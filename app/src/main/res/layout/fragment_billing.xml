@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_mainLayout"
+    android:background="@color/white"
+    tools:context=".Fragment.BillingSummary">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="10"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_from_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@color/cement_light"
+                android:drawableRight="@drawable/calender_color_billing"
+                android:gravity="center"
+                android:hint="20-01-2019"
+                android:paddingBottom="5dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:textColor="@color/DARKGray"
+                android:textSize="12dp" />
+
+            <TextView
+                android:paddingBottom="5dp"
+                android:paddingRight="15dp"
+                android:paddingTop="5dp"
+                android:id="@+id/txt_to_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:background="@color/cement_light"
+                android:drawableRight="@drawable/calender_color_billing"
+                android:gravity="center"
+                android:hint="30-01-2019"
+                android:textColor="@color/DARKGray"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            android:id="@+id/parent_ll"
+            android:layout_weight="9.5"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@drawable/grey_curve_grey_bg">
+
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/date"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="DATE"
+                    android:textColor="@color/colorBlack" />
+
+                <View
+                    android:background="@color/grey"
+                    android:layout_height="match_parent"
+                    android:layout_width="1dp" />
+
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/WL"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="WL"
+                    android:textColor="@color/colorBlack" />
+
+                <View
+                    android:background="@color/grey"
+                    android:layout_height="match_parent"
+                    android:layout_width="1dp" />
+
+                <TextView
+                    android:gravity="center"
+                    android:id="@+id/BILLING"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="BILLING"
+                    android:textColor="@color/colorBlack" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/list_billingSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="9.5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/offline_img"
+            android:src="@drawable/offline_gifimg"
+            android:orientation="vertical"
+            android:visibility="gone"
+            >
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="match_parent"
+                android:layout_marginTop="100dp"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:src="@drawable/offline_gifimg"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="  Sorry ! You are offline..."
+                android:textColor="@color/maroon"
+                android:layout_gravity="center"
+                android:gravity="top|center"
+                android:textSize="18sp"
+                android:layout_weight="2"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</FrameLayout>

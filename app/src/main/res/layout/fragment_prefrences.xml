@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorGray"
+    tools:context=".Fragment.Prefrences">
+
+    <!-- TODO: Update blank fragment layout -->
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:background="@color/colorWhite"
+       android:layout_margin="10dp"
+       android:orientation="vertical">
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:text="Brand"/>
+           <Spinner
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:id="@+id/spinnerbrand"
+            />
+
+
+
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:text="Default type"/>
+           <Spinner
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:id="@+id/deftype"
+            />
+
+
+
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:text="Report format"/>
+           <Spinner
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:id="@+id/report_type"
+            />
+
+
+
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:text="Report Mail"/>
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:gravity="left"
+               android:text="BCC"
+               android:textColor="@color/colorBlack"
+               android:layout_height="wrap_content"
+               android:id="@+id/bcc"/>
+
+           <Switch
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/report_mail"
+               android:layout_marginRight="50dp"
+               android:layout_weight="1"
+               />
+
+       </LinearLayout>
+
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+
+               android:text="Auto Mail" />
+
+           <TextView
+               android:id="@+id/No"
+               android:textColor="@color/colorBlack"
+               android:gravity="left"
+android:text="NO"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1" />
+
+           <Switch
+               android:layout_weight="1"
+               android:id="@+id/auto_mail"
+               android:layout_marginRight="50dp"
+
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content" />
+
+       </LinearLayout>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal">
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:layout_height="wrap_content"
+               android:text="Auto SMS"/>
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_weight="1"
+               android:textColor="@color/colorBlack"
+               android:gravity="left"
+               android:text="NO"
+
+               android:layout_height="wrap_content"
+               android:id="@+id/Nosms"/>
+
+           <Switch
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/auto_SMS"
+               android:layout_weight="1"
+               android:layout_marginRight="50dp"
+
+               />
+
+       </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Cancellation Action"/>
+
+        <Spinner
+           android:layout_width="match_parent"
+           android:layout_weight="1"
+           android:layout_height="wrap_content"
+           android:id="@+id/action"
+           />
+    </LinearLayout>
+   </LinearLayout>
+<Button
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/orange"
+    android:text="Save"
+    android:id="@+id/save"
+    android:textColor="@color/colorWhite"
+    android:layout_margin="10dp"/>
+
+
+</LinearLayout>

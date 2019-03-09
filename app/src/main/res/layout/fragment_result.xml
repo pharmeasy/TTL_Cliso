@@ -1,0 +1,122 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.e5322.thyrosoft.Fragment.ResultFragment">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="No data found"
+        android:textColor="@color/colorBlack"
+        android:id="@+id/nodata"
+        android:visibility="gone"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/main">
+        <!-- TODO: Update blank fragment layout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:id="@+id/linear"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@color/colorWhite"
+            android:layout_marginBottom="2dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
+                android:minHeight="30dp"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="click me"
+                    android:visibility="gone"
+                    android:id="@+id/buttonnow"
+                    android:layout_marginBottom="10dp"/>
+                <Spinner
+                    android:id="@+id/spinnertype"
+                    android:layout_width="match_parent"
+                    android:textAlignment="center"
+                    android:minHeight="20dp"
+                    android:layout_height="match_parent">
+
+                </Spinner>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/Gray"/>
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:queryHint="Search Here"
+                android:iconifiedByDefault="false"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                />
+            <!--
+                    <SearchView
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="match_parent"
+                        android:id="@+id/search"
+                        android:layout_height="wrap_content"
+                       >
+
+                    </SearchView>-->
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+
+
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorBlack"
+                android:gravity="center"
+                android:visibility="gone"
+                android:id="@+id/nodatatv"/>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listviewreport"
+                ></ListView>
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+
+</LinearLayout>

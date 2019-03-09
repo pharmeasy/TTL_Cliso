@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="60dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/days_txt"
+    android:text="Tue"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:layout_gravity="center"
+    />
+    <TextView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_weight="1"
+        android:layout_margin="2dp"
+        android:background="@drawable/circle"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:id="@+id/dates_txt"
+        android:text="25"
+        />
+</LinearLayout>

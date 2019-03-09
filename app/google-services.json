@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "310545966247",
+    "firebase_url": "https://thyrosoft-28999.firebaseio.com",
+    "project_id": "thyrosoft-28999",
+    "storage_bucket": "thyrosoft-28999.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:310545966247:android:8fc77236e8991b3c",
+        "android_client_info": {
+          "package_name": "com.example.e5322.thyrosoft"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "310545966247-891dcs6cggpa5hueuqgsdda840mq12kn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.e5322.thyrosoft",
+            "certificate_hash": "c1953ea01f8e33263dc0d58b653a5cd9f5a8a72c"
+          }
+        },
+        {
+          "client_id": "310545966247-ghljssrgoqn4144jggnq2bthlbh24l8a.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "310545966247-ghljssrgoqn4144jggnq2bthlbh24l8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHCaiOKNNpXkSh9eFkaSkdIt0NATWdYgM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "310545966247-ghljssrgoqn4144jggnq2bthlbh24l8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

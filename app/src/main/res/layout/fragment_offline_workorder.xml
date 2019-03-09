@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/parent_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linearlayout3"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <EditText
+                android:id="@+id/edtSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/imgSearch"
+                android:layout_toStartOf="@+id/imgSearch"
+                android:layout_weight="9"
+                android:background="@drawable/button_background"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz "
+                android:drawableRight="@drawable/ic_search_black_36dp"
+                android:ems="10"
+                android:hint=" Search by patient name or barcode"
+                android:imeOptions="actionSearch"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/NormalTextSize" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#c0c0c0" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:layout_weight="95"
+            android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:background="@drawable/pre_border"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+       android:id="@+id/sendwoe_ll"
+        >
+        <TextView
+            android:layout_weight="2"
+            android:id="@+id/sync_woe"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:text="Send WOE"
+            android:layout_alignParentStart="true"
+            android:textAlignment="textEnd"
+            android:gravity="center|center_horizontal|center_vertical"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            tools:ignore="RtlCompat" />
+        <ImageView
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_gravity="end"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/sync_int"
+            android:textColor="@color/black"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

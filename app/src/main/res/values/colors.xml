@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+     <resources>
+    <color name="myPrimaryDarkColor">#e52d2e</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colortoolbar">#7a7a7b</color>
+    <color name="toobar_gray">#7a7a7b</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorCommunication">#e9c7d3</color>
+    <color name="colorBlack">#121111</color>
+    <color name="colorGray">#cfcdcd</color>
+    <color name="DARKGray">#494444</color>
+    <color name="lightgray">#e2dede</color>
+    <color name="ledger">#e4e3e3</color>
+    <color name="Gray">#bcb5b5</color>
+    <color name="userloginColor">#941010</color>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <color name="Graytoolbar">#747474</color>
+    <color name="light_white">#FEFEFE</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="billing_child">#D16B7E</color>
+    <color name="colorlevendor">#a67eb7</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="darkcolorlevendor">#564060</color>
+    <color name="colorlevendorlight">#c1a3ce</color>
+    <color name="colorred">#d64351</color>
+    <!--<color name="maroon">#9b202b</color>-->
+    <color name="cement_light">#2aa2afaa</color>
+    <color name="maroon">#efa60303</color>
+    <color name="limaroon">#EFB90202</color>
+    <color name="tabindicatorColor">#FDAE31</color>
+    <color name="maroon_cicle">#eff44f4f</color>
+    <color name="marronFaint">#dc989e</color>
+    <color name="colorlevendor2">#892fe6</color>
+    <color name="colorbtn">#aad8e2</color>
+    <color name="hintcolor">#1a1b1b</color>
+    <color name="toolbar">#8dd2e1</color>
+    <color name="toolbar2">#e68c54</color>
+    <color name="button_color">#05128c</color>
+    <color name="color_maroon">#800000</color>
+    <color name="WOE">#1db8e2</color>
+    <color name="normal">#FF9FB0EA</color>
+
+    <color name="WOEtext">#20b7d9</color>
+    <color name="preborder">#c4d78f</color>
+    <color name="ana_border">#5a21af</color>
+    <color name="entered">#44dac6</color>
+    <color name="enteredtext">#44dac6</color>
+    <color name="imported">#4bd4a6</color>
+    <color name="importedtext">#bf901a</color>
+    <color name="confirmed">#6a7393</color>
+    <color name="confirmedtext">#a9189a</color>
+    <color name="wind_up">#a955a1</color>
+    <color name="reported">#da806c</color>
+    <color name="reportedtext">#827eca</color>
+    <color name="pending">#6cd8ed</color>
+    <color name="pendingtext">#588e6b</color>
+    <color name="chn">#e9a970</color>
+    <color name="chntext">#5a56b1</color>
+    <color name="cancelled">#df84d2b0</color>
+    <color name="cancelledtext">#726099</color>
+    <color name="light_gray">#d9d7d7</color>
+    <color name="noticeboard_gray">#c6c5c5</color>
+    <color name="noticeboard_bg">#edd8ae</color>
+    <color name="purple">#dfaf9eca</color>
+    <color name="woecolor">#dfffa498</color>
+    <color name="skin_color">#efffb8b8</color>
+
+
+    <color name="orange">#FF5600</color>
+
+
+    <color name="yellowlight">#f5e4ba</color>
+    <color name="darkgreen">#128c2e</color>
+    <color name="green">#18ac3a</color>
+    <color name="red">#f97d7b</color>
+
+
+    <color name="accent">#03A9F4</color>
+    <color name="primary_text">#FFFFFF</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
+
+
+    <color name="navy_blue">#3F51B5</color>
+    <color name="white">#ffffff</color>
+    <color name="windup">#f9d4ce</color>
+    <color name="zebragrey">#F5F5F5</color>
+    <color name="zebrablue">#EBF9FF</color>
+    <color name="gray">#FF8B8888</color>
+    <color name="blue">#8DD6F0</color>
+    <color name="darkBlue">#61BEE0</color>
+    <color name="highlightBlue">#57EAE8</color>
+    <color name="light">#F5F5F5</color>
+    <color name="violet">#5D3B87</color>
+    <color name="blue_shade">#2196F3</color>
+    <color name="unselected">#67C1E2</color>
+    <color name="colorSecondary">#5BE4DE</color>
+    <color name="divider_color">#979A9C</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="colorSecondaryDark">#5EBADE</color>
+    <color name="textColor">#808080</color>
+    <color name="black">#000000</color>
+    <color name="wt_color">#4fc652</color>
+    <color name="transparent">#00000000</color>
+    <color name="navigationBackground">#262626</color>
+    <color name="contentDividerLine">#e0e0e0</color>
+    <!-- Status Colors -->
+    <color name="status_level_11">#FF0000</color>
+    <color name="grey">#828080</color>
+    <color name="status_level_10">#FF2A00</color>
+    <color name="status_level_9">#FF5500</color>
+    <color name="status_level_8">#FF9000</color>
+    <color name="status_level_7">#FFC600</color>
+    <color name="status_level_6">#FFFF00</color>
+    <color name="status_level_5">#C6FF00</color>
+    <color name="status_level_4">#90FF00</color>
+    <color name="status_level_3">#5BFF00</color>
+    <color name="status_level_2">#2AFF00</color>
+    <color name="status_level_1">#00FF00</color>
+    <color name="calender_text">#444444</color>
+
+    <color name="click_txt_color">#2db1e5</color>
+    <color name="test2">#FFAB91</color>
+    <color name="test1">#A5D6A7</color>
+
+    <color name="bg_boommenuitemcolor">#6e43a6</color>
+
+    <color name="bm_level_8">#34495e</color>
+    <color name="bm_level_7">#d95d0c</color>
+    <color name="bm_level_6">#f7dc6f</color>
+    <color name="bm_level_5">#58d68d</color>
+    <color name="bm_level_4">#3498db</color>
+    <color name="bm_level_3">#8e44ad</color>
+    <color name="bm_level_2">#e74c3c</color>
+    <color name="bm_level_1">#00FF00</color>
+
+    <color name="div_color">#cccccc</color>
+    <color name="primary_color">#4967ca</color>
+    <color name="tertiary_color">#747474</color>
+    <color name="secondary_color">#444444</color>
+    <color name="highlight_color">#e52d2e</color>
+
+    <color name="light_pink">#F5D2D9</color>
+</resources>

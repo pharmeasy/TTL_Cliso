@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RevisedScreenNewUser.Payment_Activity">
+
+    <LinearLayout
+        android:id="@+id/linear_layout"
+        style="@style/heading_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:textColor="@color/colorBlack"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/back"
+            style="@style/heading_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="0.5"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:src="@drawable/color_back"
+            android:textColor="@color/colorBlack"></ImageView>
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/heading_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="4"
+            android:textStyle="bold"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:textColor="@color/maroon"></TextView>
+
+        <ImageView
+            android:id="@+id/home"
+            style="@style/heading_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="0.5"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:src="@drawable/color_homr"
+            android:textColor="@color/colorBlack"></ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_background"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instructions :"
+                android:textColor="@color/black"
+                android:textSize="15dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_minamt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instructions"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/txt_mulamt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Instructions"
+                android:textColor="@color/black"
+                android:textSize="15dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dear " />
+
+            <TextView
+                android:id="@+id/txt_tsp_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/maroon"
+                android:text="Test Entry" />
+        </LinearLayout>
+
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/card_view"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            card_view:cardCornerRadius="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:text="Your outstanding"
+                    android:layout_width="0dp"
+                    android:gravity="center|left"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:layout_height="match_parent" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:id="@+id/edt_closing_bal"
+                    android:editable="false"
+                    android:text="123"
+                    android:background="@drawable/border_background"
+                    android:layout_height="50dp" />
+            </LinearLayout>
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:text="Amount you wish to pay"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center|left"
+                        android:textColor="@color/black"
+                        android:layout_height="match_parent" />
+                    <EditText
+                        android:layout_width="0dp"
+                        android:id="@+id/edt_enter_amt"
+                        android:layout_weight="1"
+                        android:inputType="phone|number"
+                        android:digits="0123456789"
+                        android:maxLength="8"
+                        android:background="@drawable/border_background"
+                        android:layout_height="50dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/next_button"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:id="@+id/btn_payu"
+            android:text="Pay Now"
+            />
+    </LinearLayout>
+
+
+</LinearLayout>

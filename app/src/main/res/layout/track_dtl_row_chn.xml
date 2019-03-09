@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="7dp"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:background="@drawable/maroon_border_white_bg"
+            android:padding="5dp"
+            android:id="@+id/cancelled_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/cb_dark_grey"
+                    android:text="Mrs B Usha Nandhini (19Y/F)"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:textSize="11dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/Refby"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:textColor="@color/maroon"
+                    android:text="Ref by Dr. N Suganthi" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="barcode"
+                    android:textSize="10dp" />
+
+                <TextView
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/tests"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="test"
+                    android:textSize="10dp" />
+                <LinearLayout
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/test_name"
+                        android:text="test name "
+                        android:textSize="10dp"
+                        />
+                    <TextView
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        android:id="@+id/test_value"
+                        android:text="Value"
+                        android:textSize="10dp"
+                        />
+                </LinearLayout>
+                <Button
+                    android:layout_marginTop="3dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/next_button"
+                    android:text="Enter CHN"
+                    android:id="@+id/enter_chn_btn"
+                    android:textSize="@dimen/NormalTextSize1"
+                    android:textColor="@color/colorWhite"
+                    />
+
+                <LinearLayout
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="3dp"
+                    android:id="@+id/chn_remark_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_weight="2"
+                    >
+
+                    <EditText
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:hint="Enter Remark"
+                        android:id="@+id/enter_remark"
+                        android:textSize="12dp"
+                        android:background="@drawable/maroon_border_white_bg"
+                        /><requestFocus></requestFocus>
+                    <Button
+                        android:layout_marginTop="2dp"
+                        android:layout_width="80dp"
+                        android:layout_height="25dp"
+                        android:text="Submit"
+                        android:id="@+id/submit_chn"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center"
+                        android:textSize="@dimen/NormalTextSize1"
+                        android:background="@drawable/next_button"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="3dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3">
+
+                        <ImageView
+                            android:id="@+id/download"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/download_new" />
+
+                        <ImageView
+                            android:id="@+id/mail"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/mail_new" />
+
+                        <ImageView
+                            android:id="@+id/print"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="20dp"
+                            android:src="@drawable/print_new" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/canlayoutGone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/canList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

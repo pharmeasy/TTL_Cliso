@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:background="@color/colorGray"
+    tools:context="com.example.e5322.thyrosoft.Registration.Registration_third_screen_Activity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="40"
+        android:weightSum="38"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Source"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:layout_marginLeft="10dp"
+                />
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/source"
+                ></Spinner>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Enquiry remarks"
+                android:layout_weight="1"
+                android:gravity="center|left"
+                android:layout_marginLeft="10dp"
+                />
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/enquiry_remarks"
+                android:hint="Enquiry remarks"
+                android:textSize="15sp"
+                ></EditText>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text=" Upload Visiting Crad"
+                android:layout_weight="2"
+                android:id="@+id/visitingcard"
+                android:drawableLeft="@drawable/visiting"
+                android:gravity="center|left"
+                android:layout_marginLeft="10dp"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="8"
+            android:layout_margin="10dp"
+            android:id="@+id/save"
+            android:text="Save"
+            android:background="@drawable/btn_bg"
+            android:textColor="@color/colorWhite"
+            />
+
+    </LinearLayout>
+</LinearLayout>

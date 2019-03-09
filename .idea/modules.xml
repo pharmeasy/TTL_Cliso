@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Thyrosoft 24-08-2018.iml" filepath="$PROJECT_DIR$/Thyrosoft 24-08-2018.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sdkui/sdkui.iml" filepath="$PROJECT_DIR$/sdkui/sdkui.iml" />
+    </modules>
+  </component>
+</project>

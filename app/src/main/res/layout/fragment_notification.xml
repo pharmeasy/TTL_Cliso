@@ -1,0 +1,59 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/noticeboard_gray"
+    tools:context="com.example.e5322.thyrosoft.Fragment.NotificationFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lightgray"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/back"
+            android:src="@drawable/color_back"
+            android:layout_weight="0.5"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="Notification"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <ImageView
+            android:layout_width="0dp"
+            android:id="@+id/home"
+            android:layout_height="match_parent"
+            android:src="@drawable/color_homr"
+            android:layout_weight="0.5"/>
+    </LinearLayout>
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You don't have notifications - yet!"
+        android:textStyle="italic|bold"
+        android:gravity="center"
+        android:visibility="gone"
+        android:id="@+id/noNotification"
+        android:textColor="@color/colorWhite"
+
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/item_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        />
+
+</LinearLayout>

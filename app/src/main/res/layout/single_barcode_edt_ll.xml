@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/scanBarcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+       >
+
+        <Button
+            android:id="@+id/outlab_barcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:layout_weight="4"
+            android:background="@drawable/button_background"
+            android:text="Barcode" />
+
+        <ImageView
+            android:id="@+id/img_edt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="0.5"
+            android:background="@drawable/border_background"
+            android:src="@drawable/edit_consign" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/manualbarcodelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:background="@color/colorWhite"
+        android:orientation="vertical"
+        >
+
+        <EditText
+            android:id="@+id/enter_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="@drawable/barcode_button"
+            android:hint="Enter barcode"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+            android:inputType="textCapCharacters|textPassword"
+            android:maxLength="8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="5"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/reenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                android:background="@drawable/barcode_button"
+                android:hint="Renter barcode"
+                android:inputType="textCapCharacters"
+                android:maxLength="8" />
+
+            <ImageView
+                android:id="@+id/setback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:src="@drawable/upbarcode" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

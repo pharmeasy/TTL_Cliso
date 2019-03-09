@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/linear_layout_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/cement_light">
+
+                <Spinner
+                    android:id="@+id/brand_name_rt_cal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:backgroundTint="@color/maroon" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/before_discount_layout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/maroon_rect_box"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/maroon" />
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/maroon"
+                    android:gravity="center_horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="Test"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@color/grey" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="B2C Rate"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@color/grey" />
+
+                    <TextView
+                        android:id="@+id/b2b_rate_adm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="B2B Rate"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:gravity="center_horizontal"
+                    android:minHeight="20dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/show_selected_tests_list_test_ils1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:layout_weight="1"
+                        android:gravity="center|left"
+                        android:padding="3dp"
+                        android:text="Select Test"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/show_rates"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="1100"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/show_b2b_rates"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="550"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                </TableRow>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/search_option_ttl"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/grey_curve_border"
+                android:orientation="horizontal"
+                android:padding="1dp"
+                android:visibility="gone"
+                android:weightSum="5">
+
+                <!--search.setQueryHint("Custom Search Hint")-->;
+
+                <EditText
+                    android:id="@+id/sv_testsList12"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:background="@drawable/grey_curve_border"
+                    android:drawableLeft="@drawable/ic_search_black_24dp"
+                    android:hint="Search Test Name"
+                    android:paddingLeft="14dp"
+                    android:paddingTop="1dp"
+                    android:paddingRight="1dp"
+                    android:paddingBottom="1dp"
+                    android:textColorHint="@color/grey"
+                    android:textSize="10dp" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/outlabtestsearch"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/grey_curve_border"
+                android:drawableLeft="@drawable/ic_search_black_24dp"
+                android:hint="Search Test Name"
+                android:paddingLeft="14dp"
+                android:paddingTop="1dp"
+                android:paddingRight="1dp"
+                android:paddingBottom="1dp"
+                android:textColorHint="@color/grey"
+                android:textSize="10dp" />
+
+            <LinearLayout
+                android:id="@+id/lineargetselectedtestforILS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="0dp"
+                android:background="@drawable/maroon_rect_box"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/maroon" />
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/maroon"
+                    android:gravity="center_horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="Test"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@color/grey" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="B2C Rate"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@color/grey" />
+
+                    <TextView
+                        android:id="@+id/b2bratell"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="B2B Rate"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12dp" />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginRight="3dp"
+                    android:gravity="center_horizontal"
+                    android:minHeight="20dp"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/show_selected_tests_list_test_ils"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|left"
+                        android:layout_weight="1"
+                        android:gravity="center|left"
+                        android:padding="3dp"
+                        android:text="Select Test"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/out_lab_cost"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="1100"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                    <TextView
+                        android:id="@+id/out_lab_cost_b2b"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="3dp"
+                        android:text="550"
+                        android:textColor="@color/white"
+                        android:textSize="10dp" />
+
+                </TableRow>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pop_profile_test_bar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/poptab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_grey_rect_box"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="POP"
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/grey" />
+
+                <TextView
+                    android:id="@+id/profile_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_grey_rect_box"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Profile"
+                    android:textColor="@color/DARKGray"
+                    android:textSize="12dp"></TextView>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/grey" />
+
+                <TextView
+                    android:id="@+id/test_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/light_grey_rect_right_round"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="Tests"
+                    android:textColor="@color/DARKGray"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/containerlist"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical"></android.support.v7.widget.RecyclerView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/outlab_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="8"
+                android:background="@drawable/button_background"
+                android:padding="5dp"
+                android:visibility="gone"></android.support.v7.widget.RecyclerView>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/offline_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="100dp"
+                android:layout_weight="3"
+                android:src="@drawable/offline_gifimg" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="top|center"
+                android:text="  Sorry ! You are offline..."
+                android:textColor="@color/maroon"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>

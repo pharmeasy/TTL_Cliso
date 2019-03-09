@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:theme="@style/NavigationView"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_navigation"
+            android:icon="@drawable/home_d"
+            android:title="Home" />
+    </group>
+
+    <group
+        android:id="@+id/group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/woe"
+            android:icon="@drawable/woe_d"
+            android:title="Work orders"
+            android:visible="false" />
+    </group>
+
+    <group
+        android:id="@+id/group99"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/guide_me"
+            android:icon="@drawable/guide"
+            android:title="Whats new"
+            android:visible="false" />
+    </group>
+
+    <group
+        android:id="@+id/group3"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/chn"
+            android:icon="@drawable/chn_d"
+            android:title="CHN" />
+    </group>
+
+    <group
+        android:id="@+id/group4"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/woestagetwo"
+            android:icon="@drawable/woestagetwo"
+            android:title="WOE Stage 2"
+            android:visible="false" />
+    </group>
+
+    <group
+        android:id="@+id/group5"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/offlinewoe"
+            android:icon="@drawable/offlinewoe"
+            android:title="Offline WOE"
+            android:visible="false" />
+    </group>
+
+    <group
+        android:id="@+id/group6"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/result"
+            android:icon="@drawable/result"
+            android:title="Results" />
+
+    </group>
+
+    <group
+        android:id="@+id/group7"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/trackdetails"
+            android:icon="@drawable/track_details_d"
+            android:title="Receipt" />
+    </group>
+
+    <group
+        android:id="@+id/group8"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/ratecal"
+            android:icon="@drawable/calculator_d"
+            android:title="Rate calculator" />
+
+    </group>
+
+    <group
+        android:id="@+id/group9"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/payment"
+            android:icon="@drawable/payment_d"
+            android:title="Payment" />
+
+    </group>
+
+    <group
+        android:id="@+id/group10"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/ledger"
+            android:icon="@drawable/ledger_d"
+            android:title="Ledger" />
+    </group>
+
+    <group
+        android:id="@+id/group11"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/billing"
+            android:icon="@drawable/billing_d"
+            android:title="Billing" />
+
+    </group>
+
+    <group
+        android:id="@+id/group12"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/upload_document_navigation"
+            android:icon="@drawable/upload_doc_d"
+            android:title="Upload Document" />
+    </group>
+
+    <group
+        android:id="@+id/group13"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/sgc_pgc_entry_data"
+            android:icon="@drawable/sgc_pgc_d"
+            android:title="SGC PGC Entry" />
+    </group>
+
+    <group
+        android:id="@+id/group14"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/communication"
+            android:icon="@drawable/comm_d"
+            android:title="Communication" />
+    </group>
+
+    <group
+        android:id="@+id/group25"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/thyroshop"
+            android:icon="@drawable/cart"
+            android:title="Download Thyroshop" />
+    </group>
+
+    <group
+        android:id="@+id/group15"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/notice"
+            android:icon="@drawable/noticeboard"
+            android:title="Noticeboard" />
+    </group>
+
+    <group
+        android:id="@+id/group16"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/notification"
+            android:icon="@drawable/notification"
+            android:title="Notification" />
+    </group>
+
+    <group
+        android:id="@+id/group17"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/feedback"
+            android:icon="@drawable/feedback"
+            android:title="Feedback" />
+    </group>
+
+    <group
+        android:id="@+id/group18"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/profile"
+            android:title="My profile" />
+    </group>
+
+    <group
+        android:id="@+id/group19"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/phone"
+            android:icon="@drawable/phone"
+            android:title="Phone" />
+    </group>
+
+    <group
+        android:id="@+id/group20"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/whatsapp"
+            android:icon="@drawable/what"
+            android:title="WhatsApp" />
+    </group>
+
+    <group
+        android:id="@+id/group21"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/synchronization"
+            android:icon="@drawable/synchro"
+            android:title="Sync" />
+    </group>
+
+    <group
+        android:id="@+id/group22"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/faq_data"
+            android:icon="@drawable/questionandanswer"
+            android:title="FAQ" />
+
+    </group>
+
+    <group
+        android:id="@+id/group23"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/company_contcat"
+            android:icon="@drawable/company_contact"
+            android:title="Company Contact" />
+    </group>
+
+    <group
+        android:id="@+id/group24"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
+    </group>
+
+
+</menu>

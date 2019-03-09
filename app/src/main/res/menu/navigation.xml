@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home_nav"
+        android:icon="@drawable/home_nav"
+        android:title="" />
+
+    <item
+        android:id="@+id/commu"
+        android:icon="@drawable/commu"
+        android:title="" />
+
+    <item
+        android:id="@+id/loud"
+        android:icon="@drawable/loud"
+        android:title=""/>
+
+    <item
+        android:id="@+id/bell_ic"
+        android:icon="@drawable/bell"
+        android:title=""/>
+    <item
+        android:id="@+id/hamb_ic"
+        android:icon="@drawable/hamb"
+        android:title="" />
+</menu>

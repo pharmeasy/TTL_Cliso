@@ -1,0 +1,893 @@
+package com.example.e5322.thyrosoft.startscreen;
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Interface.SmsListener;
+import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
+import com.example.e5322.thyrosoft.ToastFile;
+import com.sdsmdg.tastytoast.TastyToast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Random;
+
+public class Login extends Activity implements View.OnClickListener {
+    public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    EditText username, password, otpmobile,
+            otpemail;
+    TextView forgotpassword, registration, check;
+    Button login, generateotp;
+    Context context;
+    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi,RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, Login_Type, Status, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    ProgressDialog barProgressDialog;
+    Handler updateBarHandler;
+    String emailIdValidateOTP,isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
+    //WaveDrawable mWaveDrawable;
+    AlertDialog alertDialog, alertDialogforgotpass, alertDialogforotp, alertDialogverifyOtp;
+    String email, getPhone_num, emailId, isMobileEmailValid, mobileNo, otpNo, resId, response1;
+    public static com.android.volley.RequestQueue PostQue;
+    public static com.android.volley.RequestQueue generateOTP, POstQueValidateOTP, POstQueValidateOTPForgotPassword;
+    public static com.android.volley.RequestQueue PostQueEmailPhoneOtp;
+
+    Random random;
+    String randomNumber, number, getOtpnumberfromedtText;
+    int startRange = 1000, endRange = 9999;
+    EditText edt_reg_otp;
+    Button reg_otp_ok;
+    private String TAG = Login.class.getSimpleName().toString();
+    private GlobalClass globalClass;
+    @SuppressLint("NewApi")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        username = (EditText) findViewById(R.id.username);
+        password = (EditText) findViewById(R.id.password);
+        forgotpassword = (TextView) findViewById(R.id.forgotpass);
+        registration = (TextView) findViewById(R.id.registration);
+        login = (Button) findViewById(R.id.login);
+        check = (TextView) findViewById(R.id.check);
+        login.setOnClickListener(Login.this);
+
+        if (globalClass.checkForApi21()) {    Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(Login.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.CAMERA,
+                                    Manifest.permission.READ_CONTACTS,
+                                    Manifest.permission.WRITE_CONTACTS,
+                                    Manifest.permission.CALL_PHONE,
+                                    Manifest.permission.ACCESS_NETWORK_STATE,
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.VIBRATE,
+                                    Manifest.permission.WAKE_LOCK,
+                                    Manifest.permission.READ_PHONE_STATE,
+                                    Manifest.permission.INTERNET},
+                            1001);
+
+
+                } else {
+                    // switchToActivity(activity, LoginScreenActivity.class, new Bundle());
+                    // goAhead();
+                }
+            }
+        }, 1000);
+
+
+        /* checkPermissionREAD_EXTERNAL_STORAGE(context);*/
+//        if (checkAndRequestPermissions()) {
+//            // carry on the normal flow, as the case of  permissions  granted.
+//        }
+        username.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                username.setHint("");
+                return false;
+            }
+        });
+        password.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (password.getText().toString().contains(" ")) {
+                    password.setText("");
+                }
+                password.setHint("");
+                return false;
+            }
+        });
+
+        username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent u = new Intent(Login.this, ManagingTabsActivity.class);
+                startActivity(u);
+            }
+        });
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        //get the app version Name for display
+        version = pInfo.versionName;
+
+        password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ")) {
+                    Toast.makeText(Login.this,
+                            ToastFile.crt_pwd,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        password.setText(enteredString.substring(1));
+                    } else {
+                        password.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
+        forgotpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater li = LayoutInflater.from(Login.this);
+                View promptsView = li.inflate(R.layout.activity_forgotpass, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        Login.this);
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                alertDialogforgotpass = alertDialogBuilder.create();
+                // show it
+                alertDialogforgotpass.show();
+                alertDialogforgotpass.setCanceledOnTouchOutside(false);
+                final EditText edt_mobile_otp = (EditText) promptsView.findViewById(R.id.edt_mobile_otp);
+                final Button cancel = (Button) promptsView.findViewById(R.id.cancel);
+                final Button ok = (Button) promptsView.findViewById(R.id.ok);
+                cancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        alertDialogforgotpass.dismiss();
+                    }
+                });
+                edt_mobile_otp.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                        String enteredString = s.toString();
+                        if (enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                                || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                                || enteredString.startsWith("6")) {
+                            Toast.makeText(Login.this,
+                                    ToastFile.crt_mob_num,
+                                    Toast.LENGTH_SHORT).show();
+                            if (enteredString.length() > 0) {
+                                edt_mobile_otp.setText(enteredString.substring(1));
+                            } else {
+                                edt_mobile_otp.setText("");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+
+                ok.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if (!edt_mobile_otp.getText().toString().equals("")) {
+                            random = new Random();
+                            generateRandomString();
+                            getPhone_num = edt_mobile_otp.getText().toString();
+                            final Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    sendOtp();
+                                }
+                            }, 100);
+                            alertDialogforgotpass.dismiss();
+
+                            LayoutInflater liOtpVerify = LayoutInflater.from(Login.this);
+                            View promptsViewOtpVerify = liOtpVerify.inflate(R.layout.activity_otp, null);
+                            edt_reg_otp = (EditText) promptsViewOtpVerify.findViewById(R.id.edt_reg_otp);
+                            reg_otp_ok = (Button) promptsViewOtpVerify.findViewById(R.id.reg_otp_ok);
+                            AlertDialog.Builder alertDialogBuilderOtp = new AlertDialog.Builder(
+                                    Login.this);
+                            alertDialogBuilderOtp.setView(promptsViewOtpVerify);
+                            alertDialogverifyOtp = alertDialogBuilderOtp.create();
+                            //show it
+                            alertDialogverifyOtp.show();
+                            alertDialogverifyOtp.setCanceledOnTouchOutside(false);
+
+                            MySMSBroadCastReceiver.bindListener(new SmsListener() {
+                                @Override
+                                public void messageReceived(String messageText) {
+                                    try {
+                                        numberforgotpass = String.valueOf(messageText);
+                                        edt_reg_otp.setText(messageText);
+                                        if (!numberforgotpass.equals(messageText)) {
+                                            TastyToast.makeText(getApplicationContext(), ToastFile.crt_otp, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+
+                            reg_otp_ok.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    if (edt_reg_otp.getText().toString() != "") {
+                                        POstQueValidateOTPForgotPassword = Volley.newRequestQueue(Login.this);
+
+                                        JSONObject jsonObjectValidateOtp = new JSONObject();
+                                        try {
+
+                                            getOTPNO = edt_reg_otp.getText().toString();
+                                            jsonObjectValidateOtp.put("apiKey", "68rbZ40eNeRephUzIDTos9SsQIm4mHlT3lCNnqI)Ivk=");
+                                            jsonObjectValidateOtp.put("appId", "B2BApp");
+                                            jsonObjectValidateOtp.put("mobileNo", getPhone_num);
+                                            jsonObjectValidateOtp.put("emailId", "");
+                                            jsonObjectValidateOtp.put("otpNo", getOTPNO);
+
+                                            GlobalClass.saveMobileNUmber = getPhone_num;
+
+                                            SharedPreferences.Editor editor = getSharedPreferences("OTPnumber", 0).edit();
+                                            editor.putString("PhoneNUmber", getPhone_num);
+//                                    editor.putString("", pass);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.ValidateOTP, jsonObjectValidateOtp, new com.android.volley.Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+
+                                                Log.e(TAG, "onResponse: response" + response);
+                                                try {
+                                                    String finalJson = response.toString();
+                                                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                                    emailIdValidateOTP = parentObjectOtp.getString("emailId");
+                                                    isMobileEmailValidValidateOTP = parentObjectOtp.getString("isMobileEmailValid");
+                                                    mobileNoValidateOTP = parentObjectOtp.getString("mobileNo");
+                                                    otpNoValidateOTP = parentObjectOtp.getString("otpNo");
+                                                    resIdValidateOTP = parentObjectOtp.getString("resId");
+                                                    responseValidateOTP = parentObjectOtp.getString("response");
+
+                                                    if (resIdValidateOTP.equalsIgnoreCase("RES0000")) {
+                                                        if (barProgressDialog.isShowing()) {
+                                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                        }
+                                                        TastyToast.makeText(Login.this, "" + responseValidateOTP, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                        Intent i = new Intent(Login.this, Change_Passowrd.class);
+                                                        startActivity(i);
+                                                    } else {
+                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                        TastyToast.makeText(Login.this, responseValidateOTP, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    }
+                                                } catch (JSONException e) {
+                                                    TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                if (error != null) {
+                                                } else {
+
+                                                    System.out.println(error);
+                                                }
+                                            }
+                                        });
+                                        POstQueValidateOTPForgotPassword.add(jsonObjectRequest1);
+                                        Log.e(TAG, "onClick: " + jsonObjectRequest1);
+                                        Log.e(TAG, "onClick: " + jsonObjectValidateOtp);
+
+                                    } else {
+                                        TastyToast.makeText(getApplicationContext(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+                                    }
+                                }
+                            });
+
+
+                        } else {
+                            Toast.makeText(Login.this, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+            }
+        });
+        registration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              /*  Intent reg= new Intent(Login.this, Registration_first_screen.class);
+                startActivity(reg);*/
+                LayoutInflater li = LayoutInflater.from(Login.this);
+                View promptsView = li.inflate(R.layout.activity_registration, null);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        Login.this);
+                // set prompts.xml to alertdialog builder
+                alertDialogBuilder.setView(promptsView);
+
+                alertDialog = alertDialogBuilder.create();
+
+                // show it
+
+                alertDialog.setCanceledOnTouchOutside(false);
+                otpmobile = (EditText) promptsView.findViewById(R.id.otpmobile);
+                otpemail = (EditText) promptsView.findViewById(R.id.otpemail);
+                generateotp = (Button) promptsView.findViewById(R.id.generateotp);
+                // final ImageView cross = (ImageView) promptsView.findViewById(R.id.cross);
+                alertDialog.show();
+                otpmobile.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before,
+                                              int count) {
+                        String enteredString = s.toString();
+                        if (enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2") || enteredString.startsWith("3")
+                                || enteredString.startsWith("4") || enteredString.startsWith("5") || enteredString.startsWith("6")) {
+                            Toast.makeText(Login.this,
+                                    ToastFile.crt_mob_num,
+                                    Toast.LENGTH_SHORT).show();
+                            if (enteredString.length() > 0) {
+                                otpmobile.setText(enteredString.substring(1));
+                            } else {
+                                otpmobile.setText("");
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+                generateotp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                        email = otpemail.getText().toString();
+                        regmobile = otpmobile.getText().toString();
+                        if (otpmobile.getText().toString().equals("") || otpemail.getText().toString().equals("")) {
+                            Toast.makeText(Login.this, ToastFile.crt_mob_num_eml, Toast.LENGTH_SHORT).show();
+                        } else if (regmobile.length() < 10) {
+                            Toast.makeText(Login.this, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                        } else if (!email.matches(emailPattern)) {
+                            Toast.makeText(Login.this, ToastFile.crt_eml, Toast.LENGTH_SHORT).show();
+                        } else {
+//                            generateEmailPhoneOTP();
+                            PostQueEmailPhoneOtp = Volley.newRequestQueue(Login.this);
+
+                            barProgressDialog = new ProgressDialog(Login.this);
+                            barProgressDialog.setTitle("Kindly wait ...");
+                            barProgressDialog.setMessage(ToastFile.processing_request);
+                            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                            barProgressDialog.setProgress(0);
+                            barProgressDialog.setMax(20);
+                            barProgressDialog.show();
+                            barProgressDialog.setCanceledOnTouchOutside(false);
+                            barProgressDialog.setCancelable(false);
+
+                            final JSONObject jsonObjectEmailPhoneOtp = new JSONObject();
+                            try {
+                                jsonObjectEmailPhoneOtp.put("apiKey", "68rbZ40eNeRephUzIDTos9SsQIm4mHlT3lCNnqI)Ivk=");
+                                jsonObjectEmailPhoneOtp.put("appId", "B2BApp");
+                                jsonObjectEmailPhoneOtp.put("mobileNo", regmobile);
+                                jsonObjectEmailPhoneOtp.put("emailId", email);
+
+
+                                SharedPreferences.Editor editor25 = getApplicationContext().getSharedPreferences("getEmailMobile", 0).edit();
+                                editor25.putString("Mobile", regmobile);
+                                editor25.putString("Email", email);
+                                editor25.commit();
+                                /*Global.Username = username.getText().toString();*/
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            RequestQueue queueEmailPhoneOtp = Volley.newRequestQueue(Login.this);
+                            final JsonObjectRequest jsonObjectRequestEmailPhone = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.EmailPhoneOtp, jsonObjectEmailPhoneOtp, new com.android.volley.Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+
+                                    try {
+                                        Log.e(TAG, "onResponse: " + response);
+                                        String finalJson = response.toString();
+                                        JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                                        emailId = parentObjectOtp.getString("emailId");
+                                        isMobileEmailValid = parentObjectOtp.getString("isMobileEmailValid");
+                                        mobileNo = parentObjectOtp.getString("mobileNo");
+                                        otpNo = parentObjectOtp.getString("otpNo");
+                                        resId = parentObjectOtp.getString("resId");
+                                        response1 = parentObjectOtp.getString("response");
+
+                                        GlobalClass.responseVariable = response1;
+                                        if (isMobileEmailValid.equalsIgnoreCase("YES")) {
+                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                            LayoutInflater li = LayoutInflater.from(Login.this);
+                                            View promptsView = li.inflate(R.layout.activity_otp, null);
+                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                                    Login.this);
+                                            // set prompts.xml to alertdialog builder
+                                            alertDialogBuilder.setView(promptsView);
+                                            alertDialog.dismiss();
+                                            alertDialogforotp = alertDialogBuilder.create();
+                                            alertDialogforotp.show();
+                                            alertDialogforotp.setCanceledOnTouchOutside(false);
+                                            edt_reg_otp = (EditText) promptsView.findViewById(R.id.edt_reg_otp);
+                                            reg_otp_ok = (Button) promptsView.findViewById(R.id.reg_otp_ok);
+
+
+                                            MySMSBroadCastReceiver.bindListener(new SmsListener() {
+                                                @Override
+                                                public void messageReceived(String messageText) {
+                                                    try {
+                                                        number = String.valueOf(messageText);
+                                                        edt_reg_otp.setText(messageText);
+                                                        if (!number.equals(messageText)) {
+                                                            TastyToast.makeText(getApplicationContext(), ToastFile.crt_otp, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+                                                        }
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            });
+
+
+                                            reg_otp_ok.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    getOtpnumberfromedtText = edt_reg_otp.getText().toString();
+                                                    if (edt_reg_otp.getText().toString().equals("")) {
+                                                        Toast.makeText(Login.this, ToastFile.crt_otp, Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        POstQueValidateOTP = Volley.newRequestQueue(Login.this);
+
+
+                                                        JSONObject jsonObjectValidateOtp = new JSONObject();
+                                                        try {
+                                                            jsonObjectValidateOtp.put("apiKey", "68rbZ40eNeRephUzIDTos9SsQIm4mHlT3lCNnqI)Ivk=");
+                                                            jsonObjectValidateOtp.put("appId", "B2BApp");
+                                                            jsonObjectValidateOtp.put("mobileNo", regmobile);
+                                                            jsonObjectValidateOtp.put("emailId", email);
+                                                            jsonObjectValidateOtp.put("otpNo", getOtpnumberfromedtText);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+
+
+                                                        barProgressDialog = new ProgressDialog(Login.this);
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
+
+                                                        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.ValidateOTP, jsonObjectValidateOtp, new com.android.volley.Response.Listener<JSONObject>() {
+                                                            @Override
+                                                            public void onResponse(JSONObject response) {
+                                                                try {
+                                                                    Log.e(TAG, "onResponse: " + response);
+                                                                    String finalJson = response.toString();
+                                                                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                                                    emailIdValidateOTP = parentObjectOtp.getString("emailId");
+                                                                    isMobileEmailValidValidateOTP = parentObjectOtp.getString("isMobileEmailValid");
+                                                                    mobileNoValidateOTP = parentObjectOtp.getString("mobileNo");
+                                                                    otpNoValidateOTP = parentObjectOtp.getString("otpNo");
+                                                                    resIdValidateOTP = parentObjectOtp.getString("resId");
+                                                                    responseValidateOTP = parentObjectOtp.getString("response");
+                                                                    if (responseValidateOTP.equals("OTP Validated Sucessfully")) {
+                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+//                                                        TastyToast.makeText(Login.this,""+RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                                        Intent reg = new Intent(Login.this, Registration_first_screen.class);
+                                                                        startActivity(reg);
+
+                                                                    } else if (responseValidateOTP == null) {
+                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                                        TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                    } else {
+                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                                        TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                    }
+                                                                } catch (JSONException e) {
+                                                                    TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                                    e.printStackTrace();
+                                                                }
+                                                            }
+                                                        }, new com.android.volley.Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error != null) {
+                                                                } else {
+                                                                    System.out.println(error);
+                                                                }
+                                                            }
+                                                        });
+                                                        POstQueValidateOTP.add(jsonObjectRequest1);
+                                                        Log.e(TAG, "onClick: " + jsonObjectEmailPhoneOtp);
+                                                        Log.e(TAG, "onClick: " + jsonObjectRequest1);
+                                                        Log.e(TAG, "onClick: " + jsonObjectValidateOtp);
+
+                                                    }
+
+                                                }
+                                            });
+                                            alertDialog.dismiss();
+
+                                        } else {
+                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                            Toast.makeText(getApplicationContext(), "" + response1, Toast.LENGTH_SHORT).show();
+
+                                        }
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }, new com.android.volley.Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (error != null) {
+
+                                    } else {
+
+                                        System.out.println(error);
+                                    }
+                                }
+                            });
+                            RetryPolicy policy = new DefaultRetryPolicy(5000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                            jsonObjectRequestEmailPhone.setRetryPolicy(policy);
+                            queueEmailPhoneOtp.add(jsonObjectRequestEmailPhone);
+                            Log.e(TAG, "onClick: " + jsonObjectEmailPhoneOtp);
+                            Log.e(TAG, "onClick: " + jsonObjectRequestEmailPhone);
+                            //close previouse dialogue registartion otp email mobile number
+                            // show it
+
+
+                        }
+
+                    }
+                });
+
+            }
+        });
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // do your stuff
+                } else {
+                    Toast.makeText(Login.this, "GET_ACCOUNTS Denied",
+                            Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,
+                        grantResults);
+        }
+    }
+
+    private void generateEmailPhoneOTP() {
+
+    }
+
+    private void sendOtp() {
+
+        generateOTP = Volley.newRequestQueue(Login.this);
+
+        JSONObject jsonObjectOtp = new JSONObject();
+        try {
+
+            jsonObjectOtp.put("apikey", "jLmjR1POZBbn@TVVzb0uJvpTMeBbnNwR3lCNnqI)Ivk=");
+            jsonObjectOtp.put("type", "SENDOTP");
+            jsonObjectOtp.put("mobile", getPhone_num);
+            jsonObjectOtp.put("otpno", randomNumber);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.OTP, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: " + response);
+                try {
+                    String finalJson = response.toString();
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                    OTPNO = parentObjectOtp.getString("OTPNO");
+                    RESPONSE = parentObjectOtp.getString("RESPONSE");
+                    RES_ID = parentObjectOtp.getString("RES_ID");
+                    SENDERID = parentObjectOtp.getString("SENDERID");
+                    USER_TYPE = parentObjectOtp.getString("USER_TYPE");
+                    VALID = parentObjectOtp.getString("VALID");
+
+                    if (RES_ID.equals("RES0000")) {
+                        TastyToast.makeText(Login.this, "" + RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+
+                    } else if (RES_ID.equals("RES0000")) {
+                        TastyToast.makeText(Login.this, "" + RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+
+                } catch (JSONException e) {
+                    TastyToast.makeText(Login.this, "Feedback not sent successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                } else {
+
+                    System.out.println(error);
+                }
+            }
+        });
+        generateOTP.add(jsonObjectRequest1);
+        Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
+        Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
+
+    }
+
+
+    private void generateRandomString() {
+        randomNumber = random.nextInt((endRange - startRange) + startRange) + startRange + "";
+    }
+
+
+    @Override
+    public void onClick(View v) {
+
+        //   WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wInfo = wifi.getConnectionInfo();
+        macAddress = wInfo.getMacAddress();
+
+
+        barProgressDialog = new ProgressDialog(Login.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Here you should write your time consuming task...
+                    while (barProgressDialog.getProgress() <= barProgressDialog.getMax()) {
+                        Thread.sleep(2000);
+                        updateBarHandler.post(new Runnable() {
+                            public void run() {
+                                barProgressDialog.incrementProgressBy(2);
+                            }
+                        });
+                        if (barProgressDialog.getProgress() == barProgressDialog.getMax()) {
+                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        }
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+        // get Internet status
+
+        // check for Internet status
+
+        User = username.getText().toString();
+        pass = password.getText().toString();
+        if (User.length() == 0 & pass.length() == 0) {
+            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            Toast.makeText(this, "Please Enter Ecode and Password", Toast.LENGTH_SHORT).show();
+            // Message.message(Login.this, "Please Enter Ecode and Password");
+        } else if (User.length() == 0) {
+            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            Toast.makeText(this, "Please enter your Ecode", Toast.LENGTH_SHORT).show();
+            //Message.message(Login.this, "");
+        } else if (pass.length() == 0) {
+            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show();
+            //Message.message(Login.this, "");
+        } else {
+            try {
+                PostQue = Volley.newRequestQueue(Login.this);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("passWord", pass);
+                    jsonObject.put("portalType", "ThyrosoftLite");
+                    jsonObject.put("userCode", User);
+
+                    /*Global.Username = username.getText().toString();*/
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                RequestQueue queue = Volley.newRequestQueue(Login.this);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        Log.e(TAG, "onResponse: " + response);
+                        // String Status = response.get(Constants.Status).toString();
+                        // JSONObject time=response.getJSONObject("time");
+
+                        try {
+                            String finalJson = response.toString();
+                            JSONObject parentObject = new JSONObject(finalJson);
+
+                            Status = parentObject.getString("RESPONSE");
+                            Login_Type = parentObject.getString("ACCESS_TYPE");
+
+
+                            if (Status.equals("AUTHENTICATION FAILED")) {
+                                Toast.makeText(Login.this, ToastFile.incrt_log, Toast.LENGTH_SHORT).show();
+                            } else {
+                                ACCESS_TYPE11 = parentObject.getString("ACCESS_TYPE");
+                                API_KEY11 = parentObject.getString("API_KEY");
+                                CLIENT_TYPE11 = parentObject.getString("CLIENT_TYPE");
+                                EMAIL11 = parentObject.getString("EMAIL");
+                                EXISTS11 = parentObject.getString("EXISTS");
+                                MOBILE11 = parentObject.getString("MOBILE");
+                                NAME11 = parentObject.getString("NAME");
+                                RESPONSE11 = parentObject.getString("RESPONSE");
+                                RES_ID11 = parentObject.getString("RES_ID");
+                                URL11 = parentObject.getString("URL");
+                                USER_CODE11 = parentObject.getString("USER_CODE");
+                                USER_TYPE11 = parentObject.getString("USER_TYPE");
+                                VERSION_NO11 = parentObject.getString("VERSION_NO");
+                                SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
+                                editor.putString("Username", User);
+                                editor.putString("password", pass);
+                                editor.putString("ACCESS_TYPE", ACCESS_TYPE11);
+                                editor.putString("API_KEY", API_KEY11);
+                                editor.putString("email", EMAIL11);
+                                editor.putString("mobile_user", MOBILE11);
+                                editor.putString("CLIENT_TYPE", CLIENT_TYPE11);
+                                editor.putString("NAME", nameFromLoginApi);
+                                editor.putString("RES_ID", res_id);
+                                editor.putString("URL", uil_from_login);
+                                editor.putString("USER_CODE", USER_CODE11);
+                                editor.putString("USER_TYPE", USER_TYPE11);
+                                editor.putString("VERSION_NO", VERSION_NO11);
+                                editor.apply();
+
+                                Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                                startActivity(a);
+                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        /* Toast.makeText(Login.this, "" + response, Toast.LENGTH_SHORT).show();*/
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error != null) {
+                            // Toast.makeText(Evening.this, item + " Booking not done successfully", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(Login.this, ToastFile.invalid_log, Toast.LENGTH_SHORT).show();
+                            System.out.println(error);
+                        }
+                    }
+                });
+                queue.add(jsonObjectRequest);
+                Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest);
+                Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
+
+            } catch (Exception ex) {
+                Toast.makeText(this, "URL not found", Toast.LENGTH_SHORT).show();
+                // Message.message(Login.this, "");
+            }
+        }
+    }
+
+}

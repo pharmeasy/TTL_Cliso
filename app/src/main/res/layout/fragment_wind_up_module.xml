@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/preanalytical_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:weightSum="3"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Wind-Up"
+                android:id="@+id/enter"
+                android:layout_weight="2.7"
+                android:textColor="@color/colorBlack"
+                android:gravity="center"
+                android:background="@color/lightgray"
+                android:layout_gravity="center"
+                />
+            <View
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:id="@+id/view_line"
+                android:layout_weight="0.3"
+                android:background="@color/colorlevendor2"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Consignment Entry"
+                android:id="@+id/enetered"
+                android:layout_weight="2.7"
+                android:textColor="@color/colorBlack"
+                android:gravity="center"
+                android:background="@color/lightgray"
+                android:layout_gravity="center"
+                />
+            <View
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                android:id="@+id/view_line1"
+                android:layout_weight="0.3"
+                android:background="@color/colorlevendor2"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"/>
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp" />
+
+
+
+</LinearLayout>
