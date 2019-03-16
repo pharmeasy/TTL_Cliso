@@ -371,7 +371,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 String s1 = s.toString().toLowerCase();
                 if (s1.length() > 0) {
                     final List<TrackDetModel> filteredModelList = filter(FilterReport, s1);
-                    adapter.setFilter(filteredModelList);
+                    try {
+                        adapter.setFilter(filteredModelList);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     ListReportStatus.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 } else {

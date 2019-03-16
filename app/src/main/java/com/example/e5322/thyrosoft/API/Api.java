@@ -16,17 +16,19 @@ public class Api {
     public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API/BDN/api";
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/"; // ---- Live
 
+
     //TODO staging
-//    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
-//    public static String URL_with_http = "http://www.thyrocare.com/API_BETA/B2B/";
-//    public static String SGC = "http://staging.thyrocare.com/API/BDN/api/";
-//    public static String Static_API = "http://www.thyrocare.com/API_BETA/B2B/";
-//    public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
-//    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
-//    public static String SERVER_BASE_API_URL_PROD = "https://staging.thyrocare.com/API/BDN/api";
-//    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
+    /*public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+    public static String URL_with_http = "http://www.thyrocare.com/API_BETA/B2B/";
+    public static String SGC = "http://staging.thyrocare.com/API/BDN/api/";
+    public static String Static_API = "http://www.thyrocare.com/API_BETA/B2B/";
+    public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+    public static String SERVER_BASE_API_URL_PROD = "https://staging.thyrocare.com/API/BDN/api";
+    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";*/
 
     //POOJA
+    public static String imgURL="http://www.charbi.com/assets/photo/Emp/";
     public static String count = LIVEAPI + "WO.svc/";
     public static String LOGIN = LIVEAPI + "COMMON.svc/litelogin";
     public static String OTP = LIVEAPI + "common.svc/OTP";
@@ -37,7 +39,6 @@ public class Api {
     public static String Register_User = LIVEAPI + "COMMON.svc/postRegister";
     public static String multiple_windup = LIVEAPI + "WO.svc/postwindup";
     public static String sendGeoLocation = LIVEAPI + "COMMON.svc/litelog";
-
     public static String getData = LIVEAPI + "wo.svc/";
     public static String getAllTests = LIVEAPI + "MASTER.svc/";
     public static String addrecheckWOE = LIVEAPI + "WO.svc/postaddrecheck";
@@ -45,7 +46,6 @@ public class Api {
     public static String finalWorkOrderEntry = LIVEAPI + "WO.svc/postworkorder";
     public static String finalWorkOrderEntryNew = LIVEAPI + "WO.svc/postworkordernew";
     public static String uploadDocument = SGC + "UploadDocument/PostRegister";
-
     public static String NoticeBoardData = LIVEAPI + "COMMON.svc/";
     public static String feedback = LIVEAPI + "master.svc/Feedback";//feedback url
     public static String postResponseToCommunication = LIVEAPI + "COMMON.svc/postComm";//feedback url
@@ -53,14 +53,12 @@ public class Api {
     public static String checkValidEmail = SGC + "clientEntry/ValidateME";//BDN/api/ClientEntry/PostRegister
     public static String consignmentEntry = URL_with_http + "FAQ.svc/ConsignmentEntry";//BDN/api/ClientEntry/PostRegister
     public static String barcode_Check = URL_with_http + "FAQ.svc/";//BDN/api/ClientEntry/PostRegister
-
     public static String acknowledgeNoticeBoard = LIVEAPI + "COMMON.svc/acknowledgeNotice";//ack noticeboard url
     public static String SOURCEils = LIVEAPI + "MASTER.svc/";//Whatsapp and call url
     public static String ValidateOTP = LIVEAPI + "common.svc/validateOTP";//validate OTP url
     public static String sendEstimation = LIVEAPI + "COMMON.svc/sendest";
     public static String RateCal = LIVEAPI + "COMMON.svc/ratecal";
     public static String testDetails = LIVEAPI + "MASTER.svc/TestDetails";
-
     public static String ValidateWorkOrderLeadId = LIVEAPI + "ORDER.svc/";//validate OTP url
     public static String WORKoRDEReNTRYfIRSTpAGE = LIVEAPI + "REPORT.svc/getresults/";//validate OTP url
     public static String getPartientDetailsList = LIVEAPI + "WO.svc/";//validate OTP url
@@ -73,10 +71,7 @@ public class Api {
     public static String checkNumber = LIVEAPI + "WO.svc/ValidateMob/";//lead id
     public static String static_pages_link = Static_API + "FAQ.svc/";
     public static String GenerateId = GenerateTid + "ORDER.svc/";
-
-
     public static String upload_documnet = SGC + "UploadDocument/PostRegister";
-
 
     //NEHA
     public static String billingDetLIVE = LIVEAPI + "MASTER.svc/billingDetail";
@@ -84,13 +79,11 @@ public class Api {
     public static String ResultLIVE = LIVEAPI + "REPORT.svc/getresults";
     public static String Receipt_mail = LIVEAPI + "REPORT.svc/receiptmail";
     public static String downloadreceipt = LIVEAPI + "REPORT.svc/receiptdownload";
-
     public static String postmailLive = LIVEAPI + "REPORT.svc/postreportmail";
     public static String trackbarcode = LIVEAPI + "REPORT.svc/trackBarcode";//track barcode
     public static String commGetLive = LIVEAPI + "Common.svc/getComm";
     public static String commPost = LIVEAPI + "Common.svc/postComm";
     public static String LedgerSummLive = LIVEAPI + "MASTER.svc/ledgerSummary";
-
     public static String LedgerDetLive = LIVEAPI + "MASTER.svc/ledgerDetail";
     public static String PostPref = LIVEAPI + "MASTER.svc/postpreference";
     public static String postcancellead = LIVEAPI + "REPORT.svc/postcancellead";

@@ -111,10 +111,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     ProgressDialog progressDialog;
     LinearLayout manualbarcodelayout, scanBarcode, amt_collected_and_total_amt_ll;
     String user, passwrd, access, api_key, typeName, brandName, ERROR, RES_ID, barcode, response1, barcode_patient_id, afterBarcode, storeResponse, barcodeNumber, displayslectedtest, getSampleType;
-
     ArrayList<String> getProductCode;
     String productName, showtest;
-
     ArrayList<String> testToPass;
     private boolean flag = true;
     private TextView companycost_test;
@@ -196,7 +194,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         recycler_barcode.setVisibility(View.GONE);
 
         enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
-
 
         if (globalClass.checkForApi21()) {    Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

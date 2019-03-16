@@ -46,7 +46,6 @@ public class Contact_list_fragment extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -58,8 +57,6 @@ public class Contact_list_fragment extends RootFragment {
     Company_Contact_Model company_contact_model;
     LinearLayoutManager linearLayoutManager;
     Company_Adapter company_adapter;
-
-
     private OnFragmentInteractionListener mListener;
     private static ManagingTabsActivity mContext;
     ImageView add;
@@ -103,21 +100,8 @@ public class Contact_list_fragment extends RootFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         mContext = (ManagingTabsActivity) getActivity();
-
-
-
-
         viewfab = (View) inflater.inflate(R.layout.app_bar_main_data, container, false);
-
-
-
-
-
-
-
-
         viewMain = (View) inflater.inflate(R.layout.fragment_contact_list_fragment, container, false);
         contact_list=(RecyclerView)viewMain.findViewById(R.id.contact_list);
         contact_type_spinner=(Spinner)viewMain.findViewById(R.id.contact_type_spinner);
@@ -125,6 +109,7 @@ public class Contact_list_fragment extends RootFragment {
         contact_list.setLayoutManager(linearLayoutManager);
         ArrayAdapter company_spinner = ArrayAdapter.createFromResource(mContext, R.array.company_contact_spinner_values, R.layout.spinnerproperty);
         contact_type_spinner.setAdapter(company_spinner);
+
         getCompany_contact_details();
 
         contact_type_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -132,13 +117,11 @@ public class Contact_list_fragment extends RootFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 getCompany_contact_details();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
-
         // Inflate the layout for this fragment
         return viewMain;
     }
@@ -162,8 +145,6 @@ public class Contact_list_fragment extends RootFragment {
                 company_contact_model = new Company_Contact_Model();
                 Gson gson = new Gson();
                 company_contact_model = gson.fromJson(response.toString(), Company_Contact_Model.class);
-
-
                 if(company_contact_model.getResponse().equals("Success")){
                     company_adapter = new Company_Adapter(mContext, company_contact_model.getContact_Array_list());
                     contact_list.setAdapter(company_adapter);

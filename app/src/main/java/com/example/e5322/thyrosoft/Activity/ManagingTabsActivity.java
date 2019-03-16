@@ -209,7 +209,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
         }
 
-
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
         String name = getProfileName.getString("name", null);
         String usercode = getProfileName.getString("usercode", null);

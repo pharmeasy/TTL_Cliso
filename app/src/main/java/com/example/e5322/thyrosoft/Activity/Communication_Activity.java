@@ -51,7 +51,6 @@ public class Communication_Activity extends AppCompatActivity {
     TextView FromCPL, ToCPL;
     ImageView back, home;
     public static com.android.volley.RequestQueue PostQueOtp;
-
     ImageView enter_arrow_enter, enter_arrow_entered;
     LinearLayout unchecked_entered_ll, enter_ll_unselected;
     public static RequestQueue PostQue;
@@ -83,11 +82,9 @@ public class Communication_Activity extends AppCompatActivity {
         enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
         addCommunication = (FloatingActionButton) findViewById(R.id.addCommunication);
         offline_img = (LinearLayout) findViewById(R.id.offline_img);
-
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         api_key = prefs.getString("API_KEY", null);
-
         expandlistcommunication = (ExpandableListView) findViewById(R.id.expandlistcommunication);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -103,6 +100,7 @@ public class Communication_Activity extends AppCompatActivity {
                 GlobalClass.goToHome(Communication_Activity.this);
             }
         });
+
        /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
         FromCPL.setTextColor(getResources().getColor(R.color.colorWhite));
         ToCPL.setBackgroundColor(getResources().getColor(R.color.colorWhite));
@@ -129,7 +127,6 @@ public class Communication_Activity extends AppCompatActivity {
                     offline_img.setVisibility(View.VISIBLE);
                     expandlistcommunication.setVisibility(View.GONE);
                 } else {
-
                     if (communicationRepsponseModel.getSents() != null && communicationRepsponseModel.getSents().length > 0) {
                         adapterSents = new ExpandableListCommunicationSents(Communication_Activity.this, communicationRepsponseModel.getSents());
                         expandlistcommunication.setAdapter(adapterSents);
@@ -138,11 +135,9 @@ public class Communication_Activity extends AppCompatActivity {
                     } else {
                         Toast.makeText(Communication_Activity.this, "No data found", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             }
         });
-
 
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +153,6 @@ public class Communication_Activity extends AppCompatActivity {
                     offline_img.setVisibility(View.GONE);
                     expandlistcommunication.setVisibility(View.VISIBLE);
                     setAdapter();
-
                 }
             }
         });
@@ -183,7 +177,6 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void Getdata() {
-
         barProgressDialog = new ProgressDialog(Communication_Activity.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -317,7 +310,6 @@ public class Communication_Activity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             if (error != null) {
                             } else {
-
                                 System.out.println(error);
                             }
                         }
@@ -331,7 +323,6 @@ public class Communication_Activity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     /*@Override

@@ -28,6 +28,8 @@ import com.example.e5322.thyrosoft.R;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import static com.example.e5322.thyrosoft.API.Api.imgURL;
+
 public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHolder> {
     ArrayList<OLCcontact_Array_list> contact_array_lists_to_pass;
     Activity context1;
@@ -37,12 +39,9 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
     @NonNull
     @Override
     public Company_Adapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.profile_single_layout, parent, false);
-
         return new ViewHolder(itemView);
-
     }
 
     public Company_Adapter(Activity context, ArrayList<OLCcontact_Array_list> contact_array_lists_to_pass) {
@@ -54,14 +53,11 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final Company_Adapter.ViewHolder holder, final int position) {
         holder.name.setText(contact_array_lists_to_pass.get(position).getNAME());
-
         holder.designation.setText(contact_array_lists_to_pass.get(position).getDESIGNATION());
         holder.role.setText("Role: " + contact_array_lists_to_pass.get(position).getROLE());
         holder.email_id.setText(contact_array_lists_to_pass.get(position).getEMAIL_ID());
-
         Linkify.addLinks(holder.email_id, Linkify.EMAIL_ADDRESSES);
         holder.email_id.setMovementMethod(LinkMovementMethod.getInstance());
-
         if (contact_array_lists_to_pass.get(position).getCATEGORY().equals("MANAGER")) {
             holder.mobile_number.setVisibility(View.GONE);
         } else {
@@ -72,12 +68,8 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
                 holder.mobile_number.setVisibility(View.GONE);
             }
         }
-
 //        mobile_number.setText(contact_array_lists_to_pass.get(position).get())
-
-        String url = "http://www.charbi.com/assets/photo/Emp/" + contact_array_lists_to_pass.get(position).getECODE() + ".jpg";
-
-
+        String url = imgURL + contact_array_lists_to_pass.get(position).getECODE() + ".jpg";
         if (url != null) {
             globalClass.DisplayImage(context1,url,holder.profile);
 //            new DownloadImageTask(holder.profile).execute(url);
@@ -86,20 +78,14 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
                     .load("")
                     .placeholder(context1.getResources().getDrawable(R.drawable.userprofile))
                     .into(holder.profile);
-
         }
-
-
     }
-
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView profile;
-
         public DownloadImageTask(ImageView bmImage) {
             this.profile = bmImage;
         }
-
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
             Bitmap bmp = null;
@@ -112,7 +98,6 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
             }
             return bmp;
         }
-
         protected void onPostExecute(Bitmap result) {
             profile.setImageBitmap(result);
         }

@@ -85,6 +85,8 @@ public class BillingSummary extends RootFragment {
     int fromday, frommonth, fromyear;
     SharedPreferences prefsBilling;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private Date date,dateSecond,dateThird;
+    private SimpleDateFormat format;
 
     public BillingSummary() {
         // Required empty public constructor
@@ -134,6 +136,15 @@ public class BillingSummary extends RootFragment {
         fromyear = c.get(Calendar.YEAR);
         frommonth = c.get(Calendar.MONTH);
         fromday = c.get(Calendar.DAY_OF_MONTH);
+
+        String getDate = fromday + "/" + frommonth + "/" + fromyear;
+        format = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            date = format.parse(getDate);
+            System.out.println(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -195,8 +206,25 @@ public class BillingSummary extends RootFragment {
                                     int day = c.get(Calendar.DAY_OF_MONTH);
                                     int month = c.get(Calendar.MONTH);
                                     int year1 = c.get(Calendar.YEAR);
+
+                                    String getDateSecond = dayOfMonth + "/" + dayOfMonth + "/" + year;
+                                    try {
+                                        dateSecond = format.parse(getDateSecond);
+                                        System.out.println(dateSecond);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    String getDateThird = dayOfMonth + "/" + dayOfMonth + "/" + year1;
+                                    try {
+                                        dateThird = format.parse(getDateThird);
+                                        System.out.println(dateThird);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
                                     long time2 = c.getTimeInMillis();
-                                    if (day < dayOfMonth || month < monthOfYear || year > year1) {
+                                    if (dateThird.before(dateSecond)) {
                                         AlertDialog.Builder builder;
                                         builder = new AlertDialog.Builder(getContext());
                                         builder.setTitle("").setMessage(ToastFile.slt_smaller_date_than_crnt).setPositiveButton(android.R.string.ok,
@@ -207,7 +235,7 @@ public class BillingSummary extends RootFragment {
                                                 })
                                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                                 .show();
-                                    } else if (fromday > dayOfMonth || frommonth > dayOfMonth || fromyear > year) {
+                                    } else if (date.after(dateSecond)) {
                                         AlertDialog.Builder builder;
                                         builder = new AlertDialog.Builder(getContext());
                                         builder.setTitle("").setMessage("From date should be less than to date").setPositiveButton(android.R.string.ok,

@@ -138,7 +138,7 @@ public class Start_New_Woe extends RootFragment {
     private ArrayList<String> getLabNmae;
     private ArrayList<String> statusForColor;
     ArrayList<String> getReferenceNmae;
-    TextView samplecollectionponit;
+
     AutoCompleteTextView referedbyText;
     SourceILSMainModel obj;
     Spinner spinyr;
@@ -150,12 +150,7 @@ public class Start_New_Woe extends RootFragment {
     long minDate;
     int mYear, mMonth, mDay;
     Spinner timehr, timesecond, timeampm;
-    TextView dateShow;
-    TextView leadbarcodename;
-    TextView leadidbarcodetest;
-    TextView leadbarcoderefdr;
-    TextView leadbarcodesct;
-    TextView setTime;
+
     private int hour;
     String saveGenderId;
     boolean genderId = false;
@@ -178,30 +173,19 @@ public class Start_New_Woe extends RootFragment {
     private static final String TAG = "LocationActivity";
     LABS getFullDataLabs;
     private MyPojo myPojo;
-    private RequestQueue POstQue;
-    private String labAddress;
-    private String labid;
-    private String referredID, getBtechID;
-    private String barcode_patient_id, message, status;
-    private String scpdefaultdata;
-    private String campname;
-    private String campID;
-    private String outputDateStr;
+    private String outputDateStr, woereferedby, campID, campname, scpdefaultdata, barcode_patient_id, message, status, referredID, getBtechID, labid, labAddress;
     Spinner selectTypeSpinner, brand_spinner;
     ArrayList<String> getCampNames;
     Button next_btn_stage2;
-    TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
+    TextView samplecollectionponit,woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default, radio, dateShow, leadbarcodename, leadidbarcodetest, leadbarcoderefdr, leadbarcodesct,setTime;
     EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number;
     Spinner btechname, deliveymode, camp_spinner_olc;
     private Start_New_Woe.OnFragmentInteractionListener mListener;
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     public static ArrayList<BCT_LIST> getBtechList;
-    TextView radio;
     LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc;
     WOE_Model_Patient_Details woe_model_patient_details;
-
     private LocationManager mLocationManager;
-    String woereferedby;
     boolean isLoaded = false;
 
     static final int DATE_DIALOG_ID = 0;
@@ -317,8 +301,6 @@ public class Start_New_Woe extends RootFragment {
     ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
     private String labLabNAmeTopass;
     int flagtoAdjustClisk = 0;
-
-
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
     ArrayList<Patients> patientsArrayList;
     ArrayList<Patients> filterPatientsArrayListPatient;
@@ -832,8 +814,6 @@ public class Start_New_Woe extends RootFragment {
             brand_spinner.setAdapter(new ArrayAdapter<String>(mContext,
                     R.layout.spinnerproperty,
                     spinnerBrandName));
-
-
 
 
             startDataSetting();
