@@ -10,7 +10,8 @@
         <item
             android:id="@+id/home_navigation"
             android:icon="@drawable/home_d"
-            android:title="Home" />
+            android:title="Home"
+            android:visible="false" />
     </group>
 
     <group
@@ -40,7 +41,8 @@
         <item
             android:id="@+id/chn"
             android:icon="@drawable/chn_d"
-            android:title="CHN" />
+            android:title="CHN"
+            android:visible="false" />
     </group>
 
     <group
@@ -69,7 +71,8 @@
         <item
             android:id="@+id/result"
             android:icon="@drawable/result"
-            android:title="Results" />
+            android:title="Results"
+            android:visible="false" />
 
     </group>
 
@@ -79,7 +82,8 @@
         <item
             android:id="@+id/trackdetails"
             android:icon="@drawable/track_details_d"
-            android:title="Receipt" />
+            android:title="Receipt"
+            android:visible="false" />
     </group>
 
     <group
@@ -88,7 +92,8 @@
         <item
             android:id="@+id/ratecal"
             android:icon="@drawable/calculator_d"
-            android:title="Rate calculator" />
+            android:title="Rate calculator"
+            android:visible="false" />
 
     </group>
 
@@ -108,7 +113,8 @@
         <item
             android:id="@+id/ledger"
             android:icon="@drawable/ledger_d"
-            android:title="Ledger" />
+            android:title="Ledger"
+            android:visible="false" />
     </group>
 
     <group
@@ -117,7 +123,8 @@
         <item
             android:id="@+id/billing"
             android:icon="@drawable/billing_d"
-            android:title="Billing" />
+            android:title="Billing"
+            android:visible="false" />
 
     </group>
 
@@ -243,10 +250,27 @@
         android:id="@+id/group24"
         android:checkableBehavior="single">
         <item
+            android:id="@+id/broadCast"
+            android:icon="@drawable/broadcast"
+            android:title="Broadcast" />
+    </group>
+
+    <group
+        android:id="@+id/group26"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/campIntimation"
+            android:icon="@drawable/camp"
+            android:title="Camp Intimation" />
+    </group>
+
+    <group
+        android:id="@+id/group27"
+        android:checkableBehavior="single">
+        <item
             android:id="@+id/logout"
             android:icon="@drawable/logout"
             android:title="Logout" />
     </group>
-
 
 </menu>

@@ -110,29 +110,6 @@
                     android:padding="5dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginLeft="50dp"
-                        android:layout_marginTop="7dp"
-                        android:layout_marginRight="50dp"
-                        android:layout_marginBottom="4dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/white_corner_bordered_rect"
-                        android:weightSum="1">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="20dp"
-                            android:layout_weight="1"
-                            android:background="@drawable/underline_maroon"
-                            android:text="Transport Details"
-                            android:textColor="@color/maroon"
-                            android:textSize="15dp"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
-                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:layout_margin="2dp"

@@ -93,7 +93,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:hint="Lattitude"
+                            android:hint="Latitude"
                             android:id="@+id/lattitude_txt"
                             android:maxLength="14"
                             android:gravity="center|left"

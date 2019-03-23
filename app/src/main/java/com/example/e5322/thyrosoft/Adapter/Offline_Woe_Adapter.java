@@ -33,6 +33,9 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Interface.InterfaceSendOfflineWoe;
+import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
+import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Offline_edt_activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
@@ -59,7 +62,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     Offline_woe mfragment;
     String[] samples;
     SharedPreferences prefs, sharedPrefe;
-
+    RefreshOfflineWoe refreshOfflineWoe;
     private MyPojoWoe myPojoWoeSend;
     String[] barcodes;
     private String MY_DEBUG_TAG = ManagingTabsActivity.class.getSimpleName().toString();
@@ -78,6 +81,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     String user, passwrd, access, api_key;
     private String getIMEINUMBER;
     private String mobileModel;
+    InterfaceSendOfflineWoe interfaceSendOfflineWoe;
 
     ArrayList<String> setResponse;
 
@@ -86,6 +90,12 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         this.myPojoWoe = allWoe;
         this.mfragment = fragment;
         this.setResponse = setResponse;
+    }
+    public void onClickDeleteOffWoe(RefreshOfflineWoe refreshOfflineWoe ){
+        this.refreshOfflineWoe=refreshOfflineWoe;
+    }
+    public void onClickSendOfflineWoe(InterfaceSendOfflineWoe interfaceSendOfflineWoe ){
+        this.interfaceSendOfflineWoe=interfaceSendOfflineWoe;
     }
 
     @NonNull
@@ -201,7 +211,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                                 barcode_id = parentObjectOtp.getString("barcode_id");
 
                                 if (message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
-                                    myDb = new DatabaseHelper(mContext);
+                                     myDb = new DatabaseHelper(mContext);
                                     if (barcode_id.endsWith(",")) {
                                         barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                     }
@@ -363,19 +373,17 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
 
+
                                 ArrayList<String> getBrcd = new ArrayList<>();
                                 for (int i = 0; i < myPojoWoe.get(position).getBarcodelist().size(); i++) {
                                     getBrcd.add(myPojoWoe.get(position).getBarcodelist().get(i).getBARCODE());
                                 }
                                 String getBarcodes = TextUtils.join(",", getBrcd);
 
-                                boolean deletedRows = myDb.deleteData(getBarcodes);
-                                if (deletedRows == true) {
-                                    mfragment.setNewFragment();
-                                    TastyToast.makeText(mContext, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                } else {
-                                    TastyToast.makeText(mContext, ToastFile.woeDeleteUnsuccess, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                if(refreshOfflineWoe!=null){
+                                    refreshOfflineWoe.onClickDeleteOffWoe(getBarcodes);
                                 }
+
                             }
                         });
 

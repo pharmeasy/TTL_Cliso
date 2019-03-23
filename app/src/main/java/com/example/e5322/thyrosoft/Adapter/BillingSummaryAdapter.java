@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
@@ -97,7 +98,7 @@ public class BillingSummaryAdapter extends BaseAdapter {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-
+        TableRow tr_itlcr=(TableRow) convertView.findViewById(R.id.tr_itlcr);
         TextView date = (TextView) convertView.findViewById(R.id.date);
         TextView wl = (TextView) convertView.findViewById(R.id.WL);
         TextView billling = (TextView) convertView.findViewById(R.id.BILLING);
@@ -112,7 +113,7 @@ public class BillingSummaryAdapter extends BaseAdapter {
         billling.setText(billdata.get(position).getBilledAmount() + "");
 
 
-        wl.setOnClickListener(new View.OnClickListener() {
+        tr_itlcr.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {

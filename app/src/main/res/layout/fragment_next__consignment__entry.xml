@@ -29,31 +29,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
-                    android:layout_marginTop="7dp"
-                    android:background="@drawable/white_corner_bordered_rect"
-                    android:weightSum="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/underline_maroon"
-                        android:text="Packaging Details"
-                        android:textColor="@color/maroon"
-                        android:textSize="12dp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-
                 <LinearLayout
                     android:id="@+id/consignment_number_layout"
                     android:layout_width="match_parent"
@@ -84,7 +59,6 @@
 
                 </LinearLayout>
 
-
                 <LinearLayout
                     android:id="@+id/packaging_spinner_layout"
                     android:layout_width="match_parent"
@@ -102,11 +76,9 @@
                         android:backgroundTint="@color/maroon"
                         android:hint="packging details"
                         android:padding="5dp"
-                        
                         android:textSize="15dp" />
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/consignment_name_layout"
@@ -144,6 +116,7 @@
                             android:layout_margin="0dp"
                             android:layout_weight="1"
                             android:src="@drawable/scan_barcode" />
+
                         <Button
                             android:id="@+id/consignment_barcd_btn"
                             android:layout_width="0dp"
@@ -158,19 +131,18 @@
                             android:textSize="12sp" />
 
                         <ImageView
-                            android:visibility="gone"
                             android:id="@+id/img_edt_consignment"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
                             android:background="@drawable/corner_curve_maroon"
                             android:scaleType="fitXY"
-                            android:src="@drawable/edit_consign" />
+                            android:src="@drawable/edit_consign"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/lineareditbarcode"
@@ -182,8 +154,6 @@
                     android:visibility="gone">
 
                     <EditText
-                        android:textColorHint="@color/grey"
-                        android:textColor="@color/maroon"
                         android:id="@+id/enter_barcode"
                         android:layout_width="match_parent"
                         android:layout_height="20dp"
@@ -194,6 +164,8 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="11"
                         android:paddingLeft="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
                         android:textSize="15sp" />
 
 
@@ -205,8 +177,6 @@
                         android:orientation="horizontal">
 
                         <EditText
-                            android:textColorHint="@color/grey"
-                            android:textColor="@color/maroon"
                             android:id="@+id/reenter"
                             android:layout_width="0dp"
                             android:layout_height="20dp"
@@ -217,6 +187,8 @@
                             android:inputType="textCapCharacters"
                             android:maxLength="11"
                             android:paddingLeft="5dp"
+                            android:textColor="@color/maroon"
+                            android:textColorHint="@color/grey"
                             android:textSize="15sp" />
 
                         <ImageView
@@ -249,11 +221,9 @@
                         android:buttonTint="@color/maroon"
                         android:hint="packging details"
                         android:padding="5dp"
-                        
                         android:textSize="12dp" />
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/temperature_spinner_layout"
@@ -273,11 +243,9 @@
                         android:buttonTint="@color/maroon"
                         android:hint="packging details"
                         android:padding="5dp"
-                        
                         android:textSize="12dp" />
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/total_sample_layout"
@@ -289,7 +257,6 @@
                     android:weightSum="3">
 
                     <TextView
-                        android:textStyle="bold"
                         android:id="@+id/total_consignment_edt_txt"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -301,10 +268,10 @@
                         android:paddingLeft="10dp"
                         android:text="Total Sample: 58"
                         android:textColor="@color/maroon"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:textStyle="bold"
                         android:id="@+id/rpl_edt_txt"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -315,10 +282,10 @@
                         android:paddingLeft="10dp"
                         android:text="RPL: 09"
                         android:textColor="@color/maroon"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:textStyle="bold"
                         android:id="@+id/cpl_edt_txt"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -330,10 +297,10 @@
                         android:paddingLeft="10dp"
                         android:text="CPL :49"
                         android:textColor="@color/maroon"
-                        android:textSize="12dp" />
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/bsv_barcode_scanning_ll"
@@ -374,8 +341,6 @@
                             android:src="@drawable/scan_barcode" />
 
                         <Button
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/white"
                             android:id="@+id/bsv_barcode_scanning"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -384,22 +349,23 @@
                             android:layout_weight="4"
                             android:background="@color/maroon"
                             android:hint="BSV Barcode"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
                             android:textSize="12sp" />
 
                         <ImageView
-                            android:visibility="gone"
                             android:id="@+id/img_edt_bsv"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
                             android:background="@drawable/corner_curve_maroon"
                             android:scaleType="fitXY"
-                            android:src="@drawable/edit_consign" />
+                            android:src="@drawable/edit_consign"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/lineareditbarcodebsv"
@@ -411,8 +377,6 @@
                     android:visibility="gone">
 
                     <EditText
-                        android:textColorHint="@color/grey"
-                        android:textColor="@color/maroon"
                         android:id="@+id/enter_barcodebsv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -423,8 +387,9 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="8"
                         android:paddingLeft="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
                         android:textSize="15sp" />
-
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -434,8 +399,6 @@
                         android:orientation="horizontal">
 
                         <EditText
-                            android:textColorHint="@color/grey"
-                            android:textColor="@color/maroon"
                             android:id="@+id/reenterbsv"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -446,6 +409,8 @@
                             android:inputType="textCapCharacters"
                             android:maxLength="8"
                             android:paddingLeft="5dp"
+                            android:textColor="@color/maroon"
+                            android:textColorHint="@color/grey"
                             android:textSize="15sp" />
 
                         <ImageView
@@ -458,7 +423,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
 
                 <LinearLayout
                     android:id="@+id/submit_ll"

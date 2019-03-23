@@ -94,26 +94,24 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-
         </LinearLayout>
-
 
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/view"
-            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/view"
             android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
                 android:layout_weight="75"
                 android:orientation="vertical">
 
@@ -138,10 +136,11 @@
                         <Spinner
                             android:id="@+id/brand_spinner"
                             style="@style/medium_text"
-                            android:layout_width="10dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:layout_weight="2"
+                            android:background="@color/transparent"
                             android:backgroundTint="@color/maroon"
                             android:ems="10"
                             android:hint="TTL"
@@ -165,13 +164,14 @@
                             android:layout_gravity="center"
                             android:layout_marginRight="5dp"
                             android:layout_weight="2"
-                            android:backgroundTint="@color/maroon"
+                            android:background="@color/transparent"
                             android:hint="ILS"
-                            android:textColor="@color/DARKGray"
                             android:textSize="13sp" />
                     </LinearLayout>
 
                     <EditText
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/name"
                         android:id="@+id/vial_number"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -210,12 +210,14 @@
                         android:src="@drawable/person" />
 
                     <EditText
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/age"
                         android:id="@+id/name"
                         style="@style/medium_text"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView"
                         android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView"
                         android:layout_gravity="center"
                         android:layout_margin="8dp"
                         android:layout_weight="4.4"
@@ -238,16 +240,18 @@
                     android:id="@+id/AGE_layout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="2"
                     android:orientation="horizontal"
-                    android:padding="5dp"
-                    android:layout_marginTop="3dp"
-                    android:weightSum="5">
+                    android:padding="5dp">
 
                     <EditText
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/referedby"
                         android:id="@+id/age"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_weight="0"
                         android:background="@drawable/corner_curve_maroon"
                         android:hint="PATIENT AGE"
                         android:inputType="number"
@@ -256,10 +260,10 @@
                         android:textSize="12sp"></EditText>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="2dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon">
 
                         <Spinner
@@ -267,17 +271,18 @@
                             style="@style/medium_text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="3dp"
-                            android:backgroundTint="@color/maroon"
+                            android:background="@color/transparent"
                             android:gravity="center|left" />
                     </LinearLayout>
 
+
                     <LinearLayout
                         android:id="@+id/radiogrp"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_weight="2.2"
                         android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:weightSum="2.1">
 
                         <ImageView
                             android:id="@+id/male"
@@ -329,11 +334,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_margin="5dp"
-                    android:layout_weight="2"
                     android:layout_marginTop="5dp"
+                    android:layout_weight="2"
                     android:orientation="horizontal">
 
                     <TextView
+                        android:nextFocusForward="@+id/timehr"
                         android:id="@+id/date"
                         style="@style/medium_text"
                         android:layout_width="wrap_content"
@@ -575,8 +581,8 @@
                         style="@style/medium_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/textView"
                         android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView"
                         android:layout_gravity="center"
                         android:background="@drawable/background_edt"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789-,.\()/"
@@ -675,12 +681,14 @@
                     android:padding="5dp">
 
                     <AutoCompleteTextView
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/uncheck_ref"
                         android:id="@+id/referedby"
                         style="@style/medium_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/textView"
                         android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView"
                         android:layout_gravity="center"
                         android:background="@drawable/background_edt"
                         android:digits="abcdefghijklmnopqrstuvwxyz QWERTYUIOPASDFGHJKLZXCVBNM"
@@ -712,6 +720,7 @@
                     android:weightSum="5">
 
                     <ImageView
+                        android:nextFocusForward="@+id/kyc_format"
                         android:id="@+id/uncheck_ref"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -719,6 +728,7 @@
                         android:src="@drawable/check_ref" />
 
                     <ImageView
+                        android:nextFocusForward="@+id/kyc_format"
                         android:id="@+id/ref_check"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
@@ -727,6 +737,7 @@
                         android:visibility="gone" />
 
                     <TextView
+                        android:nextFocusForward="@+id/kyc_format"
                         android:id="@+id/radio"
                         style="@style/medium_text"
                         android:layout_width="0dp"
@@ -751,6 +762,8 @@
                     android:weightSum="5">
 
                     <EditText
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/home_kyc_format"
                         android:id="@+id/kyc_format"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -778,6 +791,8 @@
 
 
                     <EditText
+                        android:singleLine="true"
+                        android:nextFocusForward="@+id/next_btn_patient"
                         android:id="@+id/home_kyc_format"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

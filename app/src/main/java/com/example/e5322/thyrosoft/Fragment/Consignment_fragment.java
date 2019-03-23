@@ -60,7 +60,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
 
 
-public class Consignment_fragment extends RootFragment {
+public class
+Consignment_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -528,16 +529,24 @@ public class Consignment_fragment extends RootFragment {
                 through_tsp.setText("Through");
                 flagtsp = 2;
                 source_code_pass.setText(user);
-
             }
         });
 
         expected_departure_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.DAY_OF_MONTH, -4);
+                Date result = cal.getTime();
+                datePickerDialog.getDatePicker().setMinDate(result.getTime());
+
+                Calendar cal1 = Calendar.getInstance();
+                cal1.add(Calendar.DAY_OF_MONTH, 2);
+                Date result1 = cal1.getTime();
+                datePickerDialog.getDatePicker().setMaxDate(result1.getTime());
+
                 datePickerDialog.show();
             }
         });
@@ -545,9 +554,10 @@ public class Consignment_fragment extends RootFragment {
         expected_arrival_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, datefor_expected_arrival_time, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, datefor_expected_arrival_time,
+                        myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 datePickerDialog.show();
             }
         });

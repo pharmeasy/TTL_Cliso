@@ -33,6 +33,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -978,7 +979,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Context context;
         ArrayList<BaseModel> productList;
         ArrayList<String> showTestNmaes = new ArrayList<>();
-        ;
 
 
         public ViewAllTestAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<BaseModel> testRateMasterModels) {
@@ -1057,121 +1057,123 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
 
 
-            holder.check.setOnClickListener(new View.OnClickListener() {
+            holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String str = "";
 
-                    str = str + testRateMasterModel.getCode() + ",";
+                    //on click of blank box
+                    if(holder.check.getVisibility() == View.VISIBLE){
+                        String str = "";
+
+                        str = str + testRateMasterModel.getCode() + ",";
 
 
-                    String slectedpackage = "";
+                        String slectedpackage = "";
 
 
-                    slectedpackage = testRateMasterModel.getName();
+                        slectedpackage = testRateMasterModel.getName();
 
-                    tempselectedTests = new ArrayList<>();
-                    tempselectedTests1 = new ArrayList<>();
+                        tempselectedTests = new ArrayList<>();
+                        tempselectedTests1 = new ArrayList<>();
 
-                    if (testRateMasterModel.getChilds() != null) {
-                        for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                            //tejas t -----------------------------
-                            for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
+                        if (testRateMasterModel.getChilds() != null) {
+                            for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                                //tejas t -----------------------------
+                                for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
 
-                                if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
-                                    System.out.println("Cart selectedtestlist Description :" + Selcted_Outlab_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Outlab_Test.get(j).getCode());
+                                    if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
+                                        System.out.println("Cart selectedtestlist Description :" + Selcted_Outlab_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Outlab_Test.get(j).getCode());
 
-                                    tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
-                                    tempselectedTests.add(Selcted_Outlab_Test.get(j));
+                                        tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
+                                        tempselectedTests.add(Selcted_Outlab_Test.get(j));
+                                    }
                                 }
                             }
                         }
-                    }
-                    for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-                        BaseModel selectedTestModel123 = Selcted_Outlab_Test.get(j);
-                        if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-
-                            tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
-                            tempselectedTests.add(selectedTestModel123);
-                        }
-                    }
-
-                    if (tempselectedTests != null && tempselectedTests.size() > 0) {
-                        String cartproduct = TextUtils.join(",", tempselectedTests1);
-                        alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
-                        alertDialogBuilder
-                                .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
-                                .setCancelable(true)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
-                    }
-                    for (int i = 0; i < tempselectedTests.size(); i++) {
                         for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-                            if (tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
-                                Selcted_Outlab_Test.remove(j);
+                            BaseModel selectedTestModel123 = Selcted_Outlab_Test.get(j);
+                            if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+
+                                tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
+                                tempselectedTests.add(selectedTestModel123);
                             }
                         }
-                    }
-                    //tejas t -----------------------------
-                    Selcted_Outlab_Test.add(testRateMasterModel);
 
-                    notifyDataSetChanged();
+                        if (tempselectedTests != null && tempselectedTests.size() > 0) {
+                            String cartproduct = TextUtils.join(",", tempselectedTests1);
+                            alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                            alertDialogBuilder
+                                    .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
+                                    .setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }
+                        for (int i = 0; i < tempselectedTests.size(); i++) {
+                            for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
+                                if (tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
+                                    Selcted_Outlab_Test.remove(j);
+                                }
+                            }
+                        }
+                        //tejas t -----------------------------
+                        Selcted_Outlab_Test.add(testRateMasterModel);
 
-                    before_discount_layout2.setVisibility(View.VISIBLE);
-                    showTestNmaes = new ArrayList<>();
-                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                        showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
-                    }
-                    Set<String> setString = new HashSet<String>(showTestNmaes);
-                    showTestNmaes.clear();
-                    showTestNmaes.addAll(setString);
-                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                    if (displayslectedtest.equals("")) {
-                        before_discount_layout2.setVisibility(View.GONE);
-                    }
-                }
-            });
-
-            holder.checked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    if (!isSelectedDueToParent) {
-                        Selcted_Outlab_Test.remove(testRateMasterModel);
                         notifyDataSetChanged();
 
                         before_discount_layout2.setVisibility(View.VISIBLE);
-
-                        showTestNmaes.remove(testRateMasterModel.getName());
-
+                        showTestNmaes = new ArrayList<>();
+                        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                            showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
+                        }
+                        Set<String> setString = new HashSet<String>(showTestNmaes);
+                        showTestNmaes.clear();
+                        showTestNmaes.addAll(setString);
                         String displayslectedtest = TextUtils.join(",", showTestNmaes);
                         show_selected_tests_list_test_ils1.setText(displayslectedtest);
                         if (displayslectedtest.equals("")) {
                             before_discount_layout2.setVisibility(View.GONE);
                         }
-                    } else {
-                        alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
-                        alertDialogBuilder
-                                .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
-                                .setCancelable(true)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                        android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                        alertDialog.show();
+                    }
 
-                        //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();
+                    //on click of checked box
+                    else if(holder.checked.getVisibility() == View.VISIBLE){
+                        if (!isSelectedDueToParent) {
+                            Selcted_Outlab_Test.remove(testRateMasterModel);
+                            notifyDataSetChanged();
+
+                            before_discount_layout2.setVisibility(View.VISIBLE);
+
+                            showTestNmaes.remove(testRateMasterModel.getName());
+
+                            String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                            show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                            if (displayslectedtest.equals("")) {
+                                before_discount_layout2.setVisibility(View.GONE);
+                            }
+                        } else {
+                            alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                            alertDialogBuilder
+                                    .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
+                                    .setCancelable(true)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+
+                            //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
             });
+
         }
 
         @Override
@@ -1182,12 +1184,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView outlab_test;
             // CheckBox check;
+            RelativeLayout parent_ll;
             boolean isSelectedDueToParent;
             String parentTestCode, parentTestname;
             ImageView check, checked, gray_check;
 
             public ViewHolder(View itemView) {
                 super(itemView);
+                parent_ll = (RelativeLayout) itemView.findViewById(R.id.parent_ll);
                 outlab_test = (TextView) itemView.findViewById(R.id.outlab_test);
                 check = (ImageView) itemView.findViewById(R.id.check);
                 checked = (ImageView) itemView.findViewById(R.id.checked);

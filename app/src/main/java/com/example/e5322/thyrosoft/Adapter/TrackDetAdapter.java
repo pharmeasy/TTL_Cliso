@@ -111,23 +111,22 @@ public class TrackDetAdapter extends BaseAdapter {
         print = (ImageView) convertView.findViewById(R.id.print);
         cancelled_Layout = (LinearLayout) convertView.findViewById(R.id.cancelled_Layout);
 
-
         name.setText(trackdet.get(position).getName().toString());
         Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
         barcode.setText(trackdet.get(position).getBarcode().toString());
         tests.setText(trackdet.get(position).getTests().toString());
 
-        if (!trackdet.get(position).getPdflink().toString().equals("")) {
-            download.setVisibility(View.VISIBLE);
-        } else {
+        /*if (trackdet.get(position).getPdflink().toString().equals("") || trackdet.get(position).getPdflink().toString().equals(null)) {
             download.setVisibility(View.INVISIBLE);
-        }
-        if (!trackdet.get(position).getEmail().toString().equals("")) {
-            mail.setVisibility(View.VISIBLE);
         } else {
-//            mail.setVisibility(View.INVISIBLE);
+            download.setVisibility(View.VISIBLE);
         }
 
+        if (trackdet.get(position).getEmail().toString().equals("") || trackdet.get(position).getEmail().toString().equals(null)) {
+            mail.setVisibility(View.INVISIBLE);
+        } else {
+            mail.setVisibility(View.VISIBLE);
+        }*/
 
         print.setOnClickListener(new View.OnClickListener() {
             @Override

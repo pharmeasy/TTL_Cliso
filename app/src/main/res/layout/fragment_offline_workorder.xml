@@ -50,37 +50,55 @@
             android:layout_margin="5dp"
             android:layout_weight="95"
             android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 
+    <TextView
+        android:paddingTop="5dp"
+        android:id="@+id/tvNoDataFound"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center|top"
+        android:text="No record found"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:visibility="gone" />
 
     <LinearLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+
+        android:id="@+id/sendwoe_ll"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:orientation="horizontal"
-        android:background="@drawable/pre_border"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-       android:id="@+id/sendwoe_ll"
-        >
+        android:background="@drawable/next_button"
+        android:orientation="horizontal">
+
         <TextView
-            android:layout_weight="2"
             android:id="@+id/sync_woe"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
-            android:text="Send WOE"
             android:layout_alignParentStart="true"
-            android:textAlignment="textEnd"
+            android:layout_weight="2"
             android:gravity="center|center_horizontal|center_vertical"
-            android:textColor="@color/black"
+            android:text="Send WOE"
+            android:textAlignment="textEnd"
+            android:textColor="@color/white"
             android:textSize="13sp"
             tools:ignore="RtlCompat" />
+
         <ImageView
-            android:layout_weight="2"
             android:layout_width="0dp"
-            android:layout_gravity="end"
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
+            android:layout_gravity="end"
+            android:layout_weight="2"
             android:src="@drawable/sync_int"
             android:textColor="@color/black"
             android:textSize="13sp" />

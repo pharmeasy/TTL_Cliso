@@ -74,11 +74,11 @@ public class ExpandableListAdapter_FAQ extends BaseExpandableListAdapter {
 
         faq_question = (TextView) convertView.findViewById(R.id.faq_question);
         img = (ImageView) convertView.findViewById(R.id.img);
-        img.setBackgroundResource(R.drawable.up_arrow);
+        img.setBackgroundResource(R.drawable.down_arrow);
         if (isExpanded) {
-            img.setBackgroundResource(R.drawable.down_arrow);
-        } else {
             img.setBackgroundResource(R.drawable.up_arrow);
+        } else {
+            img.setBackgroundResource(R.drawable.down_arrow);
         }
         faq_question.setText(faq_question_answer_list.get(groupPosition).getAck_TITLE());
         return convertView;

@@ -129,6 +129,8 @@ public class Noticeboard_activity extends AppCompatActivity {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
         barProgressDialog.show();
+
+
         requestQueueNoticeBoard = Volley.newRequestQueue(Noticeboard_activity.this);
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
             private String resIdFromApi;
@@ -159,6 +161,7 @@ public class Noticeboard_activity extends AppCompatActivity {
 
 
                             NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(Noticeboard_activity.this, array_notice, msgCode);
+
                             noticeBoard_adapter.clickListerforAckNoticeboard(new RefreshNoticeBoard() {
                                 @Override
                                 public void onClickAcknowledge(String msgCode) {

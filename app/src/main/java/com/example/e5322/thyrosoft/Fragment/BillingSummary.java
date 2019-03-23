@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
+import static com.example.e5322.thyrosoft.API.Constants.toDate;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,9 +64,9 @@ public class BillingSummary extends RootFragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    public String toDate = "";
-    public String fromDate = "";
-    public String Date = "";
+    public String toDateTxt = "";
+    public String fromDateTxt = "";
+    public String Date = "", tempMonth="";
     private OnFragmentInteractionListener mListener;
     TextView txtFromDate, txt_to_date;
     private int mYear, mMonth, mDay;
@@ -85,7 +86,7 @@ public class BillingSummary extends RootFragment {
     int fromday, frommonth, fromyear;
     SharedPreferences prefsBilling;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    private Date date,dateSecond,dateThird;
+    private Date result, fromDate, toDate;
     private SimpleDateFormat format;
 
     public BillingSummary() {
@@ -117,8 +118,12 @@ public class BillingSummary extends RootFragment {
 
         Calendar cl = Calendar.getInstance();
         sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        toDate = sdf.format(cl.getTime());
-        Date = sdf.format(cl.getTime());
+        toDateTxt = sdf.format(cl.getTime());
+        try {
+            toDate = sdf.parse(toDateTxt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         Calendar calbackdate = Calendar.getInstance();
@@ -126,25 +131,16 @@ public class BillingSummary extends RootFragment {
         calbackdate.add(Calendar.DAY_OF_YEAR, -10);
         daysBeforeDate = calbackdate.getTime();
         sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-        fromDate = sdf.format(daysBeforeDate);
-        Date = sdf.format(calbackdate.getTime());
-
-
-//        sharedpreferences = getActivity().getSharedPreferences(Constants.MyPREFERENCES, MODE_PRIVATE);
-        final Calendar c = Calendar.getInstance();
-
-        fromyear = c.get(Calendar.YEAR);
-        frommonth = c.get(Calendar.MONTH);
-        fromday = c.get(Calendar.DAY_OF_MONTH);
-
-        String getDate = fromday + "/" + frommonth + "/" + fromyear;
-        format = new SimpleDateFormat("dd/MM/yyyy");
+        fromDateTxt = sdf.format(daysBeforeDate);
         try {
-            date = format.parse(getDate);
-            System.out.println(date);
+            fromDate = sdf.parse(fromDateTxt);
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        Calendar cal= Calendar.getInstance();
+         result=cal.getTime();
 
     }
 
@@ -169,8 +165,8 @@ public class BillingSummary extends RootFragment {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        txtFromDate.setText(fromDate);
-        txt_to_date.setText(toDate);
+        txtFromDate.setText(fromDateTxt);
+        txt_to_date.setText(toDateTxt);
 
         prefsBilling = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefsBilling.getString("Username", null);
@@ -186,12 +182,60 @@ public class BillingSummary extends RootFragment {
             parent_ll.setVisibility(View.VISIBLE);
             GetData();
         }
+
+        txtFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (view == txtFromDate) {
+                    final Calendar c = Calendar.getInstance();
+                    c.setTime(fromDate);
+                    mYear = c.get(Calendar.YEAR);
+                    mMonth = c.get(Calendar.MONTH);
+                    mDay = c.get(Calendar.DAY_OF_MONTH);
+
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker view, int year,
+                                                      int monthOfYear, int dayOfMonth) {
+                                    sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear+1) + "-" + year;
+
+                                    try {
+                                        fromDate = sdf.parse(getDateSecond);
+                                        fromDateTxt = sdf.format(fromDate);
+                                        txtFromDate.setText(fromDateTxt);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                        offline_img.setVisibility(View.VISIBLE);
+                                        parent_ll.setVisibility(View.GONE);
+                                    } else {
+                                        offline_img.setVisibility(View.GONE);
+                                        parent_ll.setVisibility(View.VISIBLE);
+                                        GetData();
+                                    }
+                                }
+                            }, mYear, mMonth, mDay);
+
+                    datePickerDialog.getDatePicker().setMaxDate(toDate.getTime()-2);
+                    datePickerDialog.show();
+                }
+            }
+        });
+
+
         txt_to_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (v == txt_to_date) {
                     final Calendar c = Calendar.getInstance();
-
+                    c.setTime(toDate);
                     mYear = c.get(Calendar.YEAR);
                     mMonth = c.get(Calendar.MONTH);
                     mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -203,148 +247,36 @@ public class BillingSummary extends RootFragment {
                                 @Override
                                 public void onDateSet(DatePicker view, int year,
                                                       int monthOfYear, int dayOfMonth) {
-                                    int day = c.get(Calendar.DAY_OF_MONTH);
-                                    int month = c.get(Calendar.MONTH);
-                                    int year1 = c.get(Calendar.YEAR);
+                                    sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
-                                    String getDateSecond = dayOfMonth + "/" + dayOfMonth + "/" + year;
+                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear+1) + "-" + year;
+
+
                                     try {
-                                        dateSecond = format.parse(getDateSecond);
-                                        System.out.println(dateSecond);
+                                        toDate = sdf.parse(getDateSecond);
+                                        toDateTxt = sdf.format(toDate);
+                                        txt_to_date.setText(toDateTxt);
+                                        System.out.println(txt_to_date);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
 
-                                    String getDateThird = dayOfMonth + "/" + dayOfMonth + "/" + year1;
-                                    try {
-                                        dateThird = format.parse(getDateThird);
-                                        System.out.println(dateThird);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }
 
-                                    long time2 = c.getTimeInMillis();
-                                    if (dateThird.before(dateSecond)) {
-                                        AlertDialog.Builder builder;
-                                        builder = new AlertDialog.Builder(getContext());
-                                        builder.setTitle("").setMessage(ToastFile.slt_smaller_date_than_crnt).setPositiveButton(android.R.string.ok,
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
 
-                                                    }
-                                                })
-                                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                                .show();
-                                    } else if (date.after(dateSecond)) {
-                                        AlertDialog.Builder builder;
-                                        builder = new AlertDialog.Builder(getContext());
-                                        builder.setTitle("").setMessage("From date should be less than to date").setPositiveButton(android.R.string.ok,
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                    }
-                                                })
-                                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                                .show();
-
+                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                        offline_img.setVisibility(View.VISIBLE);
+                                        parent_ll.setVisibility(View.GONE);
                                     } else {
-
-                                        int month1 = monthOfYear + 1;
-                                        String formattedMonth = "" + month1;
-                                        String formattedDayOfMonth = "" + dayOfMonth;
-
-                                        if (month < 10) {
-
-                                            formattedMonth = "0" + month1;
-                                        }
-                                        if (dayOfMonth < 10) {
-
-                                            formattedDayOfMonth = "0" + dayOfMonth;
-                                        }
-                                        txt_to_date.setText(formattedDayOfMonth + "-" + formattedMonth + "-" + year);//formattedDayOfMonth
-                                        toDate = txt_to_date.getText().toString();
-                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                            offline_img.setVisibility(View.VISIBLE);
-                                            parent_ll.setVisibility(View.GONE);
-                                        } else {
-                                            offline_img.setVisibility(View.GONE);
-                                            parent_ll.setVisibility(View.VISIBLE);
-                                            GetData();
-                                        }
+                                        offline_img.setVisibility(View.GONE);
+                                        parent_ll.setVisibility(View.VISIBLE);
+                                        GetData();
                                     }
+
                                 }
                             }, mYear, mMonth, mDay);
+                    datePickerDialog.getDatePicker().setMinDate(fromDate.getTime());
+                    datePickerDialog.getDatePicker().setMaxDate(result.getTime()-2);
                     datePickerDialog.show();
-
-                }
-            }
-        });
-
-
-        txtFromDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (view == txtFromDate) {
-
-                    // Get Current Date
-                    final Calendar c = Calendar.getInstance();
-                    mYear = c.get(Calendar.YEAR);
-                    mMonth = c.get(Calendar.MONTH);
-                    mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme,
-                            new DatePickerDialog.OnDateSetListener() {
-
-                                @Override
-                                public void onDateSet(DatePicker view, int year,
-                                                      int monthOfYear, int dayOfMonth) {
-                                    int month = monthOfYear + 1;
-                                    String formattedMonth = "" + month;
-                                    String formattedDayOfMonth = "" + dayOfMonth;
-                                    int day = c.get(Calendar.DAY_OF_MONTH);
-                                    int month1 = c.get(Calendar.MONTH);
-                                    int year1 = c.get(Calendar.YEAR);
-                                    if (day < dayOfMonth || month1 < monthOfYear || year > year1) {
-                                        fromday = dayOfMonth;
-                                        frommonth = monthOfYear;
-                                        fromyear = year;
-                                        AlertDialog.Builder builder;
-                                        builder = new AlertDialog.Builder(getContext());
-                                        builder.setTitle("").setMessage(ToastFile.slt_smaller_date_than_crnt).setPositiveButton(android.R.string.ok,
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-
-                                                    }
-                                                })
-                                                .setIcon(android.R.drawable.ic_dialog_alert)
-                                                .show();
-                                    } else {
-                                        if (month < 10) {
-
-                                            formattedMonth = "0" + month;
-                                        }
-                                        if (dayOfMonth < 10) {
-
-                                            formattedDayOfMonth = "0" + dayOfMonth;
-                                        }
-//formattedDayOfMonth
-                                        txtFromDate.setText(formattedDayOfMonth + "-" + formattedMonth + "-" + year);
-                                        fromDate = txtFromDate.getText().toString();
-                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                            offline_img.setVisibility(View.VISIBLE);
-                                            parent_ll.setVisibility(View.GONE);
-                                        } else {
-                                            offline_img.setVisibility(View.GONE);
-                                            parent_ll.setVisibility(View.VISIBLE);
-                                            GetData();
-                                        }
-                                    }
-                                }
-                            }, mYear, mMonth, mDay);
-                    datePickerDialog.show();
-
                 }
             }
         });

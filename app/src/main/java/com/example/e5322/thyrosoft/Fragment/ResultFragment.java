@@ -183,16 +183,6 @@ public class ResultFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String getcurrentdate = sdf.format(d);
 
-
-
-
-
-
-
-
-
-
-
        // TextView dateview = getActivity().findViewById(R.id.show_date);
 
        // dateview.setVisibility(View.GONE);

@@ -42,6 +42,7 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
+import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -85,10 +86,10 @@ public class Offline_woe extends Fragment {
     private RecyclerView recyclerView;
     private LinearLayout app_bar_layout;
     private LinearLayoutManager linearLayoutManager;
-    private TextView sync_woe;
+    private TextView sync_woe, tvNoDataFound;
     DatabaseHelper myDb;
     static Offline_woe fragment;
-    LinearLayout sendwoe_ll;
+    LinearLayout sendwoe_ll, parent_ll;
     ArrayList<BarcodelistModel> barcodelists;
     Offline_Woe_Adapter offline_woe_adapter;
     ArrayList<MyPojoWoe> allWoe;
@@ -185,11 +186,13 @@ public class Offline_woe extends Fragment {
 
         viewMain = (View) inflater.inflate(R.layout.fragment_offline_workorder, container, false);
         sync_woe = (TextView) viewMain.findViewById(R.id.sync_woe);
+        tvNoDataFound = (TextView) viewMain.findViewById(R.id.tvNoDataFound);
         edtSearch = (EditText) viewMain.findViewById(R.id.edtSearch);
 //        ImageView  add = (ImageView)viewMain.findViewById(R.id.add);
         recyclerView = (RecyclerView) viewMain.findViewById(R.id.recycler_view);
         app_bar_layout = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout_consign);
         sendwoe_ll = (LinearLayout) viewMain.findViewById(R.id.sendwoe_ll);
+        parent_ll = (LinearLayout) viewMain.findViewById(R.id.parent_ll);
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -208,6 +211,9 @@ public class Offline_woe extends Fragment {
 
         edtSearch.setFilters(new InputFilter[]{filter});
         edtSearch.setFilters(new InputFilter[]{EMOJI_FILTER});
+
+
+
 
         edtSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -261,7 +267,7 @@ public class Offline_woe extends Fragment {
                         } else {
 
                         }
-                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment,errorList);
+                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment, errorList);
                         recyclerView.setAdapter(offline_woe_adapter);
                         offline_woe_adapter.notifyDataSetChanged();
                     }
@@ -319,8 +325,29 @@ public class Offline_woe extends Fragment {
         //display the current version in a TextView
 
         resultList = getResults();
+        if (resultList.size() ==0) {
+            tvNoDataFound.setVisibility(View.VISIBLE);
+            parent_ll.setVisibility(View.GONE);
+            sendwoe_ll.setVisibility(View.GONE);
+        } else {
+            parent_ll.setVisibility(View.VISIBLE);
+            sendwoe_ll.setVisibility(View.VISIBLE);
+            tvNoDataFound.setVisibility(View.GONE);
+        }
 
-        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment,errorList);
+        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
+        offline_woe_adapter.onClickDeleteOffWoe(new RefreshOfflineWoe() {
+            @Override
+            public void onClickDeleteOffWoe(String barcodes) {
+                boolean deletedRows = myDb.deleteData(barcodes);
+                if (deletedRows == true) {
+                    TastyToast.makeText(mContext, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    resultList = getResults();
+                } else {
+                    TastyToast.makeText(mContext, ToastFile.woeDeleteUnsuccess, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                }
+            }
+        });
         recyclerView.setAdapter(offline_woe_adapter);
 
         barProgressDialog = new ProgressDialog(mContext);
@@ -334,7 +361,7 @@ public class Offline_woe extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(resultList!=null && !resultList.isEmpty()){
+                if (resultList != null && !resultList.isEmpty()) {
                     if (!GlobalClass.isNetworkAvailable(mContext)) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                         // Set the Alert Dialog Message
@@ -368,7 +395,7 @@ public class Offline_woe extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-
+                                barProgressDialog.show();
                                 for (int i = 0; i < resultList.size(); i++) {
 
                                     MyPojoWoe myPojoWoe = new MyPojoWoe();
@@ -440,16 +467,13 @@ public class Offline_woe extends Fragment {
                                         e.printStackTrace();
                                     }
 
-                                    barProgressDialog.show();
                                     POstQue = Volley.newRequestQueue(mContext);
                                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
                                             try {
 
-                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                    barProgressDialog.dismiss();
-                                                }
+
                                                 Log.e(TAG, "onResponse: RESPONSE" + response);
                                                 String finalJson = response.toString();
                                                 JSONObject parentObjectOtp = new JSONObject(finalJson);
@@ -496,10 +520,9 @@ public class Offline_woe extends Fragment {
 
                                                                 if (resId.equals("RES0000")) {
                                                                     //after sending the woe succrssfully
-                                                                    Offline_woe fragment1 = new Offline_woe();
-                                                                    mContext.getSupportFragmentManager().beginTransaction()
-                                                                            .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
-
+                                                                    resultList = getResults();
+                                                                    offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
+                                                                    recyclerView.setAdapter(offline_woe_adapter);
                                                                     TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                                 } else {
 
@@ -568,9 +591,7 @@ public class Offline_woe extends Fragment {
                                     }, new com.android.volley.Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                barProgressDialog.dismiss();
-                                            }
+
                                             if (error != null) {
                                             } else {
 
@@ -586,6 +607,9 @@ public class Offline_woe extends Fragment {
                                     Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                                     Log.e(TAG, "fetchData: JSON" + jsonObj);
                                 }
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
                             }
                         });
 
@@ -596,8 +620,8 @@ public class Offline_woe extends Fragment {
                         });
                         builder.show();
                     }
-                }else{
-                    TastyToast.makeText(mContext,"No data found",TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+                } else {
+                    TastyToast.makeText(mContext, "No data found", TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
                 }
 
             }
@@ -610,7 +634,7 @@ public class Offline_woe extends Fragment {
     public void onResume() {
         super.onResume();
         resultList = getResults();
-        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment,errorList);
+        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
         recyclerView.setAdapter(offline_woe_adapter);
     }
 

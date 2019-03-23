@@ -2,6 +2,9 @@
      <resources>
     <color name="myPrimaryDarkColor">#e52d2e</color>
     <color name="colorPrimary">#3F51B5</color>
+    <color name="broadcast1">#A0C4FF</color>
+    <color name="broadcast2">#FFB848</color>
+    <color name="broadcast3">#F7DC6F</color>
     <color name="colortoolbar">#7a7a7b</color>
     <color name="toobar_gray">#7a7a7b</color>
     <color name="colorAccent">#FF4081</color>
@@ -13,24 +16,6 @@
     <color name="ledger">#e4e3e3</color>
     <color name="Gray">#bcb5b5</color>
     <color name="userloginColor">#941010</color>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <color name="Graytoolbar">#747474</color>
     <color name="light_white">#FEFEFE</color>
     <color name="colorWhite">#ffffff</color>

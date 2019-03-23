@@ -84,7 +84,6 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -138,7 +137,7 @@ public class Start_New_Woe extends RootFragment {
     private ArrayList<String> getLabNmae;
     private ArrayList<String> statusForColor;
     ArrayList<String> getReferenceNmae;
-
+    TextView samplecollectionponit;
     AutoCompleteTextView referedbyText;
     SourceILSMainModel obj;
     Spinner spinyr;
@@ -150,7 +149,12 @@ public class Start_New_Woe extends RootFragment {
     long minDate;
     int mYear, mMonth, mDay;
     Spinner timehr, timesecond, timeampm;
-
+    TextView dateShow;
+    TextView leadbarcodename;
+    TextView leadidbarcodetest;
+    TextView leadbarcoderefdr;
+    TextView leadbarcodesct;
+    TextView setTime;
     private int hour;
     String saveGenderId;
     boolean genderId = false;
@@ -173,19 +177,30 @@ public class Start_New_Woe extends RootFragment {
     private static final String TAG = "LocationActivity";
     LABS getFullDataLabs;
     private MyPojo myPojo;
-    private String outputDateStr, woereferedby, campID, campname, scpdefaultdata, barcode_patient_id, message, status, referredID, getBtechID, labid, labAddress;
+    private RequestQueue POstQue;
+    private String labAddress;
+    private String labid;
+    private String referredID, getBtechID;
+    private String barcode_patient_id, message, status;
+    private String scpdefaultdata;
+    private String campname;
+    private String campID;
+    private String outputDateStr;
     Spinner selectTypeSpinner, brand_spinner;
     ArrayList<String> getCampNames;
     Button next_btn_stage2;
-    TextView samplecollectionponit,woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default, radio, dateShow, leadbarcodename, leadidbarcodetest, leadbarcoderefdr, leadbarcodesct,setTime;
+    TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
     EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number;
     Spinner btechname, deliveymode, camp_spinner_olc;
     private Start_New_Woe.OnFragmentInteractionListener mListener;
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     public static ArrayList<BCT_LIST> getBtechList;
+    TextView radio;
     LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc;
     WOE_Model_Patient_Details woe_model_patient_details;
+
     private LocationManager mLocationManager;
+    String woereferedby;
     boolean isLoaded = false;
 
     static final int DATE_DIALOG_ID = 0;
@@ -811,9 +826,13 @@ public class Start_New_Woe extends RootFragment {
             }
             // Spinner adapter
 
-            brand_spinner.setAdapter(new ArrayAdapter<String>(mContext,
-                    R.layout.spinnerproperty,
-                    spinnerBrandName));
+
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                    mContext, R.layout.name_age_spinner, spinnerBrandName);
+            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            brand_spinner.setAdapter(adapter2);
+            brand_spinner.setSelection(0);
+
 
 
             startDataSetting();
@@ -930,6 +949,17 @@ public class Start_New_Woe extends RootFragment {
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
         ArrayList<String> hourSin = new ArrayList<>();
         hourSin.add("HR");
         hourSin.add("01");
@@ -964,6 +994,13 @@ public class Start_New_Woe extends RootFragment {
         ampmSpine.add("AM/PM");
         ampmSpine.add("AM");
         ampmSpine.add("PM");
+
+
+
+        ArrayList<String> patientsagespinner = new ArrayList<>();
+        patientsagespinner.add("Years");
+        patientsagespinner.add("Months");
+        patientsagespinner.add("Days");
 
         Date setDateToSpin = new Date();
 
@@ -1012,9 +1049,13 @@ public class Start_New_Woe extends RootFragment {
 
         namestr = name.getText().toString();
         saveGenderId = "";
-        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.Patientsagespinner,
-                R.layout.spinner_item);
-        spinyr.setAdapter(PatientsagespinnerAdapter);
+
+        ArrayAdapter<String> adap = new ArrayAdapter<String>(
+                mContext, R.layout.name_age_spinner,patientsagespinner);
+        adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinyr.setAdapter(adap);
+        spinyr.setSelection(0);
+
         //vadapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         name.setFilters(new InputFilter[]{EMOJI_FILTER});
@@ -1168,17 +1209,20 @@ public class Start_New_Woe extends RootFragment {
                 } else {
                     if (agesinteger < 12) {
                         ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.Patientsagespinner,
-                                R.layout.spinner_item);
+                               R.layout.name_age_spinner);
+                        PatientsagespinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinyr.setAdapter(PatientsagespinnerAdapter);
                     }
                     if (agesinteger > 12) {
                         ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyrday,
-                                R.layout.spinner_item);
+                                R.layout.name_age_spinner);
+                        Patientsagespinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinyr.setAdapter(Patientsagespinner);
                     }
                     if (agesinteger > 29) {
                         ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyr,
-                                R.layout.spinner_item);
+                                R.layout.name_age_spinner);
+                        Patientsagesyr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinyr.setAdapter(Patientsagesyr);
                     }
                 }
@@ -1307,9 +1351,13 @@ public class Start_New_Woe extends RootFragment {
                                 GlobalClass.items.add(GlobalClass.putData[i]);
                             }
                             // Spinner adapter
-                            brand_spinner.setAdapter(new ArrayAdapter<String>(getActivity(),
-                                    R.layout.spinnerproperty,
-                                    spinnerBrandName));
+
+                            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                                    mContext, R.layout.name_age_spinner, spinnerBrandName);
+                            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            brand_spinner.setAdapter(adapter2);
+                            brand_spinner.setSelection(0);
+
                             startDataSetting();
                         }
 
@@ -1347,9 +1395,13 @@ public class Start_New_Woe extends RootFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    selectTypeSpinner.setAdapter(new ArrayAdapter<String>(getActivity(),
-                            R.layout.spinnerproperty,
-                            getTypeListfirst));
+
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                            mContext, R.layout.name_age_spinner, getTypeListfirst);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    selectTypeSpinner.setAdapter(adapter2);
+                    selectTypeSpinner.setSelection(0);
+
 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -3075,9 +3127,12 @@ public class Start_New_Woe extends RootFragment {
 
                 }
                 if (position > 0) {
-                    selectTypeSpinner.setAdapter(new ArrayAdapter<String>(getActivity(),
-                            R.layout.spinnerproperty,
-                            getTypeListsecond));
+
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                            mContext, R.layout.name_age_spinner, getTypeListsecond);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    selectTypeSpinner.setAdapter(adapter2);
+                    selectTypeSpinner.setSelection(0);
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

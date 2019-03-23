@@ -46,6 +46,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.itextpdf.text.pdf.parser.Line;
 
 import org.json.JSONObject;
 
@@ -349,76 +350,71 @@ public class OutLabTestsActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull final OutLabAdapter.ViewHolder holder, final int position) {
             holder.outlab_test.setText(outlabdetails_outLabs.get(position).getName());
             holder.checked.setVisibility(View.GONE);
-            holder.check.setVisibility(View.VISIBLE);
+            holder.un_check.setVisibility(View.VISIBLE);
 
             for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                 if (outlabdetails_outLabs.get(position).getName().equals(Selcted_Outlab_Test.get(i).getName())) {
                     holder.checked.setVisibility(View.VISIBLE);
-                    holder.check.setVisibility(View.GONE);
+                    holder.un_check.setVisibility(View.GONE);
                 }
             }
-
-
-            holder.check.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.N)
+            holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (brandName.equals("TTL-OTHERS")) {
-                        if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
+
+                    if(holder.un_check.getVisibility()==View.VISIBLE){
+                        if (brandName.equals("TTL-OTHERS")) {
+                            if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
 //                            Alter box
-                            Selcted_Outlab_Test.clear();
-                            Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
-                            notifyDataSetChanged();
+                                Selcted_Outlab_Test.clear();
+                                Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
+                                notifyDataSetChanged();
+
+                            } else {
+                                Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
+                            }
+                            if (showTestNmaes != null && showTestNmaes.size() > 0) {
+//                            Alter box
+                                showTestNmaes.clear();
+                                showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
+                                notifyDataSetChanged();
+
+                            } else {
+                                showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
+                            }
 
                         } else {
+                            showTestNmaes.add(outlabdetails_outLabs.get(position).getName().toString());
                             Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                         }
-                        if (showTestNmaes != null && showTestNmaes.size() > 0) {
-//                            Alter box
-                            showTestNmaes.clear();
-                            showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
-                            notifyDataSetChanged();
 
-                        } else {
-                            showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
+                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                        holder.checked.setVisibility(View.VISIBLE);
+                        holder.un_check.setVisibility(View.GONE);
+
+                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                        show_selected_tests_list_test_ils.setText("");
+
+                        String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                        show_selected_tests_list_test_ils.setText(displayslectedtest);
+                    }
+
+                    else {
+                        Selcted_Outlab_Test.remove(outlabdetails_outLabs.get(position));
+                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                        showTestNmaes.remove(outlabdetails_outLabs.get(position).getName().toString());
+                        holder.un_check.setVisibility(View.VISIBLE);
+                        holder.checked.setVisibility(View.GONE);
+                        lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+                        show_selected_tests_list_test_ils.setText("");
+                        String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                        show_selected_tests_list_test_ils.setText(displayslectedtest);
+                        if (showTestNmaes == null) {
+                            lineargetselectedtestforILS.setVisibility(View.GONE);
                         }
-
-                    } else {
-                        showTestNmaes.add(outlabdetails_outLabs.get(position).getName().toString());
-                        Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                     }
-
-                    lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                    holder.checked.setVisibility(View.VISIBLE);
-                    holder.check.setVisibility(View.GONE);
-
-                    lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                    show_selected_tests_list_test_ils.setText("");
-
-                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                    show_selected_tests_list_test_ils.setText(displayslectedtest);
                 }
             });
-
-            holder.checked.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Selcted_Outlab_Test.remove(outlabdetails_outLabs.get(position));
-                    lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                    showTestNmaes.remove(outlabdetails_outLabs.get(position).getName().toString());
-                    holder.check.setVisibility(View.VISIBLE);
-                    holder.checked.setVisibility(View.GONE);
-                    lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-                    show_selected_tests_list_test_ils.setText("");
-                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                    show_selected_tests_list_test_ils.setText(displayslectedtest);
-                    if (showTestNmaes == null) {
-                        lineargetselectedtestforILS.setVisibility(View.GONE);
-                    }
-
-                }
-            });
-
         }
 
         @Override
@@ -436,13 +432,15 @@ public class OutLabTestsActivity extends AppCompatActivity {
             // CheckBox check;
             boolean isSelectedDueToParent;
             String parentTestCode, parentTestname;
-            ImageView check, checked;
+            ImageView un_check, checked;
+            LinearLayout parent_ll;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 outlab_test = (TextView) itemView.findViewById(R.id.outlab_test);
-                check = (ImageView) itemView.findViewById(R.id.check);
+                un_check = (ImageView) itemView.findViewById(R.id.check);
                 checked = (ImageView) itemView.findViewById(R.id.checked);
+                parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
             }
         }
     }

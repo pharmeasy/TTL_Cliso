@@ -218,7 +218,6 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
 
                 patientId = patients.get(position).getPatient_id().toString();
                 GlobalClass.summary_models = new ArrayList<>();
-                getPatientDetails();
                 GlobalClass.getPatientIdforDeleteDetails = patients.get(position).getPatient_id().toString();
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
