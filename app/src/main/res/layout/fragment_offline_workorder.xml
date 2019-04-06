@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +8,8 @@
     <LinearLayout
         android:id="@+id/parent_ll"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="9"
         android:orientation="vertical">
 
         <LinearLayout
@@ -24,8 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/imgSearch"
                 android:layout_toStartOf="@+id/imgSearch"
+                android:layout_toLeftOf="@+id/imgSearch"
                 android:layout_weight="9"
                 android:background="@drawable/button_background"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz "
@@ -46,31 +47,18 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_margin="5dp"
-            android:layout_weight="95"
+            android:layout_weight="90"
             android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
-
-    <TextView
-        android:paddingTop="5dp"
-        android:id="@+id/tvNoDataFound"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:gravity="center|top"
-        android:text="No record found"
-        android:textColor="@color/black"
-        android:textSize="20dp"
-        android:visibility="gone" />
 
     <LinearLayout
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-
         android:id="@+id/sendwoe_ll"
         android:layout_width="match_parent"
         android:layout_height="30dp"
@@ -82,7 +70,7 @@
         <TextView
             android:id="@+id/sync_woe"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_weight="2"
@@ -106,4 +94,17 @@
     </LinearLayout>
 
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/tvNoDataFound"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:background="@color/white"
+        android:gravity="center|top"
+        android:text="No record found"
+        android:textColor="@color/black"
+        android:textSize="5dp"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -392,6 +392,13 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         patientGender = preferences.getString("gender", null);
 
                         brandName = preferences.getString("WOEbrand", null);
+
+                        if(brandName.equalsIgnoreCase("EQNX")){
+                            brandName="WHATERS";
+                        }else{
+                            brandName = preferences.getString("WOEbrand", null);
+                        }
+
                         typeName = preferences.getString("woetype", null);
                         sampleCollectionDate = preferences.getString("date", null);
                         sampleCollectionTime = preferences.getString("sct", null);
@@ -413,9 +420,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         campID = preferences.getString("getcampIDtoPass", null);
                         homeaddress = preferences.getString("patientAddress", null);
                         getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
+                        getPincode = preferences.getString("pincode", null);
 
                         getFinalEmailIdToPost = "";
-                        getPincode = "";
 
                         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -473,6 +480,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         woe.setAMOUNT_COLLECTED(getWrittenAmt);
                         woe.setAMOUNT_DUE("");
                         woe.setAPP_ID(versionNameTopass);
+                        woe.setADDITIONAL1("CPL");
                         woe.setBCT_ID(btechID);
                         woe.setBRAND(brandName);
                         woe.setCAMP_ID(campID);

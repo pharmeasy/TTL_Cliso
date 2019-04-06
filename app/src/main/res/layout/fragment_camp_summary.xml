@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.CampIntimation.EnterDataCampIntimation"
+    android:background="@color/white">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_layout"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/corner_curve_maroon"
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/underline_maroon"
+            android:gravity="center"
+            android:text="Camp Summary"
+            android:textColor="@color/maroon"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/next_button"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:id="@+id/type_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1.5"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Camp Date "
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3.5"
+                android:background="@drawable/corner_curve_white">
+
+                <TextView
+                    android:id="@+id/txt_camp_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="TTL/ILS"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/next_button"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:id="@+id/sct_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1.5"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Camp Profile "
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3.5"
+                android:background="@drawable/corner_curve_white">
+
+                <TextView
+                    android:id="@+id/txt_camp_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="05-12-2018  09:35 am"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/refbylinear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/next_button"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:id="@+id/ref_by_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1.5"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Camp Rate "
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3.5"
+                android:background="@drawable/corner_curve_white">
+
+                <TextView
+                    android:id="@+id/txt_camp_rate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Self"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/next_button"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:id="@+id/patient_name_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1.5"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Sample/Days "
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3.5"
+                android:background="@drawable/corner_curve_white">
+
+                <TextView
+                    android:id="@+id/txt_camp_days"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Test / 11Years / Male"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/next_button"
+            android:orientation="horizontal"
+            android:weightSum="5">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
+                android:layout_weight="1.5"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+                android:text="Venue Address :"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3.5"
+                android:background="@drawable/corner_curve_white">
+
+                <TextView
+                    android:id="@+id/txt_camp_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="Test / 11Years / Male"
+                    android:textColor="@color/grey"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/next_button"
+                android:minEms="8"
+                android:text="DONE"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>

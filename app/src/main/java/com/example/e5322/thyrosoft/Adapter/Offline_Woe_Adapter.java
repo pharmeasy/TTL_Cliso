@@ -38,6 +38,7 @@ import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Offline_edt_activity;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -246,9 +247,11 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                                     alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
 
-                                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                            Intent i = new Intent(mContext, Payment_Activity.class);
+                                            mContext.startActivity(i);
+                                           /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                            mContext.startActivity(httpIntent);
+                                            mContext.startActivity(httpIntent);*/
                                             // Write your code here to execute after dialog closed
                                         }
                                     });
@@ -302,9 +305,30 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
             getbarcode.add(myPojoWoe.get(position).getBarcodelist().get(i).getBARCODE());
         }
 
-        SampleTypeAdpater sampleRecyclerView = new SampleTypeAdpater(mContext, getSampleTypes, getbarcode);
+        try {
+            if(getSampleTypes.size()==1){
+                holder.sample_type_txt.setVisibility(View.VISIBLE);
+                holder.barcode_txt.setVisibility(View.VISIBLE);
+                for (int i = 0; i <getSampleTypes.size(); i++) {
+                    holder.sample_type_txt.setText(getSampleTypes.get(i));
+                }
+                for (int j = 0; j <getbarcode.size() ; j++) {
+                    holder.barcode_txt.setText(getbarcode.get(j));
+                }
+                holder.barcode_and_sample_recycler.setVisibility(View.GONE);
 
-        holder.barcode_and_sample_recycler.setAdapter(sampleRecyclerView);
+            }else{
+                holder.sample_type_txt.setVisibility(View.GONE);
+                holder.barcode_txt.setVisibility(View.GONE);
+                holder.barcode_and_sample_recycler.setVisibility(View.VISIBLE);
+                SampleTypeAdpater sampleRecyclerView = new SampleTypeAdpater(mContext, getSampleTypes, getbarcode);
+                holder.barcode_and_sample_recycler.setAdapter(sampleRecyclerView);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         holder.image_tag.setVisibility(View.VISIBLE);
 
         holder.image_tag.setOnClickListener(new View.OnClickListener() {
@@ -373,17 +397,19 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                             @Override
                             public void onClick(DialogInterface arg0, int arg1) {
 
-
                                 ArrayList<String> getBrcd = new ArrayList<>();
                                 for (int i = 0; i < myPojoWoe.get(position).getBarcodelist().size(); i++) {
                                     getBrcd.add(myPojoWoe.get(position).getBarcodelist().get(i).getBARCODE());
                                 }
                                 String getBarcodes = TextUtils.join(",", getBrcd);
 
-                                if(refreshOfflineWoe!=null){
-                                    refreshOfflineWoe.onClickDeleteOffWoe(getBarcodes);
+                                boolean deletedRows = myDb.deleteData(getBarcodes);
+                                if (deletedRows == true) {
+                                    mfragment.setNewFragment();
+                                    TastyToast.makeText(mContext, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                } else {
+                                    TastyToast.makeText(mContext, ToastFile.woeDeleteUnsuccess, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
-
                             }
                         });
 
@@ -406,7 +432,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView patientName;
+        public TextView patientName,sample_type_txt,barcode_txt;
         public TextView testName, error_msg;
         public TextView put_testName;
         public ImageView image_tag;
@@ -424,6 +450,8 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         public ViewHolder(View itemView) {
             super(itemView);
             patientName = (TextView) itemView.findViewById(R.id.patientName);
+            sample_type_txt = (TextView) itemView.findViewById(R.id.sample_type_txt);
+            barcode_txt = (TextView) itemView.findViewById(R.id.barcode_txt);
             testName = (TextView) itemView.findViewById(R.id.testName);
             error_msg = (TextView) itemView.findViewById(R.id.error_msg);
 

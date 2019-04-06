@@ -35,6 +35,7 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
 
 
     private Activity activity;
+    ArrayList<String> listOfString;
     private ArrayList<Product_Rate_MasterModel> filteredList;
     private ArrayList<Product_Rate_MasterModel> testRateMasterModels;
     private ArrayList<BaseModel> selectedTests = new ArrayList<>();
@@ -183,10 +184,12 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
         holder.imgCheck.setVisibility(View.VISIBLE);
 
 
-        String[] elements = testNames.split(",");
-        List<String> fixedLenghtList = Arrays.asList(elements);
-        ArrayList<String> listOfString = new ArrayList<String>(fixedLenghtList);
+        if (testNames != null) {
+            String[] elements = testNames.split(",");
+            List<String> fixedLenghtList = Arrays.asList(elements);
+            listOfString = new ArrayList<String>(fixedLenghtList);
 
+        }
 
         if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {

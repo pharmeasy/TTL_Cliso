@@ -11,9 +11,131 @@ public class Woe implements Parcelable
 
     private String WATER_SOURCE;
 
+    protected Woe(Parcel in) {
+        REF_DR_NAME = in.readString();
+        SPECIMEN_COLLECTION_TIME = in.readString();
+        WATER_SOURCE = in.readString();
+        REMARKS = in.readString();
+        ULCcode = in.readString();
+        ADDITIONAL1 = in.readString();
+        LEAD_ID = in.readString();
+        REF_DR_ID = in.readString();
+        SUB_SOURCE_CODE = in.readString();
+        CUSTOMER_ID = in.readString();
+        DELIVERY_MODE = in.readInt();
+        purpose = in.readString();
+        ALERT_MESSAGE = in.readString();
+        STATUS = in.readString();
+        APP_ID = in.readString();
+        AGE_TYPE = in.readString();
+        LAB_NAME = in.readString();
+        AADHAR_NO = in.readString();
+        SPECIMEN_SOURCE = in.readString();
+        ENTERED_BY = in.readString();
+        SR_NO = in.readInt();
+        PINCODE = in.readString();
+        TYPE = in.readString();
+        EMAIL_ID = in.readString();
+        CONT_PERSON = in.readString();
+        LAB_ID = in.readString();
+        AMOUNT_COLLECTED = in.readString();
+        AGE = in.readString();
+        WO_MODE = in.readString();
+        ADDRESS = in.readString();
+        ORDER_NO = in.readString();
+        OS = in.readString();
+        BCT_ID = in.readString();
+        PRODUCT = in.readString();
+        CONTACT_NO = in.readString();
+        CAMP_ID = in.readString();
+        LAB_ADDRESS = in.readString();
+        PATIENT_NAME = in.readString();
+        GENDER = in.readString();
+        WO_STAGE = in.readInt();
+        TOTAL_AMOUNT = in.readString();
+        MAIN_SOURCE = in.readString();
+        BRAND = in.readString();
+        AMOUNT_DUE = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(REF_DR_NAME);
+        dest.writeString(SPECIMEN_COLLECTION_TIME);
+        dest.writeString(WATER_SOURCE);
+        dest.writeString(REMARKS);
+        dest.writeString(ULCcode);
+        dest.writeString(ADDITIONAL1);
+        dest.writeString(LEAD_ID);
+        dest.writeString(REF_DR_ID);
+        dest.writeString(SUB_SOURCE_CODE);
+        dest.writeString(CUSTOMER_ID);
+        dest.writeInt(DELIVERY_MODE);
+        dest.writeString(purpose);
+        dest.writeString(ALERT_MESSAGE);
+        dest.writeString(STATUS);
+        dest.writeString(APP_ID);
+        dest.writeString(AGE_TYPE);
+        dest.writeString(LAB_NAME);
+        dest.writeString(AADHAR_NO);
+        dest.writeString(SPECIMEN_SOURCE);
+        dest.writeString(ENTERED_BY);
+        dest.writeInt(SR_NO);
+        dest.writeString(PINCODE);
+        dest.writeString(TYPE);
+        dest.writeString(EMAIL_ID);
+        dest.writeString(CONT_PERSON);
+        dest.writeString(LAB_ID);
+        dest.writeString(AMOUNT_COLLECTED);
+        dest.writeString(AGE);
+        dest.writeString(WO_MODE);
+        dest.writeString(ADDRESS);
+        dest.writeString(ORDER_NO);
+        dest.writeString(OS);
+        dest.writeString(BCT_ID);
+        dest.writeString(PRODUCT);
+        dest.writeString(CONTACT_NO);
+        dest.writeString(CAMP_ID);
+        dest.writeString(LAB_ADDRESS);
+        dest.writeString(PATIENT_NAME);
+        dest.writeString(GENDER);
+        dest.writeInt(WO_STAGE);
+        dest.writeString(TOTAL_AMOUNT);
+        dest.writeString(MAIN_SOURCE);
+        dest.writeString(BRAND);
+        dest.writeString(AMOUNT_DUE);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Woe> CREATOR = new Creator<Woe>() {
+        @Override
+        public Woe createFromParcel(Parcel in) {
+            return new Woe(in);
+        }
+
+        @Override
+        public Woe[] newArray(int size) {
+            return new Woe[size];
+        }
+    };
+
+    public String getADDITIONAL1() {
+        return ADDITIONAL1;
+    }
+
+    public void setADDITIONAL1(String ADDITIONAL1) {
+        this.ADDITIONAL1 = ADDITIONAL1;
+    }
+
     private String REMARKS;
 
     private String ULCcode;
+
+    private String ADDITIONAL1;
 
     public String getULCcode() {
         return ULCcode;
@@ -102,63 +224,7 @@ public class Woe implements Parcelable
 
     private String AMOUNT_DUE;
 
-    protected Woe(Parcel in) {
-        REF_DR_NAME = in.readString();
-        SPECIMEN_COLLECTION_TIME = in.readString();
-        WATER_SOURCE = in.readString();
-        REMARKS = in.readString();
-        ULCcode = in.readString();
-        LEAD_ID = in.readString();
-        REF_DR_ID = in.readString();
-        SUB_SOURCE_CODE = in.readString();
-        CUSTOMER_ID = in.readString();
-        DELIVERY_MODE = in.readInt();
-        purpose = in.readString();
-        ALERT_MESSAGE = in.readString();
-        STATUS = in.readString();
-        APP_ID = in.readString();
-        AGE_TYPE = in.readString();
-        LAB_NAME = in.readString();
-        AADHAR_NO = in.readString();
-        SPECIMEN_SOURCE = in.readString();
-        ENTERED_BY = in.readString();
-        SR_NO = in.readInt();
-        PINCODE = in.readString();
-        TYPE = in.readString();
-        EMAIL_ID = in.readString();
-        CONT_PERSON = in.readString();
-        LAB_ID = in.readString();
-        AMOUNT_COLLECTED = in.readString();
-        AGE = in.readString();
-        WO_MODE = in.readString();
-        ADDRESS = in.readString();
-        ORDER_NO = in.readString();
-        OS = in.readString();
-        BCT_ID = in.readString();
-        PRODUCT = in.readString();
-        CONTACT_NO = in.readString();
-        CAMP_ID = in.readString();
-        LAB_ADDRESS = in.readString();
-        PATIENT_NAME = in.readString();
-        GENDER = in.readString();
-        WO_STAGE = in.readInt();
-        TOTAL_AMOUNT = in.readString();
-        MAIN_SOURCE = in.readString();
-        BRAND = in.readString();
-        AMOUNT_DUE = in.readString();
-    }
 
-    public static final Creator<Woe> CREATOR = new Creator<Woe>() {
-        @Override
-        public Woe createFromParcel(Parcel in) {
-            return new Woe(in);
-        }
-
-        @Override
-        public Woe[] newArray(int size) {
-            return new Woe[size];
-        }
-    };
 
     public String getREF_DR_NAME ()
     {
@@ -586,56 +652,6 @@ public class Woe implements Parcelable
         return "ClassPojo [REF_DR_NAME = "+REF_DR_NAME+", SPECIMEN_COLLECTION_TIME = "+SPECIMEN_COLLECTION_TIME+", WATER_SOURCE = "+WATER_SOURCE+", REMARKS = "+REMARKS+", ULCcode = "+ULCcode+", LEAD_ID = "+LEAD_ID+", REF_DR_ID = "+REF_DR_ID+", SUB_SOURCE_CODE = "+SUB_SOURCE_CODE+", CUSTOMER_ID = "+CUSTOMER_ID+", DELIVERY_MODE = "+DELIVERY_MODE+", purpose = "+purpose+", ALERT_MESSAGE = "+ALERT_MESSAGE+", STATUS = "+STATUS+", APP_ID = "+APP_ID+", AGE_TYPE = "+AGE_TYPE+", LAB_NAME = "+LAB_NAME+", AADHAR_NO = "+AADHAR_NO+", SPECIMEN_SOURCE = "+SPECIMEN_SOURCE+", ENTERED_BY = "+ENTERED_BY+", SR_NO = "+SR_NO+", PINCODE = "+PINCODE+", TYPE = "+TYPE+", EMAIL_ID = "+EMAIL_ID+", CONT_PERSON = "+CONT_PERSON+", LAB_ID = "+LAB_ID+", AMOUNT_COLLECTED = "+AMOUNT_COLLECTED+", AGE = "+AGE+", WO_MODE = "+WO_MODE+", ADDRESS = "+ADDRESS+", ORDER_NO = "+ORDER_NO+", OS = "+OS+", BCT_ID = "+BCT_ID+", PRODUCT = "+PRODUCT+", CONTACT_NO = "+CONTACT_NO+", CAMP_ID = "+CAMP_ID+", LAB_ADDRESS = "+LAB_ADDRESS+", PATIENT_NAME = "+PATIENT_NAME+", GENDER = "+GENDER+", WO_STAGE = "+WO_STAGE+", TOTAL_AMOUNT = "+TOTAL_AMOUNT+", MAIN_SOURCE = "+MAIN_SOURCE+", BRAND = "+BRAND+", AMOUNT_DUE = "+AMOUNT_DUE+"]";
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(REF_DR_NAME);
-        dest.writeString(SPECIMEN_COLLECTION_TIME);
-        dest.writeString(WATER_SOURCE);
-        dest.writeString(REMARKS);
-        dest.writeString(ULCcode);
-        dest.writeString(LEAD_ID);
-        dest.writeString(REF_DR_ID);
-        dest.writeString(SUB_SOURCE_CODE);
-        dest.writeString(CUSTOMER_ID);
-        dest.writeInt(DELIVERY_MODE);
-        dest.writeString(purpose);
-        dest.writeString(ALERT_MESSAGE);
-        dest.writeString(STATUS);
-        dest.writeString(APP_ID);
-        dest.writeString(AGE_TYPE);
-        dest.writeString(LAB_NAME);
-        dest.writeString(AADHAR_NO);
-        dest.writeString(SPECIMEN_SOURCE);
-        dest.writeString(ENTERED_BY);
-        dest.writeInt(SR_NO);
-        dest.writeString(PINCODE);
-        dest.writeString(TYPE);
-        dest.writeString(EMAIL_ID);
-        dest.writeString(CONT_PERSON);
-        dest.writeString(LAB_ID);
-        dest.writeString(AMOUNT_COLLECTED);
-        dest.writeString(AGE);
-        dest.writeString(WO_MODE);
-        dest.writeString(ADDRESS);
-        dest.writeString(ORDER_NO);
-        dest.writeString(OS);
-        dest.writeString(BCT_ID);
-        dest.writeString(PRODUCT);
-        dest.writeString(CONTACT_NO);
-        dest.writeString(CAMP_ID);
-        dest.writeString(LAB_ADDRESS);
-        dest.writeString(PATIENT_NAME);
-        dest.writeString(GENDER);
-        dest.writeInt(WO_STAGE);
-        dest.writeString(TOTAL_AMOUNT);
-        dest.writeString(MAIN_SOURCE);
-        dest.writeString(BRAND);
-        dest.writeString(AMOUNT_DUE);
-    }
 }
 

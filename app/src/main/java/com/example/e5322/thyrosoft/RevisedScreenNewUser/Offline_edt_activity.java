@@ -44,7 +44,10 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
@@ -234,7 +237,24 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
             age_edt.setText(myPojoWoe.getWoe().getAGE());
             samplecollectionponit.setText("Sample collection point : "+myPojoWoe.getWoe().getADDRESS());
             referedby.setText("Ref By: "+myPojoWoe.getWoe().getREF_DR_NAME());
-            sct_txt.setText(myPojoWoe.getWoe().getSPECIMEN_COLLECTION_TIME());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+
+            Date date = null;
+            String output = null;
+            try{
+                //Converting the input String to Date
+                date= sdf.parse(myPojoWoe.getWoe().getSPECIMEN_COLLECTION_TIME());
+                //Changing the format of date and storing it in String
+                output = sdfOutput.format(date);
+                //Displaying the date
+                System.out.println(output);
+            }catch(ParseException pe){
+                pe.printStackTrace();
+            }
+
+            sct_txt.setText(output);
 
             setAllTestWithBArcodeList = new ArrayList<>();
 
@@ -366,7 +386,9 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                 } else if (getAgeType.equals("") && getAgeType.equals(null)) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age_type, Toast.LENGTH_SHORT).show();
-                } else if (saveGenderId.equals("rew43") && saveGenderId.equals(null)) {
+                }
+                //else if (saveGenderId.equals("rew43") && saveGenderId.equals(null)) {
+                else if (saveGenderId.equals("") && saveGenderId.equals(null)) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                 } else {
                     if (getAgeType.equals("Years")) {

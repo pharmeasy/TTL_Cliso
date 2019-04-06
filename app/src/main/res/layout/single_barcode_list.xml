@@ -47,15 +47,6 @@
                 android:background="@color/white"
                 android:text="serum" />
 
-            <ImageView
-                android:id="@+id/img_edt"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_gravity="left|center"
-                android:layout_margin="-7dp"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:src="@drawable/manual_barcode" />
 
         </LinearLayout>
 

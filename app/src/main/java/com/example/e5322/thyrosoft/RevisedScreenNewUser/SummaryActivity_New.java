@@ -147,6 +147,9 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String error, pid, barcodes, response1, resID;
     private String getBarcodesOffline;
     private boolean flagforOnce=false;
+    private String location;
+    private LinearLayout ll_location;
+    private TextView txt_setLocation;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -174,6 +177,8 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         SGCLinearid = (LinearLayout) findViewById(R.id.SGCLinearid);
         btech_layout = (LinearLayout) findViewById(R.id.btech_layout);
         refbylinear = (LinearLayout) findViewById(R.id.refbylinear);
+        ll_location = (LinearLayout) findViewById(R.id.ll_location);
+        txt_setLocation = (TextView) findViewById(R.id.txt_setLocation);
         linearLayoutManager = new LinearLayoutManager(SummaryActivity_New.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
@@ -229,6 +234,10 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         kycinfo = savepatientDetails.getString("kycinfo", null);
         typename = savepatientDetails.getString("woetype", null);
         sr_number = savepatientDetails.getString("SR_NO", null);
+
+        if(sr_number!=null)
+            pass_to_api = Integer.parseInt(sr_number);
+
         pass_to_api = Integer.parseInt(sr_number);
         int edta_sr_num = pass_to_api + 1;
 
@@ -286,6 +295,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         SummaryActivity_New.this.setTitle("Summary");
         Bundle bundle = getIntent().getExtras();
         getSelctedTests = bundle.getString("tetsts");
+        location = bundle.getString("location");
         passProdcucts = bundle.getString("passProdcucts");
 //        amountPaid = bundle.getString("payment");
         totalAmount = bundle.getString("TotalAmt");
@@ -307,6 +317,12 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         pat_name.setText(nameString + "/" + getFinalAge + " " + getageType + "/" + genderType);
         pat_amt_collected.setText(amt_collected);
         serial_number.setText(sr_number);
+        if(location!=null && !location.equalsIgnoreCase("")){
+            ll_location.setVisibility(View.VISIBLE);
+            txt_setLocation.setText(location);
+        }else{
+            ll_location.setVisibility(View.GONE);
+        }
         title.setText("Summary");
 
         getFinalAddressToPost = GlobalClass.setHomeAddress;

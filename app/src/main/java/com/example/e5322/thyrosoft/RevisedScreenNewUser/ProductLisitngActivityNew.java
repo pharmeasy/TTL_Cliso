@@ -401,8 +401,13 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         Log.e(TAG, "onResponse: RESPONSE" + response);
 
 
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
+                        }*/
+
+                        if (ProductLisitngActivityNew.this instanceof Activity) {
+                            if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
+                                barProgressDialog.dismiss();
                         }
 
                         Gson gson = new Gson();
@@ -492,7 +497,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             } else if (patientYearType.equalsIgnoreCase("Days")) {
                                 ageType = "D";
                             }
-                            GlobalClass.Req_Date_Req(sampleCollectionTime, "hh:mm a", "HH:mm:ss");
+                            String getFulltime = sampleCollectionDate + " " + sampleCollectionTime;
+
+                            GlobalClass.Req_Date_Req(sampleCollectionDate + " " + sampleCollectionTime, "hh:mm a", "HH:mm:ss");
 
                             MyPojoWoe myPojoWoe = new MyPojoWoe();
                             Woe woe = new Woe();
@@ -504,6 +511,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             woe.setAMOUNT_COLLECTED(ulcResponseModel.getB2C());
                             woe.setAMOUNT_DUE(null);
                             woe.setAPP_ID("1.0.1.2");
+                            woe.setADDITIONAL1("CPL");
                             woe.setBCT_ID("");
                             woe.setBRAND(brandName);
                             woe.setCAMP_ID(campID);
@@ -605,8 +613,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                         public void onResponse(JSONObject response) {
                                             try {
 
-                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                                     barProgressDialog.dismiss();
+                                                }*/
+                                                if (ProductLisitngActivityNew.this instanceof Activity) {
+                                                    if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
+                                                        barProgressDialog.dismiss();
                                                 }
                                                 Log.e(TAG, "onResponse: RESPONSE" + response);
                                                 String finalJson = response.toString();
@@ -651,9 +663,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                     alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
 
-                                                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                                            Intent i = new Intent(ProductLisitngActivityNew.this, Payment_Activity.class);
+                                                            startActivity(i);
+                                                            /*Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                                            startActivity(httpIntent);
+                                                            startActivity(httpIntent);*/
                                                             // Write your code here to execute after dialog closed
                                                         }
                                                     });
@@ -673,8 +687,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     }, new com.android.volley.Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                           /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                                 barProgressDialog.dismiss();
+                                            }*/
+                                            if (ProductLisitngActivityNew.this instanceof Activity) {
+                                                if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
+                                                    barProgressDialog.dismiss();
                                             }
                                             if (error != null) {
                                             } else {
@@ -708,7 +726,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             @Override
             public void onClick(View v) {
                 String getTExtdata = show_selected_tests_list_test_ils1.getText().toString();
-                if (getTExtdata.equals("")) {
+                if (Selcted_Outlab_Test.size()==0) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else if (getTExtdata.equals("Select Test")) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();

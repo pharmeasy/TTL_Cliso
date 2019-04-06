@@ -101,7 +101,6 @@ public class TrackDetAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.track_det_row, parent, false);
         }
 
-
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView Refby = (TextView) convertView.findViewById(R.id.Refby);
         TextView barcode = (TextView) convertView.findViewById(R.id.barcode);
@@ -120,13 +119,13 @@ public class TrackDetAdapter extends BaseAdapter {
             download.setVisibility(View.INVISIBLE);
         } else {
             download.setVisibility(View.VISIBLE);
-        }
+        }*/
 
-        if (trackdet.get(position).getEmail().toString().equals("") || trackdet.get(position).getEmail().toString().equals(null)) {
-            mail.setVisibility(View.INVISIBLE);
+        if (trackdet.get(position).getEmail().equals("") || trackdet.get(position).getEmail().equals(null)) {
+            mail.setVisibility(View.GONE);
         } else {
             mail.setVisibility(View.VISIBLE);
-        }*/
+        }
 
         print.setOnClickListener(new View.OnClickListener() {
             @Override

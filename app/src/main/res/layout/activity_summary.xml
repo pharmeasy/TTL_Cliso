@@ -33,6 +33,7 @@
             android:textColor="@color/maroon"
             style="@style/heading_text"
             android:text="Summary"
+            android:textStyle="bold"
             android:textSize="18sp"
             android:gravity="center"
             ></TextView>

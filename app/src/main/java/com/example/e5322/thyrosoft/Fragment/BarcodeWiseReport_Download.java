@@ -31,6 +31,7 @@ import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -272,9 +273,11 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
                                 alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
 
-                                        Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                        Intent i = new Intent(mContext, Payment_Activity.class);
+                                        mContext.startActivity(i);
+                                       /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                         httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                        startActivity(httpIntent);
+                                        startActivity(httpIntent);*/
                                         // Write your code here to execute after dialog closed
                                     }
                                 });

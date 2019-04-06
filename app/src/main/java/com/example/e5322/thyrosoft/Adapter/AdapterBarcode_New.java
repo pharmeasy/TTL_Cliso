@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -92,7 +93,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView scanBarcode;
         EditText enter_barcode, reenter;
-        ImageView img_edt, setback,element1_iv;
+        ImageView img_edt, setback, element1_iv;
         LinearLayout linearEditbarcode, barcode_linear;
 
         public ViewHolder(View itemView) {
@@ -231,7 +232,13 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                     progressDialog.setMax(20);
                     progressDialog.setCanceledOnTouchOutside(false);
                     progressDialog.setCancelable(false);
-                    progressDialog.show();
+                    //progressDialog.show();
+                    try {
+                        progressDialog.show();
+                    } catch (WindowManager.BadTokenException e) {
+                        //use a log message
+                    }
+
                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode"
                             , new Response.Listener<JSONObject>() {
                         @Override
@@ -274,16 +281,23 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                         String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
                                         String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
                                     }
-                                }else if(ERROR.equalsIgnoreCase(caps_invalidApikey)){
-                                    if(progressDialog!=null && progressDialog.isShowing()){
+                                } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                                    /*if (progressDialog != null && progressDialog.isShowing()) {
                                         progressDialog.dismiss();
+                                    }*/
+
+                                    if (context instanceof Activity) {
+                                        if (!((Activity) context).isFinishing())
+                                            progressDialog.dismiss();
                                     }
                                     GlobalClass.redirectToLogin(context);
-                                } else {
-                                    holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-                                    storeResponse = response1;
-                                    progressDialog.dismiss();
-                                    Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
+                                } else{
+                                    if (position < GlobalClass.finalspecimenttypewiselist.size()) {
+                                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                                        storeResponse = response1;
+                                        progressDialog.dismiss();
+                                        Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
 
                             } catch (JSONException e) {
@@ -320,7 +334,6 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         }
 
         System.out.println("Barcode :::: " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
-        holder.img_edt.setVisibility(View.GONE);
         holder.linearEditbarcode.setVisibility(View.GONE);
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
         holder.element1_iv.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
@@ -466,7 +479,6 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                 Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
             }
             if (s.length() == 8) {
-
                 previouseBarcode = s.toString();
                 searchBarcode = s.toString();
                 //checkBarcode(position,s.toString());
@@ -479,14 +491,13 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                 enter_barcode.setText("");
                                 flag = true;
                             }
-                        } else {
+                        }
+                        else {
                             if (flag == false) {
                                 flag = true;
-
                                 if (!GlobalClass.isNetworkAvailable(context)) {
                                     enter_barcode.setText(searchBarcode);
                                 } else {
-
                                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                                     progressDialog = new ProgressDialog(context);
                                     progressDialog.setTitle("Kindly wait ...");
@@ -514,9 +525,13 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                                                     enter_barcode.setText(searchBarcode);
                                                     progressDialog.dismiss();
-                                                }else if(ERROR.equalsIgnoreCase(caps_invalidApikey)){
-                                                    if(progressDialog!=null && progressDialog.isShowing()){
+                                                } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                                                    /*if (progressDialog != null && progressDialog.isShowing()) {
                                                         progressDialog.dismiss();
+                                                    }*/
+                                                    if (context instanceof Activity) {
+                                                        if (!((Activity) context).isFinishing())
+                                                            progressDialog.dismiss();
                                                     }
                                                     GlobalClass.redirectToLogin(context);
                                                 } else {

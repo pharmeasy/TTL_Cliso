@@ -753,11 +753,14 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     download.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            Intent browserIntent = new Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    Uri.parse(barCodeDetail.get(0).getUrl()));
-                                            getContext().startActivity(browserIntent);
+                                            if(!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl()!=null){
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
+                                                startActivity(browserIntent);
+                                            }
 
+                                            else {
+                                                TastyToast.makeText(getActivity(), "Hello World !", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                            }
                                         }
                                     });
                                 }
@@ -913,6 +916,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                         search.setVisibility(View.VISIBLE);
                                         adapter = new TrackDetAdapter(getContext(), trackDetArray);
                                         listviewreport.setAdapter(adapter);
+                                        listviewreport.setVisibility(View.VISIBLE);
                                     }
                                 } else {
                                     nodata.setVisibility(View.VISIBLE);

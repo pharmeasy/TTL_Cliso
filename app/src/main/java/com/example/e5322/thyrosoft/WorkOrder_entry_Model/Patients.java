@@ -3,6 +3,7 @@ public class Patients
 {
     public boolean flag=true;
     private String scp;
+    private String B2B;
 
     private String pdflink;
 
@@ -11,6 +12,14 @@ public class Patients
     private String chn_test;
 
     private String labcode;
+
+    public String getB2B() {
+        return B2B;
+    }
+
+    public void setB2B(String b2B) {
+        B2B = b2B;
+    }
 
     private String leadId;
 

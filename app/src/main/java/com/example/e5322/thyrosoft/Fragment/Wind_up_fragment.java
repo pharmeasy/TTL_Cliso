@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -84,10 +85,10 @@ public class Wind_up_fragment extends RootFragment {
     SharedPreferences mPrefs;
     Windup_adapter windup_adapter;
     EditText edtSearch;
-    LinearLayout linearlayout2;
+    LinearLayout linearlayout2,pick_up_ll;
     String getDatefromWOE, halfTime, DateToPass;
     static final int DATE_DIALOG_ID = 999;
-    TextView wind_up, woe_cal, wind_up_multiple;
+    TextView wind_up, woe_cal, wind_up_multiple,pick_up_txt;
     ProgressDialog barProgressDialog;
     RequestQueue requestQueue, requestQueueWindup;
     Button defaultFragment;
@@ -112,7 +113,7 @@ public class Wind_up_fragment extends RootFragment {
     LinearLayout offline_img;
     Calendar myCalendar;
     public static RequestQueue PostQueOtp;
-
+    LinearLayout windup_ll_below;
     public static RequestQueue PostQueueForConsignment;
     String putDate, getFormatDate, convertedDate;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
@@ -151,7 +152,8 @@ public class Wind_up_fragment extends RootFragment {
     private String outputDateStr;
     private String passToAPI;
     private String DatePassToApi;
-
+    private String client_type;
+    LinearLayout logistic_ll;
     public Wind_up_fragment() {
         // Required empty public constructor
     }
@@ -197,14 +199,17 @@ public class Wind_up_fragment extends RootFragment {
         woe_cal = (TextView) viewMain.findViewById(R.id.woe_cal);
         edtSearch = (EditText) viewMain.findViewById(R.id.edtSearch);
 //        ImageView  add = (ImageView)viewMain.findViewById(R.id.add);
+        windup_ll_below = (LinearLayout) viewMain.findViewById(R.id.windup_ll_below);
         offline_img = (LinearLayout) viewMain.findViewById(R.id.offline_img);
         recyclerView = (RecyclerView) viewMain.findViewById(R.id.recycler_view);
-
         linearLayoutManager = new LinearLayoutManager(mContext);
         recyclerView.setLayoutManager(linearLayoutManager);
         enetered_consign = (TextView) viewMain.findViewById(R.id.enetered_consign);
+        pick_up_txt = (TextView) viewMain.findViewById(R.id.pick_up_txt);
         enter_consign = (TextView) viewMain.findViewById(R.id.enter_consign);
         linearlayout2 = (LinearLayout) viewMain.findViewById(R.id.linearlayout2);
+        pick_up_ll = (LinearLayout) viewMain.findViewById(R.id.pick_up_ll);
+        logistic_ll = (LinearLayout) viewMain.findViewById(R.id.logistic_ll);
         enter_entered_layout = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout);
         enter_entered_layout_consign = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout_consign);
         unchecked_entered_ll_consign = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll_consign);
@@ -217,19 +222,17 @@ public class Wind_up_fragment extends RootFragment {
 
         view_1.setVisibility(View.VISIBLE);
         view_2.setVisibility(View.VISIBLE);
+        windup_ll_below.setVisibility(View.VISIBLE);
 
         enter_entered_layout_consign.setVisibility(View.VISIBLE);
-
         enter_consign.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enterss.setVisibility(View.VISIBLE);
         enetered_consign.setBackgroundColor(getResources().getColor(R.color.lightgray));
         enter_arrow_enteredss.setVisibility(View.GONE);
 
-
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         woe_cal.setText(sdf.format(d));
-
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -254,17 +257,21 @@ public class Wind_up_fragment extends RootFragment {
 */
 
         getActivity().setTitle("WOE");
-
         Date dateNew = new Date();
         SimpleDateFormat sdfToday = new SimpleDateFormat("dd-MM-yyyy");
         DateToPass = sdfToday.format(dateNew);
-
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+        client_type=prefs.getString("CLIENT_TYPE", null);
 
+        if(client_type!=null && client_type.equalsIgnoreCase("OLC")){
+            logistic_ll.setVisibility(View.VISIBLE);
+        }else{
+            logistic_ll.setVisibility(View.VISIBLE);
+        }
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -419,8 +426,12 @@ public class Wind_up_fragment extends RootFragment {
                                     String response1 = parentObjectOtp.getString("response");
                                     if (RES_ID.equals("RES0000")) {
                                         TastyToast.makeText(mContext, response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                             barProgressDialog.dismiss();
+                                        }*/
+                                        if (mContext instanceof Activity) {
+                                            if (!((Activity) mContext).isFinishing())
+                                                barProgressDialog.dismiss();
                                         }
                                         fetchWoeListDoneByTSP();
                                     } else {
@@ -545,8 +556,12 @@ public class Wind_up_fragment extends RootFragment {
                     Log.e(TAG, "onClick: url" + jsonObjectRequest1);
 
                 } else {
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                   /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
+                    }*/
+                    if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
                     }
                     Toast.makeText(getContext(), ToastFile.slt_name_for_windup, Toast.LENGTH_SHORT).show();
                 }
@@ -610,7 +625,8 @@ public class Wind_up_fragment extends RootFragment {
         Consignment_fragment a2Fragment = new Consignment_fragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
+//        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
 
     }
 
@@ -718,6 +734,18 @@ public class Wind_up_fragment extends RootFragment {
                         }
                     }
 
+                    int getLogCharge=Integer.parseInt(woe_model_patient_details.getLogcharge());
+                    int getPersentfiveB2b=Integer.parseInt(woe_model_patient_details.getLogcharge());
+
+                    if(woe_model_patient_details.getPersentfiveB2b()!=""&& !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("") && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("0") && getPersentfiveB2b!=0){
+                        pick_up_ll.setVisibility(View.VISIBLE);
+                        pick_up_txt.setText(woe_model_patient_details.getLogcharge());
+
+                    }else{
+                        pick_up_ll.setVisibility(View.VISIBLE);
+                        pick_up_txt.setText("0");
+                    }
+
                     //set Adpter
                     if (woe_model_patient_details.getPatients() != null) {
                         for (int i = 0; i < woe_model_patient_details.getPatients().size(); i++) {
@@ -734,8 +762,13 @@ public class Wind_up_fragment extends RootFragment {
 
                         windup_adapter = new Windup_adapter(mContext, patientsArrayList);
                         recyclerView.setAdapter(windup_adapter);
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                       /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
+                        }*/
+
+                        if (mContext instanceof Activity) {
+                            if (!((Activity) mContext).isFinishing())
+                                barProgressDialog.dismiss();
                         }
 
                         ArrayList<String> getNoStatus = new ArrayList<>();
@@ -767,12 +800,20 @@ public class Wind_up_fragment extends RootFragment {
                         view_1.setVisibility(View.GONE);
                         view_2.setVisibility(View.GONE);
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
+                        }*/
+                        if (mContext instanceof Activity) {
+                            if (!((Activity) mContext).isFinishing())
+                                barProgressDialog.dismiss();
                         }
                     }
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
+                    }*/
+                    if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
                     }
                 }
 

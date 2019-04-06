@@ -61,7 +61,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         public TextView patientName;
         public TextView testName;
 
-        public TextView puttestName;
+        public TextView puttestName,show_amt_txt;
 
         public ImageView image_tag;
         public CardView linear;
@@ -76,6 +76,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
             patientName = (TextView) v.findViewById(R.id.patientName);
             testName = (TextView) v.findViewById(R.id.testName);
             puttestName = (TextView) v.findViewById(R.id.puttestName);
+            show_amt_txt = (TextView) v.findViewById(R.id.show_amt_txt);
             image_tag = (ImageView) v.findViewById(R.id.imageView);
             linear = (CardView) v.findViewById(R.id.linear);
             linearLayoutManager = new LinearLayoutManager(context1);
@@ -149,6 +150,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
 
         holder.patientName.setText(patients.get(position).getName());
         holder.puttestName.setText(patients.get(position).getTests());
+        holder.show_amt_txt.setText(patients.get(position).getB2B());
 
 
         holder.image_tag.setVisibility(View.VISIBLE);

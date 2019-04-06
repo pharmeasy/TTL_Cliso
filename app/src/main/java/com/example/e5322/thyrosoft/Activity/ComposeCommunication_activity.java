@@ -196,12 +196,15 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     }
 
     private void PostData() {
+        String spinnerItem;
 
         PostQue = Volley.newRequestQueue(ComposeCommunication_activity.this);
 
         JSONObject jsonObject = new JSONObject();
         try {
-            String spinnerItem = spinnercomm.getSelectedItem().toString();
+            // spinnerItem = spinnercomm.getSelectedItem().toString();
+            if (spinnercomm.getSelectedItem().toString() != null)
+                spinnerItem = spinnercomm.getSelectedItem().toString();
 
             if (spinnercomm.getSelectedItem().equals("WOE & REPORTS")) {
                 spinnerItem = "WOE-REPORTS";
@@ -240,9 +243,9 @@ public class ComposeCommunication_activity extends AppCompatActivity {
 
                             if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.redirectToLogin(ComposeCommunication_activity.this);
-                            }else if(responsetoshow.equalsIgnoreCase("Communication Registered Successfully")){
+                            } else if (responsetoshow.equalsIgnoreCase("Communication Registered Successfully")) {
                                 TastyToast.makeText(ComposeCommunication_activity.this, response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            }else{
+                            } else {
                                 TastyToast.makeText(ComposeCommunication_activity.this, response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             }
 

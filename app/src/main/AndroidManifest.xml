@@ -44,11 +44,13 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
-        <activity android:name=".Activity.BroadcastDataActivity"></activity>
+        <activity android:name=".Activity.Blood_sugar_entry_activity"></activity>
+        <activity android:name=".Activity.CampIntimation" />
+        <activity android:name=".BroadcastViewPagerActivity" />
+        <activity android:name=".Activity.BroadcastDataActivity" />
         <activity android:name=".Activity.LedgerDetailsActivity" />
 
         <meta-data

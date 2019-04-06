@@ -63,13 +63,13 @@ public class Summary_leadId extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     TextView saverepeat, saveclose, id_number, title;
     RecyclerView sample_list;
-    ImageView home,back;
+    ImageView home, back;
 
     SharedPreferences prefs;
     private String totalAnount;
     SharedPreferences preferences, prefe;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
-    String getDateTopass,getDate_and_time,get_time;
+    String getDateTopass, getDate_and_time, get_time;
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     ArrayList<String> getReferenceNmae;
     ArrayList<String> getLabNmae;
@@ -83,7 +83,7 @@ public class Summary_leadId extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private String message, RES_ID, barcode_patient_id;
     private Global globalClass;
-    int passvalue=0;
+    int passvalue = 0;
     private String TAG = Summary_leadId.this.getClass().getSimpleName();
     private String outputDateStr;
     String leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
@@ -135,20 +135,22 @@ public class Summary_leadId extends AppCompatActivity {
         SharedPreferences prefe = getSharedPreferences("getBrandTypeandName", MODE_PRIVATE);
 
         typeName = prefe.getString("typeName", null);
-        sr_number = prefe.getString("SR_NO",null);
-        if(sr_number==null){
-            sr_number_pass_to_api=Integer.parseInt("0");
-        }else{
-            sr_number_pass_to_api=Integer.parseInt(sr_number);
+        sr_number = prefe.getString("SR_NO", null);
+        if (sr_number == null) {
+            sr_number_pass_to_api = Integer.parseInt("0");
+        } else {
+            sr_number_pass_to_api = Integer.parseInt(sr_number);
         }
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
 //        if (typeName.equals("")) {
-            title.setText("Summary");
+        title.setText("Summary");
 //        } else {
 //            title.setText("Summary(" + typeName + ")");
 //        }
@@ -202,8 +204,10 @@ public class Summary_leadId extends AppCompatActivity {
         leadWATER = sharedPreferences.getString("WATER", null);
         leadleadData = sharedPreferences.getString("leadData", null);
 
-        samplCollectiondate = leadSCT.substring(0, leadSCT.length() - 6);
-        sampleCollectionTime = leadSCT.substring(11, leadSCT.length());
+        if (leadSCT.length() != 0) {
+            samplCollectiondate = leadSCT.substring(0, leadSCT.length() - 6);
+            sampleCollectionTime = leadSCT.substring(11, leadSCT.length());
+        }
 
         PackageInfo pInfo = null;
         try {
@@ -221,7 +225,7 @@ public class Summary_leadId extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
 
-                Log.e(TAG, "onResponse: RESPONSE"+response);
+                Log.e(TAG, "onResponse: RESPONSE" + response);
                 Gson gson = new Gson();
                 getReferenceNmae = new ArrayList<>();
                 getLabNmae = new ArrayList<>();
@@ -265,7 +269,7 @@ public class Summary_leadId extends AppCompatActivity {
         });
         requestQueue.add(jsonObjectRequestfetchData);
 
-        Log.e(TAG, "onCreate: URL"+jsonObjectRequestfetchData);
+        Log.e(TAG, "onCreate: URL" + jsonObjectRequestfetchData);
 
         if (leadAGE_TYPE != null) {
             if (leadAGE_TYPE.equals("Y")) {
@@ -300,7 +304,7 @@ public class Summary_leadId extends AppCompatActivity {
         Summary_leadId.this.setTitle("Summary");
         Bundle bundle = getIntent().getExtras();
         finalspecimenttypewiselist = bundle.getParcelableArrayList("leadArraylist");
-        getDateTopass =bundle.getString("Date");
+        getDateTopass = bundle.getString("Date");
         get_time = bundle.getString("Time");
         getDate_and_time = bundle.getString("DateTime");
 
@@ -312,7 +316,7 @@ public class Summary_leadId extends AppCompatActivity {
             GlobalClass.barcodelists.add(barcodelistData);
         }
 
-        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(Summary_leadId.this, GlobalClass.barcodelists,passvalue);
+        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(Summary_leadId.this, GlobalClass.barcodelists, passvalue);
         sample_list.setAdapter(getPatientSampleDetails);
 
         saveclose.setOnClickListener(new View.OnClickListener() {
@@ -331,7 +335,7 @@ public class Summary_leadId extends AppCompatActivity {
         try {
             date = inputFormat.parse(time);
             stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11,stringofconvertedTime.length()-0);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (Exception e) {
@@ -378,20 +382,20 @@ public class Summary_leadId extends AppCompatActivity {
 
         if (referenceBy != null) {
 
-            if(sourceILSMainModel!=null ){
-                if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0 && sourceILSMainModel.getMASTERS().getREF_DR()!=null ){
+            if (sourceILSMainModel != null) {
+                if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0 && sourceILSMainModel.getMASTERS().getREF_DR() != null) {
                     for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
                         if (referenceBy.equalsIgnoreCase(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
                             leadREF_ID = sourceILSMainModel.getMASTERS().getREF_DR()[j].getId().toString();
-                        }else{
-                            leadREF_ID="";
+                        } else {
+                            leadREF_ID = "";
                         }
                     }
-                }else{
-                    leadREF_ID="";
+                } else {
+                    leadREF_ID = "";
                 }
-            }else{
-                leadREF_ID="";
+            } else {
+                leadREF_ID = "";
             }
 
 
@@ -419,6 +423,7 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setAMOUNT_COLLECTED(leadRATE);
         woe.setAMOUNT_DUE("");
         woe.setAPP_ID(version);
+        woe.setADDITIONAL1("CPL");
         woe.setBCT_ID(leadBCT);
         woe.setBRAND("TTL");
 
@@ -483,13 +488,12 @@ public class Summary_leadId extends AppCompatActivity {
         }
 
 
-
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
                 try {
-                    Log.e(TAG, "onResponse: RESPONSE"+response);
+                    Log.e(TAG, "onResponse: RESPONSE" + response);
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
 
@@ -505,7 +509,7 @@ public class Summary_leadId extends AppCompatActivity {
                         i.putExtra("passToWoefragment", "frgamnebt");
                         startActivity(i);
 
-                    }else if(status.equalsIgnoreCase(caps_invalidApikey)){
+                    } else if (status.equalsIgnoreCase(caps_invalidApikey)) {
                         GlobalClass.redirectToLogin(Summary_leadId.this);
                     } else {
                         TastyToast.makeText(Summary_leadId.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -531,8 +535,8 @@ public class Summary_leadId extends AppCompatActivity {
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         POstQue.add(jsonObjectRequest1);
-        Log.e(TAG, "saveandClose: URL"+jsonObjectRequest1);
-        Log.e(TAG, "saveandClose: URL"+jsonObj);
+        Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
+        Log.e(TAG, "saveandClose: URL" + jsonObj);
 
 
     }

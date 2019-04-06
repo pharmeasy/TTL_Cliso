@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="?android:windowBackground"
     android:id="@+id/fragment_mainLayout">
 
         <LinearLayout
@@ -12,7 +12,7 @@
             android:background="@drawable/gradient_background"
             android:orientation="vertical"
             android:visibility="gone"
-            android:weightSum="100">
+            >
 
             <TextView
                 android:id="@+id/title_txt"
@@ -232,6 +232,50 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
+                    android:weightSum="2"
+                    android:background="@drawable/maroon_rect_box"
+                    android:gravity="center"
+                    android:id="@+id/logistic_ll"
+                    android:orientation="vertical">
+
+                    <!--android:textColor="@color/grey"-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/pick_up_ll"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_weight="3"
+                            android:text="Pick up Cost"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:id="@+id/pick_up_txt"
+                            android:textColor="@color/white" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:id="@+id/windup_ll_below"
                     android:background="@drawable/maroon_rect_box"
                     android:gravity="center"
                     android:orientation="horizontal"

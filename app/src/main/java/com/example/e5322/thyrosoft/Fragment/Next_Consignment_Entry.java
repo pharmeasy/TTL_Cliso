@@ -810,7 +810,7 @@ public class Next_Consignment_Entry extends RootFragment {
                         Wind_up_fragment a2Fragment = new Wind_up_fragment();
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
-                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
 
 
                         GlobalClass.consignment_number = null;

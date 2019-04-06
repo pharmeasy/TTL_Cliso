@@ -51,7 +51,7 @@ SharedPreferences savepatientDetails;
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-                holder.barcodes_patients.setText(barcodelists.get(position).getSAMPLE_TYPE().toString()+":");
+                holder.barcodes_patients.setText(barcodelists.get(position).getSAMPLE_TYPE().toString()+"");
                 if(barcodelists.get(position).getBARCODE()!=null){
                 holder.namesOftest.setText(barcodelists.get(position).getBARCODE().toString());}
                 if(pass_to_api>0){

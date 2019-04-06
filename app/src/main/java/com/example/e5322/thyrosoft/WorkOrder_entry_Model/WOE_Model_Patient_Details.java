@@ -4,6 +4,33 @@ import java.util.ArrayList;
 
 public class WOE_Model_Patient_Details  {
     private String response;
+    private String logcharge;
+    private String persentfiveB2b;
+    private String totalb2b;
+
+    public String getLogcharge() {
+        return logcharge;
+    }
+
+    public void setLogcharge(String logcharge) {
+        this.logcharge = logcharge;
+    }
+
+    public String getPersentfiveB2b() {
+        return persentfiveB2b;
+    }
+
+    public void setPersentfiveB2b(String persentfiveB2b) {
+        this.persentfiveB2b = persentfiveB2b;
+    }
+
+    public String getTotalb2b() {
+        return totalb2b;
+    }
+
+    public void setTotalb2b(String totalb2b) {
+        this.totalb2b = totalb2b;
+    }
 
     public ArrayList<Patients> getPatients() {
         return patients;

@@ -54,7 +54,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
     SharedPreferences prefs;
     MyPojo myPojo;
     BCT_LIST[] bct_lists;
-    LinearLayout SGCLinearid, refbylinear, btechlinear, linear_scp;
+    LinearLayout SGCLinearid, refbylinear, btechlinear, linear_scp,delete_patient_test_water;
     String user, passwrd, genderId, access, api_key, error, pid, response1, barcodes, resID, saveAgeType, getBtechName;
     LinearLayout delete_patient_test;
     private String mParam2;
@@ -91,9 +91,9 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         title = (TextView) findViewById(R.id.title);
         sample_list = (RecyclerView) findViewById(R.id.sample_list);
         delete_patient_test = (LinearLayout) findViewById(R.id.delete_patient_test);
+        delete_patient_test_water = (LinearLayout) findViewById(R.id.delete_patient_test_water);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
-
         SGCLinearid = (LinearLayout) findViewById(R.id.SGCLinearid);
         refbylinear = (LinearLayout) findViewById(R.id.refbylinear);
         btechlinear = (LinearLayout) findViewById(R.id.btechlinear);
@@ -106,6 +106,14 @@ public class Summary_Activity_WOE extends AppCompatActivity {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
+
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
+            delete_patient_test_water.setVisibility(View.VISIBLE);
+            delete_patient_test.setVisibility(View.GONE);
+        } else {
+            delete_patient_test_water.setVisibility(View.GONE);
+            delete_patient_test.setVisibility(View.VISIBLE);
         }
 
         title.setText("Summary");
@@ -121,7 +129,8 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 finish();
             }
         });
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().equals(0)) {
+
+        if (!GlobalClass.summary_models.get(0).getWoeditlist().equals(null)) {
             if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
                 saveAgeType = "Year";
             } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
@@ -140,7 +149,6 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                     .replace(R.id.fragment_mainLayout, notificationFragment, notificationFragment.getClass().getSimpleName()).addToBackStack(null).commit();
         }
 
-
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
@@ -151,10 +159,17 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         GlobalClass.barcodelists = new ArrayList<>();
         ArrayList<String> getNames = new ArrayList<>();
 
-        pat_type.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().toString() + "/" +
-                GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
-                GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
-                GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());//getMAIN_SOURCE
+        if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")){
+            pat_type.setText("EQNX" + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
+        }else{
+            pat_type.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().toString() + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
+                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());//getMAIN_SOURCE
+        }
 
         if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equalsIgnoreCase("")) {
             pat_sct.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
@@ -162,12 +177,13 @@ public class Summary_Activity_WOE extends AppCompatActivity {
             pat_sct.setVisibility(View.GONE);
         }
 
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME().equalsIgnoreCase("")) {
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("")) {
+            pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+        } else {
             pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME() +
                     "(" + GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() + "  " + saveAgeType + "/" + genderId + ")");
-        } else {
-            pat_name.setVisibility(View.GONE);
         }
+
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equals(null) || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equalsIgnoreCase("")) {
             pat_ref.setVisibility(View.GONE);
             refbylinear.setVisibility(View.GONE);
@@ -210,6 +226,25 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         }
         GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(mContext, GlobalClass.barcodelists, passvalue);
         sample_list.setAdapter(getPatientSampleDetails);
+
+        delete_patient_test_water.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+                builder.setTitle("Confirm delete !");
+                builder.setMessage(ToastFile.wish_woe_dlt);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        deletePatientDetailsandTest();
+                    }
+                });
+                builder.show();
+
+
+            }
+        });
+
 
         delete_patient_test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,7 +304,8 @@ public class Summary_Activity_WOE extends AppCompatActivity {
 
                 if (bct_lists.length != 0) {
                     for (int i = 0; i < bct_lists.length; i++) {
-                        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())) {
+                        //if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())) {
+                        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())&& bct_lists[i].getNED_NUMBER()!=null) {
                             String nameofbtech = bct_lists[i].getNAME();
                             btech.setText(nameofbtech);
                             btechtile.setVisibility(View.VISIBLE);

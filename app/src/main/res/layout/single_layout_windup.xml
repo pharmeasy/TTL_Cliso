@@ -95,6 +95,33 @@
                         android:textColor="@color/grey"
                         android:textSize="9sp" />
                 </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="4">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|bottom"
+                        android:layout_marginTop="-2dp"
+                        android:text="Amount: "
+                        android:textColor="@color/red"
+                        android:textSize="9sp" />
+
+                    <TextView
+                        android:id="@+id/show_amt_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="left|bottom"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="3.4"
+                        android:text="Android Version"
+                        android:textColor="@color/grey"
+                        android:textSize="9sp" />
+                </LinearLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/barcode_and_sample_recycler"

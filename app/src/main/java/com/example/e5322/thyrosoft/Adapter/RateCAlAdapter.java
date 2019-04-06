@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -173,7 +174,11 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                         testdetails.setLayoutManager(linearLayoutManager);
                                         testdetails.setAdapter(showChildTestNamesAdapter);
                                         alertDialog = alertDialogBuilder.create();
-                                        alertDialog.show();
+                                        //alertDialog.show();
+                                        if(!((Activity) mContext).isFinishing())
+                                        {alertDialog.show();
+                                            //show dialog
+                                        }
 
                                         imgClose.setOnClickListener(new View.OnClickListener() {
                                             @Override

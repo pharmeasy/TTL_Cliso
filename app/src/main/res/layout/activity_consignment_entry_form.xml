@@ -230,7 +230,6 @@
             android:orientation="horizontal"
             android:visibility="gone">
 
-
             <EditText
                 android:id="@+id/bus_number"
                 android:layout_width="0dp"
@@ -266,7 +265,7 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:gravity="center|left"
-                android:hint="Expected Depature Time"
+                android:hint="Expected Departure Time"
                 android:textColor="@color/colorBlack"
                 android:textSize="12sp" />
 

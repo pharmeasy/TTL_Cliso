@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.BroadcastDataActivity;
+import com.example.e5322.thyrosoft.BroadcastViewPagerActivity;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 import com.google.gson.Gson;
@@ -83,7 +83,8 @@ public class BroadcastAdapter extends RecyclerView.Adapter<BroadcastAdapter.MyVi
             public void onClick(View v) {
                 Gson gson=new Gson();
                 String gsonString=gson.toJson(broadCastArrayList);
-                Intent i = new Intent(mContext, BroadcastDataActivity.class);
+                //Intent i = new Intent(mContext, BroadcastDataActivity.class);
+                Intent i = new Intent(mContext, BroadcastViewPagerActivity.class);
                 i.putExtra("position", position);
                 i.putExtra("gsonString", gsonString);
                 mContext.startActivity(i);

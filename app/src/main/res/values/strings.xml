@@ -21,7 +21,11 @@
     <string name="allwoe">Are you want to do all Work order entries now</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-
+    <string name="bs_pt_name">Name:</string>
+    <string name="bs_enter_mobile_number">Mobile number:</string>
+    <string name="bs_enter_email_address">Email ID:</string>
+    <string name="bs_age">Age:</string>
+    <string name="bs_value">Value:</string>
 
     <style name="medium_text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBlack</item>
@@ -164,6 +168,8 @@
     <string name="page_7">CHN</string>
     <string name="page_8">Billing</string>
     <string name="page_9">Rate calculator</string>
+
+    <string name="img_upload">Upload image</string>
 
     <string name="your_string_here">This is an <u>underline</u>.</string>
 </resources>

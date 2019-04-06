@@ -7,11 +7,63 @@ import android.os.Parcelable;
  * Created by E5322 on 06-06-2018.
  */
 
-public class BaseModel implements Parcelable {
+public class BaseModel implements Parcelable  {
 
     private String product;
     private String billrate;
+    private String location;
 
+    protected BaseModel(Parcel in) {
+        product = in.readString();
+        billrate = in.readString();
+        location = in.readString();
+        barcodes = in.createTypedArray(Barcodes.CREATOR);
+        rate = in.readParcelable(Rate.class.getClassLoader());
+        name = in.readString();
+        fasting = in.readString();
+        childs = in.createTypedArray(Childs.CREATOR);
+        code = in.readString();
+        type = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(product);
+        dest.writeString(billrate);
+        dest.writeString(location);
+        dest.writeTypedArray(barcodes, flags);
+        dest.writeParcelable(rate, flags);
+        dest.writeString(name);
+        dest.writeString(fasting);
+        dest.writeTypedArray(childs, flags);
+        dest.writeString(code);
+        dest.writeString(type);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<BaseModel> CREATOR = new Creator<BaseModel>() {
+        @Override
+        public BaseModel createFromParcel(Parcel in) {
+            return new BaseModel(in);
+        }
+
+        @Override
+        public BaseModel[] newArray(int size) {
+            return new BaseModel[size];
+        }
+    };
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     Barcodes[] barcodes;
 
@@ -31,29 +83,6 @@ public class BaseModel implements Parcelable {
     private String type;
 
 
-    public BaseModel(Parcel in) {
-        product = in.readString();
-        billrate = in.readString();
-        barcodes = in.createTypedArray(Barcodes.CREATOR);
-        rate = in.readParcelable(Rate.class.getClassLoader());
-        name = in.readString();
-        fasting = in.readString();
-        childs = in.createTypedArray(Childs.CREATOR);
-        code = in.readString();
-        type = in.readString();
-    }
-
-    public static final Creator<BaseModel> CREATOR = new Creator<BaseModel>() {
-        @Override
-        public BaseModel createFromParcel(Parcel in) {
-            return new BaseModel(in);
-        }
-
-        @Override
-        public BaseModel[] newArray(int size) {
-            return new BaseModel[size];
-        }
-    };
 
     public String getBillrate() {
         return billrate;
@@ -127,23 +156,9 @@ public class BaseModel implements Parcelable {
         this.type = type;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(product);
-        dest.writeString(billrate);
-        dest.writeTypedArray(barcodes, flags);
-        dest.writeParcelable(rate, flags);
-        dest.writeString(name);
-        dest.writeString(fasting);
-        dest.writeTypedArray(childs, flags);
-        dest.writeString(code);
-        dest.writeString(type);
-    }
+
+
 
     public static class Barcodes implements Parcelable {
         public Barcodes() {

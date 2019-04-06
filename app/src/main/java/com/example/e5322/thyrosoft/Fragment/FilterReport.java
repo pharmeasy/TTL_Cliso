@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -42,6 +43,7 @@ import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.Models.getAllDays;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -591,9 +593,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                     alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
 
-                                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                            Intent i = new Intent(mContext, Payment_Activity.class);
+                                            mContext.startActivity(i);
+                                           /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                            startActivity(httpIntent);
+                                            startActivity(httpIntent);*/
                                             // Write your code here to execute after dialog closed
                                         }
                                     });
@@ -602,8 +606,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                             }
                         } catch (Exception e) {
 
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
+                            }*/
+                            if (mContext instanceof Activity) {
+                                if (!((Activity) mContext).isFinishing())
+                                    barProgressDialog.dismiss();
                             }
                             e.printStackTrace();
                         }
@@ -614,8 +622,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             @Override
             public void onErrorResponse(VolleyError error) {
 
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
+                }*/
+                if (mContext instanceof Activity) {
+                    if (!((Activity) mContext).isFinishing())
+                        barProgressDialog.dismiss();
                 }
                 try {
                     System.out.println("error ala parat " + error);

@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,6 +45,7 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
 import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
@@ -79,6 +81,7 @@ public class Offline_woe extends Fragment {
     public static com.android.volley.RequestQueue sendGPSDetails;
     private String mParam2;
     private static ManagingTabsActivity mContext;
+    Activity activity;
     private OnFragmentInteractionListener mListener;
     private View viewMain;
     ArrayList<String> errorList;
@@ -181,7 +184,7 @@ public class Offline_woe extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        activity = getActivity();
         mContext = (ManagingTabsActivity) getActivity();
 
         viewMain = (View) inflater.inflate(R.layout.fragment_offline_workorder, container, false);
@@ -197,6 +200,7 @@ public class Offline_woe extends Fragment {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         myDb = new DatabaseHelper(mContext);
+        progressDialog();
 
         final SharedPreferences getIMIE = mContext.getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
         getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
@@ -211,8 +215,6 @@ public class Offline_woe extends Fragment {
 
         edtSearch.setFilters(new InputFilter[]{filter});
         edtSearch.setFilters(new InputFilter[]{EMOJI_FILTER});
-
-
 
 
         edtSearch.addTextChangedListener(new TextWatcher() {
@@ -242,36 +244,44 @@ public class Offline_woe extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String s1 = s.toString().toLowerCase();
-                filterWoeList = new ArrayList<>();
-                String barcode = "";
-                String name = "";
-                if (resultList != null) {
-                    for (int i = 0; i < resultList.size(); i++) {
 
-                        for (int j = 0; j < resultList.get(i).getBarcodelist().size(); j++) {
-                            text = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
-                            if (resultList.get(i).getBarcodelist().get(j).getBARCODE() != null || !resultList.get(i).getBarcodelist().get(j).getBARCODE().equals("")) {
-                                barcode = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
+                String s1 = "";
+                if (s != null) {
+                    s1 = s.toString().toLowerCase();
+                    filterWoeList = new ArrayList<>();
+                    String barcode = "";
+                    String name = "";
+                    if (resultList != null) {
+                        for (int i = 0; i < resultList.size(); i++) {
+
+                            for (int j = 0; j < resultList.get(i).getBarcodelist().size(); j++) {
+                                if (resultList.get(i).getBarcodelist().get(j).getBARCODE() != null)
+                                    text = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
+
+                                if (resultList.get(i).getBarcodelist().get(j).getBARCODE() != null || !resultList.get(i).getBarcodelist().get(j).getBARCODE().equals("")) {
+                                    barcode = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
+                                }
                             }
-                        }
-                        if (resultList.get(i).getWoe().getPATIENT_NAME() != null || !resultList.get(i).getWoe().getPATIENT_NAME().equals("")) {
-                            name = resultList.get(i).getWoe().getPATIENT_NAME().toLowerCase();
-                        }
+                            if (resultList.get(i).getWoe().getPATIENT_NAME() != null || !resultList.get(i).getWoe().getPATIENT_NAME().equals("")) {
+                                name = resultList.get(i).getWoe().getPATIENT_NAME().toLowerCase();
+                            }
 
-                        if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
-                                (name != null && name.contains(s1))) {
-                            String testname = resultList.get(i).getWoe().getPATIENT_NAME();
-                            filterWoeList.add(resultList.get(i));
+                            if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                    (name != null && name.contains(s1))) {
+                                String testname = resultList.get(i).getWoe().getPATIENT_NAME();
+                                filterWoeList.add(resultList.get(i));
 
-                        } else {
+                            } else {
 
+                            }
+                            offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment, errorList);
+                            recyclerView.setAdapter(offline_woe_adapter);
+                            offline_woe_adapter.notifyDataSetChanged();
                         }
-                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment, errorList);
-                        recyclerView.setAdapter(offline_woe_adapter);
-                        offline_woe_adapter.notifyDataSetChanged();
                     }
                 }
+
+
                 // filter your list from your input
                 //you can use runnable postDelayed like 500 ms to delay search text
             }
@@ -325,7 +335,7 @@ public class Offline_woe extends Fragment {
         //display the current version in a TextView
 
         resultList = getResults();
-        if (resultList.size() ==0) {
+        if (resultList.size() == 0) {
             tvNoDataFound.setVisibility(View.VISIBLE);
             parent_ll.setVisibility(View.GONE);
             sendwoe_ll.setVisibility(View.GONE);
@@ -350,12 +360,6 @@ public class Offline_woe extends Fragment {
         });
         recyclerView.setAdapter(offline_woe_adapter);
 
-        barProgressDialog = new ProgressDialog(mContext);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
 
         sendwoe_ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -373,8 +377,14 @@ public class Offline_woe extends Fragment {
                                                                 int id) {
 
                                                 Offline_woe fragment1 = new Offline_woe();
-                                                mContext.getSupportFragmentManager().beginTransaction()
-                                                        .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+
+                                                try {
+                                                    mContext.getSupportFragmentManager().beginTransaction()
+                                                            .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+                                                } catch (IllegalStateException ignored) {
+                                                    // There's no way to avoid getting this if saveInstanceState has already been called.
+                                                }
+
 
                                                 // Restart the Activity
 //                                    Intent intent = getIntent();
@@ -394,7 +404,6 @@ public class Offline_woe extends Fragment {
                         builder.setPositiveButton(getResources().getString(R.string.Yes), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
                                 barProgressDialog.show();
                                 for (int i = 0; i < resultList.size(); i++) {
 
@@ -408,6 +417,7 @@ public class Offline_woe extends Fragment {
                                     woe.setAMOUNT_COLLECTED(resultList.get(i).getWoe().getAMOUNT_COLLECTED());
                                     woe.setAMOUNT_DUE(null);
                                     woe.setAPP_ID(version);
+                                    woe.setADDITIONAL1(resultList.get(i).getWoe().getADDITIONAL1());
                                     woe.setBCT_ID(resultList.get(i).getWoe().getBCT_ID());
                                     woe.setBRAND(resultList.get(i).getWoe().getBRAND());
                                     woe.setCAMP_ID(resultList.get(i).getWoe().getCAMP_ID());
@@ -466,14 +476,15 @@ public class Offline_woe extends Fragment {
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
+                                    catch (Error e) {
+                                        e.printStackTrace();
+                                    }
 
                                     POstQue = Volley.newRequestQueue(mContext);
                                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
                                             try {
-
-
                                                 Log.e(TAG, "onResponse: RESPONSE" + response);
                                                 String finalJson = response.toString();
                                                 JSONObject parentObjectOtp = new JSONObject(finalJson);
@@ -486,6 +497,7 @@ public class Offline_woe extends Fragment {
                                                     barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                                 }
                                                 if (message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
+                                                    barProgressDialog.dismiss();
                                                     //Delete woe from Db
                                                     boolean deletedRows = myDb.deleteData(barcode_id);
                                                     SharedPreferences.Editor editor = mContext.getSharedPreferences("showSelectedTest", 0).edit();
@@ -525,8 +537,9 @@ public class Offline_woe extends Fragment {
                                                                     recyclerView.setAdapter(offline_woe_adapter);
                                                                     TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                                 } else {
-
-
+                                                                    resultList = getResults();
+                                                                    offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
+                                                                    recyclerView.setAdapter(offline_woe_adapter);
                                                                 }
 
                                                             } catch (JSONException e) {
@@ -552,7 +565,7 @@ public class Offline_woe extends Fragment {
 
                                                 } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
 
-
+                                                    barProgressDialog.dismiss();
                                                     TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                     final AlertDialog alertDialog = new AlertDialog.Builder(
@@ -566,21 +579,28 @@ public class Offline_woe extends Fragment {
                                                     // Setting OK Button
                                                     alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                                         public void onClick(DialogInterface dialog, int which) {
-
-                                                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                                            Intent i = new Intent(mContext, Payment_Activity.class);
+                                                            mContext.startActivity(i);
+                                                          /*  Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                                            startActivity(httpIntent);
+                                                            startActivity(httpIntent);*/
                                                             // Write your code here to execute after dialog closed
                                                         }
                                                     });
                                                     alertDialog.show();
 
                                                 } else {
+                                                    barProgressDialog.dismiss();
                                                     boolean isUpdated = myDb.updateDataeRROR(barcode_id, message);
                                                     TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                     Offline_woe fragment1 = new Offline_woe();
-                                                    mContext.getSupportFragmentManager().beginTransaction()
-                                                            .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commit();
+
+                                                    try {
+                                                        mContext.getSupportFragmentManager().beginTransaction()
+                                                                .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+                                                    } catch (IllegalStateException ignored) {
+                                                        // There's no way to avoid getting this if saveInstanceState has already been called.
+                                                    }
                                                 }
 
                                             } catch (JSONException e) {
@@ -607,9 +627,7 @@ public class Offline_woe extends Fragment {
                                     Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                                     Log.e(TAG, "fetchData: JSON" + jsonObj);
                                 }
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
+
                             }
                         });
 
@@ -623,11 +641,23 @@ public class Offline_woe extends Fragment {
                 } else {
                     TastyToast.makeText(mContext, "No data found", TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
                 }
-
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
             }
+
         });
         // Inflate the layout for this fragment
         return viewMain;
+    }
+
+    private void progressDialog() {
+        barProgressDialog = new ProgressDialog(activity);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
     }
 
     @Override
@@ -698,7 +728,11 @@ public class Offline_woe extends Fragment {
     }
 
     public void setNewFragment() {
-        getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commit();
+        try {
+            getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commitAllowingStateLoss();
+        } catch (IllegalStateException ignored) {
+            // There's no way to avoid getting this if saveInstanceState has already been called.
+        }
 //        adapter.notifyDataSetChanged();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -84,6 +85,7 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,6 +99,7 @@ import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.e5322.thyrosoft.API.Constants.LoginName;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 /**
@@ -122,7 +125,7 @@ public class Start_New_Woe extends RootFragment {
     Date dCompare;
     AlertDialog alert;
     Context mContext;
-    EditText name, age, id_for_woe, barcode_woe;
+    EditText name, age, id_for_woe, barcode_woe, pincode_edt;
     REF_DR[] ref_drs;
     private String passToAPI;
     Brand_type[] brandType;
@@ -170,7 +173,8 @@ public class Start_New_Woe extends RootFragment {
     private String checkifChecked;
     private String api_key;
     LinearLayout namePatients, btech_layout, ref_check_linear, id_layout, barcode_layout, leadlayout, leadbarcodelayout, AGE_layout, time_layout;
-    String RES_ID, barcode, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE, SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS, REF_DR_data;
+    String RES_ID, barcode, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE,
+            SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS, REF_DR_data;
     private ArrayList<String> btechSpinner;
     LocationManager locationManager;
     private String blockCharacterSet = "#$^*+-/|><";
@@ -196,7 +200,7 @@ public class Start_New_Woe extends RootFragment {
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     public static ArrayList<BCT_LIST> getBtechList;
     TextView radio;
-    LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc;
+    LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data;
     WOE_Model_Patient_Details woe_model_patient_details;
 
     private LocationManager mLocationManager;
@@ -260,9 +264,11 @@ public class Start_New_Woe extends RootFragment {
     ArrayList<String> getSubSource;
     LeadOrderIdMainModel leadOrderIdMainModel;
 
-    String srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
+    String srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE,
+            leadGENDER, leadHEPARIN;
     String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
-    String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, getBarcode, emailPattern, getNumber;
+    String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, getBarcode,
+            emailPattern, getNumber;
     private String mm11;
     private String dd11;
     private String putDate;
@@ -323,6 +329,7 @@ public class Start_New_Woe extends RootFragment {
     private String countData;
     PatientDtailsWoe patientDtailsWoe;
     private RequestQueue requestQueue;
+    private String pincode_pass;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -369,6 +376,7 @@ public class Start_New_Woe extends RootFragment {
         age = (EditText) viewMain.findViewById(R.id.age);
         id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
         barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
+        pincode_edt = (EditText) viewMain.findViewById(R.id.pincode_edt);
         kyc_format = (EditText) viewMain.findViewById(R.id.kyc_format);
         home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
         patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
@@ -411,6 +419,7 @@ public class Start_New_Woe extends RootFragment {
         btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
         labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
         home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
+        pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
         mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
         Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
         enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
@@ -465,6 +474,15 @@ public class Start_New_Woe extends RootFragment {
             scrollView2.setVisibility(View.VISIBLE);
         }
 
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            Log.e("SDK_INT", "" + Build.VERSION.SDK_INT);
+            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow_woe, 0);
+            samplecollectionponit.setCompoundDrawablePadding(5);
+        } else {
+            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+        }
+
         viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -512,7 +530,8 @@ public class Start_New_Woe extends RootFragment {
             public void onClick(View v) {
                 Start_New_Woe fragment = new Start_New_Woe();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+//                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
             }
         });
 
@@ -604,6 +623,38 @@ public class Start_New_Woe extends RootFragment {
             samplecollectionponit.setText("");
         }
 
+        pincode_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0")) {
+                    TastyToast.makeText(getActivity(), ToastFile.crt_pincode, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                    if (enteredString.length() > 0) {
+                        pincode_edt.setText(enteredString.substring(1));
+                    } else {
+                        pincode_edt.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+                String enteredString = s.toString();
+            }
+
+        });
 
         kyc_format.addTextChangedListener(new TextWatcher() {
             @Override
@@ -671,9 +722,7 @@ public class Start_New_Woe extends RootFragment {
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
         });
-
 
         referedbyText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -721,9 +770,9 @@ public class Start_New_Woe extends RootFragment {
 
         });
 
-
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         Gson gson = new Gson();
+        myPojo = new MyPojo();
         String json = appSharedPrefs.getString("saveAlldata", "");
         myPojo = gson.fromJson(json, MyPojo.class);
 
@@ -826,15 +875,11 @@ public class Start_New_Woe extends RootFragment {
             }
             // Spinner adapter
 
-
             ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                     mContext, R.layout.name_age_spinner, spinnerBrandName);
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             brand_spinner.setAdapter(adapter2);
             brand_spinner.setSelection(0);
-
-
-
             startDataSetting();
         } else {
 
@@ -849,7 +894,8 @@ public class Start_New_Woe extends RootFragment {
                                                         int id) {
 
                                         Start_New_Woe fragment = new Start_New_Woe();
-                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout, fragment, fragment.getClass
+                                                ().getSimpleName()).addToBackStack(null).commit();
                                     }
                                 });
                 alert = builder.create();
@@ -859,8 +905,6 @@ public class Start_New_Woe extends RootFragment {
                     requestJsonObject();
                 }
             }
-
-
         }
 
         SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -870,7 +914,6 @@ public class Start_New_Woe extends RootFragment {
         getBtechList = new ArrayList<>();
         getCampNames = new ArrayList<>();
         btechSpinner = new ArrayList<>();
-
 
         if (myPojo != null) {
             if (myPojo.getMASTERS().getBCT_LIST() != null) {
@@ -890,9 +933,14 @@ public class Start_New_Woe extends RootFragment {
                     getCampNames.add(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE());
                 }
                 if (getCampNames != null) {
-                    camp_spinner_olc.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getCampNames));
+//                    camp_spinner_olc.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getCampNames));
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                            mContext, R.layout.spinnerproperty, getCampNames);
+                    camp_spinner_olc.setAdapter(adapter2);
+                    camp_spinner_olc.setSelection(0);
                 }
             }
+
             btechSpinner.add("Select Btech name");
             for (int i = 0; i < getBtechList.size(); i++) {
 
@@ -922,12 +970,10 @@ public class Start_New_Woe extends RootFragment {
             }
         }
 
-
         if (getLabNmae != null && getReferenceNmae != null) {
 
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With 	Animation
-
+            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With
 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
@@ -947,18 +993,6 @@ public class Start_New_Woe extends RootFragment {
         } else {
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         ArrayList<String> hourSin = new ArrayList<>();
         hourSin.add("HR");
@@ -995,8 +1029,6 @@ public class Start_New_Woe extends RootFragment {
         ampmSpine.add("AM");
         ampmSpine.add("PM");
 
-
-
         ArrayList<String> patientsagespinner = new ArrayList<>();
         patientsagespinner.add("Years");
         patientsagespinner.add("Months");
@@ -1019,13 +1051,11 @@ public class Start_New_Woe extends RootFragment {
         String timme = getDateToParse;
         String[] time = timme.split(":");
 
-
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                 mContext, R.layout.name_age_spinner, hourSin);
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         timehr.setAdapter(adapter2);
         timehr.setSelection(0);
-
 
         ArrayAdapter<String> timesecondspinner = new ArrayAdapter<String>(
                 mContext, R.layout.name_age_spinner, minuteSpin);
@@ -1051,7 +1081,7 @@ public class Start_New_Woe extends RootFragment {
         saveGenderId = "";
 
         ArrayAdapter<String> adap = new ArrayAdapter<String>(
-                mContext, R.layout.name_age_spinner,patientsagespinner);
+                mContext, R.layout.name_age_spinner, patientsagespinner);
         adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinyr.setAdapter(adap);
         spinyr.setSelection(0);
@@ -1065,7 +1095,6 @@ public class Start_New_Woe extends RootFragment {
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(maxLength);
         name.setFilters(FilterArray);
-
 
         int maxLength1 = 80;
         InputFilter[] FilterArray1 = new InputFilter[1];
@@ -1209,7 +1238,7 @@ public class Start_New_Woe extends RootFragment {
                 } else {
                     if (agesinteger < 12) {
                         ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.Patientsagespinner,
-                               R.layout.name_age_spinner);
+                                R.layout.name_age_spinner);
                         PatientsagespinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinyr.setAdapter(PatientsagespinnerAdapter);
                     }
@@ -1228,7 +1257,6 @@ public class Start_New_Woe extends RootFragment {
                 }
             }
 
-
         });
 
         return viewMain;
@@ -1238,7 +1266,8 @@ public class Start_New_Woe extends RootFragment {
         Woe_fragment a2Fragment = new Woe_fragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
-        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+        //transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
     }
 
 
@@ -1263,15 +1292,25 @@ public class Start_New_Woe extends RootFragment {
                         String getResponse = response.optString("RESPONSE", "");
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
+                            }*/
+                            if (mContext instanceof Activity) {
+                                if (!((Activity) mContext).isFinishing())
+                                    barProgressDialog.dismiss();
                             }
                             GlobalClass.redirectToLogin(getActivity());
                         } else {
+
                             Gson gson = new Gson();
+                            myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
+                            }*/
+                            if (mContext instanceof Activity) {
+                                if (!((Activity) mContext).isFinishing())
+                                    barProgressDialog.dismiss();
                             }
                             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                             SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
@@ -1417,16 +1456,15 @@ public class Start_New_Woe extends RootFragment {
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.GONE);
                                 home_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 mobile_number_kyc.setVisibility(View.GONE);
                                 labname_linear.setVisibility(View.VISIBLE);
                                 Home_mobile_number_kyc.setVisibility(View.GONE);
                                 namePatients.setVisibility(View.VISIBLE);
                                 AGE_layout.setVisibility(View.VISIBLE);
-
                                 time_layout.setVisibility(View.VISIBLE);
                                 refby_linear.setVisibility(View.VISIBLE);
-
                                 ref_check_linear.setVisibility(View.VISIBLE);
                                 uncheck_ref.setVisibility(View.VISIBLE);
                                 ref_check.setVisibility(View.GONE);
@@ -1670,6 +1708,7 @@ public class Start_New_Woe extends RootFragment {
                                                                 saveDetails.putString("woetype", typename);
                                                                 saveDetails.putString("WOEbrand", brandNames);
                                                                 saveDetails.putString("SR_NO", getVial_numbver);
+                                                                saveDetails.putString("pincode", "");
                                                                 saveDetails.commit();
                                                                 sDialog.dismissWithAnimation();
                                                             }
@@ -1708,6 +1747,7 @@ public class Start_New_Woe extends RootFragment {
                                                 saveDetails.putString("woetype", typename);
                                                 saveDetails.putString("WOEbrand", brandNames);
                                                 saveDetails.putString("SR_NO", getVial_numbver);
+                                                saveDetails.putString("pincode", "");
                                                 saveDetails.commit();
                                             }
 
@@ -1724,7 +1764,6 @@ public class Start_New_Woe extends RootFragment {
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.GONE);
-
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 leadlayout.setVisibility(View.GONE);
                                 brand_string = brand_spinner.getSelectedItem().toString();
@@ -1732,13 +1771,13 @@ public class Start_New_Woe extends RootFragment {
                                 next_btn.setVisibility(View.VISIBLE);
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.VISIBLE);
+                                pincode_linear_data.setVisibility(View.VISIBLE);
                                 home_layout.setVisibility(View.VISIBLE);
                                 vial_number.setVisibility(View.VISIBLE);
                                 mobile_number_kyc.setVisibility(View.VISIBLE);
                                 labname_linear.setVisibility(View.GONE);
                                 ref_check.setVisibility(View.GONE);
                                 Home_mobile_number_kyc.setVisibility(View.GONE);
-
                                 ref_check_linear.setVisibility(View.VISIBLE);
                                 uncheck_ref.setVisibility(View.VISIBLE);
 
@@ -1751,7 +1790,6 @@ public class Start_New_Woe extends RootFragment {
 
                                 namePatients.setVisibility(View.VISIBLE);
                                 AGE_layout.setVisibility(View.VISIBLE);
-
                                 time_layout.setVisibility(View.VISIBLE);
                                 referenceBy = "";
                                 getTSP_AddressStringTopass = getTSP_Address;
@@ -1805,28 +1843,37 @@ public class Start_New_Woe extends RootFragment {
                                                     barProgressDialog.setCanceledOnTouchOutside(false);
                                                     barProgressDialog.setCancelable(false);
                                                     RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
-                                                    StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-                                                            Log.e(TAG, "onResponse: response" + response);
+                                                    StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                            Response.Listener<String>() {
+                                                                @Override
+                                                                public void onResponse(String response) {
+                                                                    Log.e(TAG, "onResponse: response" + response);
 
-                                                            String getResponse = response;
-                                                            if (response.equals("\"proceed\"")) {
+                                                                    String getResponse = response;
+                                                                    if (response.equals("\"proceed\"")) {
 
-                                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                                    barProgressDialog.dismiss();
+                                                                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }*/
+                                                                        if (mContext instanceof Activity) {
+                                                                            if (!((Activity) mContext).isFinishing())
+                                                                                barProgressDialog.dismiss();
+                                                                        }
+                                                                        kyc_format.setText(checkNumber);
+                                                                    } else {
+                                                                         /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }*/
+                                                                        if (mContext instanceof Activity) {
+                                                                            if (!((Activity) mContext).isFinishing())
+                                                                                barProgressDialog.dismiss();
+                                                                        }
+                                                                        kyc_format.setText("");
+                                                                        TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                    }
                                                                 }
-                                                                kyc_format.setText(checkNumber);
-                                                            } else {
-                                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                                    barProgressDialog.dismiss();
-                                                                }
-                                                                kyc_format.setText("");
-                                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-                                                            }
-                                                        }
-                                                    }, new Response.ErrorListener() {
+                                                            }, new Response.ErrorListener() {
                                                         @Override
                                                         public void onErrorResponse(VolleyError error) {
                                                             if (error.networkResponse == null) {
@@ -1906,6 +1953,7 @@ public class Start_New_Woe extends RootFragment {
                                         woereferedby = referedbyText.getText().toString();
                                         GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
                                         patientAddressdataToPass = patientAddress.getText().toString();
+                                        pincode_pass = pincode_edt.getText().toString();
                                         btechnameTopass = btechname.getSelectedItem().toString();
                                         kycdata = kyc_format.getText().toString();
                                         labAddressTopass = "";
@@ -1964,8 +2012,10 @@ public class Start_New_Woe extends RootFragment {
                                             Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                         } else if (patientAddressdataToPass.equals("")) {
                                             Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.equalsIgnoreCase("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.length() < 6) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                         } else if (patientAddressdataToPass.length() < 25) {
                                             Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                         } else if (saveGenderId == null || saveGenderId == "") {
@@ -2070,6 +2120,7 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("woetype", typename);
                                                                     saveDetails.putString("WOEbrand", brandNames);
                                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", pincode_pass);
                                                                     saveDetails.commit();
                                                                     sDialog.dismissWithAnimation();
                                                                 }
@@ -2109,6 +2160,7 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("woetype", typename);
                                                     saveDetails.putString("WOEbrand", brandNames);
                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", pincode_pass);
                                                     saveDetails.commit();
                                                 }
 
@@ -2129,6 +2181,7 @@ public class Start_New_Woe extends RootFragment {
                                 next_btn.setVisibility(View.VISIBLE);
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.VISIBLE);
+                                pincode_linear_data.setVisibility(View.VISIBLE);
                                 home_layout.setVisibility(View.VISIBLE);
                                 Home_mobile_number_kyc.setVisibility(View.VISIBLE);
                                 vial_number.setVisibility(View.VISIBLE);
@@ -2138,7 +2191,6 @@ public class Start_New_Woe extends RootFragment {
                                 ref_check.setVisibility(View.GONE);
                                 ref_check_linear.setVisibility(View.VISIBLE);
                                 uncheck_ref.setVisibility(View.VISIBLE);
-
                                 refby_linear.setVisibility(View.VISIBLE);
                                 referedbyText.setText("");
                                 referenceBy = "";
@@ -2146,7 +2198,6 @@ public class Start_New_Woe extends RootFragment {
 
                                 namePatients.setVisibility(View.VISIBLE);
                                 AGE_layout.setVisibility(View.VISIBLE);
-
                                 time_layout.setVisibility(View.VISIBLE);
 //                                             btnClick();
                                 next_btn.setOnClickListener(new View.OnClickListener() {
@@ -2201,7 +2252,12 @@ public class Start_New_Woe extends RootFragment {
                                         woereferedby = referedbyText.getText().toString();
                                         GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
                                         patientAddressdataToPass = patientAddress.getText().toString();
-                                        btechnameTopass = btechname.getSelectedItem().toString();
+                                        pincode_pass = pincode_edt.getText().toString();
+                                        // btechnameTopass = btechname.getSelectedItem().toString();
+
+                                        if (btechname.getSelectedItem() != null)
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+
                                         kycdata = home_kyc_format.getText().toString();
                                         labIDTopass = "";
                                         labAddressTopass = "";
@@ -2277,6 +2333,10 @@ public class Start_New_Woe extends RootFragment {
                                             Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
                                         } else if (patientAddressdataToPass.length() < 25) {
                                             Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.equalsIgnoreCase("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.length() < 6) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                         } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
                                             Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                         } else if (sctHr.equals("HR")) {
@@ -2352,6 +2412,7 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("woetype", typename);
                                                                     saveDetails.putString("WOEbrand", brandNames);
                                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", pincode_pass);
                                                                     saveDetails.commit();
                                                                     sDialog.dismissWithAnimation();
                                                                 }
@@ -2388,6 +2449,7 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("woetype", typename);
                                                     saveDetails.putString("WOEbrand", brandNames);
                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", pincode_pass);
                                                     saveDetails.commit();
                                                 }
 
@@ -2403,6 +2465,7 @@ public class Start_New_Woe extends RootFragment {
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
                                 leadlayout.setVisibility(View.GONE);
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 brand_string = brand_spinner.getSelectedItem().toString();
@@ -2425,12 +2488,9 @@ public class Start_New_Woe extends RootFragment {
                                 referedbyText.setText("");
                                 ref_check_linear.setVisibility(View.VISIBLE);
                                 uncheck_ref.setVisibility(View.VISIBLE);
-
                                 refby_linear.setVisibility(View.VISIBLE);
-
                                 namePatients.setVisibility(View.VISIBLE);
                                 AGE_layout.setVisibility(View.VISIBLE);
-
                                 time_layout.setVisibility(View.VISIBLE);
 
                                 patientAddress.setText("");
@@ -2486,7 +2546,10 @@ public class Start_New_Woe extends RootFragment {
                                             ageString = age.getText().toString();
                                             woereferedby = referedbyText.getText().toString();
                                             GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                            scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                            // scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                            if (camp_spinner_olc.getSelectedItem().toString() != null) {
+                                                scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                            }
                                             kycdata = kyc_format.getText().toString();
 
                                             kycdata = "";
@@ -2568,7 +2631,9 @@ public class Start_New_Woe extends RootFragment {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }
+                                            //else if (dCompare.after(getCurrentDateandTime)) {
+                                            else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
@@ -2632,6 +2697,7 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("WOEbrand", brandNames);
                                                                     saveDetails.putString("woetype", typename);
                                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
                                                                     saveDetails.commit();
                                                                     sDialog.dismissWithAnimation();
                                                                 }
@@ -2668,6 +2734,7 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("WOEbrand", brandNames);
                                                     saveDetails.putString("woetype", typename);
                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", "");
                                                     saveDetails.commit();
                                                 }
 
@@ -2683,9 +2750,9 @@ public class Start_New_Woe extends RootFragment {
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.VISIBLE);
                                 barcode_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 leadlayout.setVisibility(View.GONE);
-                                next_btn.setVisibility(View.VISIBLE);
                                 mobile_number_kyc.setVisibility(View.GONE);
                                 Home_mobile_number_kyc.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
@@ -2699,6 +2766,7 @@ public class Start_New_Woe extends RootFragment {
                                 AGE_layout.setVisibility(View.GONE);
                                 vial_number.setVisibility(View.VISIBLE);
                                 time_layout.setVisibility(View.GONE);
+                                next_btn.setVisibility(View.GONE);
                                 referenceBy = "";
 
 
@@ -2750,7 +2818,8 @@ public class Start_New_Woe extends RootFragment {
                                                 String getId = s.toString();
                                                 String getLeadId = getId.toString();
                                                 requestQueueNoticeBoard = Volley.newRequestQueue(getActivity());
-                                                JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.ValidateWorkOrderLeadId + api_key + "/" + user + "/" + getLeadId + "/TTL/getorderdetails", new Response.Listener<JSONObject>() {
+                                                JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.ValidateWorkOrderLeadId + api_key
+                                                        + "/" + user + "/" + getLeadId + "/TTL/getorderdetails", new Response.Listener<JSONObject>() {
                                                     @Override
                                                     public void onResponse(JSONObject response) {
 
@@ -2760,8 +2829,12 @@ public class Start_New_Woe extends RootFragment {
                                                         } else {
                                                             Gson gson = new Gson();
                                                             Log.e(TAG, "onResponse: RESPONSE" + response);
-                                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                                                 barProgressDialog.dismiss();
+                                                            }*/
+                                                            if (mContext instanceof Activity) {
+                                                                if (!((Activity) mContext).isFinishing())
+                                                                    barProgressDialog.dismiss();
                                                             }
 //                                                    getLeadId= getId.toString();
                                                             leadOrderIdMainModel = new LeadOrderIdMainModel();
@@ -2843,6 +2916,7 @@ public class Start_New_Woe extends RootFragment {
 
                                                                 if (sharedPreferences != null) {
                                                                     leadlayout.setVisibility(View.VISIBLE);
+                                                                    next_btn.setVisibility(View.VISIBLE);
                                                                     leadname.setText("Name :" + leadNAME);
                                                                     leadidtest.setText("Test :" + leadTESTS);
                                                                     leadrefdr.setText("Ref Dr :" + leadREF_BY);
@@ -2854,7 +2928,8 @@ public class Start_New_Woe extends RootFragment {
 
                                                                             Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
                                                                             i.putExtra("MyClass", leadOrderIdMainModel);
-                                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName",
+                                                                                    MODE_PRIVATE).edit();
                                                                             editor.putString("typeName", leadTYPE);
                                                                             editor.putString("SR_NO", getVial_numbver);
                                                                             // To retrieve object in second Activity
@@ -2865,6 +2940,7 @@ public class Start_New_Woe extends RootFragment {
 
                                                             } else {
                                                                 leadlayout.setVisibility(View.GONE);
+                                                                next_btn.setVisibility(View.GONE);
                                                                 Toast.makeText(getActivity(), "No leads found", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
@@ -2915,7 +2991,7 @@ public class Start_New_Woe extends RootFragment {
                                             SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                                             editor.putString("typeName", leadTYPE);
                                             editor.putString("SR_NO", getVial_numbver);
-// To retrieve object in second Activity
+                                            // To retrieve object in second Activity
                                             startActivity(i);
 
                                         }
@@ -2927,6 +3003,7 @@ public class Start_New_Woe extends RootFragment {
                                 barcode_woe.setText("");
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.VISIBLE);
                                 vial_number.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
@@ -2939,15 +3016,13 @@ public class Start_New_Woe extends RootFragment {
                                 leadlayout.setVisibility(View.GONE);
                                 brand_string = brand_spinner.getSelectedItem().toString();
                                 type_string = selectTypeSpinner.getSelectedItem().toString();
-
                                 ref_check_linear.setVisibility(View.GONE);
                                 refby_linear.setVisibility(View.GONE);
                                 namePatients.setVisibility(View.GONE);
                                 AGE_layout.setVisibility(View.GONE);
-
                                 time_layout.setVisibility(View.GONE);
+                                next_btn.setVisibility(View.GONE);
 
-                                next_btn.setVisibility(View.VISIBLE);
                                 barcode_woe.addTextChangedListener(new TextWatcher() {
                                     @Override
                                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -3024,6 +3099,7 @@ public class Start_New_Woe extends RootFragment {
                                 barcode_woe.setText("");
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.VISIBLE);
                                 vial_number.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
@@ -3044,7 +3120,7 @@ public class Start_New_Woe extends RootFragment {
                                 type_string = selectTypeSpinner.getSelectedItem().toString();
 
 
-                                next_btn.setVisibility(View.VISIBLE);
+                                next_btn.setVisibility(View.GONE);
                                 barcode_woe.addTextChangedListener(new TextWatcher() {
                                     @Override
                                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -3128,590 +3204,149 @@ public class Start_New_Woe extends RootFragment {
                 }
                 if (position > 0) {
 
-                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                            mContext, R.layout.name_age_spinner, getTypeListsecond);
-                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    selectTypeSpinner.setAdapter(adapter2);
-                    selectTypeSpinner.setSelection(0);
-                    selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (selectTypeSpinner.getSelectedItemPosition() == 0) {
+                    if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("EQNX")) {
 
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                                mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        selectTypeSpinner.setAdapter(adapter2);
+                        selectTypeSpinner.setSelection(0);
+                        selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                if (selectTypeSpinner.getSelectedItemPosition() == 0) {
 
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.GONE);
-                                home_layout.setVisibility(View.GONE);
-                                ref_check.setVisibility(View.GONE);
-                                vial_number.setVisibility(View.VISIBLE);
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.VISIBLE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-
-                                time_layout.setVisibility(View.VISIBLE);
-
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-                                referedbyText.setText("");
-                                refby_linear.setVisibility(View.VISIBLE);
-                                referenceBy = "";
-
-
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                id_woe = id_for_woe.getText().toString();
-                                barcode_woe_str = barcode_woe.getText().toString();
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    ref_check.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.GONE);
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    id_woe = id_for_woe.getText().toString();
+                                    barcode_woe_str = barcode_woe.getText().toString();
 //                                            btnClick();
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
-                                            try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                System.out.println(output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
-                                            }
-                                            e.printStackTrace();
-                                        }
-
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
-
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        scpoint = samplecollectionponit.getText().toString();
-                                        GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
-                                        kycdata = kyc_format.getText().toString();
-                                        getLabName = samplecollectionponit.getText().toString();
-
-                                        kycdata = "";
-                                        btechIDToPass = "";
-                                        btechnameTopass = "";
-                                        getcampIDtoPass = "";
-
-                                        if (woereferedby.equals("") || woereferedby.equals(null)) {
-                                            if (referenceBy == null) {
-                                                Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                if (referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
-                                                    referredID = "";
-                                                    woereferedby = referenceBy;
-                                                } else {
-
-                                                    referenceBy = referedbyText.getText().toString();
-                                                }
-                                            }
-
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        if (woereferedby != null) {
-                                            if (obj != null) {
-                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                        referenceBy = woereferedby;
-                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        if (!ageString.equals("")) {
-                                            conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        }
-                                        if (getVial_numbver.equals("")) {
-
-                                            vial_number.setError(ToastFile.vial_no);
-                                            Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.length() < 2) {
-                                            Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                        } else if (ageString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                        } else if (conertage > 120) {
-                                            Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (sctHr.equals("HR")) {
-                                            Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                        } else if (sctMin.equals("MIN")) {
-                                            Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                        } else if (sctSEc.equals("AM/PM")) {
-                                            Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                        } else if (scpoint.equals("") || scpoint.equals(null)) {
-                                            Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
-                                        } else if (referenceBy == null || referenceBy.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-                                        } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
-                                            Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
-                                        } else {
-
-                                            if (woereferedby != null) {
-                                                if (obj != null) {
-                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                            referenceBy = woereferedby;
-                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                referenceBy = woereferedby;
-                                                referredID = "";
-                                            }
-
-                                            String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
-                                            s1.trim();
-                                            getLabCode = s1;
-
-                                            if (labs == null) {
-                                                labAddressTopass = "";
-                                                labIDTopass = "";
-                                            } else {
-                                                if (labs.length != 0) {
-                                                    for (int i = 0; i < labs.length; i++) {
-                                                        if (getLabCode.contains("-")) {
-                                                            String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
-                                                            s2.trim();
-                                                            getLabCode = s2;
-                                                        }
-                                                        if (getLabCode.equalsIgnoreCase(labs[i].getClientid())) {
-                                                            getFullDataLabs = new LABS();
-                                                            getFullDataLabs.setPincode(labs[i].getPincode());
-                                                            getFullDataLabs.setPassingname(labs[i].getPassingname());
-                                                            getFullDataLabs.setName(labs[i].getName());
-                                                            getFullDataLabs.setMobile(labs[i].getMobile());
-                                                            getFullDataLabs.setLabName(labs[i].getLabName());
-                                                            getFullDataLabs.setLabAddress(labs[i].getLabAddress());
-                                                            getFullDataLabs.setIdaddress(labs[i].getIdaddress());
-                                                            getFullDataLabs.setEmail(labs[i].getEmail());
-                                                            getFullDataLabs.setClientid(labs[i].getClientid());
-                                                            labAddressTopass = getFullDataLabs.getLabAddress();
-                                                            labIDTopass = getFullDataLabs.getIdaddress();
-                                                            labLabNAmeTopass = getFullDataLabs.getLabName();
-                                                        }
-                                                    }
-                                                }
-
-                                            }
-
-                                            final String getAgeType = spinyr.getSelectedItem().toString();
-                                            String sctDate = dateShow.getText().toString();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            final String getFinalAge = age.getText().toString();
-                                            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                            final String getFinalDate = dateShow.getText().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
 
-                                            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                        .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                        .setConfirmText("Ok")
-                                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                            @Override
-                                                            public void onClick(SweetAlertDialog sDialog) {
-                                                                sDialog.dismissWithAnimation();
-                                                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                                                i.putExtra("name", nameString);
-                                                                i.putExtra("age", getFinalAge);
-                                                                i.putExtra("gender", saveGenderId);
-                                                                i.putExtra("sct", getFinalTime);
-                                                                i.putExtra("date", getFinalDate);
-                                                                i.putExtra("woetype", typename);
-                                                                startActivity(i);
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                                                Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-                                                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                saveDetails.putString("name", nameString);
-                                                                saveDetails.putString("age", getFinalAge);
-                                                                saveDetails.putString("gender", saveGenderId);
-                                                                saveDetails.putString("sct", getFinalTime);
-                                                                saveDetails.putString("date", getFinalDate);
-                                                                saveDetails.putString("ageType", getAgeType);
-                                                                saveDetails.putString("labname", labLabNAmeTopass);
-                                                                saveDetails.putString("labAddress", labAddressTopass);
-                                                                saveDetails.putString("patientAddress", labAddressTopass);
-                                                                saveDetails.putString("refBy", referenceBy);
-                                                                saveDetails.putString("refId", referredID);
-                                                                saveDetails.putString("labIDaddress", labIDTopass);
-                                                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                saveDetails.putString("kycinfo", kycdata);
-                                                                saveDetails.putString("woetype", typename);
-                                                                saveDetails.putString("WOEbrand", brandNames);
-                                                                saveDetails.putString("SR_NO", getVial_numbver);
-                                                                saveDetails.commit();
-                                                            }
-                                                        })
-                                                        .show();
-                                            } else {
-
-
-                                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                                i.putExtra("name", nameString);
-                                                i.putExtra("age", getFinalAge);
-                                                i.putExtra("gender", saveGenderId);
-                                                i.putExtra("sct", getFinalTime);
-                                                i.putExtra("date", getFinalDate);
-                                                i.putExtra("woetype", typename);
-                                                startActivity(i);
-
-                                                Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-                                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                saveDetails.putString("name", nameString);
-                                                saveDetails.putString("age", getFinalAge);
-                                                saveDetails.putString("gender", saveGenderId);
-                                                saveDetails.putString("sct", getFinalTime);
-                                                saveDetails.putString("date", getFinalDate);
-                                                saveDetails.putString("ageType", getAgeType);
-                                                saveDetails.putString("labname", labLabNAmeTopass);
-                                                saveDetails.putString("labAddress", labAddressTopass);
-                                                saveDetails.putString("patientAddress", labAddressTopass);
-                                                saveDetails.putString("refBy", referenceBy);
-                                                saveDetails.putString("refId", referredID);
-                                                saveDetails.putString("labIDaddress", labIDTopass);
-                                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                saveDetails.putString("kycinfo", kycdata);
-                                                saveDetails.putString("woetype", typename);
-                                                saveDetails.putString("WOEbrand", brandNames);
-                                                saveDetails.putString("SR_NO", getVial_numbver);
-                                                saveDetails.commit();
-                                            }
-                                        }
-
-
-                                    }
-                                });
-
-
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
-
-
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-
-                                leadlayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.VISIBLE);
-                                home_layout.setVisibility(View.VISIBLE);
-                                mobile_number_kyc.setVisibility(View.VISIBLE);
-                                labname_linear.setVisibility(View.GONE);
-                                vial_number.setVisibility(View.VISIBLE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-                                ref_check.setVisibility(View.GONE);
-                                refby_linear.setVisibility(View.VISIBLE);
-
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-                                referedbyText.setText("");
-                                time_layout.setVisibility(View.VISIBLE);
-                                referenceBy = "";
-                                getTSP_AddressStringTopass = getTSP_Address;
-                                kyc_format.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before,
-                                                              int count) {
-                                        String enteredString = s.toString();
-                                        if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                                                enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                                                enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                                                enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                                                || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                                                || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                                        ) {
-                                            TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-                                            if (enteredString.length() > 0) {
-                                                kyc_format.setText(enteredString.substring(1));
-                                            } else {
-                                                kyc_format.setText("");
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count,
-                                                                  int after) {
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        final String checkNumber = s.toString();
-                                        if (checkNumber.length() < 10) {
-                                            flag = true;
-                                        }
-                                        if (flag == true) {
-                                            if (checkNumber.length() == 10) {
-                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                    flag = false;
-                                                    kyc_format.setText(checkNumber);
-                                                } else {
-                                                    flag = false;
-                                                    barProgressDialog = new ProgressDialog(getActivity());
-                                                    barProgressDialog.setTitle("Kindly wait ...");
-                                                    barProgressDialog.setMessage(ToastFile.processing_request);
-                                                    barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                                                    barProgressDialog.setProgress(0);
-                                                    barProgressDialog.setMax(20);
-                                                    barProgressDialog.show();
-                                                    barProgressDialog.setCanceledOnTouchOutside(false);
-                                                    barProgressDialog.setCancelable(false);
-                                                    RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
-                                                    StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-
-                                                            Log.e(TAG, "onResponse: response" + response);
-                                                            String getResponse = response;
-                                                            if (response.equals("\"proceed\"")) {
-
-                                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                                    barProgressDialog.dismiss();
-                                                                }
-                                                                kyc_format.setText(checkNumber);
-                                                            } else {
-                                                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                                    barProgressDialog.dismiss();
-                                                                }
-                                                                kyc_format.setText("");
-                                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-                                                            }
-                                                        }
-                                                    }, new Response.ErrorListener() {
-                                                        @Override
-                                                        public void onErrorResponse(VolleyError error) {
-                                                            if (error.networkResponse == null) {
-                                                                if (error.getClass().equals(TimeoutError.class)) {
-                                                                    // Show timeout error message
-                                                                }
-                                                            }
-                                                        }
-                                                    });
-                                                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                                            300000,
-                                                            3,
-                                                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                                                    reques5tQueueCheckNumber.add(jsonObjectRequestPop);
-                                                    Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
-                                                }
-
-                                            }
-
-                                        } else {
-
-                                        }
-
-                                    }
-                                });
-
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                                             try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                System.out.println(output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
                                             }
-                                            e.printStackTrace();
-                                        }
 
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
+                                            if (selectTypeSpinner.getSelectedItem().toString() != null && selectTypeSpinner.getSelectedItem().toString().length() > 0)
+                                                typename = selectTypeSpinner.getSelectedItem().toString();
 
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        patientAddressdataToPass = patientAddress.getText().toString();
-                                        btechnameTopass = btechname.getSelectedItem().toString();
-                                        kycdata = kyc_format.getText().toString();
-                                        labAddressTopass = "";
-                                        labIDTopass = "";
-                                        getcampIDtoPass = "";
+                                            if (brand_spinner.getSelectedItem().toString() != null && brand_spinner.getSelectedItem().toString().length() > 0)
+                                                brandNames = brand_spinner.getSelectedItem().toString();
 
-                                        if (woereferedby.equals("") || woereferedby.equals(null)) {
-                                            if (referenceBy == null) {
-                                                Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                if (referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
-                                                    referredID = "";
-                                                    woereferedby = referenceBy;
+                                            if (vial_number.getText().toString() != null && vial_number.getText().toString().length() > 0)
+                                                getVial_numbver = vial_number.getText().toString();
+
+                                            if (age.getText().toString() != null && age.getText().toString().length() > 0)
+                                                ageString = age.getText().toString();
+
+                                            if (referedbyText.getText().toString() != null && referedbyText.getText().toString().length() > 0) {
+                                                GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                woereferedby = referedbyText.getText().toString();
+                                            }
+
+                                            if (samplecollectionponit.getText().toString() != null && samplecollectionponit.getText().toString().length() > 0) {
+                                                GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+                                                scpoint = samplecollectionponit.getText().toString();
+                                            }
+
+                                            if (kyc_format.getText().toString() != null && kyc_format.getText().toString().length() > 0)
+                                                kycdata = kyc_format.getText().toString();
+
+                                            if (samplecollectionponit.getText().toString() != null && samplecollectionponit.getText().toString().length() > 0)
+                                                getLabName = samplecollectionponit.getText().toString();
+
+                                            /*typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            scpoint = samplecollectionponit.getText().toString();
+                                            GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+                                            kycdata = kyc_format.getText().toString();
+                                            getLabName = samplecollectionponit.getText().toString();*/
+
+                                            kycdata = "";
+                                            btechIDToPass = "";
+                                            btechnameTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
 
-                                                    referenceBy = referedbyText.getText().toString();
-                                                }
-                                            }
-
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        if (woereferedby != null) {
-                                            if (obj != null) {
-                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                        referenceBy = woereferedby;
-                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        referenceBy = referedbyText.getText().toString();
                                                     }
                                                 }
-                                            }
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
 
-
-                                        if (btechnameTopass != null) {
-                                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
-                                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                    if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
-                                                        btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        if (!ageString.equals("")) {
-                                            conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        }
-                                        if (getVial_numbver.equals("")) {
-                                            vial_number.setError(ToastFile.vial_no);
-                                            Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.length() < 2) {
-                                            Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                        } else if (ageString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                        } else if (conertage > 120) {
-                                            Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (referenceBy == null || referenceBy.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (sctHr.equals("HR")) {
-                                            Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                        } else if (sctMin.equals("MIN")) {
-                                            Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                        } else if (sctSEc.equals("AM/PM")) {
-                                            Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                        } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
-                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            if (myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                                getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
                                             }
 
 
@@ -3729,9 +3364,77 @@ public class Start_New_Woe extends RootFragment {
                                                 referredID = "";
                                             }
 
-                                            if (kycdata.length() < 10) {
-                                                Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equals("") || scpoint.equals(null)) {
+                                                Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
                                             } else {
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+                                                String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
+                                                s1.trim();
+                                                getLabCode = s1;
+
+                                                if (labs == null) {
+                                                    labAddressTopass = "";
+                                                    labIDTopass = "";
+                                                } else {
+                                                    if (labs.length != 0) {
+                                                        for (int i = 0; i < labs.length; i++) {
+                                                            if (getLabCode.contains("-")) {
+                                                                String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
+                                                                s2.trim();
+                                                                getLabCode = s2;
+                                                            }
+                                                            if (getLabCode.equalsIgnoreCase(labs[i].getClientid())) {
+                                                                getFullDataLabs = new LABS();
+                                                                getFullDataLabs.setPincode(labs[i].getPincode());
+                                                                getFullDataLabs.setPassingname(labs[i].getPassingname());
+                                                                getFullDataLabs.setName(labs[i].getName());
+                                                                getFullDataLabs.setMobile(labs[i].getMobile());
+                                                                getFullDataLabs.setLabName(labs[i].getLabName());
+                                                                getFullDataLabs.setLabAddress(labs[i].getLabAddress());
+                                                                getFullDataLabs.setIdaddress(labs[i].getIdaddress());
+                                                                getFullDataLabs.setEmail(labs[i].getEmail());
+                                                                getFullDataLabs.setClientid(labs[i].getClientid());
+                                                                labAddressTopass = getFullDataLabs.getLabAddress();
+                                                                labIDTopass = getFullDataLabs.getIdaddress();
+                                                                labLabNAmeTopass = getFullDataLabs.getLabName();
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
 
                                                 final String getAgeType = spinyr.getSelectedItem().toString();
                                                 String sctDate = dateShow.getText().toString();
@@ -3741,7 +3444,6 @@ public class Start_New_Woe extends RootFragment {
                                                 final String getFinalAge = age.getText().toString();
                                                 final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
                                                 final String getFinalDate = dateShow.getText().toString();
-
 
                                                 if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
                                                     new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
@@ -3758,22 +3460,23 @@ public class Start_New_Woe extends RootFragment {
                                                                     i.putExtra("sct", getFinalTime);
                                                                     i.putExtra("date", getFinalDate);
                                                                     i.putExtra("woetype", typename);
-                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                                     startActivity(i);
-                                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
+
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                                     SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                                                                     saveDetails.putString("name", nameString);
-                                                                    saveDetails.putString("age", getFinalAge);
-                                                                    saveDetails.putString("gender", saveGenderId);
+                                                                    saveDetails.putString("age", "");
+                                                                    saveDetails.putString("gender", "");
                                                                     saveDetails.putString("sct", getFinalTime);
                                                                     saveDetails.putString("date", getFinalDate);
-                                                                    saveDetails.putString("ageType", getAgeType);
-                                                                    saveDetails.putString("labname", "");
-                                                                    saveDetails.putString("labAddress", getTSP_Address);
-                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                    saveDetails.putString("ageType", "");
+                                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                                    saveDetails.putString("patientAddress", labAddressTopass);
                                                                     saveDetails.putString("refBy", referenceBy);
                                                                     saveDetails.putString("refId", referredID);
-                                                                    saveDetails.putString("labIDaddress", "");
+                                                                    saveDetails.putString("labIDaddress", labIDTopass);
                                                                     saveDetails.putString("btechIDToPass", btechIDToPass);
                                                                     saveDetails.putString("btechNameToPass", btechnameTopass);
                                                                     saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
@@ -3781,11 +3484,14 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("woetype", typename);
                                                                     saveDetails.putString("WOEbrand", brandNames);
                                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
                                                                     saveDetails.commit();
                                                                 }
                                                             })
                                                             .show();
                                                 } else {
+
+
                                                     Intent i = new Intent(mContext, OutLabTestsActivity.class);
                                                     i.putExtra("name", nameString);
                                                     i.putExtra("age", getFinalAge);
@@ -3793,22 +3499,23 @@ public class Start_New_Woe extends RootFragment {
                                                     i.putExtra("sct", getFinalTime);
                                                     i.putExtra("date", getFinalDate);
                                                     i.putExtra("woetype", typename);
-                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                     startActivity(i);
-                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
+
+                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                     SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                                                     saveDetails.putString("name", nameString);
-                                                    saveDetails.putString("age", getFinalAge);
-                                                    saveDetails.putString("gender", saveGenderId);
+                                                    saveDetails.putString("age", "");
+                                                    saveDetails.putString("gender", "");
                                                     saveDetails.putString("sct", getFinalTime);
                                                     saveDetails.putString("date", getFinalDate);
-                                                    saveDetails.putString("ageType", getAgeType);
-                                                    saveDetails.putString("labname", "");
-                                                    saveDetails.putString("labAddress", getTSP_Address);
-                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                    saveDetails.putString("ageType", "");
+                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                    saveDetails.putString("patientAddress", labAddressTopass);
                                                     saveDetails.putString("refBy", referenceBy);
                                                     saveDetails.putString("refId", referredID);
-                                                    saveDetails.putString("labIDaddress", "");
+                                                    saveDetails.putString("labIDaddress", labIDTopass);
                                                     saveDetails.putString("btechIDToPass", btechIDToPass);
                                                     saveDetails.putString("btechNameToPass", btechnameTopass);
                                                     saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
@@ -3816,192 +3523,892 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("woetype", typename);
                                                     saveDetails.putString("WOEbrand", brandNames);
                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", "");
                                                     saveDetails.commit();
                                                 }
-
                                             }
 
 
                                         }
-
-                                    }
-                                });
-
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
-
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.VISIBLE);
-                                home_layout.setVisibility(View.VISIBLE);
-                                Home_mobile_number_kyc.setVisibility(View.VISIBLE);
-                                vial_number.setVisibility(View.VISIBLE);
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                patientAddress.setText("");
-                                ref_check.setVisibility(View.GONE);
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-
-                                refby_linear.setVisibility(View.VISIBLE);
-                                referedbyText.setText("");
-                                referenceBy = "";
+                                    });
 
 
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
+                                } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
 
-                                time_layout.setVisibility(View.VISIBLE);
-//                                             btnClick();
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
 
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
 
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
+                                    leadlayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    ref_check.setVisibility(View.GONE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.GONE);
+                                    referedbyText.setText("");
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+                                    getTSP_AddressStringTopass = getTSP_Address;
+                                    kyc_format.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before,
+                                                                  int count) {
+                                            String enteredString = s.toString();
+                                            if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                                                    enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                                                    enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                                                    enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                                                    || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                                                    || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                                            ) {
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                if (enteredString.length() > 0) {
+                                                    kyc_format.setText(enteredString.substring(1));
+                                                } else {
+                                                    kyc_format.setText("");
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count,
+                                                                      int after) {
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+                                            final String checkNumber = s.toString();
+                                            if (checkNumber.length() < 10) {
+                                                flag = true;
+                                            }
+                                            if (flag == true) {
+                                                if (checkNumber.length() == 10) {
+                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                        flag = false;
+                                                        kyc_format.setText(checkNumber);
+                                                    } else {
+                                                        flag = false;
+                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
+                                                        RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
+
+                                                                        Log.e(TAG, "onResponse: response" + response);
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+                                                    }
+
+                                                }
+
+                                            } else {
+
                                             }
 
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
+                                        }
+                                    });
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                                             try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                System.out.println(output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
                                             }
-                                            e.printStackTrace();
-                                        }
 
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
 
-                                        brandNames = brand_spinner.getSelectedItem().toString();
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+                                            kycdata = kyc_format.getText().toString();
+                                            labAddressTopass = "";
+                                            labIDTopass = "";
+                                            getcampIDtoPass = "";
 
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        patientAddressdataToPass = patientAddress.getText().toString();
-                                        btechnameTopass = btechname.getSelectedItem().toString();
-                                        kycdata = home_kyc_format.getText().toString();
-                                        labIDTopass = "";
-                                        labAddressTopass = "";
-                                        getcampIDtoPass = "";
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
 
-                                        if (btechnameTopass != null) {
-                                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
-                                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                    if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
-                                                        btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
                                                     }
                                                 }
                                             }
 
-                                        }
 
-                                        if (woereferedby.equals("") || woereferedby.equals(null)) {
-                                            if (referenceBy == null) {
-                                                Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
+                                                if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                    getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                                }
+
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
                                                     referredID = "";
-                                                    woereferedby = referenceBy;
+                                                }
+
+                                                if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
                                                 } else {
 
-                                                    referenceBy = referedbyText.getText().toString();
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        sDialog.dismissWithAnimation();
+                                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        i.putExtra("woetype", typename);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", "");
+                                                                        saveDetails.putString("gender", "");
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", "");
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", "");
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                    }
+                                                                })
+                                                                .show();
+                                                    } else {
+                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        i.putExtra("woetype", typename);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", "");
+                                                        saveDetails.putString("gender", "");
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", "");
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", "");
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
                                                 }
+
+
                                             }
 
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
                                         }
+                                    });
+
+                                } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    patientAddress.setText("");
+                                    ref_check.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    referenceBy = "";
 
 
-                                        if (woereferedby != null) {
-                                            if (obj != null) {
-                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                        referenceBy = woereferedby;
-                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.GONE);
+
+                                    time_layout.setVisibility(View.VISIBLE);
+//                                             btnClick();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+                                            kycdata = home_kyc_format.getText().toString();
+                                            labIDTopass = "";
+                                            labAddressTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
                                                     }
                                                 }
+
                                             }
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
 
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
 
-                                        if (!ageString.equals("")) {
-                                            conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        }
-                                        if (getVial_numbver.equals("")) {
-                                            vial_number.setError(ToastFile.vial_no);
-                                            Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-                                        } else if (nameString.length() < 2) {
-                                            Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                        } else if (ageString.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                        } else if (conertage > 120) {
-                                            Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (referenceBy == null || referenceBy.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
-                                        } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
-                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
-                                        } else if (sctHr.equals("HR")) {
-                                            Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                        } else if (sctMin.equals("MIN")) {
-                                            Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                        } else if (sctSEc.equals("AM/PM")) {
-                                            Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-                                        } else {
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
 
-                                            if (kycdata.length() < 10) {
-                                                Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
                                             } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", "");
+                                                                        saveDetails.putString("gender", "");
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", "");
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                        sDialog.dismissWithAnimation();
+                                                                    }
+                                                                })
+                                                                .show();
+
+                                                    } else {
+                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", "");
+                                                        saveDetails.putString("gender", "");
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", "");
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
+
+                                                }
+
+                                            }
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+
+                    } else {
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                                mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        selectTypeSpinner.setAdapter(adapter2);
+                        selectTypeSpinner.setSelection(0);
+                        selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                if (selectTypeSpinner.getSelectedItemPosition() == 0) {
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    ref_check.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    id_woe = id_for_woe.getText().toString();
+                                    barcode_woe_str = barcode_woe.getText().toString();
+//                                            btnClick();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            scpoint = samplecollectionponit.getText().toString();
+                                            GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+                                            kycdata = kyc_format.getText().toString();
+                                            getLabName = samplecollectionponit.getText().toString();
+
+                                            kycdata = "";
+                                            btechIDToPass = "";
+                                            btechnameTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            } else {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (getVial_numbver.equals("")) {
+
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equals("") || scpoint.equals(null)) {
+                                                Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+                                                String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
+                                                s1.trim();
+                                                getLabCode = s1;
+
+                                                if (labs == null) {
+                                                    labAddressTopass = "";
+                                                    labIDTopass = "";
+                                                } else {
+                                                    if (labs.length != 0) {
+                                                        for (int i = 0; i < labs.length; i++) {
+                                                            if (getLabCode.contains("-")) {
+                                                                String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
+                                                                s2.trim();
+                                                                getLabCode = s2;
+                                                            }
+                                                            if (getLabCode.equalsIgnoreCase(labs[i].getClientid())) {
+                                                                getFullDataLabs = new LABS();
+                                                                getFullDataLabs.setPincode(labs[i].getPincode());
+                                                                getFullDataLabs.setPassingname(labs[i].getPassingname());
+                                                                getFullDataLabs.setName(labs[i].getName());
+                                                                getFullDataLabs.setMobile(labs[i].getMobile());
+                                                                getFullDataLabs.setLabName(labs[i].getLabName());
+                                                                getFullDataLabs.setLabAddress(labs[i].getLabAddress());
+                                                                getFullDataLabs.setIdaddress(labs[i].getIdaddress());
+                                                                getFullDataLabs.setEmail(labs[i].getEmail());
+                                                                getFullDataLabs.setClientid(labs[i].getClientid());
+                                                                labAddressTopass = getFullDataLabs.getLabAddress();
+                                                                labIDTopass = getFullDataLabs.getIdaddress();
+                                                                labLabNAmeTopass = getFullDataLabs.getLabName();
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+
                                                 final String getAgeType = spinyr.getSelectedItem().toString();
                                                 String sctDate = dateShow.getText().toString();
                                                 sctHr = timehr.getSelectedItem().toString();
@@ -4018,15 +4425,18 @@ public class Start_New_Woe extends RootFragment {
                                                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                                 @Override
                                                                 public void onClick(SweetAlertDialog sDialog) {
+                                                                    sDialog.dismissWithAnimation();
                                                                     Intent i = new Intent(mContext, OutLabTestsActivity.class);
                                                                     i.putExtra("name", nameString);
                                                                     i.putExtra("age", getFinalAge);
                                                                     i.putExtra("gender", saveGenderId);
                                                                     i.putExtra("sct", getFinalTime);
                                                                     i.putExtra("date", getFinalDate);
-                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    i.putExtra("woetype", typename);
                                                                     startActivity(i);
-                                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                                     SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                                                                     saveDetails.putString("name", nameString);
                                                                     saveDetails.putString("age", getFinalAge);
@@ -4034,9 +4444,9 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("sct", getFinalTime);
                                                                     saveDetails.putString("date", getFinalDate);
                                                                     saveDetails.putString("ageType", getAgeType);
-                                                                    saveDetails.putString("labname", "");
-                                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                                    saveDetails.putString("patientAddress", labAddressTopass);
                                                                     saveDetails.putString("refBy", referenceBy);
                                                                     saveDetails.putString("refId", referredID);
                                                                     saveDetails.putString("labIDaddress", labIDTopass);
@@ -4047,22 +4457,25 @@ public class Start_New_Woe extends RootFragment {
                                                                     saveDetails.putString("woetype", typename);
                                                                     saveDetails.putString("WOEbrand", brandNames);
                                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
                                                                     saveDetails.commit();
-                                                                    sDialog.dismissWithAnimation();
                                                                 }
                                                             })
                                                             .show();
-
                                                 } else {
+
+
                                                     Intent i = new Intent(mContext, OutLabTestsActivity.class);
                                                     i.putExtra("name", nameString);
                                                     i.putExtra("age", getFinalAge);
                                                     i.putExtra("gender", saveGenderId);
                                                     i.putExtra("sct", getFinalTime);
                                                     i.putExtra("date", getFinalDate);
-                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                    i.putExtra("woetype", typename);
                                                     startActivity(i);
-                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+
+                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                    GlobalClass.setReferenceBy_Name = referenceBy;
                                                     SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                                                     saveDetails.putString("name", nameString);
                                                     saveDetails.putString("age", getFinalAge);
@@ -4070,9 +4483,9 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("sct", getFinalTime);
                                                     saveDetails.putString("date", getFinalDate);
                                                     saveDetails.putString("ageType", getAgeType);
-                                                    saveDetails.putString("labname", "");
-                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                    saveDetails.putString("patientAddress", labAddressTopass);
                                                     saveDetails.putString("refBy", referenceBy);
                                                     saveDetails.putString("refId", referredID);
                                                     saveDetails.putString("labIDaddress", labIDTopass);
@@ -4083,24 +4496,696 @@ public class Start_New_Woe extends RootFragment {
                                                     saveDetails.putString("woetype", typename);
                                                     saveDetails.putString("WOEbrand", brandNames);
                                                     saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", "");
                                                     saveDetails.commit();
+                                                }
+                                            }
+
+
+                                        }
+                                    });
+
+
+                                } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
+
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    ref_check.setVisibility(View.GONE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+                                    getTSP_AddressStringTopass = getTSP_Address;
+                                    kyc_format.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before,
+                                                                  int count) {
+                                            String enteredString = s.toString();
+                                            if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                                                    enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                                                    enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                                                    enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                                                    || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                                                    || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                                            ) {
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                if (enteredString.length() > 0) {
+                                                    kyc_format.setText(enteredString.substring(1));
+                                                } else {
+                                                    kyc_format.setText("");
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count,
+                                                                      int after) {
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+                                            final String checkNumber = s.toString();
+                                            if (checkNumber.length() < 10) {
+                                                flag = true;
+                                            }
+                                            if (flag == true) {
+                                                if (checkNumber.length() == 10) {
+                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                        flag = false;
+                                                        kyc_format.setText(checkNumber);
+                                                    } else {
+                                                        flag = false;
+                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
+                                                        RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
+
+                                                                        Log.e(TAG, "onResponse: response" + response);
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+                                                    }
+
+                                                }
+
+                                            } else {
+
+                                            }
+
+                                        }
+                                    });
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+                                            kycdata = kyc_format.getText().toString();
+                                            labAddressTopass = "";
+                                            labIDTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            } else {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                    getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                                }
+
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+                                                if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
+                                                } else {
+
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        sDialog.dismissWithAnimation();
+                                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        i.putExtra("woetype", typename);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", getFinalAge);
+                                                                        saveDetails.putString("gender", saveGenderId);
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", getAgeType);
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", "");
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                    }
+                                                                })
+                                                                .show();
+                                                    } else {
+                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        i.putExtra("woetype", typename);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", getFinalAge);
+                                                        saveDetails.putString("gender", saveGenderId);
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", getAgeType);
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", "");
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
                                                 }
 
 
                                             }
 
                                         }
+                                    });
 
-                                    }
-                                });
+                                } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    patientAddress.setText("");
+                                    ref_check.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    referenceBy = "";
+
+
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+//                                             btnClick();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+                                            kycdata = home_kyc_format.getText().toString();
+                                            labIDTopass = "";
+                                            labAddressTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            } else {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            }
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_num, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", getFinalAge);
+                                                                        saveDetails.putString("gender", saveGenderId);
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", getAgeType);
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                        sDialog.dismissWithAnimation();
+                                                                    }
+                                                                })
+                                                                .show();
+
+                                                    } else {
+                                                        Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", getFinalAge);
+                                                        saveDetails.putString("gender", saveGenderId);
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", getAgeType);
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
+
+                                                }
+
+                                            }
+
+                                        }
+                                    });
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
 
-                        }
-                    });
+                            }
+                        });
+                    }
+
+
                 }
 
             }
@@ -4125,15 +5210,20 @@ public class Start_New_Woe extends RootFragment {
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.addTestsUsingBarcode + "" + api_key + "/" + user + "/" + getBarcode + "/getbarcodedtl", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.addTestsUsingBarcode + "" + api_key + "/" + user + "/" +
+                getBarcode + "/getbarcodedtl", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 String finalJson = response.toString();
                 Log.e(TAG, "onResponse: RESPONSE" + response);
                 JSONObject parentObjectOtp = null;
                 try {
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
+                    }*/
+                    if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
                     }
                     parentObjectOtp = new JSONObject(finalJson);
                     ALERT = parentObjectOtp.getString("ALERT");
@@ -4158,9 +5248,10 @@ public class Start_New_Woe extends RootFragment {
                     } else if (PATIENT.equals("null")) {
                         barcode_woe.setText("");
                         leadbarcodelayout.setVisibility(View.GONE);
-
+                        next_btn.setVisibility(View.GONE);
                     } else {
                         leadbarcodelayout.setVisibility(View.VISIBLE);
+                        next_btn.setVisibility(View.VISIBLE);
                         leadbarcodename.setText("Name: " + PATIENT);
                         leadidbarcodetest.setText("Tests: " + TESTS);
                         leadbarcoderefdr.setText("Ref By: " + REF_DR);
@@ -4199,7 +5290,8 @@ public class Start_New_Woe extends RootFragment {
     private void addRecheck(String passBarcode) {
         getBarcode = passBarcode.toString();
         requestQueueAddRecheck = Volley.newRequestQueue(getActivity());
-        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.addTestsUsingBarcode + "" + api_key + "/" + user + "/" + getBarcode + "/getbarcodedtl", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.addTestsUsingBarcode + "" + api_key + "/" + user + "/" +
+                getBarcode + "/getbarcodedtl", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 String finalJson = response.toString();
@@ -4231,9 +5323,11 @@ public class Start_New_Woe extends RootFragment {
                     } else if (PATIENT.equals("null")) {
                         barcode_woe.setText("");
                         leadbarcodelayout.setVisibility(View.GONE);
+                        next_btn.setVisibility(View.GONE);
 
                     } else {
                         leadbarcodelayout.setVisibility(View.VISIBLE);
+                        next_btn.setVisibility(View.VISIBLE);
                         leadbarcodename.setText("Name: " + PATIENT);
                         leadidbarcodetest.setText("Tests: " + TESTS);
                         leadbarcoderefdr.setText("Ref By: " + REF_DR);
@@ -4355,7 +5449,8 @@ public class Start_New_Woe extends RootFragment {
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user +
+                "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -4478,7 +5573,9 @@ public class Start_New_Woe extends RootFragment {
     }
 
     private void callAdapter(final SourceILSMainModel obj) {
-        if (obj.getMASTERS().getLABS().length != 0) {
+//        if (obj.getMASTERS().getLABS().length != 0) {
+        // if (obj.getMASTERS().getLABS().length != 0 && obj.getMASTERS().getLABS() != null) {
+        if (obj.getMASTERS().getLABS().length != 0 && obj.getMASTERS().getLABS() != null) {
             getReferenceNmae = new ArrayList<>();
             getLabNmae = new ArrayList<>();
             statusForColor = new ArrayList<>();
@@ -4512,7 +5609,7 @@ public class Start_New_Woe extends RootFragment {
 
 
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
-            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With 	Animation
+            spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// WithAnimation
 
 //            spinnerDialog.bindOnSpinerListener(new OnSpinerItemClick() {
 //                @Override
@@ -4698,7 +5795,6 @@ public class Start_New_Woe extends RootFragment {
         } else {
 
         }
-
     }
 
     private void getDataFromDB() {

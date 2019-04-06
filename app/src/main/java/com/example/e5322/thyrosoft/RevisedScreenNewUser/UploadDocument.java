@@ -485,7 +485,8 @@ public class UploadDocument extends AbstractActivity {
                 edt_remarksUpdate = edt_remarks.getText().toString();
 
                 if (selectedSpinItem.equalsIgnoreCase("NED")) {
-                    ned_value = ned_spr.getSelectedItem().toString();
+                    if (ned_spr.getSelectedItem().toString().length() > 0)
+                        ned_value = ned_spr.getSelectedItem().toString();
                     exp_Date = edt_expiry.getText().toString();
 
                     if (ned_value.equalsIgnoreCase("-Select-")) {
@@ -494,9 +495,9 @@ public class UploadDocument extends AbstractActivity {
                         TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                         TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName==null) {
+                    } else if (imageName == null) {
                         TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }else if(exp_Date.equalsIgnoreCase("")){
+                    } else if (exp_Date.equalsIgnoreCase("")) {
                         TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         uploadDocument();
@@ -510,7 +511,7 @@ public class UploadDocument extends AbstractActivity {
                         TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                         TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName==null) {
+                    } else if (imageName == null) {
                         TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         uploadDocument();
@@ -524,7 +525,7 @@ public class UploadDocument extends AbstractActivity {
                         TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                         TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName==null) {
+                    } else if (imageName == null) {
                         TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         uploadDocument();
@@ -752,7 +753,8 @@ public class UploadDocument extends AbstractActivity {
                 neddatamodelsarr = new ArrayList<>();
                 nedspinnerdata = new ArrayList<>();
                 nedResponseModel = responseParser.getNedResponseModel(json, statusCode);
-                if(nedResponseModel.getResponse().equalsIgnoreCase("")){}
+                if (nedResponseModel.getResponse().equalsIgnoreCase("")) {
+                }
                 if (nedResponseModel != null) {
                     neddatamodelsarr = nedResponseModel.getNedlist();
                     nedspinnerdata.add("-Select-");

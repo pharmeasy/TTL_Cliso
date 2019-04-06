@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
+ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
 	package
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:4:5-37
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:4:5-37
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:6:5-32
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:6:5-32
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:11-69
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:11-69
 	android:versionCode
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml:5:5-29
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml:5:5-29
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/e6637@thyrocare.com/Desktop/Thyrosoft 19-03-2019/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from D:\yograj\03-10-2018\Offline_woe project\Thyrosoft 30-03-2019\libraryViewPagerIndicator\src\main\AndroidManifest.xml

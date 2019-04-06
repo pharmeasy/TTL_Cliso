@@ -10,7 +10,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -128,6 +131,46 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 holder.barcode_linear.setVisibility(View.GONE);
             }
         });
+
+        holder.enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+        holder.enter_barcode.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
+        holder.reenter.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
+
         prefs = context.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);

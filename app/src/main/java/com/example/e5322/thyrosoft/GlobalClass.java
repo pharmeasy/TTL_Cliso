@@ -19,8 +19,10 @@ import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
+import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.CAMP_LIST;
+import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
 import com.example.e5322.thyrosoft.Models.CommInbox_Model;
 import com.example.e5322.thyrosoft.Models.CommToCpl_Model;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
@@ -78,9 +80,10 @@ public class GlobalClass {
     public static String expt_transit_tm;
     public static String temp_consignment;
     public static String getSelectedScp;
-    public static boolean setFlagToClose=false;
+    public static boolean setFlagToClose = false;
     public static AlertDialog alert;
-    public static boolean flagforRefresh=false;;
+    public static boolean flagforRefresh = false;
+    ;
     private static String stringofconvertedTime;
     public static String cutString;
 
@@ -111,7 +114,11 @@ public class GlobalClass {
     public static ArrayList<BCT_LIST> getBtechList = new ArrayList<>();
     public static ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
     public static ArrayList<SetBarcodeDetails> setScannedBarcodesULC = new ArrayList<>();
+    public static ArrayList<Camp_Intimatgion_List_Model> global_camp_intimatgion_list_models_arrlst = new ArrayList<>();
+    ;
     public static ArrayList<CAMP_LIST> getcamp_list = new ArrayList<>();
+    ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
+
     public static ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist = new ArrayList<>();
     public static ArrayList<String> saveBarcodes = new ArrayList<>();
     public static String specimenttype;
@@ -165,6 +172,30 @@ public class GlobalClass {
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
     ProgressDialog progressDialog;
 
+    public static Date dateFromString(String dateStr, SimpleDateFormat dateFormat) {
+
+        Date date = null;
+        try {
+            date = dateFormat.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return date;
+    }
+
+    public static String convertDate(String convDate) {
+        Date date = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+            date = sdf.parse(convDate);
+//            sdf = new SimpleDateFormat("yyyy-MM-dd");
+            convDate = sdf.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return convDate;
+    }
 
     public GlobalClass(Context context) {
         this.context = context;
@@ -178,7 +209,6 @@ public class GlobalClass {
                 .getActiveNetworkInfo();
         return activeNetworkInfo != null;
     }
-
 
 
     private static boolean isExternalStorageReadOnly() {
@@ -278,6 +308,7 @@ public class GlobalClass {
             date = new Date();
             SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd");
             String convertedDate = sdf_format.format(date);
+            time = time.substring(11, time.length() - 0);
             String finalTime = convertedDate + " " + time;
             date = inputFormat.parse(finalTime);
             stringofconvertedTime = outputFormat.format(date);
@@ -300,6 +331,7 @@ public class GlobalClass {
             date = new Date();
             SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd");
             String convertedDate = sdf_format.format(date);
+            time = time.substring(11, time.length() - 0);
             String finalTime = convertedDate + " " + time;
             try {
                 date = inputFormat1.parse(finalTime);
@@ -318,7 +350,7 @@ public class GlobalClass {
     }
 
 
-    public static void  goToHome(Activity activity){
+    public static void goToHome(Activity activity) {
         Intent i = new Intent(activity, ManagingTabsActivity.class);
         activity.startActivity(i);
         activity.finish();
@@ -334,7 +366,8 @@ public class GlobalClass {
         }
     }
 
-    public static void showAlertDialog(final Activity activity){ AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    public static void showAlertDialog(final Activity activity) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         // Set the Alert Dialog Message
         builder.setMessage(ToastFile.intConnection);
         builder.setCancelable(false);
@@ -347,13 +380,19 @@ public class GlobalClass {
                     }
                 });
         alert = builder.create();
-        alert.show();}
+        alert.show();
+    }
 
-    public static Boolean checkForApi21() {    Boolean boolStatus = false;
+    public static Boolean checkForApi21() {
+        Boolean boolStatus = false;
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-            boolStatus = true;    } else {        boolStatus = false;    }
-        return boolStatus;}
+            boolStatus = true;
+        } else {
+            boolStatus = false;
+        }
+        return boolStatus;
+    }
 
 
     public void DisplayImage(Activity activity, String Url, ImageView imageView) {
@@ -368,5 +407,41 @@ public class GlobalClass {
                 .into(imageView);
 
     }
+
+    public static ArrayList<BSTestDataModel> getTestList() {
+
+        ArrayList<BSTestDataModel> entity = new ArrayList<>();
+
+        BSTestDataModel ent = new BSTestDataModel();
+        ent.setTestName("Select Test type");
+        ent.setMinVal(0);
+        ent.setMaxVal(0);
+        ent.setRangeVal("");
+        entity.add(ent);
+
+        ent = new BSTestDataModel();
+        ent.setTestName("FBS");
+        ent.setMinVal(70);
+        ent.setMaxVal(99);
+        ent.setRangeVal("70-99");
+        entity.add(ent);
+
+        ent = new BSTestDataModel();
+        ent.setTestName("PPBS");
+        ent.setMinVal(70);
+        ent.setMaxVal(140);
+        ent.setRangeVal("70-140");
+        entity.add(ent);
+
+        ent = new BSTestDataModel();
+        ent.setTestName("RBS");
+        ent.setMinVal(70);
+        ent.setMaxVal(150);
+        ent.setRangeVal("70-150");
+        entity.add(ent);
+
+        return entity;
+    }
+
 
 }

@@ -52,6 +52,7 @@ import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 
 public class RecheckAllTest extends AppCompatActivity {
 
+    String[] elements = new String[100];
     Activity mActivity = RecheckAllTest.this;
     SearchView sv_testsList1;
     ExpandableListView exp_list;
@@ -196,7 +197,8 @@ public class RecheckAllTest extends AppCompatActivity {
         MainModel obj = gson.fromJson(json, MainModel.class);
 
         onlySelected = new MainModel();
-        String[] elements = TESTS.split(",");
+        if(TESTS!=null)
+            elements = TESTS.split(",");
         fixedLenghtList = Arrays.asList(elements);
         sample_type_array = new ArrayList<String>(fixedLenghtList);
 
@@ -366,11 +368,10 @@ public class RecheckAllTest extends AppCompatActivity {
             public void onResponse(JSONObject response) {
 
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-                String getResponse = response.optString("RESPONSE","");
-                if(getResponse.equalsIgnoreCase(caps_invalidApikey)){
+                String getResponse = response.optString("RESPONSE", "");
+                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                     redirectToLogin(RecheckAllTest.this);
-                }
-                else {
+                } else {
                     Gson gson = new Gson();
                     mainModel = new MainModel();
 
@@ -383,7 +384,8 @@ public class RecheckAllTest extends AppCompatActivity {
                     ArrayList<BaseModel> baseModelTest = new ArrayList<>();
 
                     mainModel = gson.fromJson(response.toString(), MainModel.class);
-                    String[] elements = TESTS.split(",");
+                    if(TESTS!=null)
+                        elements = TESTS.split(",");
                     fixedLenghtList = Arrays.asList(elements);
                     sample_type_array = new ArrayList<String>(fixedLenghtList);
 

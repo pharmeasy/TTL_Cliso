@@ -199,6 +199,14 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             holder.image_tag.setVisibility(View.GONE);
         } else {
             holder.image_tag.setVisibility(View.VISIBLE);
+            for (int i = 0; i < listOfSampleString.size(); i++) {
+                if(listOfSampleString.get(i).equalsIgnoreCase("WATER")){
+                    holder.image_tag.setVisibility(View.GONE);
+                }else{
+                    holder.image_tag.setVisibility(View.VISIBLE);
+                }
+
+            }
         }
         holder.image_tag.setOnClickListener(new View.OnClickListener() {
             @Override

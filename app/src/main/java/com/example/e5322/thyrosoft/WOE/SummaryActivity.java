@@ -156,10 +156,12 @@ public class SummaryActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         versionNameTopass = pInfo.versionName;
         //get the app version Code for checking
@@ -220,7 +222,12 @@ public class SummaryActivity extends AppCompatActivity {
         pat_sgc.setText(sampleGivingClient);
         pat_scp.setText(sampleCollectionPoint);
         pat_type.setText(brandName + "/" + typeName + "/" + user);
-        pat_name.setText(patientName + "(" + patientYear + " " + patientYearType + "/" + patientGender + ")");
+
+        if (patientYear.equalsIgnoreCase("")) {
+            pat_name.setText(patientName);
+        } else {
+            pat_name.setText(patientName + "(" + patientYear + " " + patientYearType + "/" + patientGender + ")");
+        }
         pat_sct.setText(sampleCollectionDate + " " + sampleCollectionTime);
         pat_ref.setText(referenceBy);
         alertMsg = "";
@@ -265,7 +272,7 @@ public class SummaryActivity extends AppCompatActivity {
                             public void onClick(DialogInterface arg0, int arg1) {
                                 if (!GlobalClass.isNetworkAvailable(SummaryActivity.this)) {
                                     boolean deletedRows = myDb.deleteData(getBarcodesOffline);
-                                    if(deletedRows ==true)
+                                    if (deletedRows == true)
                                         TastyToast.makeText(SummaryActivity.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     finish();
                                     Intent i = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
@@ -338,7 +345,7 @@ public class SummaryActivity extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
                 try {
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
@@ -354,7 +361,9 @@ public class SummaryActivity extends AppCompatActivity {
                         Intent intent = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
                         startActivity(intent);
                     } else {
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         TastyToast.makeText(SummaryActivity.this, response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 
@@ -374,10 +383,9 @@ public class SummaryActivity extends AppCompatActivity {
             }
         });
         deletePatienDetail.add(jsonObjectRequest1);
-        Log.e(TAG, "deletePatientDetailsandTest: url"+jsonObjectRequest1 );
-        Log.e(TAG, "deletePatientDetailsandTest: json"+jsonObjectOtp );
+        Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
+        Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
     }
-
 
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {

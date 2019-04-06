@@ -268,7 +268,7 @@ public class Payment_Activity extends AppCompatActivity {
                     int modulus = getAmt % 5000;
                     System.out.println("getAmount ::" + modulus);
 
-                    if (getAmt < 5000) {
+                   /* if (getAmt < 5000) {
                         new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
                                 .setContentText(getString(R.string.amt_str))
                                 .setConfirmText("Ok")
@@ -290,7 +290,7 @@ public class Payment_Activity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    } else {
+                    } else {*/
 
                         if (cd.isConnectingToInternet()) {
                             globalData.showProgressDialog();
@@ -343,7 +343,7 @@ public class Payment_Activity extends AppCompatActivity {
                     }
 
 
-                }
+//                }
 
             }
         });

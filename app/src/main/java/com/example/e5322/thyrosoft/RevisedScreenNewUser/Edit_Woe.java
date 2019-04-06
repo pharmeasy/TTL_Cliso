@@ -490,9 +490,11 @@ public class Edit_Woe extends Fragment {
                         alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
 
-                                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                Intent i = new Intent(getActivity(),Payment_Activity.class);
+                                startActivity(i);
+                              /*  Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                 httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                startActivity(httpIntent);
+                                startActivity(httpIntent);*/
                                 // Write your code here to execute after dialog closed
                             }
                         });

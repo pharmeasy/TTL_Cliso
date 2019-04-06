@@ -151,7 +151,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     private GoogleApiClient mGoogleApiClient;
     private String getLatitude;
     private String getLongitude;
-    private double lat,log;
+    private double lat, log;
 
     @SuppressLint("NewApi")
     @Override
@@ -420,16 +420,13 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 String enteerdstring = s.toString();
-
             }
         });
 
@@ -554,12 +551,10 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -606,14 +601,12 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     mobile_edt.setVisibility(View.VISIBLE);
                     email_edt.setVisibility(View.VISIBLE);
                     client_name_edt.setVisibility(View.VISIBLE);
-
                     incharge_name.setVisibility(View.VISIBLE);
                     addressEdt.setVisibility(View.VISIBLE);
                     phone_number.setVisibility(View.VISIBLE);
                     website_edt.setVisibility(View.VISIBLE);
                     visiting_card_layout.setVisibility(View.VISIBLE);
                     dr_name_layout.setVisibility(View.GONE);
-
                     pincode_edt.setText("");
                     mobile_edt.setText("");
                     email_edt.setText("");
@@ -634,12 +627,10 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     email_edt.setVisibility(View.VISIBLE);
                     dr_name_layout.setVisibility(View.VISIBLE);
                     addressEdt.setVisibility(View.VISIBLE);
-
                     phone_number.setVisibility(View.VISIBLE);
                     website_edt.setVisibility(View.VISIBLE);
                     visiting_card_layout.setVisibility(View.VISIBLE);
                     client_name_edt.setVisibility(View.GONE);
-
                     incharge_name.setVisibility(View.GONE);
                     pincode_edt.setText("");
                     mobile_edt.setText("");
@@ -774,8 +765,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     get_Address = addressEdt.getText().toString();
                     get_phone_number = phone_number.getText().toString();
                     get_website = website_edt.getText().toString();
-                    getLatitude=lattitude_txt.getText().toString();
-                    getLongitude=longitude_txt.getText().toString();
+                    getLatitude = lattitude_txt.getText().toString();
+                    getLongitude = longitude_txt.getText().toString();
                     getclient_name = getclient_name.replaceAll("\\s+", " ");
                     get_incharge_name = get_incharge_name.replaceAll("\\s+", " ");
                     get_Address = get_Address.replaceAll("\\s+", " ");
@@ -793,9 +784,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         }
                     }
 //                     get_visiting_card = encodedImage.toString();
-                    if(getLatitude.equalsIgnoreCase("")){
+                    if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.setError("Enter latitude");
-                    }else if(getLongitude.equalsIgnoreCase("")){
+                    } else if (getLongitude.equalsIgnoreCase("")) {
                         longitude_txt.setError("Enter correct longitude");
                     } else if (getpincode.equals("")) {
                         pincode_edt.setError("Enter correct Pincode");
@@ -875,8 +866,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     get_Address = addressEdt.getText().toString();
                     get_phone_number = phone_number.getText().toString();
                     get_website = website_edt.getText().toString();
-                    getLatitude=lattitude_txt.getText().toString();
-                    getLongitude=lattitude_txt.getText().toString();
+                    getLatitude = lattitude_txt.getText().toString();
+                    getLongitude = lattitude_txt.getText().toString();
                     get_dr_name = get_dr_name.replaceAll("\\s+", " ");
                     get_Address = get_Address.replaceAll("\\s+", " ");
                     get_dr_name = get_dr_name.replaceAll("\\.", "");
@@ -884,9 +875,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
 //                     get_visiting_card = encodedImage.toString();
 
-                    if(getLatitude.equalsIgnoreCase("")){
+                    if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.setError("Enter latitude");
-                    }else if(getLongitude.equalsIgnoreCase("")){
+                    } else if (getLongitude.equalsIgnoreCase("")) {
                         longitude_txt.setError("Enter correct longitude");
                     } else if (getpincode.equals("")) {
                         pincode_edt.requestFocus();
@@ -1010,7 +1001,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         startActivity(i);
                         finish();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "PGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                    } else if(Response.equalsIgnoreCase(small_invalidApikey)){
+                    } else if (Response.equalsIgnoreCase(small_invalidApikey)) {
                         GlobalClass.redirectToLogin(Sgc_Pgc_Entry_Activity.this);
                     } else {
 
@@ -1096,9 +1087,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         startActivity(i);
                         finish();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "SGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                    } else if(Response.equalsIgnoreCase(small_invalidApikey)){
+                    } else if (Response.equalsIgnoreCase(small_invalidApikey)) {
                         GlobalClass.redirectToLogin(Sgc_Pgc_Entry_Activity.this);
-                    }else {
+                    } else {
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "" + message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 

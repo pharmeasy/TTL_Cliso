@@ -255,9 +255,10 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
                 SimpleDateFormat sdfs = new SimpleDateFormat("dd-MM-yyyy");
                 SimpleDateFormat outsdf = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat outsdf22 = new SimpleDateFormat("dd-MM-yyyy");
                 try {
                     Date dateTopass = sdfs.parse(getDateTopAss);
-                    convertDate = outsdf.format(dateTopass);
+                    convertDate = outsdf22.format(dateTopass);
                     pass_full_date = convertDate + " " + formFullTime;
                 } catch (ParseException e) {
                     e.printStackTrace();

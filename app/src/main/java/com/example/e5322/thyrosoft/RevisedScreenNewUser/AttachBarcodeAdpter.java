@@ -85,7 +85,7 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
     @Override
     public AttachBarcodeAdpter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.single_barcode_list, parent, false);
+        View v = inflater.inflate(R.layout.single_barcode_list_offline_woe, parent, false);
         AttachBarcodeAdpter.ViewHolder vh = new AttachBarcodeAdpter.ViewHolder(v);
         return vh;
     }
@@ -109,12 +109,12 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
 
         holder.enter_barcode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         holder.reenter.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-        holder.img_edt.setVisibility(View.VISIBLE);
+        holder.barcodescanbtn.setVisibility(View.VISIBLE);
         holder.linearEditbarcode.setVisibility(View.GONE);
-        holder.barcodescanbtn.setOnClickListener(onScanbarcodeClickListener);
-        holder.barcodescanbtn.setTag(scannedBarcodeDetails.get(position).getSpecimen_type());
+        holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
+        holder.element1_iv.setTag(scannedBarcodeDetails.get(position).getSpecimen_type());
 
-        holder.img_edt.setOnClickListener(new View.OnClickListener() {
+        holder.barcodescanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
@@ -218,13 +218,14 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView barcodescanbtn;
         EditText enter_barcode, reenter;
-        ImageView img_edt, setback;
+        ImageView img_edt, setback,element1_iv;
         LinearLayout linearEditbarcode, barcode_linear;
 
         public ViewHolder(View itemView) {
             super(itemView);
             barcodescanbtn = (TextView) itemView.findViewById(R.id.serum);
             img_edt = (ImageView) itemView.findViewById(R.id.img_edt);
+            element1_iv = (ImageView) itemView.findViewById(R.id.element1_iv);
             linearEditbarcode = (LinearLayout) itemView.findViewById(R.id.lineareditbarcode);
             barcode_linear = (LinearLayout) itemView.findViewById(R.id.barcode_linear);
             setback = (ImageView) itemView.findViewById(R.id.setback);

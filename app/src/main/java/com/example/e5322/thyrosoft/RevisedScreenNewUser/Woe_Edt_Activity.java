@@ -211,7 +211,6 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             }
         });
 
-
         if (GlobalClass.summary_models != null) {
             brand_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND());
             selectType_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE());
@@ -225,9 +224,24 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             }else{
                 labname_linear.setVisibility(View.GONE);
             }
-
             referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
-            sct_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+
+            Date date = null;
+            String output = null;
+            try{
+                //Converting the input String to Date
+                date= sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+                //Changing the format of date and storing it in String
+                output = sdfOutput.format(date);
+                //Displaying the date
+                System.out.println(output);
+            }catch(ParseException pe){
+                pe.printStackTrace();
+            }
+
+            sct_txt.setText(output);
 
             ArrayList<String> getOnlyBarcodes = new ArrayList<>();
             if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
@@ -506,10 +520,11 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         // Setting OK Button
                         alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-
-                                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                Intent i = new Intent(Woe_Edt_Activity.this, Payment_Activity.class);
+                                startActivity(i);
+                               /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                 httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                startActivity(httpIntent);
+                                startActivity(httpIntent);*/
                                 // Write your code here to execute after dialog closed
                             }
                         });

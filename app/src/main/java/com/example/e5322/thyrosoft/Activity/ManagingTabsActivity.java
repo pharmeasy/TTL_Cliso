@@ -211,14 +211,19 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             getProfileDetails();
         }
 
-        if (profile_image != null) {
+        /*if (profile_image != null) {
             new DownloadImageTask(imageViewprofile).execute(profile_image);
         } else {
             Glide.with(ManagingTabsActivity.this)
                     .load("")
                     .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
                     .into(imageViewprofile);
-        }
+        }*/
+
+        Glide.with(ManagingTabsActivity.this)
+                .load(profile_image)
+                .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
+                .into(imageViewprofile);
     }
 
 
@@ -477,6 +482,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
         }
+
         else if (id == R.id.broadCast) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -488,16 +494,25 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         }
 
-        /*else if (id == R.id.campIntimation) {
+        else if (id == R.id.campIntimation) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, CampIntimation.class);
                 startActivity(i);
-
             }
 
-        }*/
+        }
+
+        else if (id == R.id.blood_s_entry) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, Blood_sugar_entry_activity.class);
+                startActivity(i);
+            }
+
+        }
 
         else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
@@ -528,9 +543,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     })
                     .setNegativeButton("No", null)
                     .show();
-        }
-
-        else if (id == R.id.whatsapp) {
+        } else if (id == R.id.whatsapp) {
             new AlertDialog.Builder(this)
                     .setMessage("Would you like to proceed with whatsapp?")
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -544,9 +557,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     })
                     .setNegativeButton("No", null)
                     .show();
-        }
-
-        else if (id == R.id.synchronization) {
+        } else if (id == R.id.synchronization) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -621,7 +632,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         prefs.remove("API_KEY");
     }
 
-
     public boolean popFragment() {
 
 
@@ -640,7 +650,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     }
 
-
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         ImageView imageViewprofile;
 
@@ -655,7 +664,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 bmp = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
+                Log.e("Error image display", e.getMessage());
                 e.printStackTrace();
             }
             return bmp;
@@ -668,7 +677,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 
     private void getProfileDetails() {
-
         RequestQueue queue = Volley.newRequestQueue(ManagingTabsActivity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
@@ -759,8 +767,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-/*
-    public class JSONTask extends AsyncTask<String, String, String> {
+    /*public class JSONTask extends AsyncTask<String, String, String> {
         String RES_ID, URL, VERSION_NO, cancelled_count, chn_count, confirmed_count, draft_count, maxRRT, patient_count, pending_count, processdate, reported_count, response, sample_count, woedate;
 
         @Override
@@ -949,7 +956,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         return deletedAll;
     }
 
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -984,7 +990,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             return false;
         }
     };
-
 
     private void initScreen() {
         // Creating the ViewPager container fragment once
@@ -1046,6 +1051,5 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             // do not call super
         }
     }
-
 
 }

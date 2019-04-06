@@ -80,14 +80,11 @@ public class ResultDtlAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-
         if (convertView == null) {
             // inflate the layout
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-
             convertView = inflater.inflate(R.layout.single_result_details, parent, false);
         }
-
 
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView Refby = (TextView) convertView.findViewById(R.id.Refby);
@@ -98,6 +95,11 @@ public class ResultDtlAdapter extends BaseAdapter {
         mail = (ImageView) convertView.findViewById(R.id.mail);
         clon = (ImageView) convertView.findViewById(R.id.colon);
 
+       /* if (trackdet.get(position).getEmail().equals("") || trackdet.get(position).getEmail().equals(null)) {
+            mail.setVisibility(View.GONE);
+        } else {
+            mail.setVisibility(View.VISIBLE);
+        }*/
 
         if(!trackdet.get(position).getChn_pending().toString().equals("")){
             if(trackdet.get(position).getChn_pending().toString().equals("null")){
@@ -139,10 +141,12 @@ public class ResultDtlAdapter extends BaseAdapter {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(trackdet.get(position).getPdflink().toString()));
-                mContext.startActivity(browserIntent);
+                if (trackdet.get(position).getPdflink().length()>0) {
+                    Intent browserIntent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(trackdet.get(position).getPdflink().toString()));
+                    mContext.startActivity(browserIntent);
+                }
 
             }
         });
@@ -294,7 +298,6 @@ public class ResultDtlAdapter extends BaseAdapter {
                         GetData(patient_ID,barcode,emailid.getText().toString(),date);
                         dialog.dismiss();
                 }
-
             }
         });
 

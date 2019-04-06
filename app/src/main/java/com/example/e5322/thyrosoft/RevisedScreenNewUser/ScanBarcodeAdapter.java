@@ -10,7 +10,10 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -114,10 +118,10 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
         holder.enter_barcode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         holder.reenter.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        holder.img_edt.setVisibility(View.VISIBLE);
+
         holder.linearEditbarcode.setVisibility(View.GONE);
-        holder.barcodescanbtn.setOnClickListener(onScanbarcodeClickListener);
-        holder.barcodescanbtn.setTag(scannedBarcodeDetails.get(position).getSpecimen_type());
+        holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
+        holder.element1_iv.setTag(scannedBarcodeDetails.get(position).getSpecimen_type());
 
         if (scannedBarcodeDetails.get(position).getBarcode() != null && !scannedBarcodeDetails.get(position).getBarcode().isEmpty()) {
 
@@ -236,25 +240,12 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
                     barcodeDetails.add(jsonObjectRequestPop);
                     Log.e(TAG, "onBindViewHolder: url" + jsonObjectRequestPop);
                 }
-
-
             }
-
 
         } else {
             holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type());
         }
-
-
-
-
-
-
-
-
-
-
-        holder.img_edt.setOnClickListener(new View.OnClickListener() {
+        holder.barcodescanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
@@ -266,6 +257,43 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
         holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type());
         holder.enter_barcode.setText(scannedBarcodeDetails.get(position).getBarcode());
         holder.reenter.setText(scannedBarcodeDetails.get(position).getBarcode());
+
+        holder.enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+        holder.enter_barcode.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+        holder.reenter.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
 
         holder.reenter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -356,16 +384,16 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView barcodescanbtn;
         EditText enter_barcode, reenter;
-        ImageView img_edt, setback;
+        ImageView  setback,element1_iv;
         LinearLayout linearEditbarcode, barcode_linear;
 
         public ViewHolder(View itemView) {
             super(itemView);
             barcodescanbtn = (TextView) itemView.findViewById(R.id.serum);
-            img_edt = (ImageView) itemView.findViewById(R.id.img_edt);
             linearEditbarcode = (LinearLayout) itemView.findViewById(R.id.lineareditbarcode);
             barcode_linear = (LinearLayout) itemView.findViewById(R.id.barcode_linear);
             setback = (ImageView) itemView.findViewById(R.id.setback);
+            element1_iv = (ImageView) itemView.findViewById(R.id.element1_iv);
             enter_barcode = (EditText) itemView.findViewById(R.id.enter_barcode);
             reenter = (EditText) itemView.findViewById(R.id.reenter);
             enter_barcode.setFilters(new InputFilter[]{EMOJI_FILTER});

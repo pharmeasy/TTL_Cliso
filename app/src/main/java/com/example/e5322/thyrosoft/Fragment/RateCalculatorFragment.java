@@ -413,8 +413,12 @@ public class RateCalculatorFragment extends Fragment {
                                     Gson gson = new Gson();
                                     mainModel = new GetMainModel();
                                     mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                         barProgressDialog.dismiss();
+                                    }*/
+                                    if (mContext instanceof Activity) {
+                                        if (!((Activity) mContext).isFinishing())
+                                            barProgressDialog.dismiss();
                                     }
 
                                     SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -768,8 +772,12 @@ public class RateCalculatorFragment extends Fragment {
                                     Gson gson = new Gson();
                                     mainModel = new GetMainModel();
                                     mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                         barProgressDialog.dismiss();
+                                    }*/
+                                    if (mContext instanceof Activity) {
+                                        if (!((Activity) mContext).isFinishing())
+                                            barProgressDialog.dismiss();
                                     }
 
                                     SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -1090,8 +1098,12 @@ public class RateCalculatorFragment extends Fragment {
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
 
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
+                    }*/
+                    if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
                     }
                     B2BRate = parentObjectOtp.getString("B2B");
                     B2CRate = parentObjectOtp.getString("B2C");

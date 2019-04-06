@@ -21,6 +21,7 @@ public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollecti
 
     public SampleCollectionAdapter(Activity mContext, ArrayList<LABS> LabDetailsArraList) {
         this.mContext = mContext;
+        this.LabDetailsArraList=new ArrayList<>();
         this.LabDetailsArraList = LabDetailsArraList;
     }
 
@@ -47,10 +48,12 @@ public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollecti
     @Override
     public void onBindViewHolder(@NonNull final SampleCollectionAdapter.ViewHolder holder, final int position) {
         holder.text1.setText(LabDetailsArraList.get(position).getLabName() + " - " + LabDetailsArraList.get(position).getClientid());
-        if (LabDetailsArraList.get(position).getStatus().equals("Y")) {
-            holder.text1.setTextColor(mContext.getResources().getColor(R.color.green));
-        } else {
-            holder.text1.setTextColor(mContext.getResources().getColor(R.color.black));
+        if (LabDetailsArraList.get(position).getStatus()!=null) {
+            if (LabDetailsArraList.get(position).getStatus().equals("Y")) {
+                holder.text1.setTextColor(mContext.getResources().getColor(R.color.green));
+            } else {
+                holder.text1.setTextColor(mContext.getResources().getColor(R.color.black));
+            }
         }
         holder.text1.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -567,7 +567,7 @@
                 <LinearLayout
                     android:id="@+id/home_linear_data"
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="@drawable/corner_curve_maroon"
                     android:minHeight="30dp"
@@ -580,7 +580,7 @@
                         android:id="@+id/patientAddress"
                         style="@style/medium_text"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/textView"
                         android:layout_gravity="center"
@@ -591,10 +591,43 @@
                         android:hint="ENTER PATIENT ADDRESS"
                         android:inputType="textCapCharacters"
                         android:maxLength="80"
+                        android:maxLines="3"
+                        android:textColor="@color/DARKGray"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/pincode_linear_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:minHeight="30dp"
+                    android:orientation="horizontal"
+                    android:padding="5dp"
+                    android:visibility="gone"
+                    android:weightSum="5">
+
+                    <EditText
+                        android:id="@+id/pincode_edt"
+                        style="@style/medium_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/textView"
+                        android:layout_gravity="center"
+                        android:background="@drawable/background_edt"
+                        android:digits="0123456789"
+                        android:ems="10"
+                        android:gravity="center|left"
+                        android:hint="ENTER PINCODE"
+                        android:inputType="number"
+                        android:maxLength="6"
                         android:maxLines="1"
                         android:textColor="@color/DARKGray"
                         android:textSize="12sp" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/camp_layout_woe"
@@ -662,7 +695,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:"
-                        android:drawableRight="@drawable/ic_arrow_drop_down_black_24dp"
+                        android:drawableRight="@drawable/down_arrow_woe"
                         android:ems="10"
                         android:gravity="center|left"
                         android:hint="SEARCH SAMPLE COLLECTION POINT"

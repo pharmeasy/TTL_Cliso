@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.Activity;
 
-
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.e5322.thyrosoft.R;
-
 
 /**
  * A simple {@link Fragment} subclass.

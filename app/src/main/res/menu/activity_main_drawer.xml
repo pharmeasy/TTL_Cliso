@@ -147,6 +147,14 @@
     </group>
 
     <group
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/blood_s_entry"
+            android:icon="@drawable/logout"
+            android:title="Blood Sugar entry" />
+    </group>
+
+    <group
         android:id="@+id/group14"
         android:checkableBehavior="single">
         <item
@@ -252,6 +260,7 @@
         <item
             android:id="@+id/broadCast"
             android:icon="@drawable/broadcast"
+            android:visible="true"
             android:title="Broadcast" />
     </group>
 
@@ -261,8 +270,10 @@
         <item
             android:id="@+id/campIntimation"
             android:icon="@drawable/camp"
+            android:visible="true"
             android:title="Camp Intimation" />
     </group>
+
 
     <group
         android:id="@+id/group27"

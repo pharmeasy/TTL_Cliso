@@ -65,6 +65,7 @@ public class ToastFile {
     public static String ent_qualif="Please enter your qualification";
     public static String ent_loc="Please enter your interested location";
     public static String ent_addr="Enter correct Address";
+    public static String crt_pincode="Enter correct Pincode";
     public static String ent_state="Enter correct state";
     public static String ent_city="Enter correct city";
     public static String ent_country="Enter correct country";
