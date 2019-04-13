@@ -77,7 +77,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     @Override
     public RateCAlAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-
         view = inflater.inflate(R.layout.rate_cal_test_single, viewGroup, false);
         RateCAlAdapter.ViewHolder vh = new RateCAlAdapter.ViewHolder(view);
         return vh;
@@ -104,18 +103,15 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final RateCAlAdapter.ViewHolder viewHolder, final int position) {
-        viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
 
+        viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
         int passThvalue=Integer.parseInt(base_model_rate_calculators.get(position).getRate().getB2c());
-
         String setRtaesToTests = numberFormat.format(passThvalue);
         viewHolder.test_rate_cal_txt.setText("₹ "+setRtaesToTests+"/-");
-
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
-
 
         if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
             viewHolder.txt_type.setText("T");
@@ -130,11 +126,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             viewHolder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
                     JSONObject jsonObjectValidateOtp = new JSONObject();
                     try {
-
                         jsonObjectValidateOtp.put("TestName", getSelected_test.getName());
                         jsonObjectValidateOtp.put("Type", "PROFILE");
 
@@ -144,15 +137,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     POstQueSendEstimation = Volley.newRequestQueue(mContext);
 
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObjectValidateOtp, new com.android.volley.Response.Listener<JSONObject>() {
-
-
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
                                 Log.e(TAG, "onResponse: " + response);
                                 String finalJson = response.toString();
                                 ArrayList<String> responseFromAPI = new ArrayList<>();
-
                                 String responsedata = response.getString("response");
                                 JSONArray jsonArray = response.getJSONArray("TestName");
                                 if (jsonArray.length() != 0 || jsonArray != null) {
@@ -160,10 +150,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                         responseFromAPI.add(jsonArray.get(i).toString());
                                     }
                                     if (responsedata.equals("Success")) {
-
-
                                         showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, responseFromAPI);
-
                                         LayoutInflater li = LayoutInflater.from(mContext);
                                         View promptsView = li.inflate(R.layout.activity_show_child_list, null);
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
@@ -179,7 +166,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                         {alertDialog.show();
                                             //show dialog
                                         }
-
                                         imgClose.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
@@ -188,10 +174,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                         });
                                     }
 
-
                                 } else {
                                     TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
                                 }
                             } catch (JSONException e) {
                                 Toast.makeText(mContext, "" + e, Toast.LENGTH_SHORT).show();
@@ -210,10 +194,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     });
                     POstQueSendEstimation.add(jsonObjectRequest1);
                     Log.e(TAG, "onClick: URl" + jsonObjectRequest1);
-
-
-/////////////////////////////////////////////////////////////////////////////////////
-
                     if (getSelected_test.getChilds().length != 0) {
                         storetestlist = new ArrayList<>();
                         for (int i = 0; i < getSelected_test.getChilds().length; i++) {
@@ -221,11 +201,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                         }
                         showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, storetestlist);
                     }
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
                 }
             });
 
@@ -261,7 +236,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                 viewHolder.iv_checked.setVisibility(View.GONE);
                                 viewHolder.iv_unchecked.setVisibility(View.GONE);
                                 viewHolder.iv_locked.setVisibility(View.VISIBLE);
-
                                 viewHolder.isSelectedDueToParent = false;
                                 viewHolder.parentTestCode = selectedTestModel.getCode();
                                 viewHolder.parentTestname = selectedTestModel.getName();

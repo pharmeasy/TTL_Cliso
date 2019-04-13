@@ -30,7 +30,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_margin="16dp"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="9dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="8"
                     android:background="@drawable/maroon_border_white_bg"
                     android:orientation="vertical">
@@ -62,7 +65,7 @@
 
 
                         <Button
-                            android:id="@+id/mbl_verify"
+                            android:id="@+id/btn_verify"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_marginRight="16dp"
@@ -105,7 +108,7 @@
                         android:orientation="horizontal">
 
                         <EditText
-                            android:id="@+id/edt_val"
+                            android:id="@+id/edt_age"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center"
@@ -126,6 +129,7 @@
                             android:id="@+id/radiogrp"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
                             android:layout_weight="2"
                             android:gravity="center"
                             android:orientation="horizontal"
@@ -179,36 +183,31 @@
                     <LinearLayout
                         android:id="@+id/type"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_height="40dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
-                        android:background="@drawable/corner_curve_maroon"
-                        android:gravity="center"
+                        android:background="@drawable/grey_curve_border"
                         android:orientation="horizontal">
 
                         <Spinner
+                            android:layout_marginRight="5dp"
+                            android:background="@color/transparent"
                             android:id="@+id/spin_bs_test"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/transparent"
-                            android:gravity="center_vertical"
-                            android:minHeight="40dp">
-
+                            android:layout_height="match_parent">
                         </Spinner>
+
                     </LinearLayout>
 
-                    <LinearLayout
+                    <LinearLayout android:id="@+id/value_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
                         android:orientation="horizontal">
 
                         <EditText
-                            android:id="@+id/edt_age"
+                            android:id="@+id/edt_val"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_gravity="center"
@@ -245,9 +244,9 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/visiting_card_layout"
+                        android:id="@+id/choose_file_ll"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
@@ -259,13 +258,17 @@
                         android:paddingLeft="6dp">
 
                         <TextView
+                            android:id="@+id/tvUploadImageText"
                             style="@style/medium_text"
                             android:layout_width="106dp"
                             android:layout_height="match_parent"
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="center"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginBottom="3dp"
                             android:layout_weight="1"
                             android:background="@drawable/background_edt"
+                            android:editable="false"
                             android:ems="10"
                             android:gravity="center|left"
                             android:hint="@string/img_upload"
@@ -305,7 +308,7 @@
                             android:visibility="gone"></ImageView>
 
                         <Button
-                            android:id="@+id/visiting_card_btn"
+                            android:id="@+id/btn_choose_file"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_marginTop="3dp"

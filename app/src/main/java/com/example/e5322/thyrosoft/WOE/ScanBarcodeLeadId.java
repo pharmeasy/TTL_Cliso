@@ -130,6 +130,8 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         typeName = prefe.getString("typeName", null);
         title.setText("Scan Barcode(Lead)");
 
+        GlobalClass.isAutoTimeSelected(ScanBarcodeLeadId.this);
+
         SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
 
         leadAddress = sharedPreferences.getString("ADDRESS", null);
@@ -164,6 +166,7 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         leadURINE = sharedPreferences.getString("URINE", null);
         leadWATER = sharedPreferences.getString("WATER", null);
         leadleadData = sharedPreferences.getString("leadData", null);
+
         if (sharedPreferences != null) {
             ordersct.setText("SCT :" + leadSCT);
             show_selected_tests_data.setText(leadTESTS);
@@ -352,6 +355,20 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
         }
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        GlobalClass.isAutoTimeSelected(ScanBarcodeLeadId.this);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        GlobalClass.isAutoTimeSelected(ScanBarcodeLeadId.this);
+    }
+
 
     private void passBarcodeData(String getBracode) {
         boolean isbacodeduplicate = false;

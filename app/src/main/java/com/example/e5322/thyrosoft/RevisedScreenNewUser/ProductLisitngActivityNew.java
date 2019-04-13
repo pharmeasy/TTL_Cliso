@@ -867,7 +867,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             requestQueuepoptestILS.add(jsonObjectRequestPop);
             Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
 //            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -893,21 +892,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
                     testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
                 }
-
                 product_rate_masterModel = new Product_Rate_MasterModel();
                 product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
                 product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
                 for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
                     testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
                 }
-
                 ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
                 recycler_all_test.setAdapter(outLabRecyclerView);
             }
         } else {
 //            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -923,7 +919,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 } else {
                     Toast.makeText(this, invalid_brcd, Toast.LENGTH_SHORT).show();
                 }
-
             }
         } else {
             Log.e(TAG, "else: ");
@@ -947,7 +942,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             Toast.makeText(ProductLisitngActivityNew.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-
                 if (setAllTestWithBArcodeList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
                     setAllTestWithBArcodeList.get(i).setBarcode("");
                     setAllTestWithBArcodeList.get(i).setBarcode(s);
@@ -957,8 +951,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         }
 
         recycler_ulc_woe.removeAllViews();
-        ScanBarcodeAdapter attachBarcodeAdpter = new ScanBarcodeAdapter(ProductLisitngActivityNew.this, setAllTestWithBArcodeList);
 
+        ScanBarcodeAdapter attachBarcodeAdpter = new ScanBarcodeAdapter(ProductLisitngActivityNew.this, setAllTestWithBArcodeList);
         attachBarcodeAdpter.setOnItemClickListener(new ScanBarcodeAdapter.OnItemClickListener() {
             @Override
             public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
@@ -973,7 +967,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         recycler_ulc_woe.setAdapter(attachBarcodeAdpter);
     }
 
-
     @Override
     public void onBackPressed() {
         finish();
@@ -982,7 +975,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
     @Override
     public void recyclerViewListClicked(View v, int position) {
-
 
     }
 
@@ -1048,10 +1040,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             for (BaseModel.Childs ctm :
                                     selectedTestModel.getChilds()) {
                                 if (ctm.getCode().equals(testRateMasterModel.getCode())) {
-
                                     holder.check.setVisibility(View.GONE);
                                     holder.checked.setVisibility(View.GONE);
-
                                     holder.gray_check.setVisibility(View.VISIBLE);
                                     holder.isSelectedDueToParent = true;
                                     holder.parentTestCode = selectedTestModel.getCode();
@@ -1073,7 +1063,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 holder.checked.setVisibility(View.GONE);
                 holder.check.setVisibility(View.VISIBLE);
             }
-
 
             holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override

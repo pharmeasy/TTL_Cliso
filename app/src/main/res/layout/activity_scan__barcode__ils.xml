@@ -112,7 +112,8 @@
                     android:editable="false"
                     android:ems="10"
                     android:gravity="center|left"
-                    android:text="SELECT LAB ALERTS"
+                    android:hint="SELECT LAB ALERTS"
+                    android:textColorHint="@color/black"
                     android:textColor="@color/DARKGray"
                     android:textSize="14sp"></TextView>
             </LinearLayout>

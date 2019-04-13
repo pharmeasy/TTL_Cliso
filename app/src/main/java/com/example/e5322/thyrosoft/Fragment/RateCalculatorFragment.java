@@ -662,11 +662,9 @@ public class RateCalculatorFragment extends Fragment {
                 selectedTestsListRateCal = selectedTests;
                 expAdapter.notifyDataSetChanged();
                 if (selectedTestsListRateCal.size() != 0) {
-
                     showTestNmaesRateCal = new ArrayList<>();
                     getOnlyTestCode = new ArrayList<>();
                     ArrayList<Integer> Totalcunt = new ArrayList<>();
-
                     for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                         showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
                         if (selectedTestsListRateCal.get(i).getBarcodes().length != 0)
@@ -706,7 +704,6 @@ public class RateCalculatorFragment extends Fragment {
             }
         });
         containerlist.setAdapter(rateCAlAdapter);
-
     }
 
     private void getRatesofB2bandB2C(String getSpinnerSelectedItem) {
@@ -717,10 +714,7 @@ public class RateCalculatorFragment extends Fragment {
         GetMainModel obj = gsondtaa.fromJson(jsondata, GetMainModel.class);
 
         if (getSpinnerSelectedItem != null && !getSpinnerSelectedItem.equals("")) {
-
             if (getSpinnerSelectedItem.equals("TTL")) {
-
-
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         callAdapter(obj);
@@ -730,7 +724,6 @@ public class RateCalculatorFragment extends Fragment {
                         if (selectedTestsListRateCal != null) {
                             selectedTestsListRateCal.clear();
                         }
-
                         getDataFromSharedPref();
                         rateCAlAdapter.notifyDataSetChanged();
                         containerlist.setVisibility(View.VISIBLE);

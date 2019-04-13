@@ -19,10 +19,7 @@ import com.example.e5322.thyrosoft.Fragment.Wind_up_fragment;
 import com.example.e5322.thyrosoft.R;
 
 
-/**
- * Created by shahabuddin on 6/6/14.
- */
-public class ViewPagerAdapter extends FragmentPagerAdapter {
+public class StaffViewPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
 
@@ -36,7 +33,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
      */
 
 
-    public ViewPagerAdapter(final Resources resources, FragmentManager fm) {
+    public StaffViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);
         this.resources = resources;
     }
@@ -64,21 +61,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 4:
                 // First Fragment of Third Tab
-                result = new LedgerFragment();
+                result = new Wind_up_fragment();
                 break;
             case 5:
                 // First Fragment of Third Tab
-                result = new Wind_up_fragment();
-                break;
-            case 6:
-                // First Fragment of Third Tab
                 result = new CHNfragment();
                 break;
-            case 7:
-                // First Fragment of Third Tab
-                result = new BillingSummary();
-                break;
-            case 8:
+
+            case 6:
                 // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
@@ -92,7 +82,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 9;
+        return 7;
     }
 
     @Override
@@ -108,15 +98,11 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 return resources.getString(R.string.page_4);
             case 4:
-                return resources.getString(R.string.page_5);
-            case 5:
                 return resources.getString(R.string.page_6);
-            case 6:
+            case 5:
                 return resources.getString(R.string.page_7);
-            case 7:
+            case 6:
                 return resources.getString(R.string.page_8);
-            case 8:
-                return resources.getString(R.string.page_9);
 
             default:
                 return null;
@@ -162,3 +148,5 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return registeredFragments.get(position);
     }
 }
+
+

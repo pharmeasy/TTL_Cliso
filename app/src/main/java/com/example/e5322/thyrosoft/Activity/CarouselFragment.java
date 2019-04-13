@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.e5322.thyrosoft.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +31,11 @@ public class CarouselFragment extends Fragment {
     protected ViewPager pager;
     public static Object currentFragment;
     private ViewPagerAdapter adapter;
+    private StaffViewPagerAdapter adapterStafff;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private int positionInt = 0;
+    private SharedPreferences prefs;
+    String user,passwrd,access,api_key;
 
     public CarouselFragment() {
         // Required empty public constructor
@@ -43,6 +49,12 @@ public class CarouselFragment extends Fragment {
         mContext = (ManagingTabsActivity) getActivity();
         tabLayout = (TabLayout) rootView.findViewById(R.id.tabs);
         pager = (ViewPager) rootView.findViewById(R.id.vp_pages);
+
+        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -67,10 +79,14 @@ public class CarouselFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
+        if(access.equalsIgnoreCase("STAFF")){
+            adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(adapterStafff);
+        }else{
+            adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(adapter);
+        }
 
-
-        pager.setAdapter(adapter);
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), mContext.getResources().getColor(R.color.tabindicatorColor));
 
@@ -99,7 +115,12 @@ public class CarouselFragment extends Fragment {
         // currently visible tab Fragment
         OnBackPressListener currentFragment = null;
         try {
-            currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
+            if(access.equalsIgnoreCase("STAFF")){
+                currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
+            }else{
+                currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

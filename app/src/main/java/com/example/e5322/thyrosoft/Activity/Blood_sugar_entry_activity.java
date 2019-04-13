@@ -17,11 +17,14 @@ import com.example.e5322.thyrosoft.Fragment.CampIntimation.SelectTest;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
+import java.util.List;
+
 public class Blood_sugar_entry_activity extends AppCompatActivity {
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
     TextView enter, enetered;
     ImageView back, home, enter_arrow_enter, enter_arrow_entered;
     FrameLayout fragment_main;
+    private Object currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +73,6 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 enter_arrow_entered.setVisibility(View.GONE);
                 Enter_Blood_sugar_data_Fragment enter_blood_sugar_data_fragment = new Enter_Blood_sugar_data_Fragment();
                 replaceFragment(enter_blood_sugar_data_fragment);
-
             }
         });
 
@@ -83,9 +85,29 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 enter_arrow_enter.setVisibility(View.GONE);
                 Entered_blood_sugar_fragment entered_blood_sugar_fragment1 = new Entered_blood_sugar_fragment();
                 replaceFragment(entered_blood_sugar_fragment1);
-
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            List fragments = getSupportFragmentManager().getFragments();
+            currentFragment = fragments.get(fragments.size()-1);
+            if(currentFragment.toString().contains("Entered_blood_sugar_fragment")){
+                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                enter_arrow_enter.setVisibility(View.VISIBLE);
+                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                enter_arrow_entered.setVisibility(View.GONE);
+                Enter_Blood_sugar_data_Fragment c = new Enter_Blood_sugar_data_Fragment();
+                replaceFragment(c);
+            }if(currentFragment.toString().contains("Enter_Blood_sugar_data_Fragment")){
+                finish();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void replaceFragment(Fragment destFragment) {

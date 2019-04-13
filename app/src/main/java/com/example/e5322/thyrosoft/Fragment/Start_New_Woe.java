@@ -45,7 +45,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -82,10 +81,8 @@ import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Detai
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sdsmdg.tastytoast.TastyToast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -93,11 +90,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.LoginName;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -331,6 +326,7 @@ public class Start_New_Woe extends RootFragment {
     private RequestQueue requestQueue;
     private String pincode_pass;
 
+
     public Start_New_Woe() {
         // Required empty public constructor
     }
@@ -371,8 +367,8 @@ public class Start_New_Woe extends RootFragment {
         mContext = getContext();
 
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
-        name = (EditText) viewMain.findViewById(R.id.name);
 
+        name = (EditText) viewMain.findViewById(R.id.name);
         age = (EditText) viewMain.findViewById(R.id.age);
         id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
         barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
@@ -381,7 +377,6 @@ public class Start_New_Woe extends RootFragment {
         home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
         patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
         vial_number = (EditText) viewMain.findViewById(R.id.vial_number);
-
         male = (ImageView) viewMain.findViewById(R.id.male);
         male_red = (ImageView) viewMain.findViewById(R.id.male_red);
         female = (ImageView) viewMain.findViewById(R.id.female);
@@ -389,10 +384,6 @@ public class Start_New_Woe extends RootFragment {
         next_btn = (Button) viewMain.findViewById(R.id.next_btn_patient);
         spinyr = (Spinner) viewMain.findViewById(R.id.spinyr);
         scrollView2 = (ScrollView) viewMain.findViewById(R.id.scrollView2);
-
-
-//        ImageView  add = (ImageView)viewMain.findViewById(R.id.add);
-
         dateShow = (TextView) viewMain.findViewById(R.id.date);
         leadbarcodename = (TextView) viewMain.findViewById(R.id.leadbarcodename);
         leadidbarcodetest = (TextView) viewMain.findViewById(R.id.leadidbarcodetest);
@@ -401,7 +392,6 @@ public class Start_New_Woe extends RootFragment {
         leadname = (TextView) viewMain.findViewById(R.id.leadname);
         leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
         leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
-
         add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
         GlobalClass.setflagToRefreshData = false;
         timehr = (Spinner) viewMain.findViewById(R.id.timehr);
@@ -473,6 +463,9 @@ public class Start_New_Woe extends RootFragment {
         } else {
             scrollView2.setVisibility(View.VISIBLE);
         }
+
+
+        GlobalClass.isAutoTimeSelected(getActivity());
 
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
@@ -566,6 +559,7 @@ public class Start_New_Woe extends RootFragment {
         });
 
 
+
         dateShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -575,7 +569,6 @@ public class Start_New_Woe extends RootFragment {
                 datePickerDialog.getDatePicker().setMinDate(minDate);
                 datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
                 datePickerDialog.show();
-
             }
 
         });
@@ -669,7 +662,6 @@ public class Start_New_Woe extends RootFragment {
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                 ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
                     if (enteredString.length() > 0) {
                         kyc_format.setText(enteredString.substring(1));
                     } else {
@@ -1260,6 +1252,23 @@ public class Start_New_Woe extends RootFragment {
         });
 
         return viewMain;
+    }
+
+    private DatePicker findDatePicker(ViewGroup group) {
+        if (group != null) {
+            for (int i = 0, j = group.getChildCount(); i < j; i++) {
+                View child = group.getChildAt(i);
+                if (child instanceof DatePicker) {
+                    return (DatePicker) child;
+                } else if (child instanceof ViewGroup) {
+                    DatePicker result = findDatePicker((ViewGroup) child);
+                    if (result != null)
+                        return result;
+                }
+            }
+        }
+        return null;
+
     }
 
     private void enterNextFragment() {
@@ -5797,24 +5806,13 @@ public class Start_New_Woe extends RootFragment {
         }
     }
 
-    private void getDataFromDB() {
-        Cursor res = myDb.getAllData();
-        if (res.getCount() == 0) {
-            // show message
-//            Toast.makeText(mContext, "Error,Nothing found", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        StringBuffer buffer = new StringBuffer();
-        while (res.moveToNext()) {
-            buffer.append("ID :" + res.getString(0) + "\n");
-            buffer.append("BARCODES :" + res.getString(1) + "\n");
-            buffer.append("WOEJSON :" + res.getString(2) + "\n");
-        }
-
-        // Show all data
-        showMessage("Data", buffer.toString());
+    @Override
+    public void onResume() {
+        super.onResume();
+        GlobalClass.isAutoTimeSelected(getActivity());
     }
+
+
 
     public void showMessage(String title, String Message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

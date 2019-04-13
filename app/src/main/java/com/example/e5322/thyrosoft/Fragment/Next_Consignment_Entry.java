@@ -9,7 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -32,6 +35,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -201,6 +205,78 @@ public class Next_Consignment_Entry extends RootFragment {
         ArrayAdapter consignment_temp_spinner_values = ArrayAdapter.createFromResource(mContext, R.array.consignment_temp_spinner_values, R.layout.spinner_white_prop);
         consignment_temp_spinner_nxt.setAdapter(consignment_temp_spinner_values);
 
+        enter_barcode_nxt.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+        enter_barcodebsv_nxt.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+        enter_barcode_nxt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+        enter_barcodebsv_nxt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+        reenter_nxt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+        reenterbsv_nxt.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public void onDestroyActionMode(ActionMode mode) {
+            }
+
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+        });
+
 
         consignment_edt_txt_nxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -302,7 +378,7 @@ public class Next_Consignment_Entry extends RootFragment {
                 final String search_barcode = enter_barcode_nxt.getText().toString();
                 if (hasFocus) {
 
-                } else if (!search_barcode.equals("")) {
+                } else if (!search_barcode.equals("")&& search_barcode.length()>8) {
                     barcodeDetails_nxt = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                     barProgressDialog_nxt = new ProgressDialog(mContext);
                     barProgressDialog_nxt.setTitle("Kindly wait ...");

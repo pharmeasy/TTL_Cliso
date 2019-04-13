@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.widget.ImageView;
 
@@ -442,6 +443,43 @@ public class GlobalClass {
 
         return entity;
     }
+    public static boolean isAutoTimeSelected(final Activity activity) {
+        final boolean[] isAutoTimeSelected = new boolean[1];
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                if (Settings.Global.getInt(activity.getContentResolver(), Settings.Global.AUTO_TIME) == 1 && Settings.Global.getInt(activity.getContentResolver(), Settings.Global.AUTO_TIME_ZONE) == 1) {
+                    isAutoTimeSelected[0] = true;
+                } else {
+                    final AlertDialog.Builder builder1 = new AlertDialog.Builder(activity);
+                    builder1.setTitle("Warning ").setMessage("You have to Enable Automatic date and time/Timezone settings").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            activity.startActivity(new Intent(Settings.ACTION_DATE_SETTINGS));
+                            try {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                    if (Settings.Global.getInt(activity.getContentResolver(), Settings.Global.AUTO_TIME) == 1) {
+                                        isAutoTimeSelected[0] = true;
+                                    } else {
+                                        isAutoTimeSelected[0] = false;
+
+                                    }
+                                }
+                            } catch (Settings.SettingNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    builder1.setCancelable(false);
+                    builder1.show();
+                }
+
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        return isAutoTimeSelected[0];
+    }
+
 
 
 }

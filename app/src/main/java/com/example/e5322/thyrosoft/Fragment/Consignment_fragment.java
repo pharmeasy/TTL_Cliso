@@ -723,7 +723,7 @@ Consignment_fragment extends RootFragment {
                 final String search_barcode = enter_barcode.getText().toString();
                 if (hasFocus) {
 
-                } else if (!search_barcode.equals("") && search_barcode.length()>8) {
+                } else if (!search_barcode.equals("") && search_barcode.length() > 8) {
                     barcodeDetails = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(mContext);
                     progressDialog.setTitle("Kindly wait ...");
@@ -750,7 +750,6 @@ Consignment_fragment extends RootFragment {
                                 progressDialog.dismiss();
                                 Toast.makeText(mContext, "" + response, Toast.LENGTH_SHORT).show();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                         @Override
@@ -768,12 +767,11 @@ Consignment_fragment extends RootFragment {
                             DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     barcodeDetails.add(jsonObjectRequestPop);
                     Log.e(TAG, "onFocusChange: url" + jsonObjectRequestPop);
-                }else{
+                } else {
                     enter_barcode.setText("");
                 }
             }
         });
-
 
         enter_barcode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -791,7 +789,6 @@ Consignment_fragment extends RootFragment {
                     }
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
@@ -809,15 +806,13 @@ Consignment_fragment extends RootFragment {
                 final String search_barcode = enter_barcode.getText().toString();
                 if (hasFocus) {
 
-                } else if (!search_barcode.equals("") && search_barcode.length()==8) {
+                } else if (!search_barcode.equals("") && search_barcode.length() == 8) {
 
-                }else{
+                } else {
                     enter_barcodebsv.setText("");
                 }
             }
         });
-
-
 
         enter_barcodebsv.addTextChangedListener(new TextWatcher() {
             @Override
@@ -856,9 +851,7 @@ Consignment_fragment extends RootFragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(mContext,
-                            ToastFile.entr_brcd,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         reenterbsv.setText(enteredString.substring(1));
                     } else {
@@ -881,11 +874,9 @@ Consignment_fragment extends RootFragment {
                     currentText = reenterbsv.getText().toString();
                     if (getPreviouseText.equals(currentText)) {
                         currentText = reenterbsv.getText().toString();
-
                         lineareditbarcodebsv.setVisibility(View.GONE);
                         bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
                         bsv_barcode_scanning.setText(currentText);
-
                     } else {
                         enter_barcodebsv.setText("");
                         reenterbsv.setText("");
@@ -895,23 +886,19 @@ Consignment_fragment extends RootFragment {
                 } else {
 
                 }
-
             }
         });
 
 
         enter_barcode.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(mContext,
-                            ToastFile.entr_brcd,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         enter_barcode.setText(enteredString.substring(1));
                     } else {

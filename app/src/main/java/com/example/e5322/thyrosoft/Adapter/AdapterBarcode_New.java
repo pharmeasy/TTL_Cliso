@@ -573,11 +573,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
             } else {
             }
-
         }
     }
-
-
 }
 
 

@@ -7,25 +7,26 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-   /* public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
     public static String GenerateTid = "https://www.thyrocare.com/APIs/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API/BDN/api";
-    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/"; // ---- Live*/
+    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/"; // ---- Live
 
 
     //TODO staging
-    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+/*    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "http://www.thyrocare.com/API_BETA/B2B/";
     public static String SGC = "http://staging.thyrocare.com/API/BDN/api/";
     public static String Static_API = "http://www.thyrocare.com/API_BETA/B2B/";
     public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String SERVER_BASE_API_URL_PROD = "https://staging.thyrocare.com/API/BDN/api";
-    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
+    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";*/
+
     //POOJA
     public static String imgURL="http://www.charbi.com/assets/photo/Emp/";
     public static String count = LIVEAPI + "WO.svc/";
