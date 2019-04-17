@@ -289,8 +289,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:layout_gravity="left|center"
-                    android:layout_weight="1."
-                    android:hint="From date"
+                    android:layout_weight="1"
                     android:paddingRight="6dp"
                     android:textSize="13sp" />
 

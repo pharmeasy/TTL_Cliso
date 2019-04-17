@@ -109,9 +109,7 @@
                 android:src="@drawable/rev_triangle"
                 android:visibility="gone" />
         </LinearLayout>
-
     </LinearLayout>
-
     <FrameLayout
         android:id="@+id/fragment_mainLayout"
         android:layout_width="match_parent"

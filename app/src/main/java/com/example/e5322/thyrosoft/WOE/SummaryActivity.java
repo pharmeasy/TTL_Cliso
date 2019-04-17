@@ -56,8 +56,8 @@ public class SummaryActivity extends AppCompatActivity {
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
     LinearLayoutManager linearLayoutManager;
-    LinearLayout SGCLinearid;
-    TextView saverepeat, title, delete_woe;
+    LinearLayout SGCLinearid, ll_patient_age, ll_patient_gender;
+    TextView saverepeat, title, delete_woe, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
     String getSelctedTests;
     SharedPreferences prefs;
@@ -134,6 +134,10 @@ public class SummaryActivity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         SGCLinearid = (LinearLayout) findViewById(R.id.SGCLinearid);
         btech_layout = (LinearLayout) findViewById(R.id.btech_layout);
+        ll_patient_age = (LinearLayout) findViewById(R.id.ll_patient_age);
+        ll_patient_gender = (LinearLayout) findViewById(R.id.ll_patient_gender);
+        txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
+        txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
         linearLayoutManager = new LinearLayoutManager(SummaryActivity.this);
         sample_list.setLayoutManager(linearLayoutManager);
 //        setHasOptionsMenu(true);
@@ -225,17 +229,32 @@ public class SummaryActivity extends AppCompatActivity {
 
         if (patientYear.equalsIgnoreCase("")) {
             pat_name.setText(patientName);
+            ll_patient_age.setVisibility(View.GONE);
+            ll_patient_gender.setVisibility(View.GONE);
         } else {
-            pat_name.setText(patientName + "(" + patientYear + " " + patientYearType + "/" + patientGender + ")");
+            pat_name.setText(patientName);
+            if (patientYear != null && !patientYear.equalsIgnoreCase("") && patientYearType != null && !patientYearType.equalsIgnoreCase("")) {
+                ll_patient_age.setVisibility(View.VISIBLE);
+                txt_pat_age.setText(patientYear + " " + patientYearType);
+            } else {
+                ll_patient_age.setVisibility(View.GONE);
+            }
+            if (patientGender != null && !patientGender.equalsIgnoreCase("")) {
+                ll_patient_gender.setVisibility(View.VISIBLE);
+                if (patientGender.equalsIgnoreCase("M")) {
+                    txt_pat_gender.setText("Male");
+                } else if(patientGender.equalsIgnoreCase("F")){
+                    txt_pat_gender.setText("Female");
+                }
+            } else {
+                ll_patient_gender.setVisibility(View.GONE);
+            }
         }
+
         pat_sct.setText(sampleCollectionDate + " " + sampleCollectionTime);
         pat_ref.setText(referenceBy);
         alertMsg = "";
-
-
         //display the current version in a TextView
-
-
         if (btechID != null) {
             btech.setText(btechID);
         } else {

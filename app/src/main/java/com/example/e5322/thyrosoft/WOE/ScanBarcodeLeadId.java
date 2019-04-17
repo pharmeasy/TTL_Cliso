@@ -258,7 +258,7 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
                 SimpleDateFormat sdfs = new SimpleDateFormat("dd-MM-yyyy");
                 SimpleDateFormat outsdf = new SimpleDateFormat("yyyy-MM-dd");
-                SimpleDateFormat outsdf22 = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat outsdf22 = new SimpleDateFormat("yyyy-MM-dd");
                 try {
                     Date dateTopass = sdfs.parse(getDateTopAss);
                     convertDate = outsdf22.format(dateTopass);
@@ -295,8 +295,16 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
+        String setDateFormat = day+"-"+(month + 1)+"-"+year;
+        SimpleDateFormat sdft = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            Date getDate = sdft.parse(setDateFormat);
+            setDateFormat= sdft.format(getDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        date.setText(new StringBuilder().append(day).append("-").append(month + 1).append("-").append(year).append(" "));
+        date.setText(setDateFormat);
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -324,8 +332,18 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
             year = selectedYear;
             month = selectedMonth;
             day = selectedDay;
+
+            String setDateFormat = day+"-"+(month + 1)+"-"+year;
+            SimpleDateFormat sdft = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+                Date getDate = sdft.parse(setDateFormat);
+                setDateFormat= sdft.format(getDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            date.setText(setDateFormat);
             // Show selected date
-            date.setText(new StringBuilder().append(day).append("-").append(month + 1).append("-").append(year).append(" "));
+
         }
     };
 

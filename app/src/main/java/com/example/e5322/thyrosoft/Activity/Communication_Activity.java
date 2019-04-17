@@ -54,8 +54,6 @@ public class Communication_Activity extends AppCompatActivity {
     ImageView enter_arrow_enter, enter_arrow_entered;
     LinearLayout unchecked_entered_ll, enter_ll_unselected;
     public static RequestQueue PostQue;
-    HashMap<ArrayList, ArrayList<CommInbox_Model>> listDataChild;
-    HashMap<ArrayList, ArrayList<CommToCpl_Model>> listToDataChild;
     ExpandableListCommunication adapter;
     ExpandableListCommunicationSents adapterSents;
     ExpandableListView expandlistcommunication;

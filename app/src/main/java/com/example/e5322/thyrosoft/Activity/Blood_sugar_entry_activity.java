@@ -37,12 +37,9 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
         enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
-
         enter = (TextView) findViewById(R.id.enter);
         enetered = (TextView) findViewById(R.id.enetered);
-
         fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
-
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
         enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -104,7 +101,6 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
             }if(currentFragment.toString().contains("Enter_Blood_sugar_data_Fragment")){
                 finish();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

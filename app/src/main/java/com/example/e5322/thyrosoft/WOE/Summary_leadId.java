@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,7 +62,7 @@ public class Summary_leadId extends AppCompatActivity {
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
     LinearLayoutManager linearLayoutManager;
-    TextView saverepeat, saveclose, id_number, title;
+    TextView saverepeat, saveclose, id_number, title, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
     ImageView home, back;
 
@@ -99,6 +100,7 @@ public class Summary_leadId extends AppCompatActivity {
     private String sr_number;
     private int sr_number_pass_to_api;
     private String fulldate;
+    LinearLayout ll_patient_age, ll_patient_gender;
 
     @SuppressLint("NewApi")
     @Override
@@ -125,6 +127,10 @@ public class Summary_leadId extends AppCompatActivity {
         saveclose = (TextView) findViewById(R.id.saveclose);
         linearLayoutManager = new LinearLayoutManager(Summary_leadId.this);
         sample_list.setLayoutManager(linearLayoutManager);
+        ll_patient_age = (LinearLayout) findViewById(R.id.ll_patient_age);
+        ll_patient_gender = (LinearLayout) findViewById(R.id.ll_patient_gender);
+        txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
+        txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -290,7 +296,7 @@ public class Summary_leadId extends AppCompatActivity {
         }
 
         pat_type.setText("TTL/" + leadTYPE);
-        pat_name.setText(leadNAME + "(" + leadAGE + " " + patientYearType + "/" + patientGender + ")");
+        pat_name.setText(leadNAME);
         pat_sct.setText(leadSCT);
         pat_ref.setText(leadREF_BY);
         btech.setText(leadBCT);
@@ -298,8 +304,19 @@ public class Summary_leadId extends AppCompatActivity {
         tests.setText(leadTESTS);
         id_number.setText(leadORDER_NO);
 
+        if (leadAGE != null && !leadAGE.equalsIgnoreCase("") && patientYearType != null && !patientYearType.equalsIgnoreCase("")) {
+            ll_patient_age.setVisibility(View.VISIBLE);
+            txt_pat_age.setText(leadAGE + " " + patientYearType);
+        } else {
+            ll_patient_age.setVisibility(View.GONE);
+        }
+        if (patientGender != null && !patientGender.equalsIgnoreCase("")) {
+            ll_patient_gender.setVisibility(View.VISIBLE);
+            txt_pat_gender.setText(patientGender);
+        } else {
+            ll_patient_gender.setVisibility(View.GONE);
+        }
         GlobalClass.barcodelists = new ArrayList<>();
-
         finalspecimenttypewiselist = new ArrayList<>();
         Summary_leadId.this.setTitle("Summary");
         Bundle bundle = getIntent().getExtras();
@@ -307,7 +324,6 @@ public class Summary_leadId extends AppCompatActivity {
         getDateTopass = bundle.getString("Date");
         get_time = bundle.getString("Time");
         getDate_and_time = bundle.getString("DateTime");
-
 
         for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
             barcodelistData = new Barcodelist();
@@ -346,7 +362,6 @@ public class Summary_leadId extends AppCompatActivity {
 
 
     private void saveandClose() {
-
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -357,10 +372,7 @@ public class Summary_leadId extends AppCompatActivity {
             e.printStackTrace();
         }
         outputDateStr = outputFormat.format(date);
-
         //sampleCollectionTime
-
-
         GlobalClass.Req_Date_Req(getDate_and_time, "hh:mm a", "HH:mm:ss");
 
         Log.e(TAG, "fetchData: " + outputDateStr);
@@ -377,11 +389,8 @@ public class Summary_leadId extends AppCompatActivity {
             }
         }
 
-
         referenceBy = leadREF_BY;
-
         if (referenceBy != null) {
-
             if (sourceILSMainModel != null) {
                 if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0 && sourceILSMainModel.getMASTERS().getREF_DR() != null) {
                     for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
@@ -397,8 +406,6 @@ public class Summary_leadId extends AppCompatActivity {
             } else {
                 leadREF_ID = "";
             }
-
-
         }
 
         progressDialog = new ProgressDialog(Summary_leadId.this);

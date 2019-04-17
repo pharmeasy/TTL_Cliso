@@ -51,7 +51,7 @@
             android:layout_weight="0.4"
             android:background="@color/cement_light"
             android:orientation="horizontal"
-            android:weightSum="2">
+            >
 
             <TextView
                 android:layout_width="0dp"
@@ -67,7 +67,7 @@
                 android:id="@+id/spinnercomm"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="1.5"
                 android:backgroundTint="@color/maroon"
                 android:textAlignment="center" />
         </LinearLayout>

@@ -172,6 +172,15 @@ Consignment_fragment extends RootFragment {
 
         viewMain = (View) inflater.inflate(R.layout.tm, container, false);
 
+        barProgressDialog = new ProgressDialog(mContext);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
         direct = (RadioButton) viewMain.findViewById(R.id.direct);
         through_tsp = (RadioButton) viewMain.findViewById(R.id.through_tsp);
         mode_spinner = (Spinner) viewMain.findViewById(R.id.mode_spinner);
@@ -510,11 +519,11 @@ Consignment_fragment extends RootFragment {
             mode_spinner.setSelection(0);
         }
         if (GlobalClass.flight_name != null) {
-            if (GlobalClass.flight_name.equals("JET Airways")) {
+            if (GlobalClass.flight_name.equals("Air India")) {
                 filght_spinner.setSelection(1);
-            } else if (GlobalClass.flight_name.equals("Indian Airlines")) {
+            } else if (GlobalClass.flight_name.equals("Indigo")) {
                 filght_spinner.setSelection(2);
-            } else if (GlobalClass.flight_name.equals("Others")) {
+            } else if (GlobalClass.flight_name.equals("Spice jet")) {
                 filght_spinner.setSelection(3);
             }
         } else {
@@ -616,21 +625,40 @@ Consignment_fragment extends RootFragment {
             public void onClick(View v) {
                 String mode = mode_spinner.getSelectedItem().toString();
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR),
-                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_MONTH, -4);
-                Date result = cal.getTime();
-                datePickerDialog.getDatePicker().setMinDate(result.getTime());
+                if (mode.equalsIgnoreCase("Air Cargo") || mode.equalsIgnoreCase("Bus")) {
+                    if (dispatch_time.getText().toString().equals("")) {
+                        TastyToast.makeText(getActivity(), "First select dispatch time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR),
+                                myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                        Calendar cal = Calendar.getInstance();
+                        cal.add(Calendar.DAY_OF_MONTH, -4);
+                        Date result = cal.getTime();
+                        datePickerDialog.getDatePicker().setMinDate(result.getTime());
 
-                Calendar cal1 = Calendar.getInstance();
-                cal1.add(Calendar.DAY_OF_MONTH, 2);
-                Date result1 = cal1.getTime();
-                datePickerDialog.getDatePicker().setMaxDate(result1.getTime());
+                        Calendar cal1 = Calendar.getInstance();
+                        cal1.add(Calendar.DAY_OF_MONTH, 2);
+                        Date result1 = cal1.getTime();
+                        datePickerDialog.getDatePicker().setMaxDate(result1.getTime());
 
-                datePickerDialog.show();
+                        datePickerDialog.show();
+                    }
 
+                }else{
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR),
+                            myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.DAY_OF_MONTH, -4);
+                    Date result = cal.getTime();
+                    datePickerDialog.getDatePicker().setMinDate(result.getTime());
 
+                    Calendar cal1 = Calendar.getInstance();
+                    cal1.add(Calendar.DAY_OF_MONTH, 2);
+                    Date result1 = cal1.getTime();
+                    datePickerDialog.getDatePicker().setMaxDate(result1.getTime());
+
+                    datePickerDialog.show();
+                }
             }
         });
 
@@ -666,24 +694,10 @@ Consignment_fragment extends RootFragment {
             @Override
             public void onClick(View v) {
                 String mode = mode_spinner.getSelectedItem().toString();
-                if (mode.equalsIgnoreCase("Air Cargo") || mode.equalsIgnoreCase("Bus")) {
-                    if (expected_departure_time.getText().toString().equals("")) {
-                        TastyToast.makeText(getActivity(), "Select departure time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (expected_arrival_time.getText().toString().equals("")) {
-                        TastyToast.makeText(getActivity(), "Select arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
-                        DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, dispatch_time_date, myCalendar
-                                .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                                myCalendar.get(Calendar.DAY_OF_MONTH));
-                        datePickerDialog.show();
-                    }
-                } else {
                     DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, dispatch_time_date, myCalendar
                             .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                             myCalendar.get(Calendar.DAY_OF_MONTH));
                     datePickerDialog.show();
-
-                }
 
             }
         });
@@ -723,7 +737,7 @@ Consignment_fragment extends RootFragment {
                 final String search_barcode = enter_barcode.getText().toString();
                 if (hasFocus) {
 
-                } else if (!search_barcode.equals("") && search_barcode.length() > 8) {
+                } else if (!search_barcode.equals("") && search_barcode.length() >= 8) {
                     barcodeDetails = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(mContext);
                     progressDialog.setTitle("Kindly wait ...");
@@ -769,47 +783,6 @@ Consignment_fragment extends RootFragment {
                     Log.e(TAG, "onFocusChange: url" + jsonObjectRequestPop);
                 } else {
                     enter_barcode.setText("");
-                }
-            }
-        });
-
-        enter_barcode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(mContext,
-                            ToastFile.crt_brcd,
-                            Toast.LENGTH_SHORT).show();
-                    if (enteredString.length() > 0) {
-                        enter_barcode.setText(enteredString.substring(1));
-                    } else {
-                        enter_barcode.setText("");
-                    }
-                }
-            }
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                String enteredString = s.toString();
-            }
-        });
-
-        enter_barcodebsv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                final String search_barcode = enter_barcode.getText().toString();
-                if (hasFocus) {
-
-                } else if (!search_barcode.equals("") && search_barcode.length() == 8) {
-
-                } else {
-                    enter_barcodebsv.setText("");
                 }
             }
         });
@@ -878,9 +851,7 @@ Consignment_fragment extends RootFragment {
                         bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
                         bsv_barcode_scanning.setText(currentText);
                     } else {
-                        enter_barcodebsv.setText("");
-                        reenterbsv.setText("");
-                        Toast.makeText(mContext, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+
                     }
 
                 } else {
@@ -946,20 +917,16 @@ Consignment_fragment extends RootFragment {
             public void afterTextChanged(Editable s) {
                 String enteredString = s.toString();
                 int getlength = enter_barcode.getText().length();
-                if (getlength == 8) {
+                if (getlength >= 8) {
                     String getPreviouseText = enter_barcode.getText().toString();
                     currentText = reenter.getText().toString();
                     if (getPreviouseText.equals(currentText)) {
                         currentText = reenter.getText().toString();
-
                         lineareditbarcode.setVisibility(View.GONE);
                         consignment_name_layout.setVisibility(View.VISIBLE);
                         consignment_barcd_btn.setText(currentText);
-
                     } else {
-                        reenter.setText("");
-                        enter_barcode.setText("");
-                        Toast.makeText(mContext, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+
                     }
 
                 } else {
@@ -1054,7 +1021,6 @@ Consignment_fragment extends RootFragment {
                     expected_arrival_time_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
-
 
                     flight_name_layout.setVisibility(View.GONE);
                     flight_number_layout.setVisibility(View.GONE);
@@ -1903,15 +1869,10 @@ Consignment_fragment extends RootFragment {
             tsp_su_code = source_code_pass.getText().toString();
         }
 
-        barProgressDialog = new ProgressDialog(mContext);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
+
         barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+
+
         PostQueAirCargo = Volley.newRequestQueue(mContext);
         JSONObject jsonObjectOtp = new JSONObject();
         try {
@@ -1941,34 +1902,25 @@ Consignment_fragment extends RootFragment {
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.consignmentEntry, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
                 try {
                     String finalJson = response.toString();
+                    Log.e(TAG, "onResponse: "+response );
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
                     Response = parentObjectOtp.getString("Response");
                     message = parentObjectOtp.getString("Message");
                     ResId = parentObjectOtp.getString("ResId");
                     if (Response.equalsIgnoreCase("Success")) {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
                         TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
                         Wind_up_fragment a2Fragment = new Wind_up_fragment();
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
                         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-
-
                     } else if (Response.equalsIgnoreCase(small_invalidApikey)) {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
                         GlobalClass.redirectToLogin(mContext);
                     } else {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
                         TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 
@@ -1987,6 +1939,8 @@ Consignment_fragment extends RootFragment {
             }
         });
         PostQueAirCargo.add(jsonObjectRequest1);
+        Log.e(TAG, "doTheConsignmentforLME: URL"+jsonObjectRequest1 );
+        Log.e(TAG, "doTheConsignmentforLME: object"+jsonObjectOtp );
     }
 
     @Override
@@ -2169,8 +2123,16 @@ Consignment_fragment extends RootFragment {
 
                             dep_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
 
-                            expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
-                            expected_departure_time.setError(null);
+                            if(arr_date_time!=null){
+                                if(arr_date_time.equals(dep_date_time)&&arr_date_time.before(dep_date_time));
+                                expected_arrival_time.setText("");
+                                TastyToast.makeText(getActivity(), "Arrival time should be greater than dispatch time and departure time!", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }else{
+                                expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
+                                expected_departure_time.setError(null);
+                            }
+
+
                         }
                     }, CalendarHour, CalendarMinute, false);
             timepickerdialog.show();
@@ -2242,11 +2204,11 @@ Consignment_fragment extends RootFragment {
                             total_time = GlobalClass.convertDate(total_time);
 
                             arr_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
-                            if (dep_date_time.before(arr_date_time)) {
+                            if (arr_date_time.after(dispatch_date_time) && arr_date_time.after(dep_date_time) && !arr_date_time.equals(dispatch_date_time) && !arr_date_time.equals(dep_date_time)) {
                                 expected_arrival_time.setText(getDateToShow + " " + getTimetoPass);
                             } else {
                                 expected_arrival_time.setHint("Expected Time Arrival");
-                                TastyToast.makeText(getActivity(), "Expected time should be greater than departure time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                TastyToast.makeText(getActivity(), "Arrival time should be greater than dispatch time and departure time!", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                             }
 
@@ -2372,10 +2334,10 @@ Consignment_fragment extends RootFragment {
                                 dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
 
                                 if (arr_date_time != null) {
-                                    if (arr_date_time.before(dispatch_date_time)) {
+                                    if (arr_date_time.after(dispatch_date_time) && !arr_date_time.equals(dispatch_date_time)) {
                                         dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                                     } else {
-                                        dispatch_time.setHint("Dispatch Time");
+                                        expected_arrival_time.setText("");
                                         TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     }
                                 } else {

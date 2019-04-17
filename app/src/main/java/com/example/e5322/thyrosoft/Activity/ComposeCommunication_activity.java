@@ -50,7 +50,6 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private SimpleDateFormat sdf;
     String Date = "";
     private Global globalClass;
-
     ProgressDialog barProgressDialog;
     Button sendcomm;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
@@ -161,12 +160,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
                 String getCommunication = commuTXT.getText().toString();
                 if (getCommunication.equals("")) {
                     TastyToast.makeText(ComposeCommunication_activity.this, "Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 } else {
-
                     barProgressDialog = new ProgressDialog(ComposeCommunication_activity.this);
                     barProgressDialog.setTitle("Kindly wait ...");
                     barProgressDialog.setMessage(ToastFile.processing_request);
@@ -184,15 +181,11 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         offline_img.setVisibility(View.GONE);
                         parent_ll.setVisibility(View.VISIBLE);
                     }
-
-
                 }
-
                 commuTXT.setText("");
                 spinnercomm.setSelection(0);
             }
         });
-
     }
 
     private void PostData() {

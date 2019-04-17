@@ -268,9 +268,9 @@ public class Wind_up_fragment extends RootFragment {
         client_type=prefs.getString("CLIENT_TYPE", null);
 
         if(client_type!=null && client_type.equalsIgnoreCase("OLC")){
-            logistic_ll.setVisibility(View.VISIBLE);
+            logistic_ll.setVisibility(View.GONE);//--TODO if client type is OLC then make logistic_ll visible(Logistic charges)
         }else{
-            logistic_ll.setVisibility(View.VISIBLE);
+            logistic_ll.setVisibility(View.GONE);
         }
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
@@ -586,12 +586,9 @@ public class Wind_up_fragment extends RootFragment {
                     String getCount = parentObjectOtp.getString("getCount");
                     String response1 = parentObjectOtp.getString("Response");
                     if (getCount.equals("0")) {
-
-
                         enterNextFragment();
-
                     } else {
-                        new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                       /* new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Consignment Status")
                                 .setContentText("Consignment entry already done for the day")
                                 .setConfirmText("Ok")
@@ -601,7 +598,8 @@ public class Wind_up_fragment extends RootFragment {
                                         sDialog.dismissWithAnimation();
                                     }
                                 })
-                                .show();
+                                .show();*/
+                        enterNextFragment();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

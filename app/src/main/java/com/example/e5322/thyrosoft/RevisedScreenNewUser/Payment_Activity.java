@@ -258,8 +258,6 @@ public class Payment_Activity extends AppCompatActivity {
         btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 amountTopass = edt_enter_amt.getText().toString();
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
@@ -268,7 +266,7 @@ public class Payment_Activity extends AppCompatActivity {
                     int modulus = getAmt % 5000;
                     System.out.println("getAmount ::" + modulus);
 
-                   /* if (getAmt < 5000) {
+                    if (getAmt < 5000) {
                         new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
                                 .setContentText(getString(R.string.amt_str))
                                 .setConfirmText("Ok")
@@ -290,8 +288,7 @@ public class Payment_Activity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    } else {*/
-
+                    } else {
                         if (cd.isConnectingToInternet()) {
                             globalData.showProgressDialog();
                             try {
@@ -343,7 +340,7 @@ public class Payment_Activity extends AppCompatActivity {
                     }
 
 
-//                }
+                }
 
             }
         });
@@ -907,14 +904,26 @@ public class Payment_Activity extends AppCompatActivity {
                     postdata.put(CLIENT_TYPE, "TSP");
 
                     if (result.getString("trnVer_status") != null && !result.getString("trnVer_status").isEmpty() && result.getString("trnVer_status").equalsIgnoreCase("SUCCESS")) {
-                        postdata.put(CLIENT_STATUS, SUCCESS);
-                        postdata.put(PAYMENTSTATUS, SUCCESS);
-                        if (cd.isConnectingToInternet()) {
-                            flag_for_same_orderno = false;// this flag is to use same order no if transaction fails
-                            new AsyncTaskupdatepaymentstatus(postdata, SUCCESS).execute();
+                        if (mPayU_response.getString("status").equalsIgnoreCase("SUCCESS")) {
+                            postdata.put(CLIENT_STATUS, SUCCESS);
+                            postdata.put(PAYMENTSTATUS, SUCCESS);
+                            if (cd.isConnectingToInternet()) {
+                                flag_for_same_orderno = false;// this flag is to use same order no if transaction fails
+                                new AsyncTaskupdatepaymentstatus(postdata, SUCCESS).execute();
+                            } else {
+                                globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            }
                         } else {
-                            globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            postdata.put(CLIENT_STATUS, FAILURE);
+                            postdata.put(PAYMENTSTATUS, FAILURE);
+                            if (cd.isConnectingToInternet()) {
+                                flag_for_same_orderno = true; // this flag is to use same order no transaction fails
+                                new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
+                            } else {
+                                globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            }
                         }
+
 
                     } else {
                         postdata.put(CLIENT_STATUS, FAILURE);

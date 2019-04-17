@@ -304,7 +304,6 @@ public class RateCalculatorFragment extends Fragment {
         myPojo = gson.fromJson(json, MyPojo.class);
         if (myPojo != null) {
             getBrandName = new ArrayList<>();
-
             if (myPojo != null) {
                 if (myPojo.getMASTERS().getBRAND_LIST() != null) {
                     for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
@@ -314,7 +313,6 @@ public class RateCalculatorFragment extends Fragment {
                             R.layout.spinnerproperty,
                             getBrandName));
                 }
-
             }
         } else {
             requestJsonObject();
@@ -325,14 +323,11 @@ public class RateCalculatorFragment extends Fragment {
                 getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
                 getRatesofB2bandB2C(getSpinnerSelectedItem);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-
-
         outlabtestsearch.setFilters(new InputFilter[]{EMOJI_FILTER});
         outlabtestsearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -457,7 +452,6 @@ public class RateCalculatorFragment extends Fragment {
             }
         });
 
-
         poptab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -467,8 +461,6 @@ public class RateCalculatorFragment extends Fragment {
                 profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
                 test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
-
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
@@ -483,7 +475,6 @@ public class RateCalculatorFragment extends Fragment {
 
                     } else {
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-
                     }
                 }
             }
@@ -499,7 +490,6 @@ public class RateCalculatorFragment extends Fragment {
                 poptab.setTextColor(getResources().getColor(R.color.colorBlack));
                 test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
@@ -511,16 +501,12 @@ public class RateCalculatorFragment extends Fragment {
                             }
                         }
                         callAdapaterTosetData(finalproductlist, totalproductlist);
-
                     } else {
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-
                     }
                 }
-
             }
         });
-
 
         test_txt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -544,7 +530,6 @@ public class RateCalculatorFragment extends Fragment {
                             }
                         }
                         callAdapaterTosetData(finalproductlist, totalproductlist);
-
                     } else {
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                     }
@@ -555,13 +540,10 @@ public class RateCalculatorFragment extends Fragment {
         sv_testsList_ttl.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 // TODO Auto-generated method stub
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 // TODO Auto-generated method stub
             }
 
@@ -591,7 +573,6 @@ public class RateCalculatorFragment extends Fragment {
                             String testname = finalproductlist.get(i).getName();
                             filteredFilesttl.add(finalproductlist.get(i));
                         } else {
-
                         }
                         callAdapaterTosetData(filteredFilesttl, totalproductlist);
                     }
@@ -600,8 +581,6 @@ public class RateCalculatorFragment extends Fragment {
                 }
             }
         });
-
-
         return viewrate_calfrag;
     }
 
@@ -610,7 +589,6 @@ public class RateCalculatorFragment extends Fragment {
         Gson gsondtaa = new Gson();
         String jsondata = appSharedPrefsdata.getString("MyObject", "");
         obj = gsondtaa.fromJson(jsondata, GetMainModel.class);
-
 
         if (obj != null) {
             if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
@@ -625,31 +603,23 @@ public class RateCalculatorFragment extends Fragment {
                         finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                         b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-
                         getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-
                     }
                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
                         b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
-
                         getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
                     }
                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
                         b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
-
                         getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                     }
                 }
                 totalproductlist = getAllTests;
-
                 callAdapaterTosetData(finalproductlist, totalproductlist);
-
-
             } else {
                 //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-
             }
         }
     }
@@ -831,10 +801,7 @@ public class RateCalculatorFragment extends Fragment {
                     }
                 }
             }
-
         }
-
-
     }
 
     private void requestJsonObject() {
@@ -845,7 +812,6 @@ public class RateCalculatorFragment extends Fragment {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-
                         Log.e(TAG, "onResponse: " + response);
                         Gson gson = new Gson();
                         myPojo = gson.fromJson(response.toString(), MyPojo.class);
@@ -869,7 +835,6 @@ public class RateCalculatorFragment extends Fragment {
                                     R.layout.spinnerproperty,
                                     getBrandName));
                         }
-
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
                         Toast.makeText(getActivity(), "" + e, Toast.LENGTH_SHORT).show();

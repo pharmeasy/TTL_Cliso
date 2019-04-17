@@ -54,14 +54,14 @@ public class Summary_Activity_WOE extends AppCompatActivity {
     SharedPreferences prefs;
     MyPojo myPojo;
     BCT_LIST[] bct_lists;
-    LinearLayout SGCLinearid, refbylinear, btechlinear, linear_scp,delete_patient_test_water;
+    LinearLayout SGCLinearid, refbylinear, btechlinear, linear_scp, delete_patient_test_water, ll_patient_age, ll_patient_gender;
     String user, passwrd, genderId, access, api_key, error, pid, response1, barcodes, resID, saveAgeType, getBtechName;
     LinearLayout delete_patient_test;
     private String mParam2;
     public static com.android.volley.RequestQueue deletePatienDetail;
     RecyclerView sample_list;
     ArrayList<Summary_model> summary_models;
-    TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile, title;
+    TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile, title, txt_pat_age, txt_pat_gender;
     ProgressDialog barProgressDialog;
     LinearLayoutManager linearLayoutManager;
     private SummaryFragment.OnFragmentInteractionListener mListener;
@@ -98,6 +98,12 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         refbylinear = (LinearLayout) findViewById(R.id.refbylinear);
         btechlinear = (LinearLayout) findViewById(R.id.btechlinear);
         linear_scp = (LinearLayout) findViewById(R.id.linear_scp);
+
+        ll_patient_age = (LinearLayout) findViewById(R.id.ll_patient_age);
+        ll_patient_gender = (LinearLayout) findViewById(R.id.ll_patient_gender);
+        txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
+        txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
+
         linearLayoutManager = new LinearLayoutManager(Summary_Activity_WOE.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
@@ -159,12 +165,12 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         GlobalClass.barcodelists = new ArrayList<>();
         ArrayList<String> getNames = new ArrayList<>();
 
-        if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")){
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
             pat_type.setText("EQNX" + "/" +
                     GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
                     GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
                     GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
-        }else{
+        } else {
             pat_type.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().toString() + "/" +
                     GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
                     GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
@@ -179,16 +185,29 @@ public class Summary_Activity_WOE extends AppCompatActivity {
 
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("")) {
             pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+            ll_patient_age.setVisibility(View.GONE);
+            ll_patient_gender.setVisibility(View.GONE);
         } else {
-            pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME() +
-                    "(" + GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() + "  " + saveAgeType + "/" + genderId + ")");
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE().equalsIgnoreCase("")
+                    && saveAgeType != null && !saveAgeType.equalsIgnoreCase("")) {
+                ll_patient_age.setVisibility(View.VISIBLE);
+                pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+                txt_pat_age.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() + " " + saveAgeType);
+            } else {
+                ll_patient_age.setVisibility(View.GONE);
+            }
+            if (genderId != null && !genderId.equalsIgnoreCase("")) {
+                ll_patient_gender.setVisibility(View.VISIBLE);
+                txt_pat_gender.setText(genderId);
+            } else {
+                ll_patient_gender.setVisibility(View.GONE);
+            }
         }
 
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equals(null) || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equalsIgnoreCase("")) {
             pat_ref.setVisibility(View.GONE);
             refbylinear.setVisibility(View.GONE);
         } else {
-
             pat_ref.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
         }
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() == "" || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals(null)) {
@@ -305,7 +324,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 if (bct_lists.length != 0) {
                     for (int i = 0; i < bct_lists.length; i++) {
                         //if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())) {
-                        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())&& bct_lists[i].getNED_NUMBER()!=null) {
+                        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER()) && bct_lists[i].getNED_NUMBER() != null) {
                             String nameofbtech = bct_lists[i].getNAME();
                             btech.setText(nameofbtech);
                             btechtile.setVisibility(View.VISIBLE);

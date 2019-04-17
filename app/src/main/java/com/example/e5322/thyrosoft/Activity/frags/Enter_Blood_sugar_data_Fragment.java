@@ -134,31 +134,25 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View viewMain = (View) inflater.inflate(R.layout.fragment_entered__blood_sugar_activity, container, false);
-
         spin_bs_test = (Spinner) viewMain.findViewById(R.id.spin_bs_test);
         mobile_edt = (EditText) viewMain.findViewById(R.id.mobile_edt);
         client_name_edt = (EditText) viewMain.findViewById(R.id.client_name_edt);
         edt_val = (EditText) viewMain.findViewById(R.id.edt_val);
         edt_age = (EditText) viewMain.findViewById(R.id.edt_age);
         edt_email = (EditText) viewMain.findViewById(R.id.edt_email);
-
         btn_verify = (Button) viewMain.findViewById(R.id.btn_verify);
         btn_choose_file = (Button) viewMain.findViewById(R.id.btn_choose_file);
         btn_submit_bs = (Button) viewMain.findViewById(R.id.btn_submit_bs);
-
         txt_ref_msg = (TextView) viewMain.findViewById(R.id.txt_ref_msg);
         tvUploadImageText = (TextView) viewMain.findViewById(R.id.tvUploadImageText);
-
         male = (ImageView) viewMain.findViewById(R.id.male);
         male_red = (ImageView) viewMain.findViewById(R.id.male_red);
         female = (ImageView) viewMain.findViewById(R.id.female);
         female_red = (ImageView) viewMain.findViewById(R.id.female_red);
         correct_img = (ImageView) viewMain.findViewById(R.id.correct_img);
         cross_img = (ImageView) viewMain.findViewById(R.id.cross_img);
-
         choose_file_ll = (LinearLayout) viewMain.findViewById(R.id.choose_file_ll);
         value_ll = (LinearLayout) viewMain.findViewById(R.id.value_ll);
-
 
         ArrayAdapter<BSTestDataModel> adap = new ArrayAdapter<BSTestDataModel>(getActivity().getApplicationContext(), R.layout.name_age_spinner, GlobalClass.getTestList());
         adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -528,7 +522,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         if (data != null && requestCode == PIC_SELECTION) {
             if (resultCode == RESULT_OK) {
                 targetUri = data.getData();
-
                 //ImageName Procedure
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getActivity().getContentResolver().query(targetUri,
@@ -538,9 +531,7 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
                 //Uptill Here
-
                 imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
-
                 Bitmap bitmap;
                 try {
                     bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(targetUri));
@@ -558,7 +549,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
                 }
             }
         }
-
     }
 
     public static String ConvertBitmapToString(Bitmap bitmap) {

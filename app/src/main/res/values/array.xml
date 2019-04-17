@@ -46,23 +46,6 @@
     </string-array>
 
 
-    <string-array name="brandname">
-        <item>Interlab Sample (ILS)</item>
-        <item>Walk – in</item>
-        <item>Home Collection</item>
-    </string-array>
-
-
-
-    <string-array name="deliverymode">
-        <item>Select Delivery Mode</item>
-        <item>DOOR DELIVERY</item>
-        <item>COLLECTION CENTRE</item>
-        <item>COURIER</item>
-        <item>ELECTRONIC</item>
-    </string-array>
-
-
     <string-array name="minutes">
         <item>00</item>
         <item>05</item>
@@ -97,13 +80,21 @@
         <item>LME</item>
     </string-array>
 
-    <string-array name="filght_spinner_values">
+   <!-- <string-array name="filght_spinner_values">
         <item>Select Airlines</item>
         <item>JET Airways</item>
         <item>Indian Airlines</item>
         <item>Others</item>
 
-    </string-array>
+    </string-array>-->
+
+     <string-array name="filght_spinner_values">
+       <item>Select Airlines</item>
+       <item>Air India</item>
+       <item>Indigo</item>
+       <item>Spice jet</item>
+
+   </string-array>
 
     <string-array name="packaging_dtl_edt_txt_values">
         <item>Select packaging details</item>

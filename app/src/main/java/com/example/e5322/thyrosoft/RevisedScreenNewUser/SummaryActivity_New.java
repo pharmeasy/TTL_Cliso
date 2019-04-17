@@ -66,8 +66,8 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
     LinearLayoutManager linearLayoutManager;
-    LinearLayout SGCLinearid;
-    TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, serial_number_re;
+    LinearLayout SGCLinearid, ll_patient_age, ll_patient_gender;
+    TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, serial_number_re, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
     String getSelctedTests, passProdcucts;
     int saveSrNumber;
@@ -146,7 +146,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private int pass_to_api;
     private String error, pid, barcodes, response1, resID;
     private String getBarcodesOffline;
-    private boolean flagforOnce=false;
+    private boolean flagforOnce = false;
     private String location;
     private LinearLayout ll_location;
     private TextView txt_setLocation;
@@ -178,7 +178,11 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         btech_layout = (LinearLayout) findViewById(R.id.btech_layout);
         refbylinear = (LinearLayout) findViewById(R.id.refbylinear);
         ll_location = (LinearLayout) findViewById(R.id.ll_location);
+        ll_patient_age = (LinearLayout) findViewById(R.id.ll_patient_age);
+        ll_patient_gender = (LinearLayout) findViewById(R.id.ll_patient_gender);
         txt_setLocation = (TextView) findViewById(R.id.txt_setLocation);
+        txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
+        txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
         linearLayoutManager = new LinearLayoutManager(SummaryActivity_New.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
@@ -187,10 +191,12 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
         context1 = SummaryActivity_New.this;
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
         getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
@@ -235,7 +241,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         typename = savepatientDetails.getString("woetype", null);
         sr_number = savepatientDetails.getString("SR_NO", null);
 
-        if(sr_number!=null)
+        if (sr_number != null)
             pass_to_api = Integer.parseInt(sr_number);
 
         pass_to_api = Integer.parseInt(sr_number);
@@ -314,13 +320,32 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
         pat_type.setText("TTL/" + typename);
         pat_sct.setText(getFinalDate + " " + getFinalTime);
-        pat_name.setText(nameString + "/" + getFinalAge + " " + getageType + "/" + genderType);
+        pat_name.setText(nameString);
+
+        if (typename.equalsIgnoreCase("WHATERS")) {
+            ll_patient_age.setVisibility(View.GONE);
+            ll_patient_gender.setVisibility(View.GONE);
+        } else {
+            if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
+                ll_patient_age.setVisibility(View.VISIBLE);
+                txt_pat_age.setText(getFinalAge + " " + getageType);
+            } else {
+                ll_patient_age.setVisibility(View.GONE);
+            }
+            if (genderType != null && !genderType.equalsIgnoreCase("")) {
+                ll_patient_gender.setVisibility(View.VISIBLE);
+                txt_pat_gender.setText(genderType);
+            } else {
+                ll_patient_gender.setVisibility(View.GONE);
+            }
+        }
+
         pat_amt_collected.setText(amt_collected);
         serial_number.setText(sr_number);
-        if(location!=null && !location.equalsIgnoreCase("")){
+        if (location != null && !location.equalsIgnoreCase("")) {
             ll_location.setVisibility(View.VISIBLE);
             txt_setLocation.setText(location);
-        }else{
+        } else {
             ll_location.setVisibility(View.GONE);
         }
         title.setText("Summary");
@@ -363,11 +388,11 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
                             public void onClick(DialogInterface arg0, int arg1) {
                                 if (!GlobalClass.isNetworkAvailable(SummaryActivity_New.this)) {
                                     boolean deletedRows = myDb.deleteData(getBarcodesOffline);
-                                    if(deletedRows ==true)
+                                    if (deletedRows == true)
                                         TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     finish();
-                                   Intent i = new Intent(SummaryActivity_New.this,ManagingTabsActivity.class);
-                                   startActivity(i);
+                                    Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
+                                    startActivity(i);
                                 } else {
                                     deleteWoe();
                                 }
@@ -420,8 +445,8 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         barProgressDialog.setCancelable(false);
 
 
-        if(flagforOnce==false){
-            flagforOnce=true;
+        if (flagforOnce == false) {
+            flagforOnce = true;
             deletePatienDetail = Volley.newRequestQueue(context1);
             JSONObject jsonObjectOtp = new JSONObject();
             try {
@@ -476,7 +501,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             deletePatienDetail.add(jsonObjectRequest1);
             Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
             Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
-        }else{
+        } else {
             TastyToast.makeText(context1, "Sample not deleted successfully !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
 
@@ -670,8 +695,6 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 //        GlobalClass.exportDB(SummaryActivity_New.this);
         super.onBackPressed();
     }
-
-
 
 
 }

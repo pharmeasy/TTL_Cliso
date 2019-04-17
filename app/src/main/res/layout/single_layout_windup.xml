@@ -100,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:weightSum="4">
 
                     <TextView

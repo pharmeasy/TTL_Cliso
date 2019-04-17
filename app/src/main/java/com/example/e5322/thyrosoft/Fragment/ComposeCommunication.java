@@ -123,23 +123,12 @@ Button sendcomm;
         spinnercomm=(Spinner)view.findViewById(R.id.spinnercomm);
         sendcomm=(Button) view.findViewById(R.id.sendcomm);
         commuTXT=(EditText) view.findViewById(R.id.commuTXT);
-
-
        // TextView dateview = getActivity().findViewById(R.id.show_date);
-
-
-
-
-
-
-
       //  dateview.setVisibility(View.GONE);
-
         String[]string = new String[GlobalClass.commSpinner.size()];
         for(int i = 0; i< GlobalClass.commSpinner.size(); i++){
             string[i]= GlobalClass.commSpinner.get(i).getDisplayName();
         }
-
 
         commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
 
@@ -174,17 +163,11 @@ Button sendcomm;
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
         });
-
-
-
 
         Calendar cl = Calendar.getInstance();
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-
         Date = sdf.format(cl.getTime());
-
       /*  DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
         java.util.Date date = inputFormat.parse(Date);

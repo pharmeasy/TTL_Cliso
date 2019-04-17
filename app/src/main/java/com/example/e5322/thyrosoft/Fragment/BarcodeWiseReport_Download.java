@@ -57,7 +57,6 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
     TextView txt_date, nodata;
     ProgressDialog barProgressDialog;
     ImageView back, home;
-
     Context mContext;
     Spinner spinnertype;
     public static RequestQueue PostQue;

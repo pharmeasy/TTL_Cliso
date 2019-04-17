@@ -11,8 +11,6 @@
     <dimen name="padding_twenty_one">21dp</dimen>
     <dimen name="padding_twenty_five">25dp</dimen>
     <dimen name="padding_thirty">30dp</dimen>
-    <dimen name="padding_forty">40dp</dimen>
-    <dimen name="padding_forty_one">41dp</dimen>
 
 
     <dimen name="text_size_twelve">12sp</dimen>

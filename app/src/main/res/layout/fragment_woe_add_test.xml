@@ -259,6 +259,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginRight="5dp"
                             android:layout_weight="1"
+                            android:text="100 Rs."
                             android:gravity="right"
                             android:id="@+id/pick_up_txt"
                             android:textColor="@color/white" />

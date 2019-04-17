@@ -436,7 +436,7 @@ public class Offline_woe extends Fragment {
                                     woe.setORDER_NO("");
                                     woe.setOS("unknown");
                                     woe.setPATIENT_NAME(resultList.get(i).getWoe().getPATIENT_NAME());
-                                    woe.setPINCODE("");
+                                    woe.setPINCODE(resultList.get(i).getWoe().getPINCODE());
                                     woe.setPRODUCT(resultList.get(i).getWoe().getPRODUCT());
                                     woe.setPurpose("mobile application");
                                     woe.setREF_DR_ID(resultList.get(i).getWoe().getREF_DR_ID());

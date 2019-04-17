@@ -56,6 +56,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
+import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -135,6 +136,7 @@ public class Start_New_Woe extends RootFragment {
     private ArrayList<String> getLabNmae;
     private ArrayList<String> statusForColor;
     ArrayList<String> getReferenceNmae;
+    ArrayList<REF_DR> getReferenceName1;
     TextView samplecollectionponit;
     AutoCompleteTextView referedbyText;
     SourceILSMainModel obj;
@@ -5675,9 +5677,12 @@ public class Start_New_Woe extends RootFragment {
         }
 
         getReferenceNmae = new ArrayList<>();
+        getReferenceName1 = new ArrayList<>();
+
         if (obj.getMASTERS().getREF_DR().length != 0) {
             for (int j = 0; j < obj.getMASTERS().getREF_DR().length; j++) {
                 getReferenceNmae.add(obj.getMASTERS().getREF_DR()[j].getName());
+                getReferenceName1.add(obj.getMASTERS().getREF_DR()[j]);
                 ref_drs = obj.getMASTERS().getREF_DR();
             }
         } else {
@@ -5686,13 +5691,19 @@ public class Start_New_Woe extends RootFragment {
 //            TastyToast.makeText(getActivity(), ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+       /* ArrayAdapter<String> adapter = new ArrayAdapter<String>
                 (getActivity(), R.layout.spinnerproperty, getReferenceNmae);//getLabNmae
         referedbyText.setThreshold(1);//will start working from first character
         referedbyText.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
-        referedbyText.setTextColor(Color.BLACK);
+        referedbyText.setTextColor(Color.BLACK);*/
 
+
+        CustomListAdapter adapter = new CustomListAdapter((Context) mContext, R.layout.autocompleteitem, getReferenceName1, getReferenceNmae);
+        referedbyText.setThreshold(1);//will start working from first character
+        referedbyText.setAdapter(adapter);//setting the adapter data into the AutoCompleteTextView
+        referedbyText.setTextColor(Color.BLACK);
     }
+
 
     private void showDialogue(final SourceILSMainModel obj) {
 
