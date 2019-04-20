@@ -73,29 +73,21 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         // each data item is just a string in this case
         public TextView patientName;
         public TextView testName;
-
         public TextView put_testName;
-
-
         public ImageView image_tag;
-        ;
         public RecyclerView barcode_and_sample_recycler;
         public LinearLayout linear;
         public LinearLayoutManager linearLayoutManager;
         public LinearLayout linear_summary_open;
-
         ImageView deleteWoe;
 
         public ViewHolder(View v) {
             super(v);
             patientName = (TextView) v.findViewById(R.id.patientName);
             testName = (TextView) v.findViewById(R.id.testName);
-
             put_testName = (TextView) v.findViewById(R.id.puttestName);
-
             image_tag = (ImageView) v.findViewById(R.id.imageView);
             linear = (LinearLayout) v.findViewById(R.id.linear);
-
 //            linearLayoutManager = new LinearLayoutManager(context1);
             gridLayoutManager = new GridLayoutManager(context1, 2);
             barcode_and_sample_recycler = (RecyclerView) v.findViewById(R.id.barcode_and_sample_recycler);

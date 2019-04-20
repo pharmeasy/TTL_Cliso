@@ -264,7 +264,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-
         final Calendar c = Calendar.getInstance();
 
         final String[] monthName = {"January", "February", "March", "April", "May", "June", "July",
@@ -292,11 +291,9 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             next_month.setVisibility(View.VISIBLE);
         }
 
-
         Date currentDate = new Date();
         SimpleDateFormat sdfa = new SimpleDateFormat("yyyy-MM-dd");
         passDateTogetData = sdfa.format(currentDate);
-
 
         back_month.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -546,7 +543,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 
         PostQue = Volley.newRequestQueue(getContext());
 
-
         try {
             JSONObject jsonObject = new JSONObject();
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -556,10 +552,8 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             api_key = prefs.getString("API_KEY", null);
 
             try {
-
                 jsonObject.put("apikey", api_key);
                 jsonObject.put("barcode", barcode);
-
                 Barcodesend = barcode;
 
             } catch (JSONException e) {
@@ -631,7 +625,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 
     private void TrackBrcodeData(String Barcode, String dateStr) {
 
-
         PostQue = Volley.newRequestQueue(getContext());
         barProgressDialog_nxt = new ProgressDialog(getContext());
         barProgressDialog_nxt.setTitle("Kindly wait ...");
@@ -657,12 +650,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 java.util.Date date = inputFormat.parse(dateStr);
                 String outputDateStr = outputFormat.format(date);
 
-
                 jsonObject.put("apiKey", api_key);
                 jsonObject.put("barcode", Barcode);
                 jsonObject.put("userCode", user);
                 jsonObject.put("forwardTo", outputDateStr);
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -724,13 +715,11 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     trackBarcode.setWoeStage(response.getString(Constants.woeStage));
                                     trackBarcode.setWoeTime(response.getString(Constants.woeTime));
                                     trackBarcode.setWoiLocation(response.getString(Constants.woiLocation));
-
                                     trackBarArray.add(trackBarcode);
 
                                     if (trackBarcode.getCollected().equals("null")) {
                                         trackBarcode.setCollected("NA");
                                     }
-
                                     patient.setText(trackBarcode.getPatient().toString());
                                     bill_status.setText(trackBarcode.getBillStatus().toString());
                                     refBy.setText(trackBarcode.getRefBy().toString());
@@ -753,13 +742,12 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     download.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if(!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl()!=null){
+                                            if(!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl()!=null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")){
                                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
                                                 startActivity(browserIntent);
                                             }
-
                                             else {
-                                                TastyToast.makeText(getActivity(), "Hello World !", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                                TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
                                             }
                                         }
                                     });
@@ -873,17 +861,13 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                             if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
-
                                 JSONArray jsonArray = response.optJSONArray(Constants.patients);
                                 if (jsonArray != null && jsonArray.length() > 0) {
-
                                     trackDetArray = new ArrayList<TrackDetModel>();
-
                                     for (int j = 0; j < jsonArray.length(); j++) {
 
                                         JSONObject jsonObject = jsonArray.getJSONObject(j);
                                         TrackDetModel trackdetails = new TrackDetModel();
-
                                         trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
                                         trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
                                         trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
@@ -1048,10 +1032,20 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         final EditText mob = (EditText) dialog.findViewById(R.id.mob);
         final EditText name = (EditText) dialog.findViewById(R.id.name);
 
+        if(barCodeDetail.get(0).getEmail()!=null && !barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")){
+            emailid.setText(barCodeDetail.get(0).getEmail());
+        }else{
+            emailid.setText("");
+        }
 
-        emailid.setText(barCodeDetail.get(0).getEmail());
+        if(barCodeDetail.get(0).getMobile()!=null && !barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")){
+            mob.setText(barCodeDetail.get(0).getMobile());
+        }else{
+            mob.setText("");
+        }
+
         name.setText(barCodeDetail.get(0).getName());
-        mob.setText(barCodeDetail.get(0).getMobile());
+
 
         final Button cancel = (Button) dialog.findViewById(R.id.cancel);
         Button ok = (Button) dialog.findViewById(R.id.ok);

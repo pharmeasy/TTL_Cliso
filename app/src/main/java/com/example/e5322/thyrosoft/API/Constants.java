@@ -351,7 +351,7 @@ public class Constants {
     public static final String PAYTM_UPDATE_PAYMENT_URL = "PaymentGateway.svc/PaytmResponse";
     public static final String PAYTM_PAYMENT_REQUEST_URL = "PaymentGateway.svc/PaytmRequest";
     public static final String UPDATE_PAYMENT_URL = "PaymentGateway.svc/ClientPayment";
-    public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "sNhdlQjqvoAHd0wM2XBmovfagV08jstDCTblJACEi7tTTPegWYYwDw==";
+
 
     public static final String PAYTMKEY_APIKEY = "api_key";
     public static final String PAYTMKEY_TYPE = "type";

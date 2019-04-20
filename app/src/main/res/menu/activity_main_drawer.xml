@@ -151,6 +151,7 @@
         <item
             android:id="@+id/blood_s_entry"
             android:icon="@drawable/logout"
+            android:visible="false"
             android:title="Blood Sugar entry" />
     </group>
 
@@ -260,7 +261,7 @@
         <item
             android:id="@+id/broadCast"
             android:icon="@drawable/broadcast"
-            android:visible="true"
+            android:visible="false"
             android:title="Broadcast" />
     </group>
 
@@ -270,7 +271,7 @@
         <item
             android:id="@+id/campIntimation"
             android:icon="@drawable/camp"
-            android:visible="true"
+            android:visible="false"
             android:title="Camp Intimation" />
     </group>
 

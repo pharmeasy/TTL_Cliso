@@ -173,7 +173,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                             }
                                         });
                                     }
-
                                 } else {
                                     TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
@@ -187,7 +186,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                         public void onErrorResponse(VolleyError error) {
                             if (error != null) {
                             } else {
-
                                 System.out.println(error);
                             }
                         }

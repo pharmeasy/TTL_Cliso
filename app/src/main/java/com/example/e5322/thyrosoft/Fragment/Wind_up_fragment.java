@@ -255,7 +255,6 @@ public class Wind_up_fragment extends RootFragment {
             }
         });
 */
-
         getActivity().setTitle("WOE");
         Date dateNew = new Date();
         SimpleDateFormat sdfToday = new SimpleDateFormat("dd-MM-yyyy");
@@ -588,7 +587,7 @@ public class Wind_up_fragment extends RootFragment {
                     if (getCount.equals("0")) {
                         enterNextFragment();
                     } else {
-                       /* new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                        new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                                 .setTitleText("Consignment Status")
                                 .setContentText("Consignment entry already done for the day")
                                 .setConfirmText("Ok")
@@ -598,8 +597,8 @@ public class Wind_up_fragment extends RootFragment {
                                         sDialog.dismissWithAnimation();
                                     }
                                 })
-                                .show();*/
-                        enterNextFragment();
+                                .show();
+//                        enterNextFragment();//-- TODO check consignment entry for the day
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -62,9 +62,9 @@ import java.util.Iterator;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
+import static com.example.e5322.thyrosoft.API.Api.APIKEYFORPAYMENTGATEWAY_PAYU;
 import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
 import static com.example.e5322.thyrosoft.API.Constants.AMOUNT;
-import static com.example.e5322.thyrosoft.API.Constants.APIKEYFORPAYMENTGATEWAY_PAYU;
 import static com.example.e5322.thyrosoft.API.Constants.CLIENT_STATUS;
 import static com.example.e5322.thyrosoft.API.Constants.CLIENT_TYPE;
 import static com.example.e5322.thyrosoft.API.Constants.DICTIONARY;
@@ -262,7 +262,7 @@ public class Payment_Activity extends AppCompatActivity {
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
                 } else {
-                    int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
+                   /* int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
                     int modulus = getAmt % 5000;
                     System.out.println("getAmount ::" + modulus);
 
@@ -288,7 +288,7 @@ public class Payment_Activity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    } else {
+                    } else {*/
                         if (cd.isConnectingToInternet()) {
                             globalData.showProgressDialog();
                             try {
@@ -340,7 +340,7 @@ public class Payment_Activity extends AppCompatActivity {
                     }
 
 
-                }
+//                }
 
             }
         });
