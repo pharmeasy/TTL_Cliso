@@ -272,8 +272,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                 tempselectedTests = new ArrayList<>();
                 tempselectedTests1 = new ArrayList<>();
 
-
-
                 if (getSelected_test.getChilds() != null) {
                     for (int i = 0; i < getSelected_test.getChilds().length; i++) {
                         //tejas t -----------------------------

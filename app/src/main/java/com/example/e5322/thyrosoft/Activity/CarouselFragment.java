@@ -90,6 +90,7 @@ public class CarouselFragment extends Fragment {
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), mContext.getResources().getColor(R.color.tabindicatorColor));
 
+        //TODO if tab menu are present in navigatoion drawer then get Intent from managingtab activity and set the fragment
         try {
             if (getArguments() != null) {
                 positionInt = getArguments().getInt("position");

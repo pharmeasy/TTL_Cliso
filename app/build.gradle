@@ -22,8 +22,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 14
-        versionName "1.0.1.5"
+        versionCode 15
+        versionName "1.0.1.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true

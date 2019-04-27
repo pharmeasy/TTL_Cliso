@@ -46,7 +46,7 @@ public class Splash_screenActivity extends AppCompatActivity {
     private static String TAG = Splash_screenActivity.class.getSimpleName();
     AlertDialog alert;
     public static String str_login_test, profile_test;
-    String version;
+    String appVersion;
     private int versionCode = 0;
     public static SharedPreferences sh, profile;
     public static SharedPreferences.Editor editor, editor1;
@@ -55,7 +55,7 @@ public class Splash_screenActivity extends AppCompatActivity {
     String z = "";
     private String ApkUrl;
     Animation anim;
-    String version1;
+    String apiVersion;
     String response1;
     String resId;
     ImageView iv;
@@ -86,7 +86,11 @@ public class Splash_screenActivity extends AppCompatActivity {
         }else {
             Log.e(TAG, "deleteDir: cache is not cleraed " );
         }
+
+        //TODO fetch appVersion
         getversion();
+
+        //TODO check login credentials
         myprif();
         PackageInfo pInfo = null;
         try {
@@ -94,13 +98,13 @@ public class Splash_screenActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //get the app version Name for display
-        version = pInfo.versionName;
-        //get the app version Code for checking
+        //get the app appVersion Name for display
+        appVersion = pInfo.versionName;
+        //get the app appVersion Code for checking
         versionCode = pInfo.versionCode;
-        //display the current version in a TextView
+        //display the current appVersion in a TextView
         TextView versionText = (TextView) findViewById(R.id.version);
-        versionText.setText(version);
+        versionText.setText(appVersion);
         cd = new ConnectionDetector(getApplicationContext());
 
         if (!isNetworkAvailable()) {
@@ -203,13 +207,13 @@ public class Splash_screenActivity extends AppCompatActivity {
                 try {
                     Log.e(TAG, "onResponse: response" + response);
                     Log.e(TAG, "RESPONSE" + String.valueOf(response));
-                    version1 = response.getString("Version");
+                    apiVersion = response.getString("Version");
                     ApkUrl = response.getString("url");
                     response1 = response.getString("response");
                     resId = response.getString("resId");
 
-                    if (version1 != null) {
-                        Log.e(TAG, "onResponse version1: " + version1);
+                    if (apiVersion != null) {
+                        Log.e(TAG, "onResponse apiVersion: " + apiVersion);
                         iv.startAnimation(anim);
                         anim.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -218,8 +222,8 @@ public class Splash_screenActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                String newVersion = version1.replace(".", "");//api
-                                String preversion = version.replace(".", "");//package
+                                String newVersion = apiVersion.replace(".", "");//api
+                                String preversion = appVersion.replace(".", "");//package
 
                                 int intApiVersion = Integer.parseInt(newVersion);//api
                                 int intPkgversion = Integer.parseInt(preversion);//pkg
@@ -249,7 +253,7 @@ public class Splash_screenActivity extends AppCompatActivity {
                                                 //if the user agrees to upgrade
                                                 public void onClick(DialogInterface dialog, int id) {
 
-                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.charbi.com/CDN/Applications/Android/ThyrosoftLite.Apk"));
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApkUrl));
                                                     startActivity(intent);
                                                     finish();
                                                 }

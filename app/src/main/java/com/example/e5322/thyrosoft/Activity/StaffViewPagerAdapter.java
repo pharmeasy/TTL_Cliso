@@ -102,7 +102,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
             case 5:
                 return resources.getString(R.string.page_7);
             case 6:
-                return resources.getString(R.string.page_8);
+                return resources.getString(R.string.page_9);
 
             default:
                 return null;

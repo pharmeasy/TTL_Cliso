@@ -116,6 +116,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             // and getting the reference
             carouselFragment = (CarouselFragment) getSupportFragmentManager().getFragments().get(0);
         }
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);

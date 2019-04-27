@@ -421,7 +421,6 @@ public class RateCalculatorFragment extends Fragment {
                                     Gson gson22 = new Gson();
                                     String json23 = gson22.toJson(mainModelRate);
                                     callAdapter(mainModelRate);
-
                                     prefsEditor1.putString("MyObject", json23);
                                     prefsEditor1.commit();
                                 }

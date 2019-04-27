@@ -76,8 +76,6 @@ public class Faq_activity extends AppCompatActivity {
         back=(ImageView)findViewById(R.id.back);
         home=(ImageView)findViewById(R.id.home);
 
-
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

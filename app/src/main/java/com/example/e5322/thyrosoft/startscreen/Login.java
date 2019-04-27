@@ -53,7 +53,7 @@ public class Login extends Activity implements View.OnClickListener {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
     EditText username, password, otpmobile,
             otpemail;
-    TextView forgotpassword, registration, check;
+    TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
     String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi,RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, Login_Type, Status, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
@@ -85,7 +85,7 @@ public class Login extends Activity implements View.OnClickListener {
         forgotpassword = (TextView) findViewById(R.id.forgotpass);
         registration = (TextView) findViewById(R.id.registration);
         login = (Button) findViewById(R.id.login);
-        check = (TextView) findViewById(R.id.check);
+
         login.setOnClickListener(Login.this);
 
         if (globalClass.checkForApi21()) {    Window window = getWindow();
@@ -160,20 +160,13 @@ public class Login extends Activity implements View.OnClickListener {
 
         username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        check.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent u = new Intent(Login.this, ManagingTabsActivity.class);
-                startActivity(u);
-            }
-        });
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //get the app version Name for display
+        //get the app appVersion Name for display
         version = pInfo.versionName;
 
         password.addTextChangedListener(new TextWatcher() {
@@ -841,6 +834,7 @@ public class Login extends Activity implements View.OnClickListener {
                                 USER_CODE11 = parentObject.getString("USER_CODE");
                                 USER_TYPE11 = parentObject.getString("USER_TYPE");
                                 VERSION_NO11 = parentObject.getString("VERSION_NO");
+
                                 SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
                                 editor.putString("Username", User);
                                 editor.putString("password", pass);

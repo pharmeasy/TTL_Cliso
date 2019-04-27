@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -176,6 +178,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String checkUlcNumber;
     private boolean flagforOnce = false;
     Button verify_ulc;
+    private String version;
 
     @SuppressLint("NewApi")
     @Override
@@ -223,6 +226,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+        //get the app version Code for checking
 
 
         barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
@@ -510,7 +522,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             woe.setALERT_MESSAGE("");
                             woe.setAMOUNT_COLLECTED(ulcResponseModel.getB2C());
                             woe.setAMOUNT_DUE(null);
-                            woe.setAPP_ID("1.0.1.2");
+                            woe.setAPP_ID(version);
                             woe.setADDITIONAL1("CPL");
                             woe.setBCT_ID("");
                             woe.setBRAND(brandName);

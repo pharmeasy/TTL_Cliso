@@ -100,11 +100,11 @@ public class SplashScreen extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //get the app version Name for display
+        //get the app appVersion Name for display
         version = pInfo.versionName;
-        //get the app version Code for checking
+        //get the app appVersion Code for checking
         versionCode = pInfo.versionCode;
-        //display the current version in a TextView
+        //display the current appVersion in a TextView
         TextView versionText = (TextView) findViewById(R.id.version);
         versionText.setText(version);
         cd = new ConnectionDetector(getApplicationContext());
@@ -215,7 +215,7 @@ public class SplashScreen extends AppCompatActivity {
                     resId = response.getString("resId");
 
                     if (version1 != null) {
-                        Log.e(TAG, "onResponse version1: " + version1);
+                        Log.e(TAG, "onResponse apiVersion: " + version1);
                         iv.startAnimation(anim);
                         anim.setAnimationListener(new Animation.AnimationListener() {
                             @Override

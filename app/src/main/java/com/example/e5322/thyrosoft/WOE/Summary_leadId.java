@@ -242,9 +242,7 @@ public class Summary_leadId extends AppCompatActivity {
                         getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
                         labs = sourceILSMainModel.getMASTERS().getLABS();
                     }
-
                 } else {
-
 //                    Toast.makeText(Summary_leadId.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
 
@@ -253,10 +251,7 @@ public class Summary_leadId extends AppCompatActivity {
                         getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
                         ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
                     }
-
-
                 } else {
-
 //                    Toast.makeText(Summary_leadId.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
 
