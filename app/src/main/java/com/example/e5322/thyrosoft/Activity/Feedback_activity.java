@@ -106,10 +106,12 @@ public class Feedback_activity extends AppCompatActivity {
         cry = (ImageView) findViewById(R.id.cry);
         sad = (ImageView) findViewById(R.id.sad);
         happy = (ImageView) findViewById(R.id.happy);
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
 //       excited= (ImageView)findViewById(R.id.excited);
 //        sad_cry_layout=(LinearLayout)findViewById(R.id.sad_cry_layout);
@@ -268,7 +270,8 @@ public class Feedback_activity extends AppCompatActivity {
                     Log.e(TAG, "onResponse: "+response );
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
-                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                    if(barProgressDialog!=null && barProgressDialog.isShowing()){
+                        barProgressDialog.dismiss();}
                     RESPONSE = parentObjectOtp.getString("RESPONSE");
                     RES_ID = parentObjectOtp.getString("RES_ID");
                     USER_TYPE = parentObjectOtp.getString("USER_TYPE");

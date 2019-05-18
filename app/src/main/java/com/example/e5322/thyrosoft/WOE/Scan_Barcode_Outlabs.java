@@ -318,7 +318,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         }
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
 
-            totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+            if(Globaly_Outlab_details.get(i).getRate().getB2c().equals("")){
+                totalcount = 0;
+            }else{
+                totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+            }
             Log.e(TAG, "onCreate: 11 " + totalcount);
         }
 

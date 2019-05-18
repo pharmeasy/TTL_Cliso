@@ -14,10 +14,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -37,6 +40,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
+import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
@@ -121,9 +125,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     String passDateTogetData;
     private int getPositionToset;
     public static boolean callOnce = false;
-
+    LinearLayout full_ll;
     private String currentMonthString;
     private String getTextofMonth;
+    private ArrayList<TrackDetModel> filterPatientsArrayList;
 
     public FilterReport() {
         // Required empty public constructor
@@ -183,6 +188,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
             calendarView = (RecyclerView) view.findViewById(R.id.calendarView);
             filterBy = (Spinner) view.findViewById(R.id.filterBy);
+            full_ll = (LinearLayout) view.findViewById(R.id.full_ll);
             ListReportStatus = (ListView) view.findViewById(R.id.ListReportStatus);
             linearLayoutManager = new LinearLayoutManager(this.getActivity());
             linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -227,6 +233,18 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+       
+
+        full_ll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = full_ll.getRootView().getHeight() - full_ll.getHeight();
+                if (heightDiff > dpToPx(getContext(), 200)) { // if more than 200 dp, it's probably a keyboard...
+                    // ... do something here
+                }
+            }
+        });
 
         final Calendar c = Calendar.getInstance();
 
@@ -308,7 +326,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         });
 
         String[] spinner = {"Select Type", "Reported", "Pending", "Cancelled", "CHN"};
-        String[] spinnerfilterby = {"Select Filter By", "All", "Name", "Barcode", "Mobile"};
+        String[] spinnerfilterby = {"Select Filter By", "All", "Name", "Barcode"};
         ArrayAdapter aa = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinner);
         ArrayAdapter filterby = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinnerfilterby);
 
@@ -335,6 +353,15 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         filterBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (filterBy.getSelectedItem().equals("All")) {
+                    searchbarcode.setHint("Search by patient name or barcode");}
+                else if(filterBy.getSelectedItem().equals("Name")){
+                    searchbarcode.setHint("Search by patient name");
+                }else if(filterBy.getSelectedItem().equals("Barcode")){
+                    searchbarcode.setHint("Search by patient barcode");
+                }else {
+                    searchbarcode.setHint("Search by patient name or barcode");
+                }
                 /*String filterstr = parent.getItemAtPosition(position).toString();
                 searchbarcode.setQueryHint(filterstr);
 
@@ -355,6 +382,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             }
         });
 
+/*
         searchbarcode.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -382,6 +410,266 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             }
         });
+*/
+
+        if (filterBy.getSelectedItem().equals("All")||filterBy.getSelectedItem().equals("Select Filter By")) {
+            searchbarcode.setHint("Search by patient name or barcode");
+            searchbarcode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String s1 = s.toString().toLowerCase();
+                    filterPatientsArrayList = new ArrayList<>();
+                    String barcode = "";
+                    String name = "";
+                    if (FilterReport != null) {
+                        for (int i = 0; i < FilterReport.size(); i++) {
+
+                            if (filterBy.getSelectedItem().equals("All")) {
+                                final String text = FilterReport.get(i).getBarcode().toLowerCase();
+
+                                if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                    barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                                }
+                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                    name = FilterReport.get(i).getName().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                        (name != null && name.contains(s1))) {
+                                    String testname = FilterReport.get(i).getName();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+
+                            } else if (filterBy.getSelectedItem().equals("Name")) {
+                                final String text = FilterReport.get(i).getName().toLowerCase();
+
+                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                    name = FilterReport.get(i).getName().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (name != null && name.contains(s1)) ||
+                                        (name != null && name.contains(s1))) {
+                                    String testname = FilterReport.get(i).getName();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+
+                            } else if (filterBy.getSelectedItem().equals("Barcode")) {
+
+                            }
+                        }
+                    }
+                    // filter your list from your input
+                    //you can use runnable postDelayed like 500 ms to delay search text
+                }
+            });
+        }else if(filterBy.getSelectedItem().equals("Name")){
+            searchbarcode.setHint("Search by patient name ");
+            searchbarcode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String s1 = s.toString().toLowerCase();
+                    filterPatientsArrayList = new ArrayList<>();
+                    String barcode = "";
+                    String name = "";
+                    if (FilterReport != null) {
+                        for (int i = 0; i < FilterReport.size(); i++) {
+
+                                final String text = FilterReport.get(i).getName().toLowerCase();
+
+                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                    name = FilterReport.get(i).getName().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (name != null && name.contains(s1)) ||
+                                        (name != null && name.contains(s1))) {
+                                    String testname = FilterReport.get(i).getName();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+
+
+                        }
+                    }
+                    // filter your list from your input
+                    //you can use runnable postDelayed like 500 ms to delay search text
+                }
+            });
+
+        }else if(filterBy.getSelectedItem().equals("Barcode")){
+            searchbarcode.setHint("Search by patient barcode");
+            searchbarcode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String s1 = s.toString().toLowerCase();
+                    filterPatientsArrayList = new ArrayList<>();
+                    String barcode = "";
+                    String name = "";
+                    if (FilterReport != null) {
+                        for (int i = 0; i < FilterReport.size(); i++) {
+                            final String text = FilterReport.get(i).getBarcode().toLowerCase();
+
+                            if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                            }
+                            if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                            }
+
+                            if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                    (barcode != null && barcode.contains(s1))) {
+                                String testname = FilterReport.get(i).getBarcode();
+                                filterPatientsArrayList.add(FilterReport.get(i));
+
+                            } else {
+
+                            }
+
+
+                        }
+                    }
+                    // filter your list from your input
+                    //you can use runnable postDelayed like 500 ms to delay search text
+                }
+            });
+
+        }else {
+            searchbarcode.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    String s1 = s.toString().toLowerCase();
+                    filterPatientsArrayList = new ArrayList<>();
+                    String barcode = "";
+                    String name = "";
+                    if (FilterReport != null) {
+                        for (int i = 0; i < FilterReport.size(); i++) {
+
+                            if (filterBy.getSelectedItem().equals("All")) {
+                                final String text = FilterReport.get(i).getBarcode().toLowerCase();
+
+                                if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                    barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                                }
+                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                    name = FilterReport.get(i).getName().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                        (name != null && name.contains(s1))) {
+                                    String testname = FilterReport.get(i).getName();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+
+                            } else if (filterBy.getSelectedItem().equals("Name")) {
+                                final String text = FilterReport.get(i).getName().toLowerCase();
+
+                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                    name = FilterReport.get(i).getName().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (name != null && name.contains(s1)) ||
+                                        (name != null && name.contains(s1))) {
+                                    String testname = FilterReport.get(i).getName();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+
+                            } else if (filterBy.getSelectedItem().equals("Barcode")) {
+                                final String text = FilterReport.get(i).getBarcode().toLowerCase();
+
+                                if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                    barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                        (barcode != null && barcode.contains(s1))) {
+                                    String testname = FilterReport.get(i).getBarcode();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                } else {
+
+                                }
+                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                                ListReportStatus.setAdapter(adapter);
+                            }
+                        }
+                    }
+                    // filter your list from your input
+                    //you can use runnable postDelayed like 500 ms to delay search text
+                }
+            });
+
+        }
 
 
         DateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");//dd-MM-yyyy
@@ -406,6 +694,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
 
         return view;
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
 

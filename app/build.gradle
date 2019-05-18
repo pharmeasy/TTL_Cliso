@@ -53,6 +53,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //    implementation 'com.android.support:appcompat-v7:27.1.0'//appcompact library
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-places:16.0.0'

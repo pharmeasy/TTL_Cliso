@@ -175,15 +175,12 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
         }
 
         if (testRateMasterModel.getChilds().length != 0) {
-
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-
                     JSONObject jsonObjectValidateOtp = new JSONObject();
                     try {
-
                         jsonObjectValidateOtp.put("TestName", testRateMasterModel.getName());
                         jsonObjectValidateOtp.put("Type", "PROFILE");
 
@@ -219,9 +216,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                                     }
                                     if (responsedata.equals("Success")) {
 
-
                                         showChildTestNamesAdapter = new ShowChildTestNamesAdapter(activity, responseFromAPI);
-
                                         LayoutInflater li = LayoutInflater.from(activity);
                                         View promptsView = li.inflate(R.layout.activity_show_child_list, null);
                                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity);
@@ -245,7 +240,6 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                                         });
 
                                     }
-
 
                                 } else {
                                     TastyToast.makeText(activity, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -281,11 +275,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                         }
                         showChildTestNamesAdapter = new ShowChildTestNamesAdapter(activity, storetestlist);
                     }
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
                 }
             });
 

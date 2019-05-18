@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_margin="5dp"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/cancelled_Layouqt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:id="@+id/cancelled_Layouqt"
             android:layout_marginBottom="5dp"
             android:orientation="vertical">
 
             <TextView
-                android:visibility="gone"
-                android:layout_width="50dp"
-                android:gravity="center"
                 android:id="@+id/radio"
-                android:layout_height="match_parent" />
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:weightSum="5"
                 android:id="@+id/cancelled_Layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,59 +34,55 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_marginTop="2dp"
+                    android:id="@+id/name_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:id="@+id/name_layout">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp">
+
                     <TextView
+                        android:id="@+id/name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="name"
+                        android:textSize="@dimen/NormalTextSize" />
+
+                    <ImageView
+                        android:id="@+id/colon"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:id="@+id/name"
-                        android:layout_weight="2"
-                        android:textSize="@dimen/NormalTextSize"/>
-                    <ImageView
                         android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:id="@+id/colon"
                         android:src="@drawable/clon"
-                        android:visibility="gone"
-                        android:layout_height="match_parent" />
+                        android:visibility="gone" />
                 </LinearLayout>
 
 
-
-
                 <TextView
-                    android:text="Ref by Dr. N Suganthi"
                     android:id="@+id/Refby"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Ref by Dr. N Suganthi"
                     android:textSize="@dimen/NormalTextSize" />
 
                 <TextView
-                    android:text="17267"
                     android:id="@+id/barcode"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="17267"
                     android:textSize="15dp" />
 
                 <TextView
-                    android:text="T3-T4-T5"
                     android:id="@+id/tests"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="T3-T4-T5"
                     android:textSize="@dimen/NormalTextSize" />
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp">
 
                     <ImageView
                         android:id="@+id/download"
@@ -112,16 +108,17 @@
             </LinearLayout>
 
         </LinearLayout>
+
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_margin="5dp"
-            android:orientation="vertical"
             android:id="@+id/canlayoutGone"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:orientation="vertical">
 
             <ListView
-                android:layout_width="match_parent"
                 android:id="@+id/canList"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
             </ListView>

@@ -46,7 +46,7 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class ResultDtlAdapter extends BaseAdapter {
-    ImageView mail,clon,print;
+    ImageView mail, clon, print;
     final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     Context mContext;
     ArrayList<TrackDetModel> trackdet = new ArrayList<>();
@@ -54,7 +54,7 @@ public class ResultDtlAdapter extends BaseAdapter {
     int[] SelectedArray;
     public static RequestQueue PostQue;
     SharedPreferences sharedpreferences;
-    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
 
     public ResultDtlAdapter(Context ManagingTabsActivity, ArrayList<TrackDetModel> arrayList) {
         sharedpreferences = ManagingTabsActivity.getSharedPreferences(Constants.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -63,6 +63,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         SelectedArray = new int[arrayList.size()];
 
     }
+
     @Override
     public int getCount() {
         return trackdet.size();
@@ -101,39 +102,37 @@ public class ResultDtlAdapter extends BaseAdapter {
             mail.setVisibility(View.VISIBLE);
         }*/
 
-        if(!trackdet.get(position).getChn_pending().toString().equals("")){
-            if(trackdet.get(position).getChn_pending().toString().equals("null")){
+        if (!trackdet.get(position).getChn_pending().toString().equals("")) {
+            if (trackdet.get(position).getChn_pending().toString().equals("null")) {
                 name.setText(trackdet.get(position).getName().toString());
-                Refby.setText("Ref by:"+trackdet.get(position).getRef_By().toString());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
                 barcode.setText(trackdet.get(position).getBarcode().toString());
                 tests.setText(trackdet.get(position).getTests().toString());
                 clon.setVisibility(View.GONE);
-            }else{
+            } else {
                 name.setText(trackdet.get(position).getName().toString());
                 clon.setVisibility(View.VISIBLE);
-                Refby.setText("Ref by:"+trackdet.get(position).getRef_By().toString());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
                 barcode.setText(trackdet.get(position).getBarcode().toString());
                 tests.setText(trackdet.get(position).getTests().toString());
             }
 
-        }else {
+        } else {
             name.setText(trackdet.get(position).getName().toString());
-            Refby.setText("Ref by:"+trackdet.get(position).getRef_By().toString());
+            Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
             barcode.setText(trackdet.get(position).getBarcode().toString());
             tests.setText(trackdet.get(position).getTests().toString());
             clon.setVisibility(View.GONE);
         }
 
-
-
-        if(!trackdet.get(position).getPdflink().equals("null")){
+        if (!trackdet.get(position).getPdflink().equals("null")) {
             download.setVisibility(View.VISIBLE);
-        }else if(trackdet.get(position).getPdflink().equals("null")){
+        } else if (trackdet.get(position).getPdflink().equals("null")) {
             download.setVisibility(View.INVISIBLE);
         }
-        if(!trackdet.get(position).getEmail().equals("null") ){
+        if (!trackdet.get(position).getEmail().equals("null")) {
             mail.setVisibility(View.VISIBLE);
-        }else if(trackdet.get(position).getEmail().equals("null")){
+        } else if (trackdet.get(position).getEmail().equals("null")) {
             mail.setVisibility(View.INVISIBLE);
             print.setVisibility(View.INVISIBLE);
 
@@ -141,7 +140,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (trackdet.get(position).getPdflink().length()>0) {
+                if (trackdet.get(position).getPdflink().length() > 0) {
                     Intent browserIntent = new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(trackdet.get(position).getPdflink().toString()));
@@ -164,14 +163,15 @@ public class ResultDtlAdapter extends BaseAdapter {
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowMailAlert(trackdet.get(position).getPatient_id().toString(),trackdet.get(position).getBarcode().toString(),trackdet.get(position).getEmail().toString(),trackdet.get(position).getDate().toString());
+                ShowMailAlert(trackdet.get(position).getPatient_id().toString(), trackdet.get(position).getBarcode().toString(), trackdet.get(position).getEmail().toString(), trackdet.get(position).getDate().toString());
 
 
             }
         });
         return convertView;
     }
-    private void GetData(String patient_ID, String barcode, String email, String date ) {
+
+    private void GetData(String patient_ID, String barcode, String email, String date) {
 
         PostQue = Volley.newRequestQueue(mContext);
 
@@ -180,13 +180,12 @@ public class ResultDtlAdapter extends BaseAdapter {
 
             SharedPreferences prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
 
-            jsonObject.put("api_key",prefs.getString("API_KEY", null));
-            jsonObject.put("Patient_id",patient_ID);
-            jsonObject.put("barcodes",barcode);
-            jsonObject.put("tomailid",email);
+            jsonObject.put("api_key", prefs.getString("API_KEY", null));
+            jsonObject.put("Patient_id", patient_ID);
+            jsonObject.put("barcodes", barcode);
+            jsonObject.put("tomailid", email);
             jsonObject.put("tsp", prefs.getString("Username", null));
             jsonObject.put(Constants.date, date);
-
 
 
         } catch (JSONException e) {
@@ -199,7 +198,7 @@ public class ResultDtlAdapter extends BaseAdapter {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e(TAG, "onResponse: RESPONSE"+response );
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
                             String finalJson = response.toString();
                             JSONObject parentObjectOtp = new JSONObject(finalJson);
 //                            JSONArray jsonArray = response.optJSONArray(Constants.billingDetails);
@@ -208,7 +207,7 @@ public class ResultDtlAdapter extends BaseAdapter {
                                 String response1 = parentObjectOtp.getString("response");
                                 String RES_ID = parentObjectOtp.getString("RES_ID");
                                 String error = parentObjectOtp.getString("error");
-                                Toast.makeText(mContext, ""+response1, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mContext, "" + response1, Toast.LENGTH_SHORT).show();
 
                             }
 
@@ -229,11 +228,12 @@ public class ResultDtlAdapter extends BaseAdapter {
         });
 
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: JSON"+jsonObject);
-        Log.e(TAG, "GetData: URL"+jsonObjectRequest);
+        Log.e(TAG, "GetData: JSON" + jsonObject);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
 
     }
-    public  void ShowMailAlert(final String patient_ID, final String barcode, final String email, final String date ) {
+
+    public void ShowMailAlert(final String patient_ID, final String barcode, final String email, final String date) {
         final Dialog dialog = new Dialog(mContext);
         dialog.setContentView(R.layout.mail_alert);
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
@@ -245,16 +245,15 @@ public class ResultDtlAdapter extends BaseAdapter {
         final EditText emailid = (EditText) dialog.findViewById(R.id.email);
 
 
-
         emailid.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
                 String enteredString = s.toString();
-                if (enteredString.startsWith(" ")||enteredString.startsWith("!")||enteredString.startsWith("@")||
-                        enteredString.startsWith("#")||enteredString.startsWith("$")||
-                        enteredString.startsWith("%")||enteredString.startsWith("^")||
-                        enteredString.startsWith("&")||enteredString.startsWith("*")||enteredString.startsWith(".")) {
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(mContext,
                             ToastFile.crt_eml,
                             Toast.LENGTH_SHORT).show();
@@ -277,11 +276,9 @@ public class ResultDtlAdapter extends BaseAdapter {
         });
 
 
-
-
-        if(!email.equals("")){
+        if (!email.equals("")) {
             emailid.setText(email);
-        }else{
+        } else {
 
         }
         final Button cancel = (Button) dialog.findViewById(R.id.cancel);
@@ -292,11 +289,11 @@ public class ResultDtlAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                if(emailid.equals("")){
+                if (emailid.equals("")) {
                     Toast.makeText(mContext, "Please enter E-mail id", Toast.LENGTH_SHORT).show();
-                }else{
-                        GetData(patient_ID,barcode,emailid.getText().toString(),date);
-                        dialog.dismiss();
+                } else {
+                    GetData(patient_ID, barcode, emailid.getText().toString(), date);
+                    dialog.dismiss();
                 }
             }
         });
@@ -310,6 +307,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
     }
+
     public void setFilter(List<TrackDetModel> countryModels) {
         trackdet = new ArrayList<>();
         trackdet.addAll(countryModels);

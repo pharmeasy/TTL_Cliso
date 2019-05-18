@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/full_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -104,8 +105,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginRight="2dp"
-            android:background="@drawable/corner_curve_maroon"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@drawable/corner_curve_maroon">
 
             <Spinner
                 android:id="@+id/spinnerfilter"
@@ -121,10 +122,10 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:background="@drawable/corner_curve_maroon"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@drawable/corner_curve_maroon">
 
             <Spinner
                 android:id="@+id/filterBy"
@@ -179,8 +180,8 @@
         android:layout_marginLeft="21dp"
         android:layout_marginRight="21dp"
         android:layout_weight="7.2"
-        android:visibility="gone"
-        android:divider="@color/white">
+        android:divider="@color/white"
+        android:visibility="gone">
 
     </ListView>
 
@@ -192,29 +193,29 @@
         android:text="NO DATA FOUND "
         android:textColor="@color/red"
         android:visibility="gone" />
+
     <LinearLayout
+        android:id="@+id/offline_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="7.2"
-        android:visibility="gone"
         android:orientation="vertical"
-        android:id="@+id/offline_img"
-        >
-    <pl.droidsonroids.gif.GifImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:src="@drawable/offline_gifimg"
-        />
+        android:visibility="gone">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:src="@drawable/offline_gifimg" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="top|center"
             android:text="  Sorry ! You are offline..."
             android:textColor="@color/maroon"
-            android:layout_gravity="center"
-            android:gravity="top|center"
-            android:textSize="18sp"
-            android:layout_weight="2"
-            />
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

@@ -207,7 +207,6 @@ public class MyProfile_activity extends AppCompatActivity {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-
         try {
             jsonObject.put("API_Key", api_key);
             jsonObject.put("tsp", user);
@@ -215,7 +214,6 @@ public class MyProfile_activity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         RequestQueue queue = Volley.newRequestQueue(MyProfile_activity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(

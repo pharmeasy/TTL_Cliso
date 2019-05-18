@@ -45,6 +45,7 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
 
     @Override
     public void onBindViewHolder(@NonNull final CustomCalendarAdapter.ViewHolder holder, final int position) {
+
         holder.dates_txt.setText(mgetAllDays.get(position).getStrDates());
         holder.days_txt.setText(mgetAllDays.get(position).getStrDays());
         Date d = new Date();

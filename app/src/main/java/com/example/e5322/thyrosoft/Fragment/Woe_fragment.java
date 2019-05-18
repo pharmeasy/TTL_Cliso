@@ -94,7 +94,7 @@ Woe_fragment extends RootFragment {
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     //layouts defined in fragment
-    LinearLayout enter_ll_unselected, unchecked_entered_ll,offline_img,wind_up_ll;
+    LinearLayout enter_ll_unselected, unchecked_entered_ll, offline_img, wind_up_ll;
     final Calendar myCalendar = Calendar.getInstance();
 
     WOE_Model_Patient_Details woe_model_patient_details;
@@ -102,7 +102,7 @@ Woe_fragment extends RootFragment {
     ArrayList<Patients> filterPatientsArrayList;
     ArrayList<String> getWindupCount;
 
-    LinearLayout  enter_entered_layout;
+    LinearLayout enter_entered_layout;
     public static com.android.volley.RequestQueue PostQueOtp;
     String putDate, getFormatDate, convertedDate;
     SharedPreferences prefs;
@@ -211,11 +211,11 @@ Woe_fragment extends RootFragment {
 
 
         Date d = new Date();
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat sdf1= new SimpleDateFormat("dd-MM-yyyy");
-        String showTotxt= sdf1.format(d);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+        String showTotxt = sdf1.format(d);
         woe_cal.setText(showTotxt);
-        passToAPI= sdf.format(d);
+        passToAPI = sdf.format(d);
 
 
         enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
@@ -258,11 +258,11 @@ Woe_fragment extends RootFragment {
         });
 
 
-        if(!GlobalClass.isNetworkAvailable(getActivity())){
+        if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             wind_up_ll.setVisibility(View.GONE);
 
-        }else{
+        } else {
             offline_img.setVisibility(View.GONE);
             wind_up_ll.setVisibility(View.VISIBLE);
 
@@ -356,11 +356,11 @@ Woe_fragment extends RootFragment {
         System.out.println(finalDate);
 //        wind_up.setText("Wind up (Pending:"+getWindupCount.size()+")");
 
-        if(!GlobalClass.isNetworkAvailable(getActivity())){
+        if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             wind_up_ll.setVisibility(View.GONE);
 
-        }else{
+        } else {
             offline_img.setVisibility(View.GONE);
             fetchWoeListDoneByTSP();
             wind_up_ll.setVisibility(View.VISIBLE);
@@ -370,6 +370,7 @@ Woe_fragment extends RootFragment {
 
         return viewMain;
     }
+
     DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -389,13 +390,13 @@ Woe_fragment extends RootFragment {
         String myFormat1 = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         SimpleDateFormat sdf1 = new SimpleDateFormat(myFormat1, Locale.US);
-        passToAPI=sdf1.format(myCalendar.getTime());
+        passToAPI = sdf1.format(myCalendar.getTime());
         woe_cal.setText(sdf.format(myCalendar.getTime()));
-        if(!GlobalClass.isNetworkAvailable(getActivity())){
+        if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             wind_up_ll.setVisibility(View.GONE);
 
-        }else{
+        } else {
             offline_img.setVisibility(View.GONE);
             fetchWoeListDoneByTSP();
             wind_up_ll.setVisibility(View.VISIBLE);
@@ -468,13 +469,11 @@ Woe_fragment extends RootFragment {
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
-
                     ArrayList<String> getNoStatus = new ArrayList<>();
                     for (int i = 0; i < patientsArrayList.size(); i++) {
                         if (patientsArrayList.get(i).getConfirm_status().equals("NO")) {
                             getNoStatus.add(patientsArrayList.get(i).getName());
                         }
-
                         int getCount = getNoStatus.size();
 
                         countData = String.valueOf(getCount);

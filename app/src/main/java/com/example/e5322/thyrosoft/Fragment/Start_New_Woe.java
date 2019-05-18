@@ -441,6 +441,7 @@ public class Start_New_Woe extends RootFragment {
 
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
+
         // Inflate the layout for this fragment
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -466,9 +467,7 @@ public class Start_New_Woe extends RootFragment {
             scrollView2.setVisibility(View.VISIBLE);
         }
 
-
         GlobalClass.isAutoTimeSelected(getActivity());
-
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             Log.e("SDK_INT", "" + Build.VERSION.SDK_INT);
@@ -559,8 +558,6 @@ public class Start_New_Woe extends RootFragment {
             public void afterTextChanged(Editable s) {
             }
         });
-
-
 
         dateShow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1456,7 +1453,7 @@ public class Start_New_Woe extends RootFragment {
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (selectTypeSpinner.getSelectedItemPosition() == 0) {
+                            if (selectTypeSpinner.getSelectedItem().equals("ILS")) {
 
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
@@ -1769,7 +1766,7 @@ public class Start_New_Woe extends RootFragment {
                                     }
                                 });
 
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
 
 
                                 leadlayout.setVisibility(View.GONE);
@@ -2180,7 +2177,7 @@ public class Start_New_Woe extends RootFragment {
                                         }
                                     }
                                 });
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
 
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
@@ -2472,7 +2469,7 @@ public class Start_New_Woe extends RootFragment {
                                     }
                                 });
 
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 3) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("CAMP")) {
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.GONE);
@@ -2756,7 +2753,7 @@ public class Start_New_Woe extends RootFragment {
                                     }
                                 });
 
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 4) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("ORDERS")) {
 
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.VISIBLE);
@@ -3010,7 +3007,7 @@ public class Start_New_Woe extends RootFragment {
                                 });
 
 
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 5) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("ADD")) {
                                 barcode_woe.setText("");
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
@@ -3106,7 +3103,7 @@ public class Start_New_Woe extends RootFragment {
                                         }
                                     }
                                 });
-                            } else if (selectTypeSpinner.getSelectedItemPosition() == 6) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("RECHECK")) {
                                 barcode_woe.setText("");
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);

@@ -191,7 +191,6 @@ public class BillingSummaryAdapter extends BaseAdapter {
                                         billDET.setWoetype(jsonObject.optString(Constants.woetype).toString());
                                         billDET.setRefId(jsonObject.optString(Constants.refId).toString());
 
-
                                         GlobalClass.billingDETArray.add(billDET);
                                         GlobalClass.billingDETheaderArray.add(jsonObject.optString(Constants.patient).toString());
                                     } catch (Exception e) {

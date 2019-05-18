@@ -22,12 +22,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-
-
         Log.e("Msg", "Message received ["+remoteMessage+"]");
-
         // Create Notification
-
         mDatabase = new SqliteDatabase(this);
 
         Intent intent = new Intent(this, ManagingTabsActivity.class);

@@ -267,7 +267,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                 str = str + getSelected_test.getCode() + ",";
                 String slectedpackage = "";
 
-
                 slectedpackage = getSelected_test.getName();
                 tempselectedTests = new ArrayList<>();
                 tempselectedTests1 = new ArrayList<>();
@@ -276,16 +275,10 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     for (int i = 0; i < getSelected_test.getChilds().length; i++) {
                         //tejas t -----------------------------
                         for (int j = 0; j < selectedTests.size(); j++) {
-
-
                             if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
                                 System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
                                 tempselectedTests1.add(selectedTests.get(j).getName());
                                 tempselectedTests.add(selectedTests.get(j));
-
-
-
                             } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
                                 tempselectedTests1.add(selectedTests.get(j).getName());
                                 tempselectedTests.add(selectedTests.get(j));

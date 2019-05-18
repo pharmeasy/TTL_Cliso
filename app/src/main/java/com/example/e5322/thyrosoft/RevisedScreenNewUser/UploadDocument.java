@@ -110,13 +110,13 @@ public class UploadDocument extends AbstractActivity {
     private TableRow trm, th;
     String type4 = "Tam03";
     TextView mis, mis2;
-    Button btn_upload, btn_submit;
+    Button  btn_submit;
     String image = "";
     String imageName;
     ImageView edt_expiry1;
     EditText edt_purpose, edt_remarks;
     TextView edt_expiry, title, preview_img_txt;
-    LinearLayout nedll, sgcll, pgcll, expiryll;
+    LinearLayout nedll, sgcll, pgcll, expiryll,ll_upload;
     ImageView gtick, back, home;
 
     private int mYear, mMonth, mDay;
@@ -180,7 +180,7 @@ public class UploadDocument extends AbstractActivity {
         document_spr = (Spinner) findViewById(R.id.document_spr);
         category_spr1 = (Spinner) findViewById(R.id.category_spr1);
 
-        btn_upload = (Button) findViewById(R.id.btn_upload);
+        ll_upload = (LinearLayout) findViewById(R.id.ll_upload);
         btn_submit = (Button) findViewById(R.id.btn_submit);
         edt_purpose = (EditText) findViewById(R.id.edt_purpose);
         edt_remarks = (EditText) findViewById(R.id.edt_remarks);
@@ -439,7 +439,7 @@ public class UploadDocument extends AbstractActivity {
 
             }
         });
-        btn_upload.setOnClickListener(new View.OnClickListener() {
+        ll_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK,

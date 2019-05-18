@@ -230,7 +230,6 @@ public class RateCalculatorFragment extends Fragment {
         getvalue = new ArrayList<>();
 
         go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
-
         companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
         show_selected_tests_list_test_ils1 = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils1);
         show_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rates);
@@ -243,7 +242,6 @@ public class RateCalculatorFragment extends Fragment {
         test_txt = (TextView) viewrate_calfrag.findViewById(R.id.test_txt);
         linear_layout_data = (LinearLayout) viewrate_calfrag.findViewById(R.id.linear_layout_data);
         offline_img = (LinearLayout) viewrate_calfrag.findViewById(R.id.offline_img);
-
         containerlist = (RecyclerView) viewrate_calfrag.findViewById(R.id.containerlist);
         pop_profile_test_bar = (LinearLayout) viewrate_calfrag.findViewById(R.id.pop_profile_test_bar);
         search_option_ttl = (LinearLayout) viewrate_calfrag.findViewById(R.id.search_option_ttl);
@@ -251,14 +249,12 @@ public class RateCalculatorFragment extends Fragment {
         containerlist.setLayoutManager(linearLayoutManager);
         containerlist.setItemAnimator(new DefaultItemAnimator());
         containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         brand_name_rt_cal = (Spinner) viewrate_calfrag.findViewById(R.id.brand_name_rt_cal);
-
         out_lab_cost = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost);
         out_lab_cost_b2b = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost_b2b);
-
         outlab_list = (RecyclerView) viewrate_calfrag.findViewById(R.id.outlab_list);
+
         linearLayoutManager = new LinearLayoutManager(getContext());
         outlab_list.setLayoutManager(linearLayoutManager);
         outlab_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
@@ -444,7 +440,6 @@ public class RateCalculatorFragment extends Fragment {
                         requestQueuepoptestILS.add(jsonObjectRequestPop);
                         Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
                     }
-
 
                 }
 
@@ -699,10 +694,8 @@ public class RateCalculatorFragment extends Fragment {
                         pop_profile_test_bar.setVisibility(View.VISIBLE);
                         search_option_ttl.setVisibility(View.VISIBLE);
 
-
                     } else {
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-
                     }
                 } else {
 
@@ -770,7 +763,6 @@ public class RateCalculatorFragment extends Fragment {
                     }
 
                 }
-
 
             } else {
                 outlab_list.setVisibility(View.VISIBLE);

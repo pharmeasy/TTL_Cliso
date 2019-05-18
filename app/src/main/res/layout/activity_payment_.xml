@@ -12,7 +12,7 @@
         style="@style/heading_text"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/white"
+        android:background="@color/cement_light"
         android:gravity="center"
         android:orientation="horizontal"
         android:textColor="@color/colorBlack"
@@ -23,9 +23,7 @@
             style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="0.5"
-            android:background="@color/colorWhite"
             android:gravity="center"
             android:src="@drawable/color_back"
             android:textColor="@color/colorBlack"></ImageView>
@@ -36,7 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
-            android:background="@color/colorWhite"
             android:gravity="center"
             android:textColor="@color/maroon"
             android:textStyle="bold"></TextView>
@@ -46,9 +43,7 @@
             style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="0.5"
-            android:background="@color/colorWhite"
             android:gravity="center"
             android:src="@drawable/color_homr"
             android:textColor="@color/colorBlack"></ImageView>
@@ -163,7 +158,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center|left"
-                        android:text="Amount you wish to pay"
+                        android:text=" Enter amount"
                         android:textColor="@color/black" />
 
                     <EditText

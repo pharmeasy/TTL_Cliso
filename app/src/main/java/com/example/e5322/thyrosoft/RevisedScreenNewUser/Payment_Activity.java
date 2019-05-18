@@ -108,9 +108,9 @@ public class Payment_Activity extends AppCompatActivity {
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
     ImageView back, home;
-    EditText edt_enter_amt,edt_closing_bal;
+    EditText edt_enter_amt, edt_closing_bal;
     ConnectionDetector cd;
-    String name_tsp, user, passwrd, access, api_key,email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode;
+    String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode;
     private static Activity context;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
@@ -251,7 +251,7 @@ public class Payment_Activity extends AppCompatActivity {
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
                 } else {
-                   /* int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
+                    int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
                     int modulus = getAmt % 5000;
                     System.out.println("getAmount ::" + modulus);
 
@@ -277,59 +277,59 @@ public class Payment_Activity extends AppCompatActivity {
                                     }
                                 })
                                 .show();
-                    } else {*/
-                    if (cd.isConnectingToInternet()) {
-                        globalData.showProgressDialog();
-                        try {
-                            PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
-                            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
-                                public String RES_ID;
+                    } else {
+                        if (cd.isConnectingToInternet()) {
+                            globalData.showProgressDialog();
+                            try {
+                                PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                                JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
+                                    public String RES_ID;
 
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    globalData.hideProgressDialog();
-                                    try {
-                                        Log.e(TAG, "onResponse: " + response);
-                                        String finalJson = response.toString();
-                                        JSONObject parentObjectOtp = new JSONObject(finalJson);
-                                        RESPONSE = parentObjectOtp.getString("RESPONSE");
-                                        RES_ID = parentObjectOtp.getString("RES_ID");
-                                        ordno = parentObjectOtp.getString("ordno");
-
-                                        if (RESPONSE.equals("SUCCESS")) {
-                                            startPayUTransaction(name_tsp, "", amountTopass, ordno);
-                                        } else {
-
-                                        }
-
-                                    } catch (JSONException e) {
-
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }, new com.android.volley.Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    globalData.hideProgressDialog();
-                                    if (error != null) {
-                                    } else {
+                                    @Override
+                                    public void onResponse(JSONObject response) {
                                         globalData.hideProgressDialog();
-                                        System.out.println(error);
-                                    }
-                                }
-                            });
-                            PostQueOtp.add(jsonObjectRequest1);
-                            Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
+                                        try {
+                                            Log.e(TAG, "onResponse: " + response);
+                                            String finalJson = response.toString();
+                                            JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                            RESPONSE = parentObjectOtp.getString("RESPONSE");
+                                            RES_ID = parentObjectOtp.getString("RES_ID");
+                                            ordno = parentObjectOtp.getString("ordno");
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                                            if (RESPONSE.equals("SUCCESS")) {
+                                                startPayUTransaction(name_tsp, "", amountTopass, ordno);
+                                            } else {
+
+                                            }
+
+                                        } catch (JSONException e) {
+
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, new com.android.volley.Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        globalData.hideProgressDialog();
+                                        if (error != null) {
+                                        } else {
+                                            globalData.hideProgressDialog();
+                                            System.out.println(error);
+                                        }
+                                    }
+                                });
+                                PostQueOtp.add(jsonObjectRequest1);
+                                Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
+
                     }
 
+
                 }
-
-
-//                }
 
             }
         });

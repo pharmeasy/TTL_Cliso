@@ -106,16 +106,6 @@ public class BillingDetails extends RootFragment {
         linearlay =(LinearLayout)view.findViewById(R.id.linearlay);
         download=(TextView)view.findViewById(R.id.download);
 
-
-
-
-
-
-
-
-
-
-
         lvExp = (ExpandableListView)view.findViewById(R.id.expandlist);
 
         download.setOnClickListener(new View.OnClickListener() {
@@ -217,8 +207,6 @@ public class BillingDetails extends RootFragment {
                 sheet.addCell(new Label(4, i + 1, GlobalClass.billingDETArray.get(i).getTests()));
                 sheet.addCell( new Label(5, i + 1, GlobalClass.billingDETArray.get(i).getWoetype()));
                 sheet.addCell(new Label(6, i + 1, GlobalClass.billingDETArray.get(i).getRefId()));
-
-
 
             }       //String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TODO_SUBJECT));
 
