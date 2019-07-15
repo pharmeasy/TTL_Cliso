@@ -255,11 +255,9 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-
         deletePatienDetail = Volley.newRequestQueue(context1);
         JSONObject jsonObjectOtp = new JSONObject();
         try {
-
             jsonObjectOtp.put("api_key", api_key);
             jsonObjectOtp.put("Patient_id", GlobalClass.getPatientIdforDeleteDetails);
             jsonObjectOtp.put("tsp", user);

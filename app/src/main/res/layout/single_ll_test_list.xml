@@ -1,55 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/parent_ll"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:layout_margin="3dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:layout_margin="3dp"
+    android:gravity="center"
+    android:orientation="horizontal">
+
     <LinearLayout
+        android:id="@+id/test_ll"
         android:layout_width="30dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/test_ll"
-        android:gravity="center"
-        >
+        android:gravity="center">
+
         <ImageView
+            android:id="@+id/check"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_weight="1"
-            android:src="@drawable/check_ref"
-            android:id="@+id/check"/>
+            android:src="@drawable/check_ref" />
+
         <ImageView
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:src="@drawable/checkedcheckbox_rate"
             android:id="@+id/checked"
-            android:visibility="gone"
-            android:layout_weight="1"
-            />
-        <ImageView
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:src="@drawable/gray_check"
-            android:id="@+id/gray_check"
-            android:visibility="gone"
             android:layout_weight="1"
-            />
+            android:src="@drawable/checkedcheckbox_rate"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/gray_check"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_weight="1"
+            android:src="@drawable/gray_check"
+            android:visibility="gone" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/outlab_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="test"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/test_ll"
-        android:textSize="14sp"
-        android:id="@+id/outlab_test"
-        android:gravity="center_vertical|center|left|top"
         android:layout_marginLeft="3dp"
         android:layout_marginTop="2dp"
-        />
+        android:layout_toRightOf="@+id/test_ll"
+        android:gravity="center_vertical|center|left|top"
+        android:text="test"
+        android:textSize="14sp" />
 
 </RelativeLayout>

@@ -392,6 +392,7 @@ public class UploadDocument extends AbstractActivity {
         fetchpgcspinner();
 
         Defaultupload();
+
         List<String> spinnerArray2 = new ArrayList<String>();
         spinnerArray2.add("NED");
         spinnerArray2.add("SGC");
@@ -671,12 +672,9 @@ public class UploadDocument extends AbstractActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (data != null && requestCode == 0) {
-
-
             if (resultCode == RESULT_OK) {
                 Uri targetUri = data.getData();
 
-                //ImageName Procedure
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = UploadDocument.this.getContentResolver().query(targetUri,
                         filePathColumn, null, null, null);
@@ -684,13 +682,8 @@ public class UploadDocument extends AbstractActivity {
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 picturePath = cursor.getString(columnIndex);
                 cursor.close();
-                //   Toast.makeText(UploadDocument.this, "Trush" + picturePath + "", LENGTH_SHORT).show();
-                //Uptill Here
-
 
                 imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
-                //  Toast.makeText(UploadDocument.this, "Trush" + imageName + "", LENGTH_SHORT).show();
-
 
                 Bitmap bitmap;
                 try {
@@ -699,9 +692,6 @@ public class UploadDocument extends AbstractActivity {
                     image = ConvertBitmapToString(resizedBitmap);
                     gtick.setVisibility(View.VISIBLE);
                     preview_img_txt.setVisibility(View.VISIBLE);
-
-                    // Toast.makeText(UploadDocument.this, "AbhiImage      " + image + "", LENGTH_SHORT).show();
-                    //Upload();
 
                 } catch (FileNotFoundException e) {
                     // TODO Auto-generated catch block
@@ -753,19 +743,21 @@ public class UploadDocument extends AbstractActivity {
                 neddatamodelsarr = new ArrayList<>();
                 nedspinnerdata = new ArrayList<>();
                 nedResponseModel = responseParser.getNedResponseModel(json, statusCode);
-                if (nedResponseModel.getResponse().equalsIgnoreCase("")) {
-                }
-                if (nedResponseModel != null) {
+                /*if (nedResponseModel.getResponse().equalsIgnoreCase("")) {
+                }*/
+                if (nedResponseModel.getNedlist() != null) {
                     neddatamodelsarr = nedResponseModel.getNedlist();
                     nedspinnerdata.add("-Select-");
                     for (int i = 0; i < neddatamodelsarr.size(); i++) {
                         nedspinnerdata.add(neddatamodelsarr.get(i).getNAME());
                     }
-                    ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(
-                            UploadDocument.this, R.layout.upload_document_spin, nedspinnerdata);
-                    adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    ned_spr.setAdapter(adapter3);
-                }
+                }else
+                    nedspinnerdata.add("-Select-");
+
+                ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(
+                        UploadDocument.this, R.layout.upload_document_spin, nedspinnerdata);
+                adapter3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                ned_spr.setAdapter(adapter3);
             }
         }
 
@@ -866,8 +858,6 @@ public class UploadDocument extends AbstractActivity {
                 if (uploadDocumentdatamodelsarr != null) {
                     spinnerdata1.add("-Select-");
                     for (int i = 0; i < uploadDocumentdatamodelsarr.size(); i++) {
-
-
                         spinnerdata1.add(uploadDocumentdatamodelsarr.get(i).getDocument());
                     }
 

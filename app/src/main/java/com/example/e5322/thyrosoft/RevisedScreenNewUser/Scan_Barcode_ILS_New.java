@@ -130,7 +130,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String getCollectedAmt;
     private String testsnames;
     private DatabaseHelper myDb;
-    ;
     private Cursor cursor;
 
     private static String stringofconvertedTime;
@@ -575,7 +574,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 }
 
                 if (getCollectedAmt.equals("")) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected Amount", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                 } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
                     Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
                 } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
@@ -864,6 +863,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                                     startActivity(httpIntent);*/
                                                     // Write your code here to execute after dialog closed
                                                     Intent i = new Intent(Scan_Barcode_ILS_New.this,Payment_Activity.class);
+                                                    i.putExtra("COMEFROM", "Scan_Barcode_ILS_New");
                                                     startActivity(i);
                                                 }
                                             });

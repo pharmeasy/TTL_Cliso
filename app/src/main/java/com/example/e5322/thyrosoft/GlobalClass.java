@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -97,6 +98,7 @@ public class GlobalClass {
     public static ArrayList<String> items = new ArrayList<>();
     public static ArrayList<Summary_model> summary_models;
     public static ArrayList<Barcodelist> barcodelists;
+    public static ArrayList<Barcodelist> BMC_barcodelists;
 
     public static boolean flagToSend = false;
     public static boolean flagToSendfromnavigation = false;
@@ -121,9 +123,15 @@ public class GlobalClass {
     ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
 
     public static ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist = new ArrayList<>();
-    public static ArrayList<String> saveBarcodes = new ArrayList<>();
     public static String specimenttype;
 
+    public static ArrayList<SetBarcodeDetails> BMC_setScannedBarcodes = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsList = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsTTLOTHERSList = new ArrayList<>();
+    public static String BMC_specimenttype;
+
+    public static Bitmap TRF_BITMAP;
+    public static Bitmap RECEIPT_BITMAP;
 
     public static List<Fragment> mFragmentList = new ArrayList<>();
     public static List<String> mFragmentTitleList = new ArrayList<>();

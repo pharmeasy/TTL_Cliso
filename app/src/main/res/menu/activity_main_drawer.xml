@@ -150,7 +150,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/blood_s_entry"
-            android:icon="@drawable/logout"
+            android:icon="@drawable/sgc_pgc_d"
             android:visible="true"
             android:title="Blood Sugar entry" />
     </group>
@@ -243,6 +243,17 @@
             android:id="@+id/faq_data"
             android:icon="@drawable/questionandanswer"
             android:title="FAQ" />
+
+    </group>
+
+    <group
+        android:id="@+id/group28"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/accr_data"
+            android:icon="@drawable/accredation"
+            android:visible="true"
+            android:title="Accreditation" />
 
     </group>
 

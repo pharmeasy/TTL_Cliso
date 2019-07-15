@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.e5322.thyrosoft">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -47,7 +48,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
-        <activity android:name=".Activity.Blood_sugar_entry_activity"></activity>
+        <activity android:name=".Activity.Blood_sugar_entry_activity" />
         <activity android:name=".Activity.CampIntimation" />
         <activity android:name=".BroadcastViewPagerActivity" />
         <activity android:name=".Activity.BroadcastDataActivity" />
@@ -114,6 +115,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".WOE.MainActivityFirebase"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".Activity.AccreditationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".WOE.Scan_Barcode_Outlabs"
@@ -240,6 +245,28 @@
         </provider>
 
         <activity android:name=".Activity.BroadcastActivity" />
+
+        <activity
+            android:name=".Cliso_BMC.BMC_MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_ProductListingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_WOE_SummaryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_WOE_EditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_Scan_BarcodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_SummaryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_SelectSampleTypeActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

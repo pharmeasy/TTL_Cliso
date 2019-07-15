@@ -491,6 +491,7 @@ public class Edit_Woe extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
 
                                 Intent i = new Intent(getActivity(),Payment_Activity.class);
+                                i.putExtra("COMEFROM", "Edit_Woe");
                                 startActivity(i);
                               /*  Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                 httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));

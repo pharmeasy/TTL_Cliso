@@ -11,9 +11,7 @@ public class MPL {
     ArrayList<Childs_MPL> childs;
     String code,fasting,name,product;
     Rate_MPL rate;
-    String type;
-
-
+    String type,subtypes;
 
     public ArrayList<Barcodes_MPL> getBarcodes() {
         return barcodes;
@@ -79,5 +77,11 @@ public class MPL {
         this.rate = rate;
     }
 
+    public String getSubtypes() {
+        return subtypes;
+    }
 
+    public void setSubtypes(String subtypes) {
+        this.subtypes = subtypes;
+    }
 }

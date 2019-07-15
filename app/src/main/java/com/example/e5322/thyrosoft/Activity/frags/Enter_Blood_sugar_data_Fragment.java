@@ -3,7 +3,6 @@ package com.example.e5322.thyrosoft.Activity.frags;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,8 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -56,24 +53,26 @@ import java.util.regex.Pattern;
 import static android.app.Activity.RESULT_OK;
 import static com.example.e5322.thyrosoft.API.Api.checkNumber;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Enter_Blood_sugar_data_Fragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Enter_Blood_sugar_data_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class Enter_Blood_sugar_data_Fragment extends Fragment {
+    public static final int PICK_IMAGE = 1;
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static InputFilter EMOJI_FILTER = new InputFilter() {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            for (int index = start; index < end; index++) {
 
+                int type = Character.getType(source.charAt(index));
+
+                if (type == Character.SURROGATE) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
     Spinner spin_bs_test;
     String[] arr;
     EditText mobile_edt, client_name_edt, edt_val, edt_age, edt_email;
@@ -81,11 +80,11 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
     TextView txt_ref_msg, tvUploadImageText;
     ImageView male, male_red, female, female_red, correct_img, cross_img;
     LinearLayout choose_file_ll, value_ll;
-    public static final int PICK_IMAGE = 1;
-
     File file;
-    Uri fileUri;
-
+    int PIC_SELECTION = 100, minValue = 0, maxValue = 0, enteredVal = 0;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     private OnFragmentInteractionListener mListener;
     private String mobile_number;
     private String TAG = Enter_Blood_sugar_data_Fragment.class.getSimpleName().toString();
@@ -94,7 +93,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
     private boolean setFlagTocheckMobileNumber = false;
     private ProgressDialog progressDialog;
     private String imageName, image;
-    int PIC_SELECTION = 100, minValue = 0, maxValue = 0, enteredVal = 0;
     private Uri targetUri;
     private String gender = "";
 
@@ -102,14 +100,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Enter_Blood_sugar_data_Fragment.
-     */
     // TODO: Rename and change types and number of parameters
     public static Enter_Blood_sugar_data_Fragment newInstance(String param1, String param2) {
         Enter_Blood_sugar_data_Fragment fragment = new Enter_Blood_sugar_data_Fragment();
@@ -118,6 +108,31 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static String ConvertBitmapToString(Bitmap bitmap) {
+        String encodedImage = "";
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        try {
+            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encodedImage;
+    }
+
+    public static boolean emailValidation(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
     @Override
@@ -346,9 +361,7 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         btn_choose_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                Intent intent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intent, PIC_SELECTION);
             }
         });
@@ -364,16 +377,10 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
                         LayoutInflater li = LayoutInflater.from(getContext());
                         View promptsView = li.inflate(R.layout.custom_dialog_imageviewer, null);
 
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                                getContext());
-                        // set prompts.xml to alertdialog builder
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
                         alertDialogBuilder.setView(promptsView);
-                        final ImageView userInput = (ImageView) promptsView
-                                .findViewById(R.id.img_show);
-                        // set dialog message
-                        // crete alert dialog
+                        final ImageView userInput = (ImageView) promptsView.findViewById(R.id.img_show);
                         AlertDialog alertDialog = alertDialogBuilder.create();
-                        // show it
                         alertDialog.show();
                         userInput.setImageBitmap(myBitmap);
                     }
@@ -384,11 +391,9 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         btn_submit_bs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Valdation()) {
                     Toast.makeText(getActivity(), "Done", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -551,19 +556,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         }
     }
 
-    public static String ConvertBitmapToString(Bitmap bitmap) {
-        String encodedImage = "";
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        try {
-            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return encodedImage;
-    }
-
     public String getPathFromURI(Uri contentUri) {
         String res = null;
         String[] proj = {MediaStore.Images.Media.DATA};
@@ -575,34 +567,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         cursor.close();
         return res;
     }
-
-    public static boolean emailValidation(String email) {
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-
-        Pattern pat = Pattern.compile(emailRegex);
-        if (email == null)
-            return false;
-        return pat.matcher(email).matches();
-    }
-
-    public static InputFilter EMOJI_FILTER = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            for (int index = start; index < end; index++) {
-
-                int type = Character.getType(source.charAt(index));
-
-                if (type == Character.SURROGATE) {
-                    return "";
-                }
-            }
-            return null;
-        }
-    };
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {

@@ -248,6 +248,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                                         public void onClick(DialogInterface dialog, int which) {
 
                                             Intent i = new Intent(mContext, Payment_Activity.class);
+                                            i.putExtra("COMEFROM", "Offline_Woe_Adapter");
                                             mContext.startActivity(i);
                                            /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));

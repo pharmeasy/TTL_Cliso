@@ -45,6 +45,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -82,8 +83,10 @@ import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Detai
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sdsmdg.tastytoast.TastyToast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,11 +94,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.LoginName;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 /**
@@ -107,104 +111,16 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
  * create an instance of this fragment.
  */
 public class Start_New_Woe extends RootFragment {
+    static final int DATE_DIALOG_ID = 0;
+    static final int TIME_DIALOG_ID = 1111;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    AlertDialog alertDialog;
-    DatePickerDialog datePickerDialog;
+    private static final String TAG = "LocationActivity";
     // TODO: Rename and change types of parameters
     public static com.android.volley.RequestQueue PostQueOtp;
-    private String mParam1;
-    private String mParam2;
-    View view, viewMain;
-    Date dCompare;
-    AlertDialog alert;
-    Context mContext;
-    EditText name, age, id_for_woe, barcode_woe, pincode_edt;
-    REF_DR[] ref_drs;
-    private String passToAPI;
-    Brand_type[] brandType;
-    ImageView male, female, male_red, female_red;
-    ProgressDialog barProgressDialog;
-    Button next_btn;
-    ArrayList<String> getWindupCount;
-    int agesinteger;
-    ArrayList<LABS> filterPatientsArrayList, labDetailsArrayList;
-    SourceILSMainModel sourceILSMainModel;
-    LABS[] labs;
-    private ArrayList<String> getLabNmae;
-    private ArrayList<String> statusForColor;
-    ArrayList<String> getReferenceNmae;
-    ArrayList<REF_DR> getReferenceName1;
-    TextView samplecollectionponit;
-    AutoCompleteTextView referedbyText;
-    SourceILSMainModel obj;
-    Spinner spinyr;
-    EditText kyc_format;
-    String namestr;
-    int cur = 0;
-    private int minute;
-    Calendar myCalendar;
-    long minDate;
-    int mYear, mMonth, mDay;
-    Spinner timehr, timesecond, timeampm;
-    TextView dateShow;
-    TextView leadbarcodename;
-    TextView leadidbarcodetest;
-    TextView leadbarcoderefdr;
-    TextView leadbarcodesct;
-    TextView setTime;
-    private int hour;
-    String saveGenderId;
-    boolean genderId = false;
-    DatabaseHelper myDb;
-
-    private SharedPreferences prefs;
-    private String user;
-    String enteredString;
-    BarcodelistModel barcodelist;
-    private String passwrd;
-    private String access;
-    private String referenceBy;
-    private String checkifChecked;
-    private String api_key;
-    LinearLayout namePatients, btech_layout, ref_check_linear, id_layout, barcode_layout, leadlayout, leadbarcodelayout, AGE_layout, time_layout;
-    String RES_ID, barcode, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE,
-            SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS, REF_DR_data;
-    private ArrayList<String> btechSpinner;
-    LocationManager locationManager;
-    private String blockCharacterSet = "#$^*+-/|><";
-    private static final String TAG = "LocationActivity";
-    LABS getFullDataLabs;
-    private MyPojo myPojo;
-    private RequestQueue POstQue;
-    private String labAddress;
-    private String labid;
-    private String referredID, getBtechID;
-    private String barcode_patient_id, message, status;
-    private String scpdefaultdata;
-    private String campname;
-    private String campID;
-    private String outputDateStr;
-    Spinner selectTypeSpinner, brand_spinner;
-    ArrayList<String> getCampNames;
-    Button next_btn_stage2;
-    TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
-    EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number;
-    Spinner btechname, deliveymode, camp_spinner_olc;
-    private Start_New_Woe.OnFragmentInteractionListener mListener;
-    ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     public static ArrayList<BCT_LIST> getBtechList;
-    TextView radio;
-    LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data;
-    WOE_Model_Patient_Details woe_model_patient_details;
-
-    private LocationManager mLocationManager;
-    String woereferedby;
-    boolean isLoaded = false;
-
-    static final int DATE_DIALOG_ID = 0;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -220,10 +136,124 @@ public class Start_New_Woe extends RootFragment {
             return null;
         }
     };
-
+    public static CAMP_LIST[] camp_lists;
+    AlertDialog alertDialog;
+    DatePickerDialog datePickerDialog;
+    View view, viewMain;
+    Date dCompare;
+    AlertDialog alert;
+    Context mContext;
+    EditText name, age, id_for_woe, barcode_woe, pincode_edt;
+    REF_DR[] ref_drs;
+    Brand_type[] brandType;
+    ImageView male, female, male_red, female_red;
+    ProgressDialog barProgressDialog;
+    Button next_btn;
+    ArrayList<String> getWindupCount;
+    int agesinteger;
+    ArrayList<LABS> filterPatientsArrayList, labDetailsArrayList;
+    SourceILSMainModel sourceILSMainModel;
+    LABS[] labs;
+    ArrayList<String> getReferenceNmae;
+    ArrayList<REF_DR> getReferenceName1;
+    TextView samplecollectionponit;
+    AutoCompleteTextView referedbyText;
+    SourceILSMainModel obj;
+    Spinner spinyr;
+    EditText kyc_format;
+    String namestr;
+    int cur = 0;
+    Calendar myCalendar;
+    long minDate;
+    int mYear, mMonth, mDay;
+    Spinner timehr, timesecond, timeampm;
+    TextView dateShow;
+    TextView leadbarcodename;
+    TextView leadidbarcodetest;
+    TextView leadbarcoderefdr;
+    TextView leadbarcodesct;
+    TextView setTime;
+    String saveGenderId;
+    boolean genderId = false;
+    DatabaseHelper myDb;
+    String enteredString;
+    BarcodelistModel barcodelist;
+    LinearLayout namePatients, btech_layout, ref_check_linear, id_layout, barcode_layout, leadlayout, leadbarcodelayout, AGE_layout, time_layout;
+    String RES_ID, barcode, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE,
+            SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS, REF_DR_data;
+    LocationManager locationManager;
+    LABS getFullDataLabs;
+    Spinner selectTypeSpinner, brand_spinner;
+    ArrayList<String> getCampNames;
+    Button next_btn_stage2;
+    TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
+    EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number;
+    Spinner btechname, deliveymode, camp_spinner_olc;
+    ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
+    TextView radio;
+    LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data;
+    WOE_Model_Patient_Details woe_model_patient_details;
+    String woereferedby;
+    boolean isLoaded = false;
     String blockCharacterSetdata = "~#^|$%&*!+:`";
-
-
+    ArrayList<BRAND_LIST> getBrandName;
+    ArrayList<String> spinnerBrandName;
+    ArrayList<String> spinnerTypeName;
+    ArrayList<String> getTypeListfirst;
+    ArrayList<String> getTypeListsecond;
+    ArrayList<String> getTypeListthird;
+    ArrayList<String> getTypeListfourth;
+    ArrayList<String> getDatafetch;
+    ArrayList<String> getSubSource;
+    LeadOrderIdMainModel leadOrderIdMainModel;
+    String srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE,
+            leadGENDER, leadHEPARIN;
+    String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
+    String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, getBarcode,
+            emailPattern, getNumber;
+    Toolbar toolbar;
+    int a = 0;
+    ImageView add_ref;
+    ScrollView scrollView2;
+    Button btn_clear_data;
+    String getDatefromWOE, halfTime, DateToPass;
+    TextView enetered, enter;
+    Date getCurrentDateandTime;
+    ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
+    int flagtoAdjustClisk = 0;
+    LinearLayout enter_ll_unselected, unchecked_entered_ll;
+    ArrayList<Patients> patientsArrayList;
+    ArrayList<Patients> filterPatientsArrayListPatient;
+    String convertedDate;
+    PatientDtailsWoe patientDtailsWoe;
+    private String mParam1;
+    private String mParam2;
+    private String passToAPI;
+    private ArrayList<String> getLabNmae;
+    private ArrayList<String> statusForColor;
+    private int minute;
+    private int hour;
+    private SharedPreferences prefs;
+    private String user;
+    private String passwrd;
+    private String access;
+    private String referenceBy;
+    private String checkifChecked;
+    private String api_key;
+    private ArrayList<String> btechSpinner;
+    private String blockCharacterSet = "#$^*+-/|><";
+    private MyPojo myPojo;
+    private RequestQueue POstQue;
+    private String labAddress;
+    private String labid;
+    private String referredID, getBtechID;
+    private String barcode_patient_id, message, status;
+    private String scpdefaultdata;
+    private String campname;
+    private String campID;
+    private String outputDateStr;
+    private Start_New_Woe.OnFragmentInteractionListener mListener;
+    private LocationManager mLocationManager;
     private InputFilter filter1 = new InputFilter() {
 
         @Override
@@ -235,7 +265,6 @@ public class Start_New_Woe extends RootFragment {
             return null;
         }
     };
-
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -247,32 +276,25 @@ public class Start_New_Woe extends RootFragment {
             return null;
         }
     };
-
-    public static CAMP_LIST[] camp_lists;
-
-    ArrayList<BRAND_LIST> getBrandName;
-    ArrayList<String> spinnerBrandName;
-    ArrayList<String> spinnerTypeName;
-    ArrayList<String> getTypeListfirst;
-    ArrayList<String> getTypeListsecond;
-    ArrayList<String> getTypeListthird;
-    ArrayList<String> getTypeListfourth;
-    ArrayList<String> getDatafetch;
-    ArrayList<String> getSubSource;
-    LeadOrderIdMainModel leadOrderIdMainModel;
-
-    String srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE,
-            leadGENDER, leadHEPARIN;
-    String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
-    String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, getBarcode,
-            emailPattern, getNumber;
     private String mm11;
     private String dd11;
     private String putDate;
     private String getFormatDate;
+    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            updateLabel();
+        }
+    };
     private int conertage;
     private String labAddressTopass;
-    Toolbar toolbar;
     private String labIDTopass;
     private String scpoint;
     private String getTSP_Address;
@@ -286,8 +308,6 @@ public class Start_New_Woe extends RootFragment {
     private String getTSP_AddressStringTopass;
     private String patientAddressdataToPass;
     private boolean flag = true;
-    int a = 0;
-    ImageView add_ref;
     private EditText home_kyc_format;
     private LinearLayout Home_mobile_number_kyc;
     private String brand_string;
@@ -297,37 +317,23 @@ public class Start_New_Woe extends RootFragment {
     private RequestQueue requestQueueNoticeBoard;
     private TextView leadname, leadidtest, leadrefdr;
     private RequestQueue requestQueueAddRecheck;
-    ScrollView scrollView2;
     private String brandNames;
     private String getLabName;
-    Button btn_clear_data;
     private String prof;
     private String mobile;
-    String getDatefromWOE, halfTime, DateToPass;
     private String nameofProfile;
     private SpinnerDialog spinnerDialog, spinnerDialogRef;
     private String getVial_numbver;
-    TextView enetered, enter;
     private boolean flagFromtext = false;
-    Date getCurrentDateandTime;
     private String sctHr, sctMin, sctSEc, getFinalTime, getFinalDate;
     private String getAmPm;
-    static final int TIME_DIALOG_ID = 1111;
     private LABS selectedLABS;
     private String getLabCode;
     private Cursor cursor;
-    ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
     private String labLabNAmeTopass;
-    int flagtoAdjustClisk = 0;
-    LinearLayout enter_ll_unselected, unchecked_entered_ll;
-    ArrayList<Patients> patientsArrayList;
-    ArrayList<Patients> filterPatientsArrayListPatient;
-    String convertedDate;
     private String countData;
-    PatientDtailsWoe patientDtailsWoe;
     private RequestQueue requestQueue;
     private String pincode_pass;
-
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -659,7 +665,7 @@ public class Start_New_Woe extends RootFragment {
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                ) {
+                        ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     if (enteredString.length() > 0) {
                         kyc_format.setText(enteredString.substring(1));
@@ -693,7 +699,7 @@ public class Start_New_Woe extends RootFragment {
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                ) {
+                        ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
@@ -801,9 +807,6 @@ public class Start_New_Woe extends RootFragment {
                         getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
                     }
                 }
-
-            } else {
-
             }
 
             if (myPojo.getMASTERS().getBRAND_LIST().length != 0) {
@@ -866,8 +869,7 @@ public class Start_New_Woe extends RootFragment {
             }
             // Spinner adapter
 
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                    mContext, R.layout.name_age_spinner, spinnerBrandName);
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, spinnerBrandName);
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             brand_spinner.setAdapter(adapter2);
             brand_spinner.setSelection(0);
@@ -1278,7 +1280,6 @@ public class Start_New_Woe extends RootFragment {
         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
     }
 
-
     private void requestJsonObject() {
         try {
             barProgressDialog = new ProgressDialog(getActivity());
@@ -1442,13 +1443,10 @@ public class Start_New_Woe extends RootFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-
-                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                            mContext, R.layout.name_age_spinner, getTypeListfirst);
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     selectTypeSpinner.setAdapter(adapter2);
                     selectTypeSpinner.setSelection(0);
-
 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -1548,7 +1546,6 @@ public class Start_New_Woe extends RootFragment {
                                         btechnameTopass = "";
                                         getcampIDtoPass = "";
 
-
                                         if (woereferedby.equals("") || woereferedby.equals(null)) {
                                             if (referenceBy == null) {
                                                 Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
@@ -1558,7 +1555,6 @@ public class Start_New_Woe extends RootFragment {
                                                     referredID = "";
                                                     woereferedby = referenceBy;
                                                 } else {
-
                                                     referenceBy = referedbyText.getText().toString();
                                                 }
                                             }
@@ -1615,7 +1611,7 @@ public class Start_New_Woe extends RootFragment {
                                         } else if (dCompare.after(getCurrentDateandTime)) {
                                             Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                         } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
-                                            Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(mContext, ToastFile.slt_sample_cll_point, Toast.LENGTH_SHORT).show();
                                         } else {
 
                                             if (woereferedby != null) {
@@ -2936,8 +2932,7 @@ public class Start_New_Woe extends RootFragment {
 
                                                                             Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
                                                                             i.putExtra("MyClass", leadOrderIdMainModel);
-                                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName",
-                                                                                    MODE_PRIVATE).edit();
+                                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                                                                             editor.putString("typeName", leadTYPE);
                                                                             editor.putString("SR_NO", getVial_numbver);
                                                                             // To retrieve object in second Activity
@@ -3208,14 +3203,10 @@ public class Start_New_Woe extends RootFragment {
 
                         }
                     });
-
                 }
                 if (position > 0) {
-
                     if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("EQNX")) {
-
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                                mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         selectTypeSpinner.setAdapter(adapter2);
                         selectTypeSpinner.setSelection(0);
@@ -3322,7 +3313,7 @@ public class Start_New_Woe extends RootFragment {
                                                 getLabName = samplecollectionponit.getText().toString();
 
                                             /*typename = selectTypeSpinner.getSelectedItem().toString();
-                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            brandNames = no_img_spinner.getSelectedItem().toString();
                                             getVial_numbver = vial_number.getText().toString();
 
                                             ageString = age.getText().toString();
@@ -3583,7 +3574,7 @@ public class Start_New_Woe extends RootFragment {
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                                            ) {
+                                                    ) {
                                                 TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
@@ -4200,10 +4191,8 @@ public class Start_New_Woe extends RootFragment {
 
                             }
                         });
-
                     } else {
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                                mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         selectTypeSpinner.setAdapter(adapter2);
                         selectTypeSpinner.setSelection(0);
@@ -4554,7 +4543,7 @@ public class Start_New_Woe extends RootFragment {
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                                            ) {
+                                                    ) {
                                                 TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
@@ -5192,10 +5181,7 @@ public class Start_New_Woe extends RootFragment {
                             }
                         });
                     }
-
-
                 }
-
             }
 
             @Override
@@ -5207,7 +5193,7 @@ public class Start_New_Woe extends RootFragment {
 
     private void RecheckType(String passBarcode) {
 
-        getBarcode = passBarcode.toString();
+        getBarcode = passBarcode;
         requestQueueAddRecheck = Volley.newRequestQueue(getActivity());
         barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -5294,7 +5280,6 @@ public class Start_New_Woe extends RootFragment {
         Log.e(TAG, "RecheckType: URL" + jsonObjectRequestProfile);
     }
 
-
     private void addRecheck(String passBarcode) {
         getBarcode = passBarcode.toString();
         requestQueueAddRecheck = Volley.newRequestQueue(getActivity());
@@ -5367,7 +5352,6 @@ public class Start_New_Woe extends RootFragment {
         requestQueueAddRecheck.add(jsonObjectRequestProfile);
         Log.e(TAG, "addRecheck: URL" + jsonObjectRequestProfile);
     }
-
 
     private void getTspNumber() {
         try {
@@ -5499,21 +5483,6 @@ public class Start_New_Woe extends RootFragment {
         obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
     }
 
-
-    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-            updateLabel();
-        }
-    };
-
     private void updateLabel() {
         String myFormat = "dd-MM-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -5529,54 +5498,6 @@ public class Start_New_Woe extends RootFragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-
-    @SuppressLint("ValidFragment")
-    public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-        private String mm11;
-        private String dd11;
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Calendar calendar = Calendar.getInstance();
-            int yy = calendar.get(Calendar.YEAR);
-            int mm = calendar.get(Calendar.MONTH);
-            int dd = calendar.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
-        }
-
-        public void onDateSet(DatePicker view, int yy, int mm, int dd) {
-            populateSetDate(yy, mm + 1, dd);
-        }
-
-        public void populateSetDate(int year, int month, int day) {
-            if (month < 10) {
-
-                mm11 = "0" + month;
-            }
-            if (day < 10) {
-
-                dd11 = "0" + day;
-            }
-            dateShow.setText(dd11 + "-" + mm11 + "-" + year);
         }
     }
 
@@ -5701,7 +5622,6 @@ public class Start_New_Woe extends RootFragment {
         referedbyText.setTextColor(Color.BLACK);
     }
 
-
     private void showDialogue(final SourceILSMainModel obj) {
 
         LayoutInflater li = LayoutInflater.from(mContext);
@@ -5820,13 +5740,57 @@ public class Start_New_Woe extends RootFragment {
         GlobalClass.isAutoTimeSelected(getActivity());
     }
 
-
-
     public void showMessage(String title, String Message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(true);
         builder.setTitle(title);
         builder.setMessage(Message);
         builder.show();
+    }
+
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    @SuppressLint("ValidFragment")
+    public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        private String mm11;
+        private String dd11;
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar calendar = Calendar.getInstance();
+            int yy = calendar.get(Calendar.YEAR);
+            int mm = calendar.get(Calendar.MONTH);
+            int dd = calendar.get(Calendar.DAY_OF_MONTH);
+            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
+        }
+
+        public void onDateSet(DatePicker view, int yy, int mm, int dd) {
+            populateSetDate(yy, mm + 1, dd);
+        }
+
+        public void populateSetDate(int year, int month, int day) {
+            if (month < 10) {
+
+                mm11 = "0" + month;
+            }
+            if (day < 10) {
+
+                dd11 = "0" + day;
+            }
+            dateShow.setText(dd11 + "-" + mm11 + "-" + year);
+        }
     }
 }

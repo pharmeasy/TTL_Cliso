@@ -7,23 +7,33 @@ import android.os.Parcelable;
  * Created by E5322 on 06-06-2018.
  */
 
-public class BaseModel implements Parcelable  {
+public class BaseModel implements Parcelable{
 
     private String product;
     private String billrate;
     private String location;
+    private String name;
+    private String fasting;
+    private String code;
+    private String type;
+    private String subtypes;
+    Childs[] childs;
+    Barcodes[] barcodes;
+    Rate rate;
+
 
     protected BaseModel(Parcel in) {
         product = in.readString();
         billrate = in.readString();
         location = in.readString();
-        barcodes = in.createTypedArray(Barcodes.CREATOR);
-        rate = in.readParcelable(Rate.class.getClassLoader());
         name = in.readString();
         fasting = in.readString();
-        childs = in.createTypedArray(Childs.CREATOR);
         code = in.readString();
         type = in.readString();
+        subtypes = in.readString();
+        childs = in.createTypedArray(Childs.CREATOR);
+        barcodes = in.createTypedArray(Barcodes.CREATOR);
+        rate = in.readParcelable(Rate.class.getClassLoader());
     }
 
     @Override
@@ -31,13 +41,14 @@ public class BaseModel implements Parcelable  {
         dest.writeString(product);
         dest.writeString(billrate);
         dest.writeString(location);
-        dest.writeTypedArray(barcodes, flags);
-        dest.writeParcelable(rate, flags);
         dest.writeString(name);
         dest.writeString(fasting);
-        dest.writeTypedArray(childs, flags);
         dest.writeString(code);
         dest.writeString(type);
+        dest.writeString(subtypes);
+        dest.writeTypedArray(childs, flags);
+        dest.writeTypedArray(barcodes, flags);
+        dest.writeParcelable(rate, flags);
     }
 
     @Override
@@ -64,25 +75,6 @@ public class BaseModel implements Parcelable  {
     public void setLocation(String location) {
         this.location = location;
     }
-
-    Barcodes[] barcodes;
-
-    Rate rate;
-
-    public BaseModel() {
-    }
-
-    private String name;
-
-    private String fasting;
-
-    Childs[] childs;
-
-    private String code;
-
-    private String type;
-
-
 
     public String getBillrate() {
         return billrate;
@@ -156,9 +148,13 @@ public class BaseModel implements Parcelable  {
         this.type = type;
     }
 
+    public String getSubtypes() {
+        return subtypes;
+    }
 
-
-
+    public void setSubtypes(String subtypes) {
+        this.subtypes = subtypes;
+    }
 
     public static class Barcodes implements Parcelable {
         public Barcodes() {
@@ -348,5 +344,8 @@ public class BaseModel implements Parcelable  {
             }
         }
         return isChilds;
+    }
+
+    public BaseModel() {
     }
 }

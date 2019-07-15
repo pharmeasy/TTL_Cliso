@@ -24,6 +24,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,33 +35,53 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
+
 import io.fabric.sdk.android.Fabric;
 
 public class SplashScreen extends AppCompatActivity {
-    private static String TAG = SplashScreen.class.getSimpleName();
-    AlertDialog alert;
     public static String str_login_test, profile_test;
-    String version;
-    private int versionCode = 0;
     public static SharedPreferences sh, profile;
     public static SharedPreferences.Editor editor, editor1;
+    private static String TAG = SplashScreen.class.getSimpleName();
+    AlertDialog alert;
+    String version;
     Boolean isInternetPresent = false;  // flag for Internet connection status
     ConnectionDetector cd;   // Connection detector class
     String z = "";
-    private String ApkUrl;
     Animation anim;
     String version1;
     String response1;
     String resId;
     ImageView iv;
+    private int versionCode = 0;
+    private String ApkUrl;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
+    String USER_CODE = "";
+
+    public static boolean deleteFile(File file) {
+        boolean deletedAll = true;
+        if (file != null) {
+            if (file.isDirectory()) {
+                String[] children = file.list();
+                for (int i = 0; i < children.length; i++) {
+                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
+                }
+            } else {
+                deletedAll = file.delete();
+            }
+        }
+        return deletedAll;
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -73,10 +94,12 @@ public class SplashScreen extends AppCompatActivity {
 
         Fabric.with(this, new Crashlytics());
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
@@ -89,11 +112,10 @@ public class SplashScreen extends AppCompatActivity {
         if (firstRunSplash == false) {
             p.edit().putBoolean("PREFERENCE_FIRSTSPLASH_RUN", true).commit();
             clearApplicationData();
-        }else {
-            Log.e(TAG, "deleteDir: cache is not cleraed " );
+        } else {
+            Log.e(TAG, "deleteDir: cache is not cleraed ");
         }
         getversion();
-        myprif();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -110,7 +132,6 @@ public class SplashScreen extends AppCompatActivity {
         cd = new ConnectionDetector(getApplicationContext());
 
         if (!isNetworkAvailable()) {
-
             SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
             String user = prefs.getString("Username", null);
             String passwrd = prefs.getString("password", null);
@@ -121,7 +142,6 @@ public class SplashScreen extends AppCompatActivity {
                 startActivity(prefe);
                 finish();
             } else {
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 // Set the Alert Dialog Message
                 builder.setMessage(ToastFile.intConnection)
@@ -139,15 +159,10 @@ public class SplashScreen extends AppCompatActivity {
                 AlertDialog alert = builder.create();
                 alert.show();
             }
-
-            // Create an Alert Dialog
-
         }
-
     }
 
     public void clearApplicationData() {
-
 //        Log.e(TAG, "<< Clear App Data >>");
         File cacheDirectory = getCacheDir();
         File applicationDirectory = new File(cacheDirectory.getParent());
@@ -161,25 +176,8 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
-    public static boolean deleteFile(File file) {
-        boolean deletedAll = true;
-        if (file != null) {
-            if (file.isDirectory()) {
-                String[] children = file.list();
-                for (int i = 0; i < children.length; i++) {
-                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
-                }
-            } else {
-                deletedAll = file.delete();
-            }
-        }
-        return deletedAll;
-    }
-
     private void clearAppData() {
-//        Log.e(TAG, "<< Clear App Data >>");
         try {
-// clearing app data
             if (Build.VERSION_CODES.KITKAT <= Build.VERSION.SDK_INT) {
                 ((ActivityManager) getSystemService(ACTIVITY_SERVICE)).clearApplicationUserData(); // note: it has a return value!
             } else {
@@ -237,10 +235,17 @@ public class SplashScreen extends AppCompatActivity {
                                     String passwrd = prefs.getString("password", null);
                                     String access = prefs.getString("ACCESS_TYPE", null);
                                     String api_key = prefs.getString("API_KEY", null);
+                                    USER_CODE = prefs.getString("USER_CODE", "");
                                     if (user != null && passwrd != null) {
-                                        Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
-                                        startActivity(prefe);
-                                        finish();
+                                        if (USER_CODE.startsWith("BM")) {
+                                            Intent prefe = new Intent(SplashScreen.this, BMC_MainActivity.class);
+                                            startActivity(prefe);
+                                            finish();
+                                        } else {
+                                            Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
+                                            startActivity(prefe);
+                                            finish();
+                                        }
                                     } else {
                                         Intent i = new Intent(SplashScreen.this, Login.class);
                                         startActivity(i);
@@ -254,8 +259,7 @@ public class SplashScreen extends AppCompatActivity {
                                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                 //if the user agrees to upgrade
                                                 public void onClick(DialogInterface dialog, int id) {
-
-                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.charbi.com/CDN/Applications/Android/ThyrosoftLite.Apk"));
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApkUrl));
                                                     startActivity(intent);
                                                     finish();
                                                 }
@@ -275,16 +279,10 @@ public class SplashScreen extends AppCompatActivity {
 
                             }
                         });
-                    } else {
-
                     }
-
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -298,20 +296,11 @@ public class SplashScreen extends AppCompatActivity {
         });
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "getversion URL: " + jsonObjectRequestPop);
-
     }
-
 
     @Override
     public void onBackPressed() {
         finish();
         super.onBackPressed();
     }
-
-    private void myprif() {
-
-    }
-
-
 }
-

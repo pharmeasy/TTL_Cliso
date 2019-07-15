@@ -533,7 +533,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                             barcodelist.setBARCODE(GlobalClass.finalspecimenttypewiselist.get(i).getBarcode());
                             getBarcodeArrList.add(GlobalClass.finalspecimenttypewiselist.get(i).getBarcode());
                             barcodelist.setTESTS(GlobalClass.finalspecimenttypewiselist.get(i).getProducts());
-
                             barcodelists.add(barcodelist);
                         }
                         myPojoWoe.setBarcodelistModel(barcodelists);

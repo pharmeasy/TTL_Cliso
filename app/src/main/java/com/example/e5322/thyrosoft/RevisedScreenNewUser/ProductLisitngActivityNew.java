@@ -108,7 +108,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
     MainModel obj;
     ArrayList<BaseModel> filteredFiles;
-    String TAG = ProductLisitngActivityNew.class.getSimpleName().toString();
+    String TAG = ProductLisitngActivityNew.class.getSimpleName();
     private ExpandableTestMasterListDisplayAdapter expAdapter;
     private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
     private ArrayList<B2B_MASTERSMainModel> finalproductlist;
@@ -676,6 +676,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                         public void onClick(DialogInterface dialog, int which) {
 
                                                             Intent i = new Intent(ProductLisitngActivityNew.this, Payment_Activity.class);
+                                                            i.putExtra("COMEFROM", "ProductLisitngActivityNew");
                                                             startActivity(i);
                                                             /*Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                                             httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
@@ -890,7 +891,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         String testtype = "";
         if (mainModel.B2B_MASTERS != null) {
             for (int i = 0; i < b2bmasterarraylist.size(); i++) {
-
                 Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
                 product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
                 product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());

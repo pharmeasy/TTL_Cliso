@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -48,9 +47,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class BarcodeWiseReport_Download extends AppCompatActivity {
-    private SimpleDateFormat sdf;
-    private String mParam1;
-    private String mParam2;
+    public static RequestQueue PostQue;
     public String toDate = "";
     public String fromDate = "";
     public String Date = "";
@@ -59,19 +56,21 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
     ImageView back, home;
     Context mContext;
     Spinner spinnertype;
-    public static RequestQueue PostQue;
     ResultDtlAdapter adapter;
     Spinner filterBy;
-    private com.example.e5322.thyrosoft.Fragment.FilterReport.OnFragmentInteractionListener mListener;
     SearchView searchbarcode;
     ListView ListReportStatus;
     ArrayList<TrackDetModel> FilterReport = new ArrayList<TrackDetModel>();
     String send_Date = "";
+    private SimpleDateFormat sdf;
+    private String mParam1;
+    private String mParam2;
+    private com.example.e5322.thyrosoft.Fragment.FilterReport.OnFragmentInteractionListener mListener;
     private String showDate;
     private String passToAPI;
     private String halfTime;
     private String responsetoshow;
-    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +98,7 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
         String[] spinner = {"Reported", "Pending", "Cancelled", "CHN"};
         String[] spinnerfilterby = {"All", "Name", "Barcode", "Mobile"};
         ArrayAdapter aa = new ArrayAdapter(BarcodeWiseReport_Download.this, android.R.layout.simple_spinner_item, spinner);
-        ArrayAdapter filterby = new ArrayAdapter(BarcodeWiseReport_Download.this    , android.R.layout.simple_spinner_item, spinnerfilterby);
+        ArrayAdapter filterby = new ArrayAdapter(BarcodeWiseReport_Download.this, android.R.layout.simple_spinner_item, spinnerfilterby);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         filterby.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnertype.setAdapter(aa);
@@ -139,6 +138,7 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
         });
 
     }
+
     private List<TrackDetModel> filter(List<TrackDetModel> models, String query) {
         query = query.toLowerCase();
         final List<TrackDetModel> filteredModelList = new ArrayList<>();
@@ -161,7 +161,6 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
 
 
         String sendDtaetoAPI = txt_date.getText().toString();
-
 
 
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");//dd-MM-yyyy
@@ -204,7 +203,7 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e(TAG, "onResponse: RESPONSE"+response);
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
                             String reportStatus = response.optString("reportStatus");
                             responsetoshow = response.optString("response");
 
@@ -245,18 +244,24 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
                                     }
                                     adapter = new ResultDtlAdapter(BarcodeWiseReport_Download.this, FilterReport);
                                     ListReportStatus.setAdapter(adapter);
-                                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                        barProgressDialog.dismiss();
+                                    }
                                     ListReportStatus.setVisibility(View.VISIBLE);
                                     searchbarcode.setVisibility(View.VISIBLE);
                                 } else {
                                     ListReportStatus.setVisibility(View.GONE);
                                     searchbarcode.setVisibility(View.GONE);
                                     nodata.setVisibility(View.VISIBLE);
-                                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                        barProgressDialog.dismiss();
+                                    }
                                 }
                             } else {
 
-                                if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
                                 TastyToast.makeText(mContext, responsetoshow, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
 
@@ -273,6 +278,7 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                         Intent i = new Intent(mContext, Payment_Activity.class);
+                                        i.putExtra("COMEFROM", "BarcodeWiseReport_Download");
                                         mContext.startActivity(i);
                                        /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                         httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
@@ -316,8 +322,8 @@ public class BarcodeWiseReport_Download extends AppCompatActivity {
             }
         });
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: URL"+jsonObjectRequest );
-        Log.e(TAG, "GetData: URL"+jsonObject );
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: URL" + jsonObject);
 
     }
 

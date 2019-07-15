@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -55,40 +54,39 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Woe_Edt_Activity extends AppCompatActivity {
+    public boolean genderId = false;
     ProgressDialog barProgressDialog;
-    TextView brand_name, selectType_txt, samplecollectionponit, referedby, sct_txt, sub_source_code, barcode_number, test_names_txt,title;
+    TextView brand_name, selectType_txt, samplecollectionponit, referedby, sct_txt, sub_source_code, barcode_number, test_names_txt, title;
     EditText name_edt, age_edt;
     Spinner spinyr;
     RadioButton male, female;
     Button next_btn_patient;
     ArrayList<BarcodelistModel> barcodelists;
     BarcodelistModel barcodelist;
-    public boolean genderId=false;
+    SharedPreferences prefs;
+    int agesinteger;
+    ImageView back, home;
+    LinearLayout labname_linear;
     private Edit_Woe.OnFragmentInteractionListener mListener;
     private RequestQueue POstQue;
     private String RES_ID;
     private String barcode_patient_id;
     private String message;
     private String status;
-    SharedPreferences prefs;
     private String patientName, patientYearType, user, passwrd, access, api_key;
     private String saveGenderId;
     private String age_type;
     private String getName;
     private String getAge;
     private String getAgeType;
-    int agesinteger;
     private int deliveryMode;
     private int Woe_mode;
-
     private Global globalClass;
     private int sr_no;
-    ImageView back,home;
     private String parsableDate;
     private String versionNameTopass;
-    LinearLayout labname_linear;
     private int versionCode;
-    private String TAG=Woe_Edt_Activity.class.getSimpleName().toString();
+    private String TAG = Woe_Edt_Activity.class.getSimpleName().toString();
 
     @SuppressLint("NewApi")
     @Override
@@ -119,10 +117,12 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 R.layout.spinner_item);
         spinyr.setAdapter(PatientsagespinnerAdapter);
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
 
         prefs = Woe_Edt_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -218,10 +218,10 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             sub_source_code.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
             age_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
 
-            if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME()!=null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")){
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")) {
                 labname_linear.setVisibility(View.VISIBLE);
                 samplecollectionponit.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
-            }else{
+            } else {
                 labname_linear.setVisibility(View.GONE);
             }
             referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
@@ -230,14 +230,14 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             Date date = null;
             String output = null;
-            try{
+            try {
                 //Converting the input String to Date
-                date= sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+                date = sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
                 //Changing the format of date and storing it in String
                 output = sdfOutput.format(date);
                 //Displaying the date
                 System.out.println(output);
-            }catch(ParseException pe){
+            } catch (ParseException pe) {
                 pe.printStackTrace();
             }
 
@@ -255,18 +255,18 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
                     getOnlyTestNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
                     String displayslectedtest = TextUtils.join(",", getOnlyTestNames);
-                    test_names_txt.setText("Tests : "+displayslectedtest);
+                    test_names_txt.setText("Tests : " + displayslectedtest);
                 }
 
             if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
                 spinyr.setSelection(0);
-                age_type="Y";
+                age_type = "Y";
             } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
                 spinyr.setSelection(1);
-                age_type="M";
+                age_type = "M";
             } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("D")) {
                 spinyr.setSelection(2);
-                age_type="D";
+                age_type = "D";
             }
             if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("M")) {
                 male.setChecked(true);
@@ -338,25 +338,25 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         next_btn_patient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getName=name_edt.getText().toString();
-                getName= getName.replaceAll("\\s+", " ");
+                getName = name_edt.getText().toString();
+                getName = getName.replaceAll("\\s+", " ");
                 getAge = age_edt.getText().toString();
-                getAgeType= spinyr.getSelectedItem().toString();
-                if(getName.equals("") || getName.equals(null)){
+                getAgeType = spinyr.getSelectedItem().toString();
+                if (getName.equals("") || getName.equals(null)) {
                     Toast.makeText(Woe_Edt_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-                }else if (getAge.equals("") || getAge.equals(null)){
+                } else if (getAge.equals("") || getAge.equals(null)) {
                     Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                }else if(getAgeType.equals("") || getAgeType.equals(null)){
+                } else if (getAgeType.equals("") || getAgeType.equals(null)) {
                     Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_age_type, Toast.LENGTH_SHORT).show();
-                }else if(saveGenderId.equals("") || saveGenderId.equals(null)){
+                } else if (saveGenderId.equals("") || saveGenderId.equals(null)) {
                     Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                }else {
-                    if(getAgeType.equals("Years")){
-                        age_type="Y";
-                    }else if(getAgeType.equals("Months")){
-                        age_type="M";
-                    }else if(getAgeType.equals("Days")){
-                        age_type="D";
+                } else {
+                    if (getAgeType.equals("Years")) {
+                        age_type = "Y";
+                    } else if (getAgeType.equals("Months")) {
+                        age_type = "M";
+                    } else if (getAgeType.equals("Days")) {
+                        age_type = "D";
                     }
                     doWOE_edit();
                 }
@@ -366,6 +366,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         });
         // Inflate the layout for this fragment
     }
+
     private void doWOE_edit() {
 
         barProgressDialog = new ProgressDialog(Woe_Edt_Activity.this);
@@ -378,26 +379,28 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        if(barProgressDialog.isShowing()){
-            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+        if (barProgressDialog.isShowing()) {
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
         }
 
         GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setPATIENT_NAME(getName);
         GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE(getAge);
         GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE_TYPE(age_type);
         GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setGENDER(saveGenderId);
-        String brand_type_to_send=brand_name.getText().toString();
-        String type_to_send=selectType_txt.getText().toString();
+        String brand_type_to_send = brand_name.getText().toString();
+        String type_to_send = selectType_txt.getText().toString();
 
 
-        String getDateTopass=GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME();
+        String getDateTopass = GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME();
 
-        SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
         try {
             Date d = sdf.parse(getDateTopass);
-             parsableDate = sdf1.format(d);
+            parsableDate = sdf1.format(d);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -405,12 +408,13 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         POstQue = Volley.newRequestQueue(Woe_Edt_Activity.this);
         MyPojoWoe myPojoWoe = new MyPojoWoe();
 
-        if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE()!=null){
-            deliveryMode= Integer.valueOf(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE());
-        }else{
-            Woe_mode=Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE());
-        }if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_MODE()!=null){
-            sr_no=Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO());
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE() != null) {
+            deliveryMode = Integer.valueOf(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE());
+        } else {
+            Woe_mode = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE());
+        }
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_MODE() != null) {
+            sr_no = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO());
         }
 
         Woe woe = new Woe();
@@ -488,7 +492,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
 
-                    Log.e(TAG, "onResponse: "+response );
+                    Log.e(TAG, "onResponse: " + response);
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
                     RES_ID = parentObjectOtp.getString("RES_ID");
@@ -498,14 +502,16 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
                     if (status.equalsIgnoreCase("SUCCESS")) {
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        GlobalClass.setFlag_back_toWOE=true;
+                        GlobalClass.setFlag_back_toWOE = true;
                         Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
                         startActivity(i);
                         finish();
 
                     } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
 
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
 
@@ -521,6 +527,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent i = new Intent(Woe_Edt_Activity.this, Payment_Activity.class);
+                                i.putExtra("COMEFROM", "Woe_Edt_Activity");
                                 startActivity(i);
                                /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                 httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
@@ -531,7 +538,9 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         alertDialog.show();
 
                     } else {
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 
@@ -555,8 +564,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         POstQue.add(jsonObjectRequest1);
-        Log.e(TAG, "doWOE_edit: "+jsonObj );
-        Log.e(TAG, "doWOE_edit: "+jsonObjectRequest1 );
+        Log.e(TAG, "doWOE_edit: " + jsonObj);
+        Log.e(TAG, "doWOE_edit: " + jsonObjectRequest1);
 
 
     }

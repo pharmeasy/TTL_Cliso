@@ -169,6 +169,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+            navigationView.getMenu().findItem(R.id.accr_data);
 
         } else if (access.equals("ADMIN")) {
             //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
@@ -189,6 +190,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+            navigationView.getMenu().findItem(R.id.accr_data);
         }
 
        /* navigationView.getMenu().findItem(R.id.home_navigation).setVisible(false);
@@ -208,7 +210,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationDrawerNameTSP.setText("HI " + name);
             ecode.setText("(" + usercode + ")");
         } else {
-
             getProfileDetails();
         }
 
@@ -233,12 +234,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 //        fab.setVisibility(View.VISIBLE);
-
-        if (id == R.id.home_navigation) {
-
-        } else {
-
-        }
 
         if (id == R.id.home_navigation) {
             try {
@@ -365,6 +360,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent startIntent = new Intent(ManagingTabsActivity.this, Payment_Activity.class);
+                startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
                 startActivity(startIntent);
                /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                 httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
@@ -601,6 +597,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
 
+        }else if (id == R.id.accr_data) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
+                startActivity(i);
+            }
+
+
         } else if (id == R.id.company_contcat) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -681,9 +686,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
-
                     public String tsp_img;
-
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
@@ -885,7 +888,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
         editor.clear();
-        editor.commit();//
+        editor.commit();
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
         SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();

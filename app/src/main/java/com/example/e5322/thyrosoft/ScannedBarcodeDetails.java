@@ -8,23 +8,28 @@ public class ScannedBarcodeDetails implements Parcelable {
     String BARCODE;
     String TESTS;
     String Remark;
-
-    public String getRemark() {
-        return Remark;
-    }
-
-    public void setRemark(String remark) {
-        Remark = remark;
-    }
-
-    public ScannedBarcodeDetails() {
-    }
+    String Location;
 
     protected ScannedBarcodeDetails(Parcel in) {
         SAMPLE_TYPE = in.readString();
         BARCODE = in.readString();
         TESTS = in.readString();
         Remark = in.readString();
+        Location = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(SAMPLE_TYPE);
+        dest.writeString(BARCODE);
+        dest.writeString(TESTS);
+        dest.writeString(Remark);
+        dest.writeString(Location);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ScannedBarcodeDetails> CREATOR = new Creator<ScannedBarcodeDetails>() {
@@ -38,6 +43,27 @@ public class ScannedBarcodeDetails implements Parcelable {
             return new ScannedBarcodeDetails[size];
         }
     };
+
+    public String getLocation() {
+        return Location;
+    }
+
+    public void setLocation(String location) {
+        this.Location = location;
+    }
+
+    public String getRemark() {
+        return Remark;
+    }
+
+    public void setRemark(String remark) {
+        Remark = remark;
+    }
+
+    public ScannedBarcodeDetails() {
+    }
+
+
 
     public String getBarcode() {
         return BARCODE;
@@ -63,17 +89,4 @@ public class ScannedBarcodeDetails implements Parcelable {
         this.SAMPLE_TYPE = specimen_type;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(SAMPLE_TYPE);
-        dest.writeString(BARCODE);
-        dest.writeString(TESTS);
-        dest.writeString(Remark);
-    }
 }

@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -105,20 +106,26 @@ import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 
 public class Payment_Activity extends AppCompatActivity {
 
+    private static Activity context;
+    private static Global globalData;
+    private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
+    public String merchantKey = "", userCredentials;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
     ImageView back, home;
     EditText edt_enter_amt, edt_closing_bal;
     ConnectionDetector cd;
     String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode;
-    private static Activity context;
+    android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
+    String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
+    String strOrderNo = "";
+    int ben_count = 0;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
     private int buttonclickFlag = 0;
     private boolean isemailvalid = false;
-    private static Global globalData;
-    public String merchantKey = "", userCredentials;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
     // This sets the configuration
@@ -126,13 +133,7 @@ public class Payment_Activity extends AppCompatActivity {
     // Used when generating hash from SDK
     private PayUChecksum checksum;
     private String _appointmentDate, _displaydate, _displaytime, _pinCode, _strTID, _straddress, _strlandmark, _access_token, _merchantid, _orderid, _curreny, _amount, _redirect_url, _cancel_url, _rsa_key_url, _responsedata;
-    private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
-    android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
     private String amountTopass;
-    String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
-    String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
-    String strOrderNo = "";
-    int ben_count = 0;
     private Global globalClass;
     private String appointmentDate;
     private String dataToSave;
@@ -143,6 +144,7 @@ public class Payment_Activity extends AppCompatActivity {
     private String RESPONSE;
     private String ordno;
     private boolean flagForOnce = false;
+    private String COME_FROM_SCREEN = "";
 
     @SuppressLint("NewApi")
     @Override
@@ -184,6 +186,8 @@ public class Payment_Activity extends AppCompatActivity {
         email_pref = prefs.getString("email", null);
         mobile_pref = prefs.getString("mobile_user", null);
 
+        COME_FROM_SCREEN = getIntent().getStringExtra("COMEFROM");
+
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -202,8 +206,7 @@ public class Payment_Activity extends AppCompatActivity {
 
         edt_enter_amt.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
@@ -221,8 +224,7 @@ public class Payment_Activity extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
             @Override
@@ -237,10 +239,18 @@ public class Payment_Activity extends AppCompatActivity {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalClass.goToHome(Payment_Activity.this);
+                if (COME_FROM_SCREEN.equalsIgnoreCase("BMC_WOE_EditActivity") || COME_FROM_SCREEN.equalsIgnoreCase("BMC_Scan_BarcodeActivity")) {
+                    Intent i = new Intent(Payment_Activity.this, BMC_MainActivity.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    GlobalClass.goToHome(Payment_Activity.this);
+                }
+
             }
         });
 
@@ -443,6 +453,84 @@ public class Payment_Activity extends AppCompatActivity {
         return result;
     }
 
+    public void launchSdkUI(PayuHashes payuHashes) {
+
+        mPaymentParams.setHash(payuHashes.getPaymentHash());
+        Intent intent = new Intent(this, PayUBaseActivity.class);
+        intent.putExtra(PayuConstants.PAYU_CONFIG, payuConfig);
+        intent.putExtra(PayuConstants.PAYMENT_PARAMS, mPaymentParams);
+        intent.putExtra(PayuConstants.PAYU_HASHES, payuHashes);
+//        startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
+        fetchMerchantHashes(intent);
+    }
+
+    private void fetchMerchantHashes(final Intent intent) {
+        // now make the api call.
+        final String postParams = "merchant_key=" + merchantKey + "&user_credentials=" + userCredentials;
+        final Intent baseActivityIntent = intent;
+        new AsyncTask<Void, Void, HashMap<String, String>>() {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected HashMap<String, String> doInBackground(Void... params) {
+                try {
+                    //TODO Replace below url with your server side file url.
+                    URL url = new URL("https://payu.herokuapp.com/get_merchant_hashes");
+
+                    byte[] postParamsByte = postParams.getBytes("UTF-8");
+
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                    conn.setRequestProperty("Content-Length", String.valueOf(postParamsByte.length));
+                    conn.setDoOutput(true);
+                    conn.getOutputStream().write(postParamsByte);
+
+                    InputStream responseInputStream = conn.getInputStream();
+                    StringBuffer responseStringBuffer = new StringBuffer();
+                    byte[] byteContainer = new byte[1024];
+                    for (int i; (i = responseInputStream.read(byteContainer)) != -1; ) {
+                        responseStringBuffer.append(new String(byteContainer, 0, i));
+                    }
+
+                    JSONObject response = new JSONObject(responseStringBuffer.toString());
+
+                    HashMap<String, String> cardTokens = new HashMap<String, String>();
+                    JSONArray oneClickCardsArray = response.getJSONArray("data");
+                    int arrayLength;
+                    if ((arrayLength = oneClickCardsArray.length()) >= 1) {
+                        for (int i = 0; i < arrayLength; i++) {
+                            cardTokens.put(oneClickCardsArray.getJSONArray(i).getString(0), oneClickCardsArray.getJSONArray(i).getString(1));
+                        }
+                        return cardTokens;
+                    }
+                    // pass these to next activity
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (ProtocolException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(HashMap<String, String> oneClickTokens) {
+                super.onPostExecute(oneClickTokens);
+                baseActivityIntent.putExtra(PayuConstants.ONE_CLICK_CARD_TOKENS, oneClickTokens);
+                startActivityForResult(baseActivityIntent, PayuConstants.PAYU_REQUEST_CODE);
+            }
+        }.execute();
+    }
 
     class AsyncTaskstartpayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
 
@@ -616,87 +704,6 @@ public class Payment_Activity extends AppCompatActivity {
             globalData.hideProgressDialog();
         }
     }
-
-    public void launchSdkUI(PayuHashes payuHashes) {
-
-        mPaymentParams.setHash(payuHashes.getPaymentHash());
-        Intent intent = new Intent(this, PayUBaseActivity.class);
-        intent.putExtra(PayuConstants.PAYU_CONFIG, payuConfig);
-        intent.putExtra(PayuConstants.PAYMENT_PARAMS, mPaymentParams);
-        intent.putExtra(PayuConstants.PAYU_HASHES, payuHashes);
-//        startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
-        fetchMerchantHashes(intent);
-    }
-
-
-    private void fetchMerchantHashes(final Intent intent) {
-        // now make the api call.
-        final String postParams = "merchant_key=" + merchantKey + "&user_credentials=" + userCredentials;
-        final Intent baseActivityIntent = intent;
-        new AsyncTask<Void, Void, HashMap<String, String>>() {
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-            }
-
-            @Override
-            protected HashMap<String, String> doInBackground(Void... params) {
-                try {
-                    //TODO Replace below url with your server side file url.
-                    URL url = new URL("https://payu.herokuapp.com/get_merchant_hashes");
-
-                    byte[] postParamsByte = postParams.getBytes("UTF-8");
-
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    conn.setRequestProperty("Content-Length", String.valueOf(postParamsByte.length));
-                    conn.setDoOutput(true);
-                    conn.getOutputStream().write(postParamsByte);
-
-                    InputStream responseInputStream = conn.getInputStream();
-                    StringBuffer responseStringBuffer = new StringBuffer();
-                    byte[] byteContainer = new byte[1024];
-                    for (int i; (i = responseInputStream.read(byteContainer)) != -1; ) {
-                        responseStringBuffer.append(new String(byteContainer, 0, i));
-                    }
-
-                    JSONObject response = new JSONObject(responseStringBuffer.toString());
-
-                    HashMap<String, String> cardTokens = new HashMap<String, String>();
-                    JSONArray oneClickCardsArray = response.getJSONArray("data");
-                    int arrayLength;
-                    if ((arrayLength = oneClickCardsArray.length()) >= 1) {
-                        for (int i = 0; i < arrayLength; i++) {
-                            cardTokens.put(oneClickCardsArray.getJSONArray(i).getString(0), oneClickCardsArray.getJSONArray(i).getString(1));
-                        }
-                        return cardTokens;
-                    }
-                    // pass these to next activity
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (ProtocolException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(HashMap<String, String> oneClickTokens) {
-                super.onPostExecute(oneClickTokens);
-                baseActivityIntent.putExtra(PayuConstants.ONE_CLICK_CARD_TOKENS, oneClickTokens);
-                startActivityForResult(baseActivityIntent, PayuConstants.PAYU_REQUEST_CODE);
-            }
-        }.execute();
-    }
-
 
     class AsyncTask_Log_Payment_Request extends AsyncTask<Void, Void, JSONObject> {
 

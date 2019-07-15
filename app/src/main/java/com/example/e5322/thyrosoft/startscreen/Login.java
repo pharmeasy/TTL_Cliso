@@ -37,6 +37,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
 import com.example.e5322.thyrosoft.R;
@@ -51,22 +52,21 @@ import java.util.Random;
 
 public class Login extends Activity implements View.OnClickListener {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+    public static com.android.volley.RequestQueue PostQue;
+    public static com.android.volley.RequestQueue generateOTP, POstQueValidateOTP, POstQueValidateOTPForgotPassword;
+    public static com.android.volley.RequestQueue PostQueEmailPhoneOtp;
     EditText username, password, otpmobile,
             otpemail;
     TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
-    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi,RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, Login_Type, Status, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, Login_Type, Status, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
     ProgressDialog barProgressDialog;
     Handler updateBarHandler;
-    String emailIdValidateOTP,isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
+    String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
     //WaveDrawable mWaveDrawable;
     AlertDialog alertDialog, alertDialogforgotpass, alertDialogforotp, alertDialogverifyOtp;
     String email, getPhone_num, emailId, isMobileEmailValid, mobileNo, otpNo, resId, response1;
-    public static com.android.volley.RequestQueue PostQue;
-    public static com.android.volley.RequestQueue generateOTP, POstQueValidateOTP, POstQueValidateOTPForgotPassword;
-    public static com.android.volley.RequestQueue PostQueEmailPhoneOtp;
-
     Random random;
     String randomNumber, number, getOtpnumberfromedtText;
     int startRange = 1000, endRange = 9999;
@@ -74,6 +74,7 @@ public class Login extends Activity implements View.OnClickListener {
     Button reg_otp_ok;
     private String TAG = Login.class.getSimpleName().toString();
     private GlobalClass globalClass;
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +89,12 @@ public class Login extends Activity implements View.OnClickListener {
 
         login.setOnClickListener(Login.this);
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -334,13 +337,17 @@ public class Login extends Activity implements View.OnClickListener {
 
                                                     if (resIdValidateOTP.equalsIgnoreCase("RES0000")) {
                                                         if (barProgressDialog.isShowing()) {
-                                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                barProgressDialog.dismiss();
+                                                            }
                                                         }
                                                         TastyToast.makeText(Login.this, "" + responseValidateOTP, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                         Intent i = new Intent(Login.this, Change_Passowrd.class);
                                                         startActivity(i);
                                                     } else {
-                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                            barProgressDialog.dismiss();
+                                                        }
                                                         TastyToast.makeText(Login.this, responseValidateOTP, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                     }
                                                 } catch (JSONException e) {
@@ -488,7 +495,9 @@ public class Login extends Activity implements View.OnClickListener {
 
                                         GlobalClass.responseVariable = response1;
                                         if (isMobileEmailValid.equalsIgnoreCase("YES")) {
-                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                barProgressDialog.dismiss();
+                                            }
                                             LayoutInflater li = LayoutInflater.from(Login.this);
                                             View promptsView = li.inflate(R.layout.activity_otp, null);
                                             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -565,16 +574,22 @@ public class Login extends Activity implements View.OnClickListener {
                                                                     resIdValidateOTP = parentObjectOtp.getString("resId");
                                                                     responseValidateOTP = parentObjectOtp.getString("response");
                                                                     if (responseValidateOTP.equals("OTP Validated Sucessfully")) {
-                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }
 //                                                        TastyToast.makeText(Login.this,""+RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                                         Intent reg = new Intent(Login.this, Registration_first_screen.class);
                                                                         startActivity(reg);
 
                                                                     } else if (responseValidateOTP == null) {
-                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }
                                                                         TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                                     } else {
-                                                                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }
                                                                         TastyToast.makeText(Login.this, "Invalid OTP", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                                     }
                                                                 } catch (JSONException e) {
@@ -603,7 +618,9 @@ public class Login extends Activity implements View.OnClickListener {
                                             alertDialog.dismiss();
 
                                         } else {
-                                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                barProgressDialog.dismiss();
+                                            }
                                             Toast.makeText(getApplicationContext(), "" + response1, Toast.LENGTH_SHORT).show();
 
                                         }
@@ -763,7 +780,9 @@ public class Login extends Activity implements View.OnClickListener {
                             }
                         });
                         if (barProgressDialog.getProgress() == barProgressDialog.getMax()) {
-                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -777,15 +796,21 @@ public class Login extends Activity implements View.OnClickListener {
         User = username.getText().toString();
         pass = password.getText().toString();
         if (User.length() == 0 & pass.length() == 0) {
-            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
             Toast.makeText(this, "Please Enter Ecode and Password", Toast.LENGTH_SHORT).show();
             // Message.message(Login.this, "Please Enter Ecode and Password");
         } else if (User.length() == 0) {
-            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
             Toast.makeText(this, "Please enter your Ecode", Toast.LENGTH_SHORT).show();
             //Message.message(Login.this, "");
         } else if (pass.length() == 0) {
-            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
             Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show();
             //Message.message(Login.this, "");
         } else {
@@ -805,7 +830,9 @@ public class Login extends Activity implements View.OnClickListener {
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         Log.e(TAG, "onResponse: " + response);
                         // String Status = response.get(Constants.Status).toString();
                         // JSONObject time=response.getJSONObject("time");
@@ -851,10 +878,15 @@ public class Login extends Activity implements View.OnClickListener {
                                 editor.putString("VERSION_NO", VERSION_NO11);
                                 editor.apply();
 
-                                Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                startActivity(a);
-                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
+                                if (USER_CODE11.startsWith("BM")) {
+                                    Intent a = new Intent(Login.this, BMC_MainActivity.class);
+                                    startActivity(a);
+                                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                } else {
+                                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                                    startActivity(a);
+                                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                }
                             }
 
                         } catch (JSONException e) {
@@ -884,4 +916,9 @@ public class Login extends Activity implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
+    }
 }
