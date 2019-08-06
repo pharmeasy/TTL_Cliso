@@ -77,8 +77,8 @@ public class ResultFragment extends Fragment {
     Spinner spinnertype;
     public String Date = "";
     private SimpleDateFormat sdf;
-    String user ="",yesterdayDate,getDateOnly;
-    String api_key="",convertedDate;
+    String user = "", yesterdayDate, getDateOnly;
+    String api_key = "", convertedDate;
     SharedPreferences sharedpreferences;
     TrackDetAdapter adapter;
     public static RequestQueue PostQue;
@@ -86,7 +86,7 @@ public class ResultFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     Button buttonnow;
     LinearLayout main;
-    TextView nodata,nodatatv;
+    TextView nodata, nodatatv;
     ProgressDialog barProgressDialog;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -107,7 +107,7 @@ public class ResultFragment extends Fragment {
     ArrayList<TrackDetModel> trackDetArray = new ArrayList<TrackDetModel>();
     private String passToAPI;
     private String halfTime;
-    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
 
     public ResultFragment() {
         // Required empty public constructor
@@ -142,10 +142,10 @@ public class ResultFragment extends Fragment {
         Calendar cl = Calendar.getInstance();
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-         halfTime = getDate.substring(11, getDate.length() - 0);
+        halfTime = getDate.substring(11, getDate.length() - 0);
 
 
-         GlobalClass.saveDtaeTopass=halfTime;
+        GlobalClass.saveDtaeTopass = halfTime;
 
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -159,38 +159,37 @@ public class ResultFragment extends Fragment {
         String outputDateStr = outputFormat.format(date);
 
         Date = outputDateStr;
-        GlobalClass.date=getDate;
+        GlobalClass.date = getDate;
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_result,container,false);
+        View view = inflater.inflate(R.layout.fragment_result, container, false);
 
-        listviewreport =(ListView)view.findViewById(R.id.listviewreport);
+        listviewreport = (ListView) view.findViewById(R.id.listviewreport);
         setHasOptionsMenu(true);
-        spinnertype=(Spinner)view.findViewById(R.id.spinnertype);
-        buttonnow =(Button)view.findViewById(R.id.buttonnow);
-        search =(SearchView)view.findViewById(R.id.searchView);
-        main=(LinearLayout)view.findViewById(R.id.main);
-       /*
-        */
-        nodata=(TextView)view.findViewById(R.id.nodata);
-        nodatatv=(TextView)view.findViewById(R.id.nodatatv);
+        spinnertype = (Spinner) view.findViewById(R.id.spinnertype);
+        buttonnow = (Button) view.findViewById(R.id.buttonnow);
+        search = (SearchView) view.findViewById(R.id.searchView);
+        main = (LinearLayout) view.findViewById(R.id.main);
+        /*
+         */
+        nodata = (TextView) view.findViewById(R.id.nodata);
+        nodatatv = (TextView) view.findViewById(R.id.nodatatv);
 
         java.util.Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String getcurrentdate = sdf.format(d);
 
-       // TextView dateview = getActivity().findViewById(R.id.show_date);
+        // TextView dateview = getActivity().findViewById(R.id.show_date);
 
-       // dateview.setVisibility(View.GONE);
+        // dateview.setVisibility(View.GONE);
 
 
-
-        String[] spinner = { "All", "Ready", "Downloaded"};
-        ArrayAdapter aa = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,spinner);
+        String[] spinner = {"All", "Ready", "Downloaded"};
+        ArrayAdapter aa = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinner);
 
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -204,7 +203,7 @@ public class ResultFragment extends Fragment {
                     android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_mainLayout, filt);
                     fragmentTransaction.commit();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -215,12 +214,10 @@ public class ResultFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position == 0){
+                if (position == 0) {
                     listviewreport.setVisibility(View.VISIBLE);
                     GetData();
-                }
-
-                else if (position == 2) {
+                } else if (position == 2) {
                     ArrayList<TrackDetModel> DownloadList = new ArrayList<TrackDetModel>();
 
                     for (int i = 0; i < trackDetArray.size(); i++) {
@@ -237,19 +234,20 @@ public class ResultFragment extends Fragment {
                         }
 
                     }
-                    if (DownloadList.size()==0){
+                    if (DownloadList.size() == 0) {
 
                         ShowAlert();
                         listviewreport.setVisibility(View.GONE);
 
 
-                    }else{
+                    } else {
                         listviewreport.setVisibility(View.VISIBLE);
                     }
-                }else{
+                } else {
                     GetData();
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
@@ -272,9 +270,8 @@ public class ResultFragment extends Fragment {
             }
         });
 
-        yesterdayDate= GlobalClass.getYesterdaysDate;
-         getDateOnly = yesterdayDate.substring(11, yesterdayDate.length());
-
+        yesterdayDate = GlobalClass.getYesterdaysDate;
+        getDateOnly = yesterdayDate.substring(11, yesterdayDate.length());
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -283,7 +280,6 @@ public class ResultFragment extends Fragment {
             myDate = dateFormat.parse(getDateOnly);
             SimpleDateFormat sdfdata = new SimpleDateFormat("yyyy-MM-dd");
             convertedDate = sdfdata.format(myDate);
-
 
 
         } catch (ParseException e) {
@@ -318,7 +314,8 @@ public class ResultFragment extends Fragment {
     }
 
     private List<TrackDetModel> filter(List<TrackDetModel> models, String query) {
-        query = query.toLowerCase();final List<TrackDetModel> filteredModelList = new ArrayList<>();
+        query = query.toLowerCase();
+        final List<TrackDetModel> filteredModelList = new ArrayList<>();
         for (TrackDetModel model : models) {
             final String name = model.getName().toLowerCase();
             final String ref = model.getRef_By().toLowerCase();
@@ -328,7 +325,7 @@ public class ResultFragment extends Fragment {
                 filteredModelList.add(model);
             } else if (ref.contains(query)) {
                 filteredModelList.add(model);
-            }  else if (barcode.contains(query)) {
+            } else if (barcode.contains(query)) {
                 filteredModelList.add(model);
             } else if (test.contains(query)) {
                 filteredModelList.add(model);
@@ -351,85 +348,88 @@ public class ResultFragment extends Fragment {
 
             jsonObject.put("API_Key", api_key);
             jsonObject.put("result_type", "Reported");
-            jsonObject.put("tsp",user);
+            jsonObject.put("tsp", user);
             jsonObject.put("date", Date);
             jsonObject.put("key", "");
-            jsonObject.put("value","");
+            jsonObject.put("value", "");
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(getContext());
+        Log.e(TAG, "Get Data for Result--->" + Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.ResultLIVE+"/"+api_key+"/REPORTED"+"/"+user+"/"+Date+"/key/value", new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.e(TAG, "onResponse: RESPONSE"+response );
-                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
-                            if(response.optString("response").equals(ToastFile.no_sample_found)){
-                                nodatatv.setVisibility(View.VISIBLE);
-                                nodatatv.setText(response.optString("response"));
-                                listviewreport.setVisibility(View.GONE);
-                            }else {
-                                nodatatv.setVisibility(View.GONE);
-                                listviewreport.setVisibility(View.VISIBLE);
-
-                                JSONArray jsonArray = response.optJSONArray(Constants.patients);
-                                if (jsonArray != null) {
-
-                                    trackDetArray = new ArrayList<TrackDetModel>();
-
-                                    for (int j = 0; j < jsonArray.length(); j++) {
-
-                                        JSONObject jsonObject = jsonArray.getJSONObject(j);
-                                        TrackDetModel trackdetails = new TrackDetModel();
-
-                                        trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
-                                        trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
-                                        trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
-                                        trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
-                                       // trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
-                                        trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
-                                        trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
-                                        trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
-                                        trackdetails.setDate(jsonObject.optString(Constants.date).toString());
-                                        trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
-                                        trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
-                                        trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
-                                        trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
-                                        trackdetails.setName(jsonObject.optString(Constants.name).toString());
-                                        trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
-                                        trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
-                                        trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
-                                        trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
-                                        trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
-                                        trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
-                                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
-
-                                        trackDetArray.add(trackdetails);
-
-                                    }
-                                    if (trackDetArray.size() == 0) {
-
-                                           yesterday();
-                                        nodata.setVisibility(View.VISIBLE);
-
-                                    } else {
-                                        nodata.setVisibility(View.GONE);
-                                        adapter = new TrackDetAdapter(getContext(), trackDetArray);
-                                        listviewreport.setAdapter(adapter);
-                                    }
-                                }
-                            }
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-
+                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value", new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
                     }
-                }, new com.android.volley.Response.ErrorListener() {
+                    if (response.optString("response").equals(ToastFile.no_sample_found)) {
+                        nodatatv.setVisibility(View.VISIBLE);
+                        nodatatv.setText(response.optString("response"));
+                        listviewreport.setVisibility(View.GONE);
+                    } else {
+                        nodatatv.setVisibility(View.GONE);
+                        listviewreport.setVisibility(View.VISIBLE);
+
+                        JSONArray jsonArray = response.optJSONArray(Constants.patients);
+                        if (jsonArray != null) {
+
+                            trackDetArray = new ArrayList<TrackDetModel>();
+
+                            for (int j = 0; j < jsonArray.length(); j++) {
+
+                                JSONObject jsonObject = jsonArray.getJSONObject(j);
+                                TrackDetModel trackdetails = new TrackDetModel();
+
+                                trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
+                                trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
+                                trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
+                                trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
+                                // trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
+                                trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
+                                trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
+                                trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
+                                trackdetails.setDate(jsonObject.optString(Constants.date).toString());
+                                trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
+                                trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
+                                trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
+                                trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
+                                trackdetails.setName(jsonObject.optString(Constants.name).toString());
+                                trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
+                                trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
+                                trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
+                                trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
+                                trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
+                                trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
+                                trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
+
+                                trackDetArray.add(trackdetails);
+
+                            }
+                            if (trackDetArray.size() == 0) {
+
+                                yesterday();
+                                nodata.setVisibility(View.VISIBLE);
+
+                            } else {
+                                nodata.setVisibility(View.GONE);
+                                adapter = new TrackDetAdapter(getContext(), trackDetArray);
+                                listviewreport.setAdapter(adapter);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
@@ -441,8 +441,8 @@ public class ResultFragment extends Fragment {
         });
 
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: URL"+jsonObjectRequest );
-        Log.e(TAG, "GetData: json"+jsonObject );
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: json" + jsonObject);
         RetryPolicy policy = new DefaultRetryPolicy(500000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         jsonObjectRequest.setRetryPolicy(policy);
 
@@ -454,7 +454,7 @@ public class ResultFragment extends Fragment {
         return cal.getTime();
     }
 
-    public  void  ShowAlert(){
+    public void ShowAlert() {
         AlertDialog alertDialog = new AlertDialog.Builder(getContext())
                 .setMessage(ToastFile.noDataAvailable)
                 .setCancelable(false)
@@ -484,6 +484,7 @@ public class ResultFragment extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -501,7 +502,6 @@ public class ResultFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
 }

@@ -1208,13 +1208,18 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                 Uri targetUri = data.getData();
 
                 //ImageName Procedure
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = getContentResolver().query(targetUri,
-                        filePathColumn, null, null, null);
-                cursor.moveToFirst();
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
+                String picturePath = null;
+                try {
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(targetUri,
+                            filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    picturePath = cursor.getString(columnIndex);
+                    cursor.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 //Uptill Here
 
                 imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
@@ -1285,7 +1290,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         mGoogleApiClient.stopAutoManage(Sgc_Pgc_Entry_Activity.this);
         mGoogleApiClient.disconnect();
     }
-    //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+/*    //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
 //            Bitmap photo = (Bitmap) data.getExtras().get("data");
 //
@@ -1315,7 +1320,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 //            width = (int) (height * bitmapRatio);
 //        }
 //        return Bitmap.createScaledBitmap(image, width, height, true);
-//    }
+//    }*/
 
 
 }

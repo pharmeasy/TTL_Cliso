@@ -48,7 +48,7 @@
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Dr. Caesar Sengupta"
+                    android:text=""
                     android:textColor="@color/maroon"
                     android:textSize="13dp"
                     android:textStyle="bold" />
@@ -57,7 +57,7 @@
                     android:id="@+id/designation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="VP - Operations"
+                    android:text=""
                     android:textColor="@color/maroon"
                     android:textSize="12dp" />
 
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/role"
                     android:layout_marginTop="3dp"
-                    android:text="Role: He heads and manages the Managers of Processing, Quality control"
+                    android:text=""
                     android:textColor="@color/DARKGray"
                     android:textSize="12dp" />
 
@@ -76,7 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:text="caesar@thyrocare.com"
+                    android:text=""
                     android:textColor="@color/DARKGray"
                     />
 
@@ -85,7 +85,7 @@
                     android:id="@+id/mobile_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mobile Number"
+                    android:text=""
                     android:textColor="@color/colorBlack" />
             </LinearLayout>
 

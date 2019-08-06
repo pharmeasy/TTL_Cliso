@@ -26,7 +26,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack"/>
 
         <TextView
             android:id="@+id/title"
@@ -36,7 +36,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:textColor="@color/maroon"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/home"
@@ -46,7 +46,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack"/>
     </LinearLayout>
 
     <LinearLayout

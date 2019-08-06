@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -82,10 +83,96 @@ public class RateCalculatorFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+
+    private OnFragmentInteractionListener mListener;
+
+
+    private MyPojo myPojo;
+    View viewfab, view;
+    int gertdata;
+    String getValue;
+    String displayslectedtestRateCal;
+    ArrayList<Base_Model_Rate_Calculator> getAllTests;
+    String testToPassToAPI;
+    TextView test_rate, profile_rate, pop_rate;
+    EditText edit_rate;
+    ArrayList<Base_Model_Rate_Calculator> finalproductlist;
+    RateCAlAdapter rateCAlAdapter;
+    RequestQueue requestQueuetest, requestQueueprofile, requestQueuepop;
+    private TestModel testModel;
+    Button reset;
+    RecyclerView outlab_list;
+    int getFinalAmountTopass = 0;
+    String B2BRate, B2CRate, CollCharge, toCompany, LogCost, resID, responseData,
+            yours;
+    TextView companycost_test, out_lab_cost, out_lab_cost_b2b;
+    int days = 0;
+
+    ProgressDialog barProgressDialog;
+    ListView testsforrate_calculator;
     public static ArrayList<String> testListnames;
     public static ArrayList<String> profileListnames;
     public static ArrayList<String> popListnames;
+    View viewrate_calfrag, feedback_fragment;
+    ArrayList<Base_Model_Rate_Calculator> selectedTests;
+    private static ManagingTabsActivity mContext;
+    GetMainModel mainModelRate;
+    TextView show_selected_tests_list_test_ils1, show_rates, show_b2b_rates, b2b_rate_adm, b2bratell, poptab, profile_txt, test_txt;
+
+    EditText sv_testsList_ttl;
+    Button calculate_button;
+
+    LinearLayout search_option_ttl;
+    RequestQueue requestQueuepoptestILS;
+    GetMainModel mainModel;
+    ProgressDialog progressDialog;
+    LinearLayout before_discount_layout2;
+    ArrayList<Base_Model_Rate_Calculator> param;
+
+    ArrayList<RateCalB2B_MASTERS_Main_Model> b2bmasterarraylistRate;
+    ExapandableAdpterForB2CRate_Calculator expAdapter;
+    ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
+    Button resetbutton;
+    List<String> showTestNmaesRateCal;
+    List<String> getOnlyTestCode;
+    List<String> passToApi;
+    Test_Rate_Fragment test_rate_fragment;
     public static com.android.volley.RequestQueue POstQue;
+    SharedPreferences prefs;
+    String user, passwrd, access, api_key;
+    ArrayList<Integer> getvalue;
+    int getFinaldata = 0;
+    Button go_button;
+    // TODO: Rename and change types of parameters
+    RecyclerView containerlist;
+    private int finalPriceofTest;
+    private int getFinalAmountTopassToTheAPI;
+    int add = 0;
+    private int totalcount;
+    private String displayslectedtestRateCalToShow;
+    Spinner brand_name_rt_cal;
+    LinearLayoutManager linearLayoutManager;
+    LinearLayout pop_profile_test_bar;
+    ArrayList<OUTLAB_TESTLIST_GETALLTESTS> outlab_testlist_getalltests;
+    ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test = new ArrayList<>();
+    ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs;
+    ArrayList<Outlabdetails_OutLab> filteredFiles;
+    LinearLayout linear_layout_data;
+    LinearLayout offline_img;
+    ArrayList<Base_Model_Rate_Calculator> filteredFilesttl;
+    private ArrayList<String> getBrandName;
+    private boolean isLoaded = false;
+    private EditText outlabtestsearch;
+    private TextView show_selected_tests_list_test_ils;
+    private LinearLayout lineargetselectedtestforILS;
+    List<String> showTestNmaes = new ArrayList<>();
+
+    GetMainModel obj;
+    Product_Rate_CalculatorModel product_rate_masterModel;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -101,91 +188,16 @@ public class RateCalculatorFragment extends Fragment {
             return null;
         }
     };
-    private static ManagingTabsActivity mContext;
-    View viewfab, view;
-    int gertdata;
-    String getValue;
-    String displayslectedtestRateCal;
-    ArrayList<Base_Model_Rate_Calculator> getAllTests;
-    String testToPassToAPI;
-    TextView test_rate, profile_rate, pop_rate;
-    EditText edit_rate;
-    ArrayList<Base_Model_Rate_Calculator> finalproductlist;
-    RateCAlAdapter rateCAlAdapter;
-    RequestQueue requestQueuetest, requestQueueprofile, requestQueuepop;
-    Button reset;
-    RecyclerView outlab_list;
-    int getFinalAmountTopass = 0;
-    String B2BRate, B2CRate, CollCharge, toCompany, LogCost, resID, responseData,
-            yours;
-    TextView companycost_test, out_lab_cost, out_lab_cost_b2b;
-    ProgressDialog barProgressDialog;
-    ListView testsforrate_calculator;
-    View viewrate_calfrag, feedback_fragment;
-    ArrayList<Base_Model_Rate_Calculator> selectedTests;
-    GetMainModel mainModelRate;
-    TextView show_selected_tests_list_test_ils1, show_rates, show_b2b_rates, b2b_rate_adm, b2bratell, poptab, profile_txt, test_txt;
-    EditText sv_testsList_ttl;
-    Button calculate_button;
-    LinearLayout search_option_ttl;
-    RequestQueue requestQueuepoptestILS;
-    GetMainModel mainModel;
-    ProgressDialog progressDialog;
-    LinearLayout before_discount_layout2;
-    ArrayList<Base_Model_Rate_Calculator> param;
-    ArrayList<RateCalB2B_MASTERS_Main_Model> b2bmasterarraylistRate;
-    ExapandableAdpterForB2CRate_Calculator expAdapter;
-    ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
-    Button resetbutton;
-    List<String> showTestNmaesRateCal;
-    List<String> getOnlyTestCode;
-    List<String> passToApi;
-    Test_Rate_Fragment test_rate_fragment;
-    SharedPreferences prefs;
-    String user, passwrd, access, api_key;
-    ArrayList<Integer> getvalue;
-    int getFinaldata = 0;
-    Button go_button;
-    // TODO: Rename and change types of parameters
-    RecyclerView containerlist;
-    int add = 0;
-    Spinner brand_name_rt_cal;
-    LinearLayoutManager linearLayoutManager;
-    LinearLayout pop_profile_test_bar;
-    ArrayList<OUTLAB_TESTLIST_GETALLTESTS> outlab_testlist_getalltests;
-    ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test = new ArrayList<>();
-    ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs;
-    ArrayList<Outlabdetails_OutLab> filteredFiles;
-    LinearLayout linear_layout_data;
-    LinearLayout offline_img;
-    ArrayList<Base_Model_Rate_Calculator> filteredFilesttl;
-    List<String> showTestNmaes = new ArrayList<>();
-    GetMainModel obj;
-    Product_Rate_CalculatorModel product_rate_masterModel;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private OnFragmentInteractionListener mListener;
-    private MyPojo myPojo;
-    private TestModel testModel;
-    private int finalPriceofTest;
-    private int getFinalAmountTopassToTheAPI;
-    private int totalcount;
-    private String displayslectedtestRateCalToShow;
-    private ArrayList<String> getBrandName;
-    private boolean isLoaded = false;
-    private EditText outlabtestsearch;
-    private TextView show_selected_tests_list_test_ils;
-    private LinearLayout lineargetselectedtestforILS;
     private int totalcountForOutlab;
     private int totalcountForOutlabb2b;
     private String getSpinnerSelectedItem;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private ArrayList<Base_Model_Rate_Calculator> getProfileList;
     private ArrayList<Base_Model_Rate_Calculator> gettestsList;
     private ArrayList<Base_Model_Rate_Calculator> getPopList;
     private ArrayList<Base_Model_Rate_Calculator> selectedlist;
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
+
+    private String TAG = getClass().getSimpleName();
 
 
     public RateCalculatorFragment() {
@@ -235,16 +247,15 @@ public class RateCalculatorFragment extends Fragment {
         containerlist = (RecyclerView) viewrate_calfrag.findViewById(R.id.containerlist);
         pop_profile_test_bar = (LinearLayout) viewrate_calfrag.findViewById(R.id.pop_profile_test_bar);
         search_option_ttl = (LinearLayout) viewrate_calfrag.findViewById(R.id.search_option_ttl);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        containerlist.setLayoutManager(linearLayoutManager);
+        containerlist.setItemAnimator(new DefaultItemAnimator());
+        containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         brand_name_rt_cal = (Spinner) viewrate_calfrag.findViewById(R.id.brand_name_rt_cal);
         out_lab_cost = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost);
         out_lab_cost_b2b = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost_b2b);
         outlab_list = (RecyclerView) viewrate_calfrag.findViewById(R.id.outlab_list);
-
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        containerlist.setLayoutManager(linearLayoutManager);
-        containerlist.setItemAnimator(new DefaultItemAnimator());
-        containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         outlab_list.setLayoutManager(linearLayoutManager);
@@ -283,7 +294,13 @@ public class RateCalculatorFragment extends Fragment {
         test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
 
-        getDataFromSharedPref();
+        days = GlobalClass.getStoreSynctime(getActivity());
+        if (days >= Constants.DAYS_CNT) {
+            getAllproduct();
+        } else {
+            getDataFromSharedPref();
+        }
+
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         Gson gson = new Gson();
@@ -296,7 +313,9 @@ public class RateCalculatorFragment extends Fragment {
                     for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                         getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                     }
-                    brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getBrandName));
+                    brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(),
+                            R.layout.spinnerproperty,
+                            getBrandName));
                 }
             }
         } else {
@@ -373,63 +392,7 @@ public class RateCalculatorFragment extends Fragment {
                     } else {
                         offline_img.setVisibility(View.GONE);
                         linear_layout_data.setVisibility(View.VISIBLE);
-                        barProgressDialog = new ProgressDialog(mContext);
-                        barProgressDialog.setTitle("Kindly wait ...");
-                        barProgressDialog.setMessage(ToastFile.processing_request);
-                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                        barProgressDialog.setProgress(0);
-                        barProgressDialog.setMax(20);
-                        barProgressDialog.show();
-                        barProgressDialog.setCanceledOnTouchOutside(false);
-                        barProgressDialog.setCancelable(false);
-                        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
-                        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.e(TAG, "onResponse: " + response);
-
-                                String getResponse = response.optString("RESPONSE", "");
-                                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                                    redirectToLogin(mContext);
-                                } else {
-                                    Gson gson = new Gson();
-                                    mainModel = new GetMainModel();
-                                    mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                        barProgressDialog.dismiss();
-                                    }*/
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
-                                            barProgressDialog.dismiss();
-                                    }
-
-                                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                                    Gson gson22 = new Gson();
-                                    String json23 = gson22.toJson(mainModelRate);
-                                    callAdapter(mainModelRate);
-                                    prefsEditor1.putString("MyObject", json23);
-                                    prefsEditor1.commit();
-                                }
-
-
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                if (error.networkResponse == null) {
-                                    if (error.getClass().equals(TimeoutError.class)) {
-                                        // Show timeout error message
-                                    }
-                                }
-                            }
-                        });
-                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                300000,
-                                3,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                        requestQueuepoptestILS.add(jsonObjectRequestPop);
-                        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+                        getAllproduct();
                     }
 
                 }
@@ -446,6 +409,7 @@ public class RateCalculatorFragment extends Fragment {
                 profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
                 test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
+
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
@@ -458,8 +422,6 @@ public class RateCalculatorFragment extends Fragment {
                         }
                         callAdapaterTosetData(finalproductlist, totalproductlist);
 
-                    } else {
-                        //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -570,7 +532,100 @@ public class RateCalculatorFragment extends Fragment {
         return viewrate_calfrag;
     }
 
+    private void getAllproduct() {
+        barProgressDialog = new ProgressDialog(mContext);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse for All products :::: " + response);
+
+                String getResponse = response.optString("RESPONSE", "");
+                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                    redirectToLogin(mContext);
+                } else {
+                    Gson gson = new Gson();
+                    mainModel = new GetMainModel();
+                    mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
+                    }
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                    Gson gson22 = new Gson();
+                    String json23 = gson22.toJson(mainModelRate);
+                    // callAdapter(mainModelRate);
+                    prefsEditor1.putString("MyObject", json23);
+                    GlobalClass.StoreSyncTime(getActivity());
+                    prefsEditor1.commit();
+
+                    b2bmasterarraylistRate = new ArrayList<>();
+                    b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
+                    ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
+                    ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<Base_Model_Rate_Calculator>();
+                    for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                            finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                            testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                        }
+
+                     /*   for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                            finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                            getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                        }
+                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
+                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
+                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
+                            getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
+                        }
+                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
+                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
+                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
+                            getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
+                        }
+*/
+                    }
+                    callAdapaterTosetData(finalproduct_list, testRateMasterModels);
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
+        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueuepoptestILS.add(jsonObjectRequestPop);
+        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+    }
+
     private void getDataFromSharedPref() {
+
         SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
         Gson gsondtaa = new Gson();
         String jsondata = appSharedPrefsdata.getString("MyObject", "");
@@ -606,7 +661,10 @@ public class RateCalculatorFragment extends Fragment {
                 callAdapaterTosetData(finalproductlist, totalproductlist);
             } else {
                 //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+                getAllproduct();
             }
+        } else {
+            getAllproduct();
         }
     }
 
@@ -616,7 +674,7 @@ public class RateCalculatorFragment extends Fragment {
             public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
                 System.out.println("check changed");
                 selectedTestsListRateCal = selectedTests;
-                expAdapter.notifyDataSetChanged();
+                // expAdapter.notifyDataSetChanged();
                 if (selectedTestsListRateCal.size() != 0) {
                     showTestNmaesRateCal = new ArrayList<>();
                     getOnlyTestCode = new ArrayList<>();
@@ -627,14 +685,10 @@ public class RateCalculatorFragment extends Fragment {
                             for (int j = 0; j < selectedTestsListRateCal.get(i).getBarcodes().length; j++) {
                                 getOnlyTestCode.add(selectedTestsListRateCal.get(i).getBarcodes()[j].getCode());
                             }
-                        else {
-
-                        }
-//                        int getB2BrateToCalculate = Integer.parseInt(selectedTestsListRateCal.get(i).getRate().getB2b());
-//                        int getdata = getB2BrateToCalculate*10/100;
-//                        int totalValue = getdata+ getB2BrateToCalculate;
                     }
+
                     totalcount = 0;
+
                     for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
                         totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                     }
@@ -686,72 +740,15 @@ public class RateCalculatorFragment extends Fragment {
                         pop_profile_test_bar.setVisibility(View.VISIBLE);
                         search_option_ttl.setVisibility(View.VISIBLE);
 
-                    } else {
-                        //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                     }
                 } else {
-
                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
                         offline_img.setVisibility(View.VISIBLE);
                         linear_layout_data.setVisibility(View.GONE);
                     } else {
                         offline_img.setVisibility(View.GONE);
                         linear_layout_data.setVisibility(View.VISIBLE);
-                        barProgressDialog = new ProgressDialog(mContext);
-                        barProgressDialog.setTitle("Kindly wait ...");
-                        barProgressDialog.setMessage(ToastFile.processing_request);
-                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                        barProgressDialog.setProgress(0);
-                        barProgressDialog.setMax(20);
-                        barProgressDialog.show();
-                        barProgressDialog.setCanceledOnTouchOutside(false);
-                        barProgressDialog.setCancelable(false);
-                        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
-                        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                String getResponse = response.optString("RESPONSE", "");
-                                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                                    redirectToLogin(mContext);
-                                } else {
-
-                                    Log.e(TAG, "onResponse: " + response);
-                                    Gson gson = new Gson();
-                                    mainModel = new GetMainModel();
-                                    mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                        barProgressDialog.dismiss();
-                                    }*/
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
-                                            barProgressDialog.dismiss();
-                                    }
-
-                                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
-                                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                                    Gson gson22 = new Gson();
-                                    String json23 = gson22.toJson(mainModelRate);
-                                    callAdapter(mainModelRate);
-                                    prefsEditor1.putString("MyObject", json23);
-                                    prefsEditor1.commit();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                if (error.networkResponse == null) {
-                                    if (error.getClass().equals(TimeoutError.class)) {
-                                        // Show timeout error message
-                                    }
-                                }
-                            }
-                        });
-                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                300000,
-                                3,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                        requestQueuepoptestILS.add(jsonObjectRequestPop);
-                        Log.e(TAG, "getRatesofB2bandB2C: url" + jsonObjectRequestPop);
+                        getAllproduct();
                     }
 
                 }
@@ -779,8 +776,6 @@ public class RateCalculatorFragment extends Fragment {
                                 callAdapterforOutlab();
                             }
                         }
-                    } else {
-//                        Toast.makeText(getActivity(), ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -790,7 +785,8 @@ public class RateCalculatorFragment extends Fragment {
     private void requestJsonObject() {
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user +
+                    "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
@@ -852,204 +848,6 @@ public class RateCalculatorFragment extends Fragment {
         containerlist.setVisibility(View.GONE);
         pop_profile_test_bar.setVisibility(View.GONE);
         search_option_ttl.setVisibility(View.GONE);
-    }
-
-    private void fetchData() {
-        barProgressDialog = new ProgressDialog(getActivity());
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-        POstQue = Volley.newRequestQueue(mContext);
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("apikey", api_key);
-            jsonObject.put("tests", testToPassToAPI);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.RateCal, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-                try {
-                    Log.e(TAG, "onResponse: " + response);
-                    String finalJson = response.toString();
-                    JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }*/
-                    if (mContext instanceof Activity) {
-                        if (!((Activity) mContext).isFinishing())
-                            barProgressDialog.dismiss();
-                    }
-                    B2BRate = parentObjectOtp.getString("B2B");
-                    B2CRate = parentObjectOtp.getString("B2C");
-                    CollCharge = parentObjectOtp.getString("CHC");
-                    toCompany = parentObjectOtp.getString("COMPANY");
-                    LogCost = parentObjectOtp.getString("PI");
-                    resID = parentObjectOtp.getString("RESID");
-                    responseData = parentObjectOtp.getString("RESPONSE");
-                    yours = parentObjectOtp.getString("YOURS");
-
-                    if (resID.equals("RES0000")) {
-
-                        //pass data to next screen
-
-                        test_rate_fragment = new Test_Rate_Fragment();
-//                        TastyToast.makeText(mContext, "" + responseData, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Bundle args = new Bundle();
-                        args.putString("B2B", B2BRate);
-                        args.putString("B2C", B2CRate);
-                        args.putString("CHC", CollCharge);
-                        args.putString("COMPANY", toCompany);
-                        args.putString("PI", LogCost);
-                        args.putString("RESID", resID);
-                        args.putString("RESPONSE", responseData);
-                        args.putString("YOURS", yours);
-                        args.putParcelableArrayList("send", selectedTestsListRateCal);
-
-                        before_discount_layout2.setVisibility(View.VISIBLE);
-                        show_selected_tests_list_test_ils1.setText(displayslectedtestRateCalToShow);
-                        show_rates.setText(B2CRate);
-
-                        if (access.equals("ADMIN")) {
-                            show_b2b_rates.setText(String.valueOf(totalcount));
-                            b2b_rate_adm.setVisibility(View.VISIBLE);
-                            show_b2b_rates.setVisibility(View.VISIBLE);
-                        } else {
-                            b2b_rate_adm.setVisibility(View.GONE);
-                            show_b2b_rates.setVisibility(View.GONE);
-                        }
-
-
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelableArrayList("send", selectedTestsListRateCal);
-
-//                        test_rate_fragment.setArguments(args);
-
-                    } else if (responseData.equalsIgnoreCase(caps_invalidApikey)) {
-                        GlobalClass.redirectToLogin(mContext);
-                    } else {
-                        TastyToast.makeText(mContext, "" + responseData, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }
-                } catch (JSONException e) {
-                    TastyToast.makeText(mContext, "" + responseData, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    e.printStackTrace();
-                }
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                } else {
-
-                    System.out.println(error);
-                }
-            }
-        });
-        POstQue.add(jsonObjectRequest1);
-        Log.e(TAG, "fetchData: " + jsonObjectRequest1);
-        Log.e(TAG, "fetchData: " + jsonObject);
-    }
-
-    private void callAdapter(GetMainModel mainModel) {
-
-        b2bmasterarraylistRate = new ArrayList<>();
-        b2bmasterarraylistRate.add(mainModel.B2B_MASTERS);
-
-        ArrayList<Product_Rate_CalculatorModel> finalproductlist = new ArrayList<Product_Rate_CalculatorModel>();
-        ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
-
-        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-
-            Base_Model_Rate_Calculator base_model_rate_calculator = new Base_Model_Rate_Calculator();
-
-            Product_Rate_CalculatorModel product_rate_masterModel = new Product_Rate_CalculatorModel();
-            product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
-            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getPOP());
-            finalproductlist.add(product_rate_masterModel);
-
-
-           /* product_rate_masterModel = new Product_Rate_CalculatorModel();
-            product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
-            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getPROFILE());
-            finalproductlist.add(product_rate_masterModel);
-
-            product_rate_masterModel = new Product_Rate_CalculatorModel();
-            product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
-            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getTESTS());
-            finalproductlist.add(product_rate_masterModel);*/
-
-        }
-
-        expAdapter = new ExapandableAdpterForB2CRate_Calculator(mContext, finalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
-            @Override
-            public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
-                System.out.println("check changed");
-                selectedTestsListRateCal = selectedTests;
-                expAdapter.notifyDataSetChanged();
-                if (selectedTestsListRateCal.size() != 0) {
-
-                    showTestNmaesRateCal = new ArrayList<>();
-                    getOnlyTestCode = new ArrayList<>();
-                    ArrayList<Integer> Totalcunt = new ArrayList<>();
-
-                    for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
-                        showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
-                        if (selectedTestsListRateCal.get(i).getBarcodes().length != 0)
-                            for (int j = 0; j < selectedTestsListRateCal.get(i).getBarcodes().length; j++) {
-                                getOnlyTestCode.add(selectedTestsListRateCal.get(i).getBarcodes()[j].getCode());
-                            }
-                        else {
-
-                        }
-//                        int getB2BrateToCalculate = Integer.parseInt(selectedTestsListRateCal.get(i).getRate().getB2b());
-//                        int getdata = getB2BrateToCalculate*10/100;
-//                        int totalValue = getdata+ getB2BrateToCalculate;
-                    }
-                    totalcount = 0;
-                    for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
-                        totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                    }
-                    System.out.println("Total value  :" + totalcount);
-                    displayslectedtestRateCal = TextUtils.join(",", getOnlyTestCode);
-                    displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
-                    testToPassToAPI = TextUtils.join(",", getOnlyTestCode);
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                        offline_img.setVisibility(View.VISIBLE);
-                        linear_layout_data.setVisibility(View.GONE);
-                    } else {
-                        offline_img.setVisibility(View.GONE);
-                        linear_layout_data.setVisibility(View.VISIBLE);
-                        fetchData();
-                    }
-                } else if (selectedTestsListRateCal.size() == 0) {
-                    show_selected_tests_list_test_ils1.setText("");
-                    show_rates.setText("0");
-                    before_discount_layout2.setVisibility(View.GONE);
-                }
-            }
-        });
-
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 
     private class OutLabAdapter extends RecyclerView.Adapter<OutLabAdapter.ViewHolder> {
@@ -1206,6 +1004,229 @@ public class RateCalculatorFragment extends Fragment {
             }
         }
 
+
+    }
+
+    private void fetchData() {
+        barProgressDialog = new ProgressDialog(getActivity());
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        POstQue = Volley.newRequestQueue(mContext);
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("apikey", api_key);
+            jsonObject.put("tests", testToPassToAPI);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.RateCal, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                try {
+                    Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }*/
+                  /*  if (mContext instanceof Activity) {
+                        if (!((Activity) mContext).isFinishing())
+                            barProgressDialog.dismiss();
+                    }*/
+
+                    hideProgress();
+                    B2BRate = parentObjectOtp.getString("B2B");
+                    B2CRate = parentObjectOtp.getString("B2C");
+                    CollCharge = parentObjectOtp.getString("CHC");
+                    toCompany = parentObjectOtp.getString("COMPANY");
+                    LogCost = parentObjectOtp.getString("PI");
+                    resID = parentObjectOtp.getString("RESID");
+                    responseData = parentObjectOtp.getString("RESPONSE");
+                    yours = parentObjectOtp.getString("YOURS");
+
+                    if (resID.equals("RES0000")) {
+                        test_rate_fragment = new Test_Rate_Fragment();
+                        Bundle args = new Bundle();
+                        args.putString("B2B", B2BRate);
+                        args.putString("B2C", B2CRate);
+                        args.putString("CHC", CollCharge);
+                        args.putString("COMPANY", toCompany);
+                        args.putString("PI", LogCost);
+                        args.putString("RESID", resID);
+                        args.putString("RESPONSE", responseData);
+                        args.putString("YOURS", yours);
+                        args.putParcelableArrayList("send", selectedTestsListRateCal);
+
+                        before_discount_layout2.setVisibility(View.VISIBLE);
+                        show_selected_tests_list_test_ils1.setText(displayslectedtestRateCalToShow);
+                        show_rates.setText(B2CRate);
+
+                        if (access.equals("ADMIN")) {
+                            show_b2b_rates.setText(String.valueOf(totalcount));
+                            b2b_rate_adm.setVisibility(View.VISIBLE);
+                            show_b2b_rates.setVisibility(View.VISIBLE);
+                        } else {
+                            b2b_rate_adm.setVisibility(View.GONE);
+                            show_b2b_rates.setVisibility(View.GONE);
+                        }
+
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelableArrayList("send", selectedTestsListRateCal);
+
+
+                    } else if (responseData.equalsIgnoreCase(caps_invalidApikey)) {
+                        GlobalClass.redirectToLogin(mContext);
+                    } else {
+                        TastyToast.makeText(mContext, "" + responseData, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+                } catch (JSONException e) {
+                    TastyToast.makeText(mContext, "" + responseData, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                } else {
+
+                    System.out.println(error);
+                }
+            }
+        });
+
+        POstQue.add(jsonObjectRequest1);
+        Log.e(TAG, "fetchData: " + jsonObjectRequest1);
+        Log.e(TAG, "fetchData: " + jsonObject);
+    }
+
+    private void callAdapter(GetMainModel mainModel) {
+
+        b2bmasterarraylistRate = new ArrayList<>();
+        b2bmasterarraylistRate.add(mainModel.B2B_MASTERS);
+
+        ArrayList<Product_Rate_CalculatorModel> finalproductlist = new ArrayList<Product_Rate_CalculatorModel>();
+        ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
+
+        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+
+            Base_Model_Rate_Calculator base_model_rate_calculator = new Base_Model_Rate_Calculator();
+            Product_Rate_CalculatorModel product_rate_masterModel = new Product_Rate_CalculatorModel();
+            product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
+            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getPOP());
+            finalproductlist.add(product_rate_masterModel);
+
+          /*  base_model_rate_calculator.setType(Constants.PRODUCT_POP);
+            testRateMasterModels.add(base_model_rate_calculator);*/
+
+
+         /*   product_rate_masterModel = new Product_Rate_CalculatorModel();
+            product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
+            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getPROFILE());
+            finalproductlist.add(product_rate_masterModel);
+
+            product_rate_masterModel = new Product_Rate_CalculatorModel();
+            product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
+            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylistRate.get(i).getTESTS());
+            finalproductlist.add(product_rate_masterModel);*/
+
+
+        }
+
+        //   callAdapaterTosetData(testRateMasterModels, testRateMasterModels);
+
+    /*    expAdapter = new ExapandableAdpterForB2CRate_Calculator(mContext, finalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
+            @Override
+            public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
+                System.out.println("check changed");
+                selectedTestsListRateCal = selectedTests;
+                expAdapter.notifyDataSetChanged();
+                if (selectedTestsListRateCal.size() != 0) {
+
+                    showTestNmaesRateCal = new ArrayList<>();
+                    getOnlyTestCode = new ArrayList<>();
+                    ArrayList<Integer> Totalcunt = new ArrayList<>();
+
+                    for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
+                        showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
+                        if (selectedTestsListRateCal.get(i).getBarcodes().length != 0)
+                            for (int j = 0; j < selectedTestsListRateCal.get(i).getBarcodes().length; j++) {
+                                getOnlyTestCode.add(selectedTestsListRateCal.get(i).getBarcodes()[j].getCode());
+                            }
+                    }
+                    totalcount = 0;
+                    for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
+                        totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                    }
+                    System.out.println("Total value  :" + totalcount);
+                    displayslectedtestRateCal = TextUtils.join(",", getOnlyTestCode);
+                    displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
+                    testToPassToAPI = TextUtils.join(",", getOnlyTestCode);
+
+                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        offline_img.setVisibility(View.VISIBLE);
+                        linear_layout_data.setVisibility(View.GONE);
+                    } else {
+                        offline_img.setVisibility(View.GONE);
+                        linear_layout_data.setVisibility(View.VISIBLE);
+                        fetchData();
+                    }
+                } else if (selectedTestsListRateCal.size() == 0) {
+                    show_selected_tests_list_test_ils1.setText("");
+                    show_rates.setText("0");
+                    before_discount_layout2.setVisibility(View.GONE);
+                }
+
+            }
+        });
+        containerlist.setAdapter(expAdapter);*/
+
+
+    }
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public void hideProgress() {
+        if (barProgressDialog != null) {
+            if (barProgressDialog.isShowing()) {
+                Context context = ((ContextWrapper) barProgressDialog.getContext()).getBaseContext();
+                if (context instanceof Activity) {
+                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed())
+                        barProgressDialog.dismiss();
+                } else
+                    barProgressDialog.dismiss();
+            }
+            barProgressDialog = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
     }
 }

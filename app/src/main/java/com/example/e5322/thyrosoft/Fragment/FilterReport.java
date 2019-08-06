@@ -40,7 +40,6 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
-import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
@@ -234,7 +233,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
 
-       
 
         full_ll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -263,13 +261,13 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         setCalendarAdapter(SelectedMonthData);
 
         month_txt.setText(month + " " + year);
-        currentMonthString=month + " " + year;
+        currentMonthString = month + " " + year;
 
         try {
-            getTextofMonth =month_txt.getText().toString();
-            if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
+            getTextofMonth = month_txt.getText().toString();
+            if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
                 next_month.setVisibility(View.GONE);
-            }else{
+            } else {
                 next_month.setVisibility(View.VISIBLE);
             }
         } catch (Exception e) {
@@ -291,10 +289,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     e.printStackTrace();
                 }
                 setCalendarAdapter(SelectedMonthData);
-                getTextofMonth =month_txt.getText().toString();
-                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
+                getTextofMonth = month_txt.getText().toString();
+                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
                     next_month.setVisibility(View.GONE);
-                }else{
+                } else {
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -316,10 +314,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     e.printStackTrace();
                 }
                 setCalendarAdapter(SelectedMonthData);
-                getTextofMonth =month_txt.getText().toString();
-                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
+                getTextofMonth = month_txt.getText().toString();
+                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
                     next_month.setVisibility(View.GONE);
-                }else{
+                } else {
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -354,12 +352,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (filterBy.getSelectedItem().equals("All")) {
-                    searchbarcode.setHint("Search by patient name or barcode");}
-                else if(filterBy.getSelectedItem().equals("Name")){
+                    searchbarcode.setHint("Search by patient name or barcode");
+                } else if (filterBy.getSelectedItem().equals("Name")) {
                     searchbarcode.setHint("Search by patient name");
-                }else if(filterBy.getSelectedItem().equals("Barcode")){
+                } else if (filterBy.getSelectedItem().equals("Barcode")) {
                     searchbarcode.setHint("Search by patient barcode");
-                }else {
+                } else {
                     searchbarcode.setHint("Search by patient name or barcode");
                 }
                 /*String filterstr = parent.getItemAtPosition(position).toString();
@@ -412,7 +410,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         });
 */
 
-        if (filterBy.getSelectedItem().equals("All")||filterBy.getSelectedItem().equals("Select Filter By")) {
+        if (filterBy.getSelectedItem().equals("All") || filterBy.getSelectedItem().equals("Select Filter By")) {
             searchbarcode.setHint("Search by patient name or barcode");
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -484,7 +482,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     //you can use runnable postDelayed like 500 ms to delay search text
                 }
             });
-        }else if(filterBy.getSelectedItem().equals("Name")){
+        } else if (filterBy.getSelectedItem().equals("Name")) {
             searchbarcode.setHint("Search by patient name ");
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -508,22 +506,22 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     if (FilterReport != null) {
                         for (int i = 0; i < FilterReport.size(); i++) {
 
-                                final String text = FilterReport.get(i).getName().toLowerCase();
+                            final String text = FilterReport.get(i).getName().toLowerCase();
 
-                                if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
-                                    name = FilterReport.get(i).getName().toLowerCase();
-                                }
+                            if (FilterReport.get(i).getName() != null || !FilterReport.get(i).getName().equals("")) {
+                                name = FilterReport.get(i).getName().toLowerCase();
+                            }
 
-                                if (text.contains(s1) || (name != null && name.contains(s1)) ||
-                                        (name != null && name.contains(s1))) {
-                                    String testname = FilterReport.get(i).getName();
-                                    filterPatientsArrayList.add(FilterReport.get(i));
+                            if (text.contains(s1) || (name != null && name.contains(s1)) ||
+                                    (name != null && name.contains(s1))) {
+                                String testname = FilterReport.get(i).getName();
+                                filterPatientsArrayList.add(FilterReport.get(i));
 
-                                } else {
+                            } else {
 
-                                }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+                            }
+                            adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                            ListReportStatus.setAdapter(adapter);
 
 
                         }
@@ -533,7 +531,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             });
 
-        }else if(filterBy.getSelectedItem().equals("Barcode")){
+        } else if (filterBy.getSelectedItem().equals("Barcode")) {
             searchbarcode.setHint("Search by patient barcode");
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -582,7 +580,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             });
 
-        }else {
+        } else {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -697,17 +695,22 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     }
 
     public static float dpToPx(Context context, float valueInDp) {
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        DisplayMetrics metrics = null;
+        try {
+            metrics = context.getResources().getDisplayMetrics();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
 
     @Override
     public void onStart() {
-        getTextofMonth =month_txt.getText().toString();
-        if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
+        getTextofMonth = month_txt.getText().toString();
+        if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
             next_month.setVisibility(View.GONE);
-        }else{
+        } else {
             next_month.setVisibility(View.VISIBLE);
         }
         super.onStart();

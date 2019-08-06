@@ -48,6 +48,7 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.UploadDocument;
+import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.Login;
@@ -170,6 +171,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             navigationView.getMenu().findItem(R.id.accr_data);
+            navigation.getMenu().findItem(R.id.articles_data);
 
         } else if (access.equals("ADMIN")) {
             //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
@@ -191,6 +193,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             navigationView.getMenu().findItem(R.id.accr_data);
+            navigation.getMenu().findItem(R.id.articles_data);
         }
 
        /* navigationView.getMenu().findItem(R.id.home_navigation).setVisible(false);
@@ -213,14 +216,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             getProfileDetails();
         }
 
-        /*if (profile_image != null) {
-            new DownloadImageTask(imageViewprofile).execute(profile_image);
-        } else {
-            Glide.with(ManagingTabsActivity.this)
-                    .load("")
-                    .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
-                    .into(imageViewprofile);
-        }*/
+
 
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
@@ -376,8 +372,18 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
+        } else
+        /*if (id == R.id.vid_leggy) {
 
-        } else if (id == R.id.thyroshop) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, LeggyVideo_Activity.class);
+                startActivity(i);
+            }
+
+        } else*/
+            if (id == R.id.thyroshop) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -427,7 +433,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 
         } else if (id == R.id.ledger) {
-
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -439,10 +444,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, carouselFragment)
                         .commit();
-
             }
-
-
         } else if (id == R.id.notice) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -450,6 +452,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 /*Noticeboard_Fragment noticeboard_fragment = new Noticeboard_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
+
                 Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
                 startActivity(i);
             }
@@ -478,9 +481,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
             }
 
-        }
-
-        else if (id == R.id.broadCast) {
+        } else if (id == R.id.broadCast) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -489,9 +490,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
             }
 
-        }
-
-        else if (id == R.id.campIntimation) {
+        } else if (id == R.id.campIntimation) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -501,7 +500,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         }
 
-        else if (id == R.id.blood_s_entry) {
+        /*else if (id == R.id.blood_s_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -509,7 +508,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        }
+        }*/
 
         else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
@@ -554,6 +553,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     })
                     .setNegativeButton("No", null)
                     .show();
+        } else if (id == R.id.offer_data) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, SpecialOffer_Activity.class);
+                startActivity(i);
+            }
         } else if (id == R.id.synchronization) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -590,18 +596,26 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
                 startActivity(i);
+
                 /*FAQ_Fragment faq_fragment = new FAQ_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, faq_fragment, faq_fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 */
             }
 
-
-        }else if (id == R.id.accr_data) {
+        } else if (id == R.id.accr_data) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
+                startActivity(i);
+            }
+
+        } else if (id == R.id.articles_data) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, HealthArticle_Activity.class);
                 startActivity(i);
             }
 
@@ -610,9 +624,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
+
                /* Contact_list_fragment contact_list_fragment = new Contact_list_fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, contact_list_fragment, contact_list_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
+
                 Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
                 startActivity(i);
             }
@@ -630,11 +646,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         intent.putExtra("Exit me", true);
         startActivity(intent);
         finish();
+
         SharedPreferences.Editor prefs = getSharedPreferences("Userdetails", MODE_PRIVATE).edit();
         prefs.remove("Username");
         prefs.remove("password");
         prefs.remove("ACCESS_TYPE");
         prefs.remove("API_KEY");
+
     }
 
     public boolean popFragment() {
@@ -681,12 +699,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
 
-    private void getProfileDetails() {
+    public void getProfileDetails() {
         RequestQueue queue = Volley.newRequestQueue(ManagingTabsActivity.this);
+
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
                     public String tsp_img;
+
                     @Override
                     public void onResponse(JSONObject response) {
                         try {

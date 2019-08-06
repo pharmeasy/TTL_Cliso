@@ -48,7 +48,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
     LinearLayout cancelled_Layout, childView;
     int Flag = 0;
     private ProgressDialog barProgressDialog;
-    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
 
     public CancelledAdapter(Context ManagingTabsActivity, DashboardFragment dashboardFragment, ArrayList<TrackDetModel> arrayList) {
         this.mContext = ManagingTabsActivity;
@@ -58,9 +58,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-
         return this.trackdet.size();
-
     }
 
 
@@ -68,16 +66,11 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
     public int getChildrenCount(int groupPosition) {
 
         return trackdet.get(groupPosition).getCancel_tests_with_remark().size();
-
-
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-
         return this.trackdet.get(groupPosition);
-
-
     }
 
     @Override
@@ -143,7 +136,6 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         //final String childText = (String) getChild(groupPosition, childPosition);
         try {
-
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) mContext
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -156,7 +148,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
             childView = (LinearLayout) convertView.findViewById(R.id.childView);
             if (childPosition == trackdet.get(groupPosition).getCancel_tests_with_remark().size() - 1) {
                 childView.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 childView.setVisibility(View.GONE);
             }
 //            else if (childPosition == 0 && trackdet.get(groupPosition).getCancel_tests_with_remark().size() != 1) {
@@ -224,17 +216,19 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.postcancellead, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
-                    public String RES_ID,billedB2B,credit,error,orderNo,response1;
+                    public String RES_ID, billedB2B, credit, error, orderNo, response1;
 
                     @Override
                     public void onResponse(JSONObject response) {
 
                         try {
-                        String finalJson = response.toString();
-                            Log.e(TAG, "onResponse: "+response );
-                        JSONObject parentObjectOtp = new JSONObject(finalJson);
+                            String finalJson = response.toString();
+                            Log.e(TAG, "onResponse: " + response);
+                            JSONObject parentObjectOtp = new JSONObject(finalJson);
 
-                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
 
                             RES_ID = parentObjectOtp.getString("RES_ID");
                             billedB2B = parentObjectOtp.getString("billedB2B");
@@ -266,8 +260,8 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "PostCancelledData: URL"+jsonObjectRequest );
-        Log.e(TAG, "PostCancelledData: json"+jsonObject );
+        Log.e(TAG, "PostCancelledData: URL" + jsonObjectRequest);
+        Log.e(TAG, "PostCancelledData: json" + jsonObject);
     }
 }
 

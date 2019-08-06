@@ -201,11 +201,11 @@ public class BMC_NEW_WOEFragment extends Fragment {
     };
     private int conertage;
     private String labIDTopass;
-    private String getTSP_Address="";
+    private String getTSP_Address = "";
     private String typename;
     private String nameString;
     private String ageString;
-    private String btechnameTopass;
+    private String btechnameTopass="";
     private String btechIDToPass;
     private String getcampIDtoPass;
     private String kycdata;
@@ -361,6 +361,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                     SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
                     editor.putString("TSPMobileNumber", TspNumber);
                     editor.commit();
+
                 }
             }
             if (myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
@@ -368,9 +369,11 @@ public class BMC_NEW_WOEFragment extends Fragment {
                     getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
                 }
             }
+
 //            sub_source_code_spinner.setAdapter(new ArrayAdapter<String>(getContext(),
 //                    R.layout.spinner_item,
 //                    getSubSource));
+
             spinnerTypeName = new ArrayList<>();
             getTypeListfirst = new ArrayList<>();
             if (myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
@@ -428,6 +431,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                     callWOMasterAPI();
                 }
             }
+
             String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
             SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
             ScpAddress.putString("scp_addrr", getAddress);
@@ -511,7 +515,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
             for (int i = 0; i < getBtechList.size(); i++) {
 
                 btechSpinner.add(getBtechList.get(i).getNAME());
-                if (btechSpinner.size() != 0) {
+                if (btechSpinner!=null || btechSpinner.size() != 0) {
                     btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, btechSpinner));
                 }
             }
@@ -720,7 +724,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
         enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
         enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
         btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
-        }
+    }
 
     private void initListeners() {
         viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
@@ -842,7 +846,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        ) {
+                ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     if (enteredString.length() > 0) {
                         kyc_format.setText(enteredString.substring(1));
@@ -1057,6 +1061,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                         String getResponse = response.optString("RESPONSE", "");
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+
                             if (mContext instanceof Activity) {
                                 if (!((Activity) mContext).isFinishing())
                                     barProgressDialog.dismiss();
@@ -1066,6 +1071,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                             Gson gson = new Gson();
                             myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
+
                             if (mContext instanceof Activity) {
                                 if (!((Activity) mContext).isFinishing())
                                     barProgressDialog.dismiss();
@@ -1374,11 +1380,24 @@ public class BMC_NEW_WOEFragment extends Fragment {
                                         GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
                                         patientAddressdataToPass = patientAddress.getText().toString();
                                         pincode_pass = pincode_edt.getText().toString();
-                                        btechnameTopass = btechname.getSelectedItem().toString();
+//                                        btechnameTopass = btechname.getSelectedItem().toString();
                                         kycdata = kyc_format.getText().toString();
                                         labIDTopass = "";
                                         getcampIDtoPass = "";
 
+                                        if (btechname.getSelectedItem() != null)
+                                            btechnameTopass = btechname.getSelectedItem().toString();
+
+                                        if (btechnameTopass != null) {
+                                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                    if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                        btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                    }
+                                                }
+                                            }
+
+                                        }
 
                                         if (woereferedby.equals("") || woereferedby.equals(null)) {
                                             if (referenceBy == null) {
@@ -1963,5 +1982,14 @@ public class BMC_NEW_WOEFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mContext instanceof Activity) {
+            if (!((Activity) mContext).isFinishing())
+                barProgressDialog.dismiss();
+        }
+        super.onDestroy();
     }
 }

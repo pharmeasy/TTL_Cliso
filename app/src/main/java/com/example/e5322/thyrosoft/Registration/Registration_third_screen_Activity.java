@@ -139,6 +139,8 @@ public class Registration_third_screen_Activity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Log.e(TAG,"json object --->"+jsonObjectRegister_User.toString());
         JsonObjectRequest jsonObjectRequestEmailPhone = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.Register_User, jsonObjectRegister_User, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

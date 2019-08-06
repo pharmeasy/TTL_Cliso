@@ -239,6 +239,7 @@ public class TrackDetAdapter extends BaseAdapter {
                 }
             }
         });
+
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -274,16 +275,21 @@ public class TrackDetAdapter extends BaseAdapter {
                         e.printStackTrace();
                     }
                     RequestQueue queue = Volley.newRequestQueue(mContext);
+                    Log.e(TAG, "Post Data---" + jsonObject.toString());
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                             Request.Method.POST, Api.downloadreceipt, jsonObject,
                             new com.android.volley.Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
+
                                     if (barProgressDialog_nxt != null && barProgressDialog_nxt.isShowing()) {
                                         barProgressDialog_nxt.dismiss();
                                     }
+
                                     Log.e(TAG, "onResponse: RESPONSE" + response);
-                                    try { //Track_BarcodeModel
+
+                                    try {
+                                        //Track_BarcodeModel
                                         barCodeDetail = new ArrayList<Mail_Model_Receipt>();
                                         Mail_Model_Receipt model = new Mail_Model_Receipt();
                                         model.setAddress(response.optString("address"));

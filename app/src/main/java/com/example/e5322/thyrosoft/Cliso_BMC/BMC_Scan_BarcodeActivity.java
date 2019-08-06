@@ -89,6 +89,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -221,12 +222,15 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
     private Uri imageUri;
     private String json;
     private boolean barcodeExistsFlag = false;
+    public static WeakReference<Bitmap> rotateBitmap;
 
     public static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
+
+        rotateBitmap = new WeakReference<Bitmap>(Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true));
+        return rotateBitmap.get();
     }
 
     @SuppressLint("NewApi")
@@ -924,6 +928,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                         Log.e(TAG, "onResponse: url" + objectRequest);
                                         Log.e(TAG, "onResponse: json" + jsonObjectOtp);
                                     } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
+                                        flagcallonce = false;
                                         TastyToast.makeText(BMC_Scan_BarcodeActivity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                         final AlertDialog alertDialog = new AlertDialog.Builder(BMC_Scan_BarcodeActivity.this).create();
                                         alertDialog.setTitle("Update Ledger !");
@@ -1051,6 +1056,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
                 if (data == null) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, ToastFile.failed_to_open, Toast.LENGTH_SHORT).show();
@@ -1365,5 +1371,11 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
             inputStream.close();
             return result;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        img_trf.setImageBitmap(null);
     }
 }

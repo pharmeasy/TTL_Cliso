@@ -228,7 +228,7 @@
                         android:nextFocusForward="@+id/age"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp"></EditText>
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -254,7 +254,7 @@
                         android:nextFocusForward="@+id/referedby"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:textSize="12sp"></EditText>
+                        android:textSize="12sp" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -587,8 +587,8 @@
                         android:gravity="center|left"
                         android:hint="ENTER PATIENT ADDRESS"
                         android:inputType="textCapCharacters"
-                        android:maxLength="80"
-                        android:maxLines="3"
+                        android:maxLength="180"
+                        android:maxLines="5"
                         android:textColor="@color/DARKGray"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -697,7 +697,7 @@
                         android:hint="SEARCH SAMPLE COLLECTION POINT"
                         android:textColor="@color/DARKGray"
                         android:textColorHint="@color/black"
-                        android:textSize="12sp"></TextView>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -727,7 +727,7 @@
                         android:nextFocusForward="@+id/uncheck_ref"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp"></AutoCompleteTextView>
+                        android:textSize="12sp" />
 
                     <ImageView
                         android:id="@+id/add_ref"
@@ -833,7 +833,7 @@
                         android:maxLines="1"
                         android:nextFocusForward="@+id/next_btn_patient"
                         android:singleLine="true"
-                        android:textSize="12sp"></EditText>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -870,9 +870,7 @@
                         android:textSize="15sp" />
                 </LinearLayout>
 
-
             </LinearLayout>
-
 
         </ScrollView>
 

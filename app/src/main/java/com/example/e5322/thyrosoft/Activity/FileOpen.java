@@ -16,7 +16,7 @@ public class FileOpen {
 
         Uri path;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            path = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
+            path = FileProvider.getUriForFile(context, context.getPackageName() + ".imageprovider", file);
         } else {
             path = Uri.fromFile(file);
         }

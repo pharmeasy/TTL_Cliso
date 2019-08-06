@@ -164,15 +164,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 if (getCommunication.equals("")) {
                     TastyToast.makeText(ComposeCommunication_activity.this, "Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 } else {
-                    barProgressDialog = new ProgressDialog(ComposeCommunication_activity.this);
-                    barProgressDialog.setTitle("Kindly wait ...");
-                    barProgressDialog.setMessage(ToastFile.processing_request);
-                    barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                    barProgressDialog.setProgress(0);
-                    barProgressDialog.setMax(20);
-                    barProgressDialog.show();
-                    barProgressDialog.setCanceledOnTouchOutside(false);
-                    barProgressDialog.setCancelable(false);
+
                     if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
                         offline_img.setVisibility(View.VISIBLE);
                         parent_ll.setVisibility(View.GONE);
@@ -189,6 +181,16 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     }
 
     private void PostData() {
+        barProgressDialog = new ProgressDialog(ComposeCommunication_activity.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
         String spinnerItem;
 
         PostQue = Volley.newRequestQueue(ComposeCommunication_activity.this);
@@ -232,6 +234,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
+
                             String responsetoshow = response.optString("response", "");
 
                             if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {

@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -113,12 +112,16 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
-            delete_patient_test_water.setVisibility(View.VISIBLE);
-            delete_patient_test.setVisibility(View.GONE);
-        } else {
-            delete_patient_test_water.setVisibility(View.GONE);
-            delete_patient_test.setVisibility(View.VISIBLE);
+        try {
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
+                delete_patient_test_water.setVisibility(View.VISIBLE);
+                delete_patient_test.setVisibility(View.GONE);
+            } else {
+                delete_patient_test_water.setVisibility(View.GONE);
+                delete_patient_test.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         title.setText("Summary");

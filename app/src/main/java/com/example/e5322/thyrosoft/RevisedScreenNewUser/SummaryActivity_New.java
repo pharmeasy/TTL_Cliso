@@ -40,6 +40,7 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
+import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -104,7 +105,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String saveGenderId;
     private String getFinalTime;
     private String getageType;
-    private String genderType;
+    private String genderType, CollectedAmt;
     private String getFinalDate;
     Date date;
     Context context1;
@@ -147,9 +148,11 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String error, pid, barcodes, response1, resID;
     private String getBarcodesOffline;
     private boolean flagforOnce = false;
-    private String location;
+    private String location, fromcome;
     private LinearLayout ll_location;
     private TextView txt_setLocation;
+    LinearLayout linamt_collected;
+    TextView amtcollected;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -183,6 +186,10 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         txt_setLocation = (TextView) findViewById(R.id.txt_setLocation);
         txt_pat_gender = (TextView) findViewById(R.id.txt_pat_gender);
         txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
+
+        amtcollected = findViewById(R.id.txt_amtcollect);
+        linamt_collected = findViewById(R.id.ll_amtcollect);
+
         linearLayoutManager = new LinearLayoutManager(SummaryActivity_New.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
@@ -241,11 +248,11 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         typename = savepatientDetails.getString("woetype", null);
         sr_number = savepatientDetails.getString("SR_NO", null);
 
-        if (sr_number != null)
+   /*     if (sr_number != null)
             pass_to_api = Integer.parseInt(sr_number);
 
         pass_to_api = Integer.parseInt(sr_number);
-        int edta_sr_num = pass_to_api + 1;
+        int edta_sr_num = pass_to_api + 1;*/
 
 
         PackageInfo pInfo = null;
@@ -254,6 +261,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
         version = pInfo.versionName;
         //get the app version Code for checking
         versionCode = pInfo.versionCode;
@@ -299,8 +307,10 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
         finalspecimenttypewiselist = new ArrayList<>();
         SummaryActivity_New.this.setTitle("Summary");
+
         Bundle bundle = getIntent().getExtras();
         getSelctedTests = bundle.getString("tetsts");
+        fromcome = bundle.getString("fromcome", "");
         location = bundle.getString("location");
         passProdcucts = bundle.getString("passProdcucts");
 //        amountPaid = bundle.getString("payment");
@@ -321,6 +331,14 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         pat_type.setText("TTL/" + typename);
         pat_sct.setText(getFinalDate + " " + getFinalTime);
         pat_name.setText(nameString);
+
+
+        if (fromcome.equals("")){
+            linamt_collected.setVisibility(View.GONE);
+        }else {
+            linamt_collected.setVisibility(View.VISIBLE);
+            amtcollected.setText(amt_collected);
+        }
 
         if (typename.equalsIgnoreCase("WHATERS")) {
             ll_patient_age.setVisibility(View.GONE);
@@ -591,10 +609,21 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         editor.remove("WOEbrand");
         editor.commit();
         GlobalClass.setflagToRefreshData = true;
+        Intent intent = null;
 
-        Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
-        i.putExtra("passToWoefragment", "frgamnebt");
-        startActivity(i);
+        if (fromcome.equals("")) {
+            intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
+            intent.putExtra("passToWoefragment", "frgamnebt");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            intent = new Intent(SummaryActivity_New.this, SpecialOffer_Activity.class);
+            intent.putExtra("passToWoefragment", "frgamnebt");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        }
+
+
     }
 
     @Override

@@ -23,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -250,7 +249,7 @@ Woe_fragment extends RootFragment {
         woe_cal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(getActivity(),R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
 
             }
@@ -465,9 +464,9 @@ Woe_fragment extends RootFragment {
                     recyclerView.setVisibility(View.VISIBLE);
                     patientDtailsWoe = new PatientDtailsWoe(mContext, patientsArrayList);
                     recyclerView.setAdapter(patientDtailsWoe);
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
+
+                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
                     ArrayList<String> getNoStatus = new ArrayList<>();
                     for (int i = 0; i < patientsArrayList.size(); i++) {
                         if (patientsArrayList.get(i).getConfirm_status().equals("NO")) {
@@ -487,14 +486,10 @@ Woe_fragment extends RootFragment {
                 } else {
                     recyclerView.setVisibility(View.INVISIBLE);
                     //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
+                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
                 }
 
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
+                GlobalClass.hideProgress(getActivity(), barProgressDialog);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -534,6 +529,11 @@ Woe_fragment extends RootFragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        GlobalClass.hideProgress(getActivity(), barProgressDialog);
     }
 
 

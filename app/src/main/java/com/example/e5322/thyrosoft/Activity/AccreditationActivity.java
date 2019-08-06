@@ -7,7 +7,9 @@ import android.view.View;
 
 import com.example.e5322.thyrosoft.R;
 
-//Created by kalpesh Borane
+/**
+ * Created by kalpesh Borane
+ */
 
 public class AccreditationActivity extends AppCompatActivity implements View.OnClickListener {
 

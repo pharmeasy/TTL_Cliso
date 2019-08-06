@@ -239,8 +239,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/border_background_maroon"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
 
 
 
@@ -255,7 +254,7 @@
                     android:background="@drawable/background_edt"
                     android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.,:/@0123456789 "
                     android:gravity="left"
-                    android:hint="Enter Purpose"
+                    android:hint="Enter Purpose*"
                     android:maxLines="1"
                     android:textSize="13sp" />
 

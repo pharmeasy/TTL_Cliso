@@ -142,6 +142,7 @@ public class Login extends Activity implements View.OnClickListener {
 //        if (checkAndRequestPermissions()) {
 //            // carry on the normal flow, as the case of  permissions  granted.
 //        }
+
         username.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {

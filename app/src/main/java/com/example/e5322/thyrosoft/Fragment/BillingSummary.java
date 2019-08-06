@@ -1,9 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,7 +42,6 @@ import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.API.Constants.toDate;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -66,7 +62,7 @@ public class BillingSummary extends RootFragment {
     private String mParam2;
     public String toDateTxt = "";
     public String fromDateTxt = "";
-    public String Date = "", tempMonth="";
+    public String Date = "", tempMonth = "";
     private OnFragmentInteractionListener mListener;
     TextView txtFromDate, txt_to_date;
     private int mYear, mMonth, mDay;
@@ -139,8 +135,8 @@ public class BillingSummary extends RootFragment {
             e.printStackTrace();
         }
 
-        Calendar cal= Calendar.getInstance();
-         result=cal.getTime();
+        Calendar cal = Calendar.getInstance();
+        result = cal.getTime();
 
     }
 
@@ -201,7 +197,7 @@ public class BillingSummary extends RootFragment {
                                                       int monthOfYear, int dayOfMonth) {
                                     sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
-                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear+1) + "-" + year;
+                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
 
                                     try {
                                         fromDate = sdf.parse(getDateSecond);
@@ -223,7 +219,7 @@ public class BillingSummary extends RootFragment {
                                 }
                             }, mYear, mMonth, mDay);
 
-                    datePickerDialog.getDatePicker().setMaxDate(toDate.getTime()-2);
+                    datePickerDialog.getDatePicker().setMaxDate(toDate.getTime() - 2);
                     datePickerDialog.show();
                 }
             }
@@ -249,7 +245,7 @@ public class BillingSummary extends RootFragment {
                                                       int monthOfYear, int dayOfMonth) {
                                     sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
 
-                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear+1) + "-" + year;
+                                    String getDateSecond = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
 
 
                                     try {
@@ -260,7 +256,6 @@ public class BillingSummary extends RootFragment {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-
 
 
                                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
@@ -275,7 +270,7 @@ public class BillingSummary extends RootFragment {
                                 }
                             }, mYear, mMonth, mDay);
                     datePickerDialog.getDatePicker().setMinDate(fromDate.getTime());
-                    datePickerDialog.getDatePicker().setMaxDate(result.getTime()-2);
+                    datePickerDialog.getDatePicker().setMaxDate(result.getTime() - 2);
                     datePickerDialog.show();
                 }
             }
@@ -327,6 +322,7 @@ public class BillingSummary extends RootFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.billingSUMLIVE, jsonObject,
@@ -335,6 +331,7 @@ public class BillingSummary extends RootFragment {
                     public void onResponse(JSONObject response) {
                         Log.e(TAG, "onResponse: " + response);
                         try {
+
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
@@ -347,12 +344,9 @@ public class BillingSummary extends RootFragment {
                                 JSONArray jsonArray = response.optJSONArray(Constants.billingList);
                                 if (jsonArray != null) {
 
-
                                     ArrayList<BillingSummaryMOdel> billingsumArray = new ArrayList<BillingSummaryMOdel>();
                                     for (int j = 0; j < jsonArray.length(); j++) {
                                         try {
-
-
                                             JSONObject jsonObject = jsonArray.getJSONObject(j);
                                             BillingSummaryMOdel billsum = new BillingSummaryMOdel();
 
@@ -366,6 +360,7 @@ public class BillingSummary extends RootFragment {
                                             e.printStackTrace();
                                         }
                                     }
+
                                     if (billingsumArray.size() == 0) {
                                         if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                             barProgressDialog.dismiss();

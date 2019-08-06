@@ -7,7 +7,7 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-    /*public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+  /*  public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
@@ -16,23 +16,23 @@ public class Api {
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/";
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "sNhdlQjqvoAHd0wM2XBmovfagV08jstDCTblJACEi7tTTPegWYYwDw==";
     public static String IMAGE_UPLOAD = "http://www.thyrocare.com/API/";*/
-     // ---- Live
+
 
     //TODO staging
     public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "http://www.thyrocare.com/API_BETA/B2B/";
-    public static String SGC = "http://staging.thyrocare.com/API/BDN/api/";
-    public static String Static_API = "http://www.thyrocare.com/API_BETA/B2B/";
+    public static String SGC = "http://www.thyrocare.local/API/BDN/api/";
+    public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
-    public static String SERVER_BASE_API_URL_PROD = "https://staging.thyrocare.com/API/BDN/api";
+    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.local/API/BDN/api";
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "CYs3zmAdtXVFUa4tSwpzD407UaAGDkPH2eJV8L3Ch8s=";
-    public static String IMAGE_UPLOAD = "http://staging.thyrocare.com/API/";
-
+    public static String IMAGE_UPLOAD = "http://www.thyrocare.local/API/";
 
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
-    public static String imgURL="http://www.charbi.com/assets/photo/Emp/";
+    public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String count = LIVEAPI + "WO.svc/";
+    public static String video_url = LIVEAPI+"COMMON.svc/Showvideo";
     public static String LOGIN = LIVEAPI + "COMMON.svc/litelogin";
     public static String OTP = LIVEAPI + "common.svc/OTP";
     public static String deleteWOE = LIVEAPI + "WO.svc/wodelete";
@@ -50,6 +50,7 @@ public class Api {
     public static String finalWorkOrderEntryNew = LIVEAPI + "WO.svc/postworkorder";
     public static String uploadDocument = SGC + "UploadDocument/PostRegister";
     public static String NoticeBoardData = LIVEAPI + "COMMON.svc/";
+    public static String OTPgenegrate = LIVEAPI + "MASTER.svc/";
     public static String feedback = LIVEAPI + "master.svc/Feedback";//feedback url
     public static String postResponseToCommunication = LIVEAPI + "COMMON.svc/postComm";//feedback url
     public static String SGCRegistration = SGC + "ClientEntry/PostRegister";//BDN/api/ClientEntry/PostRegister

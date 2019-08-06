@@ -23,7 +23,7 @@
             android:visibility="gone"
             style="@style/heading_text"
             android:gravity="center"
-            ></ImageView>
+            />
 
         <TextView
             android:layout_weight="4"
@@ -36,7 +36,7 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:gravity="center"
-            ></TextView>
+            />
 
         <ImageView
             android:src="@drawable/color_homr"
@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:id="@+id/home"
             android:gravity="center"
-            ></ImageView>
+            />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

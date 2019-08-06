@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,12 +29,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.InterfaceSendOfflineWoe;
-import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
+import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Offline_edt_activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
@@ -46,9 +46,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -83,20 +85,30 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     private String getIMEINUMBER;
     private String mobileModel;
     InterfaceSendOfflineWoe interfaceSendOfflineWoe;
-
+    private static ManagingTabsActivity activity;
     ArrayList<String> setResponse;
 
-    public Offline_Woe_Adapter(ManagingTabsActivity mContext, ArrayList<MyPojoWoe> allWoe, Offline_woe fragment, ArrayList<String> setResponse) {
+    ArrayList<TRFModel> trflist = new ArrayList<>();
+
+    Offline_woe offline_woe;
+    Activity activity1;
+
+
+    public Offline_Woe_Adapter(ManagingTabsActivity mContext, ArrayList<MyPojoWoe> allWoe, Offline_woe fragment, ArrayList<String> setResponse, Offline_woe offline_woe, Activity activity) {
         this.mContext = mContext;
         this.myPojoWoe = allWoe;
         this.mfragment = fragment;
         this.setResponse = setResponse;
+        this.offline_woe=offline_woe;
+        this.activity1=activity;
     }
-    public void onClickDeleteOffWoe(RefreshOfflineWoe refreshOfflineWoe ){
-        this.refreshOfflineWoe=refreshOfflineWoe;
+
+    public void onClickDeleteOffWoe(RefreshOfflineWoe refreshOfflineWoe) {
+        this.refreshOfflineWoe = refreshOfflineWoe;
     }
-    public void onClickSendOfflineWoe(InterfaceSendOfflineWoe interfaceSendOfflineWoe ){
-        this.interfaceSendOfflineWoe=interfaceSendOfflineWoe;
+
+    public void onClickSendOfflineWoe(InterfaceSendOfflineWoe interfaceSendOfflineWoe) {
+        this.interfaceSendOfflineWoe = interfaceSendOfflineWoe;
     }
 
     @NonNull
@@ -212,10 +224,12 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                                 barcode_id = parentObjectOtp.getString("barcode_id");
 
                                 if (message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
-                                     myDb = new DatabaseHelper(mContext);
+                                    myDb = new DatabaseHelper(mContext);
                                     if (barcode_id.endsWith(",")) {
                                         barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                     }
+
+                                    sendTrf(position);
                                     boolean deletedRows = myDb.deleteData(barcode_id);
                                     if (deletedRows == true) {
                                         mfragment.setNewFragment();
@@ -307,18 +321,18 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         }
 
         try {
-            if(getSampleTypes.size()==1){
+            if (getSampleTypes.size() == 1) {
                 holder.sample_type_txt.setVisibility(View.VISIBLE);
                 holder.barcode_txt.setVisibility(View.VISIBLE);
-                for (int i = 0; i <getSampleTypes.size(); i++) {
+                for (int i = 0; i < getSampleTypes.size(); i++) {
                     holder.sample_type_txt.setText(getSampleTypes.get(i));
                 }
-                for (int j = 0; j <getbarcode.size() ; j++) {
+                for (int j = 0; j < getbarcode.size(); j++) {
                     holder.barcode_txt.setText(getbarcode.get(j));
                 }
                 holder.barcode_and_sample_recycler.setVisibility(View.GONE);
 
-            }else{
+            } else {
                 holder.sample_type_txt.setVisibility(View.GONE);
                 holder.barcode_txt.setVisibility(View.GONE);
                 holder.barcode_and_sample_recycler.setVisibility(View.VISIBLE);
@@ -427,13 +441,38 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         });
     }
 
+    private void sendTrf(int finalI) {
+        trflist = new ArrayList<TRFModel>();
+        try {
+            JSONArray jsonArray = new JSONArray(myPojoWoe.get(finalI).getTrfjson());
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                TRFModel trfModel = new TRFModel();
+                trfModel.setProduct(jsonObject.getString("Product"));
+                String path = jsonObject.getString("trf_image");
+                JSONObject jsonObject1 = new JSONObject(path);
+                trfModel.setTrf_image(new File(jsonObject1.getString("path")));
+                trflist.add(trfModel);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        uploadTRf(trflist);
+    }
+
+    private void uploadTRf(ArrayList<TRFModel> trflist) {
+        if (trflist.size() > 0)
+            new AsyncTaskPost_uploadfile(offline_woe, activity1, api_key, user, barcode_patient_id, trflist).execute();
+    }
+
     @Override
     public int getItemCount() {
         return myPojoWoe.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView patientName,sample_type_txt,barcode_txt;
+        public TextView patientName, sample_type_txt, barcode_txt;
         public TextView testName, error_msg;
         public TextView put_testName;
         public ImageView image_tag;

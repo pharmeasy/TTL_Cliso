@@ -1,11 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
@@ -15,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.Adapter.ExpandablenameListAdapter;
-import com.example.e5322.thyrosoft.Fragment.BillingDetails;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.billingDetailsModel;
 import com.example.e5322.thyrosoft.R;
@@ -54,6 +49,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         try {
             setContentView(R.layout.activity_billing_details);
             Calendar cl = Calendar.getInstance();
@@ -74,12 +70,14 @@ public class BillingDetailsActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GlobalClass.goToHome(BillingDetailsActivity.this);
             }
         });
+
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,6 +85,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
                 saveExcelFile();
             }
         });
+
         PrepareDataList();
         adapter = new ExpandablenameListAdapter(BillingDetailsActivity.this, GlobalClass.billingDETheaderArray, listDataChild);
         lvExp.setAdapter(adapter);
@@ -149,8 +148,6 @@ public class BillingDetailsActivity extends AppCompatActivity {
 
 
             for (int i = 0; i < GlobalClass.billingDETArray.size(); i++) {
-
-
                 sheet.setColumnView(0, 10);
                 sheet.setColumnView(1, 20);
                 sheet.setColumnView(2, 15);

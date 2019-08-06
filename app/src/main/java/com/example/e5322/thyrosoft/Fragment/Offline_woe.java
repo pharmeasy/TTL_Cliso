@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,12 +39,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Offline_Woe_Adapter;
+import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
 import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
+import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
@@ -52,9 +55,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,13 +120,14 @@ public class Offline_woe extends Fragment {
     private String patientName, patientYearType, user, passwrd, access, api_key, status;
     GpsTracker gpsTracker;
     ArrayList<MyPojoWoe> resultList;
+    ArrayList<TRFModel> trflist;
 
     private ArrayList<MyPojoWoe> filterWoeList;
     private String text;
     private String barcode_id;
     private String barcodeCompare;
     String blockCharacterSet = "~#^|$%&*!+:`";
-
+    Activity mActivity;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -258,11 +264,12 @@ public class Offline_woe extends Fragment {
                                 if (resultList.get(i).getBarcodelist().get(j).getBARCODE() != null)
                                     text = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
 
-                                if (resultList.get(i).getBarcodelist().get(j).getBARCODE() != null || !resultList.get(i).getBarcodelist().get(j).getBARCODE().equals("")) {
+                                // Added !TextUtils.isEmpty() at Line no 268 and 272
+                                if (!TextUtils.isEmpty(resultList.get(i).getBarcodelist().get(j).getBARCODE())) {
                                     barcode = resultList.get(i).getBarcodelist().get(j).getBARCODE().toLowerCase();
                                 }
                             }
-                            if (resultList.get(i).getWoe().getPATIENT_NAME() != null || !resultList.get(i).getWoe().getPATIENT_NAME().equals("")) {
+                            if (!TextUtils.isEmpty(resultList.get(i).getWoe().getPATIENT_NAME())) {
                                 name = resultList.get(i).getWoe().getPATIENT_NAME().toLowerCase();
                             }
 
@@ -271,10 +278,9 @@ public class Offline_woe extends Fragment {
                                 String testname = resultList.get(i).getWoe().getPATIENT_NAME();
                                 filterWoeList.add(resultList.get(i));
 
-                            } else {
-
                             }
-                            offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment, errorList);
+
+                            offline_woe_adapter = new Offline_Woe_Adapter(mContext, filterWoeList, fragment, errorList, Offline_woe.this, activity);
                             recyclerView.setAdapter(offline_woe_adapter);
                             offline_woe_adapter.notifyDataSetChanged();
                         }
@@ -289,6 +295,7 @@ public class Offline_woe extends Fragment {
 
 
         CheckGpsStatus();
+
         if (GpsStatus == true) {
             gpsTracker = new GpsTracker(mContext);
             if (gpsTracker.canGetLocation()) {
@@ -335,6 +342,8 @@ public class Offline_woe extends Fragment {
         //display the current version in a TextView
 
         resultList = getResults();
+
+
         if (resultList.size() == 0) {
             tvNoDataFound.setVisibility(View.VISIBLE);
             parent_ll.setVisibility(View.GONE);
@@ -345,7 +354,7 @@ public class Offline_woe extends Fragment {
             tvNoDataFound.setVisibility(View.GONE);
         }
 
-        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
+        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
         offline_woe_adapter.onClickDeleteOffWoe(new RefreshOfflineWoe() {
             @Override
             public void onClickDeleteOffWoe(String barcodes) {
@@ -358,6 +367,7 @@ public class Offline_woe extends Fragment {
                 }
             }
         });
+
         recyclerView.setAdapter(offline_woe_adapter);
 
 
@@ -384,12 +394,6 @@ public class Offline_woe extends Fragment {
                                                 } catch (IllegalStateException ignored) {
                                                     // There's no way to avoid getting this if saveInstanceState has already been called.
                                                 }
-
-
-                                                // Restart the Activity
-//                                    Intent intent = getIntent();
-//                                    finish();
-//                                    startActivity(intent);
                                             }
                                         });
                         AlertDialog alert = builder.create();
@@ -405,6 +409,7 @@ public class Offline_woe extends Fragment {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 barProgressDialog.show();
+
                                 for (int i = 0; i < resultList.size(); i++) {
 
                                     MyPojoWoe myPojoWoe = new MyPojoWoe();
@@ -454,6 +459,7 @@ public class Offline_woe extends Fragment {
                                     woe.setWO_STAGE(3);
                                     woe.setULCcode("");
                                     myPojoWoe.setWoe(woe);
+
                                     barcodelists = new ArrayList<>();
                                     getBarcodeArrList = new ArrayList<>();
                                     for (int p = 0; p < resultList.get(i).getBarcodelist().size(); p++) {
@@ -473,14 +479,15 @@ public class Offline_woe extends Fragment {
                                     JSONObject jsonObj = null;
                                     try {
                                         jsonObj = new JSONObject(json);
+                                        POstQue = Volley.newRequestQueue(mContext);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
-                                    }
-                                    catch (Error e) {
+                                    } catch (Error e) {
                                         e.printStackTrace();
                                     }
 
-                                    POstQue = Volley.newRequestQueue(mContext);
+
+                                    final int finalI = i;
                                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
@@ -496,72 +503,10 @@ public class Offline_woe extends Fragment {
                                                 if (barcode_id.endsWith(",")) {
                                                     barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                                 }
+
                                                 if (message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
-                                                    barProgressDialog.dismiss();
-                                                    //Delete woe from Db
-                                                    boolean deletedRows = myDb.deleteData(barcode_id);
-                                                    SharedPreferences.Editor editor = mContext.getSharedPreferences("showSelectedTest", 0).edit();
-                                                    editor.remove("testsSElected");
-                                                    editor.remove("getProductNames");
-                                                    editor.commit();
-                                                    sendGPSDetails = Volley.newRequestQueue(mContext);
-                                                    JSONObject jsonObjectOtp = new JSONObject();
-                                                    try {
-                                                        jsonObjectOtp.put("Username", user);
-                                                        jsonObjectOtp.put("IMEI", getIMEINUMBER);
-                                                        jsonObjectOtp.put("city", getCityName);
-                                                        jsonObjectOtp.put("state", getStateName);
-                                                        jsonObjectOtp.put("country", getCountryName);
-                                                        jsonObjectOtp.put("longitude", longitudePassTOAPI);
-                                                        jsonObjectOtp.put("latitude", latitudePassTOAPI);
-                                                        jsonObjectOtp.put("DeviceName", mobileModel);
-
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
-                                                        @Override
-                                                        public void onResponse(JSONObject response) {
-                                                            try {
-                                                                Log.e(TAG, "onResponse: " + response);
-                                                                String finalJson = response.toString();
-                                                                JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                                                                String Response = parentObjectOtp.getString("Response");
-                                                                String resId = parentObjectOtp.getString("resId");
-
-                                                                if (resId.equals("RES0000")) {
-                                                                    //after sending the woe succrssfully
-                                                                    resultList = getResults();
-                                                                    offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
-                                                                    recyclerView.setAdapter(offline_woe_adapter);
-                                                                    TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                                                } else {
-                                                                    resultList = getResults();
-                                                                    offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
-                                                                    recyclerView.setAdapter(offline_woe_adapter);
-                                                                }
-
-                                                            } catch (JSONException e) {
-
-                                                                TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                    }, new com.android.volley.Response.ErrorListener() {
-                                                        @Override
-                                                        public void onErrorResponse(VolleyError error) {
-
-
-                                                            if (error != null) {
-                                                            } else {
-                                                                System.out.println(error);
-                                                            }
-                                                        }
-                                                    });
-                                                    sendGPSDetails.add(jsonObjectRequest1);
-                                                    Log.e(TAG, "onResponse: url" + jsonObjectRequest1);
-                                                    Log.e(TAG, "onResponse: json" + jsonObjectOtp);
+                                                    sendGeolocation();
+                                                    sendTrf(finalI);
 
                                                 } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
 
@@ -652,6 +597,12 @@ public class Offline_woe extends Fragment {
         return viewMain;
     }
 
+    private void uploadTRf(ArrayList<TRFModel> trflist) {
+        if (trflist.size() > 0)
+            new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist).execute();
+
+    }
+
     private void progressDialog() {
         barProgressDialog = new ProgressDialog(activity);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -665,7 +616,8 @@ public class Offline_woe extends Fragment {
     public void onResume() {
         super.onResume();
         resultList = getResults();
-        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList);
+        //trflist = getTRFlist();
+        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
         recyclerView.setAdapter(offline_woe_adapter);
     }
 
@@ -696,18 +648,107 @@ public class Offline_woe extends Fragment {
             } catch (Exception e) {
                 Log.e(MY_DEBUG_TAG, "Error " + e.toString());
             }
-
         }
-
         c.close();
-
         db.close();
         return resultList;
 
     }
 
+    private void sendGeolocation() {
+
+        barProgressDialog.dismiss();
+        //Delete woe from Db
+        boolean deletedRows = myDb.deleteData(barcode_id);
+        SharedPreferences.Editor editor = mContext.getSharedPreferences("showSelectedTest", 0).edit();
+        editor.remove("testsSElected");
+        editor.remove("getProductNames");
+        editor.commit();
+        sendGPSDetails = Volley.newRequestQueue(mContext);
+        JSONObject jsonObjectOtp = new JSONObject();
+        try {
+            jsonObjectOtp.put("Username", user);
+            jsonObjectOtp.put("IMEI", getIMEINUMBER);
+            jsonObjectOtp.put("city", getCityName);
+            jsonObjectOtp.put("state", getStateName);
+            jsonObjectOtp.put("country", getCountryName);
+            jsonObjectOtp.put("longitude", longitudePassTOAPI);
+            jsonObjectOtp.put("latitude", latitudePassTOAPI);
+            jsonObjectOtp.put("DeviceName", mobileModel);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                    String Response = parentObjectOtp.getString("Response");
+                    String resId = parentObjectOtp.getString("resId");
+
+
+                    if (resId.equals("RES0000")) {
+                        //after sending the woe succrssfully
+                        resultList = getResults();
+                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
+                        recyclerView.setAdapter(offline_woe_adapter);
+                        TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    } else {
+                        resultList = getResults();
+                        offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
+                        recyclerView.setAdapter(offline_woe_adapter);
+                    }
+
+                } catch (JSONException e) {
+
+                    TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+                if (error != null) {
+                } else {
+                    System.out.println(error);
+                }
+            }
+        });
+        sendGPSDetails.add(jsonObjectRequest1);
+        Log.e(TAG, "onResponse: url" + jsonObjectRequest1);
+        Log.e(TAG, "onResponse: json" + jsonObjectOtp);
+    }
+
+    private void sendTrf(int finalI) {
+        try {
+            trflist = new ArrayList<TRFModel>();
+            JSONArray jsonArray = new JSONArray(resultList.get(finalI).getTrfjson());
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                TRFModel trfModel = new TRFModel();
+                trfModel.setProduct(jsonObject.getString("Product"));
+                String path = jsonObject.getString("trf_image");
+                JSONObject jsonObject1 = new JSONObject(path);
+                trfModel.setTrf_image(new File(jsonObject1.getString("path")));
+                trflist.add(trfModel);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        uploadTRf(trflist);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
+
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -723,12 +764,14 @@ public class Offline_woe extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 
     public void setNewFragment() {
+
         try {
             getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commitAllowingStateLoss();
         } catch (IllegalStateException ignored) {

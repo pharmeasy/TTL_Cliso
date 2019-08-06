@@ -146,9 +146,9 @@ public class Contact_list_fragment extends RootFragment {
                 Gson gson = new Gson();
                 company_contact_model = gson.fromJson(response.toString(), Company_Contact_Model.class);
                 if(company_contact_model.getResponse().equals("Success")){
-                    company_adapter = new Company_Adapter(mContext, company_contact_model.getContact_Array_list());
-                    contact_list.setAdapter(company_adapter);
-                    company_adapter.notifyDataSetChanged();
+                    //company_adapter = new Company_Adapter(mContext, company_contact_model.getContact_Array_list());
+                   // contact_list.setAdapter(company_adapter);
+                   // company_adapter.notifyDataSetChanged();
                 }
             }
         }, new Response.ErrorListener() {

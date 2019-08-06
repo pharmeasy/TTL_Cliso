@@ -3,9 +3,9 @@ package com.example.e5322.thyrosoft.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.R;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +27,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.BroadcastAdapter;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
+import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -46,13 +46,13 @@ public class BroadcastActivity extends AppCompatActivity {
     RecyclerView rvBroadcast;
     LinearLayoutManager linearLayoutManager;
     BroadcastAdapter broadcastAdapter;
-    RequestQueue requestQueue,requestQueue1;
+    RequestQueue requestQueue, requestQueue1;
     ProgressDialog progressDialog;
     NoticeBoard_Model noticeBoard_model;
     private Global globalClass;
     SharedPreferences prefs;
-    String api_key,user,passwrd,access,msgCode;
-    
+    String api_key, user, passwrd, access, msgCode;
+
     String TAG = BroadcastActivity.class.getName().toString();
     private LinearLayout offline_ll;
 
@@ -101,8 +101,7 @@ public class BroadcastActivity extends AppCompatActivity {
         if (!GlobalClass.isNetworkAvailable(BroadcastActivity.this)) {
             offline_ll.setVisibility(View.VISIBLE);
             rvBroadcast.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             getBroadcastData();
             offline_ll.setVisibility(View.GONE);
             rvBroadcast.setVisibility(View.VISIBLE);
@@ -148,7 +147,7 @@ public class BroadcastActivity extends AppCompatActivity {
                         array_notice.add(noticeBoard_model);
                         if (array_notice.get(0).getMessages()[0].getMessageCode() != null) {
                             msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
-                            broadcastAdapter = new BroadcastAdapter(BroadcastActivity.this,array_notice);
+                            broadcastAdapter = new BroadcastAdapter(BroadcastActivity.this, array_notice);
                             rvBroadcast.setAdapter(broadcastAdapter);
 
                         } else {

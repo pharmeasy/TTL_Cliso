@@ -113,6 +113,7 @@ public class ToastFile {
     public static String ent_brcd = "Enter Barcode";
     public static String ent_crt_brcd = "Insert correct barcode";
     public static String woeSaved = "Your WOE has been saved offline !";
+    public static String woeSavedonline = "Your WOE has been saved Online !";
     public static String woenotSaved = "Wor order entry not saved";
     public static String woenotEdt = "Wor order entry not edited successfully";
     public static String woeDelete = "Work order entry deleted successfully !";
@@ -139,6 +140,7 @@ public class ToastFile {
     public static String setTitle_submitall_woe = "Would you like to submit all WOE ?";
     public static String internet_avail = "Yes, Internet is Available !";
     public static String PLAYVIDEO = "Play";
+    public static String TRF_UPLOAD_CHECK = "Upload TRF images for all the selected tests";
     public static String UrlEmpty = "E";
     public static String IMAGE_UPLOAD_FAILED="WOE done successfully. But TRF and receipt upload failed. Kindly submit the images again.";
     public static String scan_barcode_all="Please scan the barcode for all sample types.";

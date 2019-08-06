@@ -41,6 +41,7 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SetBarcodeDetails;
+import com.example.e5322.thyrosoft.SpecialOffer.OfferScan_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
 
 import org.json.JSONException;
@@ -57,13 +58,15 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
     SharedPreferences prefs;
     String user, passwrd, access, api_key, ERROR, RES_ID, barcode, response1, previouseBarcode, afterBarcode, searchBarcode, storeResponse;
     RequestQueue barcodeDetails;
-    Scan_Barcode_ILS_New context;
+    public Context context;
+    OfferScan_Activity offerScan_activity;
     ArrayList<BaseModel> selctedProductArraylist;
     RecyclerInterface listener;
     boolean flag = false;
     boolean storeflag = true;
     ArrayList<Integer> getPosition;
     ProgressDialog progressDialog;
+    int fromcome;
     String TAG = AdapterBarcode_New.class.getSimpleName();
     ArrayList<ScannedBarcodeDetails> distinctspecimentlist;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
@@ -88,6 +91,16 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         this.selctedProductArraylist = selectedlist;
         this.listener = listener;
         this.distinctspecimentlist = distinctspecimentlist;
+        fromcome = 0;
+    }
+
+    public AdapterBarcode_New(OfferScan_Activity scan_barcode_ils, ArrayList<BaseModel> selectedlist, ArrayList<ScannedBarcodeDetails> distinctspecimentlist, RecyclerInterface listener) {
+        this.context = scan_barcode_ils;
+        this.selctedProductArraylist = selectedlist;
+        this.listener = listener;
+        this.distinctspecimentlist = distinctspecimentlist;
+        GlobalClass.finalspecimenttypewiselist = distinctspecimentlist;
+        fromcome = 2;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -103,6 +116,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
             element1_iv = (ImageView) itemView.findViewById(R.id.element1_iv);
             linearEditbarcode = (LinearLayout) itemView.findViewById(R.id.lineareditbarcode);
             barcode_linear = (LinearLayout) itemView.findViewById(R.id.barcode_linear);
+            setback = (ImageView) itemView.findViewById(R.id.setback);
             setback = (ImageView) itemView.findViewById(R.id.setback);
             enter_barcode = (EditText) itemView.findViewById(R.id.enter_barcode);
             reenter = (EditText) itemView.findViewById(R.id.reenter);
@@ -189,9 +203,9 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         holder.enter_barcode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         holder.reenter.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        if (GlobalClass.finalspecimenttypewiselist.get(position).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(position).getBarcode().isEmpty()) {
+        if (GlobalClass.finalspecimenttypewiselist.get(position).getBarcode() != null) {
 
-            if (!GlobalClass.isNetworkAvailable(context)) {
+            if (!GlobalClass.isNetworkAvailable(((Activity)context))) {
                 holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
 
                 SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
@@ -220,7 +234,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
             } else {
                 searchBarcode = GlobalClass.finalspecimenttypewiselist.get(position).getBarcode();
 
-                if (!GlobalClass.isNetworkAvailable(context)) {
+                if (!GlobalClass.isNetworkAvailable(((Activity)context))) {
                     holder.scanBarcode.setText(searchBarcode);
                 } else {
                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
@@ -238,7 +252,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                     } catch (WindowManager.BadTokenException e) {
                         //use a log message
                     }
-
+                    System.out.println("barcode url  --> " + Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode");
                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode"
                             , new Response.Listener<JSONObject>() {
                         @Override
@@ -254,9 +268,12 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                 RES_ID = parentObjectOtp.getString("RES_ID");
                                 barcode = parentObjectOtp.getString("barcode");
                                 response1 = parentObjectOtp.getString("response");
+
                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+
                                     holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
-                                    progressDialog.dismiss();
+                                    GlobalClass.hideProgress(context, progressDialog);
+
 
                                     SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
                                     setBarcodeDetails.setSpecimenType(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
@@ -270,32 +287,36 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
                                     Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodes.size());
                                     for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                                        Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
+                                        Log.e(TAG, "onBindViewHolder: specimen type & barcode  --->" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
                                     }
 
-                                    System.out.println("length of barcodes" + GlobalClass.setScannedBarcodes.size());
-                                    Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodes.size());
+                                    System.out.println("length of barcodes --->" + GlobalClass.setScannedBarcodes.size());
+                                    Log.e(TAG, "onBind View Holder: size of array --->" + GlobalClass.setScannedBarcodes.size());
 
                                     for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
                                         String getbarcodeType = GlobalClass.setScannedBarcodes.get(i).getSpecimenType();
                                         String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
                                         String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
                                     }
+
                                 } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
                                     /*if (progressDialog != null && progressDialog.isShowing()) {
-                                        progressDialog.dismiss();
+                                       GlobalClass.hideProgress(context, progressDialog);
+
                                     }*/
 
                                     if (context instanceof Activity) {
                                         if (!((Activity) context).isFinishing())
-                                            progressDialog.dismiss();
+                                            GlobalClass.hideProgress(context, progressDialog);
+
                                     }
-                                    GlobalClass.redirectToLogin(context);
-                                } else{
+                                    GlobalClass.redirectToLogin(((Activity)context));
+                                } else {
                                     if (position < GlobalClass.finalspecimenttypewiselist.size()) {
                                         holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
                                         storeResponse = response1;
-                                        progressDialog.dismiss();
+                                        GlobalClass.hideProgress(context, progressDialog);
+
                                         Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
                                     }
                                 }
@@ -315,7 +336,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                             }
                         }
                     });
-                    progressDialog.dismiss();
+                    GlobalClass.hideProgress(context, progressDialog);
+
 
                     jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
                             300000,
@@ -417,7 +439,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
             String Specimenttype = (String) v.getTag();
             String code = (String) v.getTag();
             if (onItemClickListener != null) {
-                onItemClickListener.onScanbarcodeClickListener(Specimenttype, context);
+                onItemClickListener.onScanbarcodeClickListener(Specimenttype, ((Activity)context));
             }
         }
     };
@@ -491,11 +513,10 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                 enter_barcode.setText("");
                                 flag = true;
                             }
-                        }
-                        else {
+                        } else {
                             if (flag == false) {
                                 flag = true;
-                                if (!GlobalClass.isNetworkAvailable(context)) {
+                                if (!GlobalClass.isNetworkAvailable(((Activity)context))) {
                                     enter_barcode.setText(searchBarcode);
                                 } else {
                                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
@@ -524,20 +545,24 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                                 response1 = parentObjectOtp.getString("response");
                                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                                                     enter_barcode.setText(searchBarcode);
-                                                    progressDialog.dismiss();
+                                                    GlobalClass.hideProgress(context, progressDialog);
+
                                                 } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
                                                     /*if (progressDialog != null && progressDialog.isShowing()) {
-                                                        progressDialog.dismiss();
+                                                       GlobalClass.hideProgress(context, progressDialog);
+
                                                     }*/
                                                     if (context instanceof Activity) {
                                                         if (!((Activity) context).isFinishing())
-                                                            progressDialog.dismiss();
+                                                            GlobalClass.hideProgress(context, progressDialog);
+
                                                     }
-                                                    GlobalClass.redirectToLogin(context);
+                                                    GlobalClass.redirectToLogin(((Activity)context));
                                                 } else {
                                                     enter_barcode.setText("");
                                                     storeResponse = response1;
-                                                    progressDialog.dismiss();
+                                                    GlobalClass.hideProgress(context, progressDialog);
+
                                                     Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
                                                 }
 
@@ -566,8 +591,6 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                             }
                         }
                     }
-
-                } else {
 
                 }
 

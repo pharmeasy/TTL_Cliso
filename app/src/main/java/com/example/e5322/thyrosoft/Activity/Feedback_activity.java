@@ -38,19 +38,16 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 public class Feedback_activity extends AppCompatActivity {
     ImageView cry, sad, happy;
     View view;
-    ImageView back,home;
+    ImageView back, home;
     ProgressDialog barProgressDialog;
-    //    LinearLayout sad_cry_layout;
-//    EditText editremark;
     String RESPONSE, RES_ID, USER_TYPE;
     Button submitcomment;
     private Global globalClass;
     EditText query;
     public static com.android.volley.RequestQueue PostQueOtp;
-
     private String blockCharacterSet = "#$^*+-/|><";
-
     String blockCharacterSetdata = "~#^|$%&*!+:`";
+
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -95,7 +92,7 @@ public class Feedback_activity extends AppCompatActivity {
     SharedPreferences sharedpreferences, prefs;
     String user, passwrd, access, api_key, email_pref, mobile_pref;
     private String feedbackText;
-    private String TAG=Feedback_activity.class.getSimpleName().toString();
+    private String TAG = Feedback_activity.class.getSimpleName().toString();
 
     @SuppressLint("NewApi")
     @Override
@@ -130,9 +127,8 @@ public class Feedback_activity extends AppCompatActivity {
         email_pref = prefs.getString("email", null);
         mobile_pref = prefs.getString("mobile_user", null);
 
-        back=(ImageView)findViewById(R.id.back);
-        home=(ImageView)findViewById(R.id.home);
-
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +143,7 @@ public class Feedback_activity extends AppCompatActivity {
                 GlobalClass.goToHome(Feedback_activity.this);
             }
         });
+
 
 
         query.addTextChangedListener(new TextWatcher() {
@@ -216,13 +213,40 @@ public class Feedback_activity extends AppCompatActivity {
             }
         });
 
+
+       /* query.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() >= 1) {
+                    submitcomment.setEnabled(true);
+                    submitcomment.setClickable(true);
+                    submitcomment.setBackground(getResources().getDrawable(R.drawable.white_border_marron_bg_corner));
+                } else {
+                    submitcomment.setEnabled(false);
+                    submitcomment.setClickable(false);
+                    submitcomment.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });*/
+
         submitcomment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String getFeedback = query.getText().toString();
-                if(getFeedback.equals("")){
+                if (getFeedback.equals("")) {
                     Toast.makeText(Feedback_activity.this, "Kindly give the feedback for app", Toast.LENGTH_SHORT).show();
-                }else{
+                } else {
                     if (emoji.equals("")) {
                         Toast.makeText(Feedback_activity.this, "Please select emoji", Toast.LENGTH_SHORT).show();
                     } else {
@@ -232,6 +256,7 @@ public class Feedback_activity extends AppCompatActivity {
             }
         });
     }
+
     private void SendFeedbackToAPI() {
         barProgressDialog = new ProgressDialog(Feedback_activity.this, R.style.ProgressBarColor);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -254,7 +279,7 @@ public class Feedback_activity extends AppCompatActivity {
             jsonObjectOtp.put("name", user);
             jsonObjectOtp.put("email", email_pref);
             jsonObjectOtp.put("mobile", mobile_pref);
-            jsonObjectOtp.put("feedback", feedbackText +" "+ emoji);
+            jsonObjectOtp.put("feedback", feedbackText + " " + emoji);
             jsonObjectOtp.put("emotion_text", emoji);
             jsonObjectOtp.put("rating", "");
             jsonObjectOtp.put("portal_type", "Thyrosoft Lite");
@@ -267,18 +292,19 @@ public class Feedback_activity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
 
                 try {
-                    Log.e(TAG, "onResponse: "+response );
+                    Log.e(TAG, "onResponse: " + response);
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
-                    if(barProgressDialog!=null && barProgressDialog.isShowing()){
-                        barProgressDialog.dismiss();}
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
                     RESPONSE = parentObjectOtp.getString("RESPONSE");
                     RES_ID = parentObjectOtp.getString("RES_ID");
                     USER_TYPE = parentObjectOtp.getString("USER_TYPE");
 
                     if (RES_ID.equals("RES0001")) {
                         TastyToast.makeText(Feedback_activity.this, "" + RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }else if(RESPONSE.equalsIgnoreCase(caps_invalidApikey)){
+                    } else if (RESPONSE.equalsIgnoreCase(caps_invalidApikey)) {
                         GlobalClass.redirectToLogin(Feedback_activity.this);
                     } else if (RES_ID.equals("RES0000")) {
                         TastyToast.makeText(Feedback_activity.this, "" + RESPONSE + " " + emoji, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
@@ -298,14 +324,14 @@ public class Feedback_activity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
                 } else {
-
                     System.out.println(error);
                 }
             }
         });
+
         PostQueOtp.add(jsonObjectRequest1);
-        Log.e(TAG, "SendFeedbackToAPI: json"+jsonObjectOtp );
-        Log.e(TAG, "SendFeedbackToAPI: url"+jsonObjectRequest1 );
+        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObjectOtp);
+        Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
 
     }
 

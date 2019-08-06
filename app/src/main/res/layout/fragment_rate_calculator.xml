@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -51,7 +53,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/maroon"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    >
 
                     <TextView
                         android:layout_width="0dp"
@@ -110,7 +113,8 @@
                     android:layout_marginLeft="3dp"
                     android:layout_marginRight="3dp"
                     android:gravity="center_horizontal"
-                    android:minHeight="20dp">
+                    android:minHeight="20dp"
+                    >
 
                     <TextView
                         android:id="@+id/show_selected_tests_list_test_ils1"
@@ -167,7 +171,7 @@
                 android:visibility="gone"
                 android:weightSum="5">
 
-                <!--search.setQueryHint("Custom Search Hint")-->
+                <!--search.setQueryHint("Custom Search Hint")-->;
 
                 <EditText
                     android:id="@+id/sv_testsList12"
@@ -222,7 +226,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/maroon"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    >
 
                     <TextView
                         android:layout_width="0dp"
@@ -364,7 +369,7 @@
                     android:padding="5dp"
                     android:text="Profile"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12dp"/>
+                    android:textSize="12dp"></TextView>
 
                 <View
                     android:layout_width="1dp"

@@ -41,9 +41,9 @@
                 android:id="@+id/linear_summary_open"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginLeft="2dp"
                 android:layout_weight="5"
-                android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -85,8 +85,8 @@
                     <TextView
                         android:id="@+id/sample_type_txt"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="wrap_content"
+                        android:layout_weight="2"
                         android:text="Tests"
                         android:textColor="@color/red"
                         android:textSize="10sp"
@@ -95,9 +95,9 @@
                     <TextView
                         android:id="@+id/barcode_txt"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dp"
+                        android:layout_weight="2"
                         android:text="Android Version"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -107,18 +107,18 @@
                     android:id="@+id/barcode_and_sample_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
                 <TextView
                     android:id="@+id/error_msg"
-                    android:layout_marginTop="3dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
                     android:layout_weight="1"
                     android:gravity="left"
                     android:textColor="@color/red"
                     android:textSize="10sp"
                     android:visibility="gone" />
             </LinearLayout>
-
 
 
             <LinearLayout
@@ -130,24 +130,24 @@
                     android:id="@+id/deleteWoe"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
                     android:gravity="center"
                     android:src="@drawable/trash" />
             </LinearLayout>
 
 
             <LinearLayout
+                android:id="@+id/send_woe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/send_woe"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
                     android:src="@drawable/wind_up_data"
                     android:text="SW"
                     android:textSize="10sp" />

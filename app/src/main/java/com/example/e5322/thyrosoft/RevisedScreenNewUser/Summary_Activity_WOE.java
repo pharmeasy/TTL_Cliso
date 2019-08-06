@@ -114,13 +114,21 @@ public class Summary_Activity_WOE extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
-            delete_patient_test_water.setVisibility(View.VISIBLE);
-            delete_patient_test.setVisibility(View.GONE);
-        } else {
-            delete_patient_test_water.setVisibility(View.GONE);
-            delete_patient_test.setVisibility(View.VISIBLE);
+
+        try {
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null) {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
+                    delete_patient_test_water.setVisibility(View.VISIBLE);
+                    delete_patient_test.setVisibility(View.GONE);
+                } else {
+                    delete_patient_test_water.setVisibility(View.GONE);
+                    delete_patient_test.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         title.setText("Summary");
         home.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +137,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 GlobalClass.goToHome(Summary_Activity_WOE.this);
             }
         });
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -294,15 +303,19 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 };
 
 
-                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO() != null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
-                    builder.setTitle("Confirm delete !");
-                    builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener).show();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
-                    builder.setTitle("Confirm delete !");
-                    builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener)
-                            .setNegativeButton("Edit", dialogClickListener).show();
+                try {
+                    if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO() != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+                        builder.setTitle("Confirm delete !");
+                        builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener).show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Summary_Activity_WOE.this);
+                        builder.setTitle("Confirm delete !");
+                        builder.setMessage(ToastFile.wish_woe_dlt).setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("Edit", dialogClickListener).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -319,24 +332,26 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                 Log.e(TAG, "onResponse: response" + response);
                 Gson gson = new Gson();
                 MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
-                BCT_LIST[] bct_lists = myPojo.getMASTERS().getBCT_LIST();
 
-                if (bct_lists.length != 0) {
-                    for (int i = 0; i < bct_lists.length; i++) {
-                        //if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER())) {
-                        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER()) && bct_lists[i].getNED_NUMBER() != null) {
-                            String nameofbtech = bct_lists[i].getNAME();
-                            btech.setText(nameofbtech);
-                            btechtile.setVisibility(View.VISIBLE);
-                            btechlinear.setVisibility(View.VISIBLE);
-                        } else {
-                            btech.setVisibility(View.GONE);
-                            btechtile.setVisibility(View.GONE);
-                        }
+                try {
+                    BCT_LIST[] bct_lists = myPojo.getMASTERS().getBCT_LIST();
+                    if (bct_lists.length != 0) {
+                        for (int i = 0; i < bct_lists.length; i++) {
+                            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID().equals(bct_lists[i].getNED_NUMBER()) && bct_lists[i].getNED_NUMBER() != null) {
+                                String nameofbtech = bct_lists[i].getNAME();
+                                btech.setText(nameofbtech);
+                               /* btechtile.setVisibility(View.VISIBLE);
+                                btechlinear.setVisibility(View.VISIBLE);*/
+                            } else {
+                                btech.setVisibility(View.GONE);
+                                btechtile.setVisibility(View.GONE);
+                            }                        }
+                    } else {
+                        btech.setVisibility(View.GONE);
+                        btechtile.setVisibility(View.GONE);
                     }
-                } else {
-                    btech.setVisibility(View.GONE);
-                    btechtile.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {

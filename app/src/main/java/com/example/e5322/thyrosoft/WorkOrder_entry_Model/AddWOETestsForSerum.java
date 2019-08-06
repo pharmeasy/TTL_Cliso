@@ -40,7 +40,9 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.example.e5322.thyrosoft.WOE.RecheckAllTest;
 import com.example.e5322.thyrosoft.WOE.SummaryAddWoe;
 import com.google.gson.Gson;
 
@@ -81,6 +83,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
     TextView title;
     private String getTestName;
     private String passTheTests;
+    int days = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,24 +142,24 @@ public class AddWOETestsForSerum extends AppCompatActivity {
             }
         });
 
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString("MyObject", "");
+        days = GlobalClass.getStoreSynctime(AddWOETestsForSerum.this);
 
-        MainModel obj = gson.fromJson(json, MainModel.class);
-
-        if (obj != null) {
-            if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                callAdapter(obj);
-
-            } else {
-//                Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-
+        if (days >= Constants.DAYS_CNT) {
             getAlltTestData();
-//            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+        } else {
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            Gson gson = new Gson();
+            String json = appSharedPrefs.getString("MyObject", "");
+            MainModel obj = gson.fromJson(json, MainModel.class);
+            if (obj != null) {
+                if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+                    callAdapter(obj);
+                }
+            } else {
+                getAlltTestData();
+            }
         }
+
 
         getBarcodeDetails = getSharedPreferences("AddTestType", MODE_PRIVATE);
         ALERT = getBarcodeDetails.getString("ALERT", null);
@@ -201,13 +204,6 @@ public class AddWOETestsForSerum extends AppCompatActivity {
             public boolean onQueryTextSubmit(String query) {
                 if (expAdapter != null) {
                     expAdapter.filterData(query);
-//                    if (!query.isEmpty()) {
-//                        for (int i = 0; i < expAdapter.getGroupCount(); i++)
-//                            exp_list.expandGroup(i);
-//                    } else {
-//                        for (int i = 0; i < expAdapter.getGroupCount(); i++)
-//                            exp_list.collapseGroup(i);
-//                    }
                 }
                 return false;
             }
@@ -216,13 +212,6 @@ public class AddWOETestsForSerum extends AppCompatActivity {
             public boolean onQueryTextChange(String query) {
                 if (expAdapter != null) {
                     expAdapter.filterData(query);
-//                    if (!query.isEmpty()) {
-//                        for (int i = 0; i < expAdapter.getGroupCount(); i++)
-//                            exp_list.expandGroup(i);
-//                    } else {
-//                        for (int i = 0; i < expAdapter.getGroupCount(); i++)
-//                            exp_list.collapseGroup(i);
-//                    }
 
                 }
                 return false;
@@ -249,6 +238,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
     }
 
     private void getAlltTestData() {
+
         globalClass.showProgressDialog(this);
         requestQueuepoptestILS = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + "" + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
@@ -273,6 +263,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
                     String json22 = gson22.toJson(mainModel);
                     String jsonSelected = gson22.toJson(onlySelected);
                     prefsEditor1.putString("MyObject", json22);
+                    GlobalClass.StoreSyncTime(AddWOETestsForSerum.this);
                     prefsEditor1.commit();
 
                     B2B_MASTERSMainModel b2B_mastersMainModel = new B2B_MASTERSMainModel();

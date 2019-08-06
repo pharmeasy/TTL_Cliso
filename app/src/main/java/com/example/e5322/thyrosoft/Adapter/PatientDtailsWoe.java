@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,9 +179,9 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         ArrayList<String> listOfSampleString = new ArrayList<String>(fixedSampleList);
         ArrayList<String> listOfBarcodeString = new ArrayList<String>(fixedBarcodeList);
 
-        if(listOfSampleString.size()< 2){
+        if (listOfSampleString.size() < 2) {
             gridLayoutManager = new GridLayoutManager(context1, 1);
-        }else{
+        } else {
             gridLayoutManager = new GridLayoutManager(context1, 2);
         }
         holder.barcode_and_sample_recycler.setLayoutManager(gridLayoutManager);
@@ -192,9 +193,9 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         } else {
             holder.image_tag.setVisibility(View.VISIBLE);
             for (int i = 0; i < listOfSampleString.size(); i++) {
-                if(listOfSampleString.get(i).equalsIgnoreCase("WATER")){
+                if (listOfSampleString.get(i).equalsIgnoreCase("WATER")) {
                     holder.image_tag.setVisibility(View.GONE);
-                }else{
+                } else {
                     holder.image_tag.setVisibility(View.VISIBLE);
                 }
 
@@ -325,20 +326,23 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
                 summary_model = gson.fromJson(response.toString(), Summary_model.class);
                 GlobalClass.summary_models.add(summary_model);
                 String getResponse = summary_model.getResponse();
-                if (getResponse.equals("FAILURE")) {
 
-                } else {
-                    if (flagpass == 1) {
-                        Intent intent = new Intent(context1, Summary_Activity_WOE.class);
-                        context1.startActivity(intent);
-                    } else if (flagpass == 2) {
-                        Intent i = new Intent(context1, Woe_Edt_Activity.class);
-                        context1.startActivity(i);
+
+                try {
+                    if (getResponse.equals("FAILURE") && !TextUtils.isEmpty(getResponse)) {
+                        System.out.println(TAG + "error in geteditdata");
+                    } else {
+                        if (flagpass == 1) {
+                            Intent intent = new Intent(context1, Summary_Activity_WOE.class);
+                            context1.startActivity(intent);
+                        } else if (flagpass == 2) {
+                            Intent i = new Intent(context1, Woe_Edt_Activity.class);
+                            context1.startActivity(i);
+                        }
                     }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override

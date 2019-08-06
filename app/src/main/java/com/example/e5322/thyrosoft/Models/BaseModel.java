@@ -16,6 +16,7 @@ public class BaseModel implements Parcelable{
     private String fasting;
     private String code;
     private String type;
+    private String trf;
     private String subtypes;
     Childs[] childs;
     Barcodes[] barcodes;
@@ -30,6 +31,7 @@ public class BaseModel implements Parcelable{
         fasting = in.readString();
         code = in.readString();
         type = in.readString();
+        trf=in.readString();
         subtypes = in.readString();
         childs = in.createTypedArray(Childs.CREATOR);
         barcodes = in.createTypedArray(Barcodes.CREATOR);
@@ -45,6 +47,7 @@ public class BaseModel implements Parcelable{
         dest.writeString(fasting);
         dest.writeString(code);
         dest.writeString(type);
+        dest.writeString(trf);
         dest.writeString(subtypes);
         dest.writeTypedArray(childs, flags);
         dest.writeTypedArray(barcodes, flags);
@@ -148,6 +151,14 @@ public class BaseModel implements Parcelable{
         this.type = type;
     }
 
+    public String getTrf() {
+        return trf;
+    }
+
+    public void setTrf(String trf) {
+        this.trf = trf;
+    }
+
     public String getSubtypes() {
         return subtypes;
     }
@@ -216,12 +227,13 @@ public class BaseModel implements Parcelable{
 
     public static class Childs implements Parcelable {
         String code;
-
         String type;
+
 
         Childs(Parcel in) {
             code = in.readString();
             type = in.readString();
+
         }
 
         public static final Creator<Childs> CREATOR = new Creator<Childs>() {
@@ -239,6 +251,7 @@ public class BaseModel implements Parcelable{
         public String getCode() {
             return code;
         }
+
 
         public void setCode(String code) {
             this.code = code;
@@ -347,5 +360,12 @@ public class BaseModel implements Parcelable{
     }
 
     public BaseModel() {
+    }
+
+
+
+    @Override
+    public String toString() {
+        return code;
     }
 }

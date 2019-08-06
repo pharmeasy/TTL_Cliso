@@ -22,8 +22,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 17
-        versionName "1.0.1.8"
+        versionCode 18
+        versionName "1.0.1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -103,6 +103,19 @@ dependencies {
     //used for volley
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.MdFarhanRaja:SearchableSpinner:1.9'
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    //retrofit Dependancy
+    //these two lines are added
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.2.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation 'android.arch.lifecycle:viewmodel:1.1.1'
+    annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
+
+    implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
+
     //used for searchable spinner
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -119,5 +132,8 @@ dependencies {
         transitive = true
     }
     implementation files('libs/httpclient-4.2.jar')
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'com.mindorks:paracamera:0.2.2'
+
 }
 apply plugin: 'com.google.gms.google-services'

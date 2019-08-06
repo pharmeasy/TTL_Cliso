@@ -17,8 +17,10 @@
     <color name="colorred">#d64351</color>
     <!--<color name="maroon">#9b202b</color>-->
     <color name="cement_light">#2aa2afaa</color>
-    <color name="maroon">#efa60303</color>
-    <color name="limaroon">#EFB90202</color>
+    <color name="maroon">#B00020</color>
+    <color name="limaroon">#B00020</color>
+    <color name="dismaroon">#EFB97474</color>
+    <color name="lightestgrey">#ededed</color>
     <color name="tabindicatorColor">#FDAE31</color>
     <color name="marronFaint">#dc989e</color>
     <color name="colorlevendor2">#892fe6</color>

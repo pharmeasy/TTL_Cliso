@@ -91,7 +91,6 @@ public class Splash_screenActivity extends AppCompatActivity {
         getversion();
 
         //TODO check login credentials
-        myprif();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -306,9 +305,6 @@ public class Splash_screenActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    private void myprif() {
-
-    }
 
 
 }

@@ -16,6 +16,7 @@ public class Constants {
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
+    public static int DAYS_CNT = 2;
 
 
     public static String caps_invalidApikey = "INVALID API KEY";
@@ -398,7 +399,7 @@ public class Constants {
 
     public static final String DICTIONARY = "dictionary";
     public static final String GATEWAY = "getwaytype";
-    public static final String  ORDERID = "OrderNo";
+    public static final String ORDERID = "OrderNo";
     public static final String PAYMENTSTATUS = "paymentstatus";
 
     public static final String HOMEMODULE = "Home Screen";

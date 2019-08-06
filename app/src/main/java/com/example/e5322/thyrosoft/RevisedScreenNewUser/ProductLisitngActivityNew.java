@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -60,6 +59,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
+import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.Models.ULCResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -67,7 +67,6 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -115,7 +114,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     ProgressDialog progressDialog;
     TextView show_selected_tests_list_test_ils1, test_txt;
     ProgressDialog barProgressDialog;
-    List<String> showTestNmaes;
+    // List<String> showTestNmaes;
+    ArrayList<String> showTestNmaes = new ArrayList<>();
     List<String> getOnlyProducts;
     String user, passwrd, access, api_key, convertDate;
     SharedPreferences prefs;
@@ -124,6 +124,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     RadioButton ulc_radiobtn, nonulc_radiobtn;
     TextView companycost_test;
     private int totalcount;
+
+
     private ArrayList<BaseModel> tempselectedTests;
     private List<String> tempselectedTests1;
     private MainModel mainModelRate;
@@ -155,6 +157,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String sampleGivingClient;
     private String refeID;
     private String labAddress;
+    int days = 0;
     private String labID;
     private String labName;
     private String btechID;
@@ -179,6 +182,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private boolean flagforOnce = false;
     Button verify_ulc;
     private String version;
+    ArrayList<TRFModel> trf_list = new ArrayList<>();
 
     @SuppressLint("NewApi")
     @Override
@@ -293,6 +297,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -369,14 +374,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         if (testRateMasterModels.get(i).getProduct() != null || !testRateMasterModels.get(i).getProduct().equals("")) {
                             product = testRateMasterModels.get(i).getProduct().toLowerCase();
                         }
+
                         if (text.contains(s1) || (name != null && name.contains(s1)) ||
                                 (code != null && code.contains(s1)) ||
                                 (product != null && product.contains(s1))) {
                             String testname = testRateMasterModels.get(i).getName();
                             filteredFiles.add(testRateMasterModels.get(i));
-                        } else {
-
                         }
+
                         ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, filteredFiles);
                         recycler_all_test.setAdapter(outLabRecyclerView);
                     }
@@ -412,10 +417,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     public void onResponse(JSONObject response) {
                         Log.e(TAG, "onResponse: RESPONSE" + response);
 
-
-                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }*/
 
                         if (ProductLisitngActivityNew.this instanceof Activity) {
                             if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
@@ -586,7 +587,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                             if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
                                 String barcodes = TextUtils.join(",", getBarcodeArrList);
-
+                                Gson trfgson = new GsonBuilder().create();
+                                String trfjson = trfgson.toJson(trf_list);
                                 boolean isInserted = myDb.insertData(barcodes, json);
                                 if (isInserted == true) {
                                     TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.woeSaved, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
@@ -644,7 +646,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                 if (status.equalsIgnoreCase("SUCCESS")) {
 
                                                     //after sending the woe succrssfully
-                                                    TastyToast.makeText(ProductLisitngActivityNew.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                    TastyToast.makeText(ProductLisitngActivityNew.this, "Your WOE has been saved online !", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                                     Intent intent = new Intent(ProductLisitngActivityNew.this, SummaryActivity_New.class);
                                                     Bundle bundle = new Bundle();
                                                     bundle.putString("tetsts", ulcResponseModel.getTEST());
@@ -735,13 +737,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         });
 
+
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String getTExtdata = show_selected_tests_list_test_ils1.getText().toString();
-                if (Selcted_Outlab_Test.size()==0) {
+                if (Selcted_Outlab_Test.size() == 0) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
-                } else if (getTExtdata.equals("Select Test")) {
+                } else if (getTExtdata.equalsIgnoreCase("Select Test")) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     int sum = 0;
@@ -750,6 +753,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
                         getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
                     }
+
                     String testsCodesPassing = TextUtils.join(",", getTestNameLits);
                     String payment = String.valueOf(sum);
                     Intent intent = new Intent(ProductLisitngActivityNew.this, Scan_Barcode_ILS_New.class);
@@ -760,127 +764,90 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
-
                 }
             }
         });
 
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        Gson gson = new Gson();
-        final String json = appSharedPrefs.getString("MyObject", "");
-        MainModel obj = gson.fromJson(json, MainModel.class);
 
-        if (obj != null) {
-            if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                callAdapter(obj);
-            } else {
+        days = GlobalClass.getStoreSynctime(ProductLisitngActivityNew.this);
 
-                barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
-                barProgressDialog.setTitle("Kindly wait ...");
-                barProgressDialog.setMessage(ToastFile.processing_request);
-                barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                barProgressDialog.setProgress(0);
-                barProgressDialog.setMax(20);
-                barProgressDialog.show();
-                barProgressDialog.setCanceledOnTouchOutside(false);
-                barProgressDialog.setCancelable(false);
-
-                RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
-                JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.e(TAG, "onResponse: RESPONSE" + response);
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
-
-                        String getResponse = response.optString("RESPONSE", "");
-                        if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                            redirectToLogin(ProductLisitngActivityNew.this);
-                        } else {
-                            Gson gson = new Gson();
-                            mainModel = new MainModel();
-                            mainModel = gson.fromJson(response.toString(), MainModel.class);
-                            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
-                            SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                            Gson gson22 = new Gson();
-                            String json22 = gson22.toJson(mainModel);
-                            prefsEditor1.putString("MyObject", json22);
-                            prefsEditor1.commit();
-                            callAdapter(mainModel);
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (error.networkResponse == null) {
-                            if (error.getClass().equals(TimeoutError.class)) {
-                                // Show timeout error message
-                            }
-                        }
-                    }
-                });
-                jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                        300000,
-                        3,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                requestQueuepoptestILS.add(jsonObjectRequestPop);
-                Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
-            }
+        if (days >= Constants.DAYS_CNT) {
+            getAllproduct();
         } else {
-            barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
-            barProgressDialog.setTitle("Kindly wait ...");
-            barProgressDialog.setMessage(ToastFile.processing_request);
-            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-            barProgressDialog.setProgress(0);
-            barProgressDialog.setMax(20);
-            barProgressDialog.show();
-            barProgressDialog.setCanceledOnTouchOutside(false);
-            barProgressDialog.setCancelable(false);
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            Gson gson = new Gson();
+            final String json = appSharedPrefs.getString("MyObject", "");
+            MainModel obj = gson.fromJson(json, MainModel.class);
 
-            RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
-            JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.e(TAG, "onResponse: RESPONSE" + response);
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
-                    String getResponse = response.optString("RESPONSE", "");
-                    if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                        redirectToLogin(ProductLisitngActivityNew.this);
-                    } else {
-                        Gson gson = new Gson();
-                        mainModel = new MainModel();
-                        mainModel = gson.fromJson(response.toString(), MainModel.class);
-                        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
-                        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                        Gson gson22 = new Gson();
-                        String json22 = gson22.toJson(mainModel);
-                        prefsEditor1.putString("MyObject", json22);
-                        prefsEditor1.commit();
-                        callAdapter(mainModel);
-                    }
+            if (obj != null) {
+                if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+                    callAdapter(obj);
+                } else {
+                    getAllproduct();
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (error.networkResponse == null) {
-                        if (error.getClass().equals(TimeoutError.class)) {
-                            // Show timeout error message
-                        }
-                    }
-                }
-            });
-            jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                    300000,
-                    3,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            requestQueuepoptestILS.add(jsonObjectRequestPop);
-            Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
-//            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+            } else {
+                getAllproduct();
+            }
         }
+    }
+
+    private void getAllproduct() {
+        barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
+        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
+        Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproducts");
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: RESPONSE" + response);
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
+
+                String getResponse = response.optString("RESPONSE", "");
+                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                    redirectToLogin(ProductLisitngActivityNew.this);
+                } else {
+                    Gson gson = new Gson();
+                    mainModel = new MainModel();
+                    mainModel = gson.fromJson(response.toString(), MainModel.class);
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
+                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                    Gson gson22 = new Gson();
+                    String json22 = gson22.toJson(mainModel);
+                    prefsEditor1.putString("MyObject", json22);
+                    prefsEditor1.commit();
+
+                    GlobalClass.StoreSyncTime(ProductLisitngActivityNew.this);
+
+                    callAdapter(mainModel);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
+        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueuepoptestILS.add(jsonObjectRequestPop);
+        Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
     }
 
     private void callAdapter(MainModel mainModel) {
@@ -910,11 +877,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
                     testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
                 }
+
                 ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
                 recycler_all_test.setAdapter(outLabRecyclerView);
             }
-        } else {
-//            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1000,7 +966,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     class ViewAllTestAdapter extends RecyclerView.Adapter<ViewAllTestAdapter.ViewHolder> {
         Context context;
         ArrayList<BaseModel> productList;
-        ArrayList<String> showTestNmaes = new ArrayList<>();
+//        ArrayList<String> showTestNmaes = new ArrayList<>();
 
 
         public ViewAllTestAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<BaseModel> testRateMasterModels) {
@@ -1030,50 +996,60 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             final BaseModel testRateMasterModel = productList.get(position);
 
 
-            if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
-                for (int i = 0; !isChecked && i < Selcted_Outlab_Test.size(); i++) {
-                    BaseModel selectedTestModel = Selcted_Outlab_Test.get(i);
-                    if (selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
-                        holder.checked.setVisibility(View.VISIBLE);
-                        holder.check.setVisibility(View.GONE);
-                        holder.isSelectedDueToParent = false;
-                        holder.parentTestCode = "";
-                        isChecked = true;
-                    } else if (selectedTestModel.getChilds() != null && testRateMasterModel.getChilds() != null && selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
-                        holder.checked.setVisibility(View.GONE);
-                        holder.check.setVisibility(View.GONE);
-                        holder.gray_check.setVisibility(View.VISIBLE);
-                        holder.isSelectedDueToParent = true;
-                        holder.parentTestCode = selectedTestModel.getCode();
-                        holder.parentTestname = selectedTestModel.getName();
-                        isChecked = true;
-                    } else {
-                        if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
-                            for (BaseModel.Childs ctm :
-                                    selectedTestModel.getChilds()) {
-                                if (ctm.getCode().equals(testRateMasterModel.getCode())) {
-                                    holder.check.setVisibility(View.GONE);
-                                    holder.checked.setVisibility(View.GONE);
-                                    holder.gray_check.setVisibility(View.VISIBLE);
-                                    holder.isSelectedDueToParent = true;
-                                    holder.parentTestCode = selectedTestModel.getCode();
-                                    holder.parentTestname = selectedTestModel.getName();
-                                    isChecked = true;
-                                    break;
+            try {
+                if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
+                    for (int i = 0; !isChecked && i < Selcted_Outlab_Test.size(); i++) {
+                        BaseModel selectedTestModel = Selcted_Outlab_Test.get(i);
+
+                        if (selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
+                            holder.checked.setVisibility(View.VISIBLE);
+                            holder.check.setVisibility(View.GONE);
+                            holder.isSelectedDueToParent = false;
+                            holder.parentTestCode = "";
+                            isChecked = true;
+                        } else if (selectedTestModel.getChilds() != null && testRateMasterModel.getChilds() != null && selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
+                            holder.checked.setVisibility(View.GONE);
+                            holder.check.setVisibility(View.GONE);
+                            holder.gray_check.setVisibility(View.VISIBLE);
+                            holder.isSelectedDueToParent = true;
+                            holder.parentTestCode = selectedTestModel.getCode();
+                            holder.parentTestname = selectedTestModel.getName();
+                            isChecked = true;
+                        } else {
+
+                            try {
+                                if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
+                                    for (BaseModel.Childs ctm : selectedTestModel.getChilds()) {
+                                        if (ctm.getCode().equals(testRateMasterModel.getCode())) {
+                                            holder.check.setVisibility(View.GONE);
+                                            holder.checked.setVisibility(View.GONE);
+                                            holder.gray_check.setVisibility(View.VISIBLE);
+                                            holder.isSelectedDueToParent = true;
+                                            holder.parentTestCode = selectedTestModel.getCode();
+                                            holder.parentTestname = selectedTestModel.getName();
+                                            isChecked = true;
+                                            break;
+                                        } else {
+                                            holder.checked.setVisibility(View.GONE);
+                                            holder.check.setVisibility(View.VISIBLE);
+                                        }
+                                    }
                                 } else {
                                     holder.checked.setVisibility(View.GONE);
                                     holder.check.setVisibility(View.VISIBLE);
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } else {
-                            holder.checked.setVisibility(View.GONE);
-                            holder.check.setVisibility(View.VISIBLE);
+
                         }
                     }
+                } else {
+                    holder.checked.setVisibility(View.GONE);
+                    holder.check.setVisibility(View.VISIBLE);
                 }
-            } else {
-                holder.checked.setVisibility(View.GONE);
-                holder.check.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             holder.parent_ll.setOnClickListener(new View.OnClickListener() {
@@ -1081,7 +1057,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 public void onClick(View v) {
 
                     //on click of blank box
-                    if(holder.check.getVisibility() == View.VISIBLE){
+                    if (holder.check.getVisibility() == View.VISIBLE) {
                         String str = "";
 
                         str = str + testRateMasterModel.getCode() + ",";
@@ -1119,6 +1095,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         }
 
                         if (tempselectedTests != null && tempselectedTests.size() > 0) {
+                            HashSet<String> hashSet = new HashSet<String>();
+                            hashSet.addAll(tempselectedTests1);
+                            tempselectedTests1.clear();
+                            tempselectedTests1.addAll(hashSet);
+
                             String cartproduct = TextUtils.join(",", tempselectedTests1);
                             alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
                             alertDialogBuilder
@@ -1139,16 +1120,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 }
                             }
                         }
+
                         //tejas t -----------------------------
                         Selcted_Outlab_Test.add(testRateMasterModel);
-
                         notifyDataSetChanged();
 
                         before_discount_layout2.setVisibility(View.VISIBLE);
                         showTestNmaes = new ArrayList<>();
+
                         for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                             showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
                         }
+
                         Set<String> setString = new HashSet<String>(showTestNmaes);
                         showTestNmaes.clear();
                         showTestNmaes.addAll(setString);
@@ -1157,10 +1140,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         if (displayslectedtest.equals("")) {
                             before_discount_layout2.setVisibility(View.GONE);
                         }
+
                     }
 
                     //on click of checked box
-                    else if(holder.checked.getVisibility() == View.VISIBLE){
+                    else if (holder.checked.getVisibility() == View.VISIBLE) {
                         if (!isSelectedDueToParent) {
                             Selcted_Outlab_Test.remove(testRateMasterModel);
                             notifyDataSetChanged();

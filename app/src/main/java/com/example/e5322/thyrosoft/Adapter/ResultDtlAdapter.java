@@ -137,18 +137,20 @@ public class ResultDtlAdapter extends BaseAdapter {
             print.setVisibility(View.INVISIBLE);
 
         }
+
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (trackdet.get(position).getPdflink().length() > 0) {
+                if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
                     Intent browserIntent = new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(trackdet.get(position).getPdflink().toString()));
                     mContext.startActivity(browserIntent);
                 }
-
             }
         });
+
+
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,8 +166,6 @@ public class ResultDtlAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 ShowMailAlert(trackdet.get(position).getPatient_id().toString(), trackdet.get(position).getBarcode().toString(), trackdet.get(position).getEmail().toString(), trackdet.get(position).getDate().toString());
-
-
             }
         });
         return convertView;

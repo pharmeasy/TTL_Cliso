@@ -15,14 +15,33 @@ public class MyPojoWoe implements Parcelable
     private String woe_type;
 
     private String api_key;
+    private String trfjson;
 
 
     ArrayList<BarcodelistModel> barcodelist;
 //    private Barcodelist[] barcodelist;
 
+
     protected MyPojoWoe(Parcel in) {
+        woe = in.readParcelable(Woe.class.getClassLoader());
         woe_type = in.readString();
         api_key = in.readString();
+        trfjson = in.readString();
+        barcodelist = in.createTypedArrayList(BarcodelistModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(woe, flags);
+        dest.writeString(woe_type);
+        dest.writeString(api_key);
+        dest.writeString(trfjson);
+        dest.writeTypedList(barcodelist);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MyPojoWoe> CREATOR = new Creator<MyPojoWoe>() {
@@ -83,18 +102,13 @@ public class MyPojoWoe implements Parcelable
         return "ClassPojo [woe = "+woe+", woe_type = "+woe_type+", api_key = "+api_key+", barcodelist = "+barcodelist+"]";
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getTrfjson() {
+        return trfjson;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(woe_type);
-        dest.writeString(api_key);
+    public void setTrfjson(String trfjson) {
+        this.trfjson = trfjson;
     }
-
-
 }
 
 

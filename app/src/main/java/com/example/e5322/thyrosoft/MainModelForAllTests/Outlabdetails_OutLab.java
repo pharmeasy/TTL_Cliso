@@ -9,21 +9,21 @@ import java.util.Arrays;
  * Created by E5322 on 07-06-2018.
  */
 
-public class Outlabdetails_OutLab implements Parcelable{
-    String code,name,product,type;
+public class Outlabdetails_OutLab implements Parcelable {
+    String code, name, product, type, trf;
 
-     Rate_OutLab rate;
-     Sampletype_OutLab[] sampletype;
+    Rate_OutLab rate;
+    Sampletype_OutLab[] sampletype;
 
 
-
-     Outlabdetails_OutLab(Parcel in) {
+    Outlabdetails_OutLab(Parcel in) {
         code = in.readString();
         name = in.readString();
         product = in.readString();
-         type = in.readString();
-         rate = in.readParcelable(Rate_OutLab.class.getClassLoader());
-        sampletype=in.createTypedArray(Sampletype_OutLab.CREATOR);
+        type = in.readString();
+        trf = in.readString();
+        rate = in.readParcelable(Rate_OutLab.class.getClassLoader());
+        sampletype = in.createTypedArray(Sampletype_OutLab.CREATOR);
     }
 
     public static final Creator<Outlabdetails_OutLab> CREATOR = new Creator<Outlabdetails_OutLab>() {
@@ -43,6 +43,14 @@ public class Outlabdetails_OutLab implements Parcelable{
 
     public String getType() {
         return type;
+    }
+
+    public String getTrf() {
+        return trf;
+    }
+
+    public void setTrf(String trf) {
+        this.trf = trf;
     }
 
     public void setType(String type) {
@@ -101,12 +109,13 @@ public class Outlabdetails_OutLab implements Parcelable{
         dest.writeString(name);
         dest.writeString(product);
         dest.writeString(type);
-        dest.writeParcelable(rate,flags);
+        dest.writeString(trf);
+        dest.writeParcelable(rate, flags);
         dest.writeTypedArray(sampletype, flags);
     }
 
-    public static class Rate_OutLab  implements Parcelable{
-        String b2b,b2c;
+    public static class Rate_OutLab implements Parcelable {
+        String b2b, b2c;
 
         public Rate_OutLab() {
         }
@@ -202,7 +211,7 @@ public class Outlabdetails_OutLab implements Parcelable{
     public String toString() {
         return
                 ", rate=" + rate +
-                ", sampletype=" + Arrays.toString(sampletype)
-               ;
+                        ", sampletype=" + Arrays.toString(sampletype)
+                ;
     }
 }

@@ -176,6 +176,7 @@ public class Payment_Activity extends AppCompatActivity {
         email_id = getProfileName.getString("email", null);
         address_pref = getProfileName.getString("address", null);
         pincode_pref = getProfileName.getString("pincode", null);
+
         closing_balance_pref = getProfileName.getString("closing_balance", null);
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -254,9 +255,11 @@ public class Payment_Activity extends AppCompatActivity {
             }
         });
 
+
         btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 amountTopass = edt_enter_amt.getText().toString();
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
@@ -343,6 +346,109 @@ public class Payment_Activity extends AppCompatActivity {
 
             }
         });
+
+
+/*        btn_payu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                amountTopass = edt_enter_amt.getText().toString();
+
+                Log.e(TAG, "Entered Amount ----->" + amountTopass);
+
+                Log.e(TAG, "CB Amount ----->" + closing_balance_pref);
+
+                if (amountTopass.equals("")) {
+                    Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
+                } else if (Integer.parseInt(closing_balance_pref) < 5000) {
+
+                    if (Integer.parseInt(amountTopass) >= 5000) {
+                        gotopayGatway();
+                    } else {
+                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setContentText(getString(R.string.amt_str))
+                                .setConfirmText("Ok")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .show();
+                    }
+
+                } else if (5000 <= Integer.parseInt(closing_balance_pref)) {
+
+                    if (Integer.parseInt(amountTopass) >= Integer.parseInt(closing_balance_pref)) {
+                        gotopayGatway();
+                    } else {
+                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
+                                .setContentText("Enter Minimum Amount of Rs " + closing_balance_pref + " to Proceed")
+                                .setConfirmText("Ok")
+                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                    @Override
+                                    public void onClick(SweetAlertDialog sDialog) {
+                                        sDialog.dismissWithAnimation();
+                                    }
+                                })
+                                .show();
+                    }
+
+                }
+
+            }
+
+        });*/
+    }
+
+    private void gotopayGatway() {
+        if (cd.isConnectingToInternet()) {
+            globalData.showProgressDialog();
+            try {
+                PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
+                    public String RES_ID;
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        globalData.hideProgressDialog();
+                        try {
+                            Log.e(TAG, "onResponse: " + response);
+                            String finalJson = response.toString();
+                            JSONObject parentObjectOtp = new JSONObject(finalJson);
+                            RESPONSE = parentObjectOtp.getString("RESPONSE");
+                            RES_ID = parentObjectOtp.getString("RES_ID");
+                            ordno = parentObjectOtp.getString("ordno");
+
+                            if (RESPONSE.equals("SUCCESS")) {
+                                startPayUTransaction(name_tsp, "", amountTopass, ordno);
+                            } else {
+
+                            }
+
+                        } catch (JSONException e) {
+
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        globalData.hideProgressDialog();
+                        if (error != null) {
+                        } else {
+                            globalData.hideProgressDialog();
+                            System.out.println(error);
+                        }
+                    }
+                });
+                PostQueOtp.add(jsonObjectRequest1);
+                Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

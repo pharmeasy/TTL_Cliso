@@ -23,7 +23,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack"/>
 
         <TextView
             android:id="@+id/title"
@@ -35,7 +35,7 @@
             android:text="Select Tests(s)"
             android:textColor="@color/maroon"
             android:textSize="15sp"
-            android:textStyle="bold"></TextView>
+            android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/home"
@@ -46,7 +46,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack"/>
     </LinearLayout>
 
     <LinearLayout
@@ -116,7 +116,7 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:textColor="@color/DARKGray"
-                android:textSize="12sp"></EditText>
+                android:textSize="12sp"/>
 
             <Button
                 android:id="@+id/verify_ulc"
@@ -159,14 +159,14 @@
                     android:gravity="center|left"
                     android:hint="PRODUCTS"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="12sp"/>
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_ulc_woe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"></android.support.v7.widget.RecyclerView>
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/ulc_woe_btn"
@@ -243,7 +243,7 @@
                 android:drawableRight="@drawable/search_red"
                 android:hint="Search Test Name"
                 android:iconifiedByDefault="false"
-                android:textSize="14sp"></EditText>
+                android:textSize="14sp"/>
 
         </LinearLayout>
 
@@ -254,7 +254,7 @@
             android:layout_margin="3dp"
             android:layout_weight="5"
             android:background="@drawable/border_background"
-            android:padding="5dp"></android.support.v7.widget.RecyclerView>
+            android:padding="5dp"/>
 
         <LinearLayout
             android:id="@+id/ll_btn"

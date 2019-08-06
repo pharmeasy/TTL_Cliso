@@ -11,7 +11,7 @@ public class MPL {
     ArrayList<Childs_MPL> childs;
     String code,fasting,name,product;
     Rate_MPL rate;
-    String type,subtypes;
+    String type,subtypes,trf;
 
     public ArrayList<Barcodes_MPL> getBarcodes() {
         return barcodes;
@@ -67,6 +67,14 @@ public class MPL {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getTrf() {
+        return trf;
+    }
+
+    public void setTrf(String trf) {
+        this.trf = trf;
     }
 
     public Rate_MPL getRate() {

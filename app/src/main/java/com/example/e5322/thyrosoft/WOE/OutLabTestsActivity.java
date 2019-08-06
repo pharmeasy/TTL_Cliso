@@ -39,11 +39,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.itextpdf.text.pdf.parser.Line;
@@ -74,6 +76,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
     LinearLayout lineargetselectedtestforILS;
     TextView show_selected_tests_list_test_ils, title;
     Button next_btn;
+    int days = 0;
     ProgressDialog barProgressDialog;
     private SharedPreferences prefsavedetails;
     private String getTypeName;
@@ -215,38 +218,39 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         OutLabAdapter outLabRecyclerView = new OutLabAdapter(OutLabTestsActivity.this, filteredFiles);
                         outlab_list.setAdapter(outLabRecyclerView);
                     }
-                } else {
-
                 }
-
-
             }
         });
 
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString("MyObject", "");
-        MainModel obj = gson.fromJson(json, MainModel.class);
+        days = GlobalClass.getStoreSynctime(OutLabTestsActivity.this);
+        if (days >= Constants.DAYS_CNT) {
+            getAlltTestData();
+        } else {
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            Gson gson = new Gson();
+            String json = appSharedPrefs.getString("MyObject", "");
+            MainModel obj = gson.fromJson(json, MainModel.class);
 
-        if (obj != null) {
-            if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
-                outlabdetails_outLabs = new ArrayList<>();
-                for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
-                    if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
-                        if (outlabdetails_outLabs != null) {
-                            outlabdetails_outLabs = null;
-                            outlabdetails_outLabs = new ArrayList<>();
-                            outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+            if (obj != null) {
+                if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+                    outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                    outlabdetails_outLabs = new ArrayList<>();
+                    for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
+                        if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
+                            if (outlabdetails_outLabs != null) {
+                                outlabdetails_outLabs = null;
+                                outlabdetails_outLabs = new ArrayList<>();
+                                outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                            }
+                            callAdapter();
                         }
-                        callAdapter();
                     }
+                } else {
+                    getAlltTestData();
                 }
             } else {
-//                Toast.makeText(OutLabTestsActivity.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+                getAlltTestData();
             }
-        } else {
-            getAlltTestData();
         }
 
 
@@ -265,6 +269,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
         barProgressDialog.setCancelable(false);
         //    globalClass.showProgressDialog(this);
         requestQueuepoptestILS = Volley.newRequestQueue(this);
+        //Log.e(TAG,"API product ----->"+Api.getAllTests + "" + api_key + "/ALL/getproducts");
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + "" + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -286,6 +291,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
                     Gson gson22 = new Gson();
                     String json22 = gson22.toJson(mainModel);
                     prefsEditor1.putString("MyObject", json22);
+                    GlobalClass.StoreSyncTime(OutLabTestsActivity.this);
                     prefsEditor1.commit();
 
                     outlab_testlist_getalltests = mainModel.getB2B_MASTERS().getOUTLAB_TESTLIST();
@@ -362,7 +368,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if(holder.un_check.getVisibility()==View.VISIBLE){
+                    if (holder.un_check.getVisibility() == View.VISIBLE) {
                         if (brandName.equals("TTL-OTHERS")) {
                             if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
 //                            Alter box
@@ -397,9 +403,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
 
                         String displayslectedtest = TextUtils.join(",", showTestNmaes);
                         show_selected_tests_list_test_ils.setText(displayslectedtest);
-                    }
-
-                    else {
+                    } else {
                         Selcted_Outlab_Test.remove(outlabdetails_outLabs.get(position));
                         lineargetselectedtestforILS.setVisibility(View.VISIBLE);
                         showTestNmaes.remove(outlabdetails_outLabs.get(position).getName().toString());

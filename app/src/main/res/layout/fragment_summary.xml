@@ -660,14 +660,14 @@
             android:text="Delete "
             android:gravity="right|center"
             android:textColor="@color/maroon"
-            ></TextView>
+            />
         <ImageView
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:background="@color/colorWhite"
             android:gravity="left|center"
             android:src="@drawable/gray_delete"
-            ></ImageView>
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -691,7 +691,7 @@
             android:drawableLeft="@drawable/edt_woe_img"
             android:gravity="right|center"
             android:textColor="@color/maroon"
-            ></TextView>
+            />
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -701,7 +701,7 @@
             android:gravity="left|center"
             android:drawableRight="@drawable/gray_delete"
             android:textColor="@color/maroon"
-            ></TextView>
+            />
     </LinearLayout>
 
 </RelativeLayout>

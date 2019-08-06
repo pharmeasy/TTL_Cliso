@@ -33,13 +33,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
-import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SetBarcodeDetails;
@@ -322,6 +320,7 @@ public class BMC_ScanBarcodeAdapter extends RecyclerView.Adapter<BMC_ScanBarcode
                         Toast.makeText(context, ToastFile.first_ent_brcd, Toast.LENGTH_SHORT).show();
                         holder.reenter.setText("");
                     }
+
                 } else {
                     holder.reenter.setText(enteredString);
                 }
@@ -329,9 +328,8 @@ public class BMC_ScanBarcodeAdapter extends RecyclerView.Adapter<BMC_ScanBarcode
                 if (enteredString.length() > 8) {
                     holder.reenter.setText(enteredString.substring(1));
                     Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
-                } else {
-
                 }
+
                 //getData = reg_pincode.getText().toString();
                 if (s.length() == 8) {
                     afterBarcode = s.toString();

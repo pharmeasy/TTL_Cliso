@@ -60,9 +60,9 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="5"
                         android:maxLines="1"
-                        android:textColorHint="@color/userloginColor" />
-                </android.support.design.widget.TextInputLayout>
+                        android:textColorHint="@color/userloginColor"/>
 
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/input_layout_password"
@@ -84,6 +84,11 @@
                         android:maxLines="1"
                         android:textColorHint="@color/userloginColor" />
                 </android.support.design.widget.TextInputLayout>
+
+
+
+
+
 
                 <Button
                     android:id="@+id/login"

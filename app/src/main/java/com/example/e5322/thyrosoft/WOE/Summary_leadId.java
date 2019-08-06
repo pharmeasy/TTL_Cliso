@@ -17,7 +17,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -210,10 +209,12 @@ public class Summary_leadId extends AppCompatActivity {
         leadWATER = sharedPreferences.getString("WATER", null);
         leadleadData = sharedPreferences.getString("leadData", null);
 
-        if (leadSCT.length() != 0) {
+        // Added leadSCT ! = null &&
+        if (leadSCT != null && leadSCT.length() != 0) {
             samplCollectiondate = leadSCT.substring(0, leadSCT.length() - 6);
             sampleCollectionTime = leadSCT.substring(11, leadSCT.length());
         }
+
 
         PackageInfo pInfo = null;
         try {

@@ -106,9 +106,9 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
         viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
-        int passThvalue=Integer.parseInt(base_model_rate_calculators.get(position).getRate().getB2c());
+        int passThvalue = Integer.parseInt(base_model_rate_calculators.get(position).getRate().getB2c());
         String setRtaesToTests = numberFormat.format(passThvalue);
-        viewHolder.test_rate_cal_txt.setText("₹ "+setRtaesToTests+"/-");
+        viewHolder.test_rate_cal_txt.setText("₹ " + setRtaesToTests + "/-");
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
@@ -162,8 +162,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                         testdetails.setAdapter(showChildTestNamesAdapter);
                                         alertDialog = alertDialogBuilder.create();
                                         //alertDialog.show();
-                                        if(!((Activity) mContext).isFinishing())
-                                        {alertDialog.show();
+                                        if (!((Activity) mContext).isFinishing()) {
+                                            alertDialog.show();
                                             //show dialog
                                         }
                                         imgClose.setOnClickListener(new View.OnClickListener() {
@@ -271,28 +271,37 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                 tempselectedTests = new ArrayList<>();
                 tempselectedTests1 = new ArrayList<>();
 
-                if (getSelected_test.getChilds() != null) {
-                    for (int i = 0; i < getSelected_test.getChilds().length; i++) {
-                        //tejas t -----------------------------
-                        for (int j = 0; j < selectedTests.size(); j++) {
-                            if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-                                tempselectedTests1.add(selectedTests.get(j).getName());
-                                tempselectedTests.add(selectedTests.get(j));
-                            } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
-                                tempselectedTests1.add(selectedTests.get(j).getName());
-                                tempselectedTests.add(selectedTests.get(j));
+                try {
+                    if (getSelected_test.getChilds() != null) {
+                        for (int i = 0; i < getSelected_test.getChilds().length; i++) {
+                            //tejas t -----------------------------
+                            for (int j = 0; j < selectedTests.size(); j++) {
+                                if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                    System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTests.get(j));
+                                } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTests.get(j));
+                                }
                             }
                         }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                for (int j = 0; j < selectedTests.size(); j++) {
-                    Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
-                    if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
 
-                        tempselectedTests1.add(selectedTests.get(j).getName());
-                        tempselectedTests.add(selectedTestModel123);
+
+                try {
+                    for (int j = 0; j < selectedTests.size(); j++) {
+                        Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
+                        if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
+                            tempselectedTests1.add(selectedTests.get(j).getName());
+                            tempselectedTests.add(selectedTestModel123);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 if (tempselectedTests != null && tempselectedTests.size() > 0) {
@@ -326,10 +335,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 if (!isSelectedDueToParent) {
-
                     selectedTests.remove(getSelected_test);
                     mcallback.onCheckChangeRateCalculator(selectedTests);
-
                 } else {
                     alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(mContext);
                     alertDialogBuilder
@@ -351,6 +358,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
 
     }
+
     @Override
     public int getItemCount() {
         return base_model_rate_calculators.size();

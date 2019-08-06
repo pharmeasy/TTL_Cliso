@@ -85,10 +85,10 @@ public class Wind_up_fragment extends RootFragment {
     SharedPreferences mPrefs;
     Windup_adapter windup_adapter;
     EditText edtSearch;
-    LinearLayout linearlayout2,pick_up_ll;
+    LinearLayout linearlayout2, pick_up_ll;
     String getDatefromWOE, halfTime, DateToPass;
     static final int DATE_DIALOG_ID = 999;
-    TextView wind_up, woe_cal, wind_up_multiple,pick_up_txt;
+    TextView wind_up, woe_cal, wind_up_multiple, pick_up_txt;
     ProgressDialog barProgressDialog;
     RequestQueue requestQueue, requestQueueWindup;
     Button defaultFragment;
@@ -154,6 +154,7 @@ public class Wind_up_fragment extends RootFragment {
     private String DatePassToApi;
     private String client_type;
     LinearLayout logistic_ll;
+
     public Wind_up_fragment() {
         // Required empty public constructor
     }
@@ -264,11 +265,11 @@ public class Wind_up_fragment extends RootFragment {
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-        client_type=prefs.getString("CLIENT_TYPE", null);
+        client_type = prefs.getString("CLIENT_TYPE", null);
 
-        if(client_type!=null && client_type.equalsIgnoreCase("OLC")){
+        if (client_type != null && client_type.equalsIgnoreCase("OLC")) {
             logistic_ll.setVisibility(View.GONE);//--TODO if client type is OLC then make logistic_ll visible(Logistic charges)
-        }else{
+        } else {
             logistic_ll.setVisibility(View.GONE);
         }
 
@@ -489,6 +490,7 @@ public class Wind_up_fragment extends RootFragment {
 
                 if (GlobalClass.windupBarcodeList.size() != 0 && GlobalClass.windupBarcodeList != null) {
                     String SEPARATOR = ",";
+
                     StringBuilder csvBuilder = new StringBuilder();
 
                     for (String patientlist : GlobalClass.windupBarcodeList) {
@@ -731,14 +733,14 @@ public class Wind_up_fragment extends RootFragment {
                         }
                     }
 
-                    int getLogCharge=Integer.parseInt(woe_model_patient_details.getLogcharge());
-                    int getPersentfiveB2b=Integer.parseInt(woe_model_patient_details.getLogcharge());
+                    int getLogCharge = Integer.parseInt(woe_model_patient_details.getLogcharge());
+                    int getPersentfiveB2b = Integer.parseInt(woe_model_patient_details.getLogcharge());
 
-                    if(woe_model_patient_details.getPersentfiveB2b()!=""&& !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("") && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("0") && getPersentfiveB2b!=0){
+                    if (woe_model_patient_details.getPersentfiveB2b() != "" && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("") && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("0") && getPersentfiveB2b != 0) {
                         pick_up_ll.setVisibility(View.VISIBLE);
                         pick_up_txt.setText(woe_model_patient_details.getLogcharge());
 
-                    }else{
+                    } else {
                         pick_up_ll.setVisibility(View.VISIBLE);
                         pick_up_txt.setText("0");
                     }

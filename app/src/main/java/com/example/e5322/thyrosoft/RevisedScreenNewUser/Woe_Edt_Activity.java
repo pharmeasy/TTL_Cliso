@@ -113,9 +113,13 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         labname_linear = (LinearLayout) findViewById(R.id.labname_linear);
 
-        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
-                R.layout.spinner_item);
-        spinyr.setAdapter(PatientsagespinnerAdapter);
+        try {
+            ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
+                    R.layout.spinner_item);
+            spinyr.setAdapter(PatientsagespinnerAdapter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
@@ -130,6 +134,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+
+        System.out.println(TAG + prefs + " " + user + " " + api_key);
 
         title.setText("WOE Edit");
         back.setOnClickListener(new View.OnClickListener() {
@@ -192,44 +198,62 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 if (age_edt.getText().toString().equals("")) {
 
                 } else {
-                    if (agesinteger < 12) {
-                        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(PatientsagespinnerAdapter);
-                    }
-                    if (agesinteger > 12) {
-                        ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyrday,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(Patientsagespinner);
-                    }
-                    if (agesinteger > 29) {
-                        ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyr,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(Patientsagesyr);
+                    try {
+                        if (agesinteger < 12) {
+                            ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(PatientsagespinnerAdapter);
+                        }
+                        if (agesinteger > 12) {
+                            ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyrday,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(Patientsagespinner);
+                        }
+
+                        if (agesinteger > 29) {
+                            ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyr,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(Patientsagesyr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
         });
 
         if (GlobalClass.summary_models != null) {
-            brand_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND());
-            selectType_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE());
-            name_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
-            sub_source_code.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
-            age_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
 
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")) {
-                labname_linear.setVisibility(View.VISIBLE);
-                samplecollectionponit.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
-            } else {
-                labname_linear.setVisibility(View.GONE);
+            try {
+                brand_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND());
+                selectType_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE());
+                name_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+                sub_source_code.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
+                age_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
+
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")) {
+                    if (selectType_txt.getText().equals("HOME") ||selectType_txt.getText().equals("DPS")){
+                        labname_linear.setVisibility(View.GONE);
+                    }else {
+                        labname_linear.setVisibility(View.VISIBLE);
+                    }
+
+                    samplecollectionponit.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
+                } else {
+                    labname_linear.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 
             Date date = null;
             String output = null;
+
             try {
                 //Converting the input String to Date
                 date = sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
@@ -244,39 +268,54 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             sct_txt.setText(output);
 
             ArrayList<String> getOnlyBarcodes = new ArrayList<>();
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
-                for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                    getOnlyBarcodes.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
-                    String displayBarcodes = TextUtils.join(",", getOnlyBarcodes);
-                    barcode_number.setText(displayBarcodes);
-                }
-            ArrayList<String> getOnlyTestNames = new ArrayList<>();
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
-                for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                    getOnlyTestNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
-                    String displayslectedtest = TextUtils.join(",", getOnlyTestNames);
-                    test_names_txt.setText("Tests : " + displayslectedtest);
+
+            try {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
+                    for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+                        getOnlyBarcodes.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
+                        String displayBarcodes = TextUtils.join(",", getOnlyBarcodes);
+                        barcode_number.setText(displayBarcodes);
+                    }
+
+                ArrayList<String> getOnlyTestNames = new ArrayList<>();
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
+                    for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+                        getOnlyTestNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
+                        String displayslectedtest = TextUtils.join(",", getOnlyTestNames);
+                        test_names_txt.setText("Tests : " + displayslectedtest);
+                    }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            try {
+
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
+                    //spinyr.setSelection(0);
+                    age_type = "Y";
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
+                   // spinyr.setSelection(1);
+                    age_type = "M";
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("D")) {
+                  //  spinyr.setSelection(2);
+                    age_type = "D";
                 }
 
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
-                spinyr.setSelection(0);
-                age_type = "Y";
-            } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
-                spinyr.setSelection(1);
-                age_type = "M";
-            } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("D")) {
-                spinyr.setSelection(2);
-                age_type = "D";
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("M")) {
+                    male.setChecked(true);
+                    female.setChecked(false);
+                    saveGenderId = "M";
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("F")) {
+                    female.setChecked(true);
+                    male.setChecked(false);
+                    saveGenderId = "F";
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("M")) {
-                male.setChecked(true);
-                female.setChecked(false);
-                saveGenderId = "M";
-            } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("F")) {
-                female.setChecked(true);
-                male.setChecked(false);
-                saveGenderId = "F";
-            }
+
+
         }
 
         name_edt.addTextChangedListener(new TextWatcher() {
@@ -335,6 +374,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             }
         });
+
         next_btn_patient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

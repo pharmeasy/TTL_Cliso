@@ -28,10 +28,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListCommunication;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
-import com.example.e5322.thyrosoft.Models.CommInbox_Model;
-import com.example.e5322.thyrosoft.Models.CommToCpl_Model;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseModel;
-import com.example.e5322.thyrosoft.Models.commMaster_Model;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
@@ -39,9 +36,6 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
@@ -125,13 +119,17 @@ public class Communication_Activity extends AppCompatActivity {
                     offline_img.setVisibility(View.VISIBLE);
                     expandlistcommunication.setVisibility(View.GONE);
                 } else {
-                    if (communicationRepsponseModel.getSents() != null && communicationRepsponseModel.getSents().length > 0) {
-                        adapterSents = new ExpandableListCommunicationSents(Communication_Activity.this, communicationRepsponseModel.getSents());
-                        expandlistcommunication.setAdapter(adapterSents);
-                        offline_img.setVisibility(View.GONE);
-                        expandlistcommunication.setVisibility(View.VISIBLE);
-                    } else {
-                        Toast.makeText(Communication_Activity.this, "No data found", Toast.LENGTH_SHORT).show();
+                    try {
+                        if (communicationRepsponseModel.getSents() != null && communicationRepsponseModel.getSents().length > 0) {
+                            adapterSents = new ExpandableListCommunicationSents(Communication_Activity.this, communicationRepsponseModel.getSents());
+                            expandlistcommunication.setAdapter(adapterSents);
+                            offline_img.setVisibility(View.GONE);
+                            expandlistcommunication.setVisibility(View.VISIBLE);
+                        } else {
+                            Toast.makeText(Communication_Activity.this, "No data found", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
@@ -175,6 +173,7 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void Getdata() {
+
         barProgressDialog = new ProgressDialog(Communication_Activity.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -188,7 +187,6 @@ public class Communication_Activity extends AppCompatActivity {
 
         JSONObject jsonObject = new JSONObject();
         try {
-
             SharedPreferences prefs = Communication_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
             String user = prefs.getString("Username", null);
             String passwrd = prefs.getString("password", null);
@@ -252,7 +250,7 @@ public class Communication_Activity extends AppCompatActivity {
                 @Override
                 public void passCommIdAndMSg(Activity activity, String commiId, String message) {
 
-                    barProgressDialog = new ProgressDialog(activity, R.style.ProgressBarColor);
+                 /*   barProgressDialog = new ProgressDialog(activity, R.style.ProgressBarColor);
                     barProgressDialog.setTitle("Kindly wait ...");
                     barProgressDialog.setMessage(ToastFile.processing_request);
                     barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -260,7 +258,7 @@ public class Communication_Activity extends AppCompatActivity {
                     barProgressDialog.setMax(20);
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
-                    barProgressDialog.show();
+                    barProgressDialog.show();*/
 
                     PostQueOtp = Volley.newRequestQueue(activity);
                     JSONObject jsonObjectOtp = new JSONObject();
@@ -277,9 +275,9 @@ public class Communication_Activity extends AppCompatActivity {
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.postResponseToCommunication, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                          /*  if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
-                            }
+                            }*/
                             try {
                                 Log.e(TAG, "onResponse: " + response);
                                 String finalJson = response.toString();

@@ -38,6 +38,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 
@@ -189,73 +190,64 @@ public class RecheckAllTest extends AppCompatActivity {
             }
         });
 
+        int days = GlobalClass.getStoreSynctime(RecheckAllTest.this);
+        if (days >= Constants.DAYS_CNT) {
+            getAlltTestData();
+        } else {
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            Gson gson = new Gson();
+            String json = appSharedPrefs.getString("MyObject", "");
 
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString("MyObject", "");
+            MainModel obj = gson.fromJson(json, MainModel.class);
 
-        MainModel obj = gson.fromJson(json, MainModel.class);
+            onlySelected = new MainModel();
+            if (TESTS != null)
+                elements = TESTS.split(",");
+            fixedLenghtList = Arrays.asList(elements);
+            sample_type_array = new ArrayList<String>(fixedLenghtList);
 
-        onlySelected = new MainModel();
-        if(TESTS!=null)
-            elements = TESTS.split(",");
-        fixedLenghtList = Arrays.asList(elements);
-        sample_type_array = new ArrayList<String>(fixedLenghtList);
+            if (obj != null) {
+                if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
 
-        if (obj != null) {
-            if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+                    B2B_MASTERSMainModel b2B_mastersMainModel = new B2B_MASTERSMainModel();
+                    if (obj != null) {
+                        onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
+                        ArrayList<BaseModel> baseModelPop = new ArrayList<>();
+                        ArrayList<BaseModel> baseModelProfile = new ArrayList<>();
+                        ArrayList<BaseModel> baseModelTest = new ArrayList<>();
 
-                B2B_MASTERSMainModel b2B_mastersMainModel = new B2B_MASTERSMainModel();
-                if (obj != null) {
-                    onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
-                    ArrayList<BaseModel> baseModelPop = new ArrayList<>();
-                    ArrayList<BaseModel> baseModelProfile = new ArrayList<>();
-                    ArrayList<BaseModel> baseModelTest = new ArrayList<>();
+                        if (obj.getB2B_MASTERS().getPOP().size() != 0 && !obj.getB2B_MASTERS().getPOP().isEmpty()) {
+                            for (int i = 0; i < obj.getB2B_MASTERS().getPOP().size(); i++) {
 
-                    if (obj.getB2B_MASTERS().getPOP().size() != 0 && !obj.getB2B_MASTERS().getPOP().isEmpty()) {
-                        for (int i = 0; i < obj.getB2B_MASTERS().getPOP().size(); i++) {
+                                for (int j = 0; j < obj.getB2B_MASTERS().getPOP().get(i).getBarcodes().length; j++) {
+                                    for (int k = 0; k < sample_type_array.size(); k++) {
+                                        if (obj.getB2B_MASTERS().getPOP().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
+                                            baseModelPop.add(obj.getB2B_MASTERS().getPOP().get(i));
 
-                            for (int j = 0; j < obj.getB2B_MASTERS().getPOP().get(i).getBarcodes().length; j++) {
-                                for (int k = 0; k < sample_type_array.size(); k++) {
-                                    if (obj.getB2B_MASTERS().getPOP().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
-                                        baseModelPop.add(obj.getB2B_MASTERS().getPOP().get(i));
-
-                                        if (baseModelPop != null) {
-                                            for (int m = 0; m < baseModelPop.size(); m++) {
-                                                if (baseModelPop.get(m).getChilds() != null) {
-                                                    for (int n = 0; n < baseModelPop.get(m).getChilds().length; n++) {
-                                                        if (obj.getB2B_MASTERS().getPROFILE() != null) {
-                                                            for (int l = 0; l < obj.getB2B_MASTERS().getPROFILE().size(); l++) {
-                                                                if (baseModelPop.get(m).getChilds()[n].getCode().equals(obj.getB2B_MASTERS().getPROFILE().get(l).getCode())) {
-                                                                    baseModelProfile.add(obj.getB2B_MASTERS().getPROFILE().get(l));
+                                            if (baseModelPop != null) {
+                                                for (int m = 0; m < baseModelPop.size(); m++) {
+                                                    if (baseModelPop.get(m).getChilds() != null) {
+                                                        for (int n = 0; n < baseModelPop.get(m).getChilds().length; n++) {
+                                                            if (obj.getB2B_MASTERS().getPROFILE() != null) {
+                                                                for (int l = 0; l < obj.getB2B_MASTERS().getPROFILE().size(); l++) {
+                                                                    if (baseModelPop.get(m).getChilds()[n].getCode().equals(obj.getB2B_MASTERS().getPROFILE().get(l).getCode())) {
+                                                                        baseModelProfile.add(obj.getB2B_MASTERS().getPROFILE().get(l));
+                                                                    }
                                                                 }
                                                             }
-                                                        }
-                                                        if (obj.getB2B_MASTERS().getTESTS() != null) {
-                                                            for (int l = 0; l < obj.getB2B_MASTERS().getTESTS().size(); l++) {
-                                                                if (baseModelPop.get(m).getChilds()[n].getCode().equals(obj.getB2B_MASTERS().getTESTS().get(l).getCode())) {
-                                                                    baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(l));
+                                                            if (obj.getB2B_MASTERS().getTESTS() != null) {
+                                                                for (int l = 0; l < obj.getB2B_MASTERS().getTESTS().size(); l++) {
+                                                                    if (baseModelPop.get(m).getChilds()[n].getCode().equals(obj.getB2B_MASTERS().getTESTS().get(l).getCode())) {
+                                                                        baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(l));
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
-                                        }
 
 
-                                        if (baseModelProfile != null) {
-                                            b2B_mastersMainModel.setPROFILE(baseModelProfile);
-                                            if (baseModelTest != null) {
-                                                b2B_mastersMainModel.setTESTS(baseModelTest);
-                                                onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
-                                                callAdapter(onlySelected);
-                                            }
-                                        }
-
-
-                                        if (baseModelPop != null) {
-                                            b2B_mastersMainModel.setPOP(baseModelPop);
                                             if (baseModelProfile != null) {
                                                 b2B_mastersMainModel.setPROFILE(baseModelProfile);
                                                 if (baseModelTest != null) {
@@ -264,86 +256,94 @@ public class RecheckAllTest extends AppCompatActivity {
                                                     callAdapter(onlySelected);
                                                 }
                                             }
+
+
+                                            if (baseModelPop != null) {
+                                                b2B_mastersMainModel.setPOP(baseModelPop);
+                                                if (baseModelProfile != null) {
+                                                    b2B_mastersMainModel.setPROFILE(baseModelProfile);
+                                                    if (baseModelTest != null) {
+                                                        b2B_mastersMainModel.setTESTS(baseModelTest);
+                                                        onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
+                                                        callAdapter(onlySelected);
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
+
                             }
 
                         }
 
-                    }
+
+                        if (obj.getB2B_MASTERS().getPROFILE().size() != 0 && !obj.getB2B_MASTERS().getPROFILE().isEmpty()) {
+                            for (int i = 0; i < obj.getB2B_MASTERS().getPROFILE().size(); i++) {
+                                for (int j = 0; j < obj.getB2B_MASTERS().getPROFILE().get(i).getBarcodes().length; j++) {
+                                    for (int k = 0; k < sample_type_array.size(); k++) {
+                                        if (obj.getB2B_MASTERS().getPROFILE().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
+                                            baseModelProfile.add(obj.getB2B_MASTERS().getPROFILE().get(i));
 
 
-                    if (obj.getB2B_MASTERS().getPROFILE().size() != 0 && !obj.getB2B_MASTERS().getPROFILE().isEmpty()) {
-                        for (int i = 0; i < obj.getB2B_MASTERS().getPROFILE().size(); i++) {
-                            for (int j = 0; j < obj.getB2B_MASTERS().getPROFILE().get(i).getBarcodes().length; j++) {
-                                for (int k = 0; k < sample_type_array.size(); k++) {
-                                    if (obj.getB2B_MASTERS().getPROFILE().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
-                                        baseModelProfile.add(obj.getB2B_MASTERS().getPROFILE().get(i));
-
-
-                                        if (baseModelProfile != null) {
-                                            for (int l = 0; l < baseModelProfile.size(); l++) {
-                                                if (baseModelProfile.get(l).getChilds() != null) {
-                                                    for (int m = 0; m < baseModelProfile.get(l).getChilds().length; m++) {
-                                                        for (int r = 0; r < obj.getB2B_MASTERS().getTESTS().size(); r++) {
-                                                            if (baseModelProfile.get(l).getChilds()[m].getCode().equals(obj.getB2B_MASTERS().getTESTS().get(r).getCode())) {//
-                                                                baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(r));
+                                            if (baseModelProfile != null) {
+                                                for (int l = 0; l < baseModelProfile.size(); l++) {
+                                                    if (baseModelProfile.get(l).getChilds() != null) {
+                                                        for (int m = 0; m < baseModelProfile.get(l).getChilds().length; m++) {
+                                                            for (int r = 0; r < obj.getB2B_MASTERS().getTESTS().size(); r++) {
+                                                                if (baseModelProfile.get(l).getChilds()[m].getCode().equals(obj.getB2B_MASTERS().getTESTS().get(r).getCode())) {//
+                                                                    baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(r));
+                                                                }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
+
+
+                                            if (baseModelProfile != null) {
+                                                b2B_mastersMainModel.setPROFILE(baseModelProfile);
+                                                if (baseModelTest != null) {
+                                                    b2B_mastersMainModel.setTESTS(baseModelTest);
+                                                    onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
+                                                    callAdapter(onlySelected);
+                                                }
+                                            }
+
                                         }
+                                    }
+                                }
 
+                            }
 
-                                        if (baseModelProfile != null) {
-                                            b2B_mastersMainModel.setPROFILE(baseModelProfile);
+                        }
+
+                        if (obj.getB2B_MASTERS().getTESTS().size() != 0 && !obj.getB2B_MASTERS().getTESTS().isEmpty()) {
+                            for (int i = 0; i < obj.getB2B_MASTERS().getTESTS().size(); i++) {
+
+                                for (int j = 0; j < obj.getB2B_MASTERS().getTESTS().get(i).getBarcodes().length; j++) {
+                                    for (int k = 0; k < sample_type_array.size(); k++) {
+
+                                        if (obj.getB2B_MASTERS().getTESTS().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
+                                            baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(i));
                                             if (baseModelTest != null) {
                                                 b2B_mastersMainModel.setTESTS(baseModelTest);
                                                 onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
                                                 callAdapter(onlySelected);
                                             }
-                                        }
 
+                                        }
                                     }
                                 }
                             }
 
                         }
-
                     }
 
-                    if (obj.getB2B_MASTERS().getTESTS().size() != 0 && !obj.getB2B_MASTERS().getTESTS().isEmpty()) {
-                        for (int i = 0; i < obj.getB2B_MASTERS().getTESTS().size(); i++) {
-
-                            for (int j = 0; j < obj.getB2B_MASTERS().getTESTS().get(i).getBarcodes().length; j++) {
-                                for (int k = 0; k < sample_type_array.size(); k++) {
-
-                                    if (obj.getB2B_MASTERS().getTESTS().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
-                                        baseModelTest.add(obj.getB2B_MASTERS().getTESTS().get(i));
-                                        if (baseModelTest != null) {
-                                            b2B_mastersMainModel.setTESTS(baseModelTest);
-                                            onlySelected.setB2B_MASTERS(b2B_mastersMainModel);
-                                            callAdapter(onlySelected);
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
-
-                    }
                 }
-
-
             } else {
-//                Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+                getAlltTestData();
             }
-        } else {
-
-            getAlltTestData();
-//            Toast.makeText(mActivity, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -384,13 +384,15 @@ public class RecheckAllTest extends AppCompatActivity {
                     ArrayList<BaseModel> baseModelTest = new ArrayList<>();
 
                     mainModel = gson.fromJson(response.toString(), MainModel.class);
-                    if(TESTS!=null)
+                    if (TESTS != null)
                         elements = TESTS.split(",");
                     fixedLenghtList = Arrays.asList(elements);
                     sample_type_array = new ArrayList<String>(fixedLenghtList);
 
 
                     if (mainModel.getB2B_MASTERS().getPOP().size() != 0 && !mainModel.getB2B_MASTERS().getPOP().isEmpty()) {
+
+
                         for (int i = 0; i < mainModel.getB2B_MASTERS().getPOP().size(); i++) {
 
                             for (int j = 0; j < mainModel.getB2B_MASTERS().getPOP().get(i).getBarcodes().length; j++) {
@@ -515,7 +517,7 @@ public class RecheckAllTest extends AppCompatActivity {
 
                 // onlySelected
 
-
+                GlobalClass.StoreSyncTime(RecheckAllTest.this);
                 globalClass.dismissProgressDialog();
             }
         }, new Response.ErrorListener() {

@@ -146,14 +146,14 @@
             android:title="SGC PGC Entry" />
     </group>
 
-    <group
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/blood_s_entry"
-            android:icon="@drawable/sgc_pgc_d"
-            android:visible="true"
-            android:title="Blood Sugar entry" />
-    </group>
+    <!-- <group
+         android:checkableBehavior="single">
+         <item
+             android:id="@+id/blood_s_entry"
+             android:icon="@drawable/sgc_pgc_d"
+             android:visible="true"
+             android:title="Blood Sugar entry" />
+     </group>-->
 
     <group
         android:id="@+id/group14"
@@ -163,6 +163,17 @@
             android:icon="@drawable/comm_d"
             android:title="Communication" />
     </group>
+
+
+  <!--  <group
+        android:id="@+id/group_video"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/vid_leggy"
+            android:icon="@drawable/videoicon"
+            android:title="Leggy Video" />
+
+    </group>-->
 
     <group
         android:id="@+id/group25"
@@ -252,8 +263,30 @@
         <item
             android:id="@+id/accr_data"
             android:icon="@drawable/accredation"
-            android:visible="true"
-            android:title="Accreditation" />
+            android:title="Accreditation"
+            android:visible="true" />
+
+    </group>
+
+    <group
+        android:id="@+id/group_offer"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/offer_data"
+            android:icon="@drawable/offer"
+            android:title="Special Offers"
+            android:visible="true" />
+
+    </group>
+
+    <group
+        android:id="@+id/group_articles"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/articles_data"
+            android:icon="@drawable/health_article_icon"
+            android:title="Health Articles"
+            android:visible="true" />
 
     </group>
 
@@ -272,8 +305,8 @@
         <item
             android:id="@+id/broadCast"
             android:icon="@drawable/broadcast"
-            android:visible="false"
-            android:title="Broadcast" />
+            android:title="Broadcast"
+            android:visible="false" />
     </group>
 
     <group
@@ -282,8 +315,8 @@
         <item
             android:id="@+id/campIntimation"
             android:icon="@drawable/camp"
-            android:visible="false"
-            android:title="Camp Intimation" />
+            android:title="Camp Intimation"
+            android:visible="false" />
     </group>
 
 

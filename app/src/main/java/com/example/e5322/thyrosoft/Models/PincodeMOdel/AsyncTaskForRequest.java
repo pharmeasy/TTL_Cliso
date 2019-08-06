@@ -32,6 +32,7 @@ public class AsyncTaskForRequest {
             Log.e(AsyncTaskForRequest.class.getSimpleName(), "getdocumentspinner: ");
             // abstractApiModel.setHeader(getHeader(AbstractApiModel.APPLICATION_JSON));
             abstractApiModel.setRequestUrl(AbstractApiModel.SERVER_BASE_API_URL + abstractApiModel.DOCUMENTSPINNER + "/" + APi_key + "/" + Data + "/" + Type);
+            Log.e(AsyncTaskForRequest.class.getSimpleName(), "getdocumentspinner : "+AbstractApiModel.SERVER_BASE_API_URL + abstractApiModel.DOCUMENTSPINNER + "/" + APi_key + "/" + Data + "/" + Type);
             apiCallAsyncTask.setHttpMethod((APICall.GET_METHOD));
             apiCallAsyncTask.setContentType(AbstractApiModel.APPLICATION_JSON);
             apiCallAsyncTask.setApiModel(abstractApiModel);

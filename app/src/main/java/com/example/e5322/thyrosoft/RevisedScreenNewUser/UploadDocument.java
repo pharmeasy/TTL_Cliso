@@ -52,18 +52,12 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.NedResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.Neddatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.PgcsResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.ResponseParser;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.StaffResponseModel;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.UploadDocumentPostRequestlModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.UploadDocumentdatamodel;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.UploadPostRequestlModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.WithoutexpiryResponsemodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.pgcdatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.sgcdatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.sgcsResponseModel;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.staffdatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.uploadspinnerResponseModel;
-import com.example.e5322.thyrosoft.Models.tspsinnerdatamodel;
-import com.example.e5322.thyrosoft.Models.tspspinnerResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -83,8 +77,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
-import static android.widget.Toast.LENGTH_SHORT;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class UploadDocument extends AbstractActivity {
@@ -110,14 +104,15 @@ public class UploadDocument extends AbstractActivity {
     private TableRow trm, th;
     String type4 = "Tam03";
     TextView mis, mis2;
-    Button  btn_submit;
+    Button btn_submit;
     String image = "";
     String imageName;
     ImageView edt_expiry1;
     EditText edt_purpose, edt_remarks;
     TextView edt_expiry, title, preview_img_txt;
-    LinearLayout nedll, sgcll, pgcll, expiryll,ll_upload;
+    LinearLayout nedll, sgcll, pgcll, expiryll, ll_upload;
     ImageView gtick, back, home;
+    String spincode;
 
     private int mYear, mMonth, mDay;
     private Calendar fromDt;
@@ -243,6 +238,8 @@ public class UploadDocument extends AbstractActivity {
         });*/
 
 
+        //btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
+
         edt_purpose.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -261,8 +258,14 @@ public class UploadDocument extends AbstractActivity {
                             Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         edt_purpose.setText(enteredString.substring(1));
+                       /*btn_submit.setBackground(getResources().getDrawable(R.drawable.next_button));
+                        btn_submit.setEnabled(true);
+                        btn_submit.setClickable(true);*/
                     } else {
                         edt_purpose.setText("");
+                       /* btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
+                        btn_submit.setEnabled(false);
+                        btn_submit.setClickable(false);*/
                     }
                 }
             }
@@ -290,9 +293,8 @@ public class UploadDocument extends AbstractActivity {
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                         || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
                         || enteredString.startsWith("9")) {
-                    Toast.makeText(UploadDocument.this,
-                            ToastFile.remark,
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UploadDocument.this, ToastFile.remark, Toast.LENGTH_SHORT).show();
+
                     if (enteredString.length() > 0) {
                         edt_remarks.setText(enteredString.substring(1));
                     } else {
@@ -313,6 +315,7 @@ public class UploadDocument extends AbstractActivity {
 
 
         finalsetfromdate = appPreferenceManager.getLeaveFromDate();
+
         try {
             DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             Date date1 = (Date) formatter.parse(finalsetfromdate);
@@ -328,6 +331,7 @@ public class UploadDocument extends AbstractActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         edt_expiry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -360,8 +364,6 @@ public class UploadDocument extends AbstractActivity {
         edt_expiry1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Get Current Date
                 final Calendar c = Calendar.getInstance();
                 mYear = c.get(Calendar.YEAR);
                 mMonth = c.get(Calendar.MONTH);
@@ -374,7 +376,7 @@ public class UploadDocument extends AbstractActivity {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                //  edt_expiry.setText(DateUtils.Req_Date_Req(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year, "dd-MM-yyyy", "dd-MM-yyyy"));
+
                                 edt_expiry.setText(DateUtils.Req_Date_Req(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, "yyyy-MM-dd", "yyyy-MM-dd"));
 
                                 fromDt.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
@@ -406,8 +408,7 @@ public class UploadDocument extends AbstractActivity {
         category_spr1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (category_spr1.getSelectedItem()
-                        .equals("NED")) {
+                if (category_spr1.getSelectedItem().equals("NED")) {
                     nedll.setVisibility(View.VISIBLE);
                     sgcll.setVisibility(View.GONE);
                     pgcll.setVisibility(View.GONE);
@@ -416,16 +417,14 @@ public class UploadDocument extends AbstractActivity {
                     passSpinnervalue = category_spr1.getSelectedItem().toString();
                     fetchtDocumentpinner();
 
-                } else if (category_spr1.getSelectedItem()
-                        .equals("SGC")) {
+                } else if (category_spr1.getSelectedItem().equals("SGC")) {
                     nedll.setVisibility(View.GONE);
                     sgcll.setVisibility(View.VISIBLE);
                     pgcll.setVisibility(View.GONE);
                     passSpinnervalue = category_spr1.getSelectedItem().toString();
                     fetchtDocumentpinner();
                     expiryll.setVisibility(View.GONE);
-                } else if (category_spr1.getSelectedItem()
-                        .equals("PGC")) {
+                } else if (category_spr1.getSelectedItem().equals("PGC")) {
                     nedll.setVisibility(View.GONE);
                     sgcll.setVisibility(View.GONE);
                     pgcll.setVisibility(View.VISIBLE);
@@ -440,6 +439,7 @@ public class UploadDocument extends AbstractActivity {
 
             }
         });
+
         ll_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -456,6 +456,7 @@ public class UploadDocument extends AbstractActivity {
             public void onClick(View v) {
 
                 File imgFile = new File(picturePath);
+
                 if (imgFile.exists()) {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     LayoutInflater li = LayoutInflater.from(UploadDocument.this);
@@ -485,51 +486,68 @@ public class UploadDocument extends AbstractActivity {
                 document_spin_value = document_spr.getSelectedItem().toString();
                 edt_remarksUpdate = edt_remarks.getText().toString();
 
-                if (selectedSpinItem.equalsIgnoreCase("NED")) {
-                    if (ned_spr.getSelectedItem().toString().length() > 0)
-                        ned_value = ned_spr.getSelectedItem().toString();
-                    exp_Date = edt_expiry.getText().toString();
+                if (selectedSpinItem != null && document_spin_value != null && edt_remarksUpdate != null) {
+                    if (selectedSpinItem.equalsIgnoreCase("NED")) {
+                        if (ned_spr.getSelectedItem().toString().length() > 0)
+                            ned_value = ned_spr.getSelectedItem().toString();
+                        exp_Date = edt_expiry.getText().toString();
 
-                    if (ned_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                        TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName == null) {
-                        TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (exp_Date.equalsIgnoreCase("")) {
-                        TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
-                        uploadDocument();
-                    }
-                } else if (selectedSpinItem.equalsIgnoreCase("SGC")) {
-                    ned_value = sgc_spr.getSelectedItem().toString();
-                    exp_Date = "";
-                    if (ned_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                        TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName == null) {
-                        TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
-                        uploadDocument();
-                    }
-                } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
-                    ned_value = pgc_spr.getSelectedItem().toString();
-                    exp_Date = "";
-                    if (ned_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                        TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                        TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (imageName == null) {
-                        TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
-                        uploadDocument();
+                        String[] parts = ned_value.split("-");
+                        spincode = parts[0];
+
+                        if (ned_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (exp_Date.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
+                            uploadDocument();
+                        }
+                    } else if (selectedSpinItem.equalsIgnoreCase("SGC")) {
+                        ned_value = sgc_spr.getSelectedItem().toString();
+                        exp_Date = "";
+
+                        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                        while (m.find()) {
+                            spincode = m.group(1);
+                        }
+
+                        if (ned_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
+                            uploadDocument();
+                        }
+                    } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
+                        ned_value = pgc_spr.getSelectedItem().toString();
+                        exp_Date = "";
+
+                        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                        while (m.find()) {
+                            spincode = m.group(1);
+                        }
+
+                        if (ned_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                            TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
+                            uploadDocument();
+                        }
                     }
                 }
             }
@@ -550,9 +568,10 @@ public class UploadDocument extends AbstractActivity {
 
         PostQueOtp = Volley.newRequestQueue(UploadDocument.this);
         JSONObject jsonObjectOtp = new JSONObject();
+
         try {
             jsonObjectOtp.put("apikey", api_key);
-            jsonObjectOtp.put("code", user);
+            jsonObjectOtp.put("code", spincode);
             jsonObjectOtp.put("letter_type", document_spin_value);
             jsonObjectOtp.put("purpose", edt_remarksUpdate);
             jsonObjectOtp.put("attached_file", imageName);
@@ -565,6 +584,9 @@ public class UploadDocument extends AbstractActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        System.out.println(TAG + jsonObjectOtp);
+        System.out.println(TAG + Api.uploadDocument);
+
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.uploadDocument, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
 
 
@@ -573,6 +595,7 @@ public class UploadDocument extends AbstractActivity {
                 if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
                 }
+
                 try {
                     Log.e(TAG, "onResponse: " + response);
                     String finalJson = response.toString();
@@ -583,12 +606,10 @@ public class UploadDocument extends AbstractActivity {
                     ResId = parentObjectOtp.getString("ResId");
 
                     if (Response.equalsIgnoreCase("Success")) {
-                        TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                         Intent i = new Intent(UploadDocument.this, UploadDocument.class);
                         startActivity(i);
                         finish();
-                    } else {
-                        TastyToast.makeText(UploadDocument.this, "Document not uploaded successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 
                 } catch (JSONException e) {
@@ -601,18 +622,20 @@ public class UploadDocument extends AbstractActivity {
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
                 } else {
-
                     System.out.println(error);
                 }
             }
         });
+
         jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
                 150000,
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         PostQueOtp.add(jsonObjectRequest1);
+
         Log.e(TAG, "SendFeedbackToAPI: json" + jsonObjectOtp);
         Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
+
     }
 
 
@@ -630,7 +653,6 @@ public class UploadDocument extends AbstractActivity {
     }
 
     private void fetchsgcspinner() {
-
         AsyncTaskForRequest asyncTaskForRequest = new AsyncTaskForRequest(UploadDocument.this);
         ApiCallAsyncTask fetchSgcDetailApiAsyncTask = asyncTaskForRequest.getsgcspinnner(api_key, Data, type6, user);
         fetchSgcDetailApiAsyncTask.setApiCallAsyncTaskDelegate(new FetchsgcspinnerdataApiAsyncTaskDelegateResult());
@@ -679,6 +701,7 @@ public class UploadDocument extends AbstractActivity {
                 Cursor cursor = UploadDocument.this.getContentResolver().query(targetUri,
                         filePathColumn, null, null, null);
                 cursor.moveToFirst();
+
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 picturePath = cursor.getString(columnIndex);
                 cursor.close();
@@ -719,7 +742,6 @@ public class UploadDocument extends AbstractActivity {
     }
 
     private void Defaultupload() {
-
         AsyncTaskForRequest asyncTaskForRequest = new AsyncTaskForRequest(UploadDocument.this);
         ApiCallAsyncTask fetchSgcDetailApiAsyncTask = asyncTaskForRequest.getDefaultupload(APi_key, type4);
         fetchSgcDetailApiAsyncTask.setApiCallAsyncTaskDelegate(new FetchdefaultdataApiAsyncTaskDelegateResult());
@@ -751,7 +773,7 @@ public class UploadDocument extends AbstractActivity {
                     for (int i = 0; i < neddatamodelsarr.size(); i++) {
                         nedspinnerdata.add(neddatamodelsarr.get(i).getNAME());
                     }
-                }else
+                } else
                     nedspinnerdata.add("-Select-");
 
                 ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(
@@ -830,6 +852,7 @@ public class UploadDocument extends AbstractActivity {
                             UploadDocument.this, R.layout.upload_document_spin, sgcspinnerdata);
                     adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     sgc_spr.setAdapter(adapter4);
+
                 }
             }
         }
@@ -900,12 +923,8 @@ public class UploadDocument extends AbstractActivity {
 
         @Override
         public void onApiCancelled() {
-
-
             CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
         }
     }
-
-
 }
 

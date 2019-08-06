@@ -470,15 +470,15 @@ public class BMC_ProductListingActivity extends Activity {
 
         @NonNull
         @Override
-        public ViewAllTestAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View v = inflater.inflate(R.layout.bmc_product_name_item, parent, false);
-            ViewAllTestAdapter.ViewHolder vh = new ViewAllTestAdapter.ViewHolder(v);
+            ViewHolder vh = new ViewHolder(v);
             return vh;
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewAllTestAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             holder.outlab_test.setText(productList.get(position).getName());
             holder.checked.setVisibility(View.GONE);
             holder.gray_check.setVisibility(View.GONE);
