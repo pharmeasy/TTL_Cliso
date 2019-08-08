@@ -51,7 +51,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon">
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -66,7 +65,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBcm2CJDh69483Z9dZrSNRqjX1l-nuNo-o" />
 
-        <!--<activity android:name=".startscreen.Splash_screenActivity" />-->
+        <!-- <activity android:name=".startscreen.Splash_screenActivity" /> -->
 
         <activity
             android:name=".startscreen.SplashScreen"
@@ -88,11 +87,9 @@
         <activity
             android:name=".Activity.BillingDetailsActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.LeggyVideo_Activity"
             android:screenOrientation="landscape" />
-
         <activity
             android:name=".Registration.Registration_first_screen"
             android:label="@string/title_activity_main2"
@@ -130,7 +127,6 @@
         <activity
             android:name=".WOE.MainActivityFirebase"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.AccreditationActivity"
             android:screenOrientation="portrait" />
@@ -153,7 +149,6 @@
         <activity
             android:name=".WOE.SummaryActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".SpecialOffer.SpecialOffer_Activity"
             android:screenOrientation="portrait" />
@@ -252,7 +247,8 @@
             android:name=".Activity.VidoePlayerActivity"
             android:screenOrientation="portrait" />
 
-        <!-- <provider
+        <!--
+         <provider
              android:name="android.support.v4.content.FileProvider"
              android:authorities="${applicationId}.fileprovider"
              android:exported="false"
@@ -260,8 +256,8 @@
              <meta-data
                  android:name="android.support.FILE_PROVIDER_PATHS"
                  android:resource="@xml/file_provider_paths" />
-         </provider>-->
-
+         </provider>
+        -->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -274,14 +270,12 @@
         </provider>
 
         <activity android:name=".Activity.BroadcastActivity" />
-
         <activity
             android:name=".Cliso_BMC.BMC_MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Cliso_BMC.BMC_ProductListingActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.HealthArticle_Activity"
             android:screenOrientation="portrait" />
@@ -294,7 +288,6 @@
         <activity
             android:name=".Cliso_BMC.BMC_Scan_BarcodeActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.HealthTipsDetail_Activity"
             android:screenOrientation="portrait" />
@@ -304,10 +297,12 @@
         <activity
             android:name=".Cliso_BMC.BMC_SelectSampleTypeActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".SpecialOffer.OfferScan_Activity"
             android:screenOrientation="portrait" />
+
+        <activity android:name=".Cliso_BMC.BMC_VideoActivity"/>
+
     </application>
 
 </manifest>

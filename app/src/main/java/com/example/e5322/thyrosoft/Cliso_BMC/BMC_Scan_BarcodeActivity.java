@@ -147,8 +147,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     ArrayList<String> saveLocation;
-    RadioGroup location_radio_grp;
-    RadioButton cpl_rdo, rpl_rdo;
     RequestQueue barcodeDetailsdata;
     ArrayList<ScannedBarcodeDetails> BMC_FinalBarcodeDetailsList;
     File trf_img = null, receipt_img = null;
@@ -247,9 +245,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
         title = (TextView) findViewById(R.id.title);
         amt_collected_and_total_amt_ll = (LinearLayout) findViewById(R.id.amt_collected_and_total_amt_ll);
         lab_alert_spin = (TextView) findViewById(R.id.lab_alert_spin);
-        location_radio_grp = (RadioGroup) findViewById(R.id.location_radio_grp);
-        cpl_rdo = (RadioButton) findViewById(R.id.cpl_rdo);
-        rpl_rdo = (RadioButton) findViewById(R.id.rpl_rdo);
         enterAmt = (EditText) findViewById(R.id.enterAmt);
         next = (Button) findViewById(R.id.next);
         btn_upload_trf = (Button) findViewById(R.id.btn_upload_trf);
@@ -488,28 +483,12 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
             if (saveLocation != null && !saveLocation.isEmpty()) {
                 for (int i = 0; i < saveLocation.size(); i++) {
                     if (saveLocation.contains("CPL")) {
-                        location_radio_grp.setVisibility(View.GONE);
                         setLocation = "CPL";
                     } else {
-                        location_radio_grp.setVisibility(View.VISIBLE);
-                        setLocation = null;
+                        setLocation = "RPL";
                     }
                 }
             }
-
-            rpl_rdo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setLocation = "RPL";
-                }
-            });
-            cpl_rdo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    setLocation = "CPL";
-                }
-            });
-
 
             Set<String> hs = new HashSet<>();
             hs.addAll(temparraylist);
@@ -602,12 +581,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please select TRF image", Toast.LENGTH_SHORT).show();
                 } else if (receipt_img == null) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please select receipt image", Toast.LENGTH_SHORT).show();
-                } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
-                    if (setLocation == null) {
-                        TastyToast.makeText(BMC_Scan_BarcodeActivity.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                    } else {
-                        doFinalWoe(totalamt, getTestSelection);
-                    }
                 } else {
                     doFinalWoe(totalamt, getTestSelection);
                 }
@@ -738,7 +711,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 getBrand_name = savepatientDetails.getString("WOEbrand", null);
                 getPincode = savepatientDetails.getString("pincode", null);
                 sampleCollectionDate = getFinalDate;
-                String getOnlyTime = getFinalTime.substring(0, getFinalTime.length() - 3);
                 DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
                 Date date = null;

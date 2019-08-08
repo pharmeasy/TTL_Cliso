@@ -84,6 +84,7 @@ public class ToastFile {
     public static String slt_ampm = "Please select AM/PM";
     public static String slt_sample_cll_point = "Please select sample collection point";
     public static String sct_grt_than_crnt_tm = "SCT should not be greater than current time";
+    public static String sct_blank = "SCT should not be blank";
     public static String crt_addr = "Please enter correct address";
     public static String addre25long = "Address should be 25 characters long";
     public static String btech_name = "Please select Btech name";
