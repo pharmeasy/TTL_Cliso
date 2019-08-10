@@ -40,6 +40,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:name=".Controller.ControllersGlobalInitialiser"
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:debuggable="true"
@@ -300,9 +301,13 @@
         <activity
             android:name=".SpecialOffer.OfferScan_Activity"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".Cliso_BMC.BMC_VideoActivity"/>
-
+        <activity
+            android:name=".Cliso_BMC.BMC_VideoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Cliso_BMC.BMC_StockAvailabilityActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity"></activity>
     </application>
 
 </manifest>

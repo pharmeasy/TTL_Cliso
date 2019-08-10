@@ -35,7 +35,7 @@ public class BMC_MainActivity extends AppCompatActivity {
     Activity activity;
     Fragment fragment;
     private Global globalClass;
-    private ImageView img_logout, img_video;
+    private ImageView img_logout, img_material;
     private Object currentFragment;
     private String TAG = BMC_MainActivity.class.getSimpleName();
 
@@ -83,14 +83,14 @@ public class BMC_MainActivity extends AppCompatActivity {
 
     private void initUI() {
         img_logout = (ImageView) findViewById(R.id.img_logout);
-        img_video = (ImageView) findViewById(R.id.img_video);
+        img_material = (ImageView) findViewById(R.id.img_material);
     }
 
     private void initListeners() {
-        img_video.setOnClickListener(new View.OnClickListener() {
+        img_material.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(BMC_MainActivity.this, BMC_VideoActivity.class);
+                Intent intent = new Intent(BMC_MainActivity.this, BMC_StockAvailabilityActivity.class);
                 startActivity(intent);
             }
         });

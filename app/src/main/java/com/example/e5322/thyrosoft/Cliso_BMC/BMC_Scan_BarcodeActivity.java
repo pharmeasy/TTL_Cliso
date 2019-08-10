@@ -40,8 +40,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -114,12 +112,13 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
     public static ArrayList<String> labAlerts;
     public static RequestQueue sendGPSDetails;
     public static RequestQueue POstQue;
+    public static WeakReference<Bitmap> rotateBitmap;
     public IntentIntegrator scanIntegrator;
     public String specimenttype1;
     public int position1 = 0;
     SharedPreferences prefs;
     String setLocation = null;
-    EditText enterAmt;
+    EditText enterAmt, edt_trfNumber, edt_receiptNumber;
     TextView title;
     Button next, btn_upload_trf, btn_upload_receipt;
     ImageView back;
@@ -163,7 +162,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
     private AlertDialog.Builder alertDialog;
     private int collectedAmt;
     private int totalAmount;
-    private String getCollectedAmt;
+    private String getCollectedAmt, getTRFnumber, getReceiptNumber;
     private String testsnames;
     private DatabaseHelper myDb;
     private String patientName, patientYearType, user, passwrd, access, api_key, status;
@@ -220,7 +219,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
     private Uri imageUri;
     private String json;
     private boolean barcodeExistsFlag = false;
-    public static WeakReference<Bitmap> rotateBitmap;
 
     public static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
@@ -246,6 +244,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
         amt_collected_and_total_amt_ll = (LinearLayout) findViewById(R.id.amt_collected_and_total_amt_ll);
         lab_alert_spin = (TextView) findViewById(R.id.lab_alert_spin);
         enterAmt = (EditText) findViewById(R.id.enterAmt);
+        edt_trfNumber = (EditText) findViewById(R.id.edt_trfNumber);
+        edt_receiptNumber = (EditText) findViewById(R.id.edt_receiptNumber);
         next = (Button) findViewById(R.id.next);
         btn_upload_trf = (Button) findViewById(R.id.btn_upload_trf);
         btn_upload_receipt = (Button) findViewById(R.id.btn_upload_receipt);
@@ -563,7 +563,11 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 } else {
                     lab_alert_pass_toApi = lab_alert_spin.getText().toString();
                 }
+
+                getTRFnumber = edt_trfNumber.getText().toString().trim().toUpperCase();
+                getReceiptNumber = edt_receiptNumber.getText().toString().trim().toUpperCase();
                 getCollectedAmt = enterAmt.getText().toString();
+
                 if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
                     collectedAmt = Integer.parseInt(getCollectedAmt);
                     totalAmount = Integer.parseInt(totalamt);
@@ -577,6 +581,14 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Select test", Toast.LENGTH_SHORT).show();
                 } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
+                } else if (getTRFnumber == null || getTRFnumber.isEmpty()) {
+                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter TRF number", Toast.LENGTH_SHORT).show();
+                } else if (getTRFnumber.length() < 6) {
+                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter valid TRF number", Toast.LENGTH_SHORT).show();
+                } else if (getReceiptNumber == null || getReceiptNumber.isEmpty()) {
+                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter receipt number", Toast.LENGTH_SHORT).show();
+                } else if (getReceiptNumber.length() < 10) {
+                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter valid receipt number", Toast.LENGTH_SHORT).show();
                 } else if (trf_img == null) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please select TRF image", Toast.LENGTH_SHORT).show();
                 } else if (receipt_img == null) {
@@ -873,7 +885,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                                         TastyToast.makeText(BMC_Scan_BarcodeActivity.this, "" + Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                     }
 
-                                                    new AsyncTaskPost_uploadfile(api_key, user, barcode_patient_id, trf_img, receipt_img, getTestSelection, totalamt).execute();
+                                                    new AsyncTaskPost_uploadfile(api_key, user, barcode_patient_id, trf_img, receipt_img, getTestSelection, totalamt, getTRFnumber, getReceiptNumber).execute();
 
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
@@ -890,6 +902,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                                     if (!((Activity) BMC_Scan_BarcodeActivity.this).isFinishing())
                                                         barProgressDialog.dismiss();
                                                 }
+                                                flagcallonce = false;
                                             }
                                         });
                                         objectRequest.setRetryPolicy(new DefaultRetryPolicy(
@@ -929,8 +942,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                 if (BMC_Scan_BarcodeActivity.this instanceof Activity) {
                                     if (!((Activity) BMC_Scan_BarcodeActivity.this).isFinishing())
                                         barProgressDialog.dismiss();
-                                    flagcallonce = false;
                                 }
+                                flagcallonce = false;
                                 if (error != null) {
                                 } else {
                                     System.out.println(error);
@@ -948,7 +961,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                         if (!GlobalClass.isNetworkAvailable(BMC_Scan_BarcodeActivity.this)) {
                             TastyToast.makeText(BMC_Scan_BarcodeActivity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
-                            new AsyncTaskPost_uploadfile(api_key, user, barcode_patient_id, trf_img, receipt_img, getTestSelection, totalamt).execute();
+                            new AsyncTaskPost_uploadfile(api_key, user, barcode_patient_id, trf_img, receipt_img, getTestSelection, totalamt, getTRFnumber, getReceiptNumber).execute();
                         }
                     }
                 }
@@ -1219,12 +1232,18 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
         dialog.show();
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        img_trf.setImageBitmap(null);
+    }
+
     class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         String apiKey, sourceCode, patientID;
         File trfImageFile, receiptImageFile;
-        String getTestSelection, totalamt;
+        String getTestSelection, totalamt, TRFnumber, receiptNumber;
 
-        public AsyncTaskPost_uploadfile(String apiKey, String sourceCode, String patientID, File trfImageFile, File receiptImageFile, String getTestSelection, String totalamt) {
+        public AsyncTaskPost_uploadfile(String apiKey, String sourceCode, String patientID, File trfImageFile, File receiptImageFile, String getTestSelection, String totalamt, String getTRFnumber, String getReceiptNumber) {
             this.apiKey = apiKey;
             this.sourceCode = sourceCode;
             this.patientID = patientID;
@@ -1232,6 +1251,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
             this.receiptImageFile = receiptImageFile;
             this.getTestSelection = getTestSelection;
             this.totalamt = totalamt;
+            this.TRFnumber = getTRFnumber;
+            this.receiptNumber = getReceiptNumber;
 
             status_code = 0;
         }
@@ -1260,6 +1281,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 builder.addPart("KEY", new StringBody("" + apiKey));
                 builder.addPart("SOURCECODE", new StringBody("" + sourceCode));
                 builder.addPart("PATIENTID", new StringBody("" + patientID));
+                builder.addPart("TRFNUMBER", new StringBody("" + TRFnumber));
+                builder.addPart("RECEIPTNUMBER", new StringBody("" + receiptNumber));
                 builder.addPart("TYPE", new StringBody("DATA Reciept"));
                 builder.addPart("MODE", new StringBody("BMC App"));
 
@@ -1274,14 +1297,13 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                     }
                 }
 
-                Log.e(TAG, "Post params:- " + "KEY" + ":" + apiKey + "\n" + "SOURCECODE" + ":" + sourceCode + "\n" + "PATIENTID" + ":" + patientID + "\n" + "TYPE:DATA Reciept" + "\n" + "MODE:BMC App" + "\n"
-                        + "\"DataSheet\"" + ":\"" + trfImageFile + "\"," + "\"Receipt\"" + ":\"" + receiptImageFile + "\"");
+                Log.e(TAG, "Post params:- " + "\nKEY:" + apiKey + "\nSOURCECODE:" + sourceCode + "\nPATIENTID:" + patientID + "\nTRFNUMBER:" + TRFnumber
+                        + "\nRECEIPTNUMBER:" + receiptNumber + "\nTYPE:DATA Reciept" + "\nMODE:BMC App" + "\nDataSheet:" + trfImageFile + "\nReceipt:" + receiptImageFile);
 
                 httpPost.setEntity(builder.build());
                 HttpResponse httpResponse = httpclient.execute(httpPost);
                 inputStream = httpResponse.getEntity().getContent();
                 Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
-
                 status_code = httpResponse.getStatusLine().getStatusCode();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
@@ -1343,11 +1365,5 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
             inputStream.close();
             return result;
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        img_trf.setImageBitmap(null);
     }
 }

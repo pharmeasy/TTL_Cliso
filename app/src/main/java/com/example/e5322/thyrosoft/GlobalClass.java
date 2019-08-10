@@ -32,6 +32,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RetryPolicy;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.Activity.HealthArticle_Activity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -766,5 +770,10 @@ public class GlobalClass {
             barProgressDialog = null;
         }
 
+    }
+
+    public static void volleyRetryPolicy(JsonObjectRequest request) {
+        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
     }
 }

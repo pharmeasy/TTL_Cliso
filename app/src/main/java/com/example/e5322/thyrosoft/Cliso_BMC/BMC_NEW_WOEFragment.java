@@ -1895,15 +1895,6 @@ public class BMC_NEW_WOEFragment extends Fragment {
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(150000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-    @Override
-    public void onDestroy() {
-        if (mContext instanceof Activity) {
-            if (!((Activity) mContext).isFinishing())
-                barProgressDialog.dismiss();
-        }
-        super.onDestroy();
-    }
-
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

@@ -30,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -64,44 +65,48 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 public class OfferScan_Activity extends AppCompatActivity implements RecyclerInterface, View.OnClickListener {
-    ArrayList<BaseModel.Barcodes> barcodesArrayList;
+    public static ArrayList<String> labAlerts;
+    public static com.android.volley.RequestQueue POstQue;
     public String TAG = getClass().getSimpleName();
+    public IntentIntegrator scanIntegrator;
+    public String specimenttype1;
+    public int position1 = 0;
+    ArrayList<BaseModel.Barcodes> barcodesArrayList;
     AdapterBarcode_New adapterBarcode;
     ArrayList<BaseModel> selctedTest = new ArrayList<>();
     RecyclerView recycler_barcode;
-    public static ArrayList<String> labAlerts;
-    private MyPojo myPojo;
-    public IntentIntegrator scanIntegrator;
     TextView lab_alert_spin;
-    public String specimenttype1;
-    public int position1 = 0;
-    private SpinnerDialog spinnerDialog;
     int payment;
-    private String referenceID, referrredBy;
     TextView setAmt;
     ArrayList<String> saveLocation;
-    private int collectedAmt;
-    private int totalAmount, versionCode;
     String setLocation = "RPL";
     LinearLayout lin_labalert;
-
-    private String nameString, barcode_patient_id;
-    private String getFinalAge;
-    private String saveGenderId;
-    private String getFinalTime;
     ArrayList<BarcodelistModel> barcodelists;
     ArrayList<String> getBarcodeArrList;
     BarcodelistModel barcodelist;
     boolean flagcallonce = false;
-    private String getageType;
-    private String testsnames;
-    private String genderType;
-    private String getFinalDate, user, passwrd, access, api_key, status, message;
     SharedPreferences savepatientDetails, preferences;
     SharedPreferences prefs;
     String labname, tspaddress, pincode;
     ProgressDialog progressDialog;
     String labAddress;
+    Button btn_next;
+    TextView show_selected_tests_data;
+    String getTestSelection, totalamt, type;
+    RadioButton cpl_rdo, rpl_rdo;
+    private MyPojo myPojo;
+    private SpinnerDialog spinnerDialog;
+    private String referenceID, referrredBy;
+    private int collectedAmt;
+    private int totalAmount, versionCode;
+    private String nameString, barcode_patient_id;
+    private String getFinalAge;
+    private String saveGenderId;
+    private String getFinalTime;
+    private String getageType;
+    private String testsnames;
+    private String genderType;
+    private String getFinalDate, user, passwrd, access, api_key, status, message;
     private boolean barcodeExistsFlag = false;
     private String getRemark;
     private String getBrand_name;
@@ -111,14 +116,9 @@ public class OfferScan_Activity extends AppCompatActivity implements RecyclerInt
     private String ageType;
     private String patientAddress;
     private String lab_alert_pass_toApi;
-    Button btn_next;
-    TextView show_selected_tests_data;
-    String getTestSelection, totalamt, type;
     private String getCollectedAmt = "";
     private EditText enterAmt;
     private RadioGroup location_radio_grp;
-    public static com.android.volley.RequestQueue POstQue;
-    RadioButton cpl_rdo, rpl_rdo;
     private String version;
     private String btechIDToPass, contactno, btechNameToPass;
 
@@ -146,6 +146,8 @@ public class OfferScan_Activity extends AppCompatActivity implements RecyclerInt
     }
 
     private void initView() {
+        findViewById(R.id.back).setOnClickListener(this);
+        findViewById(R.id.home).setOnClickListener(this);
 
         PackageInfo pInfo = null;
         try {
@@ -617,6 +619,13 @@ public class OfferScan_Activity extends AppCompatActivity implements RecyclerInt
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.back:
+                finish();
+                break;
+            case R.id.home:
+                startActivity(new Intent(OfferScan_Activity.this, ManagingTabsActivity.class));
+                break;
+
             case R.id.next:
                 getTestSelection = show_selected_tests_data.getText().toString();
                 final String passProdcucts = testsnames;

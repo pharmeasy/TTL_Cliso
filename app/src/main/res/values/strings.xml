@@ -88,5 +88,7 @@
     <string name="img_upload">Upload image</string>
     <string name="view_trf_image"><u>View TRF image</u></string>
     <string name="view_receipt_image"><u>View receipt image</u></string>
+    <string name="stock_digits">0123456789-.</string>
+    <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
 
 </resources>
