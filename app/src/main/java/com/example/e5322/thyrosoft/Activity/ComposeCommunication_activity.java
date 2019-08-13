@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -52,6 +54,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private Global globalClass;
     ProgressDialog barProgressDialog;
     Button sendcomm;
+    String comefrom;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -75,6 +78,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_compose_communication);
 
+        if (getIntent().getExtras() != null) {
+            comefrom = getIntent().getExtras().getString("comefrom");
+        }
+
         spinnercomm = (Spinner) findViewById(R.id.spinnercomm);
         sendcomm = (Button) findViewById(R.id.sendcomm);
         commuTXT = (EditText) findViewById(R.id.commuTXT);
@@ -91,7 +98,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalClass.goToHome(ComposeCommunication_activity.this);
+                if (comefrom.equals("BMC"))
+                    startActivity(new Intent(ComposeCommunication_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                else
+                    GlobalClass.goToHome(ComposeCommunication_activity.this);
             }
         });
 
@@ -120,14 +130,12 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
+
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     TastyToast.makeText(ComposeCommunication_activity.this, ToastFile.crt_txt, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {

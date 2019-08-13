@@ -66,7 +66,7 @@
             android:layout_weight="0.7"
             android:background="@color/cement_light"
             android:gravity="center"
-            android:text="Credit Limit : 2,58,374"
+            android:text="Credit Limit : "
             android:textColor="@color/maroon"
             android:textSize="16dp"
             android:textStyle="italic|bold" />
@@ -135,7 +135,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="2,48,635"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -185,7 +185,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="2,02,719"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -250,7 +250,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="48,635"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -302,7 +302,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="27,481"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -362,7 +362,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="2,48,635"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -412,7 +412,7 @@
                             android:layout_marginTop="-2dp"
                             android:layout_weight="2"
                             android:gravity="center"
-                            android:text="2,48,635"
+                            android:text=""
                             android:textColor="@color/maroon"
                             android:textSize="15dp"
                             android:textStyle="bold" />

@@ -26,6 +26,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListCommunication;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseModel;
@@ -59,12 +60,17 @@ public class Communication_Activity extends AppCompatActivity {
     private SharedPreferences prefs;
     private String user, api_key;
     private String communicationMasterResponse, inboxesResponse, resId, sentsResponse, responseID;
+    String comefrom;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_communication);
+
+        if (getIntent().getExtras() != null) {
+            comefrom = getIntent().getExtras().getString("comefrom");
+        }
 
         FromCPL = (TextView) findViewById(R.id.FromCPL);
         ToCPL = (TextView) findViewById(R.id.ToCPL);
@@ -89,7 +95,10 @@ public class Communication_Activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalClass.goToHome(Communication_Activity.this);
+                if (comefrom.equals("BMC"))
+                    startActivity(new Intent(Communication_Activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                else
+                    GlobalClass.goToHome(Communication_Activity.this);
             }
         });
 
@@ -126,6 +135,8 @@ public class Communication_Activity extends AppCompatActivity {
                             offline_img.setVisibility(View.GONE);
                             expandlistcommunication.setVisibility(View.VISIBLE);
                         } else {
+                            expandlistcommunication.setVisibility(View.GONE);
+                            adapterSents.notifyDataSetChanged();
                             Toast.makeText(Communication_Activity.this, "No data found", Toast.LENGTH_SHORT).show();
                         }
                     } catch (Exception e) {
@@ -147,7 +158,6 @@ public class Communication_Activity extends AppCompatActivity {
                     expandlistcommunication.setVisibility(View.GONE);
                 } else {
                     offline_img.setVisibility(View.GONE);
-                    expandlistcommunication.setVisibility(View.VISIBLE);
                     setAdapter();
                 }
             }
@@ -157,6 +167,7 @@ public class Communication_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Communication_Activity.this, ComposeCommunication_activity.class);
+                i.putExtra("comefrom", comefrom);
                 startActivity(i);
             }
         });
@@ -245,7 +256,9 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void setAdapter() {
+
         if (communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
+            expandlistcommunication.setVisibility(View.VISIBLE);
             adapter = new ExpandableListCommunication(Communication_Activity.this, communicationRepsponseModel.getInboxes(), new Interface_Pass_CommunicationValue() {
                 @Override
                 public void passCommIdAndMSg(Activity activity, String commiId, String message) {
@@ -316,7 +329,9 @@ public class Communication_Activity extends AppCompatActivity {
                 }
             });
             expandlistcommunication.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         } else {
+            expandlistcommunication.setVisibility(View.GONE);
             Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show();
         }
     }

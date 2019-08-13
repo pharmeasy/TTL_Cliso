@@ -21,6 +21,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.Communication_Activity;
+import com.example.e5322.thyrosoft.Activity.Feedback_activity;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.Login;
@@ -35,7 +37,7 @@ public class BMC_MainActivity extends AppCompatActivity {
     Activity activity;
     Fragment fragment;
     private Global globalClass;
-    private ImageView img_logout, img_material;
+    private ImageView img_logout, img_material, img_communicaation, img_feedback;
     private Object currentFragment;
     private String TAG = BMC_MainActivity.class.getSimpleName();
 
@@ -84,6 +86,9 @@ public class BMC_MainActivity extends AppCompatActivity {
     private void initUI() {
         img_logout = (ImageView) findViewById(R.id.img_logout);
         img_material = (ImageView) findViewById(R.id.img_material);
+
+        img_communicaation = (ImageView) findViewById(R.id.img_communication);
+        img_feedback = (ImageView) findViewById(R.id.img_report);
     }
 
     private void initListeners() {
@@ -94,6 +99,28 @@ public class BMC_MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+
+        img_communicaation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BMC_MainActivity.this, Communication_Activity.class);
+                intent.putExtra("comefrom","BMC");
+                startActivity(intent);
+            }
+        });
+
+
+        img_feedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(BMC_MainActivity.this, Feedback_activity.class);
+                intent.putExtra("comefrom","BMC");
+                startActivity(intent);
+            }
+        });
+
+
 
         img_logout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -587,8 +587,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter valid TRF number", Toast.LENGTH_SHORT).show();
                 } else if (getReceiptNumber == null || getReceiptNumber.isEmpty()) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter receipt number", Toast.LENGTH_SHORT).show();
-                } else if (getReceiptNumber.length() < 10) {
-                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter valid receipt number", Toast.LENGTH_SHORT).show();
+                } else if (getReceiptNumber.length() <= 6) {
+                    Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please enter minimum 7 digit receipt number", Toast.LENGTH_SHORT).show();
                 } else if (trf_img == null) {
                     Toast.makeText(BMC_Scan_BarcodeActivity.this, "Please select TRF image", Toast.LENGTH_SHORT).show();
                 } else if (receipt_img == null) {

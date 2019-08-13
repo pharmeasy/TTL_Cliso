@@ -217,7 +217,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
 
 
-
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
                 .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
@@ -369,6 +368,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
+                i.putExtra("comefrom", "TSP");
                 startActivity(i);
             }
 
@@ -384,121 +384,123 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         } else*/
             if (id == R.id.thyroshop) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                httpIntent.setData(Uri.parse("http://www.charbi.com/CDN/Applications/Android/Thyroshop.apk"));
-                startActivity(httpIntent);
-            }
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                    httpIntent.setData(Uri.parse("http://www.charbi.com/CDN/Applications/Android/Thyroshop.apk"));
+                    startActivity(httpIntent);
+                }
 
 
-        } else if (id == R.id.billing) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.billing) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
 
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 7);
-                carouselFragment = new CarouselFragment();
-                carouselFragment.setArguments(bundle);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", 7);
+                    carouselFragment = new CarouselFragment();
+                    carouselFragment.setArguments(bundle);
+                    final FragmentManager fragmentManager = getSupportFragmentManager();
 
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, carouselFragment)
-                        .commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, carouselFragment)
+                            .commit();
 
-            }
-
-
-        } else if (id == R.id.upload_document_navigation) {
-
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, UploadDocument.class);
-                startActivity(i);
-
-            }
+                }
 
 
-        } else if (id == R.id.sgc_pgc_entry_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Sgc_Pgc_Entry_Activity.class);
-                startActivity(i);
+            } else if (id == R.id.upload_document_navigation) {
 
-            }
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, UploadDocument.class);
+                    startActivity(i);
+
+                }
 
 
-        } else if (id == R.id.ledger) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 4);
-                carouselFragment = new CarouselFragment();
-                carouselFragment.setArguments(bundle);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, carouselFragment)
-                        .commit();
-            }
-        } else if (id == R.id.notice) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.sgc_pgc_entry_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Sgc_Pgc_Entry_Activity.class);
+                    startActivity(i);
+
+                }
+
+
+            } else if (id == R.id.ledger) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", 4);
+                    carouselFragment = new CarouselFragment();
+                    carouselFragment.setArguments(bundle);
+                    final FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, carouselFragment)
+                            .commit();
+                }
+            } else if (id == R.id.notice) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
                 /*Noticeboard_Fragment noticeboard_fragment = new Noticeboard_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
-                startActivity(i);
-            }
+                    Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                    startActivity(i);
+                }
 
-        } else if (id == R.id.notification) {
+            } else if (id == R.id.notification) {
 
-            Intent i = new Intent(ManagingTabsActivity.this, Notification_activity.class);
-            startActivity(i);
-
-        } else if (id == R.id.feedback) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, Notification_activity.class);
                 startActivity(i);
 
+            } else if (id == R.id.feedback) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
+                    i.putExtra("comefrom", "TSP");
+                    startActivity(i);
+
+                }
+
+
+            } else if (id == R.id.profile) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
+                    startActivity(i);
+
+                }
+
+            } else if (id == R.id.broadCast) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, BroadcastActivity.class);
+                    startActivity(i);
+
+                }
+
+            } else if (id == R.id.campIntimation) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, CampIntimation.class);
+                    startActivity(i);
+                }
+
             }
-
-
-        } else if (id == R.id.profile) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
-                startActivity(i);
-
-            }
-
-        } else if (id == R.id.broadCast) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, BroadcastActivity.class);
-                startActivity(i);
-
-            }
-
-        } else if (id == R.id.campIntimation) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, CampIntimation.class);
-                startActivity(i);
-            }
-
-        }
 
         /*else if (id == R.id.blood_s_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -510,130 +512,130 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         }*/
 
-        else if (id == R.id.logout) {
-            new AlertDialog.Builder(this)
-                    .setMessage(ToastFile.surelogout)
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            // Toast.makeText(getApplicationContext(), "You have successfully logout", Toast.LENGTH_LONG).show();
-                            distoye();
-                            logout();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        } else if (id == R.id.phone) {
-            new AlertDialog.Builder(this)
-                    .setMessage("Would you like to proceed with call?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
-                            restoredText = prefs.getString("TSPMobileNumber", null);
+            else if (id == R.id.logout) {
+                new AlertDialog.Builder(this)
+                        .setMessage(ToastFile.surelogout)
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                // Toast.makeText(getApplicationContext(), "You have successfully logout", Toast.LENGTH_LONG).show();
+                                distoye();
+                                logout();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.phone) {
+                new AlertDialog.Builder(this)
+                        .setMessage("Would you like to proceed with call?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs.getString("TSPMobileNumber", null);
 
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + restoredText));
-                            startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        } else if (id == R.id.whatsapp) {
-            new AlertDialog.Builder(this)
-                    .setMessage("Would you like to proceed with whatsapp?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
-                            restoredText = prefs1.getString("TSPMobileNumber", null);
-                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                            httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
-                            startActivity(httpIntent);
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        } else if (id == R.id.offer_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, SpecialOffer_Activity.class);
-                startActivity(i);
-            }
-        } else if (id == R.id.synchronization) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                prefsEditor1.remove("MyObject");
-                prefsEditor1.commit();
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + restoredText));
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.whatsapp) {
+                new AlertDialog.Builder(this)
+                        .setMessage("Would you like to proceed with whatsapp?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs1.getString("TSPMobileNumber", null);
+                                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
+                                startActivity(httpIntent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.offer_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, SpecialOffer_Activity.class);
+                    startActivity(i);
+                }
+            } else if (id == R.id.synchronization) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                    prefsEditor1.remove("MyObject");
+                    prefsEditor1.commit();
 
-                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
-                prefsEditor2.remove("savelabnames");
-                prefsEditor2.commit();
+                    SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
+                    prefsEditor2.remove("savelabnames");
+                    prefsEditor2.commit();
 
-                SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor deletepredf = saveAlldata.edit();
-                deletepredf.remove("saveAlldata");
-                deletepredf.commit();
+                    SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor deletepredf = saveAlldata.edit();
+                    deletepredf.remove("saveAlldata");
+                    deletepredf.commit();
 
-                SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditordata = myData.edit();
-                prefsEditordata.remove("getBtechnames");
-                prefsEditordata.commit();
+                    SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditordata = myData.edit();
+                    prefsEditordata.remove("getBtechnames");
+                    prefsEditordata.commit();
 
-                Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
-                startActivity(i);
+                    Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
+                    startActivity(i);
 
-            }
+                }
 
 
-        } else if (id == R.id.faq_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
-                startActivity(i);
+            } else if (id == R.id.faq_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
+                    startActivity(i);
 
                 /*FAQ_Fragment faq_fragment = new FAQ_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, faq_fragment, faq_fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 */
-            }
+                }
 
-        } else if (id == R.id.accr_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
-                startActivity(i);
-            }
+            } else if (id == R.id.accr_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
+                    startActivity(i);
+                }
 
-        } else if (id == R.id.articles_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, HealthArticle_Activity.class);
-                startActivity(i);
-            }
+            } else if (id == R.id.articles_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, HealthArticle_Activity.class);
+                    startActivity(i);
+                }
 
 
-        } else if (id == R.id.company_contcat) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.company_contcat) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
 
                /* Contact_list_fragment contact_list_fragment = new Contact_list_fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, contact_list_fragment, contact_list_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
-                startActivity(i);
-            }
+                    Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
+                    startActivity(i);
+                }
 
-        }
+            }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
@@ -994,6 +996,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                 case R.id.commu:
                     Intent j = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
+                    j.putExtra("comefrom", "TSP");
                     startActivity(j);
                     return true;
 

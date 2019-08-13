@@ -18,7 +18,7 @@ public class Api {
     public static String IMAGE_UPLOAD = "http://www.thyrocare.com/API/";
 
     //TODO staging
-    /*public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+/*    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "http://www.thyrocare.com/API_BETA/B2B/";
     public static String SGC = "http://www.thyrocare.local/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";

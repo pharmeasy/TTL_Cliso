@@ -31,20 +31,47 @@
             style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
+            android:layout_weight="2.5"
+            android:gravity="center|left"
             android:text="PATIENT DETAILS"
             android:textColor="@color/maroon"
             android:textSize="15sp"
             android:textStyle="bold" />
 
         <ImageView
+            android:id="@+id/img_communication"
+            style="@style/heading_text"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_26"
+            android:layout_margin="3dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:src="@drawable/cm"
+            android:textColor="@color/colorBlack"
+            android:visibility="visible" />
+
+
+        <ImageView
+            android:id="@+id/img_report"
+            style="@style/heading_text"
+            android:layout_width="0dp"
+            android:padding="@dimen/dp_2"
+            android:layout_height="@dimen/dp_26"
+            android:layout_margin="3dp"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:src="@drawable/feedbk"
+            android:textColor="@color/colorBlack"
+            android:visibility="visible" />
+
+        <ImageView
             android:id="@+id/img_material"
             style="@style/heading_text"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_2"
+            android:layout_height="@dimen/dp_26"
             android:layout_margin="3dp"
-            android:layout_weight="0.7"
+            android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/ic_material"
             android:textColor="@color/colorBlack"
@@ -54,13 +81,14 @@
             android:id="@+id/img_logout"
             style="@style/heading_text"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_26"
             android:layout_margin="3dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0.5"
             android:gravity="center"
             android:padding="5dp"
             android:src="@drawable/ic_logout"
             android:textColor="@color/colorBlack" />
+
     </LinearLayout>
 
     <RelativeLayout

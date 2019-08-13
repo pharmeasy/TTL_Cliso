@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -47,7 +48,7 @@ public class Feedback_activity extends AppCompatActivity {
     public static com.android.volley.RequestQueue PostQueOtp;
     private String blockCharacterSet = "#$^*+-/|><";
     String blockCharacterSetdata = "~#^|$%&*!+:`";
-
+    String comefrom;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -99,7 +100,9 @@ public class Feedback_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_feedback);
-
+        if (getIntent().getExtras() != null) {
+            comefrom = getIntent().getExtras().getString("comefrom");
+        }
         cry = (ImageView) findViewById(R.id.cry);
         sad = (ImageView) findViewById(R.id.sad);
         happy = (ImageView) findViewById(R.id.happy);
@@ -140,10 +143,12 @@ public class Feedback_activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalClass.goToHome(Feedback_activity.this);
+                if (comefrom.equals("BMC"))
+                    startActivity(new Intent(Feedback_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                else
+                    GlobalClass.goToHome(Feedback_activity.this);
             }
         });
-
 
 
         query.addTextChangedListener(new TextWatcher() {
