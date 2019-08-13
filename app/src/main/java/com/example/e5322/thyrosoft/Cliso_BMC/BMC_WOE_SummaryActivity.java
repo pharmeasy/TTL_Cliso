@@ -33,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
@@ -128,7 +129,7 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_WOE_SummaryActivity.this, BMC_MainActivity.class);
+                Intent i = new Intent(BMC_WOE_SummaryActivity.this, ManagingTabsActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -415,7 +416,7 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
                     if (resID.equals("RES0000")) {
                         TastyToast.makeText(BMC_WOE_SummaryActivity.this, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
-                        Intent intent = new Intent(BMC_WOE_SummaryActivity.this, BMC_MainActivity.class);
+                        Intent intent = new Intent(BMC_WOE_SummaryActivity.this, ManagingTabsActivity.class);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         GlobalClass.setFlagBackToWoe = true;
                         startActivity(intent);

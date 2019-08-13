@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -55,7 +54,6 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Fragment.SampleCollectionAdapter;
-import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BRAND_LIST;
@@ -189,7 +187,6 @@ public class BMC_NEW_WOEFragment extends Fragment {
     private ArrayList<String> btechSpinner;
     private MyPojo myPojo;
     private String referredID;
-    private Start_New_Woe.OnFragmentInteractionListener mListener;
     private String putDate;
     private String getFormatDate;
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -463,22 +460,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
             startDataSetting();
         } else {
             if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                // Set the Alert Dialog Message
-                builder.setMessage(ToastFile.intConnection)
-                        .setCancelable(false)
-                        .setPositiveButton("Retry",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int id) {
-
-                                        Start_New_Woe fragment = new Start_New_Woe();
-                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_mainLayout, fragment, fragment.getClass
-                                                ().getSimpleName()).addToBackStack(null).commit();
-                                    }
-                                });
-                alert = builder.create();
-                alert.show();
+                Toast.makeText(mContext, ToastFile.intConnection, Toast.LENGTH_SHORT).show();
             } else {
                 if (isLoaded == false) {
                     callWOMasterAPI();
@@ -714,11 +696,11 @@ public class BMC_NEW_WOEFragment extends Fragment {
         viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BMC_WOEFragment a2Fragment = new BMC_WOEFragment();
+                BMC_WOEFragment bmc_woeFragment = new BMC_WOEFragment();
                 FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                 transaction.addToBackStack(null);
                 //transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-                transaction.replace(R.id.frame_layout, a2Fragment).commitAllowingStateLoss();
+                transaction.replace(R.id.frame_layout, bmc_woeFragment).commitAllowingStateLoss();
             }
         });
 
@@ -1657,13 +1639,6 @@ public class BMC_NEW_WOEFragment extends Fragment {
         putDate = sdf.format(myCalendar.getTime());
         getFormatDate = sdf.format(myCalendar.getTime());
         dateShow.setText(putDate);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     private void callAdapter(final SourceILSMainModel obj) {

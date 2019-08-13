@@ -108,6 +108,17 @@
     </group>
 
     <group
+        android:id="@+id/group222"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/stock_availability"
+            android:icon="@drawable/ic_material"
+            android:title="Stock Availability"
+            android:visible="false" />
+
+    </group>
+
+    <group
         android:id="@+id/group10"
         android:checkableBehavior="single">
         <item
@@ -165,15 +176,15 @@
     </group>
 
 
-  <!--  <group
-        android:id="@+id/group_video"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/vid_leggy"
-            android:icon="@drawable/videoicon"
-            android:title="Leggy Video" />
+    <!--  <group
+          android:id="@+id/group_video"
+          android:checkableBehavior="single">
+          <item
+              android:id="@+id/vid_leggy"
+              android:icon="@drawable/videoicon"
+              android:title="Leggy Video" />
 
-    </group>-->
+      </group>-->
 
     <group
         android:id="@+id/group25"

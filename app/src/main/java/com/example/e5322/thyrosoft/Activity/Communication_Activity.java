@@ -26,7 +26,6 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListCommunication;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseModel;
@@ -68,9 +67,9 @@ public class Communication_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_communication);
 
-        if (getIntent().getExtras() != null) {
+        /*if (getIntent().getExtras() != null) {
             comefrom = getIntent().getExtras().getString("comefrom");
-        }
+        }*/
 
         FromCPL = (TextView) findViewById(R.id.FromCPL);
         ToCPL = (TextView) findViewById(R.id.ToCPL);
@@ -95,9 +94,9 @@ public class Communication_Activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (comefrom.equals("BMC"))
+                /*if (comefrom.equals("BMC"))
                     startActivity(new Intent(Communication_Activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                else
+                else*/
                     GlobalClass.goToHome(Communication_Activity.this);
             }
         });
@@ -167,7 +166,7 @@ public class Communication_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Communication_Activity.this, ComposeCommunication_activity.class);
-                i.putExtra("comefrom", comefrom);
+//                i.putExtra("comefrom", comefrom);
                 startActivity(i);
             }
         });

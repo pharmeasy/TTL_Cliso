@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.MainMaterialModel;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.MaterialDetailsModel;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
@@ -102,7 +103,7 @@ public class BMC_StockAvailabilityActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_StockAvailabilityActivity.this, BMC_MainActivity.class);
+                Intent i = new Intent(BMC_StockAvailabilityActivity.this, ManagingTabsActivity.class);
                 startActivity(i);
                 finish();
             }

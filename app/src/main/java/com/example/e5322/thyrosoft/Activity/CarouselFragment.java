@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import com.example.e5322.thyrosoft.Adapter.BMCViewPagerAdapter;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -21,21 +23,22 @@ import static android.content.Context.MODE_PRIVATE;
  */
 public class CarouselFragment extends Fragment {
 
+    public static Object currentFragment;
+    private static ManagingTabsActivity mContext;
     /**
      * TabPagerIndicator
      * <p>
      * Please refer to ViewPagerIndicator library
      */
     protected TabLayout tabLayout;
-    private static ManagingTabsActivity mContext;
     protected ViewPager pager;
-    public static Object currentFragment;
+    String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    String user, passwrd, access, api_key, user_code;
     private ViewPagerAdapter adapter;
     private StaffViewPagerAdapter adapterStafff;
-    String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private BMCViewPagerAdapter bmcViewPagerAdapter;
     private int positionInt = 0;
     private SharedPreferences prefs;
-    String user,passwrd,access,api_key;
 
     public CarouselFragment() {
         // Required empty public constructor
@@ -55,6 +58,13 @@ public class CarouselFragment extends Fragment {
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+        user_code = prefs.getString("USER_CODE", null);
+
+        if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+            tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        } else {
+            tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        }
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -79,12 +89,17 @@ public class CarouselFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if(access.equalsIgnoreCase("STAFF")){
-            adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
-            pager.setAdapter(adapterStafff);
-        }else{
-            adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
-            pager.setAdapter(adapter);
+        if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+            bmcViewPagerAdapter = new BMCViewPagerAdapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(bmcViewPagerAdapter);
+        } else {
+            if (access.equalsIgnoreCase("STAFF")) {
+                adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
+                pager.setAdapter(adapterStafff);
+            } else {
+                adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
+                pager.setAdapter(adapter);
+            }
         }
 
         tabLayout.setupWithViewPager(pager);
@@ -116,12 +131,15 @@ public class CarouselFragment extends Fragment {
         // currently visible tab Fragment
         OnBackPressListener currentFragment = null;
         try {
-            if(access.equalsIgnoreCase("STAFF")){
-                currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
-            }else{
-                currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
+            if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+                currentFragment = (OnBackPressListener) bmcViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
+            } else {
+                if (access.equalsIgnoreCase("STAFF")) {
+                    currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
+                } else {
+                    currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
+                }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -142,11 +160,8 @@ public class CarouselFragment extends Fragment {
             } else {
                 return true;
             }
-
         } else {
             return false;
         }
-
-        // this Fragment couldn't handle the onBackPressed call
     }
 }

@@ -36,6 +36,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -143,7 +144,7 @@ public class BMC_WOE_EditActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_WOE_EditActivity.this, BMC_MainActivity.class);
+                Intent i = new Intent(BMC_WOE_EditActivity.this, ManagingTabsActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -487,7 +488,7 @@ public class BMC_WOE_EditActivity extends AppCompatActivity {
                     if (status.equalsIgnoreCase("SUCCESS")) {
                         TastyToast.makeText(BMC_WOE_EditActivity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                         GlobalClass.setFlag_back_toWOE = true;
-                        Intent i = new Intent(BMC_WOE_EditActivity.this, BMC_MainActivity.class);
+                        Intent i = new Intent(BMC_WOE_EditActivity.this, ManagingTabsActivity.class);
                         startActivity(i);
                         finish();
                     } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
@@ -502,7 +503,6 @@ public class BMC_WOE_EditActivity extends AppCompatActivity {
                         alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent i = new Intent(BMC_WOE_EditActivity.this, Payment_Activity.class);
-                                i.putExtra("COMEFROM", "BMC_WOE_EditActivity");
                                 startActivity(i);
                             }
                         });

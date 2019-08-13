@@ -18,23 +18,11 @@ import com.example.e5322.thyrosoft.Fragment.TrackDetails;
 import com.example.e5322.thyrosoft.Fragment.Wind_up_fragment;
 import com.example.e5322.thyrosoft.R;
 
-
-/**
- * Created by shahabuddin on 6/6/14.
- */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
-
-    /**
-     * Create pager adapter
-     *
-     * @param resources
-     * @param fm
-     */
-
 
     public ViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);

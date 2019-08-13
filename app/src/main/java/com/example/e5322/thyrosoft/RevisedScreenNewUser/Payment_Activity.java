@@ -26,7 +26,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -244,14 +243,7 @@ public class Payment_Activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (COME_FROM_SCREEN.equalsIgnoreCase("BMC_WOE_EditActivity") || COME_FROM_SCREEN.equalsIgnoreCase("BMC_Scan_BarcodeActivity")) {
-                    Intent i = new Intent(Payment_Activity.this, BMC_MainActivity.class);
-                    startActivity(i);
-                    finish();
-                } else {
-                    GlobalClass.goToHome(Payment_Activity.this);
-                }
-
+                GlobalClass.goToHome(Payment_Activity.this);
             }
         });
 

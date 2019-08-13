@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
@@ -230,7 +231,7 @@ public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_Patie
 
                     if (resID.equals("RES0000")) {
                         TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Intent intent = new Intent(context1, BMC_MainActivity.class);
+                        Intent intent = new Intent(context1, ManagingTabsActivity.class);
                         GlobalClass.setFlagBackToWoe = true;
                         context1.startActivity(intent);
                     } else {

@@ -330,7 +330,7 @@ public class LedgerFragment extends RootFragment {
 
 
                                 SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
-                                String credit_limit_value = prefs.getString("credit_limit", null);
+                                String credit_limit_value = prefs.getString("credit_limit", "");
 
                                 NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
                                 String opening_bal = response.get(Constants.openingBalance).toString();

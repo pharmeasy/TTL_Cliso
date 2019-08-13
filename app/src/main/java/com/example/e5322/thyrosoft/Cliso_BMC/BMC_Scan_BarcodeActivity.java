@@ -52,6 +52,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -446,7 +447,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_Scan_BarcodeActivity.this, BMC_MainActivity.class);
+                Intent i = new Intent(BMC_Scan_BarcodeActivity.this, ManagingTabsActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -921,7 +922,6 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                         alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int which) {
                                                 Intent i = new Intent(BMC_Scan_BarcodeActivity.this, Payment_Activity.class);
-                                                i.putExtra("COMEFROM", "BMC_Scan_BarcodeActivity");
                                                 startActivity(i);
                                             }
                                         });

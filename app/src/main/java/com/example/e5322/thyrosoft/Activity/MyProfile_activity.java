@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -37,15 +38,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MyProfile_activity extends AppCompatActivity {
+    public static RequestQueue PostQue;
     TextView nametxt, dojtxt, source_codetxt, closing_bal, credit_lim;
     Button view_aadhar, pref;
     ProgressDialog barProgressDialog;
     ImageView aadhar;
-    ImageView back,home;
-
+    ImageView back, home;
     ImageView profimg;
     String prof, aadharimg;
-    public static RequestQueue PostQue;
     String aadhar_no = "";
     String URL = "";
     Bitmap decodedByte;
@@ -55,7 +55,7 @@ public class MyProfile_activity extends AppCompatActivity {
     private String api_key;
     private Global globalClass;
     private String access;
-    private String TAG=MyProfile_activity.class.getSimpleName().toString();
+    private String TAG = MyProfile_activity.class.getSimpleName();
 
     @SuppressLint("NewApi")
     @Override
@@ -69,9 +69,8 @@ public class MyProfile_activity extends AppCompatActivity {
         closing_bal = (TextView) findViewById(R.id.closing_bal);
         credit_lim = (TextView) findViewById(R.id.credit_lim);
 
-        back=(ImageView)findViewById(R.id.back);
-        home=(ImageView)findViewById(R.id.home);
-
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
 
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -93,10 +92,12 @@ public class MyProfile_activity extends AppCompatActivity {
 
         SharedPreferences getshared = getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         prof = getshared.getString("prof", null);
         if (prof != null) {
@@ -113,9 +114,9 @@ public class MyProfile_activity extends AppCompatActivity {
             String source_code = getshared.getString("source_code", null);
             String tsp_img = getshared.getString("tsp_image", null);
 
-            if(tsp_img!=null){
+            if (tsp_img != null) {
                 checkFileExists(tsp_img);
-            }else{
+            } else {
                 Glide.with(MyProfile_activity.this)
                         .load("")
                         .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.userprofile))
@@ -128,7 +129,7 @@ public class MyProfile_activity extends AppCompatActivity {
             nametxt.setText(name);
             source_codetxt.setText(source_code);
 
-        }else {
+        } else {
             GetData();
         }
 /*
@@ -184,6 +185,7 @@ public class MyProfile_activity extends AppCompatActivity {
         });*/
 
     }
+
     private void GetData() {
         barProgressDialog = new ProgressDialog(MyProfile_activity.this, R.style.ProgressBarColor);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -222,8 +224,10 @@ public class MyProfile_activity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e(TAG, "onResponse: "+response );
-                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                            Log.e(TAG, "onResponse: " + response);
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
                          /*   Glide.with(MyProfile_activity.this)
                                     .load(response.getString(Constants.tsp_image)+".jpg")
 
@@ -244,7 +248,6 @@ public class MyProfile_activity extends AppCompatActivity {
                             nametxt.setText(response.getString(Constants.name));
                             source_codetxt.setText(response.getString(Constants.source_code));
 
-
                             try {
                                 String decode = response.getString(Constants.aadhar_no).substring(response.getString(Constants.aadhar_no).lastIndexOf(",") + 1);
                                 byte[] decodedString = Base64.decode(decode, Base64.DEFAULT);
@@ -257,24 +260,26 @@ public class MyProfile_activity extends AppCompatActivity {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-                    System.out.println("error ala parat " + error);
+                    Toast.makeText(MyProfile_activity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: json"+jsonObject );
-        Log.e(TAG, "GetData: URL"+jsonObjectRequest );
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        Log.e(TAG, "GetData: json" + jsonObject);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
     }
+
     public void checkFileExists(String str) {
 
         String url = str;
@@ -283,6 +288,16 @@ public class MyProfile_activity extends AppCompatActivity {
             task.execute(url);
         }
     }
+
+    public void checkFileExists_Aadhar(String str, View view) {
+
+        String url = str;
+        if (!url.equals("")) {
+            CheckFileExistTask_Aadhar task = new CheckFileExistTask_Aadhar();
+            task.execute(url);
+        }
+    }
+
     private class CheckFileExistTask extends AsyncTask<String, Void, Boolean> {
         @Override
         protected void onPreExecute() {
@@ -327,14 +342,7 @@ public class MyProfile_activity extends AppCompatActivity {
             }
         }
     }
-    public void checkFileExists_Aadhar(String str, View view) {
 
-        String url = str;
-        if (!url.equals("")) {
-           CheckFileExistTask_Aadhar task = new CheckFileExistTask_Aadhar();
-            task.execute(url);
-        }
-    }
     private class CheckFileExistTask_Aadhar extends AsyncTask<String, Void, Boolean> {
         @Override
         protected void onPreExecute() {

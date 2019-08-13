@@ -272,9 +272,6 @@
 
         <activity android:name=".Activity.BroadcastActivity" />
         <activity
-            android:name=".Cliso_BMC.BMC_MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".Cliso_BMC.BMC_ProductListingActivity"
             android:screenOrientation="portrait" />
         <activity

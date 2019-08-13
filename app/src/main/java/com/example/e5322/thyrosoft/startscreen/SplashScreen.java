@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.startscreen;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,7 +34,6 @@ import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -62,11 +60,11 @@ public class SplashScreen extends AppCompatActivity {
     String response1;
     String resId;
     ImageView iv;
+    String USER_CODE = "";
     private int versionCode = 0;
     private String ApkUrl;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
-    String USER_CODE = "";
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -106,7 +104,7 @@ public class SplashScreen extends AppCompatActivity {
             return; // add this to prevent from doing unnecessary stuffs
         }
 
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
+        /*SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
         firstRunSplash = p.getBoolean("PREFERENCE_FIRSTSPLASH_RUN", false);
 
         if (firstRunSplash == false) {
@@ -114,7 +112,8 @@ public class SplashScreen extends AppCompatActivity {
             clearApplicationData();
         } else {
             Log.e(TAG, "deleteDir: cache is not cleraed ");
-        }
+        }*/
+
         getversion();
         PackageInfo pInfo = null;
         try {
@@ -214,9 +213,7 @@ public class SplashScreen extends AppCompatActivity {
 
                                 int intApiVersion = Integer.parseInt(newVersion);//api
                                 int intPkgversion = Integer.parseInt(preversion);//pkg
-                                //46>47intNewVersion
                                 if (intPkgversion >= intApiVersion) {//intPreversion<intNewVersion
-
                                     SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
                                     String user = prefs.getString("Username", null);
                                     String passwrd = prefs.getString("password", null);
@@ -224,22 +221,15 @@ public class SplashScreen extends AppCompatActivity {
                                     String api_key = prefs.getString("API_KEY", null);
                                     USER_CODE = prefs.getString("USER_CODE", "");
                                     if (user != null && passwrd != null) {
-                                        if (USER_CODE.startsWith("BM")) {
-                                            Intent prefe = new Intent(SplashScreen.this, BMC_MainActivity.class);
-                                            startActivity(prefe);
-                                            finish();
-                                        } else {
-                                            Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
-                                            startActivity(prefe);
-                                            finish();
-                                        }
+                                        Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
+                                        startActivity(prefe);
+                                        finish();
                                     } else {
                                         Intent i = new Intent(SplashScreen.this, Login.class);
                                         startActivity(i);
                                         finish();
                                     }
                                 } else {
-                                    //oh yeah we do need an upgrade, let the user know send an alert message
                                     AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
                                     builder.setCancelable(false);
                                     builder.setMessage(ToastFile.newer_version)
@@ -282,6 +272,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
         requestQueuepoptestILS.add(jsonObjectRequestPop);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
         Log.e(TAG, "getversion URL: " + jsonObjectRequestPop);
     }
 

@@ -37,7 +37,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
 import com.example.e5322.thyrosoft.R;
@@ -879,15 +878,15 @@ public class Login extends Activity implements View.OnClickListener {
                                 editor.putString("VERSION_NO", VERSION_NO11);
                                 editor.apply();
 
-                                if (USER_CODE11.startsWith("BM")) {
+                                /*if (USER_CODE11.startsWith("BM")) {
                                     Intent a = new Intent(Login.this, BMC_MainActivity.class);
                                     startActivity(a);
                                     TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                } else {
-                                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                    startActivity(a);
-                                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                }
+                                } else {*/
+                                Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                                startActivity(a);
+                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+//                                }
                             }
 
                         } catch (JSONException e) {

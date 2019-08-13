@@ -5,10 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -32,7 +29,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -43,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
@@ -58,34 +55,80 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private CarouselFragment carouselFragment;
-    String restoredText;
-    private String user;
     public static String getdate;
     private static String TAG = ManagingTabsActivity.class.getSimpleName();
-    private GlobalClass globalClass;
-    String prof, address, ac_code, email, mobile, pincode, user_code, name, dojresponse;
-    String passwrd, access, api_key;
-    SharedPreferences prefs;
-    TextView navigationDrawerNameTSP, ecode;
     private static android.support.v4.app.FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
+    String restoredText;
+    String prof, address, ac_code, email, mobile, pincode, user_code, name, dojresponse;
+    String passwrd, access, api_key, USER_CODE;
+    SharedPreferences prefs;
+    TextView navigationDrawerNameTSP, ecode;
     ImageView imageViewprofile, home;
+    NavigationView navigationView;
+    BottomNavigationView bottomNavigationView;
+    private CarouselFragment carouselFragment;
+    private String user;
+    private GlobalClass globalClass;
     private String closing_bal;
     private String credit_lim;
     private String source_code;
-    NavigationView navigationView;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DatabaseHelper db;
     private int offline_draft_counts;
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.home_nav:
+                    Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
+                    startActivity(i);
+                    return true;
+                case R.id.commu:
+                    Intent j = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
+//                    j.putExtra("comefrom", "TSP");
+                    startActivity(j);
+                    return true;
+
+                case R.id.loud:
+                    Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                    startActivity(k);
+                    return true;
+
+                case R.id.bell_ic:
+                    Intent l = new Intent(ManagingTabsActivity.this, Notification_activity.class);
+                    startActivity(l);
+                    return true;
+
+                case R.id.hamb_ic:
+                    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+                    drawerLayout.openDrawer(Gravity.END);
+                    return true;
+            }
+            return false;
+        }
+    };
+
+    public static boolean deleteFile(File file) {
+        boolean deletedAll = true;
+        if (file != null) {
+            if (file.isDirectory()) {
+                String[] children = file.list();
+                for (int i = 0; i < children.length; i++) {
+                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
+                }
+            } else {
+                deletedAll = file.delete();
+            }
+        }
+        return deletedAll;
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -93,10 +136,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ll);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        BottomNavigationViewHelper.removeShiftMode(navigation);
-        navigation.setItemIconTintList(null);
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
+        bottomNavigationView.setItemIconTintList(null);
 
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
@@ -111,7 +154,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             // On orientation change, it will prevent fragment recreation
             // its necessary to reserving the fragment stack inside each tab
             initScreen();
-
         } else {
             // restoring the previously created fragment
             // and getting the reference
@@ -131,79 +173,84 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         navigationDrawerNameTSP = (TextView) headerView.findViewById(R.id.navigationDrawerNameTSP);
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
-// Add Shadow with default param
-// or with custom param
+
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-
-        Date d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        String passToAPI = sdf.format(d);
-//new JSONTask().execute(Api.count + api_key + "" + "/" + user + "" + "/" + "" + passToAPI + "/getdashboard");
-        //Change the color of navigation drawer
+        USER_CODE = prefs.getString("USER_CODE", null);
 
         db = new DatabaseHelper(ManagingTabsActivity.this);
         db.open();
         offline_draft_counts = db.getProfilesCount();
         db.close();
 
+        if (!GlobalClass.isNull(USER_CODE) && USER_CODE.startsWith("BM")) {
+            bottomNavigationView.getMenu().findItem(R.id.home_nav).setVisible(true);
+            bottomNavigationView.getMenu().findItem(R.id.commu).setVisible(true);
+            bottomNavigationView.getMenu().findItem(R.id.loud).setVisible(false);
+            bottomNavigationView.getMenu().findItem(R.id.bell_ic).setVisible(false);
 
-        if (access.equals("STAFF")) {
-            //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
-//            navigationView.getMenu().findItem(R.id.woe).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.result).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
-            // navigationView.getMenu().findItem(R.id.ledger).setVisible(false);
-            //navigationView.getMenu().findItem(R.id.billing).setVisible(false);
+            navigationView.getMenu().findItem(R.id.stock_availability).setVisible(true);
             navigationView.getMenu().findItem(R.id.communication).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notice).setVisible(true);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
-            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
-            navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
-            navigationView.getMenu().findItem(R.id.accr_data);
-            navigation.getMenu().findItem(R.id.articles_data);
-
-        } else if (access.equals("ADMIN")) {
-            //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
+            navigationView.getMenu().findItem(R.id.payment).setVisible(false);
+            navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(false);
+            navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(false);
+            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
+            navigationView.getMenu().findItem(R.id.notification).setVisible(false);
+            navigationView.getMenu().findItem(R.id.notice).setVisible(false);
+            navigationView.getMenu().findItem(R.id.phone).setVisible(false);
+            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(false);
+            navigationView.getMenu().findItem(R.id.profile).setVisible(false);
+            navigationView.getMenu().findItem(R.id.synchronization).setVisible(false);
+            navigationView.getMenu().findItem(R.id.faq_data).setVisible(false);
+            navigationView.getMenu().findItem(R.id.offer_data).setVisible(false);
+            navigationView.getMenu().findItem(R.id.articles_data).setVisible(false);
+        } else {
+            if (access.equals("STAFF")) {
+                //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
 //            navigationView.getMenu().findItem(R.id.woe).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.result).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.ledger).setVisible(true);
-            //navigationView.getMenu().findItem(R.id.billing).setVisible(true);
-            navigationView.getMenu().findItem(R.id.communication).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notice).setVisible(true);
-            navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
-            navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
-            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
-            navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
-            navigationView.getMenu().findItem(R.id.accr_data);
-            navigation.getMenu().findItem(R.id.articles_data);
+                //navigationView.getMenu().findItem(R.id.result).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
+                // navigationView.getMenu().findItem(R.id.ledger).setVisible(false);
+                //navigationView.getMenu().findItem(R.id.billing).setVisible(false);
+                navigationView.getMenu().findItem(R.id.communication).setVisible(true);
+                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+                navigationView.getMenu().findItem(R.id.notice).setVisible(true);
+                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+                navigationView.getMenu().findItem(R.id.logout).setVisible(true);
+                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+                navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+            } else if (access.equals("ADMIN")) {
+                //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
+//            navigationView.getMenu().findItem(R.id.woe).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.result).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.ledger).setVisible(true);
+                //navigationView.getMenu().findItem(R.id.billing).setVisible(true);
+                navigationView.getMenu().findItem(R.id.communication).setVisible(true);
+                navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+                navigationView.getMenu().findItem(R.id.notice).setVisible(true);
+                navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+                navigationView.getMenu().findItem(R.id.logout).setVisible(true);
+                navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+                navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+                navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
+            }
         }
 
-       /* navigationView.getMenu().findItem(R.id.home_navigation).setVisible(false);
-        navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(false);
-        navigationView.getMenu().findItem(R.id.result).setVisible(false);
-        navigationView.getMenu().findItem(R.id.trackdetails).setVisible(false);
-        navigationView.getMenu().findItem(R.id.ratecal).setVisible(false);
-        navigationView.getMenu().findItem(R.id.ledger).setVisible(false);
-        navigationView.getMenu().findItem(R.id.billing).setVisible(false);
-        */
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
         String name = getProfileName.getString("name", null);
         String usercode = getProfileName.getString("usercode", null);
@@ -216,43 +263,35 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             getProfileDetails();
         }
 
-
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
                 .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
                 .into(imageViewprofile);
     }
 
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle bottomNavigationView view item clicks here.
         int id = item.getItemId();
 //        fab.setVisibility(View.VISIBLE);
 
         if (id == R.id.home_navigation) {
             try {
-
                 getIntent();
                 if (!popFragment()) {
 
                 } else {
                 }
-                Intent intentstart = new Intent(ManagingTabsActivity.this,
-                        ManagingTabsActivity.class);
-
+                Intent intentstart = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
                 startActivity(intentstart);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             // Handle the camera action
         } else if (id == R.id.guide_me) {
             Intent i = new Intent(ManagingTabsActivity.this, VidoePlayerActivity.class);
             startActivity(i);
-
         } else if (id == R.id.woe) {
-
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -368,7 +407,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
-                i.putExtra("comefrom", "TSP");
+//                i.putExtra("comefrom", "TSP");
                 startActivity(i);
             }
 
@@ -468,7 +507,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     GlobalClass.showAlertDialog(ManagingTabsActivity.this);
                 } else {
                     Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
-                    i.putExtra("comefrom", "TSP");
+//                    i.putExtra("comefrom", "TSP");
                     startActivity(i);
 
                 }
@@ -500,6 +539,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     startActivity(i);
                 }
 
+            }else if (id == R.id.stock_availability) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
+                    startActivity(i);
+                }
             }
 
         /*else if (id == R.id.blood_s_entry) {
@@ -658,13 +704,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public boolean popFragment() {
-
-
         boolean isPop = false;
 
-        Fragment currentFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.viewpager);
-
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.viewpager);
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             isPop = true;
@@ -675,39 +717,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     }
 
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView imageViewprofile;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.imageViewprofile = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap bmp = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                bmp = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error image display", e.getMessage());
-                e.printStackTrace();
-            }
-            return bmp;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageViewprofile.setImageBitmap(result);
-        }
-    }
-
-
     public void getProfileDetails() {
         RequestQueue queue = Volley.newRequestQueue(ManagingTabsActivity.this);
 
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
                     public String tsp_img;
 
@@ -764,14 +779,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                 navigationDrawerNameTSP.setText("HI");
 //                                getTspNumber();
                             }
-                            if (tsp_img != null) {
-                                new DownloadImageTask(imageViewprofile).execute(tsp_img);
-                            } else {
-                                Glide.with(ManagingTabsActivity.this)
-                                        .load("")
-                                        .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
-                                        .into(imageViewprofile);
-                            }
+
+                            Glide.with(ManagingTabsActivity.this)
+                                    .load(tsp_img)
+                                    .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
+                                    .into(imageViewprofile);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -788,117 +801,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         });
         queue.add(jsonObjectRequest);
         Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
     }
-
-    /*public class JSONTask extends AsyncTask<String, String, String> {
-        String RES_ID, URL, VERSION_NO, cancelled_count, chn_count, confirmed_count, draft_count, maxRRT, patient_count, pending_count, processdate, reported_count, response, sample_count, woedate;
-
-        @Override
-        protected void onPreExecute() {
-            barProgressDialog = new ProgressDialog(ManagingTabsActivity.this);
-            barProgressDialog.setTitle("Kindly wait ...");
-            barProgressDialog.setMessage(ToastFile.processing_request);
-            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-            barProgressDialog.setProgress(0);
-            barProgressDialog.setMax(20);
-            barProgressDialog.show();
-            barProgressDialog.setCanceledOnTouchOutside(false);
-            barProgressDialog.setCancelable(false);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
-            try {
-
-
-
-                DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
-                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-                Date date = null;
-                date = new Date();
-                String outputDateStr = outputFormat.format(date);
-
-                java.net.URL url = new URL(Api.count + api_key + "" + "/" + user + "" + "/" + outputDateStr + "" + "/getdashboard");
-                Log.e(TAG, "doInBackground: URL" + url);
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
-                InputStream stream = connection.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(stream));
-                StringBuffer buffer = new StringBuffer();
-                String line = "";
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                String finalJson = buffer.toString();
-                JSONObject parentObject = new JSONObject(finalJson);
-                RES_ID = parentObject.getString("RES_ID");
-                URL = parentObject.getString("URL");
-                VERSION_NO = parentObject.getString("VERSION_NO");
-                cancelled_count = parentObject.getString("cancelled_count");
-                chn_count = parentObject.getString("chn_count");
-                confirmed_count = parentObject.getString("confirmed_count");
-                draft_count = parentObject.getString("draft_count");
-                maxRRT = parentObject.getString("maxRRT");
-                patient_count = parentObject.getString("patient_count");
-                pending_count = parentObject.getString("pending_count");
-                processdate = parentObject.getString("processdate");
-                reported_count = parentObject.getString("reported_count");
-                response = parentObject.getString("response");
-                sample_count = parentObject.getString("sample_count");
-                woedate = parentObject.getString("woedate");
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } finally {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-                try {
-                    if (reader != null) {
-                        reader.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public void onPostExecute(final String result) {
-            super.onPostExecute(result);
-            Log.e(TAG, "doInBackground: RESPONSE" + result);
-            if (woe != null) {
-                for (int i = 0; i < woe.size(); i++) {
-                    if (woe.get(i).equals("null")) {
-                        TastyToast.makeText(ManagingTabsActivity.this, "Unauthorized user", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        logout();
-                    }
-                }
-            }
-
-
-            if (barProgressDialog.isShowing()) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
-            }
-
-        }
-    }
-*/
 
     public void logout() {
 
@@ -968,57 +872,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
     }
 
-    public static boolean deleteFile(File file) {
-        boolean deletedAll = true;
-        if (file != null) {
-            if (file.isDirectory()) {
-                String[] children = file.list();
-                for (int i = 0; i < children.length; i++) {
-                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
-                }
-            } else {
-                deletedAll = file.delete();
-            }
-        }
-        return deletedAll;
-    }
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.home_nav:
-                    Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
-                    startActivity(i);
-                    return true;
-
-                case R.id.commu:
-                    Intent j = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
-                    j.putExtra("comefrom", "TSP");
-                    startActivity(j);
-                    return true;
-
-                case R.id.loud:
-                    Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
-                    startActivity(k);
-                    return true;
-
-                case R.id.bell_ic:
-                    Intent l = new Intent(ManagingTabsActivity.this, Notification_activity.class);
-                    startActivity(l);
-                    return true;
-
-                case R.id.hamb_ic:
-                    drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-                    drawerLayout.openDrawer(Gravity.END);
-                    return true;
-            }
-            return false;
-        }
-    };
-
     private void initScreen() {
         // Creating the ViewPager container fragment once
         carouselFragment = new CarouselFragment();
@@ -1072,12 +925,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             });
 
             builder.show();
-
-
-        } else {
-            // carousel handled the back pressed task
-            // do not call super
         }
     }
-
 }

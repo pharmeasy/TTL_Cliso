@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +27,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -78,9 +76,9 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_compose_communication);
 
-        if (getIntent().getExtras() != null) {
+        /*if (getIntent().getExtras() != null) {
             comefrom = getIntent().getExtras().getString("comefrom");
-        }
+        }*/
 
         spinnercomm = (Spinner) findViewById(R.id.spinnercomm);
         sendcomm = (Button) findViewById(R.id.sendcomm);
@@ -98,9 +96,9 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (comefrom.equals("BMC"))
+                /*if (comefrom.equals("BMC"))
                     startActivity(new Intent(ComposeCommunication_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                else
+                else*/
                     GlobalClass.goToHome(ComposeCommunication_activity.this);
             }
         });
