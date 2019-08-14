@@ -35,9 +35,6 @@ public class BMCViewPagerAdapter extends FragmentPagerAdapter {
                 result = new FilterReport();
                 break;
             case 2:
-                result = new Wind_up_fragment();
-                break;
-            case 3:
                 result = new CHNfragment();
                 break;
             default:
@@ -49,7 +46,7 @@ public class BMCViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -61,8 +58,6 @@ public class BMCViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return resources.getString(R.string.page_4);
             case 2:
-                return resources.getString(R.string.page_6);
-            case 3:
                 return resources.getString(R.string.page_7);
 
             default:

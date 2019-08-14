@@ -777,6 +777,11 @@ public class GlobalClass {
         request.setRetryPolicy(policy);
     }
 
+    public static void volleyRetryPolicy(StringRequest request) {
+        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+    }
+
     public static boolean isNull(String val) {
         if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
             return true;

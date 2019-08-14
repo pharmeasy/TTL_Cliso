@@ -128,6 +128,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     private String currentMonthString;
     private String getTextofMonth;
     private ArrayList<TrackDetModel> filterPatientsArrayList;
+    String user,passwrd,access,api_key,user_code;
 
     public FilterReport() {
         // Required empty public constructor
@@ -233,6 +234,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+        user_code = prefs.getString("USER_CODE", null);
 
         full_ll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -776,17 +783,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     }
 
     private void GetData() {
-
-
         barProgressDialog.show();
 
         PostQue = Volley.newRequestQueue(getContext());
-
-        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        final String user = prefs.getString("Username", null);
-        String passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
-        String api_key = prefs.getString("API_KEY", null);
 
         JSONObject jsonObject = new JSONObject();
         try {

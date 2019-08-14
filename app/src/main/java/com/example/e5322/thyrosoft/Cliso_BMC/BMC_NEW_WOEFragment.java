@@ -1366,8 +1366,6 @@ public class BMC_NEW_WOEFragment extends Fragment {
 
                                         if (!ageString.equals("")) {
                                             conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                         }
 
                                         if (getVial_numbver.equals("")) {
@@ -1386,7 +1384,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                                             Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                         } else if (referenceBy == null || referenceBy.equals("")) {
                                             Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (btechnameTopass.equals(ToastFile.slt_btech_name)) {
+                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
                                             Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                         } else if (isChangeSCTSelected) {
                                             if (sctHr.equals("HR")) {

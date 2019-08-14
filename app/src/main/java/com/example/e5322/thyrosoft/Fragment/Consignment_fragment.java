@@ -1068,6 +1068,7 @@ Consignment_fragment extends RootFragment {
                     });
 
                 } else if (mode_value_compare.equals("Courier")) {
+                    name_edt_txt.setHint("Enter courier name");
 
                     courier_spinner_name_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
@@ -1147,7 +1148,7 @@ Consignment_fragment extends RootFragment {
 
 
                 } else if (mode_value_compare.equals("Hand Delivery")) {
-
+                    name_edt_txt.setHint("Enter name of person");
 
                     hand_del_name_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
@@ -1177,8 +1178,6 @@ Consignment_fragment extends RootFragment {
                     bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
 
                 } else if (mode_value_compare.equals("LME")) {
-
-
                     total_sample_layout.setVisibility(View.VISIBLE);
                     consignment_name_layout.setVisibility(View.VISIBLE);
                     bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
@@ -1198,7 +1197,6 @@ Consignment_fragment extends RootFragment {
                     hand_del_name_layout.setVisibility(View.GONE);
                     lineareditbarcode.setVisibility(View.GONE);
                     lineareditbarcodebsv.setVisibility(View.GONE);
-
                 }
             }
 
@@ -1240,34 +1238,23 @@ Consignment_fragment extends RootFragment {
                         TastyToast.makeText(mContext, "Select Airlines", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (flight_number_to_pass.equals("")) {
                         flight_name.requestFocus();
-                        flight_name.setError(ToastFile.flight_num);
                         TastyToast.makeText(mContext, ToastFile.flight_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (getDeparture_time.equals("")) {
+                    }  else if (getDispatchtime.equals("")) {
+                        dispatch_time.requestFocus();
+                        TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }else if (getDeparture_time.equals("")) {
                         expected_departure_time.requestFocus();
-                        expected_departure_time.setError(ToastFile.dept_tm);
                         TastyToast.makeText(mContext, ToastFile.dept_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getArrival_time.equals("")) {
-
                         expected_arrival_time.requestFocus();
-                        expected_arrival_time.setError(ToastFile.arrival_tm);
                         TastyToast.makeText(mContext, ToastFile.arrival_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (getDispatchtime.equals("")) {
-
-                        dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm);
-                        TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (d_convert.equals(compare)) {
-
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (d_convert.after(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else {
-
-
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                         Date myDate = null;
                         Date myDateDeparture_time = null;
@@ -1325,8 +1312,6 @@ Consignment_fragment extends RootFragment {
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
                         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-
-
                     }
                 } else if (mode_value_compare.equals("Bus")) {
                     String bus_name = bus_spinner.getSelectedItem().toString();
@@ -1361,33 +1346,26 @@ Consignment_fragment extends RootFragment {
                         TastyToast.makeText(mContext, "Select Bus Name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (bus_number_to_pass.equals("")) {
                         bus_number.requestFocus();
-                        bus_number.setError(ToastFile.bus_num);
                         TastyToast.makeText(mContext, ToastFile.bus_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDeparture_time.equals("")) {
                         expected_departure_time.requestFocus();
-                        expected_departure_time.setError(ToastFile.dept_tm);
                         TastyToast.makeText(mContext, ToastFile.dept_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getArrival_time.equals("")) {
                         expected_arrival_time.requestFocus();
-                        expected_arrival_time.setError(ToastFile.arrival_tm);
                         TastyToast.makeText(mContext, ToastFile.arrival_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm);
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (d_convert.equals(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (d_convert.after(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (bus_name_to_pass.equalsIgnoreCase("OTHERS")) {
                         String getBusName = bus_edt_txt.getText().toString();
                         if (getBusName.equals("")) {
                             bus_edt_txt.requestFocus();
-                            bus_edt_txt.setError(ToastFile.pls_ent_bus_name);
                             Toast.makeText(mContext, ToastFile.pls_ent_bus_name, Toast.LENGTH_SHORT).show();
                         } else {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -1541,15 +1519,12 @@ Consignment_fragment extends RootFragment {
                         TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm);
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (d_convert.equals(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         TastyToast.makeText(mContext, ToastFile.dispt_tm_condition, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (d_convert.after(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         TastyToast.makeText(mContext, ToastFile.dispt_tm_condition, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (courier_name.equals("Select Courier Name")) {
                         TastyToast.makeText(mContext, ToastFile.pls_slt_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1562,7 +1537,6 @@ Consignment_fragment extends RootFragment {
                         if (courier_name_to_pass.equals("")) {
                             TastyToast.makeText(mContext, ToastFile.ent_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             name_edt_txt.requestFocus();
-                            name_edt_txt.setError(ToastFile.ent_courier_name);
                         } else {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                             Date myDate = null;
@@ -1698,19 +1672,15 @@ Consignment_fragment extends RootFragment {
                         TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (nameof_person_hnd.equals("")) {
                         name_edt_txt.requestFocus();
-                        name_edt_txt.setError(ToastFile.per_name);
                         TastyToast.makeText(mContext, ToastFile.per_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm);
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (d_convert.equals(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (d_convert.after(compare)) {
                         dispatch_time.requestFocus();
-                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (consignment_barcode.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1948,11 +1918,8 @@ Consignment_fragment extends RootFragment {
         Log.e(TAG, "123: ");
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-
-
             Log.e(TAG, "onActivityResult: " + result);
             if (result.getContents() != null) {
-
                 getBarcodeDetails = result.getContents();
                 if (mode == 1) {
                     passBarcodeData(getBarcodeDetails);
@@ -1961,8 +1928,6 @@ Consignment_fragment extends RootFragment {
                     enter_barcodebsv.setText(getBarcodeDetails);
                     reenterbsv.setText(getBarcodeDetails);
                 }
-
-
             }
         } else {
             Log.e(TAG, "else: ");
@@ -2000,11 +1965,8 @@ Consignment_fragment extends RootFragment {
                 }
             }
         });
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         barcodeDetails.add(jsonObjectRequestPop);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
         Log.e(TAG, "passBarcodeData: url" + jsonObjectRequestPop);
     }
 

@@ -39,7 +39,6 @@ import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.example.e5322.thyrosoft.startscreen.Login;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -60,12 +59,7 @@ public class Next_Consignment_Entry extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private static ManagingTabsActivity mContext;
-    private SharedPreferences prefs;
     String user, passwrd, access, api_key;
     View viewMain;
     TextView rpl_edt_txt_nxt, total_consignment_edt_txt_nxt, cpl_edt_txt_nxt;
@@ -73,9 +67,6 @@ public class Next_Consignment_Entry extends RootFragment {
             cpl_sample_nxt;
     int mode_nxt = 0;
     IntentIntegrator scanIntegrator_nxt;
-    private RequestQueue requestQueue_nxt;
-    private String cpl_count_nxt, response1_nxt, rpl_count_nxt, total_count_nxt;
-    private OnFragmentInteractionListener mListener;
     ArrayList<String> setSpinnerTRansitTime_nxt;
     Button consignment_barcd_btn_nxt, bsv_barcode_scanning_nxt;
     ImageView img_edt_nxt, img_edt_bsv_nxt, setbackbsv_nxt, setback_nxt, img_scan_consignment_barcode, img_scan_bsv_barcode;
@@ -85,10 +76,19 @@ public class Next_Consignment_Entry extends RootFragment {
     EditText consignment_edt_txt_nxt;
     Spinner packaging_dtl_edt_txt_nxt, transit_time_spinner_nxt, consignment_temp_spinner_nxt;
     Button consignment_br_txt_nxt, btn_submit_nxt, bsv_barcode_nxt;
+    boolean flag_nxt = false;
+    ProgressDialog barProgressDialog_nxt;
+    TextView enetered_nxt, enterwindup_nxt;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private SharedPreferences prefs;
+    private RequestQueue requestQueue_nxt;
+    private String cpl_count_nxt, response1_nxt, rpl_count_nxt, total_count_nxt;
+    private OnFragmentInteractionListener mListener;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private String getBarcodeDetails_nxt;
     private RequestQueue barcodeDetails_nxt;
-
     private String packaging_dtl_nxt;
     private String temp_consignment_nxt;
     private String expt_transit_tm_nxt;
@@ -97,10 +97,7 @@ public class Next_Consignment_Entry extends RootFragment {
     private String bsv_barcode_num_nxt;
     private RequestQueue PostQue_nxt;
     private String ResponseData_nxt, message_nxt, ResId_nxt;
-    boolean flag_nxt = false;
-    ProgressDialog barProgressDialog_nxt;
     private String currentText_nxt;
-    TextView enetered_nxt, enterwindup_nxt;
 
     public Next_Consignment_Entry() {
         // Required empty public constructor
@@ -378,7 +375,7 @@ public class Next_Consignment_Entry extends RootFragment {
                 final String search_barcode = enter_barcode_nxt.getText().toString();
                 if (hasFocus) {
 
-                } else if (!search_barcode.equals("")&& search_barcode.length()>8) {
+                } else if (!search_barcode.equals("") && search_barcode.length() > 8) {
                     barcodeDetails_nxt = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                     barProgressDialog_nxt = new ProgressDialog(mContext);
                     barProgressDialog_nxt.setTitle("Kindly wait ...");
@@ -956,7 +953,7 @@ public class Next_Consignment_Entry extends RootFragment {
             if (result.getContents() != null) {
                 getBarcodeDetails_nxt = result.getContents();
                 if (mode_nxt == 1) {
-                    if (getBarcodeDetails_nxt.length() == 8) {
+                    if (getBarcodeDetails_nxt.length() >= 8 && getBarcodeDetails_nxt.length() <= 15) {
                         passBarcodeData(getBarcodeDetails_nxt);
                     } else {
                         Toast.makeText(mContext, ToastFile.invalid_brcd, Toast.LENGTH_SHORT).show();

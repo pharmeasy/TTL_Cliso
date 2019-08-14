@@ -119,7 +119,7 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
                 delete_patient_test.setVisibility(View.GONE);
             } else {
                 delete_patient_test_water.setVisibility(View.GONE);
-                delete_patient_test.setVisibility(View.VISIBLE);
+                delete_patient_test.setVisibility(View.GONE);//todo make visible once BM changes are done
             }
         } catch (Exception e) {
             e.printStackTrace();

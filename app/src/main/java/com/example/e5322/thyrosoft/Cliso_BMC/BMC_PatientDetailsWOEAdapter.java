@@ -144,12 +144,12 @@ public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_Patie
         if (patients.get(position).getIsOrder().equalsIgnoreCase("YES")) {
             holder.image_tag.setVisibility(View.GONE);
         } else {
-            holder.image_tag.setVisibility(View.VISIBLE);
+            holder.image_tag.setVisibility(View.GONE);//todo make visible once BM issue is resolved
             for (int i = 0; i < listOfSampleString.size(); i++) {
                 if (listOfSampleString.get(i).equalsIgnoreCase("WATER")) {
                     holder.image_tag.setVisibility(View.GONE);
                 } else {
-                    holder.image_tag.setVisibility(View.VISIBLE);
+                    holder.image_tag.setVisibility(View.GONE);//todo make visible once BM issue is resolved
                 }
             }
         }
