@@ -906,11 +906,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                                 flagcallonce = false;
                                             }
                                         });
-                                        objectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                                                150000,
-                                                3,
-                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                                         sendGPSDetails.add(objectRequest);
+                                        GlobalClass.volleyRetryPolicy(objectRequest);
                                         Log.e(TAG, "onResponse: url" + objectRequest);
                                         Log.e(TAG, "onResponse: json" + jsonObjectOtp);
                                     } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
@@ -950,11 +947,8 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                                 }
                             }
                         });
-                        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
-                                150000,
-                                3,
-                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                         POstQue.add(jsonObjectRequest1);
+                        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                         Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                         Log.e(TAG, "fetchData: JSON" + jsonObj);
                     } else {

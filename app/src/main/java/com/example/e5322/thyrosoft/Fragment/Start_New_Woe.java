@@ -5485,6 +5485,7 @@ public class Start_New_Woe extends RootFragment {
             });
             requestQueue.add(jsonObjectRequest2);
             Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
+//            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -5526,6 +5527,7 @@ public class Start_New_Woe extends RootFragment {
         });
         requestQueue.add(jsonObjectRequestfetchData);
         Log.e(TAG, "fetchData: URL" + jsonObjectRequestfetchData);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestfetchData);
     }
 
     private void autotextcompletefunction(JSONObject response) {

@@ -667,7 +667,6 @@ public class Wind_up_fragment extends RootFragment {
 
 
     private void fetchPatientDetails() {
-
         DateToPass = getActivity().getTitle().toString().substring(4, getActivity().getTitle().toString().length() - 0);
 
         woe_cal.setText(DateToPass);
@@ -679,7 +678,6 @@ public class Wind_up_fragment extends RootFragment {
             linearlayout2.setVisibility(View.VISIBLE);
             fetchWoeListDoneByTSP();
         }
-
     }
 
     private void fetchWoeListDoneByTSP() {
@@ -709,9 +707,7 @@ public class Wind_up_fragment extends RootFragment {
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
                 Log.e(TAG, "onResponse: response" + response);
-
                 String responsetoshow = response.optString("response", "");
 
                 if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
@@ -745,7 +741,7 @@ public class Wind_up_fragment extends RootFragment {
                         pick_up_txt.setText("0");
                     }
 
-                    //set Adpter
+                    //set Adapter
                     if (woe_model_patient_details.getPatients() != null) {
                         for (int i = 0; i < woe_model_patient_details.getPatients().size(); i++) {
                             patientsArrayList.add(woe_model_patient_details.getPatients().get(i));

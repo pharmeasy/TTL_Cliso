@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -360,7 +361,7 @@ public class ResultFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         Log.e(TAG, "Get Data for Result--->" + Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value");
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value", new com.android.volley.Response.Listener<JSONObject>() {
+                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
