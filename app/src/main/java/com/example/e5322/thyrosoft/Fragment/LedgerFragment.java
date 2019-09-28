@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.LedgerDetailsActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
@@ -61,7 +58,7 @@ public class LedgerFragment extends RootFragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit;
+    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit, txt_unbill_woe, txt_unbill_material;
     public static RequestQueue PostQue;
     Spinner year, month;
     private String mParam2;
@@ -128,8 +125,11 @@ public class LedgerFragment extends RootFragment {
         cash_cheque = (TextView) view.findViewById(R.id.cash_cheque);
         offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
-        // TextView dateview = getActivity().findViewById(R.id.show_date);
 
+        txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
+        txt_unbill_material = view.findViewById(R.id.unbilled_material);
+
+        // TextView dateview = getActivity().findViewById(R.id.show_date);
         // dateview.setVisibility(View.GONE);
 
         month = (Spinner) view.findViewById(R.id.month);
@@ -181,6 +181,7 @@ public class LedgerFragment extends RootFragment {
                 }
                 monthadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 month.setAdapter(monthadap);
+
                 if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
                     if (!flagfor1sttime) {
 
@@ -310,6 +311,8 @@ public class LedgerFragment extends RootFragment {
         }
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
+        Log.e(TAG, "GetData Request: " + jsonObject.toString());
+        Log.e(TAG, "GetData API: " + Api.LedgerSummLive);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.LedgerSummLive, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -327,10 +330,9 @@ public class LedgerFragment extends RootFragment {
                             if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
-
-
                                 SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
-                                String credit_limit_value = prefs.getString("credit_limit", "");
+
+                                String credit_limit_value = prefs.getString(Constants.credit_limit, null);
 
                                 NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
                                 String opening_bal = response.get(Constants.openingBalance).toString();
@@ -339,6 +341,8 @@ public class LedgerFragment extends RootFragment {
                                 String debit_bal = response.get(Constants.debitNotes).toString();
                                 String billed_bal = response.get(Constants.billAmount).toString();
                                 String cheque_bal = response.get(Constants.cashCheque).toString();
+                                String unbill_woe = response.get("unbilledWOE").toString();
+                                String unbill_mat = response.get("unbilledMaterial").toString();
 
 
                                 int openingbal = Integer.parseInt(opening_bal);
@@ -349,12 +353,18 @@ public class LedgerFragment extends RootFragment {
                                 int chequebal = Integer.parseInt(cheque_bal);
                                 int credit_bal_ltd = Integer.parseInt(credit_limit_value);
 
+                                int unbillwoe = Integer.parseInt(unbill_woe);
+                                int unbillmat = Integer.parseInt(unbill_mat);
+
+
                                 String ope_bal_str = numberFormat.format(openingbal);
                                 String clos_bal_str = numberFormat.format(closingbal);
                                 String credit_bal_str = numberFormat.format(creditbal);
                                 String debit_bal_str = numberFormat.format(debitbal);
                                 String billed_bal_str = numberFormat.format(billedbal);
                                 String cheque_bal_str = numberFormat.format(chequebal);
+                                String str_unbillwoe = numberFormat.format(unbillwoe);
+                                String str_unbillmat = numberFormat.format(unbillmat);
                                 String credit_bal_str_value = numberFormat.format(credit_bal_ltd);
 
                                 open_bal.setText(ope_bal_str);
@@ -363,6 +373,9 @@ public class LedgerFragment extends RootFragment {
                                 debit.setText(debit_bal_str);
                                 billed_amt.setText(billed_bal_str);
                                 cash_cheque.setText(cheque_bal_str);
+                                txt_unbill_woe.setText(str_unbillwoe);
+                                txt_unbill_material.setText(str_unbillmat);
+
                                 credit_limit.setText("Credit Limit :" + credit_bal_str_value);
 
                                 JSONArray jsonArray = response.optJSONArray(Constants.billingList);
@@ -372,7 +385,7 @@ public class LedgerFragment extends RootFragment {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
-                            e.printStackTrace();
+                            Log.e(TAG,"on error-->"+e.getLocalizedMessage());
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {

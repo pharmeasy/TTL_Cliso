@@ -7,21 +7,14 @@ import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.Models.VerifyotpRequest;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
-import com.google.gson.JsonObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
-public interface GetAPIInteface {
+public interface APIInteface {
 
 
     @GET("ORDER.svc/Health")

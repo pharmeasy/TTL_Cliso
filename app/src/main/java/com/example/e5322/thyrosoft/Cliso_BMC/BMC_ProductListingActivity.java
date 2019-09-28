@@ -398,9 +398,9 @@ public class BMC_ProductListingActivity extends Activity {
                 }
             }
         });
+        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(300000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
     }
 
     private void callAdapter(BMC_MainModel mainModel) {

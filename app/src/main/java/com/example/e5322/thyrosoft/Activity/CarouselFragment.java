@@ -120,6 +120,8 @@ public class CarouselFragment extends Fragment {
             pager.setCurrentItem(0);
         }
 
+
+
     }
 
     /**
@@ -148,6 +150,7 @@ public class CarouselFragment extends Fragment {
             // lets see if the currentFragment or any of its childFragment can handle onBackPressed
 
             boolean a = currentFragment.onBackPressed();
+
             if (!a) {
                 if (pager != null && pager.getCurrentItem() != 0) {
 
@@ -164,4 +167,5 @@ public class CarouselFragment extends Fragment {
             return false;
         }
     }
+
 }

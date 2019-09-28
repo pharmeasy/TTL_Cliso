@@ -46,7 +46,7 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_PatientDetailsWOEAdapter.ViewHolder> {
-    public static RequestQueue deletePatienDetail;
+    public static com.android.volley.RequestQueue deletePatienDetail;
     String user, passwrd, access, api_key, error, pid, response1, barcodes, resID;
     GridLayoutManager gridLayoutManager;
     Context context1;
@@ -215,7 +215,7 @@ public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_Patie
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: " + response);
@@ -257,7 +257,6 @@ public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_Patie
         deletePatienDetail.add(jsonObjectRequest1);
         Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
         Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
     }
 
     private void getPatientDetails() {

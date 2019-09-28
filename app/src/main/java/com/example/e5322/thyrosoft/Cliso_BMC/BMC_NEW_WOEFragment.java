@@ -1103,8 +1103,12 @@ public class BMC_NEW_WOEFragment extends Fragment {
                     }
                 }
             });
+
+            jsonObjectRequest2.setRetryPolicy(new DefaultRetryPolicy(
+                    300000,
+                    3,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             requestQueue.add(jsonObjectRequest2);
-            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
             Log.e(TAG, "callWOMasterAPI: URL" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1239,9 +1243,12 @@ public class BMC_NEW_WOEFragment extends Fragment {
                                                             }
                                                         }
                                                     });
+                                                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                            300000,
+                                                            3,
+                                                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                                                     reques5tQueueCheckNumber.add(jsonObjectRequestPop);
                                                     Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
-                                                    GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
                                                 }
                                             }
                                         }
@@ -1503,70 +1510,75 @@ public class BMC_NEW_WOEFragment extends Fragment {
     }
 
     private void getTspNumber() {
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Log.e(TAG, "<< onResponse: RESPONSE >>" + response);
-                    String getResponse = response.optString("RESPONSE", "");
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.e(TAG, "onResponse: RESPONSE" + response);
+                        String getResponse = response.optString("RESPONSE", "");
 
-                    if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                        GlobalClass.redirectToLogin(getActivity());
-                    } else {
-                        Gson gson = new Gson();
-                        MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
-
-                        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                        Gson gson22 = new Gson();
-                        String json22 = gson22.toJson(myPojo);
-                        prefsEditor1.putString("getBtechnames", json22);
-                        prefsEditor1.commit();
-
-                        getBtechList = new ArrayList<>();
-                        if (myPojo.getMASTERS().getBCT_LIST() != null) {
-                            for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
-                                // Toast.makeText(MainActivity.this, ""+myPojo.getMASTERS().getBCT_LIST().length, Toast.LENGTH_SHORT).show();
-                            }
+                        if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(getActivity());
                         } else {
-                            BCT_LIST bct_list = new BCT_LIST();
-                            bct_list.setMOBILE_NUMBER(mobile);
-                            bct_list.setNAME(nameofProfile);
-                            getBtechList.add(bct_list);
-                        }
-                        btechSpinner = new ArrayList<>();
-                        if (getBtechList.size() != 0) {
-                            for (int i = 0; i < getBtechList.size(); i++) {
-                                btechSpinner.add(getBtechList.get(i).getNAME());
-                                btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
+                            Gson gson = new Gson();
+                            MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
+
+                            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                            Gson gson22 = new Gson();
+                            String json22 = gson22.toJson(myPojo);
+                            prefsEditor1.putString("getBtechnames", json22);
+                            prefsEditor1.commit();
+
+                            getBtechList = new ArrayList<>();
+                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                    getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
+                                    // Toast.makeText(MainActivity.this, ""+myPojo.getMASTERS().getBCT_LIST().length, Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                BCT_LIST bct_list = new BCT_LIST();
+                                bct_list.setMOBILE_NUMBER(mobile);
+                                bct_list.setNAME(nameofProfile);
+                                getBtechList.add(bct_list);
                             }
-                        } else {
-                            BCT_LIST bct_list = new BCT_LIST();
-                            bct_list.setMOBILE_NUMBER(mobile);
-                            bct_list.setNAME(nameofProfile);
-                            getBtechList.add(bct_list);
+                            btechSpinner = new ArrayList<>();
+                            if (getBtechList.size() != 0) {
+                                for (int i = 0; i < getBtechList.size(); i++) {
+                                    btechSpinner.add(getBtechList.get(i).getNAME());
+                                    btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
+                                }
+                            } else {
+                                BCT_LIST bct_list = new BCT_LIST();
+                                bct_list.setMOBILE_NUMBER(mobile);
+                                bct_list.setNAME(nameofProfile);
+                                getBtechList.add(bct_list);
+                            }
                         }
-                    }
-                } catch (JsonSyntaxException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "onResponse: ", e);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        // Show timeout error message
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                         Toast.makeText(getActivity(), ""+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-            }
-        });
-        requestQueue.add(jsonObjectRequest2);
-        Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse == null) {
+                        if (error.getClass().equals(TimeoutError.class)) {
+                            // Show timeout error message
+                        }
+                    }
+                }
+            });
+            requestQueue.add(jsonObjectRequest2);
+            Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
+            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("TAG", "on error --->"+e.getLocalizedMessage());
+        }
     }
 
     private void fetchData() {
@@ -1602,7 +1614,6 @@ public class BMC_NEW_WOEFragment extends Fragment {
         });
         requestQueue.add(jsonObjectRequestfetchData);
         Log.e(TAG, "fetchData: URL" + jsonObjectRequestfetchData);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequestfetchData);
     }
 
     private void autotextcompletefunction(JSONObject response) {
@@ -1856,7 +1867,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
         });
         queue.add(jsonObjectRequest);
         Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(150000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
     public interface OnFragmentInteractionListener {

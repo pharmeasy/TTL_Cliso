@@ -188,6 +188,120 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/ll_mobileno_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1.6"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <EditText
+                            android:id="@+id/et_mobno"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="1dp"
+                            android:background="@drawable/background_edt"
+                            android:digits="0123456789"
+                            android:hint="PATIENT MOBILE NUMBER"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_sendotp"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_weight="0.4"
+                        android:background="@color/maroon"
+                        android:text="Send OTP"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/tv_timer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|left"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_8"
+                    android:text=""
+                    android:textAllCaps="false"
+                    android:textColor="@color/maroon"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+
+                <LinearLayout
+                    android:id="@+id/lin_otp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="35dp"
+                        android:layout_weight="1.6"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <EditText
+                            android:id="@+id/et_otp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="1dp"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/background_edt"
+                            android:digits="0123456789"
+                            android:hint="OTP"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:maxLines="1"
+                            android:nextFocusForward="@+id/home_kyc_format"
+                            android:singleLine="true"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btn_verifyotp"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_weight="0.4"
+                        android:background="@color/maroon"
+                        android:text="Verify OTP"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/namePatients"
@@ -723,7 +837,7 @@
                         android:gravity="center|left"
                         android:hint="TYPE/SEARCH REF BY"
                         android:inputType="textCapCharacters"
-                        android:maxLength="80"
+                        android:maxLength="50"
                         android:nextFocusForward="@+id/uncheck_ref"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
@@ -800,11 +914,11 @@
                         android:digits="0123456789"
                         android:hint="PATIENT MOBILE NUMBER"
                         android:inputType="number"
+                        android:nextFocusForward="@+id/home_kyc_format"
                         android:maxLength="10"
                         android:maxLines="1"
-                        android:nextFocusForward="@+id/home_kyc_format"
                         android:singleLine="true"
-                        android:textSize="12sp"></EditText>
+                        android:textSize="12sp"/>
                 </LinearLayout>
 
 

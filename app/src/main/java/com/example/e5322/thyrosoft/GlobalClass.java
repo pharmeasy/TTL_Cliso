@@ -12,6 +12,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -28,6 +30,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -736,6 +739,17 @@ public class GlobalClass {
         toast.show();
     }
 
+    public static void dynamicolordot(Context mContext, LinearLayout lin_color, int color) {
+        ImageView imageView = new ImageView(mContext);
+        imageView.setPadding(2, 0, 2, 2);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.setMarginStart(10);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageDrawable(GlobalClass.drawCircle(mContext, 50, 50, color));
+        lin_color.addView(imageView);
+    }
+
 
     public static int getStoreSynctime(Context context) {
         SharedPreferences synpref = context.getSharedPreferences("Syncpref", MODE_PRIVATE);
@@ -771,6 +785,17 @@ public class GlobalClass {
         }
 
     }
+
+    public static ShapeDrawable drawCircle(Context context, int width, int height, int color) {
+
+        //////Drawing oval & Circle programmatically /////////////
+        ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+        oval.setIntrinsicHeight(height);
+        oval.setIntrinsicWidth(width);
+        oval.getPaint().setColor(color);
+        return oval;
+    }
+
 
     public static void volleyRetryPolicy(JsonObjectRequest request) {
         RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);

@@ -3,5 +3,6 @@
 <domain-config cleartextTrafficPermitted="true">
     <domain includeSubdomains="true">www.charbi.com</domain>
     <domain includeSubdomains="true">www.thyrocare.com</domain>
+    <domain includeSubdomains="true">www.charbi.local</domain>
 </domain-config>
 </network-security-config>

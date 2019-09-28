@@ -16,6 +16,8 @@
     <string name="bs_age">Age:</string>
     <string name="bs_value">Value:</string>
     <string name="upload_trf">*Upload TRF</string>
+    <string name="billing">Per Day Billing \n(Last 30 days)</string>
+    <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
 
     <style name="medium_text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBlack</item>

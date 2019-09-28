@@ -172,7 +172,6 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
         ArrayAdapter<BSTestDataModel> adap = new ArrayAdapter<BSTestDataModel>(getActivity().getApplicationContext(), R.layout.name_age_spinner, GlobalClass.getTestList());
         adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spin_bs_test.setAdapter(adap);
-
         value_ll.setVisibility(View.GONE);
 
         mobile_edt.addTextChangedListener(new TextWatcher() {
@@ -190,6 +189,7 @@ public class Enter_Blood_sugar_data_Fragment extends Fragment {
             public void afterTextChanged(Editable s) {
                 validMobileNumber = false;
                 String enteredString = s.toString();
+
                 if (enteredString.length() == 10) {
                     if (enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                             || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5") || enteredString.startsWith("6")) {

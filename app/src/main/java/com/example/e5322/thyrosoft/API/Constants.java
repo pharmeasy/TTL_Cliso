@@ -18,6 +18,10 @@ public class Constants {
     public static String PRODUCT_TEST = "TEST";
     public static int DAYS_CNT = 2;
 
+    public static String setVideoUrl = "VideoURL";
+    public static String setFullScreen;
+    public static int timeInterval = 0;
+    public static String videoName;
 
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
@@ -212,8 +216,9 @@ public class Constants {
     public static final String debitNotes = "debitNotes";
     public static final String openingBalance = "openingBalance";
 
-    public static final String unbilledMaterial = "unbilledMaterial";
-    public static final String unbilledWOE = "unbilledWOE";
+    public static final String unbilledMaterial = "Unbilledmaterial";
+    public static final String unbilledWOE = "UnbilledWOE";
+    //public static String setVideoUrl="VideoURL";
 
     public static final String ledgerListDetails = "ledgerListDetails";
 
@@ -233,9 +238,12 @@ public class Constants {
     public static final String mobile = "mobile";
     public static final String pincode = "pincode";
     public static final String source_code = "source_code";
+    public static final String Billamount = "Billamount";
+    public static final String DAYAVG = "Days";
 
     public static final String tsp_image = "tsp_image";
     public static final String user_code = "user_code";
+    public static String preotp = "PreOTP";
 
 
     public static final String automail = "automail";
@@ -452,6 +460,21 @@ public class Constants {
     public static int Testsmodule = 2;
 
     public static int Imagepadding = 25;
+
+    public static int PAYAMOUNT = 5000;
+
+    public static String THYROTEST = "Thyro";
+    public static String THYRONAME="";
+
+    /**
+     * test Color Code
+     */
+    public static final String EDTA = "EDTA";
+    public static final String SERUM = "SERUM";
+    public static final String URINE = "URINE";
+    public static final String FLUORIDE = "FLUORIDE";
+    public static final String LITHIUMHEPARIN = "LITHIUM HEPARIN";
+    public static final String SODIUMHEPARIN = "SODIUM HEPARIN";
 
 
     public static String returnToken(Activity mContext) {

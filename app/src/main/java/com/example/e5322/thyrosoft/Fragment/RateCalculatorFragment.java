@@ -23,6 +23,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Adapter.ExapandableAdpterForB2CRate_Calculator;
 import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -71,6 +73,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -171,6 +174,9 @@ public class RateCalculatorFragment extends Fragment {
     private LinearLayout lineargetselectedtestforILS;
     List<String> showTestNmaes = new ArrayList<>();
 
+
+    LinearLayout lin_color, lin_color2;
+
     GetMainModel obj;
     Product_Rate_CalculatorModel product_rate_masterModel;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
@@ -198,6 +204,8 @@ public class RateCalculatorFragment extends Fragment {
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
 
     private String TAG = getClass().getSimpleName();
+    private TextView txt_more;
+    boolean viewmoreflag = false;
 
 
     public RateCalculatorFragment() {
@@ -227,9 +235,11 @@ public class RateCalculatorFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mContext = (ManagingTabsActivity) getActivity();
         viewrate_calfrag = inflater.inflate(R.layout.fragment_rate_calculator, container, false);
         getvalue = new ArrayList<>();
+
 
         go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
         companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
@@ -252,6 +262,28 @@ public class RateCalculatorFragment extends Fragment {
         containerlist.setItemAnimator(new DefaultItemAnimator());
         containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
+
+        lin_color = viewrate_calfrag.findViewById(R.id.lin_color);
+        lin_color2 = viewrate_calfrag.findViewById(R.id.lin_color2);
+
+        txt_more = viewrate_calfrag.findViewById(R.id.txt_more);
+        txt_more.setText("More..");
+
+        txt_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (viewmoreflag == false) {
+                    lin_color2.setVisibility(View.VISIBLE);
+                    txt_more.setText("Less");
+                    viewmoreflag = true;
+                } else {
+                    lin_color2.setVisibility(View.GONE);
+                    txt_more.setText("More");
+                    viewmoreflag = false;
+                }
+            }
+        });
+
         brand_name_rt_cal = (Spinner) viewrate_calfrag.findViewById(R.id.brand_name_rt_cal);
         out_lab_cost = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost);
         out_lab_cost_b2b = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost_b2b);
@@ -269,7 +301,6 @@ public class RateCalculatorFragment extends Fragment {
 
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         before_discount_layout2.setVisibility(View.GONE);
-
         SearchManager searchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -320,6 +351,32 @@ public class RateCalculatorFragment extends Fragment {
             }
         } else {
             requestJsonObject();
+        }
+
+
+        List<String> colorview = Arrays.asList(Constants.EDTA, Constants.SERUM, Constants.URINE, Constants.FLUORIDE);
+        List<String> colorview2 = Arrays.asList(Constants.LITHIUMHEPARIN, Constants.SODIUMHEPARIN, "OTHERS");
+
+        for (String s : colorview) {
+            if (s.equalsIgnoreCase(Constants.EDTA)) {
+                dynamicolordot(getActivity(), lin_color, mContext.getResources().getColor(R.color.edta), Constants.EDTA);
+            } else if (s.equalsIgnoreCase(Constants.SERUM)) {
+                dynamicolordot(getActivity(), lin_color, mContext.getResources().getColor(R.color.serum), Constants.SERUM);
+            } else if (s.equalsIgnoreCase(Constants.URINE)) {
+                dynamicolordot(getActivity(), lin_color, mContext.getResources().getColor(R.color.urine), Constants.URINE);
+            } else if (s.equalsIgnoreCase(Constants.FLUORIDE)) {
+                dynamicolordot(getActivity(), lin_color, mContext.getResources().getColor(R.color.flouride), Constants.FLUORIDE);
+            }
+        }
+
+        for (String s : colorview2) {
+            if (s.equalsIgnoreCase(Constants.LITHIUMHEPARIN)) {
+                dynamicolordot(getActivity(), lin_color2, mContext.getResources().getColor(R.color.lithium), Constants.LITHIUMHEPARIN);
+            } else if (s.equalsIgnoreCase(Constants.SODIUMHEPARIN)) {
+                dynamicolordot(getActivity(), lin_color2, mContext.getResources().getColor(R.color.sodium), Constants.SODIUMHEPARIN);
+            } else {
+                dynamicolordot(mContext, lin_color2, mContext.getResources().getColor(R.color.other), "OTHERS");
+            }
         }
 
         brand_name_rt_cal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -383,6 +440,7 @@ public class RateCalculatorFragment extends Fragment {
                             search_option_ttl.setVisibility(View.GONE);
                             OutLabAdapter outLabRecyclerView = new OutLabAdapter(getActivity(), filteredFiles);
                             outlab_list.setAdapter(outLabRecyclerView);
+
                         }
                     }
                 } else {
@@ -542,6 +600,7 @@ public class RateCalculatorFragment extends Fragment {
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
+
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
@@ -583,23 +642,7 @@ public class RateCalculatorFragment extends Fragment {
                             testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                         }
 
-                     /*   for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                            finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-                            getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                        }
-                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
-                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
-                            getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
-                        }
-                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
-                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
-                            getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
-                        }
-*/
+
                     }
                     callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                 }
@@ -669,6 +712,7 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     private void callAdapaterTosetData(final ArrayList<Base_Model_Rate_Calculator> finalproductlist, ArrayList<Base_Model_Rate_Calculator> getAllTests) {
+
         rateCAlAdapter = new RateCAlAdapter(mContext, finalproductlist, totalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
             @Override
             public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
@@ -809,9 +853,7 @@ public class RateCalculatorFragment extends Fragment {
                             for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                                 getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                             }
-                            brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(),
-                                    R.layout.spinnerproperty,
-                                    getBrandName));
+                            brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getBrandName));
                         }
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
@@ -872,14 +914,20 @@ public class RateCalculatorFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull final OutLabAdapter.ViewHolder holder, final int position) {
+            holder.lin_color.removeAllViews();
             holder.outlab_test.setText(outlabdetails_outLabs.get(position).getName());
-
             holder.outlab_test_rates.setText("₹ " + outlabdetails_outLabs.get(position).getRate().getB2c() + "/-");
             holder.checked.setVisibility(View.GONE);
             holder.check.setVisibility(View.VISIBLE);
 
-            if (showTestNmaes != null) {
 
+            /*TODO Below logic for Outlab Sample type color code*/
+            if (outlabdetails_outLabs != null || outlabdetails_outLabs.size() != 0) {
+                SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, "outlab", outlabdetails_outLabs, position);
+                sampleTypeColor.outLabcolor(holder.lin_color);
+            }
+
+            if (showTestNmaes != null) {
                 for (int j = 0; j < showTestNmaes.size(); j++) {
                     if (showTestNmaes.get(j).equalsIgnoreCase(outlabdetails_outLabs.get(position).getName())) {
                         holder.checked.setVisibility(View.VISIBLE);
@@ -994,6 +1042,7 @@ public class RateCalculatorFragment extends Fragment {
             boolean isSelectedDueToParent;
             String parentTestCode, parentTestname;
             ImageView check, checked;
+            LinearLayout lin_color;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -1001,6 +1050,7 @@ public class RateCalculatorFragment extends Fragment {
                 outlab_test_rates = (TextView) itemView.findViewById(R.id.outlab_test_rates);
                 check = (ImageView) itemView.findViewById(R.id.check);
                 checked = (ImageView) itemView.findViewById(R.id.checked);
+                lin_color = itemView.findViewById(R.id.lin_color);
             }
         }
 
@@ -1206,6 +1256,28 @@ public class RateCalculatorFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void dynamicolordot(Context mContext, LinearLayout lin_color, int color, String sampletype) {
+        ImageView imageView = new ImageView(mContext);
+        imageView.setPadding(2, 0, 2, 2);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.setMarginEnd(10);
+        layoutParams.setMarginStart(10);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageDrawable(GlobalClass.drawCircle(mContext, 50, 50, color));
+
+        TextView textView = new TextView(mContext);
+        textView.setText(sampletype);
+        textView.setTextSize(14);
+        LinearLayout.LayoutParams textlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        textlayoutParams.setMarginStart(10);
+        textlayoutParams.gravity = Gravity.CENTER;
+        textView.setLayoutParams(textlayoutParams);
+
+        lin_color.addView(imageView);
+        lin_color.addView(textView);
     }
 
 

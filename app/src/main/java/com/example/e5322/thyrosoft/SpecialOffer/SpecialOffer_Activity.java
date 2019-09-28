@@ -161,13 +161,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             return null;
         }
     };
+
     private String referredID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
-
 
         initView();
 
@@ -200,7 +200,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         textwatcher();
         agetextwatcher();
         Disablefields();
-
 
         referedby.addTextChangedListener(new TextWatcher() {
             @Override
@@ -399,7 +398,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                             Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
                             product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
 
-
                             for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
                                 testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
                                 Selcted_Outlab_Test.add(product_rate_masterModel.getTestRateMasterModels().get(j).getRate().getB2c());
@@ -434,6 +432,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 R.layout.list_ite, R.id.title, testRateMasterModels);
                         spin_test.setAdapter(testListAdapter);
                         barcodesList.clear();
+
                         spin_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -815,6 +814,10 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_mobno.setEnabled(true);
                         et_mobno.setClickable(true);
                         btn_sendotp.setText("Send OTP");
+
+                        btn_sendotp.setClickable(true);
+                        btn_sendotp.setEnabled(true);
+
                         et_otp.setText("");
 
                         btn_verifyotp.setVisibility(View.GONE);
@@ -1195,6 +1198,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
+
         if (validateOTPmodel.getResponse().equals("OTP Generated Successfully to your registered number")) {
             GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
 

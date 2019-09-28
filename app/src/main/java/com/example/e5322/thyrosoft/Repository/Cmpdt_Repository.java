@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
-import com.example.e5322.thyrosoft.Retrofit.GetAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 
 import retrofit2.Call;
@@ -14,7 +14,7 @@ import retrofit2.Response;
 
 public class Cmpdt_Repository {
 
-    GetAPIInteface getAPIInteface;
+    APIInteface getAPIInteface;
 
 
     public Cmpdt_Repository() {
@@ -23,7 +23,7 @@ public class Cmpdt_Repository {
     public MutableLiveData<Cmpdt_Model.ContactArrayListBean> getEmpdt() {
 
         final MutableLiveData<Cmpdt_Model.ContactArrayListBean> emplist = new MutableLiveData<>();
-        getAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.static_pages_link).create(GetAPIInteface.class);
+        getAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.static_pages_link).create(APIInteface.class);
         Call<Cmpdt_Model.ContactArrayListBean> cmpdtModelCall = getAPIInteface.getemployeedt("SUPPORT", "Contact_Details");
         Log.e("TAG", "getEmpdt: " + cmpdtModelCall.request().url());
         cmpdtModelCall.enqueue(new Callback<Cmpdt_Model.ContactArrayListBean>() {

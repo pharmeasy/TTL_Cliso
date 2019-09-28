@@ -21,8 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
 import com.example.e5322.thyrosoft.R;
@@ -60,6 +60,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     AlertDialog alertDialog, alert;
     public static com.android.volley.RequestQueue POstQueSendEstimation;
     public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
+    ImageView imageView = null;
 
     public RateCAlAdapter(ManagingTabsActivity mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, InterfaceRateCAlculator mcallback) {
         this.mContext = mContext;
@@ -83,9 +84,9 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView test_name_rate_txt, test_rate_cal_txt, txt_type;
+        TextView test_name_rate_txt, test_rate_cal_txt;
         ImageView iv_checked, iv_unchecked, iv_locked;
-        LinearLayout parent_ll;
+        LinearLayout parent_ll, lin_color;
         public boolean isSelectedDueToParent;
         public String parentTestCode, parentTestname;
 
@@ -93,16 +94,31 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             super(itemView);
             test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
             test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
-            txt_type = (TextView) itemView.findViewById(R.id.txt_type);
+            /*  txt_type = (TextView) itemView.findViewById(R.id.txt_type);*/
             iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
             iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);
             parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
+            lin_color = itemView.findViewById(R.id.lin_color);
         }
     }
 
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+
     @Override
     public void onBindViewHolder(@NonNull final RateCAlAdapter.ViewHolder viewHolder, final int position) {
+
+        viewHolder.lin_color.removeAllViews();
 
         viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
@@ -113,13 +129,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
 
-        if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
-            viewHolder.txt_type.setText("T");
-        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
-            viewHolder.txt_type.setText("P");
-        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
-            viewHolder.txt_type.setText("PO");
+        /*TODO Below logic for TTL Sample type color code*/
+        if (base_model_rate_calculators != null || base_model_rate_calculators.size() != 0) {
+            SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, base_model_rate_calculators, position);
+            sampleTypeColor.ttlcolor(viewHolder.lin_color);
         }
+
 
         if (getSelected_test.getChilds().length != 0) {
 
@@ -208,9 +223,15 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         viewHolder.isSelectedDueToParent = false;
         viewHolder.parentTestCode = "";
 
+
+        /*for (int i = 0; i <selectedTests.get(0).getBarcodes().length ; i++) {
+            Log.e(TAG,"BARCODE TYPE --->"+selectedTests.get(position).getBarcodes());
+        }*/
+
         if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {
                 Base_Model_Rate_Calculator selectedTestModel = selectedTests.get(i);
+
                 if (selectedTestModel.getCode().equals(getSelected_test.getCode())) {
                     viewHolder.iv_checked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
@@ -358,6 +379,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
 
     }
+
 
     @Override
     public int getItemCount() {

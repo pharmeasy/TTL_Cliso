@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -20,11 +22,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
@@ -112,9 +118,9 @@ public class Payment_Activity extends AppCompatActivity {
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
     ImageView back, home;
-    EditText edt_enter_amt, edt_closing_bal;
+    EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
-    String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode;
+    String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
     android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
     String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
     String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
@@ -124,6 +130,7 @@ public class Payment_Activity extends AppCompatActivity {
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
     private int buttonclickFlag = 0;
+    int CBamount = 0;
     private boolean isemailvalid = false;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
@@ -138,12 +145,14 @@ public class Payment_Activity extends AppCompatActivity {
     private String dataToSave;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
     private String randomTid;
-    private String closing_balance_pref;
+    public String closing_balance_pref;
     private RequestQueue PostQueOtp;
+    private int Today_bill;
     private String RESPONSE;
     private String ordno;
     private boolean flagForOnce = false;
     private String COME_FROM_SCREEN = "";
+    private String unbillwoe, unbillmt, crd_amt;
 
     @SuppressLint("NewApi")
     @Override
@@ -158,6 +167,9 @@ public class Payment_Activity extends AppCompatActivity {
         btn_payu = (Button) findViewById(R.id.btn_payu);
         edt_enter_amt = (EditText) findViewById(R.id.edt_enter_amt);
         edt_closing_bal = (EditText) findViewById(R.id.edt_closing_bal);
+        et_avg_bill = findViewById(R.id.edt_per_billing);
+        et_per_day = findViewById(R.id.edt_day_per);
+
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
 
@@ -175,8 +187,9 @@ public class Payment_Activity extends AppCompatActivity {
         email_id = getProfileName.getString("email", null);
         address_pref = getProfileName.getString("address", null);
         pincode_pref = getProfileName.getString("pincode", null);
+        billavg = getProfileName.getString(Constants.Billamount, null);
 
-        closing_balance_pref = getProfileName.getString("closing_balance", null);
+        // closing_balance_pref = getProfileName.getString("closing_balance", null);
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -195,13 +208,14 @@ public class Payment_Activity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
+        getProfileDetails();
 
         globalData = new Global(Payment_Activity.this);
         title.setText("Online Payment");
         txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
         txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
         txt_tsp_name.setText(name_tsp + " - " + usercode);
-        edt_closing_bal.setText(closing_balance_pref);
+        /* edt_closing_bal.setText(closing_balance_pref);*/
 
 
         edt_enter_amt.addTextChangedListener(new TextWatcher() {
@@ -215,11 +229,13 @@ public class Payment_Activity extends AppCompatActivity {
                     Toast.makeText(Payment_Activity.this,
                             ToastFile.ent_crt_amt,
                             Toast.LENGTH_SHORT).show();
+
                     if (enteredString.length() > 0) {
                         edt_enter_amt.setText(enteredString.substring(1));
                     } else {
                         edt_enter_amt.setText("");
                     }
+
                 }
             }
 
@@ -229,6 +245,7 @@ public class Payment_Activity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -244,11 +261,12 @@ public class Payment_Activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 GlobalClass.goToHome(Payment_Activity.this);
+
             }
         });
 
 
-        btn_payu.setOnClickListener(new View.OnClickListener() {
+      /*  btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -337,10 +355,10 @@ public class Payment_Activity extends AppCompatActivity {
                 }
 
             }
-        });
+        });*/
 
 
-/*        btn_payu.setOnClickListener(new View.OnClickListener() {
+        btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -348,13 +366,13 @@ public class Payment_Activity extends AppCompatActivity {
 
                 Log.e(TAG, "Entered Amount ----->" + amountTopass);
 
-                Log.e(TAG, "CB Amount ----->" + closing_balance_pref);
+                Log.e(TAG, "CB Amount ----->" + CBamount);
 
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
-                } else if (Integer.parseInt(closing_balance_pref) < 5000) {
+                } else if (CBamount < Constants.PAYAMOUNT) {
 
-                    if (Integer.parseInt(amountTopass) >= 5000) {
+                    if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
                         gotopayGatway();
                     } else {
                         new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
@@ -369,13 +387,12 @@ public class Payment_Activity extends AppCompatActivity {
                                 .show();
                     }
 
-                } else if (5000 <= Integer.parseInt(closing_balance_pref)) {
-
-                    if (Integer.parseInt(amountTopass) >= Integer.parseInt(closing_balance_pref)) {
+                } else if (Constants.PAYAMOUNT <= CBamount) {
+                    if (Integer.parseInt(amountTopass) >= CBamount) {
                         gotopayGatway();
                     } else {
                         new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText("Enter Minimum Amount of Rs " + closing_balance_pref + " to Proceed")
+                                .setContentText("Enter Minimum Amount of Rs " + CBamount + " to Proceed")
                                 .setConfirmText("Ok")
                                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                     @Override
@@ -390,7 +407,8 @@ public class Payment_Activity extends AppCompatActivity {
 
             }
 
-        });*/
+        });
+
     }
 
     private void gotopayGatway() {
@@ -1152,5 +1170,89 @@ public class Payment_Activity extends AppCompatActivity {
         }
     }
 
+    public void getProfileDetails() {
 
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
+
+        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
+
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                new Response.Listener<JSONObject>() {
+                    public String tsp_img;
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
+                            Log.e(TAG, "onResponse: " + response);
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.closing_balance))) {
+                                closing_balance_pref = response.getString(Constants.closing_balance);
+                            } else {
+                                closing_balance_pref = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.credit_limit))) {
+                                crd_amt = response.getString(Constants.credit_limit);
+                            } else {
+                                crd_amt = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.unbilledMaterial))) {
+                                unbillmt = response.getString(Constants.unbilledMaterial);
+                            } else {
+                                unbillmt = "0";
+                            }
+
+                            unbillwoe = response.getString(Constants.unbilledWOE);
+                            billavg = response.getString(Constants.Billamount);
+                            dayavg = response.getString(Constants.DAYAVG);
+                            Today_bill = Integer.parseInt(unbillmt) + Integer.parseInt(unbillwoe);
+                            CBamount = (Integer.parseInt(closing_balance_pref) + Today_bill) - Integer.parseInt(crd_amt);
+
+
+                            if (!TextUtils.isEmpty(billavg)) {
+                                et_avg_bill.setText(billavg);
+                            } else {
+                                et_avg_bill.setText(0);
+                            }
+
+                            if (!TextUtils.isEmpty(dayavg)) {
+                                et_per_day.setText(dayavg);
+                            } else {
+                                et_per_day.setText(0);
+                            }
+
+
+                            edt_closing_bal.setText("" + CBamount);
+
+
+                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
+                            saveProfileDetails.commit();
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
 }

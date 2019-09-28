@@ -32,6 +32,85 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:visibility="gone"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="left|center"
+                    android:padding="3dp"
+                    android:text="Note :"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp_14" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:gravity="left|center"
+                    android:padding="3dp"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:text="Minimum Billing will be Rs.100/-"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dp_14" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:visibility="visible"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/lin_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:orientation="horizontal"
+                    android:scrollHorizontally="true" />
+
+                <TextView
+                    android:id="@+id/txt_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:background="@color/white"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/dp_14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lin_color2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|center"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:orientation="horizontal"
+                android:scrollHorizontally="true"
+                android:visibility="gone" />
+
+
             <LinearLayout
                 android:id="@+id/before_discount_layout2"
                 android:layout_width="match_parent"
@@ -170,8 +249,6 @@
                 android:padding="1dp"
                 android:visibility="gone"
                 android:weightSum="5">
-
-                <!--search.setQueryHint("Custom Search Hint")-->;
 
                 <EditText
                     android:id="@+id/sv_testsList12"
@@ -438,4 +515,5 @@
         </LinearLayout>
 
     </RelativeLayout>
+
 </FrameLayout>

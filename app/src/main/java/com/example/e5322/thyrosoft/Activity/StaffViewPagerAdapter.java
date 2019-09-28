@@ -4,13 +4,12 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
-import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
@@ -121,6 +120,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
         registeredFragments.put(position, fragment);
+
         return fragment;
     }
 

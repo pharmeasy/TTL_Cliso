@@ -345,7 +345,8 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                             } else {
                                 btech.setVisibility(View.GONE);
                                 btechtile.setVisibility(View.GONE);
-                            }                        }
+                            }
+                        }
                     } else {
                         btech.setVisibility(View.GONE);
                         btechtile.setVisibility(View.GONE);
@@ -381,6 +382,8 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.e(TAG, "Delete WOE -->" + jsonObjectOtp.toString());
+
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

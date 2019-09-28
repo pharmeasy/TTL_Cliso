@@ -77,6 +77,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Activity.VideoFullScreen"
+            android:screenOrientation="landscape">
+
+        </activity>
         <activity
             android:name=".startscreen.Login"
             android:label="@string/app_name"
@@ -90,7 +94,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.LeggyVideo_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LeggyVideo"
             android:screenOrientation="landscape" />
+
+
         <activity
             android:name=".Registration.Registration_first_screen"
             android:label="@string/title_activity_main2"
@@ -304,7 +313,7 @@
         <activity
             android:name=".Cliso_BMC.BMC_StockAvailabilityActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity"></activity>
+        <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity" />
     </application>
 
 </manifest>
