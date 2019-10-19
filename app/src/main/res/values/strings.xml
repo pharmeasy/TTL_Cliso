@@ -92,5 +92,15 @@
     <string name="view_receipt_image"><u>View receipt image</u></string>
     <string name="stock_digits">0123456789-.</string>
     <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
-
+    <string name="upload_voice_message">Upload voice message</string>
+    <string name="reupload_voice_message">Re-upload voice message</string>
+    <string name="upload_image">Upload image</string>
+    <string name="re_upload_image">Re-upload image</string>
+    <string name="start_record">Click on below icon to start recording</string>
+    <string name="stop_record">Click on below icon to stop recording</string>
+    <string name="discard">Discard</string>
+    <string name="save">Save</string>
+    <string name="stop">Stop</string>
+    <string name="play">Play</string>
+    <string name="play_recorded_audio">Play recorded audio</string>
 </resources>

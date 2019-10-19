@@ -930,6 +930,7 @@
                     android:background="@drawable/corner_curve_maroon"
                     android:orientation="horizontal"
                     android:padding="5dp"
+                    android:visibility="gone"
                     android:weightSum="5">
 
 

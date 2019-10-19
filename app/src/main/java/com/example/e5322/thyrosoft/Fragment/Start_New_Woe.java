@@ -394,7 +394,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
         mContext = getContext();
-
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
         name = (EditText) viewMain.findViewById(R.id.name);
         age = (EditText) viewMain.findViewById(R.id.age);
@@ -1246,6 +1245,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
 
+                    if (enteredString.length() > 0) {
+                        name.setText(enteredString.substring(1));
+                    } else {
+                        name.setText("");
+                    }
+
                 }
 
             }
@@ -1271,7 +1276,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-
+                    if (enteredString.length() > 0) {
+                        patientAddress.setText(enteredString.substring(1));
+                    } else {
+                        patientAddress.setText("");
+                    }
                 }
 
             }
@@ -1753,9 +1762,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         if (!ageString.equals("")) {
                                             conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                         }
+
                                         if (getVial_numbver.equals("")) {
                                             vial_number.setError(ToastFile.vial_no);
                                             Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -1769,16 +1777,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                         } else if (conertage > 120) {
                                             Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (scpoint.equals("") || scpoint.equals(null)) {
-                                            Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
-                                        } else if (referenceBy == null || referenceBy.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                         } else if (sctHr.equals("HR")) {
                                             Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                         } else if (sctMin.equals("MIN")) {
                                             Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                         } else if (sctSEc.equals("AM/PM")) {
                                             Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                        } else if (scpoint.equals("") || scpoint.equals(null)) {
+                                            Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
+                                        } else if (referenceBy == null || referenceBy.equals("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                         } else if (dCompare.after(getCurrentDateandTime)) {
                                             Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                         } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
@@ -2209,9 +2217,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         if (!ageString.equals("")) {
                                             conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                         }
+
                                         if (getVial_numbver.equals("")) {
                                             vial_number.setError(ToastFile.vial_no);
                                             Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -2221,22 +2228,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                         } else if (ageString.equals("")) {
                                             Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
-                                        } else if (pincode_pass.equalsIgnoreCase("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                        } else if (pincode_pass.length() < 6) {
-                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                         } else if (conertage > 120) {
                                             Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (referenceBy == null || referenceBy.equals("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                        } else if (saveGenderId == null || saveGenderId == "") {
+                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                         } else if (sctHr.equals("HR")) {
                                             Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                         } else if (sctMin.equals("MIN")) {
@@ -2245,6 +2240,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                         } else if (dCompare.after(getCurrentDateandTime)) {
                                             Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                        } else if (patientAddressdataToPass.equals("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                        } else if (patientAddressdataToPass.length() < 25) {
+                                            Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.equalsIgnoreCase("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.length() < 6) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                        } else if (referenceBy == null || referenceBy.equals("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                         } else {
 
                                             try {
@@ -2553,35 +2560,21 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         if (!ageString.equals("")) {
                                             conertage = Integer.parseInt(ageString);
-                                        } else {
-                                            Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                         }
 
-                                        if (TextUtils.isEmpty(getVial_numbver)) {
+                                        if (getVial_numbver.equals("")) {
                                             vial_number.setError(ToastFile.vial_no);
                                             Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                        } else if (TextUtils.isEmpty(nameString)) {
+                                        } else if (nameString.equals("")) {
                                             Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                         } else if (nameString.length() < 2) {
                                             Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                        } else if (TextUtils.isEmpty(ageString)) {
+                                        } else if (ageString.equals("")) {
                                             Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                        } else if (TextUtils.isEmpty(saveGenderId)) {
-                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                         } else if (conertage > 120) {
                                             Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                        } else if (TextUtils.isEmpty(referenceBy)) {
-                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                        } else if (TextUtils.isEmpty(patientAddressdataToPass)) {
-                                            Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
-                                        } else if (pincode_pass.equalsIgnoreCase("")) {
-                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                        } else if (pincode_pass.length() < 6) {
-                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                        } else if (saveGenderId == null || saveGenderId == "") {
+                                            Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                         } else if (sctHr.equals("HR")) {
                                             Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                         } else if (sctMin.equals("MIN")) {
@@ -2590,6 +2583,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                         } else if (dCompare.after(getCurrentDateandTime)) {
                                             Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                        } else if (patientAddressdataToPass.equals("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                        } else if (patientAddressdataToPass.length() < 25) {
+                                            Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.equalsIgnoreCase("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (pincode_pass.length() < 6) {
+                                            Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                            Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                        } else if (referenceBy == null || referenceBy.equals("")) {
+                                            Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                         } else {
 
                                             if (kycdata.length() < 10) {
@@ -2850,9 +2855,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
-                                            } else {
-                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             }
+
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -2866,19 +2870,17 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                            } else if (referenceBy == null || referenceBy.equals("")) {
-                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                            } else if (scpoint.equals("Select Camp")) {
-                                                Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            }
-                                            //else if (dCompare.after(getCurrentDateandTime)) {
-                                            else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
+                                            }else  if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equals("Select Camp")) {
+                                                Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
@@ -3052,15 +3054,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (!GlobalClass.isNetworkAvailable(getActivity())) {
                                                 GlobalClass.showAlertDialog(getActivity());
                                             } else {
-                                                barProgressDialog = new ProgressDialog(mContext);
-                                                barProgressDialog.setTitle("Kindly wait ...");
-                                                barProgressDialog.setMessage(ToastFile.processing_request);
-                                                barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                                                barProgressDialog.setProgress(0);
-                                                barProgressDialog.setMax(20);
-                                                barProgressDialog.show();
-                                                barProgressDialog.setCanceledOnTouchOutside(false);
-                                                barProgressDialog.setCancelable(false);
+                                                final ProgressDialog pd_dialog = GlobalClass.ShowprogressDialog(getActivity());
 
                                                 String getId = s.toString();
                                                 String getLeadId = getId.toString();
@@ -3084,11 +3078,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                     barProgressDialog.dismiss();
                                                             }*/
 
-                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
 //                                                    getLeadId= getId.toString();
                                                             leadOrderIdMainModel = new LeadOrderIdMainModel();
                                                             leadOrderIdMainModel = gson.fromJson(response.toString(), LeadOrderIdMainModel.class);
                                                             if (leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
+                                                                GlobalClass.hideProgress(getActivity(), pd_dialog);
                                                                 for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
                                                                     SharedPreferences.Editor editor = getActivity().getSharedPreferences("LeadOrderID", 0).edit();
                                                                     editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
@@ -3187,6 +3182,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                 }
 
                                                             } else {
+                                                               GlobalClass.hideProgress(getActivity(), pd_dialog);
+
                                                                 leadlayout.setVisibility(View.GONE);
                                                                 next_btn.setVisibility(View.GONE);
                                                                 Toast.makeText(getActivity(), "No leads found", Toast.LENGTH_SHORT).show();
@@ -3198,6 +3195,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     public void onErrorResponse(VolleyError error) {
                                                         if (error.networkResponse == null) {
                                                             if (error.getClass().equals(TimeoutError.class)) {
+                                                               GlobalClass.hideProgress(getActivity(), pd_dialog);
                                                                 TastyToast.makeText(getActivity(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                                 // Show timeout error message
                                                             }
@@ -4035,6 +4033,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
@@ -4045,13 +4049,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
-                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
-                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
-                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                            } else  if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
                                                 Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
@@ -4326,7 +4324,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else  if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
@@ -4338,13 +4342,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
                                                 Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
-                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
-                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
-                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            } else  if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
@@ -4602,11 +4600,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
-                                            } else {
-                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             }
-                                            if (getVial_numbver.equals("")) {
 
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.equals("")) {
@@ -4800,7 +4796,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                    /* mobile_number_kyc.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);*/
-
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -5049,9 +5044,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
-                                            } else {
-                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             }
+
+
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
@@ -5061,6 +5056,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                             } else if (ageString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
@@ -5069,22 +5076,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
                                                 Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                            } else if (saveGenderId == null || saveGenderId == "") {
-                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (conertage > 120) {
-                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                            } else if (referenceBy == null || referenceBy.equals("")) {
-                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
-                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
-                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
-                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
                                                 Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
-                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else  if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                                 try {
                                                     if (myPojo.getMASTERS().getTSP_MASTER() != null) {
@@ -5214,13 +5209,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     if (Constants.preotp.equalsIgnoreCase("NO")) {
                                         Enablefields();
-                                        Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
-                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
@@ -5228,7 +5223,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                    /* mobile_number_kyc.setVisibility(View.GONE);
                                     Home_mobile_number_kyc.setVisibility(View.VISIBLE);*/
-
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -5317,7 +5312,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
                                                 kycdata = et_mobno.getText().toString();
                                             } else {
-                                                kycdata = home_kyc_format.getText().toString();
+                                                kycdata = kyc_format.getText().toString();
                                             }
 
                                             labIDTopass = "";
@@ -5372,8 +5367,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
-                                            } else {
-                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             }
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
@@ -5384,22 +5377,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                             } else if (ageString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                                            } else if (saveGenderId == null || saveGenderId == "") {
-                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                            } else if (referenceBy == null || referenceBy.equals("")) {
-                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
-                                            } else if (patientAddressdataToPass.equals("")) {
-                                                Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
-                                            } else if (patientAddressdataToPass.length() < 25) {
-                                                Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
-                                            } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                            } else if (pincode_pass.length() < 6) {
-                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
-                                            } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
@@ -5408,6 +5389,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else  if (referenceBy == null || referenceBy.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                 if (kycdata.length() < 10) {

@@ -630,21 +630,25 @@ public class RateCalculatorFragment extends Fragment {
                     GlobalClass.StoreSyncTime(getActivity());
                     prefsEditor1.commit();
 
-                    b2bmasterarraylistRate = new ArrayList<>();
-                    b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
-                    ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
-                    ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<Base_Model_Rate_Calculator>();
-                    for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                            finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-                            testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                    try {
+                        b2bmasterarraylistRate = new ArrayList<>();
+                        b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
+                        ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
+                        ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<Base_Model_Rate_Calculator>();
+                        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                            for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                                finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                                testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                            }
+
+
                         }
-
-
+                        callAdapaterTosetData(finalproduct_list, testRateMasterModels);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                 }
 
 

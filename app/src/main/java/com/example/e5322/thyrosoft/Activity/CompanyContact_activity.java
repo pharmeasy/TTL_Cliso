@@ -112,7 +112,7 @@ public class CompanyContact_activity extends AppCompatActivity {
         String getSpinnertype = contact_type_spinner.getSelectedItem().toString();
         requestQueue_CompanyContact = Volley.newRequestQueue(CompanyContact_activity.this);
 
-        if (getSpinnertype.equals("STATE OFFICER")) {
+        if (getSpinnertype.equalsIgnoreCase("STATE OFFICER")) {
             passSpinner_value = "STATE%20OFFICER";
         } else {
             passSpinner_value = getSpinnertype;

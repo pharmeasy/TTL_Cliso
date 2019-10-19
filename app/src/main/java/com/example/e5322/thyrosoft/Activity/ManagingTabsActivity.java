@@ -29,6 +29,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -729,69 +730,74 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e(TAG, "onResponse: " + response);
-                            prof = response.getString(Constants.tsp_image);
-                            ac_code = response.getString(Constants.ac_code);
+                            if (response!=null){
+                                Log.e(TAG, "onResponse: " + response);
+                                prof = response.getString(Constants.tsp_image);
+                                ac_code = response.getString(Constants.ac_code);
 
-                           // Constants.preotp = response.getString("PriOTP");
-                            Constants.preotp="NO";
-                            address = response.getString(Constants.address);
-                            email = response.getString(Constants.email);
-                            mobile = response.getString(Constants.mobile);
-                            name = response.getString("name");
-                            pincode = response.getString(Constants.pincode);
-                            user_code = response.getString(Constants.user_code);
-                            closing_bal = response.getString(Constants.closing_balance);
-                            unbilled_woe = response.getString(Constants.unbilledWOE);
-                            unbilled_mt = response.getString(Constants.unbilledMaterial);
-                            credit_lim = response.getString(Constants.credit_limit);
-                            dojresponse = response.getString(Constants.doj);
-                            source_code = response.getString(Constants.source_code);
-                            tsp_img = response.getString(Constants.tsp_image);
+                                Constants.preotp = response.getString("PriOTP");
+
+                                address = response.getString(Constants.address);
+                                email = response.getString(Constants.email);
+                                mobile = response.getString(Constants.mobile);
+                                name = response.getString("name");
+                                pincode = response.getString(Constants.pincode);
+                                user_code = response.getString(Constants.user_code);
+                                closing_bal = response.getString(Constants.closing_balance);
+                                unbilled_woe = response.getString(Constants.unbilledWOE);
+                                unbilled_mt = response.getString(Constants.unbilledMaterial);
+                                credit_lim = response.getString(Constants.credit_limit);
+                                dojresponse = response.getString(Constants.doj);
+                                source_code = response.getString(Constants.source_code);
+                                tsp_img = response.getString(Constants.tsp_image);
 
 
-                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                            saveProfileDetails.putString("prof", prof);
-                            saveProfileDetails.putString("ac_code", ac_code);
-                            saveProfileDetails.putString("address", address);
-                            saveProfileDetails.putString("email", email);
-                            saveProfileDetails.putString("mobile", mobile);
-                            saveProfileDetails.putString("name", name);
-                            saveProfileDetails.putString("pincode", pincode);
-                            saveProfileDetails.putString("user_code", user_code);
-                            saveProfileDetails.putString("closing_balance", closing_bal);
-                            saveProfileDetails.putString(Constants.credit_limit, credit_lim);
-                            saveProfileDetails.putString("doj", dojresponse);
-                            saveProfileDetails.putString("source_code", source_code);
-                            saveProfileDetails.putString("tsp_image", tsp_img);
-                            saveProfileDetails.putString("address", address);
-                            saveProfileDetails.putString(Constants.unbilledWOE, unbilled_woe);
-                            saveProfileDetails.putString(Constants.unbilledMaterial, unbilled_mt);
-                            saveProfileDetails.commit();
+                                SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                                saveProfileDetails.putString("prof", prof);
+                                saveProfileDetails.putString("ac_code", ac_code);
+                                saveProfileDetails.putString("address", address);
+                                saveProfileDetails.putString("email", email);
+                                saveProfileDetails.putString("mobile", mobile);
+                                saveProfileDetails.putString("name", name);
+                                saveProfileDetails.putString("pincode", pincode);
+                                saveProfileDetails.putString("user_code", user_code);
+                                saveProfileDetails.putString("closing_balance", closing_bal);
+                                saveProfileDetails.putString(Constants.credit_limit, credit_lim);
+                                saveProfileDetails.putString("doj", dojresponse);
+                                saveProfileDetails.putString("source_code", source_code);
+                                saveProfileDetails.putString("tsp_image", tsp_img);
+                                saveProfileDetails.putString("address", address);
+                                saveProfileDetails.putString(Constants.unbilledWOE, unbilled_woe);
+                                saveProfileDetails.putString(Constants.unbilledMaterial, unbilled_mt);
+                                saveProfileDetails.commit();
 
-                            SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
-                            saveProfileData.putString("name", name);
-                            saveProfileData.putString("usercode", user_code);
-                            saveProfileData.putString("mobile", mobile);
-                            saveProfileData.putString("image", prof);
-                            saveProfileData.putString("email", email);
+                                SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
+                                saveProfileData.putString("name", name);
+                                saveProfileData.putString("usercode", user_code);
+                                saveProfileData.putString("mobile", mobile);
+                                saveProfileData.putString("image", prof);
+                                saveProfileData.putString("email", email);
 
-                            saveProfileData.commit();
+                                saveProfileData.commit();
 
-                            Log.e(TAG, "onResponse: tsp name and code" + name + " " + user_code);
-                            if (name != null && user_code != null) {
-                                navigationDrawerNameTSP.setText("HI " + name);
-                                ecode.setText("(" + user_code + ")");
+                                Log.e(TAG, "onResponse: tsp name and code" + name + " " + user_code);
+                                if (name != null && user_code != null) {
+                                    navigationDrawerNameTSP.setText("HI " + name);
+                                    ecode.setText("(" + user_code + ")");
 //                                getTspNumber();
-                            } else {
-                                navigationDrawerNameTSP.setText("HI");
+                                } else {
+                                    navigationDrawerNameTSP.setText("HI");
 //                                getTspNumber();
+                                }
+
+                                Glide.with(context)
+                                        .load(tsp_img)
+                                        .placeholder(context.getResources().getDrawable(R.drawable.userprofile))
+                                        .into(imageViewprofile);
+                            }else {
+                                Toast.makeText(ManagingTabsActivity.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
                             }
 
-                            Glide.with(context)
-                                    .load(tsp_img)
-                                    .placeholder(context.getResources().getDrawable(R.drawable.userprofile))
-                                    .into(imageViewprofile);
 
                         } catch (Exception e) {
                             e.printStackTrace();

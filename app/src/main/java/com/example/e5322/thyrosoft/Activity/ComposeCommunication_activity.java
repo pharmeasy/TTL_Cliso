@@ -1,9 +1,21 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -15,10 +27,16 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -28,32 +46,29 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.mindorks.paracamera.Camera;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class ComposeCommunication_activity extends AppCompatActivity {
-    Spinner spinnercomm;
-    EditText commuTXT;
-    ImageView back, home;
-    LinearLayout parent_ll, offline_img;
+    public static final int RequestPermissionCode = 1;
     public static RequestQueue PostQue;
-    private SimpleDateFormat sdf;
-    String Date = "";
-    private Global globalClass;
-    ProgressDialog barProgressDialog;
-    Button sendcomm;
-    String comefrom;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -69,6 +84,32 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             return null;
         }
     };
+    private static Dialog dialog;
+    Spinner spinnercomm;
+    EditText commuTXT;
+    ImageView back, home, iv_tick_voice, iv_tick_img, iv_preview, iv_playAudio;
+    LinearLayout parent_ll, offline_img;
+    String Date = "";
+    ProgressDialog barProgressDialog;
+    Button sendcomm;
+    String comefrom;
+    private LinearLayout ll_upVoice, ll_upImage;
+    private TextView tv_UpVoice, tv_UpImage;
+    private SimpleDateFormat sdf;
+    private Global globalClass;
+    private String TAG = ManagingTabsActivity.class.getSimpleName();
+    private Activity mActivity;
+    private int PERMISSION_REQUEST_CODE = 200;
+    private String userChoosenTask;
+    private int PICK_PHOTO_FROM_GALLERY = 202;
+    private Camera camera;
+    private File selectedFile = null;
+    private MediaRecorder mediaRecorder;
+    private String audioPath = null;
+    private Boolean ButtonClicked = false;
+    private MediaPlayer mediaPlayer;
+    private RadioButton rd_audio, rd_image;
+    private boolean audioChecked, imageChecked;
 
     @SuppressLint("NewApi")
     @Override
@@ -79,6 +120,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         /*if (getIntent().getExtras() != null) {
             comefrom = getIntent().getExtras().getString("comefrom");
         }*/
+        mActivity = ComposeCommunication_activity.this;
 
         spinnercomm = (Spinner) findViewById(R.id.spinnercomm);
         sendcomm = (Button) findViewById(R.id.sendcomm);
@@ -87,6 +129,17 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         offline_img = (LinearLayout) findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) findViewById(R.id.parent_ll);
+        ll_upVoice = (LinearLayout) findViewById(R.id.ll_upVoice);
+        ll_upImage = (LinearLayout) findViewById(R.id.ll_upImage);
+        tv_UpVoice = (TextView) findViewById(R.id.tv_UpVoice);
+        tv_UpImage = (TextView) findViewById(R.id.tv_UpImage);
+        iv_tick_voice = (ImageView) findViewById(R.id.iv_tick_voice);
+        iv_tick_img = (ImageView) findViewById(R.id.iv_tick_img);
+        iv_preview = (ImageView) findViewById(R.id.iv_preview);
+        iv_playAudio = (ImageView) findViewById(R.id.iv_playAudio);
+        rd_audio = (RadioButton) findViewById(R.id.rd_audio);
+        rd_image = (RadioButton) findViewById(R.id.rd_image);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,7 +152,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 /*if (comefrom.equals("BMC"))
                     startActivity(new Intent(ComposeCommunication_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 else*/
-                    GlobalClass.goToHome(ComposeCommunication_activity.this);
+                GlobalClass.goToHome(ComposeCommunication_activity.this);
             }
         });
 
@@ -184,6 +237,95 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 spinnercomm.setSelection(0);
             }
         });
+
+        rd_audio.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                audioChecked = isChecked;
+                if (audioChecked) {
+                    if (selectedFile != null && selectedFile.exists()) {
+                        showAlertDialog();
+                    } else {
+                        ll_upVoice.setVisibility(View.VISIBLE);
+                        ll_upImage.setVisibility(View.GONE);
+                        rd_image.setChecked(false);
+                        rd_image.setSelected(false);
+                    }
+                }
+            }
+        });
+
+        rd_image.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                imageChecked = isChecked;
+                if (imageChecked) {
+                    if (selectedFile != null && selectedFile.exists()) {
+                        showAlertDialog();
+                    } else {
+                        ll_upVoice.setVisibility(View.GONE);
+                        ll_upImage.setVisibility(View.VISIBLE);
+                        rd_audio.setChecked(false);
+                        rd_audio.setSelected(false);
+                    }
+                }
+            }
+        });
+
+        tv_UpImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (checkPermission()) {
+                    selectImage();
+                } else {
+                    requestPermission();
+                }
+            }
+        });
+
+        iv_preview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedFile != null) {
+                    GlobalClass.showImageDialog(mActivity, selectedFile);
+                }else {
+                    Toast.makeText(mActivity, "File not found", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        tv_UpVoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRecordAudioDialog(mActivity);
+            }
+        });
+
+        iv_playAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPlayAudioDialog(mActivity);
+            }
+        });
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
+        alertDialog.setMessage("At a time you can upload only one, voice or image. Do you want delete the selected file ?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (selectedFile.exists()) {
+                    selectedFile.delete();
+                    selectedFile = null;
+                }
+            }
+        });
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        alertDialog.show();
     }
 
     private void PostData() {
@@ -272,4 +414,300 @@ public class ComposeCommunication_activity extends AppCompatActivity {
 
     }
 
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(mActivity, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(mActivity, CAMERA);
+        return result1 == PackageManager.PERMISSION_GRANTED && result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(mActivity, new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
+    }
+
+    private void selectImage() {
+        CharSequence[] items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setTitle("Upload Image !");
+        final CharSequence[] finalItems = items;
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (finalItems[item].equals("Take Photo")) {
+                    userChoosenTask = "Take Photo";
+                    openCamera();
+                } else if (finalItems[item].equals("Choose from gallery")) {
+                    userChoosenTask = "Choose from gallery";
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, PICK_PHOTO_FROM_GALLERY);
+                } else if (finalItems[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void openCamera() {
+        buildCamera();
+
+        try {
+            camera.takePicture();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void buildCamera() {
+        camera = new com.mindorks.paracamera.Camera.Builder()
+                .resetToCorrectOrientation(true)// it will rotate the camera bitmap to the correct orientation from meta data
+                .setTakePhotoRequestCode(1)
+                .setDirectory("/Uploads/Images")
+                .setName("img" + System.currentTimeMillis())
+                .setImageFormat(com.mindorks.paracamera.Camera.IMAGE_JPEG)
+                .setCompression(75)
+                .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;
+                .build(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+            try {
+                String imageurl = camera.getCameraBitmapPath();
+                selectedFile = new File(imageurl);
+                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
+                manageImageView(selectedFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(mActivity, ToastFile.failed_to_open, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                selectedFile = FileUtil.from(this, data.getData());
+                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
+                selectedFile = GlobalClass.getCompressedFile(mActivity, selectedFile);
+                Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
+                manageImageView(selectedFile);
+            } catch (IOException e) {
+                Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void manageImageView(File imageFile) {
+        if (imageFile != null) {
+            iv_tick_img.setVisibility(View.VISIBLE);
+            iv_preview.setVisibility(View.VISIBLE);
+            tv_UpImage.setText(getString(R.string.re_upload_image));
+        } else {
+            iv_tick_img.setVisibility(View.GONE);
+            iv_preview.setVisibility(View.GONE);
+            tv_UpImage.setText(getString(R.string.upload_image));
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if (camera != null) {
+                camera.deleteImage();
+            }
+            camera = null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showRecordAudioDialog(final Activity activity) {
+        dialog = new Dialog(activity);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.record_audio_custom_dailog);
+        dialog.setCancelable(false);
+
+        final ImageButton closeButton = (ImageButton) dialog.findViewById(R.id.ib_close);
+        final TextView tv_record_title = (TextView) dialog.findViewById(R.id.tv_record_title);
+        final ImageView img_record = (ImageView) dialog.findViewById(R.id.img_record);
+        final Button btn_discard = (Button) dialog.findViewById(R.id.btn_discard);
+        final Button btn_save = (Button) dialog.findViewById(R.id.btn_save);
+
+        if (selectedFile != null) {
+            if (selectedFile.exists()) {
+                btn_discard.setEnabled(true);
+                btn_discard.setBackgroundResource(R.drawable.maroon_rect_box);
+            }
+        } else {
+            btn_discard.setEnabled(false);
+            btn_discard.setBackgroundResource(R.drawable.disabled_rect_box);
+        }
+        btn_save.setEnabled(false);
+        btn_save.setBackgroundResource(R.drawable.disabled_rect_box);
+        Log.e(TAG, "Audio file initUI: " + selectedFile);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        btn_discard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+                if (selectedFile != null) {
+                    if (selectedFile.exists()) {
+                        selectedFile.delete();
+                    }
+                    selectedFile = null;
+                }
+                Log.e(TAG, "On discard Audio file: " + selectedFile);
+                iv_tick_voice.setVisibility(View.INVISIBLE);
+                tv_UpVoice.setText(getString(R.string.upload_voice_message));
+                iv_playAudio.setVisibility(View.GONE);
+            }
+        });
+
+        btn_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+                Log.e(TAG, "On Save Audio file: " + selectedFile);
+                iv_tick_voice.setVisibility(View.VISIBLE);
+                tv_UpVoice.setText(getString(R.string.reupload_voice_message));
+                iv_playAudio.setVisibility(View.VISIBLE);
+            }
+        });
+
+        img_record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ButtonClicked) {
+                    if (checkAudioPermission()) {
+                        ButtonClicked = true;
+                        File sdCard = Environment.getExternalStorageDirectory();
+                        File directory = new File(sdCard.getAbsolutePath() + "/Uploads/Audio");
+                        if (!directory.isDirectory()) {
+                            directory.mkdirs();
+                        }
+                        audioPath = directory + "/" + "audio.Mp3";
+                        Log.e(TAG, "Audio File Path: " + audioPath);
+                        selectedFile = new File(audioPath);
+                        MediaRecorderReady();
+                        try {
+                            mediaRecorder.prepare();
+                            mediaRecorder.start();
+                        } catch (IllegalStateException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        tv_record_title.setText(getString(R.string.stop_record));
+                        closeButton.setClickable(false);
+                        img_record.setImageResource(R.drawable.ic_stop_record);
+                        btn_save.setEnabled(false);
+                        btn_save.setBackgroundResource(R.drawable.disabled_rect_box);
+                        btn_discard.setEnabled(false);
+                        btn_discard.setBackgroundResource(R.drawable.disabled_rect_box);
+                        Toast.makeText(activity, "Recording started", Toast.LENGTH_SHORT).show();
+                    } else {
+                        requestAudioPermission();
+                    }
+                } else {
+                    ButtonClicked = false;
+                    try {
+                        mediaRecorder.stop();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    }
+                    tv_record_title.setText(getString(R.string.start_record));
+                    closeButton.setClickable(true);
+                    img_record.setImageResource(R.drawable.ic_start_record);
+                    btn_save.setEnabled(true);
+                    btn_save.setBackgroundResource(R.drawable.maroon_rect_box);
+                    btn_discard.setEnabled(true);
+                    btn_discard.setBackgroundResource(R.drawable.maroon_rect_box);
+                    Toast.makeText(activity, "Recording completed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
+
+    private void requestAudioPermission() {
+        ActivityCompat.requestPermissions(mActivity, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, RequestPermissionCode);
+    }
+
+    public boolean checkAudioPermission() {
+        int result = ContextCompat.checkSelfPermission(mActivity, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(mActivity, RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void MediaRecorderReady() {
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        mediaRecorder.setOutputFile(selectedFile.getAbsolutePath());
+    }
+
+    private void showPlayAudioDialog(final Activity activity) {
+        dialog = new Dialog(activity);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.play_audio_dailog);
+        dialog.setCancelable(false);
+
+        final ImageButton closeButton = (ImageButton) dialog.findViewById(R.id.ib_close);
+        final Button btn_play = (Button) dialog.findViewById(R.id.btn_play);
+        final Button btn_stop = (Button) dialog.findViewById(R.id.btn_stop);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        btn_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mediaPlayer = new MediaPlayer();
+                try {
+                    mediaPlayer.setDataSource(audioPath);
+                    mediaPlayer.prepare();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mediaPlayer.start();
+                Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        btn_stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                }
+                Toast.makeText(activity, "Recording stopped", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+    }
 }

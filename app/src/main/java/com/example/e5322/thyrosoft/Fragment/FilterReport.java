@@ -128,7 +128,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     private String currentMonthString;
     private String getTextofMonth;
     private ArrayList<TrackDetModel> filterPatientsArrayList;
-    String user,passwrd,access,api_key,user_code;
+    String user, passwrd, access, api_key, user_code;
 
     public FilterReport() {
         // Required empty public constructor
@@ -260,6 +260,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         System.out.println("Month name:" + month);
         final int year = c.get(YEAR);
         getPositionToset = c.get(Calendar.DATE);
+
         try {
             SelectedMonthData = getAllDaysInMonth(c);
         } catch (ParseException e) {
@@ -422,6 +423,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() == 0) {
+                        GetData();
+                    }
 
                     // TODO Auto-generated method stub
                 }
@@ -456,11 +460,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
 
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
 
                             } else if (filterBy.getSelectedItem().equals("Name")) {
                                 final String text = FilterReport.get(i).getName().toLowerCase();
@@ -474,15 +474,13 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
 
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Barcode")) {
 
                             }
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -494,6 +492,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() == 0) {
+                        GetData();
+                    }
 
                     // TODO Auto-generated method stub
                 }
@@ -524,13 +525,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 String testname = FilterReport.get(i).getName();
                                 filterPatientsArrayList.add(FilterReport.get(i));
 
-                            } else {
-
                             }
-                            adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                            ListReportStatus.setAdapter(adapter);
+                     /*       adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                            ListReportStatus.setAdapter(adapter);*/
 
-
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -545,6 +544,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                     // TODO Auto-generated method stub
+
+                    if (s.length() == 0) {
+                        GetData();
+                    }
                 }
 
                 @Override
@@ -575,11 +578,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 String testname = FilterReport.get(i).getBarcode();
                                 filterPatientsArrayList.add(FilterReport.get(i));
 
-                            } else {
-
                             }
 
-
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -591,7 +592,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                    if (s.length() == 0) {
+                        GetData();
+                    }
                     // TODO Auto-generated method stub
                 }
 
@@ -624,12 +627,8 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                         (name != null && name.contains(s1))) {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
-
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Name")) {
                                 final String text = FilterReport.get(i).getName().toLowerCase();
@@ -646,8 +645,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 } else {
 
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Barcode")) {
                                 final String text = FilterReport.get(i).getBarcode().toLowerCase();
@@ -664,9 +662,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 } else {
 
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
                             }
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -699,6 +697,19 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
 
         return view;
+    }
+
+    private void callAdapter(ArrayList<TrackDetModel> modelArrayList) {
+        if (modelArrayList.size() > 0) {
+            ListReportStatus.setVisibility(View.VISIBLE);
+            adapter = new ResultDtlAdapter(getActivity(), modelArrayList);
+            ListReportStatus.setAdapter(adapter);
+            nodata.setVisibility(View.GONE);
+        } else {
+            ListReportStatus.setVisibility(View.GONE);
+            nodata.setVisibility(View.VISIBLE);
+        }
+
     }
 
     public static float dpToPx(Context context, float valueInDp) {
@@ -789,7 +800,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            if (spinnertype.getSelectedItem().toString().equals("Select Type") && filterBy.getSelectedItem().toString().equals("Select Filter By")) {
+            if (spinnertype.getSelectedItem().toString().equals("Select Type")) {
                 passToSpinner = "Reported";
             } else {
                 passToSpinner = spinnertype.getSelectedItem().toString();
@@ -952,6 +963,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         Log.e(TAG, "onResponse: URL" + jsonObjectRequest);
         Log.e(TAG, "GetData: json" + jsonObject);
     }
+
 
     @Override
     public void onPassDateandPos(int position, String pasDate) {
