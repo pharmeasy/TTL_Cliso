@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.startscreen;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,13 +11,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -24,22 +20,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.INAPP_UPDATE;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 
@@ -60,11 +46,15 @@ public class SplashScreen extends AppCompatActivity {
     String response1;
     String resId;
     ImageView iv;
+    static String path;
     String USER_CODE = "";
     private int versionCode = 0;
     private String ApkUrl;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
+    ProgressDialog barProgressDialog;
+    File ThyrosoftLite;
+    private static final int MEGABYTE = 1024 * 1024;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -80,6 +70,7 @@ public class SplashScreen extends AppCompatActivity {
         }
         return deletedAll;
     }
+
 
     @SuppressLint("NewApi")
     @Override
@@ -104,28 +95,18 @@ public class SplashScreen extends AppCompatActivity {
             return; // add this to prevent from doing unnecessary stuffs
         }
 
-        /*SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
-        firstRunSplash = p.getBoolean("PREFERENCE_FIRSTSPLASH_RUN", false);
 
-        if (firstRunSplash == false) {
-            p.edit().putBoolean("PREFERENCE_FIRSTSPLASH_RUN", true).commit();
-            clearApplicationData();
-        } else {
-            Log.e(TAG, "deleteDir: cache is not cleraed ");
-        }*/
+        //   getversion();
 
-        getversion();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //get the app appVersion Name for display
+
         version = pInfo.versionName;
-        //get the app appVersion Code for checking
         versionCode = pInfo.versionCode;
-        //display the current appVersion in a TextView
         TextView versionText = (TextView) findViewById(R.id.version);
         versionText.setText(version);
         cd = new ConnectionDetector(getApplicationContext());
@@ -142,7 +123,6 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                // Set the Alert Dialog Message
                 builder.setMessage(ToastFile.intConnection)
                         .setCancelable(false)
                         .setPositiveButton("Retry",
@@ -159,20 +139,9 @@ public class SplashScreen extends AppCompatActivity {
                 alert.show();
             }
         }
-    }
 
-    public void clearApplicationData() {
-//        Log.e(TAG, "<< Clear App Data >>");
-        File cacheDirectory = getCacheDir();
-        File applicationDirectory = new File(cacheDirectory.getParent());
-        if (applicationDirectory.exists()) {
-            String[] fileNames = applicationDirectory.list();
-            for (String fileName : fileNames) {
-                if (!fileName.equals("lib")) {
-                    deleteFile(new File(applicationDirectory, fileName));
-                }
-            }
-        }
+        new INAPP_UPDATE(SplashScreen.this);
+
     }
 
 
@@ -185,7 +154,9 @@ public class SplashScreen extends AppCompatActivity {
         return activeNetworkInfo != null;
     }
 
-    private void getversion() {
+
+
+    /*private void getversion() {
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(SplashScreen.this);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkVersion, new Response.Listener<JSONObject>() {
             @Override
@@ -274,7 +245,8 @@ public class SplashScreen extends AppCompatActivity {
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
         Log.e(TAG, "getversion URL: " + jsonObjectRequestPop);
-    }
+    }*/
+
 
     @Override
     public void onBackPressed() {

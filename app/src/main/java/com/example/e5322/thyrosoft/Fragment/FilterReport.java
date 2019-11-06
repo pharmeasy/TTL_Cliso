@@ -442,6 +442,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     filterPatientsArrayList = new ArrayList<>();
                     String barcode = "";
                     String name = "";
+
                     if (FilterReport != null) {
                         for (int i = 0; i < FilterReport.size(); i++) {
 
@@ -478,7 +479,18 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
 
                             } else if (filterBy.getSelectedItem().equals("Barcode")) {
+                                final String text = FilterReport.get(i).getBarcode().toLowerCase();
 
+                                if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                    barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                        (barcode != null && barcode.contains(s1))) {
+                                    String testname = FilterReport.get(i).getBarcode();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                }
                             }
                             callAdapter(filterPatientsArrayList);
                         }

@@ -18,6 +18,8 @@
         android:required="false" />
     <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -56,7 +58,9 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".Activity.Blood_sugar_entry_activity" />
+        <activity
+            android:name=".Activity.Blood_sugar_entry_activity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activity.CampIntimation" />
         <activity android:name=".BroadcastViewPagerActivity" />
         <activity android:name=".Activity.BroadcastDataActivity" />
@@ -77,7 +81,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.VideoFullScreen"
+        <activity
+            android:name=".Activity.VideoFullScreen"
             android:screenOrientation="landscape">
 
         </activity>
@@ -95,9 +100,6 @@
         <activity
             android:name=".Activity.LeggyVideo_Activity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".LeggyVideo"
-            android:screenOrientation="landscape" />
 
 
         <activity
@@ -256,16 +258,16 @@
         <activity
             android:name=".Activity.VidoePlayerActivity"
             android:screenOrientation="portrait" />
-<!--
-         <provider
-             android:name="android.support.v4.content.FileProvider"
-             android:authorities="${applicationId}.fileprovider"
-             android:exported="false"
-             android:grantUriPermissions="true">
-             <meta-data
-                 android:name="android.support.FILE_PROVIDER_PATHS"
-                 android:resource="@xml/file_provider_paths" />
-         </provider>-->
+        <!--
+                 <provider
+                     android:name="android.support.v4.content.FileProvider"
+                     android:authorities="${applicationId}.fileprovider"
+                     android:exported="false"
+                     android:grantUriPermissions="true">
+                     <meta-data
+                         android:name="android.support.FILE_PROVIDER_PATHS"
+                         android:resource="@xml/file_provider_paths" />
+                 </provider>-->
 
         <provider
             android:name="android.support.v4.content.FileProvider"

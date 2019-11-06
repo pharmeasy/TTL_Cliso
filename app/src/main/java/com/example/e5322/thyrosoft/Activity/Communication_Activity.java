@@ -55,7 +55,7 @@ public class Communication_Activity extends AppCompatActivity {
     CommunicationRepsponseModel communicationRepsponseModel;
     private Global globalClass;
     LinearLayout offline_img;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName();
     private SharedPreferences prefs;
     private String user, api_key;
     private String communicationMasterResponse, inboxesResponse, resId, sentsResponse, responseID;
@@ -172,6 +172,19 @@ public class Communication_Activity extends AppCompatActivity {
         });
 
 
+        /*if (!GlobalClass.isNetworkAvailable(Communication_Activity.this)) {
+            offline_img.setVisibility(View.VISIBLE);
+            expandlistcommunication.setVisibility(View.GONE);
+        } else {
+            Getdata();
+            offline_img.setVisibility(View.GONE);
+            expandlistcommunication.setVisibility(View.VISIBLE);
+        }*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         if (!GlobalClass.isNetworkAvailable(Communication_Activity.this)) {
             offline_img.setVisibility(View.VISIBLE);
             expandlistcommunication.setVisibility(View.GONE);

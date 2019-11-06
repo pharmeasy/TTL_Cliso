@@ -93,7 +93,7 @@ public class Global {
         }
     }
 
-    public void showCustomToast(Activity activity, String message) {
+    public static void showCustomToast(Activity activity, String message) {
         if (activity!=null) {
             Context context = activity.getApplicationContext();
             LayoutInflater inflater = activity.getLayoutInflater();

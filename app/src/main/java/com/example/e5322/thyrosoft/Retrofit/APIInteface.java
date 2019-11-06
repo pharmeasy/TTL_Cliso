@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Retrofit;
 
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
+import com.example.e5322.thyrosoft.Models.Language_Model;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
@@ -22,6 +23,9 @@ public interface APIInteface {
 
     @GET("{passSpinner_value}/{Contact_Details}")
     Call<Cmpdt_Model.ContactArrayListBean> getemployeedt(@Path("passSpinner_value") String passSpinner_value, @Path("Contact_Details") String Contact_Details);
+
+/*    @GET("Showlang")
+    Call<Language_Model> getlanguage();*/
 
     @GET("{api_key}/{user}/{getclient}")
     Call<SourceILSMainModel> getClient(@Path("api_key") String api_key, @Path("user") String user, @Path("getclient") String getclient);

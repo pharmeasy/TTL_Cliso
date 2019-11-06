@@ -296,11 +296,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     agesinteger = Integer.parseInt(s.toString());
-                } else {
-
                 }
-                String enteredString = s.toString();
 
+                String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     Toast.makeText(SpecialOffer_Activity.this,
                             ToastFile.crt_age,
@@ -311,6 +309,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_age.setText("");
                     }
                 }
+
                 if (et_age.getText().toString().equals("")) {
 
                 } else {
@@ -605,6 +604,12 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+
+                    if (enteredString.length() > 0) {
+                        et_name.setText(enteredString.substring(1));
+                    } else {
+                        et_name.setText("");
+                    }
 
                 }
 
@@ -1054,7 +1059,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             } else {
                 sendIntent();
             }
-        } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
+        }else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
             Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
         } else {
             sendIntent();
@@ -1099,12 +1104,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("age", getFinalAge);
         saveDetails.putString("gender", saveGenderId);
 
-       /* if (sctflag == false) {
-            saveDetails.putString("sct", strtime);
-            saveDetails.putString("date", strdate);
-        } else {
 
-        }*/
 
         if (checktime.equals("Default")) {
             saveDetails.putString("sct", strtime);
@@ -1133,8 +1133,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("getcampIDtoPass", "");
         saveDetails.putString("kycinfo", "");
         saveDetails.putString("WOEbrand", "");
-
-
         saveDetails.putString("SR_NO", "");
         saveDetails.putString("pincode", "");
         saveDetails.commit();

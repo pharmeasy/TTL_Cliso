@@ -59,22 +59,30 @@
 
             </LinearLayout>
 
-
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_below="@+id/linear_layout"
                 android:layout_weight="10"
                 android:orientation="vertical">
 
-
                 <android.support.v7.widget.RecyclerView
-                    android:id="@+id/entered_recycler_view"
+                    android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="match_parent" />
 
+                <TextView
+                    android:id="@+id/tv_noResult"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_centerInParent="true"
+                    android:text="No records found!"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/DARKGray"
+                    android:textSize="@dimen/dp_20"
+                    android:visibility="gone" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/bs_calendar_ll"
@@ -83,6 +91,7 @@
                 android:background="@color/white"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="3">
 
                 <TextView

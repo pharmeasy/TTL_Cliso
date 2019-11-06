@@ -70,6 +70,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
                 android:backgroundTint="@color/maroon"
+                android:overlapAnchor="false"
                 android:textAlignment="center" />
         </LinearLayout>
 
@@ -104,7 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:gravity="center"
+                android:gravity="start"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -148,17 +149,6 @@
                     android:textColor="@color/DARKGray"
                     android:textSize="12sp" />
 
-                <ImageView
-                    android:id="@+id/iv_playAudio"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="@dimen/smallPadding"
-                    android:src="@drawable/ic_audio"
-                    android:visibility="gone" />
-
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -183,6 +173,17 @@
                         android:visibility="gone" />
 
                 </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/iv_playAudio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/smallPadding"
+                    android:src="@drawable/ic_audio"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -212,17 +213,6 @@
                     android:textColor="@color/DARKGray"
                     android:textSize="12sp" />
 
-                <ImageView
-                    android:id="@+id/iv_preview"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="@dimen/smallPadding"
-                    android:src="@drawable/ic_gallery"
-                    android:visibility="gone" />
-
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -247,21 +237,53 @@
                         android:visibility="gone" />
 
                 </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/iv_preview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/smallPadding"
+                    android:src="@drawable/ic_gallery"
+                    android:visibility="gone" />
+
             </LinearLayout>
 
-            <Button
-                android:id="@+id/sendcomm"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="center"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/smallPadding"
-                android:layout_weight="0.8"
-                android:background="@drawable/maroon_rect_box"
+                android:orientation="horizontal"
                 android:paddingLeft="50dp"
-                android:paddingRight="50dp"
-                android:text="SEND"
-                android:textColor="@color/colorWhite"
-                android:textSize="14dp" />
+                android:paddingRight="50dp">
+
+                <Button
+                    android:id="@+id/btn_reset"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="@dimen/smallPadding"
+                    android:layout_weight="1"
+                    android:background="@drawable/maroon_rect_box"
+                    android:text="RESET"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14dp" />
+
+                <Button
+                    android:id="@+id/sendcomm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/smallPadding"
+                    android:layout_weight="1"
+                    android:background="@drawable/maroon_rect_box"
+                    android:text="SEND"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="14dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>

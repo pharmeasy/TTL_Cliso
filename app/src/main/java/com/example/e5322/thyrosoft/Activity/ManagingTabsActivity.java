@@ -549,7 +549,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
-        /*else if (id == R.id.blood_s_entry) {
+        else if (id == R.id.bs_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -557,7 +557,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        }*/
+        }
 
         else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
@@ -730,13 +730,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if (response!=null){
+                            if (response != null) {
                                 Log.e(TAG, "onResponse: " + response);
                                 prof = response.getString(Constants.tsp_image);
                                 ac_code = response.getString(Constants.ac_code);
 
                                 Constants.preotp = response.getString("PriOTP");
-
+                                //  Constants.preotp = "NO";
                                 address = response.getString(Constants.address);
                                 email = response.getString(Constants.email);
                                 mobile = response.getString(Constants.mobile);
@@ -794,8 +794,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                         .load(tsp_img)
                                         .placeholder(context.getResources().getDrawable(R.drawable.userprofile))
                                         .into(imageViewprofile);
-                            }else {
-                                Toast.makeText(ManagingTabsActivity.this,"Something Went Wrong",Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(ManagingTabsActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
                             }
 
 

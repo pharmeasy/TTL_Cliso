@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +24,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -38,14 +38,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.MultipartComposeCommController;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.ComposeCommPOSTModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -57,18 +53,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.ArrayList;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class ComposeCommunication_activity extends AppCompatActivity {
     public static final int RequestPermissionCode = 1;
-    public static RequestQueue PostQue;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -89,14 +81,9 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     EditText commuTXT;
     ImageView back, home, iv_tick_voice, iv_tick_img, iv_preview, iv_playAudio;
     LinearLayout parent_ll, offline_img;
-    String Date = "";
-    ProgressDialog barProgressDialog;
-    Button sendcomm;
-    String comefrom;
+    Button sendcomm, btn_reset;
     private LinearLayout ll_upVoice, ll_upImage;
     private TextView tv_UpVoice, tv_UpImage;
-    private SimpleDateFormat sdf;
-    private Global globalClass;
     private String TAG = ManagingTabsActivity.class.getSimpleName();
     private Activity mActivity;
     private int PERMISSION_REQUEST_CODE = 200;
@@ -110,6 +97,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private RadioButton rd_audio, rd_image;
     private boolean audioChecked, imageChecked;
+    private String strForwardTo;
+    private boolean flag = false;
 
     @SuppressLint("NewApi")
     @Override
@@ -122,8 +111,49 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         }*/
         mActivity = ComposeCommunication_activity.this;
 
+        initUI();
+
+        if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
+            offline_img.setVisibility(View.VISIBLE);
+            parent_ll.setVisibility(View.GONE);
+        } else {
+            offline_img.setVisibility(View.GONE);
+            parent_ll.setVisibility(View.VISIBLE);
+        }
+
+        if (Global.checkForApi21()) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
+
+        commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
+
+        /*String[] string = new String[GlobalClass.commSpinner.size()];
+        for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+            string[i] = GlobalClass.commSpinner.get(i).getDisplayName();
+        }*/
+
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add("-Select-");
+        if (GlobalClass.commSpinner.size() > 0) {
+            for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+                stringArrayList.add(GlobalClass.commSpinner.get(i).getDisplayName());
+            }
+        }
+
+        ArrayAdapter aa = new ArrayAdapter(mActivity, android.R.layout.simple_spinner_item, stringArrayList);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnercomm.setAdapter(aa);
+
+        initListeners();
+    }
+
+    private void initUI() {
         spinnercomm = (Spinner) findViewById(R.id.spinnercomm);
         sendcomm = (Button) findViewById(R.id.sendcomm);
+        btn_reset = (Button) findViewById(R.id.btn_reset);
         commuTXT = (EditText) findViewById(R.id.commuTXT);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -139,13 +169,16 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         iv_playAudio = (ImageView) findViewById(R.id.iv_playAudio);
         rd_audio = (RadioButton) findViewById(R.id.rd_audio);
         rd_image = (RadioButton) findViewById(R.id.rd_image);
+    }
 
+    private void initListeners() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,32 +189,27 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             }
         });
 
-        if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
-            offline_img.setVisibility(View.VISIBLE);
-            parent_ll.setVisibility(View.GONE);
-        } else {
-            offline_img.setVisibility(View.GONE);
-            parent_ll.setVisibility(View.VISIBLE);
-        }
+        spinnercomm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (GlobalClass.commSpinner.size() > 0) {
+                    for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+                        if (spinnercomm.getSelectedItem().toString().equalsIgnoreCase(GlobalClass.commSpinner.get(i).getDisplayName())) {
+                            strForwardTo = GlobalClass.commSpinner.get(i).getForwardTo();
+                        }
+                    }
+                }
+            }
 
-        String[] string = new String[GlobalClass.commSpinner.size()];
-        for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
-            string[i] = GlobalClass.commSpinner.get(i).getDisplayName();
-        }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
+            }
+        });
 
-        commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
         commuTXT.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
@@ -203,38 +231,35 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             }
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
         });
-        Calendar cl = Calendar.getInstance();
-        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-        Date = sdf.format(cl.getTime());
-        ArrayAdapter aa = new ArrayAdapter(ComposeCommunication_activity.this, android.R.layout.simple_spinner_item, string);
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnercomm.setAdapter(aa);
         sendcomm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                String getCommunication = commuTXT.getText().toString();
-                if (getCommunication.equals("")) {
+                String getCommunication = commuTXT.getText().toString().trim();
+                if (spinnercomm.getSelectedItem().toString().equalsIgnoreCase("-Select-")) {
+                    TastyToast.makeText(ComposeCommunication_activity.this, "Select related to", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                } else if (getCommunication.isEmpty()) {
                     TastyToast.makeText(ComposeCommunication_activity.this, "Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                } else {
-
-                    if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
-                        offline_img.setVisibility(View.VISIBLE);
-                        parent_ll.setVisibility(View.GONE);
+                    commuTXT.requestFocus();
+                } else if (rd_audio.isSelected() || rd_audio.isChecked()) {
+                    if (selectedFile == null || !selectedFile.exists()) {
+                        TastyToast.makeText(ComposeCommunication_activity.this, "Record audio to upload", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
-                        PostData();
-                        offline_img.setVisibility(View.GONE);
-                        parent_ll.setVisibility(View.VISIBLE);
+                        proceed();
                     }
+                } else if (rd_image.isSelected() || rd_image.isChecked()) {
+                    if (selectedFile == null || !selectedFile.exists()) {
+                        TastyToast.makeText(ComposeCommunication_activity.this, "Select image to upload", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        proceed();
+                    }
+                } else {
+                    proceed();
                 }
-                commuTXT.setText("");
-                spinnercomm.setSelection(0);
             }
         });
 
@@ -244,13 +269,16 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 audioChecked = isChecked;
                 if (audioChecked) {
                     if (selectedFile != null && selectedFile.exists()) {
-                        showAlertDialog();
+                        if (!flag) {
+                            showAlertDialog("audio");
+                        }
                     } else {
                         ll_upVoice.setVisibility(View.VISIBLE);
                         ll_upImage.setVisibility(View.GONE);
                         rd_image.setChecked(false);
                         rd_image.setSelected(false);
                     }
+                    manageAudioView(selectedFile);
                 }
             }
         });
@@ -261,18 +289,21 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 imageChecked = isChecked;
                 if (imageChecked) {
                     if (selectedFile != null && selectedFile.exists()) {
-                        showAlertDialog();
+                        if (!flag) {
+                            showAlertDialog("image");
+                        }
                     } else {
                         ll_upVoice.setVisibility(View.GONE);
                         ll_upImage.setVisibility(View.VISIBLE);
                         rd_audio.setChecked(false);
                         rd_audio.setSelected(false);
                     }
+                    manageImageView(selectedFile);
                 }
             }
         });
 
-        tv_UpImage.setOnClickListener(new View.OnClickListener() {
+        ll_upImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (checkPermission()) {
@@ -287,14 +318,14 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (selectedFile != null) {
-                    GlobalClass.showImageDialog(mActivity, selectedFile);
-                }else {
+                    GlobalClass.showImageDialog(mActivity, selectedFile, "", 1);
+                } else {
                     Toast.makeText(mActivity, "File not found", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        tv_UpVoice.setOnClickListener(new View.OnClickListener() {
+        ll_upVoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showRecordAudioDialog(mActivity);
@@ -307,111 +338,120 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 showPlayAudioDialog(mActivity);
             }
         });
+
+        btn_reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                callIntent();
+            }
+        });
     }
 
-    private void showAlertDialog() {
+    private void proceed() {
+        if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
+            offline_img.setVisibility(View.VISIBLE);
+            parent_ll.setVisibility(View.GONE);
+        } else {
+            PostData();
+            offline_img.setVisibility(View.GONE);
+            parent_ll.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void showAlertDialog(final String value) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
-        alertDialog.setMessage("At a time you can upload only one, voice or image. Do you want delete the selected file ?");
+        alertDialog.setMessage("At a time you can upload only one, voice or image. Do you want to delete the selected file ?");
         alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedFile.exists()) {
                     selectedFile.delete();
                     selectedFile = null;
                 }
+                if (value.equalsIgnoreCase("audio")) {
+                    ll_upVoice.setVisibility(View.VISIBLE);
+                    ll_upImage.setVisibility(View.GONE);
+                    rd_image.setChecked(false);
+                    rd_image.setSelected(false);
+                    manageAudioView(selectedFile);
+                } else {
+                    ll_upVoice.setVisibility(View.GONE);
+                    ll_upImage.setVisibility(View.VISIBLE);
+                    rd_audio.setChecked(false);
+                    rd_audio.setSelected(false);
+                    manageImageView(selectedFile);
+                }
             }
         });
         alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+                flag = true;
+                if (value.equalsIgnoreCase("audio")) {
+                    ll_upVoice.setVisibility(View.GONE);
+                    ll_upImage.setVisibility(View.VISIBLE);
+                    rd_audio.setChecked(false);
+                    rd_audio.setSelected(false);
+                    rd_image.setChecked(true);
+                    rd_image.setSelected(true);
+                    manageImageView(selectedFile);
+                } else {
+                    ll_upVoice.setVisibility(View.VISIBLE);
+                    ll_upImage.setVisibility(View.GONE);
+                    rd_image.setChecked(false);
+                    rd_image.setSelected(false);
+                    rd_audio.setChecked(true);
+                    rd_audio.setSelected(true);
+                    manageAudioView(selectedFile);
+                }
             }
         });
         alertDialog.show();
     }
 
     private void PostData() {
-        barProgressDialog = new ProgressDialog(ComposeCommunication_activity.this);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-
-        String spinnerItem;
-
-        PostQue = Volley.newRequestQueue(ComposeCommunication_activity.this);
-
-        JSONObject jsonObject = new JSONObject();
         try {
-            // spinnerItem = spinnercomm.getSelectedItem().toString();
-            if (spinnercomm.getSelectedItem().toString() != null)
-                spinnerItem = spinnercomm.getSelectedItem().toString();
-
-            if (spinnercomm.getSelectedItem().equals("WOE & REPORTS")) {
-                spinnerItem = "WOE-REPORTS";
-            } else {
-                spinnerItem = spinnercomm.getSelectedItem().toString();
-            }
-
             SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
             String user = prefs.getString("Username", null);
             String passwrd = prefs.getString("password", null);
             String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
-            jsonObject.put("apiKey", api_key);
-            jsonObject.put(Constants.UserCode_billing, user);
-            jsonObject.put("type", "Request");
-            jsonObject.put("communication", commuTXT.getText());
-            jsonObject.put("commId", "");
-            jsonObject.put("forwardTo", spinnerItem);
+            ComposeCommPOSTModel composeCommPOSTModel = new ComposeCommPOSTModel();
+            composeCommPOSTModel.setApiKey(api_key);
+            composeCommPOSTModel.setUserCode(user);
+            composeCommPOSTModel.setSource("CLISO APP");
+            composeCommPOSTModel.setType("REQUEST");
+            composeCommPOSTModel.setForwardTo(strForwardTo);
+            composeCommPOSTModel.setCommunication("" + commuTXT.getText().toString().trim());
+            composeCommPOSTModel.setFile(selectedFile);
 
+            new MultipartComposeCommController(mActivity, ComposeCommunication_activity.this, composeCommPOSTModel).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPOSTCommunicationResponse(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String Response = jsonObject.optString("response", "");
+            String respId = jsonObject.optString("resId", "");
+            if (respId.equalsIgnoreCase("RES000")) {
+                TastyToast.makeText(mActivity, Response, Toast.LENGTH_SHORT, TastyToast.SUCCESS);
+                callIntent();
+            } else {
+                TastyToast.makeText(mActivity, Response, Toast.LENGTH_SHORT, TastyToast.ERROR);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(ComposeCommunication_activity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                com.android.volley.Request.Method.POST, Api.commPost, jsonObject,
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.e(TAG, "onResponse: RESPONSE" + response);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
+    }
 
-                            String responsetoshow = response.optString("response", "");
-
-                            if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(ComposeCommunication_activity.this);
-                            } else if (responsetoshow.equalsIgnoreCase("Communication Registered Successfully")) {
-                                TastyToast.makeText(ComposeCommunication_activity.this, response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            } else {
-                                TastyToast.makeText(ComposeCommunication_activity.this, response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    System.out.println("error ala parat " + error);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "PostData: URL" + jsonObjectRequest);
-        Log.e(TAG, "PostData: json" + jsonObject);
-
+    private void callIntent() {
+        Intent intent = new Intent(ComposeCommunication_activity.this, ComposeCommunication_activity.class);
+        startActivity(intent);
+        finish();
     }
 
     private boolean checkPermission() {
@@ -502,6 +542,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
 
     private void manageImageView(File imageFile) {
         if (imageFile != null) {
+            flag = false;
             iv_tick_img.setVisibility(View.VISIBLE);
             iv_preview.setVisibility(View.VISIBLE);
             tv_UpImage.setText(getString(R.string.re_upload_image));
@@ -569,9 +610,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     selectedFile = null;
                 }
                 Log.e(TAG, "On discard Audio file: " + selectedFile);
-                iv_tick_voice.setVisibility(View.INVISIBLE);
-                tv_UpVoice.setText(getString(R.string.upload_voice_message));
-                iv_playAudio.setVisibility(View.GONE);
+                manageAudioView(selectedFile);
             }
         });
 
@@ -580,9 +619,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             public void onClick(View view) {
                 dialog.cancel();
                 Log.e(TAG, "On Save Audio file: " + selectedFile);
-                iv_tick_voice.setVisibility(View.VISIBLE);
-                tv_UpVoice.setText(getString(R.string.reupload_voice_message));
-                iv_playAudio.setVisibility(View.VISIBLE);
+                manageAudioView(selectedFile);
             }
         });
 
@@ -643,6 +680,20 @@ public class ComposeCommunication_activity extends AppCompatActivity {
 
         dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
+    }
+
+    private void manageAudioView(File selectedFile) {
+        if (selectedFile != null) {
+            flag = false;
+            iv_tick_voice.setVisibility(View.VISIBLE);
+            tv_UpVoice.setText(getString(R.string.reupload_voice_message));
+            iv_playAudio.setVisibility(View.VISIBLE);
+        } else {
+            iv_tick_voice.setVisibility(View.INVISIBLE);
+            tv_UpVoice.setText(getString(R.string.upload_voice_message));
+            iv_playAudio.setVisibility(View.GONE);
+        }
+
     }
 
     private void requestAudioPermission() {

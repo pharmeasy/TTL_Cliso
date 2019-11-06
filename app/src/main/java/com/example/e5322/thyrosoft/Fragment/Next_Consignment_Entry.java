@@ -743,16 +743,16 @@ public class Next_Consignment_Entry extends RootFragment {
                     temp_consignment_nxt = consignment_temp_spinner_nxt.getSelectedItem().toString();
                     if (consignment_number_nxt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else  if (packaging_dtl_nxt.equals("Select packaging details")) {
+                        TastyToast.makeText(mContext, ToastFile.slt_pkg_dtl, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (consignment_barcode_nxt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (bsv_barcode_num_nxt.equals("")) {
-                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (packaging_dtl_nxt.equals("Select packaging details")) {
-                        TastyToast.makeText(mContext, ToastFile.slt_pkg_dtl, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (expt_transit_tm_nxt.equals("Select expected transit time")) {
                         TastyToast.makeText(mContext, ToastFile.expt_transit_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (temp_consignment_nxt.equals("Select Temperature of the Consignment")) {
                         TastyToast.makeText(mContext, ToastFile.slt_temp_consign, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (bsv_barcode_num_nxt.equals("")) {
+                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         doConsignment();
                     }
@@ -769,17 +769,17 @@ public class Next_Consignment_Entry extends RootFragment {
                     temp_consignment_nxt = consignment_temp_spinner_nxt.getSelectedItem().toString();
                     if (consignment_number_nxt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (consignment_barcode_nxt.equals("")) {
-                        TastyToast.makeText(mContext, ToastFile.consignment_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (bsv_barcode_num_nxt.equals("")) {
-                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (packaging_dtl_nxt.equals("Select packaging details")) {
+                    } else  if (packaging_dtl_nxt.equals("Select packaging details")) {
                         TastyToast.makeText(mContext, ToastFile.slt_pkg_dtl, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else  if (consignment_barcode_nxt.equals("")) {
+                        TastyToast.makeText(mContext, ToastFile.consignment_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (expt_transit_tm_nxt.equals("Select expected transit time")) {
                         TastyToast.makeText(mContext, ToastFile.expt_transit_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (temp_consignment_nxt.equals("Select Temperature of the Consignment")) {
                         TastyToast.makeText(mContext, ToastFile.slt_temp_consign, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
+                    } else if (bsv_barcode_num_nxt.equals("")) {
+                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else   {
                         doConsignment();
                     }
                 } else if (modedata_nxt.equals("Courier")) {
@@ -792,15 +792,15 @@ public class Next_Consignment_Entry extends RootFragment {
                     temp_consignment_nxt = consignment_temp_spinner_nxt.getSelectedItem().toString();
                     if (consignment_number_nxt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (bsv_barcode_num_nxt.equals("")) {
-                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (packaging_dtl_nxt.equals("Select packaging details")) {
                         TastyToast.makeText(mContext, ToastFile.slt_pkg_dtl, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (expt_transit_tm_nxt.equals("Select expected transit time")) {
                         TastyToast.makeText(mContext, ToastFile.expt_transit_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (temp_consignment_nxt.equals("Select Temperature of the Consignment")) {
                         TastyToast.makeText(mContext, ToastFile.slt_temp_consign, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
+                    } else if (bsv_barcode_num_nxt.equals("")) {
+                        TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else  {
                         doConsignment();
                     }
 

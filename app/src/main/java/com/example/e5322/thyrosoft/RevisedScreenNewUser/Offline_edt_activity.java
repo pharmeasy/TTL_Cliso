@@ -380,15 +380,13 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 getName = getName.replaceAll("\\s+", " ");
                 getAge = age_edt.getText().toString();
                 getAgeType = spinyr.getSelectedItem().toString();
-                if (getName.equals("") && getName.equals(null)) {
+                if (getName.equals("") || getName.equals(null) ||getName.length()<=1) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-                } else if (getAge.equals("") && getAge.equals(null)) {
+                } else if (getAge.equals("") || getAge.equals(null)) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-                } else if (getAgeType.equals("") && getAgeType.equals(null)) {
+                } else if (getAgeType.equals("") || getAgeType.equals(null)) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age_type, Toast.LENGTH_SHORT).show();
-                }
-                //else if (saveGenderId.equals("rew43") && saveGenderId.equals(null)) {
-                else if (saveGenderId.equals("") && saveGenderId.equals(null)) {
+                } else if (saveGenderId.equals("") || saveGenderId.equals(null)) {
                     Toast.makeText(Offline_edt_activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                 } else {
                     if (getAgeType.equals("Years")) {
@@ -400,8 +398,6 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                     }
                     doWOE_edit();
                 }
-
-
             }
         });
         // Inflate the layout for this fragment

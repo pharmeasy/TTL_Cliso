@@ -841,6 +841,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             }
         });
+
         jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
                 300000,
                 3,

@@ -240,7 +240,7 @@ public class FAQ_Fragment extends Fragment {
         String getSpinner_value = category_spinner.getSelectedItem().toString();
         requestQueue_FAQ = Volley.newRequestQueue(mContext);
 
-
+        Log.e(TAG,"FAQ API--->"+Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ");
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -265,9 +265,6 @@ public class FAQ_Fragment extends Fragment {
                         expandableListAdapter = new ExpandableListAdapter_FAQ(faq_list, mContext);
                         expandable_list_faq.setAdapter(expandableListAdapter);
                     }
-                } else {
-
-                    //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
 
             }

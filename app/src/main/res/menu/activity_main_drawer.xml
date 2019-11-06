@@ -157,14 +157,14 @@
             android:title="SGC PGC Entry" />
     </group>
 
-    <!-- <group
+     <group
          android:checkableBehavior="single">
          <item
-             android:id="@+id/blood_s_entry"
-             android:icon="@drawable/sgc_pgc_d"
+             android:id="@+id/bs_entry"
+             android:icon="@drawable/ic_bsentry"
              android:visible="true"
-             android:title="Blood Sugar entry" />
-     </group>-->
+             android:title="@string/bs_bp_entry" />
+     </group>
 
     <group
         android:id="@+id/group14"

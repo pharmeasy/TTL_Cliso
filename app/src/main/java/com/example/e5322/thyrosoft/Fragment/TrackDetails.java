@@ -435,7 +435,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                         e.printStackTrace();
                     }
 
-
                     callAdapter(trackDetArray);
 
                 }
@@ -1080,7 +1079,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     if (!emailid.getText().toString().matches(emailPattern)) {
                         Toast.makeText(getContext(), ToastFile.invalid_eml, Toast.LENGTH_SHORT).show();
                     } else {
-                        SendMail();
+                        SendMail(mob, name);
                         dialog.dismiss();
                     }
 
@@ -1105,7 +1104,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         dialog.setCanceledOnTouchOutside(false);
     }
 
-    private void SendMail() {
+    private void SendMail(EditText mob, EditText name) {
 
         PostQue = Volley.newRequestQueue(getContext());
 
@@ -1124,7 +1123,11 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             String[] twoStringArray = barCodeDetail.get(0).getName().split("\\(", 2); //the main line
 
             jsonObject.put("name", twoStringArray[0]);
-            jsonObject.put("mob", barCodeDetail.get(0).getMobile());
+
+            if (!TextUtils.isEmpty(mob.getText().toString())) {
+                jsonObject.put("mob", barCodeDetail.get(0).getMobile());
+            }
+
             jsonObject.put("email", email_id_string);
 
 
@@ -1132,6 +1135,9 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(getContext());
+        Log.e(TAG, "SEND EMAIL RESPONSE ---->" + jsonObject.toString());
+        Log.e(TAG, "SEND EMAIL API ---->" + Api.Receipt_mail);
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.Receipt_mail, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

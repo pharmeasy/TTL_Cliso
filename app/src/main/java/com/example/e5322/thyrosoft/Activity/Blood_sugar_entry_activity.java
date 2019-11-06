@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Activity.frags.Enter_Blood_sugar_data_Fragment;
-import com.example.e5322.thyrosoft.Activity.frags.Entered_blood_sugar_fragment;
-import com.example.e5322.thyrosoft.Fragment.CampIntimation.Camp_Mis_Data_fragment;
-import com.example.e5322.thyrosoft.Fragment.CampIntimation.SelectTest;
+import com.example.e5322.thyrosoft.Activity.frags.BS_EntryFragment;
+import com.example.e5322.thyrosoft.Activity.frags.BS_MISEntryFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
@@ -58,8 +56,8 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
             }
         });
 
-        final Enter_Blood_sugar_data_Fragment entered_blood_sugar_fragment = new Enter_Blood_sugar_data_Fragment();
-        replaceFragment(entered_blood_sugar_fragment);
+        final BS_EntryFragment bs_entryFragment = new BS_EntryFragment();
+        replaceFragment(bs_entryFragment);
 
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +66,8 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_entered.setVisibility(View.GONE);
-                Enter_Blood_sugar_data_Fragment enter_blood_sugar_data_fragment = new Enter_Blood_sugar_data_Fragment();
-                replaceFragment(enter_blood_sugar_data_fragment);
+                BS_EntryFragment bs_entryFragment = new BS_EntryFragment();
+                replaceFragment(bs_entryFragment);
             }
         });
 
@@ -80,8 +78,8 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 enter_arrow_entered.setVisibility(View.VISIBLE);
                 enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_enter.setVisibility(View.GONE);
-                Entered_blood_sugar_fragment entered_blood_sugar_fragment1 = new Entered_blood_sugar_fragment();
-                replaceFragment(entered_blood_sugar_fragment1);
+                BS_MISEntryFragment bs_misEntryFragment = new BS_MISEntryFragment();
+                replaceFragment(bs_misEntryFragment);
             }
         });
     }
@@ -91,14 +89,14 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
         try {
             List fragments = getSupportFragmentManager().getFragments();
             currentFragment = fragments.get(fragments.size()-1);
-            if(currentFragment.toString().contains("Entered_blood_sugar_fragment")){
+            if(currentFragment.toString().contains("BS_MISEntryFragment")){
                 enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_entered.setVisibility(View.GONE);
-                Enter_Blood_sugar_data_Fragment c = new Enter_Blood_sugar_data_Fragment();
+                BS_EntryFragment c = new BS_EntryFragment();
                 replaceFragment(c);
-            }if(currentFragment.toString().contains("Enter_Blood_sugar_data_Fragment")){
+            }if(currentFragment.toString().contains("BS_EntryFragment")){
                 finish();
             }
         } catch (Exception e) {

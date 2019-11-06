@@ -1081,7 +1081,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected JSONObject doInBackground(Void... params) {
 
 
-            String strUrl = Api.GenerateTid + "PaymentGateway.svc/PaymentLog_franchise";
+            String strUrl = Api.THYROCARE + "PaymentGateway.svc/PaymentLog_franchise";
             Log.e(TAG, "doInBackground: " + strUrl);
             System.out.println(strUrl);
 

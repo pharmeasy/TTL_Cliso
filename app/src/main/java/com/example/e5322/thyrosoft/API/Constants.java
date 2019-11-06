@@ -26,6 +26,9 @@ public class Constants {
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
 
+    public static String APK_NAME = "ThyrosoftLite.apk";
+    public static String APKTYPE="application/vnd.android.package-archive";
+
 
     //login details//
     public static String Status = "Status";
@@ -475,6 +478,8 @@ public class Constants {
     public static final String FLUORIDE = "FLUORIDE";
     public static final String LITHIUMHEPARIN = "LITHIUM HEPARIN";
     public static final String SODIUMHEPARIN = "SODIUM HEPARIN";
+    public static String GENRATE_OTP_API_KEY="sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
+    public static String RES0000 = "RES0000";
 
 
     public static String returnToken(Activity mContext) {

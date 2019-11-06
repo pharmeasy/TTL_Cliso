@@ -32,7 +32,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.LeggyVideo;
 import com.example.e5322.thyrosoft.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptionsExtension;
 import com.google.gson.Gson;
@@ -41,7 +40,7 @@ public class LeggyVideo_Activity extends AppCompatActivity implements MyGestureL
     RecyclerView videoList;
     RecyclerView.Adapter recyclerAdapter;
     ImageView back, home;
-    String URL = "https://www.thyrocare.com/API_BETA/B2B/COMMON.svc/Cliso/Showvideo";
+    String URL = "";
     LeggyVideo_Activity mActivity;
     Context mContext;
     VideoView videoView;
@@ -187,19 +186,16 @@ public class LeggyVideo_Activity extends AppCompatActivity implements MyGestureL
 //        progressDialog.show();
         GlobalClass.isNetworkAvailable(LeggyVideo_Activity.this);
 
-        if (!videoView.isPlaying()) {
+        /*if (!videoView.isPlaying()) {
             loading.setVisibility(View.VISIBLE);
-        }
+        }*/
 
         if (leggyVideoListModel != null) {
             if (leggyVideoListModel.getPath() != null) {
                 if (!leggyVideoListModel.getPath().equalsIgnoreCase("")) {
                     URL = leggyVideoListModel.getPath().toString().trim();
 //                    leggyVideoAdapter.loading3.setVisibility(View.GONE);
-
-
                     getVideo();
-
 //                    progressDialog.dismiss();
                 }
             }
@@ -208,59 +204,55 @@ public class LeggyVideo_Activity extends AppCompatActivity implements MyGestureL
 
     public void getVideo() {
         video.setVisibility(View.VISIBLE);
+        try {
+            mediaController = new CustomMediaController(this, URL);
+            mediaController.setAnchorView(videoView);
+            uri = Uri.parse(URL);
+            mediaController.setMediaPlayer(videoView);
+            videoView.setMediaController(mediaController);
+            videoView.setVideoURI(uri);
 
-         if (video.getVisibility() == View.VISIBLE && !videoView.isPlaying()) {
-//            loading3.setVisibility(View.GONE);
-            loading2.setVisibility(View.GONE);
-            loading.setVisibility(View.VISIBLE);
-            progressDialog.dismiss();
-//             leggyVideoAdapter.loading3.setVisibility(View.GONE);
-
-             try {
-                mediaController = new CustomMediaController(this, URL);
-                mediaController.setAnchorView(videoView);
-                uri = Uri.parse(URL);
-                mediaController.setMediaPlayer(videoView);
-                videoView.setMediaController(mediaController);
-                videoView.setVideoURI(uri);
-
-                videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                            @Override
-                            public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
-                                if (i == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START)
-                                    loading.setVisibility(View.GONE);
-                                progressDialog.dismiss();
-                                if (i == MediaPlayer.MEDIA_INFO_BUFFERING_START)
-                                    loading.setVisibility(View.VISIBLE);
-                                progressDialog.show();
-                                if (i == MediaPlayer.MEDIA_INFO_BUFFERING_END)
-                                    loading.setVisibility(View.GONE);
-                                progressDialog.dismiss();
-                                return false;
-                            }
-                        });
-                        if (Constants.timeInterval > 0) {
-                            videoView.seekTo(Constants.timeInterval);
-                            videoView.start();
-//                            loading.setVisibility(View.GONE);
-                            videoView.getBufferPercentage();
-                            Constants.timeInterval = 0;
-                        }
-                    }
-                });
-                videoView.start();
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (!videoView.isPlaying()) {
+                progressDialog.show();
             }
+
+            videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                        @Override
+                        public boolean onInfo(MediaPlayer mediaPlayer, int i, int i1) {
+                            if (i == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START)
+                                progressDialog.dismiss();
+                            if (i == MediaPlayer.MEDIA_INFO_BUFFERING_START)
+                                progressDialog.show();
+                            if (i == MediaPlayer.MEDIA_INFO_BUFFERING_END)
+                                progressDialog.dismiss();
+                            return false;
+                        }
+                    });
+                    if (Constants.timeInterval > 0) {
+                        videoView.seekTo(Constants.timeInterval);
+                        videoView.start();
+                        videoView.getBufferPercentage();
+                        Constants.timeInterval = 0;
+                    }
+                }
+            });
+            videoView.start();
+            videoView.requestFocus();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if (!videoView.isPlaying() && progressDialog==null) {
+            assert false;
+            progressDialog.show();
+        }
     }
 
     @Override
@@ -304,8 +296,20 @@ public class LeggyVideo_Activity extends AppCompatActivity implements MyGestureL
     }
 
     @Override
-    protected void onDestroy() {
+    public void onPause() {
+        super.onPause();
+        if (!videoView.isPlaying() && progressDialog==null) {
+            assert false;
+            progressDialog.show();
+        }
+    }
+
+    @Override
+    public void onDestroy(){
         super.onDestroy();
-        finish();
+        if ( progressDialog!=null && progressDialog.isShowing() ){
+            progressDialog.dismiss();
+            finish();
+        }
     }
 }
