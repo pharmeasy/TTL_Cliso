@@ -36,6 +36,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
@@ -834,8 +835,6 @@ public class Login extends Activity implements View.OnClickListener {
                             barProgressDialog.dismiss();
                         }
                         Log.e(TAG, "onResponse: " + response);
-                        // String Status = response.get(Constants.Status).toString();
-                        // JSONObject time=response.getJSONObject("time");
 
                         try {
                             String finalJson = response.toString();
@@ -843,56 +842,54 @@ public class Login extends Activity implements View.OnClickListener {
 
                             Status = parentObject.getString("RESPONSE");
                             Login_Type = parentObject.getString("ACCESS_TYPE");
-
+                            RES_ID= parentObject.getString("RES_ID");
 
                             if (Status.equals("AUTHENTICATION FAILED")) {
                                 Toast.makeText(Login.this, ToastFile.incrt_log, Toast.LENGTH_SHORT).show();
                             } else {
-                                ACCESS_TYPE11 = parentObject.getString("ACCESS_TYPE");
-                                API_KEY11 = parentObject.getString("API_KEY");
-                                CLIENT_TYPE11 = parentObject.getString("CLIENT_TYPE");
-                                EMAIL11 = parentObject.getString("EMAIL");
-                                EXISTS11 = parentObject.getString("EXISTS");
-                                MOBILE11 = parentObject.getString("MOBILE");
-                                NAME11 = parentObject.getString("NAME");
-                                RESPONSE11 = parentObject.getString("RESPONSE");
-                                RES_ID11 = parentObject.getString("RES_ID");
-                                URL11 = parentObject.getString("URL");
-                                USER_CODE11 = parentObject.getString("USER_CODE");
-                                USER_TYPE11 = parentObject.getString("USER_TYPE");
-                                VERSION_NO11 = parentObject.getString("VERSION_NO");
+                                if (RES_ID.equals(Constants.RES0000)) {
+                                    ACCESS_TYPE11 = parentObject.getString("ACCESS_TYPE");
+                                    API_KEY11 = parentObject.getString("API_KEY");
+                                    CLIENT_TYPE11 = parentObject.getString("CLIENT_TYPE");
+                                    EMAIL11 = parentObject.getString("EMAIL");
+                                    EXISTS11 = parentObject.getString("EXISTS");
+                                    MOBILE11 = parentObject.getString("MOBILE");
+                                    NAME11 = parentObject.getString("NAME");
+                                    RESPONSE11 = parentObject.getString("RESPONSE");
+                                    RES_ID11 = parentObject.getString("RES_ID");
+                                    URL11 = parentObject.getString("URL");
+                                    USER_CODE11 = parentObject.getString("USER_CODE");
+                                    USER_TYPE11 = parentObject.getString("USER_TYPE");
+                                    VERSION_NO11 = parentObject.getString("VERSION_NO");
 
-                                SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
-                                editor.putString("Username", User);
-                                editor.putString("password", pass);
-                                editor.putString("ACCESS_TYPE", ACCESS_TYPE11);
-                                editor.putString("API_KEY", API_KEY11);
-                                editor.putString("email", EMAIL11);
-                                editor.putString("mobile_user", MOBILE11);
-                                editor.putString("CLIENT_TYPE", CLIENT_TYPE11);
-                                editor.putString("NAME", nameFromLoginApi);
-                                editor.putString("RES_ID", res_id);
-                                editor.putString("URL", uil_from_login);
-                                editor.putString("USER_CODE", USER_CODE11);
-                                editor.putString("USER_TYPE", USER_TYPE11);
-                                editor.putString("VERSION_NO", VERSION_NO11);
-                                editor.apply();
+                                    SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
+                                    editor.putString("Username", User);
+                                    editor.putString("password", pass);
+                                    editor.putString("ACCESS_TYPE", ACCESS_TYPE11);
+                                    editor.putString("API_KEY", API_KEY11);
+                                    editor.putString("email", EMAIL11);
+                                    editor.putString("mobile_user", MOBILE11);
+                                    editor.putString("CLIENT_TYPE", CLIENT_TYPE11);
+                                    editor.putString("NAME", nameFromLoginApi);
+                                    editor.putString("RES_ID", res_id);
+                                    editor.putString("URL", uil_from_login);
+                                    editor.putString("USER_CODE", USER_CODE11);
+                                    editor.putString("USER_TYPE", USER_TYPE11);
+                                    editor.putString("VERSION_NO", VERSION_NO11);
+                                    editor.apply();
 
-                                /*if (USER_CODE11.startsWith("BM")) {
-                                    Intent a = new Intent(Login.this, BMC_MainActivity.class);
+                                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
                                     startActivity(a);
                                     TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                } else {*/
-                                Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                startActivity(a);
-                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-//                                }
+
+                                }else {
+                                    TastyToast.makeText(getApplicationContext(), parentObject.getString("RESPONSE"), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                }
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        /* Toast.makeText(Login.this, "" + response, Toast.LENGTH_SHORT).show();*/
                     }
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override

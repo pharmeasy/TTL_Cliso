@@ -317,9 +317,7 @@ public class INAPP_UPDATE implements ActivityCompat.OnRequestPermissionsResultCa
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case GlobalClass.WRITE_EXTERNAL_STORAGE_PERMISSION:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     new DownloadFile(context).execute(ApkUrl, Constants.APK_NAME);
                 }
                 break;

@@ -736,7 +736,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     if (trackBarcode.getCollected().equals("null")) {
                                         trackBarcode.setCollected("NA");
                                     }
-                                    patient.setText(trackBarcode.getPatient().toString());
+                                  /*  patient.setText(trackBarcode.getPatient().toString());
                                     bill_status.setText(trackBarcode.getBillStatus().toString());
                                     refBy.setText(trackBarcode.getRefBy().toString());
                                     wo_order.setText(trackBarcode.getWoeTime().toString());
@@ -746,7 +746,19 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     collected.setText(trackBarcode.getCollected().toString());
                                     billed.setText(trackBarcode.getBilled().toString());
                                     tedtedat.setText(trackBarcode.getWoiLocation());
-                                    collectedat.setText(trackBarcode.getReportAddress());
+                                    collectedat.setText(trackBarcode.getReportAddress());*/
+
+                                    GlobalClass.SetText(patient, trackBarcode.getPatient().toString());
+                                    GlobalClass.SetText(bill_status, trackBarcode.getBillStatus().toString());
+                                    GlobalClass.SetText(refBy, trackBarcode.getRefBy().toString());
+                                    GlobalClass.SetText(wo_order, trackBarcode.getWoeTime().toString());
+                                    GlobalClass.SetText(sct, trackBarcode.getSct().toString());
+                                    GlobalClass.SetText(bvt, trackBarcode.getBvt().toString());
+                                    GlobalClass.SetText(RRT, trackBarcode.getRrt().toString());
+                                    GlobalClass.SetText(collected, trackBarcode.getCollected().toString());
+                                    GlobalClass.SetText(billed, trackBarcode.getBilled().toString());
+                                    GlobalClass.SetText(tedtedat, trackBarcode.getWoiLocation().toString());
+                                    GlobalClass.SetText(collectedat, trackBarcode.getReportAddress().toString());
 
                                     mail.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -860,6 +872,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + passDateTogetData + "/" + "key/value", jsonObject,

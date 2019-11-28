@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -58,6 +59,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import static com.example.e5322.thyrosoft.API.Constants.NHF;
+
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String getdate;
@@ -73,7 +76,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
     private CarouselFragment carouselFragment;
-    private String user;
+    private String user, CLIENT_TYPE;
     private GlobalClass globalClass;
     private String closing_bal, unbilled_woe, unbilled_mt;
     private String credit_lim;
@@ -82,6 +85,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DatabaseHelper db;
     private int offline_draft_counts;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -182,36 +186,38 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
         USER_CODE = prefs.getString("USER_CODE", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
         db = new DatabaseHelper(ManagingTabsActivity.this);
         db.open();
         offline_draft_counts = db.getProfilesCount();
         db.close();
 
-        if (!GlobalClass.isNull(USER_CODE) && USER_CODE.startsWith("BM")) {
-            bottomNavigationView.getMenu().findItem(R.id.home_nav).setVisible(true);
-            bottomNavigationView.getMenu().findItem(R.id.commu).setVisible(true);
-            bottomNavigationView.getMenu().findItem(R.id.loud).setVisible(false);
-            bottomNavigationView.getMenu().findItem(R.id.bell_ic).setVisible(false);
-
-            navigationView.getMenu().findItem(R.id.stock_availability).setVisible(true);
-            navigationView.getMenu().findItem(R.id.communication).setVisible(true);
+        if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+            navigationView.getMenu().findItem(R.id.payment).setVisible(true);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
+            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
+            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
+            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-            navigationView.getMenu().findItem(R.id.payment).setVisible(false);
+
+
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(false);
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(false);
-            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(false);
+            navigationView.getMenu().findItem(R.id.communication).setVisible(false);
+            navigationView.getMenu().findItem(R.id.vid_leggy).setVisible(false);
             navigationView.getMenu().findItem(R.id.notice).setVisible(false);
-            navigationView.getMenu().findItem(R.id.phone).setVisible(false);
-            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(false);
-            navigationView.getMenu().findItem(R.id.profile).setVisible(false);
+            navigationView.getMenu().findItem(R.id.notification).setVisible(false);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(false);
             navigationView.getMenu().findItem(R.id.faq_data).setVisible(false);
+            navigationView.getMenu().findItem(R.id.accr_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.offer_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.articles_data).setVisible(false);
-            navigationView.getMenu().findItem(R.id.vid_leggy).setVisible(false);
+            navigationView.getMenu().findItem(R.id.company_contcat).setVisible(false);
+            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
+            navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
+
         } else {
             if (access.equals("STAFF")) {
                 //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
@@ -253,6 +259,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             }
         }
+
 
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
         String name = getProfileName.getString("name", null);
@@ -419,7 +426,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, LeggyVideo_Activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, VideoActivity.class);
                 startActivity(i);
             }
 
@@ -547,9 +554,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
                 startActivity(i);
             }
-        }
-
-        else if (id == R.id.bs_entry) {
+        } else if (id == R.id.bs_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -557,9 +562,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        }
-
-        else if (id == R.id.logout) {
+        } else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
                     .setMessage(ToastFile.surelogout)
                     .setCancelable(false)
@@ -582,12 +585,18 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                             restoredText = prefs.getString("TSPMobileNumber", null);
 
                             Intent intent = new Intent(Intent.ACTION_DIAL);
-                            intent.setData(Uri.parse("tel:" + restoredText));
+                            if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                                intent.setData(Uri.parse("tel:" + Constants.NHF_Whatsapp));
+                            } else {
+                                intent.setData(Uri.parse("tel:" + restoredText));
+                            }
+
                             startActivity(intent);
                         }
                     })
                     .setNegativeButton("No", null)
                     .show();
+
         } else if (id == R.id.whatsapp) {
             new AlertDialog.Builder(this)
                     .setMessage("Would you like to proceed with whatsapp?")
@@ -596,8 +605,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                             SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
                             restoredText = prefs1.getString("TSPMobileNumber", null);
                             Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                            httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
+                            if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                                httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + Constants.NHF_Whatsapp + "#"));
+                            } else {
+                                httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
+                            }
+
                             startActivity(httpIntent);
+
                         }
                     })
                     .setNegativeButton("No", null)
@@ -721,6 +736,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     public void getProfileDetails(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
@@ -731,6 +748,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     public void onResponse(JSONObject response) {
                         try {
                             if (response != null) {
+                                GlobalClass.hideProgress(context, progressDialog);
                                 Log.e(TAG, "onResponse: " + response);
                                 prof = response.getString(Constants.tsp_image);
                                 ac_code = response.getString(Constants.ac_code);
@@ -916,6 +934,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (!carouselFragment.onBackPressed()) {
             // container Fragment or its associates couldn't handle the back pressed task
             // delegating the task to super class
+
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.close_app));
             builder.setCancelable(false);
@@ -937,10 +956,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
-
             builder.show();
         }
     }
-
-
 }

@@ -25,6 +25,8 @@ import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,8 +50,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.HealthArticle_Activity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
@@ -78,6 +80,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -496,13 +499,13 @@ public class GlobalClass {
         activity.finish();
     }
 
-    public static void hideProgress(Context context, ProgressDialog progressDialog) {
+    public static void hideProgress(Context mcontext, ProgressDialog progressDialog) {
 
         if (progressDialog != null) {
             if (progressDialog.isShowing()) {
-                context = ((ContextWrapper) progressDialog.getContext()).getBaseContext();
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed())
+                mcontext = ((ContextWrapper) progressDialog.getContext()).getBaseContext();
+                if (mcontext instanceof Activity) {
+                    if (!((Activity) mcontext).isFinishing() && !((Activity) mcontext).isDestroyed())
                         progressDialog.dismiss();
                 } else
                     progressDialog.dismiss();
@@ -519,7 +522,7 @@ public class GlobalClass {
                 enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                 || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                 || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                ) {
+        ) {
             TastyToast.makeText(context, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             if (enteredString.length() > 0) {
                 kyc_format.setText(enteredString.substring(1));
@@ -528,7 +531,6 @@ public class GlobalClass {
             }
 
         }
-
     }
 
     public static void showAlertDialog(final Activity activity) {
@@ -644,6 +646,142 @@ public class GlobalClass {
         return isAutoTimeSelected[0];
     }
 
+    public static String formatDate(String currentFormat, String outputFormat, String date) {
+
+        SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
+        SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
+        Date dateObj = null;
+        try {
+            dateObj = curFormater.parse(date);
+            date = postFormater.format(dateObj);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static void SetText(TextView txtview, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+//                txtview.setText("" + msg);
+                if (msg.equalsIgnoreCase("null")) {
+                    txtview.setText("");
+                } else {
+                    txtview.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getAge(int year, int month, int day) {
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.set(year, month - 1, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
+    }
+
+    public static void SetEditText(EditText txtview, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    txtview.setText("");
+                } else {
+                    txtview.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String IsNull(String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (msg != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    msg = "";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msg;
+    }
+
+    public static String getStringwithOutSpace(String str_gbls) {
+        String str = "";
+        str = str_gbls.replaceAll(" ", "%20");
+
+        return str;
+    }
+
+    public static void toastyError(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
+
+    public static void toastySuccess(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.SUCCESS);
+    }
+
+    public static void toastyInfo(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
+
+    private static int ToastLength(boolean b) {
+        if (b) {
+            return Toast.LENGTH_LONG;
+        } else {
+            return Toast.LENGTH_SHORT;
+        }
+    }
+
+
+    public static void printLog(String Type, String Tag, String Label, String msg) {
+        try {
+            if (BuildConfig.DEBUG) {
+                if (Type.equalsIgnoreCase("Error")) {
+                    Log.e(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Info")) {
+                    Log.i(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Debug")) {
+                    Log.d(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Warning")) {
+                    Log.w(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("sout")) {
+                    System.out.println(Tag + " " + Label + ": " + msg);
+                }
+            } else {
+                System.out.println("Live....");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void showImageDialog(Activity activity, File file, String url, int flag) {
         dialog = new Dialog(activity);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -682,11 +820,23 @@ public class GlobalClass {
         dialog.show();
     }
 
-    public static void StoreSyncTime(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("Syncpref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putLong("synctime", System.currentTimeMillis());
+
+    public static void storeProductsCachingTime(Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit();
+        editor.putLong("offer_millis", System.currentTimeMillis()); // add this line and comment below line for cache
         editor.apply();
+    }
+
+
+    public static int Dayscnt(Context context) {
+        long offer_millis = 0, current_millis = 0, differ_millis = 0;
+        SharedPreferences pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, MODE_PRIVATE);
+        offer_millis = pref_prod_caching.getLong("offer_millis", 0);
+        current_millis = System.currentTimeMillis();
+        differ_millis = current_millis - offer_millis;
+        int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
+        Log.e("TAG11", "<< DAYS >> " + days);
+        return days;
     }
 
     public static void dynamicolordot(Context mContext, LinearLayout lin_color, int color) {
@@ -790,6 +940,21 @@ public class GlobalClass {
 
     }
 
+    public void DisplayVideoImage(Activity activity, String Url, ImageView imageView) {
+
+        //            Glide.get(mActivity).clearMemory();
+        Glide.with(activity).load(Url)
+                .asBitmap()
+//                .placeholder(R.drawable.thumbnailicon).dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                .error(R.drawable.thumbnailicon)
+                .fitCenter()
+                .into(imageView);
+
+    }
+
+
     public void DisplayImage1(Activity activity, String Url, ImageView imageView) {
         Glide.with(activity).load(Url)
                 .asBitmap()
@@ -816,13 +981,26 @@ public class GlobalClass {
         toast.show();
     }
 
-    public void setLoadingGIF(HealthArticle_Activity mContext) {
-        progressDialog = new ProgressDialog(mContext);
+    public static String currencyFormat(String amount) {
+        DecimalFormat formatter = null;
+        if (!TextUtils.isEmpty(amount)) {
+            formatter = new DecimalFormat("##,##,##,###.##");
+            return formatter.format(Double.parseDouble(amount));
+        } else {
+            amount = "0";
+        }
+        return formatter.format(Double.parseDouble(amount));
+    }
+
+
+    public static void setLoadingGIF(Activity activity) {
+        ProgressDialog progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle(null);
-        progressDialog.setMessage("Kindly Wait...");
+        progressDialog.setMessage(activity.getResources().getString(R.string.loading));
         progressDialog.setIndeterminate(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+        //progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#e52d2e")));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)

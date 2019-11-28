@@ -91,6 +91,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private int PICK_PHOTO_FROM_GALLERY = 202;
     private Camera camera;
     private File selectedFile = null;
+    private File tmp_selectedFile = null;
     private MediaRecorder mediaRecorder;
     private String audioPath = null;
     private Boolean ButtonClicked = false;
@@ -99,6 +100,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private boolean audioChecked, imageChecked;
     private String strForwardTo;
     private boolean flag = false;
+    private boolean audioflag = false;
+    private String temp_audioPath = null;
 
     @SuppressLint("NewApi")
     @Override
@@ -599,7 +602,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             }
         });
 
-        btn_discard.setOnClickListener(new View.OnClickListener() {
+ /*       btn_discard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.cancel();
@@ -612,14 +615,23 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 Log.e(TAG, "On discard Audio file: " + selectedFile);
                 manageAudioView(selectedFile);
             }
-        });
+        });*/
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.cancel();
-                Log.e(TAG, "On Save Audio file: " + selectedFile);
-                manageAudioView(selectedFile);
+                if (tmp_selectedFile != null) {
+                    selectedFile = tmp_selectedFile;
+                    audioPath = temp_audioPath;
+                    if (audioflag) {
+                        audioflag = false;
+                    } else {
+                        audioflag = true;
+                    }
+
+                    manageAudioView(selectedFile);
+                }
             }
         });
 
@@ -634,10 +646,17 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         if (!directory.isDirectory()) {
                             directory.mkdirs();
                         }
-                        audioPath = directory + "/" + "audio.Mp3";
-                        Log.e(TAG, "Audio File Path: " + audioPath);
-                        selectedFile = new File(audioPath);
-                        MediaRecorderReady();
+
+                        if (audioflag) {
+                            temp_audioPath = directory + "/" + "audio.Mp3";
+                        } else {
+                            temp_audioPath = directory + "/" + "tempaudio.Mp3";
+                        }
+
+                        Log.e(TAG, "Audio File Path ----> " + temp_audioPath);
+                        tmp_selectedFile = new File(temp_audioPath);
+                        MediaRecorderReady(tmp_selectedFile);
+
                         try {
                             mediaRecorder.prepare();
                             mediaRecorder.start();
@@ -648,6 +667,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+
+
                         tv_record_title.setText(getString(R.string.stop_record));
                         closeButton.setClickable(false);
                         img_record.setImageResource(R.drawable.ic_stop_record);
@@ -706,12 +727,12 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void MediaRecorderReady() {
+    private void MediaRecorderReady(File tmp_selectedFile) {
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mediaRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        mediaRecorder.setOutputFile(selectedFile.getAbsolutePath());
+        mediaRecorder.setOutputFile(tmp_selectedFile.getAbsolutePath());
     }
 
     private void showPlayAudioDialog(final Activity activity) {

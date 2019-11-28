@@ -139,6 +139,7 @@ public class ToastFile {
     public static String offline_tool = "Would you like to go with Offline Mode ?";
 
 
+
     public static String setTitle_submitall_woe = "Would you like to submit all WOE ?";
     public static String internet_avail = "Yes, Internet is Available !";
     public static String PLAYVIDEO = "Play";

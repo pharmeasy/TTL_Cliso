@@ -181,6 +181,7 @@ public class Payment_Activity extends AppCompatActivity {
 
         cd = new ConnectionDetector(Payment_Activity.this);
 
+
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
         name_tsp = getProfileName.getString("name", null);
         usercode = getProfileName.getString("user_code", null);
@@ -1254,5 +1255,14 @@ public class Payment_Activity extends AppCompatActivity {
                 150000,
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent();
+        intent.putExtra("message", "ok");//Put Message to pass over intent
+        setResult(1, intent);
     }
 }

@@ -58,7 +58,7 @@ public class LedgerFragment extends RootFragment {
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit, txt_unbill_woe, txt_unbill_material;
+    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit, txt_unbillwoe, txt_unbill_woe, txt_unbill_material;
     public static RequestQueue PostQue;
     Spinner year, month;
     private String mParam2;
@@ -115,6 +115,9 @@ public class LedgerFragment extends RootFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ledger, container, false);
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+
+        String CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
         open_bal = (TextView) view.findViewById(R.id.open_bal);
         credit_limit = (TextView) view.findViewById(R.id.credit_limit);
@@ -127,6 +130,13 @@ public class LedgerFragment extends RootFragment {
         parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
 
         txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
+        txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
+
+       if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            txt_unbillwoe.setText("Unbilled Scan");
+        } else {
+            txt_unbillwoe.setText("Unbilled WOE");
+        }
         txt_unbill_material = view.findViewById(R.id.unbilled_material);
 
         // TextView dateview = getActivity().findViewById(R.id.show_date);
@@ -385,7 +395,7 @@ public class LedgerFragment extends RootFragment {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
-                            Log.e(TAG,"on error-->"+e.getLocalizedMessage());
+                            Log.e(TAG, "on error-->" + e.getLocalizedMessage());
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {

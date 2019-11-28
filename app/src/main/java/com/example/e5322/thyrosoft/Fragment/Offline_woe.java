@@ -500,6 +500,7 @@ public class Offline_woe extends Fragment {
                                                 message = parentObjectOtp.getString("message");
                                                 status = parentObjectOtp.getString("status");
                                                 barcode_id = parentObjectOtp.getString("barcode_id");
+
                                                 if (barcode_id.endsWith(",")) {
                                                     barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                                 }

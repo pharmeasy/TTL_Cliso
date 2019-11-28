@@ -26,7 +26,6 @@ import com.example.e5322.thyrosoft.Adapter.BillingSummaryAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BillingSummaryMOdel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +66,7 @@ public class BillingSummary extends RootFragment {
     TextView txtFromDate, txt_to_date;
     private int mYear, mMonth, mDay;
     public static RequestQueue PostQue;
-    ProgressDialog barProgressDialog;
+    // ProgressDialog barProgressDialog;
     SharedPreferences sharedpreferences;
     ListView list_billingSummary;
     BillingSummaryAdapter adapter;
@@ -152,7 +151,7 @@ public class BillingSummary extends RootFragment {
         offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
 
-        barProgressDialog = new ProgressDialog(getContext());
+  /*      barProgressDialog = new ProgressDialog(getContext());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -160,6 +159,9 @@ public class BillingSummary extends RootFragment {
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
+*/
+
+        //  ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getContext());
 
         txtFromDate.setText(fromDateTxt);
         txt_to_date.setText(toDateTxt);
@@ -282,7 +284,7 @@ public class BillingSummary extends RootFragment {
 
 
     private void GetData() {
-        barProgressDialog.show();
+        final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
 
         PostQue = Volley.newRequestQueue(getContext());
 
@@ -332,12 +334,14 @@ public class BillingSummary extends RootFragment {
                         Log.e(TAG, "onResponse: " + response);
                         try {
 
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                           /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
+*/
+
+                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
                             String responsetoshow = response.optString("response", "");
-
                             if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
@@ -362,16 +366,12 @@ public class BillingSummary extends RootFragment {
                                     }
 
                                     if (billingsumArray.size() == 0) {
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
+                                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
                                     } else {
                                         adapter = new BillingSummaryAdapter(getContext(), billingsumArray);
                                         list_billingSummary.setAdapter(adapter);
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
+                                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
                                     }
                                 }

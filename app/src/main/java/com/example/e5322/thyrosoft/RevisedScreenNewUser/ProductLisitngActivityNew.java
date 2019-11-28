@@ -183,6 +183,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
 
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -250,6 +251,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         SearchManager searchManager = (SearchManager) mActivity.getSystemService(Context.SEARCH_SERVICE);
 
         before_discount_layout2.setVisibility(View.GONE);
+
 
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         patientName = preferences.getString("name", null);
@@ -768,9 +770,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         });
 
 
-        days = GlobalClass.getStoreSynctime(ProductLisitngActivityNew.this);
-
-        if (days >= Constants.DAYS_CNT) {
+        if (GlobalClass.Dayscnt(ProductLisitngActivityNew.this) >= Constants.DAYS_CNT) {
             getAllproduct();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -825,8 +825,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     prefsEditor1.putString("MyObject", json22);
                     prefsEditor1.commit();
 
-                    GlobalClass.StoreSyncTime(ProductLisitngActivityNew.this);
-
+                    GlobalClass.storeProductsCachingTime(ProductLisitngActivityNew.this);
                     callAdapter(mainModel);
                 }
 

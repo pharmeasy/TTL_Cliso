@@ -1,5 +1,5 @@
 package com.example.e5322.thyrosoft.Activity;
-import android.app.Activity;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,13 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.FileDescriptorBitmapDecoder;
-import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
@@ -34,7 +28,6 @@ public class LeggyVideoAdapter extends RecyclerView.Adapter<LeggyVideoAdapter.Vi
     ArrayList<LeggyVideoListModel> list;
     LeggyVideo_Activity mLeggyVideo_Activity;
     ProgressDialog progressDialog;
-
 
 
     public LeggyVideoAdapter(LeggyVideo_Activity pActivity, Context context, ArrayList<LeggyVideoListModel> list) {
@@ -80,7 +73,7 @@ public class LeggyVideoAdapter extends RecyclerView.Adapter<LeggyVideoAdapter.Vi
                 mLeggyVideo_Activity.ShowVideo(list.get(position));
                 mLeggyVideo_Activity.videoName.setText(list.get(position).getTitle());
                 Constants.videoName = list.get(position).getTitle();
-                if (mLeggyVideo_Activity.video.getVisibility()==View.VISIBLE) {
+                if (mLeggyVideo_Activity.video.getVisibility() == View.VISIBLE) {
                     viewHolder.loading3.setVisibility(View.GONE);
                 }
 
@@ -90,7 +83,7 @@ public class LeggyVideoAdapter extends RecyclerView.Adapter<LeggyVideoAdapter.Vi
         try {
             Bitmap bitmap = null;
             try {
-                bitmap = retriveVideoFrameFromVideo(viewHolder.leggyVideoListModel.getPath(),viewHolder.leggyVideoListModel.getThumbtime());
+                bitmap = retriveVideoFrameFromVideo(viewHolder.leggyVideoListModel.getPath(), viewHolder.leggyVideoListModel.getThumbtime());
             } catch (Throwable throwable) {
                 throwable.printStackTrace();
             }
@@ -98,7 +91,7 @@ public class LeggyVideoAdapter extends RecyclerView.Adapter<LeggyVideoAdapter.Vi
                 bitmap = Bitmap.createScaledBitmap(bitmap, 250, 250, false);
                 viewHolder.videoImage.setImageBitmap(bitmap);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -145,12 +138,12 @@ public class LeggyVideoAdapter extends RecyclerView.Adapter<LeggyVideoAdapter.Vi
             else
                 mediaMetadataRetriever.setDataSource(videoPath);
             bitmap =
-                    mediaMetadataRetriever.getFrameAtTime(Long.parseLong(time),mediaMetadataRetriever.OPTION_CLOSEST);
-            Log.e("THUMB"," "+time);
+                    mediaMetadataRetriever.getFrameAtTime(Long.parseLong(time), mediaMetadataRetriever.OPTION_CLOSEST);
+            Log.e("THUMB", " " + time);
         } catch (Exception e) {
             e.printStackTrace();
             throw new Throwable(
-                    "Thumbnail Exception : "+ e.getMessage());
+                    "Thumbnail Exception : " + e.getMessage());
         } finally {
             if (mediaMetadataRetriever != null) {
                 mediaMetadataRetriever.release();

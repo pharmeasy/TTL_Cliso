@@ -16,19 +16,60 @@ public class Constants {
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
-    public static int DAYS_CNT = 2;
+    public static int DAYS_CNT = 1;
 
     public static String setVideoUrl = "VideoURL";
     public static String setFullScreen;
     public static int timeInterval = 0;
     public static String videoName;
 
+    public static String APP_ID="1";
+
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
 
     public static String APK_NAME = "ThyrosoftLite.apk";
-    public static String APKTYPE="application/vnd.android.package-archive";
+    public static String availcoupon = "Avail Coupon";
+    public static String APKTYPE = "application/vnd.android.package-archive";
 
+    public static final String PNAME = "pname";
+    public static final String FNAME = "fname";
+    public static final String MKNAME = "mname";
+    public static final String LNAME = "lname";
+    public static final String PGENDER = "pgender";
+    public static final String PDIEB = "diabetics";
+    public static final String PDOB = "dob";
+    public static final String appointdate = "appointdate";
+    public static final String PMOB = "pmobileno";
+    public static final String PEMAIL = "p_emailid";
+    public static final String PCITY = "city";
+    public static final String PREMARK = "remark";
+    public static final String SERVICETYPE = "servicetype";
+    public static final String AVAILBAL = "availbal";
+    public static final String PAID_BAL = "paidbal";
+    public static final String HEADER = "header";
+    public static final String CALAGE = "calage";
+    public static final String CENTERID = "centerid";
+    public static final String SERVICEID = "serviceid";
+    public static final String AMT_Coll = "amtcoll";
+    public static final String SLOT = "slot";
+
+    public static final String STAFF = "STAFF";
+    public static final String ADMIN = "ADMIN";
+    public static final String NHF = "NHF";
+
+    public static final String DATEFORMATE = "dd-MM-yyyy";
+    public static final String YEARFORMATE = "yyyy-MM-dd";
+    public static final String NHF_Whatsapp = "8422849939";
+
+    public static final String PREF_PRODUCTS_CACHING="syncpref";
+
+
+    //NHF Login
+
+    public static final String NHF_EMAIL = "COMM_NHF";
+
+    public static String tab_flag = "0";
 
     //login details//
     public static String Status = "Status";
@@ -467,7 +508,7 @@ public class Constants {
     public static int PAYAMOUNT = 5000;
 
     public static String THYROTEST = "Thyro";
-    public static String THYRONAME="";
+    public static String THYRONAME = "";
 
     /**
      * test Color Code
@@ -478,7 +519,7 @@ public class Constants {
     public static final String FLUORIDE = "FLUORIDE";
     public static final String LITHIUMHEPARIN = "LITHIUM HEPARIN";
     public static final String SODIUMHEPARIN = "SODIUM HEPARIN";
-    public static String GENRATE_OTP_API_KEY="sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
+    public static String GENRATE_OTP_API_KEY = "sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
     public static String RES0000 = "RES0000";
 
 

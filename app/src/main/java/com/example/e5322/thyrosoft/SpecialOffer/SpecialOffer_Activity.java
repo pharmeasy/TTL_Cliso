@@ -143,6 +143,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel();
+
         }
     };
 
@@ -366,7 +367,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     private void getAllproduct() {
-        barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
+       final  ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
 
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
@@ -374,9 +375,11 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+               /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
-                }
+                }*/
+
+               GlobalClass.hideProgress(SpecialOffer_Activity.this,barProgressDialog);
 
                 String getResponse = response.optString("RESPONSE", "");
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {

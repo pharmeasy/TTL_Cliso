@@ -3,11 +3,7 @@ package com.example.e5322.thyrosoft.Activity;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.NoticeBoard_Adapter;
 import com.example.e5322.thyrosoft.Fragment.Noticeboard_Fragment;
@@ -36,7 +33,6 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -46,7 +42,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
-import static com.example.e5322.thyrosoft.API.Constants.resId;
 
 public class Noticeboard_activity extends AppCompatActivity {
     View viewfab, view, viewresultfrag;
@@ -63,8 +58,9 @@ public class Noticeboard_activity extends AppCompatActivity {
     LinearLayout offline_img;
     LinearLayoutManager linearLayoutManager;
     String user, passwrd, access, api_key;
-    private String TAG = Noticeboard_Fragment.class.getSimpleName().toString();
+    private String TAG = Noticeboard_Fragment.class.getSimpleName().toString(), CLIENT_TYPE;
     private RequestQueue PostQueOtp;
+    LinearLayout lin_cmsoon;
 
     @SuppressLint("NewApi")
     @Override
@@ -78,6 +74,7 @@ public class Noticeboard_activity extends AppCompatActivity {
         noticeboard_list.setLayoutManager(linearLayoutManager);
         back = (ImageView) findViewById(R.id.back);
         offline_img = (LinearLayout) findViewById(R.id.offline_img);
+        lin_cmsoon = findViewById(R.id.lin_cmsoon);
         home = (ImageView) findViewById(R.id.home);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,11 +102,19 @@ public class Noticeboard_activity extends AppCompatActivity {
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
         if (!GlobalClass.isNetworkAvailable(Noticeboard_activity.this)) {
             offline_img.setVisibility(View.VISIBLE);
             noticeboard_list.setVisibility(View.GONE);
         } else {
+            Log.e(TAG, "CLIENT_TYPE: " + CLIENT_TYPE);
+            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                lin_cmsoon.setVisibility(View.VISIBLE);
+            } else {
+                lin_cmsoon.setVisibility(View.GONE);
+                getNoticeBoardData();
+            }
             getNoticeBoardData();
             offline_img.setVisibility(View.GONE);
             noticeboard_list.setVisibility(View.VISIBLE);
@@ -120,7 +125,7 @@ public class Noticeboard_activity extends AppCompatActivity {
 
 
     private void getNoticeBoardData() {
-        barProgressDialog = new ProgressDialog(Noticeboard_activity.this, R.style.ProgressBarColor);
+ /*       barProgressDialog = new ProgressDialog(Noticeboard_activity.this, R.style.ProgressBarColor);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -128,8 +133,9 @@ public class Noticeboard_activity extends AppCompatActivity {
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-        barProgressDialog.show();
+        barProgressDialog.show();*/
 
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Noticeboard_activity.this);
 
         requestQueueNoticeBoard = Volley.newRequestQueue(Noticeboard_activity.this);
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
@@ -140,9 +146,11 @@ public class Noticeboard_activity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: " + response);
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+               /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
-                }
+                }*/
+
+               GlobalClass.hideProgress(Noticeboard_activity.this,progressDialog);
                 String getReposne = response.optString("response", "");
                 if (getReposne.equalsIgnoreCase(caps_invalidApikey)) {
                     GlobalClass.redirectToLogin(Noticeboard_activity.this);

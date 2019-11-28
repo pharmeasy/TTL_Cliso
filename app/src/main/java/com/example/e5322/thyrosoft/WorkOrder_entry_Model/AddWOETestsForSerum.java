@@ -142,7 +142,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
 
         days = GlobalClass.getStoreSynctime(AddWOETestsForSerum.this);
 
-        if (days >= Constants.DAYS_CNT) {
+        if (GlobalClass.Dayscnt(AddWOETestsForSerum.this) >= Constants.DAYS_CNT) {
             getAlltTestData();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -260,8 +260,12 @@ public class AddWOETestsForSerum extends AppCompatActivity {
                     String json22 = gson22.toJson(mainModel);
                     String jsonSelected = gson22.toJson(onlySelected);
                     prefsEditor1.putString("MyObject", json22);
-                    GlobalClass.StoreSyncTime(AddWOETestsForSerum.this);
+                   // GlobalClass.StoreSyncTime(AddWOETestsForSerum.this);
                     prefsEditor1.commit();
+
+
+                    GlobalClass.storeProductsCachingTime(AddWOETestsForSerum.this);
+
 
                     B2B_MASTERSMainModel b2B_mastersMainModel = new B2B_MASTERSMainModel();
                     ArrayList<BaseModel> baseModelProfile = new ArrayList<>();

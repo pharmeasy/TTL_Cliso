@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/start_record"
+            android:fontFamily="sans-serif-medium"
             android:textSize="@dimen/dp_18" />
 
         <ImageView
@@ -49,12 +50,13 @@
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/maroon_rect_box"
                 android:text="@string/discard"
+                android:visibility="gone"
                 android:textColor="@color/white"
                 android:textSize="@dimen/dp_20" />
 
             <Button
                 android:id="@+id/btn_save"
-                android:layout_width="@dimen/dp_120"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_10"
                 android:background="@drawable/maroon_rect_box"

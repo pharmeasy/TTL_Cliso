@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -64,7 +63,6 @@ import com.example.e5322.thyrosoft.RateCalculatorForModels.GetMainModel;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Product_Rate_CalculatorModel;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.RateCalB2B_MASTERS_Main_Model;
 import com.example.e5322.thyrosoft.TestListModel.TestModel;
-import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -115,7 +113,7 @@ public class RateCalculatorFragment extends Fragment {
     TextView companycost_test, out_lab_cost, out_lab_cost_b2b;
     int days = 0;
 
-    ProgressDialog barProgressDialog;
+    /*   ProgressDialog barProgressDialog;*/
     ListView testsforrate_calculator;
     public static ArrayList<String> testListnames;
     public static ArrayList<String> profileListnames;
@@ -236,10 +234,10 @@ public class RateCalculatorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         mContext = (ManagingTabsActivity) getActivity();
         viewrate_calfrag = inflater.inflate(R.layout.fragment_rate_calculator, container, false);
         getvalue = new ArrayList<>();
-
 
         go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
         companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
@@ -268,6 +266,7 @@ public class RateCalculatorFragment extends Fragment {
 
         txt_more = viewrate_calfrag.findViewById(R.id.txt_more);
         txt_more.setText("More..");
+        txt_more.setTextSize(4 * getResources().getDisplayMetrics().density);
 
         txt_more.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -325,8 +324,8 @@ public class RateCalculatorFragment extends Fragment {
         test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
 
-        days = GlobalClass.getStoreSynctime(getActivity());
-        if (days >= Constants.DAYS_CNT) {
+        // days = GlobalClass.getStoreSynctime(getActivity());
+        if (GlobalClass.Dayscnt(getActivity()) >= Constants.DAYS_CNT) {
             getAllproduct();
         } else {
             getDataFromSharedPref();
@@ -591,7 +590,7 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     private void getAllproduct() {
-        barProgressDialog = new ProgressDialog(mContext);
+    /*    barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -599,7 +598,9 @@ public class RateCalculatorFragment extends Fragment {
         barProgressDialog.setMax(20);
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+        barProgressDialog.setCancelable(false);*/
+
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
 
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
@@ -614,21 +615,26 @@ public class RateCalculatorFragment extends Fragment {
                     Gson gson = new Gson();
                     mainModel = new GetMainModel();
                     mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                   /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
                     if (mContext instanceof Activity) {
                         if (!((Activity) mContext).isFinishing())
                             barProgressDialog.dismiss();
-                    }
-                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                    }*/
+
+                    GlobalClass.hideProgress(getActivity(), progressDialog);
+
+                 /*   SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
                     SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                     Gson gson22 = new Gson();
                     String json23 = gson22.toJson(mainModelRate);
                     // callAdapter(mainModelRate);
                     prefsEditor1.putString("MyObject", json23);
                     GlobalClass.StoreSyncTime(getActivity());
-                    prefsEditor1.commit();
+                    prefsEditor1.commit();*/
+
+                    GlobalClass.storeProductsCachingTime(getActivity());
 
                     try {
                         b2bmasterarraylistRate = new ArrayList<>();
@@ -1057,12 +1063,10 @@ public class RateCalculatorFragment extends Fragment {
                 lin_color = itemView.findViewById(R.id.lin_color);
             }
         }
-
-
     }
 
     private void fetchData() {
-        barProgressDialog = new ProgressDialog(getActivity());
+     /*   barProgressDialog = new ProgressDialog(getActivity());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -1070,7 +1074,10 @@ public class RateCalculatorFragment extends Fragment {
         barProgressDialog.setMax(20);
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+        barProgressDialog.setCancelable(false);*/
+
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+
         POstQue = Volley.newRequestQueue(mContext);
         JSONObject jsonObject = new JSONObject();
         try {
@@ -1096,8 +1103,11 @@ public class RateCalculatorFragment extends Fragment {
                         if (!((Activity) mContext).isFinishing())
                             barProgressDialog.dismiss();
                     }*/
+/*
+                    hideProgress();*/
 
-                    hideProgress();
+                    GlobalClass.hideProgress(getActivity(), progressDialog);
+
                     B2BRate = parentObjectOtp.getString("B2B");
                     B2CRate = parentObjectOtp.getString("B2C");
                     CollCharge = parentObjectOtp.getString("CHC");
@@ -1173,7 +1183,6 @@ public class RateCalculatorFragment extends Fragment {
         ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
 
         for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-
             Base_Model_Rate_Calculator base_model_rate_calculator = new Base_Model_Rate_Calculator();
             Product_Rate_CalculatorModel product_rate_masterModel = new Product_Rate_CalculatorModel();
             product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
@@ -1265,16 +1274,17 @@ public class RateCalculatorFragment extends Fragment {
     public void dynamicolordot(Context mContext, LinearLayout lin_color, int color, String sampletype) {
         ImageView imageView = new ImageView(mContext);
         imageView.setPadding(2, 0, 2, 2);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(40, 40);
         layoutParams.gravity = Gravity.CENTER;
         layoutParams.setMarginEnd(10);
         layoutParams.setMarginStart(10);
         imageView.setLayoutParams(layoutParams);
-        imageView.setImageDrawable(GlobalClass.drawCircle(mContext, 50, 50, color));
+        imageView.setImageDrawable(GlobalClass.drawCircle(mContext, 40, 40, color));
 
         TextView textView = new TextView(mContext);
         textView.setText(sampletype);
-        textView.setTextSize(14);
+        textView.setTextSize(4 * getResources().getDisplayMetrics().density);
+
         LinearLayout.LayoutParams textlayoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         textlayoutParams.setMarginStart(10);
         textlayoutParams.gravity = Gravity.CENTER;
@@ -1284,21 +1294,6 @@ public class RateCalculatorFragment extends Fragment {
         lin_color.addView(textView);
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    public void hideProgress() {
-        if (barProgressDialog != null) {
-            if (barProgressDialog.isShowing()) {
-                Context context = ((ContextWrapper) barProgressDialog.getContext()).getBaseContext();
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed())
-                        barProgressDialog.dismiss();
-                } else
-                    barProgressDialog.dismiss();
-            }
-            barProgressDialog = null;
-        }
-    }
 
     @Override
     public void onDestroy() {

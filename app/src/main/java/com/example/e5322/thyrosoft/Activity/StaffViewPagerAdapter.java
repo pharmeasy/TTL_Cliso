@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
+import com.example.e5322.thyrosoft.Fragment.NHFFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
+import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;
@@ -58,6 +60,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
+
             case 4:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
