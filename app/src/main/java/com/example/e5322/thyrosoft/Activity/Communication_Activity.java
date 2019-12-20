@@ -28,7 +28,6 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListCommunication;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationRepsponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -37,8 +36,6 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
@@ -58,7 +55,7 @@ public class Communication_Activity extends AppCompatActivity {
     CommunicationRepsponseModel communicationRepsponseModel;
     private Global globalClass;
     LinearLayout offline_img;
-    private String TAG = getClass().getSimpleName();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private SharedPreferences prefs;
     private String user, api_key;
     private String communicationMasterResponse, inboxesResponse, resId, sentsResponse, responseID;
@@ -100,10 +97,10 @@ public class Communication_Activity extends AppCompatActivity {
                 /*if (comefrom.equals("BMC"))
                     startActivity(new Intent(Communication_Activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 else*/
-                GlobalClass.goToHome(Communication_Activity.this);
+                    GlobalClass.goToHome(Communication_Activity.this);
             }
         });
-        Log.e(TAG, "");
+
        /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
         FromCPL.setTextColor(getResources().getColor(R.color.colorWhite));
         ToCPL.setBackgroundColor(getResources().getColor(R.color.colorWhite));
@@ -175,19 +172,6 @@ public class Communication_Activity extends AppCompatActivity {
         });
 
 
-        /*if (!GlobalClass.isNetworkAvailable(Communication_Activity.this)) {
-            offline_img.setVisibility(View.VISIBLE);
-            expandlistcommunication.setVisibility(View.GONE);
-        } else {
-            Getdata();
-            offline_img.setVisibility(View.GONE);
-            expandlistcommunication.setVisibility(View.VISIBLE);
-        }*/
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         if (!GlobalClass.isNetworkAvailable(Communication_Activity.this)) {
             offline_img.setVisibility(View.VISIBLE);
             expandlistcommunication.setVisibility(View.GONE);
@@ -246,7 +230,6 @@ public class Communication_Activity extends AppCompatActivity {
                         Gson gson = new Gson();
                         communicationRepsponseModel = new CommunicationRepsponseModel();
                         communicationRepsponseModel = gson.fromJson(response.toString(), CommunicationRepsponseModel.class);
-                        GlobalClass.commSpinner = new ArrayList<CommunicationMaster>();
                         for (int i = 0; i < communicationRepsponseModel.getCommunicationMaster().length; i++) {
                             GlobalClass.commSpinner.add(communicationRepsponseModel.getCommunicationMaster()[i]);
                         }

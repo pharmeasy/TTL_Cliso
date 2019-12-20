@@ -1559,7 +1559,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                         }
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
-                         Toast.makeText(getActivity(), ""+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(MainActivity.this, ""+e, Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new Response.ErrorListener() {
@@ -1574,10 +1574,8 @@ public class BMC_NEW_WOEFragment extends Fragment {
             });
             requestQueue.add(jsonObjectRequest2);
             Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
-            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("TAG", "on error --->"+e.getLocalizedMessage());
         }
     }
 

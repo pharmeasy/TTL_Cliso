@@ -35,7 +35,13 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
@@ -75,6 +81,8 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class PETCT_Frag extends Fragment {
 
@@ -122,6 +130,8 @@ public class PETCT_Frag extends Fragment {
     RelativeLayout rel_dob;
     String user;
     ImageView enter_arrow_enter, enter_arrow_entered;
+    private SharedPreferences prefs;
+    private String api_key="";
 
     public static PETCT_Frag newInstance(String param1, String param2) {
         PETCT_Frag fragment = new PETCT_Frag();
@@ -186,10 +196,18 @@ public class PETCT_Frag extends Fragment {
         cd = new ConnectionDetector(getActivity());
         decimalFormat = new DecimalFormat("##,##,##,###");
 
+        getAPIKeyDetails();
         initUI(view);
         generateToken();
         initListners();
+        getProfileDetails(context);
+
         return view;
+    }
+
+    private void getAPIKeyDetails() {
+        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        api_key = prefs.getString("API_KEY", null);
     }
 
 
@@ -212,10 +230,65 @@ public class PETCT_Frag extends Fragment {
         return date;
     }
 
+    public void getProfileDetails(final Context context) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    public String tsp_img;
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response != null) {
+                                GlobalClass.hideProgress(context, progressDialog);
+
+                                SharedPreferences.Editor saveProfileDetails = getActivity().getSharedPreferences("profile", 0).edit();
+                                saveProfileDetails.putString("balance",response.getString(Constants.balance));
+                                saveProfileDetails.commit();
+
+                                if (!TextUtils.isEmpty(response.getString(Constants.balance))) {
+                                    closingbal=response.getString(Constants.balance);
+                                    GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(response.getString(Constants.balance)));
+                                } else {
+                                    txt_ledgerbal.setText("");
+                                    closingbal = "0";
+                                }
+
+
+                            } else {
+                                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+    }
+
 
     private void initUI(View v) {
         SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
-        closingbal = preferences.getString("closing_balance", "");
+        closingbal = preferences.getString("balance", "");
+        Log.e(TAG, "BALANCE ---->" + closingbal);
         // closingbal = "1000000";
 
         SharedPreferences preferences1 = getActivity().getSharedPreferences("Userdetails", 0);
@@ -977,8 +1050,9 @@ public class PETCT_Frag extends Fragment {
         header = tokenResponseModel.getToken_type() + " " + tokenResponseModel.getAccess_token();
         APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SCANSOAPI).create(APIInteface.class);
         Call<List<CenterList_Model>> responseCall = apiInterface.getcenterList(header, user);
-
+        Log.e("TAG", "header --->" + header);
         Log.e("TAG", "S C A N S O URL --->" + responseCall.request().url());
+
 
         responseCall.enqueue(new Callback<List<CenterList_Model>>() {
             @Override
@@ -1052,7 +1126,10 @@ public class PETCT_Frag extends Fragment {
     public void onResume() {
         super.onResume();
         try {
-            ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
+            if (GlobalClass.isNetworkAvailable(getActivity())) {
+                ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

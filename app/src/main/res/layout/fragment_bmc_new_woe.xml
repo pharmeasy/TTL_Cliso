@@ -638,7 +638,7 @@
                         android:gravity="center|left"
                         android:hint="TYPE/SEARCH REF BY"
                         android:inputType="textCapCharacters"
-                        android:maxLength="50"
+                        android:maxLength="80"
                         android:nextFocusForward="@+id/uncheck_ref"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"

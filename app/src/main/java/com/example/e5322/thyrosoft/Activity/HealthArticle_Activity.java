@@ -60,7 +60,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
                 healthviewModel.setListdata(healthTipsApiResponseModels);
             }
         };
-
         /**getData method is written in Viewmodel,here we observe view */
         healthviewModel.getData(HealthArticle_Activity.this, healthTipViewpager).observe(HealthArticle_Activity.this, listObserver);
     }

@@ -143,7 +143,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             updateLabel();
-
         }
     };
 
@@ -162,13 +161,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             return null;
         }
     };
-
     private String referredID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
+
 
         initView();
 
@@ -201,6 +200,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         textwatcher();
         agetextwatcher();
         Disablefields();
+
 
         referedby.addTextChangedListener(new TextWatcher() {
             @Override
@@ -297,9 +297,11 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     agesinteger = Integer.parseInt(s.toString());
-                }
+                } else {
 
+                }
                 String enteredString = s.toString();
+
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     Toast.makeText(SpecialOffer_Activity.this,
                             ToastFile.crt_age,
@@ -310,7 +312,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_age.setText("");
                     }
                 }
-
                 if (et_age.getText().toString().equals("")) {
 
                 } else {
@@ -367,7 +368,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     private void getAllproduct() {
-       final  ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
+        barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
 
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
@@ -375,11 +376,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-               /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
-                }*/
-
-               GlobalClass.hideProgress(SpecialOffer_Activity.this,barProgressDialog);
+                }
 
                 String getResponse = response.optString("RESPONSE", "");
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
@@ -399,6 +398,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                             Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
                             product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+
 
                             for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
                                 testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
@@ -434,7 +434,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 R.layout.list_ite, R.id.title, testRateMasterModels);
                         spin_test.setAdapter(testListAdapter);
                         barcodesList.clear();
-
                         spin_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -607,12 +606,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-
-                    if (enteredString.length() > 0) {
-                        et_name.setText(enteredString.substring(1));
-                    } else {
-                        et_name.setText("");
-                    }
 
                 }
 
@@ -822,10 +815,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_mobno.setEnabled(true);
                         et_mobno.setClickable(true);
                         btn_sendotp.setText("Send OTP");
-
-                        btn_sendotp.setClickable(true);
-                        btn_sendotp.setEnabled(true);
-
                         et_otp.setText("");
 
                         btn_verifyotp.setVisibility(View.GONE);
@@ -1062,7 +1051,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             } else {
                 sendIntent();
             }
-        }else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
+        } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
             Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
         } else {
             sendIntent();
@@ -1107,7 +1096,12 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("age", getFinalAge);
         saveDetails.putString("gender", saveGenderId);
 
+       /* if (sctflag == false) {
+            saveDetails.putString("sct", strtime);
+            saveDetails.putString("date", strdate);
+        } else {
 
+        }*/
 
         if (checktime.equals("Default")) {
             saveDetails.putString("sct", strtime);
@@ -1136,6 +1130,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("getcampIDtoPass", "");
         saveDetails.putString("kycinfo", "");
         saveDetails.putString("WOEbrand", "");
+
+
         saveDetails.putString("SR_NO", "");
         saveDetails.putString("pincode", "");
         saveDetails.commit();
@@ -1199,7 +1195,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
-
         if (validateOTPmodel.getResponse().equals("OTP Generated Successfully to your registered number")) {
             GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
 

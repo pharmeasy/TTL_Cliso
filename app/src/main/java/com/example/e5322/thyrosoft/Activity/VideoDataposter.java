@@ -38,8 +38,11 @@ public class VideoDataposter {
         usercode = preferences.getString("USER_CODE", null);
 
         if (GlobalClass.isNetworkAvailable((Activity) context)) {
+
             if (minutes != 0 || seconds != 0) {
+
                 APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(APIInteface.class);
+
                 PostVideoTime_module postVideoTime_module = new PostVideoTime_module();
                 postVideoTime_module.setClientId(usercode);
                 postVideoTime_module.setMin_Duration("" + minutes);
@@ -48,7 +51,7 @@ public class VideoDataposter {
 
                 Call<VideoTime_Model> responseCall = apiInterface.postvideotime(postVideoTime_module);
                 Log.e("TAG", "V I D E O D A T A B O D Y --->" + new GsonBuilder().create().toJson(postVideoTime_module));
-                Log.e("TAG", "V I DE O D A T A u r l --->" + responseCall.request().url());
+                Log.e("TAG", "V I D E O D A T A u r l --->" + responseCall.request().url());
 
                 responseCall.enqueue(new Callback<VideoTime_Model>() {
                     @Override
@@ -59,7 +62,6 @@ public class VideoDataposter {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
 
                     @Override

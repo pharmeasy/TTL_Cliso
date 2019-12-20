@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.GetAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
 import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
@@ -30,7 +30,7 @@ public class GetClientDetail_Controller {
 
     public void CallgetClient(String user, String api_key) {
 
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SOURCEils).create(APIInteface.class);
+        GetAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SOURCEils).create(GetAPIInteface.class);
         Call<SourceILSMainModel> responseCall = apiInterface.getClient(api_key, user, "/B2BAPP/getclients");
         Log.e("TAG", "Client URL --->" + responseCall.request().url());
 

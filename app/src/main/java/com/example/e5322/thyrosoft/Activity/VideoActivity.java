@@ -60,7 +60,7 @@ import tv.danmaku.ijk.media.player.IjkTimedText;
 public class VideoActivity extends AppCompatActivity {
 
     Activity mActivity;
-    public tcking.github.com.giraffeplayer2.VideoView videoView;
+    public VideoView videoView;
     private int a = 0;
     private GlobalClass globalClass;
     private Global global;
@@ -81,14 +81,17 @@ public class VideoActivity extends AppCompatActivity {
     String VideoID;
     boolean rel_falg = false;
     boolean stop_flag = false;
+    boolean onpause = false;
     boolean destroy_flag = false;
     boolean back_flag = false;
+    boolean backpress_flag = false;
     private int b = 0;
     long milliseconds, minutes, seconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mActivity = VideoActivity.this;
 
         prefs_Language = mActivity.getSharedPreferences("Video_lang_pref", 0);
@@ -108,6 +111,7 @@ public class VideoActivity extends AppCompatActivity {
         recView = (RecyclerView) findViewById(R.id.recView);
         tv_noDatafound = (TextView) findViewById(R.id.tv_noDatafound);
         progressDialog = new ProgressDialog(mActivity);
+
         initToolbar();
 
         if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
@@ -119,11 +123,13 @@ public class VideoActivity extends AppCompatActivity {
 
         } else {
             tv_languageSelected.setText(prefs_Language.getString("LanguageSelected", ""));
+
             if (connectionDetector.isConnectingToInternet()) {
                 GetVideosBasedonLanguage(prefs_Language.getString("LanguageID", ""));
             } else {
                 global.showCustomToast(mActivity, "Please check internet connection.");
             }
+
             tv_noDatafound.setVisibility(View.VISIBLE);
             if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
                 videoView.getPlayer().stop();
@@ -144,6 +150,7 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void initToolbar() {
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarVideo);
         setSupportActionBar(toolbar);
 
@@ -158,7 +165,10 @@ public class VideoActivity extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     if (videoView.getVideoInfo().getUri() != null) {
-                        postdata(videoView.getPlayer());
+                        backpress_flag = true;
+                        if (videoView.getPlayer().isPlaying()) {
+                            postdata(videoView.getPlayer());
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -198,7 +208,6 @@ public class VideoActivity extends AppCompatActivity {
         global.showProgressDialog();
         APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(APIInteface.class);
         Call<VideoLangaugesResponseModel> responseCall = apiInterface.getVideoLanguages();
-
         Log.e(TAG, "V I D E O U R L ---->" + responseCall.request().url());
 
         responseCall.enqueue(new Callback<VideoLangaugesResponseModel>() {
@@ -208,6 +217,7 @@ public class VideoActivity extends AppCompatActivity {
                 global.hideProgressDialog();
 
                 VideoLangArylist = new ArrayList<>();
+
                 if (response.isSuccessful()) {
                     VideoLangaugesResponseModel model = response.body();
                     if (model.getOutput() != null || model.getResId().equalsIgnoreCase(Constants.RES0000)) {
@@ -216,6 +226,7 @@ public class VideoActivity extends AppCompatActivity {
                 }
 
                 if (VideoLangArylist.size() > 0) {
+
                     SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
                     SharedPreferences.Editor editor = pref.edit();
                     Gson gson = new Gson();
@@ -231,6 +242,7 @@ public class VideoActivity extends AppCompatActivity {
                     }
 
                 } else {
+
                     Gson gson = new Gson();
                     String json = prefs_Language.getString("LanguageArryList", "");
                     VideoLangArylist = gson.fromJson(json, new TypeToken<List<VideoLangaugesResponseModel.Outputlang>>() {
@@ -246,6 +258,8 @@ public class VideoActivity extends AppCompatActivity {
                     } else {
                         global.showCustomToast(mActivity, "Unable to fetch languages from server. Please try after sometime.");
                     }
+
+
                 }
             }
 
@@ -280,16 +294,18 @@ public class VideoActivity extends AppCompatActivity {
             builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
                     if (which < arrayAdapter.getCount()) {
+
                         String strName = arrayAdapter.getItem(which).getLANGUAGE();
                         textView.setText(strName);
+
                         if (connectionDetector.isConnectingToInternet()) {
                             GetVideosBasedonLanguage(arrayAdapter.getItem(which).getIID_NEW());
                             if (videoView.getVideoInfo().getUri() != null) {
                                 videoView.getPlayer().stop();
                                 //  videoView.getPlayer().release();
                                 videoView.getPlayer().getDuration();
-
                                 Log.e(TAG, "GET VIDEO DUR ---->" + videoView.getPlayer().getDuration());
                             }
 
@@ -298,6 +314,7 @@ public class VideoActivity extends AppCompatActivity {
                             editor.putString("LanguageSelected", arrayAdapter.getItem(which).getLANGUAGE());
                             editor.putString("LanguageID", arrayAdapter.getItem(which).getIID_NEW());
                             editor.apply();
+
                         } else {
                             GlobalClass.toastyError(VideoActivity.this, MessageConstants.CHECK_INTERNET_CONN, false);
                         }
@@ -309,20 +326,19 @@ public class VideoActivity extends AppCompatActivity {
         } else {
             global.showCustomToast(mActivity, "List is not available");
         }
+
     }
 
     private void GetVideosBasedonLanguage(String LanguageID) {
-
         GetVideoLanguageWiseRequestModel model = new GetVideoLanguageWiseRequestModel();
-        model.setApp(Constants.APP_ID); // TODO Change this to 4 during live
+        model.setApp(Constants.APP_ID);
         model.setLanguage(LanguageID);
-
         PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(PostAPIInteface.class);
         Call<VideosResponseModel> responseCall = apiInterface.getVideobasedOnLanguage(model);
-        Log.e(
-                TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
+        Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
         Log.e(TAG, "VIDEO LIST URL ---->" + responseCall.request().url());
         global.showProgressDialog();
+
         responseCall.enqueue(new Callback<VideosResponseModel>() {
             @Override
             public void onResponse(Call<VideosResponseModel> call, Response<VideosResponseModel> response) {
@@ -356,8 +372,8 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void DisplayVideosInList() {
-
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(mActivity);
+
         recView.setLayoutManager(mLayoutManager);
         recView.setItemAnimator(new DefaultItemAnimator());
         recView.addItemDecoration(new DividerItemDecoration(mActivity, LinearLayoutManager.VERTICAL));
@@ -366,36 +382,39 @@ public class VideoActivity extends AppCompatActivity {
         recView.setVisibility(View.VISIBLE);
 
         videoListAdapter = new VideoListAdapter(mActivity, VideosArylist);
+
         videoListAdapter.setOnItemClickListener(new VideoListAdapter.OnItemClickListener() {
             @Override
             public void OnVideoItemSelected(ArrayList<VideosResponseModel.Outputlang> VideoArrylist1, VideosResponseModel.Outputlang SelectedVideo) {
 
 
-                if (videoView.getVideoInfo().getUri() != null && videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
+                try {
+                    if (videoView.getVideoInfo().getUri() != null && videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
 
-                    if (videoView.getPlayer().isPlaying()) {
-//                        globalclass.showcenterCustomToast(mActivity,"Already Playing");
-                    } else {
-
-                        if (videoView.getPlayer().getCurrentState() == GiraffePlayer.STATE_PLAYBACK_COMPLETED) {
-                            initializePlayer(SelectedVideo);
-                            VideosArylist = VideoArrylist1;
-                            videoListAdapter.notifyDataSetChanged();
+                        if (videoView.getPlayer().isPlaying()) {
+                            //globalclass.showcenterCustomToast(mActivity, "Already Playing");
+                            //  GlobalClass.toastyError(mActivity, "Already Playing", false);
+                            // initializePlayer(SelectedVideo);
                         } else {
-                            videoView.getPlayer().start();
+                            if (videoView.getPlayer().getCurrentState() == GiraffePlayer.STATE_PLAYBACK_COMPLETED) {
+                                initializePlayer(SelectedVideo);
+                                VideosArylist = VideoArrylist1;
+                                videoListAdapter.notifyDataSetChanged();
+                            } else {
+                                videoView.getPlayer().start();
+                            }
                         }
-
+                    } else {
+                        initializePlayer(SelectedVideo);
+                        VideosArylist = VideoArrylist1;
+                        videoListAdapter.notifyDataSetChanged();
                     }
-
-                } else {
-                    initializePlayer(SelectedVideo);
-                    VideosArylist = VideoArrylist1;
-                    videoListAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    Log.e(TAG, "OnVideoItemSelected error ---->" + e.getLocalizedMessage());
                 }
-
-
             }
         });
+
         recView.setAdapter(videoListAdapter);
 
     }
@@ -411,16 +430,12 @@ public class VideoActivity extends AppCompatActivity {
         videoView.setVideoPath(Video.getPath()).getPlayer().setDisplayModel(GiraffePlayer.DISPLAY_NORMAL);
         videoView.getPlayer().getVideoInfo().setTitle(Video.getTitle()).setAspectRatio(VideoInfo.AR_ASPECT_FIT_PARENT).setBgColor(Color.BLACK).setShowTopBar(true).addOption(Option.create(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "multiple_requests", 1L));
         videoView.getPlayer().start();
-
-
         VideoID = Video.getId();
-        Log.e(TAG, "VIDEO ID -----" + VideoID);
 
         videoView.setPlayerListener(new PlayerListener() {
             @Override
             public void onPrepared(GiraffePlayer giraffePlayer) {
-                Log.e(TAG, "onPrepared: "
-                );
+                Log.e(TAG, "onPrepared:");
             }
 
             @Override
@@ -443,11 +458,13 @@ public class VideoActivity extends AppCompatActivity {
             @Override
             public void onSeekComplete(GiraffePlayer giraffePlayer) {
                 Log.e(TAG, "onSeekComplete: ");
+
             }
 
             @Override
             public boolean onError(GiraffePlayer giraffePlayer, int what, int extra) {
                 System.out.println("tejas >>> onError");
+
                 if (a == 0) {
                     a = giraffePlayer.getCurrentPosition();
 
@@ -466,10 +483,6 @@ public class VideoActivity extends AppCompatActivity {
                     internetErrorSnackbar.show();
                 }
 
-                System.out.println("tejas >>> CurrentPosition  " + a + " duration : " + giraffePlayer.getDuration());
-                System.out.println("tejas >>> CurrentPositionMin  " + minutes + " CurrentPositionSec : " + seconds);
-                System.out.println("tejas >>> durationMin  " + minutes1 + " durationSec : " + seconds1);
-
                 return false;
             }
 
@@ -480,11 +493,11 @@ public class VideoActivity extends AppCompatActivity {
                     for (int i = 0; i < VideosArylist.size(); i++) {
                         if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
                             VideosArylist.get(i).setVideoPaused(true);
+                            onpause = true;
                         }
                     }
                     videoListAdapter.notifyDataSetChanged();
                 }
-
 
                 try {
                     postdata(giraffePlayer);
@@ -498,9 +511,11 @@ public class VideoActivity extends AppCompatActivity {
             @Override
             public void onRelease(GiraffePlayer giraffePlayer) {
                 Log.e(TAG, "onRelease----------------->  " + giraffePlayer.getDuration());
-
-                if (back_flag || destroy_flag) {
-                    Log.e(TAG, "<-------------- I AM IN IF --------->");
+                if (onpause || stop_flag || back_flag | backpress_flag) {
+                  //  onpause = false;
+                   /* back_flag = false;
+                    stop_flag = false;*/
+                    Log.e(TAG, "<---- I AM IN IF ---->");
                 } else {
                     postdata(giraffePlayer);
                 }
@@ -515,6 +530,7 @@ public class VideoActivity extends AppCompatActivity {
                     internetErrorSnackbar.dismiss();
                 }
 
+
                 if (VideosArylist != null && VideosArylist.size() > 0) {
                     for (int i = 0; i < VideosArylist.size(); i++) {
                         if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
@@ -522,10 +538,12 @@ public class VideoActivity extends AppCompatActivity {
                             VideosArylist.get(i).setVideoPaused(false);
                         } else {
                             VideosArylist.get(i).setVideoPlaying(false);
+                            VideosArylist.get(i).setVideoPaused(true);
                         }
-
+                        videoListAdapter.notifyDataSetChanged();
                     }
-                    System.out.println("tejas >>> seek Time : " + a);
+
+                    System.out.println("Tejas >>> seek Time : " + a);
                     Log.e(TAG, " on Video Start ---->" + videoView.getPlayer().getCurrentPosition());
 
                 }
@@ -541,26 +559,12 @@ public class VideoActivity extends AppCompatActivity {
 
                 Log.e(TAG, "OLD STATE : " + oldState + " NEW STATE : " + newState);
 
-                /*if (newState == GiraffePlayer.STATE_RELEASE) {
-
-
-                    Log.e(TAG, "time >> " + videoView.getPlayer().getCurrentPosition());
-                    if (destroy_flag || back_flag) {
-
-                    } else {
-                        postdata(videoView.getPlayer());
-                    }
-                }*/
-
                 if (oldState == GiraffePlayer.STATE_ERROR && newState == GiraffePlayer.STATE_PLAYBACK_COMPLETED) {
-
-
                     long milliseconds1 = videoView.getPlayer().getDuration();
                     long minutes1 = (milliseconds1 / 1000) / 60;
                     long seconds1 = (milliseconds1 / 1000) % 60;
 
                     if (minutes == minutes1 && seconds == seconds1) {
-
                         if (VideosArylist != null && VideosArylist.size() > 0) {
                             for (int i = 0; i < VideosArylist.size(); i++) {
                                 VideosArylist.get(i).setVideoPlaying(false);
@@ -587,11 +591,11 @@ public class VideoActivity extends AppCompatActivity {
                     }
 
                     Log.e(TAG, "STATE_PLAYBACK_COMPLETED : " + VideoID);
+
                 } else if ((oldState == GiraffePlayer.STATE_PLAYING && newState == GiraffePlayer.STATE_PLAYBACK_COMPLETED) || (oldState == GiraffePlayer.DISPLAY_NORMAL && newState == GiraffePlayer.STATE_RELEASE)) {
                     videoView.setVisibility(View.GONE);
                     if (VideosArylist != null && VideosArylist.size() > 0) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
-
                             VideosArylist.get(i).setVideoPlaying(false);
                         }
                         videoListAdapter.notifyDataSetChanged();
@@ -599,7 +603,6 @@ public class VideoActivity extends AppCompatActivity {
                 } else if (oldState == GiraffePlayer.STATE_PREPARED && newState == GiraffePlayer.STATE_PLAYING) {
                     if (VideosArylist != null && VideosArylist.size() > 0) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
-
                             if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
                                 VideosArylist.get(i).setVideoPlaying(true);
                                 VideosArylist.get(i).setVideoPaused(false);
@@ -680,7 +683,11 @@ public class VideoActivity extends AppCompatActivity {
         try {
             if (videoView.getVideoInfo().getUri() != null) {
                 stop_flag = true;
-                postdata(videoView.getPlayer());
+                if (!backpress_flag) {
+                    if (videoView.getPlayer().isPlaying()) {
+                        postdata(videoView.getPlayer());
+                    }
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -694,9 +701,12 @@ public class VideoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         try {
-            back_flag = true;
-           // postdata(videoView.getPlayer());
+
             if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().onBackPressed()) {
+                back_flag = true;
+                if (videoView.getPlayer().isPlaying()) {
+                    postdata(videoView.getPlayer());
+                }
                 return;
             } else {
                 super.onBackPressed();

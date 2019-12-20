@@ -89,7 +89,6 @@ public class ToastFile {
     public static String addre25long = "Address should be 25 characters long";
     public static String btech_name = "Please select Btech name";
     public static String crt_kyc_num = "Please enter correct KYC number";
-    public static String crt_kyc_empty = "Please enter  mobile number";
     public static String crt_MOB_num = "Please enter correct mobile number";
     public static String ent_addre = "Please enter address";
     public static String slt_btech_name = "Select Btech name";
@@ -139,33 +138,11 @@ public class ToastFile {
     public static String offline_tool = "Would you like to go with Offline Mode ?";
 
 
-
     public static String setTitle_submitall_woe = "Would you like to submit all WOE ?";
     public static String internet_avail = "Yes, Internet is Available !";
     public static String PLAYVIDEO = "Play";
     public static String TRF_UPLOAD_CHECK = "Upload TRF images for all the selected tests";
     public static String UrlEmpty = "E";
-    public static String IMAGE_UPLOAD_FAILED = "WOE done successfully. But TRF and receipt upload failed. Kindly submit the images again.";
-    public static String scan_barcode_all = "Please scan the barcode for all sample types.";
-    public static String MOBILE_10_DIGITS = "Mobile number should be of 10 digits";
-    public static String ENTER_MOBILE = "Please enter mobile number";
-    public static String ENTER_VALID_OTP = "Enter valid OTP";
-    public static String PLEASE_WAIT = "Please wait..";
-    public static String OTP_SENT_SUCCESS = "OTP sent successfully";
-    public static String LOCATION_NOT_FOUND = "Location not found";
-    public static String MOB_NOT_VERIFIED = "Entered mobile number not verified !";
-    public static String ENTER_AGE = "Please enter age";
-    public static String ENTER_NAME = "Please enter name";
-    public static String SELECT_GENDER = "Please select gender";
-    public static String SELECT_TEST_TYPE = "Select test type";
-    public static String ENTER_VALUE = "Enter value";
-    public static String ENTER_SYSTOLIC_VALUE = "Enter systolic value";
-    public static String ENTER_DIASTOLIC_VALUE = "Enter diastolic value";
-    public static String UPLOAD_IMAGE = "Upload the image ";
-    public static String SELECT_IMAGE = "Select the image";
-    public static String SELECT_COLL_AMT = "Select collected amount";
-    public static String ENTER_PINCODE = "Please enter pincode";
-    public static String PINCODE_6_DIGITS = "Pincode should be of 6 digits";
-    public static String ENTER_EMAIL = "Please enter email ID";
-    public static String VALID_EMAIL = "Please enter valid Email Id";
+    public static String IMAGE_UPLOAD_FAILED="WOE done successfully. But TRF and receipt upload failed. Kindly submit the images again.";
+    public static String scan_barcode_all="Please scan the barcode for all sample types.";
 }

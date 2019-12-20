@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,6 +56,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -243,6 +244,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         search = (EditText) view.findViewById(R.id.searchView);
 
 
+
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             listviewreport.setVisibility(View.GONE);
@@ -277,15 +279,15 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
         setCalendarAdapter(SelectedMonthData);
-        currentMonthString = month + " " + year;
+        currentMonthString=month + " " + year;
 
         month_txt.setText(month + " " + year);
 
-        getTextofMonth = month_txt.getText().toString();
+         getTextofMonth =month_txt.getText().toString();
 
-        if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+        if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
             next_month.setVisibility(View.GONE);
-        } else {
+        }else{
             next_month.setVisibility(View.VISIBLE);
         }
 
@@ -308,10 +310,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 setCalendarAdapter(SelectedMonthData);
 
-                getTextofMonth = month_txt.getText().toString();
-                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+                getTextofMonth =month_txt.getText().toString();
+                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
                     next_month.setVisibility(View.GONE);
-                } else {
+                }else{
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -334,10 +336,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 setCalendarAdapter(SelectedMonthData);
 
-                getTextofMonth = month_txt.getText().toString();
-                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+                getTextofMonth =month_txt.getText().toString();
+                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
                     next_month.setVisibility(View.GONE);
-                } else {
+                }else{
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -394,10 +396,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 // TODO Auto-generated method stub
-                if (s.length() == 0) {
-                    GetData();
-                }
-
             }
 
             @Override
@@ -418,7 +416,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     DownloadReceipt(s1);
                     final List<TrackDetModel> filteredModelList = filter(trackDetArray, s1);
                     try {
-                        if (filteredModelList != null) {
+                        if (filteredModelList.get(0) != null) {
                             listviewreport.setVisibility(View.GONE);
                             offline_img.setVisibility(View.GONE);
                             searchbarcodelistlinear.setVisibility(View.VISIBLE);
@@ -431,11 +429,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                         }
                     } catch (Exception e) {
 //                        Toast.makeText(getActivity(), ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "on errror ---->" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-
-                    callAdapter(trackDetArray);
+                    adapter = new TrackDetAdapter(getContext(), trackDetArray);
+                    listviewreport.setAdapter(adapter);
 
                 }
                 // filter your list from your input
@@ -458,26 +455,13 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 
     @Override
     public void onStart() {
-        getTextofMonth = month_txt.getText().toString();
-        if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+        getTextofMonth =month_txt.getText().toString();
+        if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
             next_month.setVisibility(View.GONE);
-        } else {
+        }else{
             next_month.setVisibility(View.VISIBLE);
         }
         super.onStart();
-    }
-
-    private void callAdapter(ArrayList<TrackDetModel> modelArrayList) {
-        if (modelArrayList.size() > 0) {
-            listviewreport.setVisibility(View.VISIBLE);
-            adapter = new TrackDetAdapter(getContext(), trackDetArray);
-            listviewreport.setAdapter(adapter);
-            nodata.setVisibility(View.GONE);
-        } else {
-            listviewreport.setVisibility(View.GONE);
-            nodata.setVisibility(View.VISIBLE);
-        }
-
     }
 
     private void setCalendarAdapter(ArrayList<getAllDays> SelectedMonthData) {
@@ -736,7 +720,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     if (trackBarcode.getCollected().equals("null")) {
                                         trackBarcode.setCollected("NA");
                                     }
-                                  /*  patient.setText(trackBarcode.getPatient().toString());
+                                    patient.setText(trackBarcode.getPatient().toString());
                                     bill_status.setText(trackBarcode.getBillStatus().toString());
                                     refBy.setText(trackBarcode.getRefBy().toString());
                                     wo_order.setText(trackBarcode.getWoeTime().toString());
@@ -746,19 +730,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     collected.setText(trackBarcode.getCollected().toString());
                                     billed.setText(trackBarcode.getBilled().toString());
                                     tedtedat.setText(trackBarcode.getWoiLocation());
-                                    collectedat.setText(trackBarcode.getReportAddress());*/
-
-                                    GlobalClass.SetText(patient, trackBarcode.getPatient().toString());
-                                    GlobalClass.SetText(bill_status, trackBarcode.getBillStatus().toString());
-                                    GlobalClass.SetText(refBy, trackBarcode.getRefBy().toString());
-                                    GlobalClass.SetText(wo_order, trackBarcode.getWoeTime().toString());
-                                    GlobalClass.SetText(sct, trackBarcode.getSct().toString());
-                                    GlobalClass.SetText(bvt, trackBarcode.getBvt().toString());
-                                    GlobalClass.SetText(RRT, trackBarcode.getRrt().toString());
-                                    GlobalClass.SetText(collected, trackBarcode.getCollected().toString());
-                                    GlobalClass.SetText(billed, trackBarcode.getBilled().toString());
-                                    GlobalClass.SetText(tedtedat, trackBarcode.getWoiLocation().toString());
-                                    GlobalClass.SetText(collectedat, trackBarcode.getReportAddress().toString());
+                                    collectedat.setText(trackBarcode.getReportAddress());
 
                                     mail.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -770,10 +742,11 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     download.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
-                                            if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
+                                            if(!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl()!=null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")){
                                                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
                                                 startActivity(browserIntent);
-                                            } else {
+                                            }
+                                            else {
                                                 TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
                                             }
                                         }
@@ -872,7 +845,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + passDateTogetData + "/" + "key/value", jsonObject,
@@ -1060,23 +1032,19 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         final EditText mob = (EditText) dialog.findViewById(R.id.mob);
         final EditText name = (EditText) dialog.findViewById(R.id.name);
 
-        if (barCodeDetail.get(0).getEmail() != null && !barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")) {
+        if(barCodeDetail.get(0).getEmail()!=null && !barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")){
             emailid.setText(barCodeDetail.get(0).getEmail());
-        } else {
+        }else{
             emailid.setText("");
         }
 
-        if (barCodeDetail.get(0).getMobile() != null && !barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")) {
+        if(barCodeDetail.get(0).getMobile()!=null && !barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")){
             mob.setText(barCodeDetail.get(0).getMobile());
-        } else {
+        }else{
             mob.setText("");
         }
 
-        if (barCodeDetail.get(0).getName() != null && !barCodeDetail.get(0).getName().equalsIgnoreCase("null")) {
-            name.setText(barCodeDetail.get(0).getName());
-        } else {
-            name.setText("");
-        }
+        name.setText(barCodeDetail.get(0).getName());
 
 
         final Button cancel = (Button) dialog.findViewById(R.id.cancel);
@@ -1092,7 +1060,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     if (!emailid.getText().toString().matches(emailPattern)) {
                         Toast.makeText(getContext(), ToastFile.invalid_eml, Toast.LENGTH_SHORT).show();
                     } else {
-                        SendMail(mob, name);
+                        SendMail();
                         dialog.dismiss();
                     }
 
@@ -1112,12 +1080,11 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 dialog.cancel();
             }
         });
-
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
     }
 
-    private void SendMail(EditText mob, EditText name) {
+    private void SendMail() {
 
         PostQue = Volley.newRequestQueue(getContext());
 
@@ -1136,11 +1103,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             String[] twoStringArray = barCodeDetail.get(0).getName().split("\\(", 2); //the main line
 
             jsonObject.put("name", twoStringArray[0]);
-
-            if (!TextUtils.isEmpty(mob.getText().toString())) {
-                jsonObject.put("mob", barCodeDetail.get(0).getMobile());
-            }
-
+            jsonObject.put("mob", barCodeDetail.get(0).getMobile());
             jsonObject.put("email", email_id_string);
 
 
@@ -1148,9 +1111,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        Log.e(TAG, "SEND EMAIL RESPONSE ---->" + jsonObject.toString());
-        Log.e(TAG, "SEND EMAIL API ---->" + Api.Receipt_mail);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.Receipt_mail, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

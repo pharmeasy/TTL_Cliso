@@ -169,6 +169,7 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
+                android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                 android:hint="Flight Number"
                 android:maxLength="25"
                 android:textSize="12sp" />

@@ -41,7 +41,6 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Windup_adapter;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Interface.CountInterface;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.Patients;
@@ -73,7 +72,7 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
  * Use the {@link Wind_up_fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Wind_up_fragment extends RootFragment implements CountInterface {
+public class Wind_up_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -97,7 +96,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     private String mParam1;
     private String mParam2;
     RecyclerView recyclerView;
-
     LinearLayoutManager linearLayoutManager;
     View view_line, view_line1;
     TextView enetered, enter;
@@ -350,7 +348,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         } else {
 
                         }
-                        windup_adapter = new Windup_adapter(mContext, filterPatientsArrayList,Wind_up_fragment.this);
+                        windup_adapter = new Windup_adapter(mContext, filterPatientsArrayList);
                         recyclerView.setAdapter(windup_adapter);
                     }
                 }
@@ -371,7 +369,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 updateLabel();
             }
         };
-
         woe_cal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -436,11 +433,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                             if (!((Activity) mContext).isFinishing())
                                                 barProgressDialog.dismiss();
                                         }
-                                        Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                        transaction.addToBackStack(null);
-                                        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-
                                         fetchWoeListDoneByTSP();
                                     } else {
                                         Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
@@ -522,8 +514,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    Log.e(TAG, "Windup  ReqBody : "+new Gson().toJson(jsonObjectOtp));
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.multiple_windup, jsonObjectOtp, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -539,15 +529,8 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                     TastyToast.makeText(mContext, response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                         barProgressDialog.dismiss();
-
                                         GlobalClass.windupBarcodeList = new ArrayList<>();
                                     }
-
-                                    Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                    transaction.addToBackStack(null);
-                                    transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-
                                     fetchWoeListDoneByTSP();
                                 } else {
                                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -776,7 +759,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 //                    wind_up_multiple.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
 
-                        windup_adapter = new Windup_adapter(mContext, patientsArrayList,Wind_up_fragment.this);
+                        windup_adapter = new Windup_adapter(mContext, patientsArrayList);
                         recyclerView.setAdapter(windup_adapter);
                        /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
@@ -859,12 +842,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
-
-
-    @Override
-    public void getclickcount(int count) {
-        wind_up_multiple.setText("Wind up( "+count+" )");
     }
 
     /**

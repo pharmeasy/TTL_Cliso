@@ -20,7 +20,7 @@ public class GetHealthTipsController {
     public void CallHealthTipsApi() {
 
       /*  globalClass.setLoadingGIF(mContext);
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mContext, HEALTH_BASE_URL).create(APIInteface.class);
+        GetAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mContext, HEALTH_BASE_URL).create(GetAPIInteface.class);
         Call<HealthTipsApiResponseModel> responseCall = apiInterface.getHealthtips();
         Log.e("TAG", "URL --->" + responseCall.request().url());
 

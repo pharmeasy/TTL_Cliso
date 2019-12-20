@@ -39,7 +39,7 @@ public class Feedback_activity extends AppCompatActivity {
     ImageView cry, sad, happy;
     View view;
     ImageView back, home;
-   // ProgressDialog barProgressDialog;
+    ProgressDialog barProgressDialog;
     String RESPONSE, RES_ID, USER_TYPE;
     Button submitcomment;
     private Global globalClass;
@@ -262,7 +262,7 @@ public class Feedback_activity extends AppCompatActivity {
     }
 
     private void SendFeedbackToAPI() {
-      /*  barProgressDialog = new ProgressDialog(Feedback_activity.this, R.style.ProgressBarColor);
+        barProgressDialog = new ProgressDialog(Feedback_activity.this, R.style.ProgressBarColor);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -270,8 +270,7 @@ public class Feedback_activity extends AppCompatActivity {
         barProgressDialog.setMax(20);
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);*/
-        final ProgressDialog progressDialog=GlobalClass.ShowprogressDialog(Feedback_activity.this);
+        barProgressDialog.setCancelable(false);
 
         feedbackText = query.getText().toString();
 
@@ -300,10 +299,9 @@ public class Feedback_activity extends AppCompatActivity {
                     Log.e(TAG, "onResponse: " + response);
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
-                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
-                    }*/
-                    GlobalClass.hideProgress(Feedback_activity.this,progressDialog);
+                    }
                     RESPONSE = parentObjectOtp.getString("RESPONSE");
                     RES_ID = parentObjectOtp.getString("RES_ID");
                     USER_TYPE = parentObjectOtp.getString("USER_TYPE");
@@ -321,7 +319,6 @@ public class Feedback_activity extends AppCompatActivity {
                     }
 
                 } catch (JSONException e) {
-                    GlobalClass.hideProgress(Feedback_activity.this,progressDialog);
                     TastyToast.makeText(Feedback_activity.this, "Feedback not sent successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     e.printStackTrace();
                 }

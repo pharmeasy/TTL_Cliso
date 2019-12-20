@@ -36,6 +36,7 @@
                     android:background="@drawable/grey_curve_border"
                     android:digits="0123456789"
                     android:ems="10"
+                    android:importantForAutofill="no"
                     android:hint="@string/bs_enter_mobile_number"
                     android:inputType="number"
                     android:maxLength="10"

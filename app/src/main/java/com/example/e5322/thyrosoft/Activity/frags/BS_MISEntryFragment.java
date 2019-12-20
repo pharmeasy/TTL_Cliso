@@ -20,6 +20,7 @@ import com.example.e5322.thyrosoft.Adapter.BS_MISAdapter;
 import com.example.e5322.thyrosoft.Controller.BloodSugarMISController;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Models.BSMISModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.BSMISRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
@@ -36,14 +37,27 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class BS_MISEntryFragment extends Fragment {
 
-    private View viewMain;
     final Calendar myCalendar = Calendar.getInstance();
     LinearLayout bs_calendar_ll;
-    TextView txt_bs_cal,tv_noResult;
+    TextView txt_bs_cal, tv_noResult;
+    Activity activity;
+    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+
+    };
+    private View viewMain;
     private RecyclerView recycler_view;
     private SharedPreferences prefs;
-    Activity activity;
-    private String user,passwrd,access,api_key,USER_CODE;
+    private String user, passwrd, access, api_key, USER_CODE;
     private String currentDate;
 
     public BS_MISEntryFragment() {
@@ -80,7 +94,7 @@ public class BS_MISEntryFragment extends Fragment {
         bs_calendar_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(getActivity(),R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
@@ -89,25 +103,12 @@ public class BS_MISEntryFragment extends Fragment {
     }
 
     private void initUI() {
-        recycler_view = (RecyclerView)viewMain.findViewById(R.id.recycler_view);
-        bs_calendar_ll= (LinearLayout) viewMain.findViewById(R.id.bs_calendar_ll);
-        txt_bs_cal= (TextView) viewMain.findViewById(R.id.txt_bs_cal);
+        recycler_view = (RecyclerView) viewMain.findViewById(R.id.recycler_view);
+        bs_calendar_ll = (LinearLayout) viewMain.findViewById(R.id.bs_calendar_ll);
+        txt_bs_cal = (TextView) viewMain.findViewById(R.id.txt_bs_cal);
         tv_noResult = (TextView) viewMain.findViewById(R.id.tv_noResult);
     }
 
-    DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-
-    };
     private void updateLabel() {
         String myFormat = "dd-MM-yyyy"; //In which you need put here
         String myFormat1 = "yyyy-MM-dd"; //In which you need put here
@@ -118,10 +119,14 @@ public class BS_MISEntryFragment extends Fragment {
 
     private void callMISDataAPI(String date) {
         try {
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject = null;
             try {
-                jsonObject.put("UserId", user);
-                jsonObject.put("Date", date);
+                BSMISRequestModel requestModel = new BSMISRequestModel();
+                requestModel.setUserId(user);
+                requestModel.setDate(date);
+
+                String json = new Gson().toJson(requestModel);
+                jsonObject = new JSONObject(json);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -130,7 +135,7 @@ public class BS_MISEntryFragment extends Fragment {
                 if (ControllersGlobalInitialiser.bloodSugarMISController != null) {
                     ControllersGlobalInitialiser.bloodSugarMISController = null;
                 }
-                ControllersGlobalInitialiser.bloodSugarMISController = new BloodSugarMISController(BS_MISEntryFragment.this,activity);
+                ControllersGlobalInitialiser.bloodSugarMISController = new BloodSugarMISController(BS_MISEntryFragment.this, activity);
                 ControllersGlobalInitialiser.bloodSugarMISController.getMISData(jsonObject);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -141,8 +146,8 @@ public class BS_MISEntryFragment extends Fragment {
     }
 
     public void getMISResponse(JSONObject response) {
-        Gson gson =new Gson();
-      BSMISModel misModel = gson.fromJson(String.valueOf(response), BSMISModel.class);
+        Gson gson = new Gson();
+        BSMISModel misModel = gson.fromJson(String.valueOf(response), BSMISModel.class);
         if (misModel != null) {
             if (misModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
                 if (misModel.getBloodSugarEntries().size() > 0) {

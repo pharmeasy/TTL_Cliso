@@ -1,7 +1,5 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -176,7 +174,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
             workbook.write();
             TastyToast.makeText(BillingDetailsActivity.this, ToastFile.xl_dtl, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
-     /*       Intent intent = new Intent(Intent.ACTION_VIEW);
+           /* Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
             startActivity(intent);*/
 

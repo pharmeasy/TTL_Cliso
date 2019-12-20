@@ -294,10 +294,6 @@ public class CHNfragment extends RootFragment {
         }
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-
-        Log.e(TAG,"CHN POST -->"+jsonObject.toString());
-        Log.e(TAG,"CHN API -->"+Api.Result + "/" + api_key + "/" + "CHN" + "/" + user + "/" + convertedDate + "/" + "key/value");
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.Result + "/" + api_key + "/" + "CHN" + "/" + user + "/" + convertedDate + "/" + "key/value", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -377,9 +373,6 @@ patients":[
                                     ListReportStatus.setAdapter(adapter);
                                     // ListReportStatus.setOnGroupClickListener(myListGroupClicked);
                                 } else {
-                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                        barProgressDialog.dismiss();
-                                    }
                                     no_view.setVisibility(View.VISIBLE);
                                     ListReportStatus.setVisibility(View.GONE);
                                 }

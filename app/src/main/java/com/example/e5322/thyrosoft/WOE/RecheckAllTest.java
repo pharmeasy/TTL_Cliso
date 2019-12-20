@@ -18,6 +18,7 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -189,8 +190,8 @@ public class RecheckAllTest extends AppCompatActivity {
             }
         });
 
-
-        if (GlobalClass.Dayscnt(RecheckAllTest.this) >= Constants.DAYS_CNT) {
+        int days = GlobalClass.getStoreSynctime(RecheckAllTest.this);
+        if (days >= Constants.DAYS_CNT) {
             getAlltTestData();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -515,10 +516,9 @@ public class RecheckAllTest extends AppCompatActivity {
                 }
 
                 // onlySelected
-                /*GlobalClass.StoreSyncTime(RecheckAllTest.this);*/
-                GlobalClass.storeProductsCachingTime(RecheckAllTest.this);
-                globalClass.dismissProgressDialog();
 
+                GlobalClass.StoreSyncTime(RecheckAllTest.this);
+                globalClass.dismissProgressDialog();
             }
         }, new Response.ErrorListener() {
             @Override

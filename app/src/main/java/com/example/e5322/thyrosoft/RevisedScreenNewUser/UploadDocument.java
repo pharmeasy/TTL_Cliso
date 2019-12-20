@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -500,13 +499,13 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (imageName == null) {
                             TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (TextUtils.isEmpty(edt_remarksUpdate)){
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        }else if (exp_Date.equalsIgnoreCase("")) {
+                        } else if (exp_Date.equalsIgnoreCase("")) {
                             TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else  {
+                        } else {
                             uploadDocument();
                         }
                     } else if (selectedSpinItem.equalsIgnoreCase("SGC")) {
@@ -522,11 +521,11 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else  if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else  if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                             TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else{
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
                             uploadDocument();
                         }
                     } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
@@ -542,11 +541,11 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (imageName == null) {
                             TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else  if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else{
+                        } else {
                             uploadDocument();
                         }
                     }

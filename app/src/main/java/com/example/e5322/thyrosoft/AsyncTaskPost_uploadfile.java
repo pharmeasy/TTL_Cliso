@@ -81,7 +81,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         flag = 2;
     }
 
-   /* public AsyncTaskPost_Multipartfile(Context context, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
+   /* public AsyncTaskPost_uploadfile(Context context, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
         this.context=context;
         this.apiKey = apiKey;
         this.sourceCode = sourceCode;
@@ -174,10 +174,6 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
 
                     if (flag == 1)
                         scan_barcode_ils_new.getUploadFileResponse();
-
-                    if (flag ==2){
-                        offline_woe=new Offline_woe();
-                    }
 
                 } else {
                     Toast.makeText(mActivity, response, Toast.LENGTH_SHORT).show();

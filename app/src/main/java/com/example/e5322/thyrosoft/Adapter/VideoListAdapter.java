@@ -23,6 +23,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
     ArrayList<VideosResponseModel.Outputlang> VideosArylist;
     GlobalClass globalClass;
     OnItemClickListener onItemClickListener;
+    public String TAG = getClass().getSimpleName();
 
     public VideoListAdapter(Activity activity, ArrayList<VideosResponseModel.Outputlang> VideosArylist) {
         this.activity = activity;
@@ -48,6 +49,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
             myViewHolder.tv_title.setTextColor(activity.getResources().getColor(R.color.maroon));
             myViewHolder.tv_description.setTextColor(activity.getResources().getColor(R.color.maroon));
             myViewHolder.tv_nowPlaying.setVisibility(View.VISIBLE);
+
             if (VideosArylist.get(position).isVideoPaused()) {
                 myViewHolder.tv_nowPlaying.setText("Paused");
                 myViewHolder.GIF_VideoPlaying.setVisibility(View.GONE);
@@ -55,6 +57,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
                 myViewHolder.tv_nowPlaying.setText("Now Playing..");
                 myViewHolder.GIF_VideoPlaying.setVisibility(View.VISIBLE);
             }
+
         } else {
             myViewHolder.tv_title.setTextColor(activity.getResources().getColor(R.color.black));
             myViewHolder.tv_description.setTextColor(activity.getResources().getColor(R.color.black));
@@ -67,7 +70,6 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
         myViewHolder.rel_main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 for (int i = 0; i < VideosArylist.size(); i++) {
                     if (i == position) {
                         VideosArylist.get(i).setVideoPlaying(true);
@@ -79,6 +81,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
                 if (onItemClickListener != null) {
                     onItemClickListener.OnVideoItemSelected(VideosArylist, VideosArylist.get(position));
                 }
+
             }
         });
     }

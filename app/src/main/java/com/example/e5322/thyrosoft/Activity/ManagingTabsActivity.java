@@ -2,8 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,7 +28,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -59,8 +56,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 
-import static com.example.e5322.thyrosoft.API.Constants.NHF;
-
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String getdate;
@@ -68,7 +63,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private static android.support.v4.app.FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
     String restoredText;
-    String prof, address, ac_code, preotp, email, mobile, pincode, user_code, name, dojresponse;
+    String prof, address, ac_code, email, mobile, pincode, user_code, name, dojresponse;
     String passwrd, access, api_key, USER_CODE;
     SharedPreferences prefs;
     TextView navigationDrawerNameTSP, ecode;
@@ -76,16 +71,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
     private CarouselFragment carouselFragment;
-    private String user, CLIENT_TYPE;
+    private String user;
     private GlobalClass globalClass;
-    private String closing_bal, unbilled_woe, unbilled_mt;
+    private String closing_bal;
     private String credit_lim;
     private String source_code;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DatabaseHelper db;
     private int offline_draft_counts;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -186,38 +180,35 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
         USER_CODE = prefs.getString("USER_CODE", null);
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
         db = new DatabaseHelper(ManagingTabsActivity.this);
         db.open();
         offline_draft_counts = db.getProfilesCount();
         db.close();
 
-        if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-            navigationView.getMenu().findItem(R.id.payment).setVisible(true);
+        if (!GlobalClass.isNull(USER_CODE) && USER_CODE.startsWith("BM")) {
+            bottomNavigationView.getMenu().findItem(R.id.home_nav).setVisible(true);
+            bottomNavigationView.getMenu().findItem(R.id.commu).setVisible(true);
+            bottomNavigationView.getMenu().findItem(R.id.loud).setVisible(false);
+            bottomNavigationView.getMenu().findItem(R.id.bell_ic).setVisible(false);
+
+            navigationView.getMenu().findItem(R.id.stock_availability).setVisible(true);
+            navigationView.getMenu().findItem(R.id.communication).setVisible(true);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
-            navigationView.getMenu().findItem(R.id.profile).setVisible(true);
-            navigationView.getMenu().findItem(R.id.notification).setVisible(true);
-            navigationView.getMenu().findItem(R.id.phone).setVisible(true);
-            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-
-
+            navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(false);
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(false);
-            navigationView.getMenu().findItem(R.id.communication).setVisible(false);
-            navigationView.getMenu().findItem(R.id.vid_leggy).setVisible(false);
-            navigationView.getMenu().findItem(R.id.notice).setVisible(false);
+            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
             navigationView.getMenu().findItem(R.id.notification).setVisible(false);
+            navigationView.getMenu().findItem(R.id.notice).setVisible(false);
+            navigationView.getMenu().findItem(R.id.phone).setVisible(false);
+            navigationView.getMenu().findItem(R.id.whatsapp).setVisible(false);
+            navigationView.getMenu().findItem(R.id.profile).setVisible(false);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(false);
             navigationView.getMenu().findItem(R.id.faq_data).setVisible(false);
-            navigationView.getMenu().findItem(R.id.accr_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.offer_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.articles_data).setVisible(false);
-            navigationView.getMenu().findItem(R.id.company_contcat).setVisible(false);
-            navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
-            navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
-
         } else {
             if (access.equals("STAFF")) {
                 //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
@@ -260,7 +251,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
-
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
         String name = getProfileName.getString("name", null);
         String usercode = getProfileName.getString("usercode", null);
@@ -269,9 +259,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (name != null) {
             navigationDrawerNameTSP.setText("HI " + name);
             ecode.setText("(" + usercode + ")");
+        } else {
+            getProfileDetails();
         }
-
-        getProfileDetails(ManagingTabsActivity.this);
 
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
@@ -421,140 +411,144 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        } else if (id == R.id.vid_leggy) {
+        } else
+        /*if (id == R.id.vid_leggy) {
 
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, VideoActivity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, LeggyVideo_Activity.class);
                 startActivity(i);
             }
 
-        } else if (id == R.id.thyroshop) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                httpIntent.setData(Uri.parse("http://www.charbi.com/CDN/Applications/Android/Thyroshop.apk"));
-                startActivity(httpIntent);
-            }
+        } else*/
+            if (id == R.id.thyroshop) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                    httpIntent.setData(Uri.parse("http://www.charbi.com/CDN/Applications/Android/Thyroshop.apk"));
+                    startActivity(httpIntent);
+                }
 
 
-        } else if (id == R.id.billing) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.billing) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
 
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 7);
-                carouselFragment = new CarouselFragment();
-                carouselFragment.setArguments(bundle);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", 7);
+                    carouselFragment = new CarouselFragment();
+                    carouselFragment.setArguments(bundle);
+                    final FragmentManager fragmentManager = getSupportFragmentManager();
 
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, carouselFragment)
-                        .commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, carouselFragment)
+                            .commit();
 
-            }
-
-
-        } else if (id == R.id.upload_document_navigation) {
-
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, UploadDocument.class);
-                startActivity(i);
-
-            }
+                }
 
 
-        } else if (id == R.id.sgc_pgc_entry_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Sgc_Pgc_Entry_Activity.class);
-                startActivity(i);
+            } else if (id == R.id.upload_document_navigation) {
 
-            }
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, UploadDocument.class);
+                    startActivity(i);
+
+                }
 
 
-        } else if (id == R.id.ledger) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putInt("position", 4);
-                carouselFragment = new CarouselFragment();
-                carouselFragment.setArguments(bundle);
-                final FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, carouselFragment)
-                        .commit();
-            }
-        } else if (id == R.id.notice) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.sgc_pgc_entry_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Sgc_Pgc_Entry_Activity.class);
+                    startActivity(i);
+
+                }
+
+
+            } else if (id == R.id.ledger) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("position", 4);
+                    carouselFragment = new CarouselFragment();
+                    carouselFragment.setArguments(bundle);
+                    final FragmentManager fragmentManager = getSupportFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.container, carouselFragment)
+                            .commit();
+                }
+            } else if (id == R.id.notice) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
                 /*Noticeboard_Fragment noticeboard_fragment = new Noticeboard_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                    Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                    startActivity(i);
+                }
+
+            } else if (id == R.id.notification) {
+
+                Intent i = new Intent(ManagingTabsActivity.this, Notification_activity.class);
                 startActivity(i);
-            }
 
-        } else if (id == R.id.notification) {
-
-            Intent i = new Intent(ManagingTabsActivity.this, Notification_activity.class);
-            startActivity(i);
-
-        } else if (id == R.id.feedback) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
+            } else if (id == R.id.feedback) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
 //                    i.putExtra("comefrom", "TSP");
-                startActivity(i);
+                    startActivity(i);
 
+                }
+
+
+            } else if (id == R.id.profile) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
+                    startActivity(i);
+
+                }
+
+            } else if (id == R.id.broadCast) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, BroadcastActivity.class);
+                    startActivity(i);
+
+                }
+
+            } else if (id == R.id.campIntimation) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, CampIntimation.class);
+                    startActivity(i);
+                }
+
+            }else if (id == R.id.stock_availability) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
+                    startActivity(i);
+                }
             }
 
-
-        } else if (id == R.id.profile) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
-                startActivity(i);
-
-            }
-
-        } else if (id == R.id.broadCast) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, BroadcastActivity.class);
-                startActivity(i);
-
-            }
-
-        } else if (id == R.id.campIntimation) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, CampIntimation.class);
-                startActivity(i);
-            }
-
-        } else if (id == R.id.stock_availability) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
-                startActivity(i);
-            }
-        } else if (id == R.id.bs_entry) {
+        /*else if (id == R.id.blood_s_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -562,142 +556,132 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        } else if (id == R.id.logout) {
-            new AlertDialog.Builder(this)
-                    .setMessage(ToastFile.surelogout)
-                    .setCancelable(false)
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            // Toast.makeText(getApplicationContext(), "You have successfully logout", Toast.LENGTH_LONG).show();
-                            distoye();
-                            logout();
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        } else if (id == R.id.phone) {
-            new AlertDialog.Builder(this)
-                    .setMessage("Would you like to proceed with call?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
-                            restoredText = prefs.getString("TSPMobileNumber", null);
+        }*/
 
-                            Intent intent = new Intent(Intent.ACTION_DIAL);
-                            if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-                                intent.setData(Uri.parse("tel:" + Constants.NHF_Whatsapp));
-                            } else {
+            else if (id == R.id.logout) {
+                new AlertDialog.Builder(this)
+                        .setMessage(ToastFile.surelogout)
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                // Toast.makeText(getApplicationContext(), "You have successfully logout", Toast.LENGTH_LONG).show();
+                                distoye();
+                                logout();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.phone) {
+                new AlertDialog.Builder(this)
+                        .setMessage("Would you like to proceed with call?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs.getString("TSPMobileNumber", null);
+
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
                                 intent.setData(Uri.parse("tel:" + restoredText));
+                                startActivity(intent);
                             }
-
-                            startActivity(intent);
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-
-        } else if (id == R.id.whatsapp) {
-            new AlertDialog.Builder(this)
-                    .setMessage("Would you like to proceed with whatsapp?")
-                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
-                            restoredText = prefs1.getString("TSPMobileNumber", null);
-                            Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                            if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-                                httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + Constants.NHF_Whatsapp + "#"));
-                            } else {
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.whatsapp) {
+                new AlertDialog.Builder(this)
+                        .setMessage("Would you like to proceed with whatsapp?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
+                                restoredText = prefs1.getString("TSPMobileNumber", null);
+                                Intent httpIntent = new Intent(Intent.ACTION_VIEW);
                                 httpIntent.setData(Uri.parse("https://api.whatsapp.com/send?phone=+91" + restoredText + "#"));
+                                startActivity(httpIntent);
                             }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            } else if (id == R.id.offer_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, SpecialOffer_Activity.class);
+                    startActivity(i);
+                }
+            } else if (id == R.id.synchronization) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                    prefsEditor1.remove("MyObject");
+                    prefsEditor1.commit();
 
-                            startActivity(httpIntent);
+                    SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
+                    prefsEditor2.remove("savelabnames");
+                    prefsEditor2.commit();
 
-                        }
-                    })
-                    .setNegativeButton("No", null)
-                    .show();
-        } else if (id == R.id.offer_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, SpecialOffer_Activity.class);
-                startActivity(i);
-            }
-        } else if (id == R.id.synchronization) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                prefsEditor1.remove("MyObject");
-                prefsEditor1.commit();
+                    SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor deletepredf = saveAlldata.edit();
+                    deletepredf.remove("saveAlldata");
+                    deletepredf.commit();
 
-                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
-                prefsEditor2.remove("savelabnames");
-                prefsEditor2.commit();
+                    SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+                    SharedPreferences.Editor prefsEditordata = myData.edit();
+                    prefsEditordata.remove("getBtechnames");
+                    prefsEditordata.commit();
 
-                SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor deletepredf = saveAlldata.edit();
-                deletepredf.remove("saveAlldata");
-                deletepredf.commit();
+                    Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
+                    startActivity(i);
 
-                SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditordata = myData.edit();
-                prefsEditordata.remove("getBtechnames");
-                prefsEditordata.commit();
-
-                Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
-                startActivity(i);
-
-            }
+                }
 
 
-        } else if (id == R.id.faq_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
-                startActivity(i);
+            } else if (id == R.id.faq_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
+                    startActivity(i);
 
                 /*FAQ_Fragment faq_fragment = new FAQ_Fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, faq_fragment, faq_fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 */
-            }
+                }
 
-        } else if (id == R.id.accr_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
-                startActivity(i);
-            }
+            } else if (id == R.id.accr_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
+                    startActivity(i);
+                }
 
-        } else if (id == R.id.articles_data) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
-                Intent i = new Intent(ManagingTabsActivity.this, HealthArticle_Activity.class);
-                startActivity(i);
-            }
+            } else if (id == R.id.articles_data) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
+                    Intent i = new Intent(ManagingTabsActivity.this, HealthArticle_Activity.class);
+                    startActivity(i);
+                }
 
 
-        } else if (id == R.id.company_contcat) {
-            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
-            } else {
+            } else if (id == R.id.company_contcat) {
+                if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                    GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+                } else {
 
                /* Contact_list_fragment contact_list_fragment = new Contact_list_fragment();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, contact_list_fragment, contact_list_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
-                startActivity(i);
-            }
+                    Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
+                    startActivity(i);
+                }
 
-        }
+            }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.END);
@@ -733,10 +717,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     }
 
-    public void getProfileDetails(final Context context) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+    public void getProfileDetails() {
+        RequestQueue queue = Volley.newRequestQueue(ManagingTabsActivity.this);
 
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
@@ -747,75 +729,61 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if (response != null) {
-                                GlobalClass.hideProgress(context, progressDialog);
-                                Log.e(TAG, "onResponse: " + response);
-                                prof = response.getString(Constants.tsp_image);
-                                ac_code = response.getString(Constants.ac_code);
+                            Log.e(TAG, "onResponse: " + response);
+                            prof = response.getString(Constants.tsp_image);
+                            ac_code = response.getString(Constants.ac_code);
+                            address = response.getString(Constants.address);
+                            email = response.getString(Constants.email);
+                            mobile = response.getString(Constants.mobile);
+                            name = response.getString("name");
+                            pincode = response.getString(Constants.pincode);
+                            user_code = response.getString(Constants.user_code);
+                            closing_bal = response.getString(Constants.closing_balance);
+                            credit_lim = response.getString(Constants.credit_limit);
+                            dojresponse = response.getString(Constants.doj);
+                            source_code = response.getString(Constants.source_code);
+                            tsp_img = response.getString(Constants.tsp_image);
 
-                                Constants.preotp = response.getString("PriOTP");
-                                //  Constants.preotp = "NO";
-                                address = response.getString(Constants.address);
-                                email = response.getString(Constants.email);
-                                mobile = response.getString(Constants.mobile);
-                                name = response.getString("name");
-                                pincode = response.getString(Constants.pincode);
-                                user_code = response.getString(Constants.user_code);
-                                closing_bal = response.getString(Constants.closing_balance);
-                                unbilled_woe = response.getString(Constants.unbilledWOE);
-                                unbilled_mt = response.getString(Constants.unbilledMaterial);
-                                credit_lim = response.getString(Constants.credit_limit);
-                                dojresponse = response.getString(Constants.doj);
-                                source_code = response.getString(Constants.source_code);
-                                tsp_img = response.getString(Constants.tsp_image);
+                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                            saveProfileDetails.putString("prof", prof);
+                            saveProfileDetails.putString("ac_code", ac_code);
+                            saveProfileDetails.putString("address", address);
+                            saveProfileDetails.putString("email", email);
+                            saveProfileDetails.putString("mobile", mobile);
+                            saveProfileDetails.putString("name", name);
+                            saveProfileDetails.putString("pincode", pincode);
+                            saveProfileDetails.putString("user_code", user_code);
+                            saveProfileDetails.putString("closing_balance", closing_bal);
+                            saveProfileDetails.putString("credit_limit", credit_lim);
+                            saveProfileDetails.putString("doj", dojresponse);
+                            saveProfileDetails.putString("source_code", source_code);
+                            saveProfileDetails.putString("tsp_image", tsp_img);
+                            saveProfileDetails.putString("address", address);
+                            saveProfileDetails.commit();
 
+                            SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
+                            saveProfileData.putString("name", name);
+                            saveProfileData.putString("usercode", user_code);
+                            saveProfileData.putString("mobile", mobile);
+                            saveProfileData.putString("image", prof);
+                            saveProfileData.putString("email", email);
 
-                                SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                                saveProfileDetails.putString("prof", prof);
-                                saveProfileDetails.putString("ac_code", ac_code);
-                                saveProfileDetails.putString("address", address);
-                                saveProfileDetails.putString("email", email);
-                                saveProfileDetails.putString("mobile", mobile);
-                                saveProfileDetails.putString("name", name);
-                                saveProfileDetails.putString("pincode", pincode);
-                                saveProfileDetails.putString("user_code", user_code);
-                                saveProfileDetails.putString("closing_balance", closing_bal);
-                                saveProfileDetails.putString(Constants.credit_limit, credit_lim);
-                                saveProfileDetails.putString("doj", dojresponse);
-                                saveProfileDetails.putString("source_code", source_code);
-                                saveProfileDetails.putString("tsp_image", tsp_img);
-                                saveProfileDetails.putString("address", address);
-                                saveProfileDetails.putString(Constants.unbilledWOE, unbilled_woe);
-                                saveProfileDetails.putString(Constants.unbilledMaterial, unbilled_mt);
-                                saveProfileDetails.commit();
+                            saveProfileData.commit();
 
-                                SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
-                                saveProfileData.putString("name", name);
-                                saveProfileData.putString("usercode", user_code);
-                                saveProfileData.putString("mobile", mobile);
-                                saveProfileData.putString("image", prof);
-                                saveProfileData.putString("email", email);
-
-                                saveProfileData.commit();
-
-                                Log.e(TAG, "onResponse: tsp name and code" + name + " " + user_code);
-                                if (name != null && user_code != null) {
-                                    navigationDrawerNameTSP.setText("HI " + name);
-                                    ecode.setText("(" + user_code + ")");
+                            Log.e(TAG, "onResponse: tsp name and code" + name + " " + user_code);
+                            if (name != null && user_code != null) {
+                                navigationDrawerNameTSP.setText("HI " + name);
+                                ecode.setText("(" + user_code + ")");
 //                                getTspNumber();
-                                } else {
-                                    navigationDrawerNameTSP.setText("HI");
-//                                getTspNumber();
-                                }
-
-                                Glide.with(context)
-                                        .load(tsp_img)
-                                        .placeholder(context.getResources().getDrawable(R.drawable.userprofile))
-                                        .into(imageViewprofile);
                             } else {
-                                Toast.makeText(ManagingTabsActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+                                navigationDrawerNameTSP.setText("HI");
+//                                getTspNumber();
                             }
 
+                            Glide.with(ManagingTabsActivity.this)
+                                    .load(tsp_img)
+                                    .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
+                                    .into(imageViewprofile);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -934,7 +902,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (!carouselFragment.onBackPressed()) {
             // container Fragment or its associates couldn't handle the back pressed task
             // delegating the task to super class
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.close_app));
             builder.setCancelable(false);
@@ -956,6 +923,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 public void onClick(DialogInterface dialog, int which) {
                 }
             });
+
             builder.show();
         }
     }

@@ -2,6 +2,8 @@ package com.example.e5322.thyrosoft.Retrofit;
 
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
+import com.example.e5322.thyrosoft.Models.FirebaseModel;
+import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
@@ -59,11 +61,14 @@ public interface APIInteface {
     Call<VideoTime_Model> postvideotime(@Body PostVideoTime_module postVideoTime_module);
 
 
-    @POST("OtpVerification")
-    Call<VerifyotpModel> Verifyotp(@Body VerifyotpRequest verifyotpRequest);
+    @POST("Mapping")
+    Call<FirebaseModel> pushtoken(@Body Firebasepost firebasepost);
 
 
     @GET("COMMON.svc/Showlang")
     Call<VideoLangaugesResponseModel> getVideoLanguages();
+
+    @POST("OtpVerification")
+    Call<VerifyotpModel> Verifyotp(@Body VerifyotpRequest verifyotpRequest);
 
 }

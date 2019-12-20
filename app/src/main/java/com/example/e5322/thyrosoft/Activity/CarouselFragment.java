@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.BMCViewPagerAdapter;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -33,11 +33,10 @@ public class CarouselFragment extends Fragment {
     protected TabLayout tabLayout;
     protected ViewPager pager;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    String user, passwrd, access, api_key, user_code, CLIENT_TYPE;
+    String user, passwrd, access, api_key, user_code;
     private ViewPagerAdapter adapter;
     private StaffViewPagerAdapter adapterStafff;
     private BMCViewPagerAdapter bmcViewPagerAdapter;
-    NHF_pageradapter nhf_pageradapter;
     private int positionInt = 0;
     private SharedPreferences prefs;
 
@@ -56,13 +55,12 @@ public class CarouselFragment extends Fragment {
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
         user_code = prefs.getString("USER_CODE", null);
 
-        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+        if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
         } else {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -91,11 +89,11 @@ public class CarouselFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-            nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
-            pager.setAdapter(nhf_pageradapter);
+        if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+            bmcViewPagerAdapter = new BMCViewPagerAdapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(bmcViewPagerAdapter);
         } else {
-            if (access.equalsIgnoreCase(Constants.STAFF)) {
+            if (access.equalsIgnoreCase("STAFF")) {
                 adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
                 pager.setAdapter(adapterStafff);
             } else {
@@ -103,7 +101,6 @@ public class CarouselFragment extends Fragment {
                 pager.setAdapter(adapter);
             }
         }
-
 
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), mContext.getResources().getColor(R.color.tabindicatorColor));
@@ -117,20 +114,12 @@ public class CarouselFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-        if (Constants.tab_flag.equalsIgnoreCase("1")) {
-            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)){
-                pager.setCurrentItem(0);
-            }
-            Constants.tab_flag = "0";
+        if (pager != null && pager.getCurrentItem() != positionInt) {
+            pager.setCurrentItem(positionInt);
         } else {
-            Constants.tab_flag = "0";
-            if (pager != null && pager.getCurrentItem() != positionInt) {
-                pager.setCurrentItem(positionInt);
-            } else {
-                pager.setCurrentItem(0);
-            }
+            pager.setCurrentItem(0);
         }
+
     }
 
     /**
@@ -142,17 +131,14 @@ public class CarouselFragment extends Fragment {
         // currently visible tab Fragment
         OnBackPressListener currentFragment = null;
         try {
-            {
-                if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-                    currentFragment = (OnBackPressListener) nhf_pageradapter.getRegisteredFragment(pager.getCurrentItem());
+            if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+                currentFragment = (OnBackPressListener) bmcViewPagerAdapter.getRegisteredFragment(pager.getCurrentItem());
+            } else {
+                if (access.equalsIgnoreCase("STAFF")) {
+                    currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
                 } else {
-                    if (access.equalsIgnoreCase(Constants.STAFF)) {
-                        currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
-                    } else {
-                        currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
-                    }
+                    currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -162,7 +148,6 @@ public class CarouselFragment extends Fragment {
             // lets see if the currentFragment or any of its childFragment can handle onBackPressed
 
             boolean a = currentFragment.onBackPressed();
-
             if (!a) {
                 if (pager != null && pager.getCurrentItem() != 0) {
 
@@ -179,5 +164,4 @@ public class CarouselFragment extends Fragment {
             return false;
         }
     }
-
 }

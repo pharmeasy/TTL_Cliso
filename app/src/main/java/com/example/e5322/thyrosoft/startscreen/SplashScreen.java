@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.startscreen;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,8 +10,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -20,12 +24,22 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.example.e5322.thyrosoft.Activity.INAPP_UPDATE;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -46,15 +60,11 @@ public class SplashScreen extends AppCompatActivity {
     String response1;
     String resId;
     ImageView iv;
-    static String path;
     String USER_CODE = "";
     private int versionCode = 0;
     private String ApkUrl;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
-    ProgressDialog barProgressDialog;
-    File ThyrosoftLite;
-    private static final int MEGABYTE = 1024 * 1024;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -70,7 +80,6 @@ public class SplashScreen extends AppCompatActivity {
         }
         return deletedAll;
     }
-
 
     @SuppressLint("NewApi")
     @Override
@@ -95,18 +104,28 @@ public class SplashScreen extends AppCompatActivity {
             return; // add this to prevent from doing unnecessary stuffs
         }
 
+        /*SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
+        firstRunSplash = p.getBoolean("PREFERENCE_FIRSTSPLASH_RUN", false);
 
-        //   getversion();
+        if (firstRunSplash == false) {
+            p.edit().putBoolean("PREFERENCE_FIRSTSPLASH_RUN", true).commit();
+            clearApplicationData();
+        } else {
+            Log.e(TAG, "deleteDir: cache is not cleraed ");
+        }*/
 
+        getversion();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
+        //get the app appVersion Name for display
         version = pInfo.versionName;
+        //get the app appVersion Code for checking
         versionCode = pInfo.versionCode;
+        //display the current appVersion in a TextView
         TextView versionText = (TextView) findViewById(R.id.version);
         versionText.setText(version);
         cd = new ConnectionDetector(getApplicationContext());
@@ -123,6 +142,7 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                // Set the Alert Dialog Message
                 builder.setMessage(ToastFile.intConnection)
                         .setCancelable(false)
                         .setPositiveButton("Retry",
@@ -139,9 +159,20 @@ public class SplashScreen extends AppCompatActivity {
                 alert.show();
             }
         }
+    }
 
-        new INAPP_UPDATE(SplashScreen.this);
-
+    public void clearApplicationData() {
+//        Log.e(TAG, "<< Clear App Data >>");
+        File cacheDirectory = getCacheDir();
+        File applicationDirectory = new File(cacheDirectory.getParent());
+        if (applicationDirectory.exists()) {
+            String[] fileNames = applicationDirectory.list();
+            for (String fileName : fileNames) {
+                if (!fileName.equals("lib")) {
+                    deleteFile(new File(applicationDirectory, fileName));
+                }
+            }
+        }
     }
 
 
@@ -152,6 +183,97 @@ public class SplashScreen extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager
                 .getActiveNetworkInfo();
         return activeNetworkInfo != null;
+    }
+
+    private void getversion() {
+        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(SplashScreen.this);
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkVersion, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: response" + response);
+                    Log.e(TAG, "RESPONSE" + String.valueOf(response));
+                    version1 = response.getString("Version");
+                    ApkUrl = response.getString("url");
+                    response1 = response.getString("response");
+                    resId = response.getString("resId");
+
+                    if (version1 != null) {
+                        Log.e(TAG, "onResponse apiVersion: " + version1);
+                        iv.startAnimation(anim);
+                        anim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                String newVersion = version1.replace(".", "");//api
+                                String preversion = version.replace(".", "");//package
+
+                                int intApiVersion = Integer.parseInt(newVersion);//api
+                                int intPkgversion = Integer.parseInt(preversion);//pkg
+                                if (intPkgversion >= intApiVersion) {//intPreversion<intNewVersion
+                                    SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+                                    String user = prefs.getString("Username", null);
+                                    String passwrd = prefs.getString("password", null);
+                                    String access = prefs.getString("ACCESS_TYPE", null);
+                                    String api_key = prefs.getString("API_KEY", null);
+                                    USER_CODE = prefs.getString("USER_CODE", "");
+                                    if (user != null && passwrd != null) {
+                                        Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
+                                        startActivity(prefe);
+                                        finish();
+                                    } else {
+                                        Intent i = new Intent(SplashScreen.this, Login.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+                                    builder.setCancelable(false);
+                                    builder.setMessage(ToastFile.newer_version)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                //if the user agrees to upgrade
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApkUrl));
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            })
+                                            .setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
+                                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    finishAffinity();
+                                                }
+                                            });
+                                    builder.create().show();
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
+        requestQueuepoptestILS.add(jsonObjectRequestPop);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
+        Log.e(TAG, "getversion URL: " + jsonObjectRequestPop);
     }
 
     @Override

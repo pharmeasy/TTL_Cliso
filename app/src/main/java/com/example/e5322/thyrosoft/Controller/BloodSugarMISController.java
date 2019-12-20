@@ -39,8 +39,8 @@ public class BloodSugarMISController {
             if (requestQueue == null)
                 requestQueue = Volley.newRequestQueue(mactivity);
             String url = Api.SUGARSO + Api.ENTERED_MIS;
-            Log.e(TAG, "MISAPI" + url);
-            Log.e(TAG, "postData" + jsonObject);
+            Log.e(TAG, "MISAPI " + url);
+            Log.e(TAG, "postData " + jsonObject);
             final ProgressDialog finalProgressDialog = progressDialog;
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
@@ -50,7 +50,7 @@ public class BloodSugarMISController {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Log.e(TAG, "MISAPIResponse" + String.valueOf(response));
+                    Log.e(TAG, "MISAPIResponse " + String.valueOf(response));
                     try {
                         if (response != null) {
                             bs_misFragment.getMISResponse(response);

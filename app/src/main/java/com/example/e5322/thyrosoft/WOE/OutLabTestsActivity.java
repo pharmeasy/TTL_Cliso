@@ -222,8 +222,8 @@ public class OutLabTestsActivity extends AppCompatActivity {
             }
         });
 
-
-        if (GlobalClass.Dayscnt(OutLabTestsActivity.this) >= Constants.DAYS_CNT) {
+        days = GlobalClass.getStoreSynctime(OutLabTestsActivity.this);
+        if (days >= Constants.DAYS_CNT) {
             getAlltTestData();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -286,15 +286,13 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         barProgressDialog.dismiss();
                     }
 
-           /*         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(OutLabTestsActivity.this);
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(OutLabTestsActivity.this);
                     SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                     Gson gson22 = new Gson();
                     String json22 = gson22.toJson(mainModel);
                     prefsEditor1.putString("MyObject", json22);
                     GlobalClass.StoreSyncTime(OutLabTestsActivity.this);
-                    prefsEditor1.commit();*/
-
-                    GlobalClass.storeProductsCachingTime(OutLabTestsActivity.this);
+                    prefsEditor1.commit();
 
                     outlab_testlist_getalltests = mainModel.getB2B_MASTERS().getOUTLAB_TESTLIST();
                     outlabdetails_outLabs = new ArrayList<>();

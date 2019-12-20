@@ -500,7 +500,6 @@ public class Offline_woe extends Fragment {
                                                 message = parentObjectOtp.getString("message");
                                                 status = parentObjectOtp.getString("status");
                                                 barcode_id = parentObjectOtp.getString("barcode_id");
-
                                                 if (barcode_id.endsWith(",")) {
                                                     barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                                 }
@@ -699,8 +698,6 @@ public class Offline_woe extends Fragment {
                         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
                         recyclerView.setAdapter(offline_woe_adapter);
                         TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        mContext.getSupportFragmentManager().beginTransaction().remove(new Offline_woe()).commitAllowingStateLoss();
-
                     } else {
                         resultList = getResults();
                         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);

@@ -42,8 +42,10 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 import com.mindorks.paracamera.Camera;
 
 import org.json.JSONException;
@@ -470,17 +472,20 @@ public class BS_EntryFragment extends Fragment {
                 } else {
                     callValidateOTP(mobile_number, otp);
                 }
-
             }
         });
     }
 
     private void callGenerateOTP(String mobile_number) {
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = null;
         try {
-            jsonObject.put("api_key", Constants.GENRATE_OTP_API_KEY);
-            jsonObject.put("mobile", mobile_number);
-            jsonObject.put("type", "SENDOTPALL");
+            GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
+            requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
+            requestModel.setMobile(mobile_number);
+            requestModel.setType("SENDOTPALL");
+
+            String json = new Gson().toJson(requestModel);
+            jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -606,8 +611,8 @@ public class BS_EntryFragment extends Fragment {
         bs_postDataModel.setGender(gender);
         bs_postDataModel.setRange(range);
         bs_postDataModel.setFile(imageFile);
-        bs_postDataModel.setLatitude(String.valueOf(latitude));
-        bs_postDataModel.setLongitude(String.valueOf(longitude));
+        bs_postDataModel.setLatitude(String.valueOf(new DecimalFormat("##.##########").format(latitude)));
+        bs_postDataModel.setLongitude(String.valueOf(new DecimalFormat("##.##########").format(longitude)));
         bs_postDataModel.setCollAmount(spin_coll_amt.getSelectedItem().toString().trim());
         bs_postDataModel.setPincode(edt_pincode.getText().toString().trim());
         bs_postDataModel.setSBP(sbpValue);

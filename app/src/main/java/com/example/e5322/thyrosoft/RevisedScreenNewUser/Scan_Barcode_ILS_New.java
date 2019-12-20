@@ -483,7 +483,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             for (int i = 0; i < selctedTest.size(); i++) {
                 totalcount = totalcount + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                 Log.e(TAG, "TRF list data --->" + selctedTest.get(i).getTrf());
-                Log.e(TAG, "Location list data --->" + selctedTest.get(i).getLocation());
                 if (selctedTest.get(i).getTrf() != null && !selctedTest.get(i).getTrf().equals("")) {
                     if (selctedTest.get(i).getTrf().equalsIgnoreCase("Yes")) {
                         TRFModel trfModel = new TRFModel();
@@ -521,9 +520,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     setLocation = "CPL";
                 } else {
                     location_radio_grp.setVisibility(View.VISIBLE);
-                    rpl_rdo.setChecked(true);
-                    cpl_rdo.setChecked(false);
-                    setLocation = "RPL";
+                    setLocation = null;
                 }
             }
         }
