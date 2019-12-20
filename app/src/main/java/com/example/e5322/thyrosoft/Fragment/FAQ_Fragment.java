@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -78,6 +77,7 @@ public class FAQ_Fragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     ProgressDialog barProgressDialog;
+
     public FAQ_Fragment() {
         // Required empty public constructor
     }
@@ -118,11 +118,6 @@ public class FAQ_Fragment extends Fragment {
         viewfab = (View) inflater.inflate(R.layout.app_bar_main_data, container, false);
 
 
-
-
-
-
-
         viewMain = (View) inflater.inflate(R.layout.activity_faq_, container, false);
         expandable_list_faq = (ExpandableListView) viewMain.findViewById(R.id.faq_list_expandable);
         category_spinner = (Spinner) viewMain.findViewById(R.id.category_spinner);
@@ -153,7 +148,6 @@ public class FAQ_Fragment extends Fragment {
         }
 
 
-
         category_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -165,7 +159,6 @@ public class FAQ_Fragment extends Fragment {
 
             }
         });
-        // Inflate the layout for this fragment
         return viewMain;
     }
 
@@ -186,9 +179,11 @@ public class FAQ_Fragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
 
-                Log.e(TAG, "onResponse: response"+response );
+                Log.e(TAG, "onResponse: response" + response);
                 String finalJson = response.toString();
-                if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
 
                 JSONObject parentObjectOtp = null;
                 type_spinner_value = new ArrayList<>();
@@ -238,20 +233,19 @@ public class FAQ_Fragment extends Fragment {
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueSpinner_value.add(jsonObjectRequestProfile);
-        Log.e(TAG, "getSpinnerdata: URL"+jsonObjectRequestProfile );
+        Log.e(TAG, "getSpinnerdata: URL" + jsonObjectRequestProfile);
     }
 
     private void getAll_FAQ_data() {
         String getSpinner_value = category_spinner.getSelectedItem().toString();
         requestQueue_FAQ = Volley.newRequestQueue(mContext);
 
-
-
+        Log.e(TAG,"FAQ API--->"+Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ");
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
-                Log.e(TAG, "onResponse: response"+response );
+                Log.e(TAG, "onResponse: response" + response);
                 Gson gson = new Gson();
                 faq_model = gson.fromJson(response.toString(), FAQ_Model.class);
 
@@ -271,9 +265,6 @@ public class FAQ_Fragment extends Fragment {
                         expandableListAdapter = new ExpandableListAdapter_FAQ(faq_list, mContext);
                         expandable_list_faq.setAdapter(expandableListAdapter);
                     }
-                } else {
-
-                    //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -294,7 +285,7 @@ public class FAQ_Fragment extends Fragment {
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue_FAQ.add(jsonObjectRequestFAQ);
-        Log.e(TAG, "getAll_FAQ_data: URL"+jsonObjectRequestFAQ );
+        Log.e(TAG, "getAll_FAQ_data: URL" + jsonObjectRequestFAQ);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -522,7 +522,6 @@
                                     android:background="@drawable/light_custom_border"
                                     android:digits="@string/digits"
                                     android:ems="10"
-                                    android:importantForAutofill="no"
                                     android:gravity="top"
                                     android:hint="@string/mobile"
                                     android:inputType="phone"

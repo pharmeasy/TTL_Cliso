@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ActionMode;
@@ -394,14 +395,19 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                 String enteredString = s.toString();
 
                 previouseBarcode = holder.enter_barcode.getText().toString();
-                if (storeflag == true) {
-                    if (previouseBarcode.equals("")) {
-                        Toast.makeText(context, ToastFile.first_ent_brcd, Toast.LENGTH_SHORT).show();
-                        holder.reenter.setText("");
+                try {
+                    if (storeflag == true) {
+                        if (TextUtils.isEmpty(previouseBarcode)) {
+                            Toast.makeText(context, ToastFile.first_ent_brcd, Toast.LENGTH_SHORT).show();
+                            holder.reenter.setText("");
+                        }
+                    } else {
+                        holder.reenter.setText(enteredString);
                     }
-                } else {
-                    holder.reenter.setText(enteredString);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
 
                 if (enteredString.length() > 8) {
                     holder.reenter.setText(enteredString.substring(1));

@@ -44,7 +44,6 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.Consignment_entry_form;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -242,6 +241,34 @@ Consignment_fragment extends RootFragment {
         consignment_barcd_btn = (Button) viewMain.findViewById(R.id.consignment_barcd_btn);
         bsv_barcode_scanning = (Button) viewMain.findViewById(R.id.bsv_barcode_scanning);
         Submit_consignment = (Button) viewMain.findViewById(R.id.Submit_consignment);
+
+
+        flight_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ")) {
+                    Toast.makeText(getActivity(),
+                            "Please enter correct flight Number",
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        flight_name.setText(enteredString.substring(1));
+                    } else {
+                        flight_name.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
         enter_barcodebsv.setTransformationMethod(new AsteriskPasswordTransformationMethod());
@@ -644,7 +671,7 @@ Consignment_fragment extends RootFragment {
                         datePickerDialog.show();
                     }
 
-                }else{
+                } else {
                     DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR),
                             myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
                     Calendar cal = Calendar.getInstance();
@@ -694,10 +721,10 @@ Consignment_fragment extends RootFragment {
             @Override
             public void onClick(View v) {
                 String mode = mode_spinner.getSelectedItem().toString();
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, dispatch_time_date, myCalendar
-                            .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                            myCalendar.get(Calendar.DAY_OF_MONTH));
-                    datePickerDialog.show();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, R.style.DialogTheme, dispatch_time_date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
 
             }
         });
@@ -1210,8 +1237,9 @@ Consignment_fragment extends RootFragment {
             @Override
             public void onClick(View v) {
                 mode_value_compare = mode_spinner.getSelectedItem().toString();
-
-                if (mode_value_compare.equals("Select Mode")) {
+                if (flagtsp == 0) {
+                    TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                } else if (mode_value_compare.equals("Select Mode")) {
                     Toast.makeText(mContext, ToastFile.slt_mode, Toast.LENGTH_SHORT).show();
                 } else if (mode_value_compare.equals("Air Cargo")) {
 
@@ -1232,17 +1260,15 @@ Consignment_fragment extends RootFragment {
                         e.printStackTrace();
                     }
 
-                    if (flagtsp == 0) {
-                        TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (flight_name_to_pass.equals("Select Airlines")) {
+                    if (flight_name_to_pass.equals("Select Airlines")) {
                         TastyToast.makeText(mContext, "Select Airlines", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (flight_number_to_pass.equals("")) {
                         flight_name.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.flight_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }  else if (getDispatchtime.equals("")) {
+                    } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }else if (getDeparture_time.equals("")) {
+                    } else if (getDeparture_time.equals("")) {
                         expected_departure_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dept_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getArrival_time.equals("")) {
@@ -1347,21 +1373,21 @@ Consignment_fragment extends RootFragment {
                     } else if (bus_number_to_pass.equals("")) {
                         bus_number.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.bus_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (getDispatchtime.equals("")) {
+                        dispatch_time.requestFocus();
+                        TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else  if (d_convert.equals(compare)) {
+                        dispatch_time.requestFocus();
+                        Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
+                    } else if (d_convert.after(compare)) {
+                        dispatch_time.requestFocus();
+                        Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (getDeparture_time.equals("")) {
                         expected_departure_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dept_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getArrival_time.equals("")) {
                         expected_arrival_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.arrival_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (getDispatchtime.equals("")) {
-                        dispatch_time.requestFocus();
-                        TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (d_convert.equals(compare)) {
-                        dispatch_time.requestFocus();
-                        Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
-                    } else if (d_convert.after(compare)) {
-                        dispatch_time.requestFocus();
-                        Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (bus_name_to_pass.equalsIgnoreCase("OTHERS")) {
                         String getBusName = bus_edt_txt.getText().toString();
                         if (getBusName.equals("")) {
@@ -1517,6 +1543,8 @@ Consignment_fragment extends RootFragment {
                     }
                     if (flagtsp == 0) {
                         TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else  if (courier_name.equals("Select Courier Name")) {
+                        TastyToast.makeText(mContext, ToastFile.pls_slt_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1526,8 +1554,6 @@ Consignment_fragment extends RootFragment {
                     } else if (d_convert.after(compare)) {
                         dispatch_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dispt_tm_condition, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (courier_name.equals("Select Courier Name")) {
-                        TastyToast.makeText(mContext, ToastFile.pls_slt_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (consignment_barcode.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.scan_consignment_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (bsv_edt_txt.equals("")) {
@@ -1877,7 +1903,7 @@ Consignment_fragment extends RootFragment {
                 }
                 try {
                     String finalJson = response.toString();
-                    Log.e(TAG, "onResponse: "+response );
+                    Log.e(TAG, "onResponse: " + response);
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
                     Response = parentObjectOtp.getString("Response");
                     message = parentObjectOtp.getString("Message");
@@ -1909,8 +1935,8 @@ Consignment_fragment extends RootFragment {
             }
         });
         PostQueAirCargo.add(jsonObjectRequest1);
-        Log.e(TAG, "doTheConsignmentforLME: URL"+jsonObjectRequest1 );
-        Log.e(TAG, "doTheConsignmentforLME: object"+jsonObjectOtp );
+        Log.e(TAG, "doTheConsignmentforLME: URL" + jsonObjectRequest1);
+        Log.e(TAG, "doTheConsignmentforLME: object" + jsonObjectOtp);
     }
 
     @Override
@@ -2085,11 +2111,12 @@ Consignment_fragment extends RootFragment {
 
                             dep_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
 
-                            if(arr_date_time!=null){
-                                if(arr_date_time.equals(dep_date_time)&&arr_date_time.before(dep_date_time));
+                            if (arr_date_time != null) {
+                                if (arr_date_time.equals(dep_date_time) && arr_date_time.before(dep_date_time))
+                                    ;
                                 expected_arrival_time.setText("");
                                 TastyToast.makeText(getActivity(), "Arrival time should be greater than dispatch time and departure time!", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            }else{
+                            } else {
                                 expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
                                 expected_departure_time.setError(null);
                             }

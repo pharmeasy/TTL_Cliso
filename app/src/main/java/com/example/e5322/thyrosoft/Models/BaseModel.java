@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by E5322 on 06-06-2018.
  */
 
-public class BaseModel implements Parcelable{
+public class BaseModel implements Parcelable {
 
     private String product;
     private String billrate;
@@ -31,7 +31,7 @@ public class BaseModel implements Parcelable{
         fasting = in.readString();
         code = in.readString();
         type = in.readString();
-        trf=in.readString();
+        trf = in.readString();
         subtypes = in.readString();
         childs = in.createTypedArray(Childs.CREATOR);
         barcodes = in.createTypedArray(Barcodes.CREATOR);
@@ -361,7 +361,6 @@ public class BaseModel implements Parcelable{
 
     public BaseModel() {
     }
-
 
 
     @Override

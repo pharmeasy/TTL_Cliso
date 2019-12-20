@@ -22,8 +22,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 22
-        versionName "1.0.1.13"
+        versionCode 30
+        versionName "1.0.1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     // gradle used for gson
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
     //cardview view for gridview
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.xwray:passwordview:1.0'
@@ -100,6 +101,8 @@ dependencies {
     implementation 'com.sdsmdg.tastytoast:tastytoast:0.1.1'
     //tasty toast animated toast
     implementation 'com.mcxiaoke.volley:library:1.0.19'
+
+
     //used for volley
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.MdFarhanRaja:SearchableSpinner:1.9'
@@ -115,6 +118,9 @@ dependencies {
     annotationProcessor 'android.arch.lifecycle:compiler:1.1.1'
 
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
+    // giraffe Video Player Library
+    api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
+
 
     //used for searchable spinner
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'

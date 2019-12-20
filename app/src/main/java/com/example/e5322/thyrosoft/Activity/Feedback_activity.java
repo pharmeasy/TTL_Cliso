@@ -26,8 +26,11 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.RequestModels.FeedbackRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -36,18 +39,7 @@ import org.json.JSONObject;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Feedback_activity extends AppCompatActivity {
-    ImageView cry, sad, happy;
-    View view;
-    ImageView back, home;
-    ProgressDialog barProgressDialog;
-    String RESPONSE, RES_ID, USER_TYPE;
-    Button submitcomment;
-    private Global globalClass;
-    EditText query;
     public static com.android.volley.RequestQueue PostQueOtp;
-    private String blockCharacterSet = "#$^*+-/|><";
-    String blockCharacterSetdata = "~#^|$%&*!+:`";
-    String comefrom;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -63,6 +55,19 @@ public class Feedback_activity extends AppCompatActivity {
             return null;
         }
     };
+    ImageView cry, sad, happy;
+    View view;
+    ImageView back, home;
+    // ProgressDialog barProgressDialog;
+    Button submitcomment;
+    EditText query;
+    String blockCharacterSetdata = "~#^|$%&*!+:`";
+    String comefrom;
+    String emoji = "";
+    SharedPreferences sharedpreferences, prefs;
+    String user, passwrd, access, api_key, email_pref, mobile_pref;
+    private Global globalClass;
+    private String blockCharacterSet = "#$^*+-/|><";
     private InputFilter filter1 = new InputFilter() {
 
         @Override
@@ -74,7 +79,6 @@ public class Feedback_activity extends AppCompatActivity {
             return null;
         }
     };
-
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -86,11 +90,6 @@ public class Feedback_activity extends AppCompatActivity {
             return null;
         }
     };
-
-
-    String emoji = "";
-    SharedPreferences sharedpreferences, prefs;
-    String user, passwrd, access, api_key, email_pref, mobile_pref;
     private String feedbackText;
     private String TAG = Feedback_activity.class.getSimpleName().toString();
 
@@ -145,7 +144,7 @@ public class Feedback_activity extends AppCompatActivity {
                 /*if (comefrom.equals("BMC"))
                     startActivity(new Intent(Feedback_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
                 else*/
-                    GlobalClass.goToHome(Feedback_activity.this);
+                GlobalClass.goToHome(Feedback_activity.this);
             }
         });
 
@@ -262,63 +261,54 @@ public class Feedback_activity extends AppCompatActivity {
     }
 
     private void SendFeedbackToAPI() {
-        barProgressDialog = new ProgressDialog(Feedback_activity.this, R.style.ProgressBarColor);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Feedback_activity.this);
 
         feedbackText = query.getText().toString();
 
         PostQueOtp = Volley.newRequestQueue(Feedback_activity.this);
-        JSONObject jsonObjectOtp = new JSONObject();
+        JSONObject jsonObject = null;
         try {
-            jsonObjectOtp.put("api_key", api_key);
-            jsonObjectOtp.put("display_type", "null");
-            jsonObjectOtp.put("purpose", "MOBILE APPLICATION");
-            jsonObjectOtp.put("name", user);
-            jsonObjectOtp.put("email", email_pref);
-            jsonObjectOtp.put("mobile", mobile_pref);
-            jsonObjectOtp.put("feedback", feedbackText + " " + emoji);
-            jsonObjectOtp.put("emotion_text", emoji);
-            jsonObjectOtp.put("rating", "");
-            jsonObjectOtp.put("portal_type", "Thyrosoft Lite");
+            FeedbackRequestModel requestModel = new FeedbackRequestModel();
+            requestModel.setApi_key(api_key);
+            requestModel.setDisplay_type("null");
+            requestModel.setPurpose("MOBILE APPLICATION");
+            requestModel.setName(user);
+            requestModel.setEmail(email_pref);
+            requestModel.setMobile(mobile_pref);
+            requestModel.setFeedback(feedbackText + " " + emoji);
+            requestModel.setEmotion_text(emoji);
+            requestModel.setRating("");
+            requestModel.setPortal_type("Thyrosoft Lite");
 
+            String json = new Gson().toJson(requestModel);
+            jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.feedback, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.feedback, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
                 try {
                     Log.e(TAG, "onResponse: " + response);
-                    String finalJson = response.toString();
-                    JSONObject parentObjectOtp = new JSONObject(finalJson);
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
+                    GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
+
+                    FeedbackResponseModel responseModel = new Gson().fromJson(String.valueOf(response), FeedbackResponseModel.class);
+                    if (responseModel != null) {
+                        if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase("RES0001")) {
+                            TastyToast.makeText(Feedback_activity.this, "" + responseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (!GlobalClass.isNull(responseModel.getRESPONSE()) && responseModel.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(Feedback_activity.this);
+                        } else if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equals("RES0000")) {
+                            TastyToast.makeText(Feedback_activity.this, "" + responseModel.getRESPONSE() + " " + emoji, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent i = new Intent(Feedback_activity.this, Feedback_activity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(Feedback_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                     }
-                    RESPONSE = parentObjectOtp.getString("RESPONSE");
-                    RES_ID = parentObjectOtp.getString("RES_ID");
-                    USER_TYPE = parentObjectOtp.getString("USER_TYPE");
-
-                    if (RES_ID.equals("RES0001")) {
-                        TastyToast.makeText(Feedback_activity.this, "" + RESPONSE, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (RESPONSE.equalsIgnoreCase(caps_invalidApikey)) {
-                        GlobalClass.redirectToLogin(Feedback_activity.this);
-                    } else if (RES_ID.equals("RES0000")) {
-                        TastyToast.makeText(Feedback_activity.this, "" + RESPONSE + " " + emoji, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Intent i = new Intent(Feedback_activity.this, Feedback_activity.class);
-                        startActivity(i);
-                        finish();
-
-                    }
-
-                } catch (JSONException e) {
+                } catch (Exception e) {
+                    GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
                     TastyToast.makeText(Feedback_activity.this, "Feedback not sent successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     e.printStackTrace();
                 }
@@ -326,17 +316,17 @@ public class Feedback_activity extends AppCompatActivity {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
                 if (error != null) {
                 } else {
                     System.out.println(error);
                 }
             }
         });
-
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
         PostQueOtp.add(jsonObjectRequest1);
-        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObjectOtp);
+        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
         Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-
     }
 
 }

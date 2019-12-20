@@ -28,6 +28,8 @@
     <color name="button_color">#05128c</color>
     <color name="color_maroon">#800000</color>
     <color name="WOE">#1db8e2</color>
+    <color name="hint">#a6a6a6</color>
+    <color name="toolbar">#222222</color>
 
     <color name="WOEtext">#20b7d9</color>
     <color name="entered">#44dac6</color>
@@ -44,6 +46,13 @@
 
     <color name="orange">#FF5600</color>
 
+    <color name="edta">#76448A</color>
+    <color name="serum">#d4ac0d</color>
+    <color name="urine">#f9e79f</color>
+    <color name="flouride">#ABB2B9</color>
+    <color name="lithium">#1D8348</color>
+    <color name="sodium">#82e0aa</color>
+    <color name="other">#e67e22</color>
 
     <color name="darkgreen">#128c2e</color>
     <color name="green">#18ac3a</color>

@@ -794,6 +794,8 @@ public class Consignment_Entry_fragment extends Fragment {
                     } else if (consignment_barcode.equals("")) {
                         enter_edt_txt.setError(ToastFile.consign_brcd);
                         TastyToast.makeText(mContext, ToastFile.consign_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else if (pkg_details.equalsIgnoreCase("Select packaging details")) {
+                        TastyToast.makeText(mContext, ToastFile.consign_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (consignment_reenter_barcode.equals("")) {
                         reenter_edt_txt.setError(ToastFile.consign_cfrm_brcd);
                         TastyToast.makeText(mContext, ToastFile.consign_cfrm_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1021,6 +1023,8 @@ public class Consignment_Entry_fragment extends Fragment {
                         } else if (flagtsp == 2) {
                             tsp_su_code = source_code_pass.getText().toString();
                         }
+
+
                         barProgressDialog = new ProgressDialog(mContext);
                         barProgressDialog.setTitle("Kindly wait ...");
                         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -1030,6 +1034,7 @@ public class Consignment_Entry_fragment extends Fragment {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
+
                         PostQueAirCargo = Volley.newRequestQueue(mContext);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
@@ -1056,6 +1061,7 @@ public class Consignment_Entry_fragment extends Fragment {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.consignmentEntry, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -1099,6 +1105,8 @@ public class Consignment_Entry_fragment extends Fragment {
                                 }
                             }
                         });
+
+
                         PostQueAirCargo.add(jsonObjectRequest1);
                         Log.e(TAG, "onClick: url" + jsonObjectOtp);
                         Log.e(TAG, "onClick: url" + jsonObjectRequest1);

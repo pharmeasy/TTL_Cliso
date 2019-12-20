@@ -64,8 +64,7 @@ import static android.content.Context.MODE_PRIVATE;
  * Use the {@link Woe_fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class
-Woe_fragment extends RootFragment {
+public class Woe_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";

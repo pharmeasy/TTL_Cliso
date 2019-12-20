@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,6 +13,8 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,7 +23,10 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,16 +34,24 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.RetryPolicy;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
-import com.example.e5322.thyrosoft.Activity.HealthArticle_Activity;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
@@ -66,6 +80,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +95,7 @@ import static com.example.e5322.thyrosoft.ToastFile.relogin;
 
 public class GlobalClass {
 
+    public static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     public static int flag = 0;
     public static String setHomeAddress, getPhoneNumberTofinalPost, getFinalEmailAddressToPOst, getFinalPincode, selectedTestnamesOutlab;
     public static String windupCountDataToShow;
@@ -100,7 +116,6 @@ public class GlobalClass {
     public static long syntime = 0;
     public static long curr_time = 0;
     public static long differ_millis = 0;
-
     public static String getCourier_name;
     public static String get_edt_bus_name;
     public static String bus_name;
@@ -117,13 +132,7 @@ public class GlobalClass {
     public static boolean setFlagToClose = false;
     public static AlertDialog alert;
     public static boolean flagforRefresh = false;
-    private static Dialog dialog;
-    private static String stringofconvertedTime;
     public static String cutString;
-
-    private final Context context;
-    int[] colors = {R.color.WOE, R.color.entered, R.color.confirmed, R.color.imported};
-    int[] textcolors = {R.color.WOEtext, R.color.enteredtext, R.color.confirmedtext, R.color.importedtext};
     public static String[] putData;
     public static String getPatientIdforDeleteDetails, brandName, typeName;
     public static boolean setFlag = true;
@@ -131,11 +140,9 @@ public class GlobalClass {
     public static ArrayList<Summary_model> summary_models;
     public static ArrayList<Barcodelist> barcodelists;
     public static ArrayList<Barcodelist> BMC_barcodelists;
-
     public static boolean flagToSend = false;
     public static boolean flagToSendfromnavigation = false;
     public static boolean flagtoMove = false;
-
     public static String getAllPhoneNumber, getEmailAddre, getYesterdaysDate;
     public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, srNo_item, mobile_number, email_id, id_value, globalNameAadhar, globalAgeAadhar, globalGenderAadhar, responseVariable, setSR_NO;
     public static String getDate, setWindUpCount, getscannedData;
@@ -150,68 +157,59 @@ public class GlobalClass {
     public static ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
     public static ArrayList<SetBarcodeDetails> setScannedBarcodesULC = new ArrayList<>();
     public static ArrayList<Camp_Intimatgion_List_Model> global_camp_intimatgion_list_models_arrlst = new ArrayList<>();
-    ;
     public static ArrayList<CAMP_LIST> getcamp_list = new ArrayList<>();
-    ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
-
     public static ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist = new ArrayList<>();
     public static String specimenttype;
-
     public static ArrayList<SetBarcodeDetails> BMC_setScannedBarcodes = new ArrayList<>();
     public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsList = new ArrayList<>();
+    ;
     public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsTTLOTHERSList = new ArrayList<>();
     public static String BMC_specimenttype;
-
     public static Bitmap TRF_BITMAP;
     public static Bitmap RECEIPT_BITMAP;
-
     public static List<Fragment> mFragmentList = new ArrayList<>();
     public static List<String> mFragmentTitleList = new ArrayList<>();
-
-
     public static ArrayList<ScannedBarcodeDetails> scannedBarcodeDetails = new ArrayList<>();
     //Selected profile for WOE adapter lisy
     public static ArrayList<String> selctedProfileNames = new ArrayList<>();
     public static ArrayList<String> selctedProfileNamesILS = new ArrayList<>();
-
     //Selected pop for WOE adapter lisy
     public static ArrayList<String> selctedPopNames = new ArrayList<>();
     public static ArrayList<String> selctedPopNamesILS = new ArrayList<>();
-
-
     public static ArrayList<String> selctedoutLabTestNames = new ArrayList<>();
     public static ArrayList<Integer> getPosition = new ArrayList<>();///for checkbox for employees in Employee adapetr
     public static ArrayList<Integer> getPositionOutlab = new ArrayList<>();///for checkbox for employees in Employee adapetr
-
-
     public static ArrayList<billingDetailsModel> billingDETArray = new ArrayList<billingDetailsModel>();
     public static ArrayList<String> billingDETheaderArray = new ArrayList<>();
     public static ArrayList<String> empList = new ArrayList<>();//new arralist for employee
     public static String date = "";
     public static String reg_name_glo, reg_landline_glo, reg_profession_glo, reg_qualification_glo, reg_int_location_glo, reg_pincode_glo, reg_Addr_glo, reg_city_glo, reg_state_glo, reg_country_glo, reg_email_glo, reg_number_glo;
     public static String type = "";
-
     public static ArrayList<CommunicationMaster> commSpinner = new ArrayList<CommunicationMaster>();
-
-
     public static ArrayList<CommInbox_Model> commFromCPL;
     public static ArrayList<CommToCpl_Model> commToCPL;
-
-
     public static int FromCPLInt = 0;
-
     //0 means from ,1 means to
     public static String MONTH = ""; //0 means from ,1 means to
     public static String YEAR = ""; //0 means from ,1 means to
     public static int CHANGEMONTH = 0; //0 means from ,1 means to
-
     public static ArrayList<String> listdata = new ArrayList<String>();
     public static ArrayList<BaseModel> selectedTestsList = new ArrayList<>();
     public static ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
     public static ArrayList<String> debitlist = new ArrayList<String>();
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
+    private static Dialog dialog;
+    private static String stringofconvertedTime;
+    private final Context context;
+    int[] colors = {R.color.WOE, R.color.entered, R.color.confirmed, R.color.imported};
+    int[] textcolors = {R.color.WOEtext, R.color.enteredtext, R.color.confirmedtext, R.color.importedtext};
+    ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
     ProgressDialog progressDialog;
+
+    public GlobalClass(Context context) {
+        this.context = context;
+    }
 
     public static Date dateFromString(String dateStr, SimpleDateFormat dateFormat) {
 
@@ -256,7 +254,6 @@ public class GlobalClass {
             }
         }
     }
-
 
     public static Bitmap rotate(Bitmap bitmap, String photoPath) {
         ExifInterface ei = null;
@@ -317,7 +314,6 @@ public class GlobalClass {
         return compressedFile;
     }
 
-
     public static String convertDate(String convDate) {
         Date date = null;
         try {
@@ -329,10 +325,6 @@ public class GlobalClass {
             e.printStackTrace();
         }
         return convDate;
-    }
-
-    public GlobalClass(Context context) {
-        this.context = context;
     }
 
     public static boolean isNetworkAvailable(Activity activity) {
@@ -358,6 +350,23 @@ public class GlobalClass {
 
         return barProgressDialog;
 
+    }
+
+    public static void requestStoragePermission(final Context context) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            // Provide an additional rationale to the user if the permission was not granted
+            // and the user would benefit from additional context for the use of the permission.
+            // For example if the user has previously denied the permission.
+
+            ActivityCompat.requestPermissions((Activity) context,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
+        } else {
+            // permission has not been granted yet. Request it directly.
+            ActivityCompat.requestPermissions((Activity) context,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
+        }
     }
 
     private static boolean isExternalStorageReadOnly() {
@@ -431,23 +440,6 @@ public class GlobalClass {
         clearPreference(activity);
     }
 
-    public void showProgressDialog(Activity activity) {
-        if (progressDialog != null && !progressDialog.isShowing())
-
-            if (!((Activity) context).isFinishing()) {
-                progressDialog = new ProgressDialog(activity);
-                progressDialog.setTitle("Kindly wait ...");
-                progressDialog.setMessage(ToastFile.processing_request);
-                progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                progressDialog.setProgress(0);
-                progressDialog.setMax(20);
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.setCancelable(false);
-                progressDialog.show();
-            }
-
-    }
-
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
@@ -501,37 +493,25 @@ public class GlobalClass {
         return stringofconvertedTime;
     }
 
-
     public static void goToHome(Activity activity) {
         Intent i = new Intent(activity, ManagingTabsActivity.class);
         activity.startActivity(i);
         activity.finish();
     }
 
-    public void dismissProgressDialog() {
-
-        try {
-            if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void hideProgress(Context context, ProgressDialog progressDialog) {
+    public static void hideProgress(Context mcontext, ProgressDialog progressDialog) {
 
         if (progressDialog != null) {
             if (progressDialog.isShowing()) {
-                context = ((ContextWrapper) progressDialog.getContext()).getBaseContext();
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed())
+                mcontext = ((ContextWrapper) progressDialog.getContext()).getBaseContext();
+                if (mcontext instanceof Activity) {
+                    if (!((Activity) mcontext).isFinishing() && !((Activity) mcontext).isDestroyed())
                         progressDialog.dismiss();
                 } else
                     progressDialog.dismiss();
             }
         }
     }
-
 
     public static void addTexwatcher(Context context, CharSequence s, EditText kyc_format) {
 
@@ -551,7 +531,6 @@ public class GlobalClass {
             }
 
         }
-
     }
 
     public static void showAlertDialog(final Activity activity) {
@@ -582,36 +561,12 @@ public class GlobalClass {
         return boolStatus;
     }
 
-
-    public void DisplayImage(Activity activity, String Url, ImageView imageView) {
-
-        //            Glide.get(mActivity).clearMemory();
-        Glide.with(activity).load(Url)
-                .asBitmap()
-                .placeholder(R.drawable.userprofile).dontAnimate()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-                .error(R.drawable.userprofile)
-                .fitCenter()
-                .into(imageView);
-
-    }
-
-
-    public void DisplayImage1(Activity activity, String Url, ImageView imageView) {
-        Glide.with(activity).load(Url)
-                .asBitmap()
-                .placeholder(R.drawable.userprofile).dontAnimate()
-                .error(R.drawable.userprofile)
-                .into(imageView);
-    }
-
     public static ArrayList<BSTestDataModel> getTestList() {
 
         ArrayList<BSTestDataModel> entity = new ArrayList<>();
 
         BSTestDataModel ent = new BSTestDataModel();
-        ent.setTestName("Select Test type");
+        ent.setTestName("Select");
         ent.setMinVal(0);
         ent.setMaxVal(0);
         ent.setRangeVal("");
@@ -620,23 +575,36 @@ public class GlobalClass {
         ent = new BSTestDataModel();
         ent.setTestName("FBS");
         ent.setMinVal(70);
-        ent.setMaxVal(99);
-        ent.setRangeVal("70-99");
+        ent.setMaxVal(120);
+        ent.setRangeVal("70-120");
         entity.add(ent);
 
-        ent = new BSTestDataModel();
+        /*ent = new BSTestDataModel();
         ent.setTestName("PPBS");
-        ent.setMinVal(70);
+        ent.setMinVal(90);
         ent.setMaxVal(140);
-        ent.setRangeVal("70-140");
-        entity.add(ent);
+        ent.setRangeVal("90-140");
+        entity.add(ent);*/
 
         ent = new BSTestDataModel();
         ent.setTestName("RBS");
         ent.setMinVal(70);
-        ent.setMaxVal(150);
-        ent.setRangeVal("70-150");
+        ent.setMaxVal(160);
+        ent.setRangeVal("70-160");
         entity.add(ent);
+
+        return entity;
+    }
+
+    public static ArrayList<String> getCollAmount() {
+        ArrayList<String> entity = new ArrayList<>();
+        entity.add("Select collected amount");
+        entity.add("0");
+        entity.add("5");
+        entity.add("10");
+        entity.add("15");
+        entity.add("20");
+        entity.add("25");
 
         return entity;
     }
@@ -678,7 +646,143 @@ public class GlobalClass {
         return isAutoTimeSelected[0];
     }
 
-    public static void showImageDialog(Activity activity, File file) {
+    public static String formatDate(String currentFormat, String outputFormat, String date) {
+
+        SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
+        SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
+        Date dateObj = null;
+        try {
+            dateObj = curFormater.parse(date);
+            date = postFormater.format(dateObj);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static void SetText(TextView txtview, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+//                txtview.setText("" + msg);
+                if (msg.equalsIgnoreCase("null")) {
+                    txtview.setText("");
+                } else {
+                    txtview.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getAge(int year, int month, int day) {
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.set(year, month - 1, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        Integer ageInt = new Integer(age);
+        String ageS = ageInt.toString();
+
+        return ageS;
+    }
+
+    public static void SetEditText(EditText txtview, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    txtview.setText("");
+                } else {
+                    txtview.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String IsNull(String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (msg != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    msg = "";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msg;
+    }
+
+    public static String getStringwithOutSpace(String str_gbls) {
+        String str = "";
+        str = str_gbls.replaceAll(" ", "%20");
+
+        return str;
+    }
+
+    public static void toastyError(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
+
+    public static void toastySuccess(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.SUCCESS);
+    }
+
+    public static void toastyInfo(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
+
+    private static int ToastLength(boolean b) {
+        if (b) {
+            return Toast.LENGTH_LONG;
+        } else {
+            return Toast.LENGTH_SHORT;
+        }
+    }
+
+
+    public static void printLog(String Type, String Tag, String Label, String msg) {
+        try {
+            if (BuildConfig.DEBUG) {
+                if (Type.equalsIgnoreCase("Error")) {
+                    Log.e(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Info")) {
+                    Log.i(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Debug")) {
+                    Log.d(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("Warning")) {
+                    Log.w(Tag, " " + Label + ": " + msg);
+                } else if (Type.equalsIgnoreCase("sout")) {
+                    System.out.println(Tag + " " + Label + ": " + msg);
+                }
+            } else {
+                System.out.println("Live....");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showImageDialog(Activity activity, File file, String url, int flag) {
         dialog = new Dialog(activity);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -688,11 +792,18 @@ public class GlobalClass {
         ImageView imgView = (ImageView) dialog.findViewById(R.id.imageview);
         ImageView img_close = (ImageView) dialog.findViewById(R.id.img_close);
 
-        Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-        if (myBitmap != null)
-            imgView.setImageBitmap(myBitmap);
-        else
-            Toast.makeText(activity, "Image not found", Toast.LENGTH_SHORT).show();
+        if (flag == 1) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+            if (myBitmap != null)
+                imgView.setImageBitmap(myBitmap);
+            else
+                Global.showCustomToast(activity, "Image not found");
+        } else {
+            Glide.with(activity)
+                    .load(url)
+                    .placeholder(activity.getResources().getDrawable(R.drawable.img_no_img_aval))
+                    .into(imgView);
+        }
 
         img_close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -710,13 +821,147 @@ public class GlobalClass {
     }
 
 
-    public static void StoreSyncTime(Context context) {
-        SharedPreferences pref = context.getSharedPreferences("Syncpref", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putLong("synctime", System.currentTimeMillis());
+    public static void storeProductsCachingTime(Activity activity) {
+        SharedPreferences.Editor editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit();
+        editor.putLong("offer_millis", System.currentTimeMillis()); // add this line and comment below line for cache
         editor.apply();
     }
 
+
+    public static int Dayscnt(Context context) {
+        long offer_millis = 0, current_millis = 0, differ_millis = 0;
+        SharedPreferences pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, MODE_PRIVATE);
+        offer_millis = pref_prod_caching.getLong("offer_millis", 0);
+        current_millis = System.currentTimeMillis();
+        differ_millis = current_millis - offer_millis;
+        int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
+        Log.e("TAG11", "<< DAYS >> " + days);
+        return days;
+    }
+
+    public static void dynamicolordot(Context mContext, LinearLayout lin_color, int color) {
+        ImageView imageView = new ImageView(mContext);
+        imageView.setPadding(2, 0, 2, 2);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(50, 50);
+        layoutParams.gravity = Gravity.CENTER;
+        layoutParams.setMarginStart(10);
+        imageView.setLayoutParams(layoutParams);
+        imageView.setImageDrawable(GlobalClass.drawCircle(mContext, 50, 50, color));
+        lin_color.addView(imageView);
+    }
+
+    public static int getStoreSynctime(Context context) {
+        SharedPreferences synpref = context.getSharedPreferences("Syncpref", MODE_PRIVATE);
+        syntime = synpref.getLong("synctime", 0);
+        curr_time = System.currentTimeMillis();
+        differ_millis = curr_time - syntime;
+        int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
+        System.out.println("<< Days >> " + days);
+        return days;
+    }
+
+    public static ShapeDrawable drawCircle(Context context, int width, int height, int color) {
+
+        //////Drawing oval & Circle programmatically /////////////
+        ShapeDrawable oval = new ShapeDrawable(new OvalShape());
+        oval.setIntrinsicHeight(height);
+        oval.setIntrinsicWidth(width);
+        oval.getPaint().setColor(color);
+        return oval;
+    }
+
+    public static void showVolleyError(VolleyError error, Activity activity) {
+        if (error instanceof TimeoutError) {
+            Global.showCustomToast(activity, "Timeout Error");
+        } else if (error instanceof ServerError) {
+            Global.showCustomToast(activity, "Server Error");
+        } else if (error instanceof NetworkError) {
+            Global.showCustomToast(activity, "Network Error");
+        } else if (error instanceof ParseError) {
+            Global.showCustomToast(activity, "Parse Error");
+        } else if (error instanceof NoConnectionError) {
+            Global.showCustomToast(activity, "NoConnection Error");
+        } else {
+            Global.showCustomToast(activity, ToastFile.something_went_wrong);
+        }
+    }
+
+    public static void volleyRetryPolicy(JsonObjectRequest request) {
+        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+    }
+
+    public static void volleyRetryPolicy(StringRequest request) {
+        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        request.setRetryPolicy(policy);
+    }
+
+    public static boolean isNull(String val) {
+        if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
+            return true;
+        return false;
+    }
+
+    public void showProgressDialog(Activity activity) {
+        if (progressDialog != null && !progressDialog.isShowing())
+            if (!((Activity) context).isFinishing()) {
+                progressDialog = new ProgressDialog(activity);
+                progressDialog.setTitle("Kindly wait ...");
+                progressDialog.setMessage(ToastFile.processing_request);
+                progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+                progressDialog.setProgress(0);
+                progressDialog.setMax(20);
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.setCancelable(false);
+                progressDialog.show();
+            }
+    }
+
+    public void dismissProgressDialog() {
+        try {
+            if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void DisplayImage(Activity activity, String Url, ImageView imageView) {
+
+        //            Glide.get(mActivity).clearMemory();
+        Glide.with(activity).load(Url)
+                .asBitmap()
+                .placeholder(R.drawable.userprofile).dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+                .error(R.drawable.userprofile)
+                .fitCenter()
+                .into(imageView);
+
+    }
+
+    public void DisplayVideoImage(Activity activity, String Url, ImageView imageView) {
+
+        //            Glide.get(mActivity).clearMemory();
+        Glide.with(activity).load(Url)
+                .asBitmap()
+//                .placeholder(R.drawable.thumbnailicon).dontAnimate()
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+//                .error(R.drawable.thumbnailicon)
+                .fitCenter()
+                .into(imageView);
+
+    }
+
+
+    public void DisplayImage1(Activity activity, String Url, ImageView imageView) {
+        Glide.with(activity).load(Url)
+                .asBitmap()
+                .placeholder(R.drawable.userprofile).dontAnimate()
+                .error(R.drawable.userprofile)
+                .into(imageView);
+    }
 
     public void showcenterCustomToast(Activity activity, String message) {
         Context context = activity.getApplicationContext();
@@ -736,24 +981,26 @@ public class GlobalClass {
         toast.show();
     }
 
-
-    public static int getStoreSynctime(Context context) {
-        SharedPreferences synpref = context.getSharedPreferences("Syncpref", MODE_PRIVATE);
-        syntime = synpref.getLong("synctime", 0);
-        curr_time = System.currentTimeMillis();
-        differ_millis = curr_time - syntime;
-        int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
-        System.out.println("<< Days >> " + days);
-        return days;
+    public static String currencyFormat(String amount) {
+        DecimalFormat formatter = null;
+        if (!TextUtils.isEmpty(amount)) {
+            formatter = new DecimalFormat("##,##,##,###.##");
+            return formatter.format(Double.parseDouble(amount));
+        } else {
+            amount = "0";
+        }
+        return formatter.format(Double.parseDouble(amount));
     }
 
-    public void setLoadingGIF(HealthArticle_Activity mContext) {
-        progressDialog = new ProgressDialog(mContext);
+
+    public static void setLoadingGIF(Activity activity) {
+        ProgressDialog progressDialog = new ProgressDialog(activity);
         progressDialog.setTitle(null);
-        progressDialog.setMessage("Kindly Wait...");
+        progressDialog.setMessage(activity.getResources().getString(R.string.loading));
         progressDialog.setIndeterminate(false);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
+        //progressDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#e52d2e")));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -771,20 +1018,34 @@ public class GlobalClass {
         }
 
     }
-
-    public static void volleyRetryPolicy(JsonObjectRequest request) {
-        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        request.setRetryPolicy(policy);
+    public void showupdate(String msg) {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setTitle(null);
+        progressDialog.setMessage(msg);
+        progressDialog.setIndeterminate(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        if (progressDialog != null && !progressDialog.isShowing())
+            if (!((Activity) context).isFinishing()) {
+                progressDialog.show();
+            }
     }
 
-    public static void volleyRetryPolicy(StringRequest request) {
-        RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        request.setRetryPolicy(policy);
+    public void hideProgressDialog1() {
+        try {
+            if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static boolean isNull(String val) {
-        if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
-            return true;
-        return false;
+    public static void showShortToast(Activity activity, String message) {
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
     }
+
+
 }

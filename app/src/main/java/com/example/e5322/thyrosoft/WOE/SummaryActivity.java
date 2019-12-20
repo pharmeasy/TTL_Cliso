@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
@@ -34,6 +35,8 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.DeleteWOEResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
@@ -52,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class SummaryActivity extends AppCompatActivity {
+    public static com.android.volley.RequestQueue POstQue;
     private static String stringofconvertedTime;
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
@@ -61,23 +65,24 @@ public class SummaryActivity extends AppCompatActivity {
     RecyclerView sample_list;
     String getSelctedTests;
     SharedPreferences prefs;
-    private String totalAnount;
     SharedPreferences preferences, prefe;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     ProgressDialog barProgressDialog;
     BarcodelistModel barcodelist;
     Barcodelist barcodelistData;
+    ImageView back, home;
+    DatabaseHelper myDb;
+    LinearLayout btech_layout;
+    int convertSrno;
+    private String totalAnount;
     private String patientName, patientYearType, user, passwrd, access, api_key, status;
     private String patientYear, patientGender;
     private String brandName, sampleCollectionDate, sampleCollectionTime;
     private String typeName, referenceBy, sampleCollectionPoint, sampleGivingClient, getFinalSrNO;
-    public static com.android.volley.RequestQueue POstQue;
     private String RES_ID;
     private String barcode_patient_id, message;
     private String alertMsg;
-    ImageView back, home;
-    DatabaseHelper myDb;
     private String refeID;
     private String ageType;
     private String labAddress;
@@ -93,8 +98,6 @@ public class SummaryActivity extends AppCompatActivity {
     private String getPincode;
     private String TAG = SummaryActivity.this.getClass().getSimpleName();
     private String outputDateStr;
-    LinearLayout btech_layout;
-    int convertSrno;
     private String version;
     private int versionCode;
     private String testnames;
@@ -109,6 +112,26 @@ public class SummaryActivity extends AppCompatActivity {
     private String versionNameTopass;
     private RequestQueue deletePatienDetail;
     private String getBarcodesOffline;
+
+    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        stringofconvertedTime = null;
+        try {
+            date = new Date();
+            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
+            String convertedDate = sdf_format.format(date);
+            date = inputFormat.parse(time);
+            stringofconvertedTime = outputFormat.format(date);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringofconvertedTime;
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -243,7 +266,7 @@ public class SummaryActivity extends AppCompatActivity {
                 ll_patient_gender.setVisibility(View.VISIBLE);
                 if (patientGender.equalsIgnoreCase("M")) {
                     txt_pat_gender.setText("Male");
-                } else if(patientGender.equalsIgnoreCase("F")){
+                } else if (patientGender.equalsIgnoreCase("F")) {
                     txt_pat_gender.setText("Female");
                 }
             } else {
@@ -349,96 +372,70 @@ public class SummaryActivity extends AppCompatActivity {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-
         deletePatienDetail = Volley.newRequestQueue(SummaryActivity.this);
-        JSONObject jsonObjectOtp = new JSONObject();
+
+        JSONObject jsonObject = null;
         try {
+            DeleteWOERequestModel requestModel = new DeleteWOERequestModel();
+            requestModel.setApi_key(api_key);
+            requestModel.setPatient_id(barcode_patient_id);
+            requestModel.setTsp(user);
 
-            jsonObjectOtp.put("api_key", api_key);
-            jsonObjectOtp.put("Patient_id", barcode_patient_id);
-            jsonObjectOtp.put("tsp", user);
-
+            Gson deleteGson = new Gson();
+            String deleteJSON = deleteGson.toJson(requestModel);
+            jsonObject = new JSONObject(deleteJSON);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: " + response);
                 try {
-                    String finalJson = response.toString();
-                    JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                    error = parentObjectOtp.getString("error");
-                    pid = parentObjectOtp.getString("pid");
-                    response1 = parentObjectOtp.getString("response");
-                    barcodes = parentObjectOtp.getString("barcodes");
-                    resID = parentObjectOtp.getString("RES_ID");
-
-                    if (resID.equals("RES0000")) {
-                        TastyToast.makeText(SummaryActivity.this, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Intent intent = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
-                        startActivity(intent);
-                    } else {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
-                        TastyToast.makeText(SummaryActivity.this, response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
                     }
-
-                } catch (JSONException e) {
-                    TastyToast.makeText(SummaryActivity.this, response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    Gson gson = new Gson();
+                    DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
+                    if (deleteWOEResponseModel != null) {
+                        if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                            TastyToast.makeText(SummaryActivity.this, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent intent = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
+                            startActivity(intent);
+                        } else {
+                            TastyToast.makeText(SummaryActivity.this, deleteWOEResponseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } else {
+                        TastyToast.makeText(SummaryActivity.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
                 if (error != null) {
                 } else {
-
                     System.out.println(error);
                 }
             }
         });
         deletePatienDetail.add(jsonObjectRequest1);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
         Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
-        Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
+        Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
     }
-
-
-    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        stringofconvertedTime = null;
-        try {
-            date = new Date();
-            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
-            String convertedDate = sdf_format.format(date);
-            date = inputFormat.parse(time);
-            stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringofconvertedTime;
-    }
-
 
     private void fetchData() {
-
         GlobalClass.setflagToRefreshData = true;
         Intent i = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
         i.putExtra("passToWoefragment", "frgamnebt");
         startActivity(i);
-
-    }
-
-    private void sendFinalWoe() {
-
     }
 
     @Override
@@ -447,7 +444,6 @@ public class SummaryActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.more_tab_menu, menu);
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

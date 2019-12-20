@@ -61,6 +61,8 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -69,6 +71,7 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
@@ -97,10 +100,15 @@ import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 
 public class Scan_Barcode_Outlabs extends AppCompatActivity {
-    Button serum, edta, outlab_barcode;
+    private static final int REQUEST_CAMERA = 1;
+    private static final int SELECT_FILE = 0;
+    public static ArrayList<String> labAlerts;
     private static String stringofconvertedTime;
-    SharedPreferences prefs, sharedPrefe;
     private static String cutString;
+    public String specimenttype1;
+    public int position1 = 0;
+    Button serum, edta, outlab_barcode;
+    SharedPreferences prefs, sharedPrefe;
     RequestQueue barcodeDetailsdata, POstQue;
     String testName, getB2Brate, outTestToSend, getBarcodeDetails, testsData;
     EditText enterAmt, enter_barcode, reenter;
@@ -108,31 +116,19 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     Button next;
     Camera camera;
     ScannedBarcodeDetails scannedBarcodeDetails;
-    private int PERMISSION_REQUEST_CODE = 200;
-    private int PICK_PHOTO_FROM_CAMERA = 201;
-    private int PICK_PHOTO_FROM_GALLERY = 202;
     ArrayList<Outlabdetails_OutLab> Globaly_Outlab_details = new ArrayList<>();
     LinearLayout sample_type_linear;
     ArrayList<String> getUniquespecimenttype;
-    private boolean trfCheckFlag = false;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     TextView show_selected_tests_data, setAmt, title;
     LinearLayoutManager linearLayoutManager;
     IntentIntegrator scanIntegrator;
-    private MyPojo myPojo;
     LinearLayout barcodescanninglist;
     BaseModel.Barcodes[] barcodes;
-    private SpinnerDialog spinnerDialog;
     Spinner sample_type_spinner;
-    public static ArrayList<String> labAlerts;
     RecyclerView recycler_barcode;
-    private ArrayList<String> temparraylist;
-    private ArrayList<String> getProducts;
-    public String specimenttype1;
     TextView lab_alert_spin;
     String barcodes1;
-    private AdapterBarcodeOutlabs adapterBarcodeOutlabs;
-    public int position1 = 0;
     SharedPreferences preferences, prefe;
     ImageView img_edt, setback;
     ProgressDialog progressDialog;
@@ -143,6 +139,27 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     ArrayList<String> getProductCode;
     String productName, showtest;
     ArrayList<String> testToPass;
+    BarcodelistModel barcodelist;
+    ProgressDialog barProgressDialog;
+    ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
+    LinearLayout ll_uploadTRF;
+    RecyclerView rec_trf;
+    LinearLayoutManager linearLayoutManager1;
+    ArrayList<TRFModel> trflist = new ArrayList<>();
+    Activity mActivity;
+    Bitmap bitmapimage;
+    Uri imageUri;
+    String userChoosenTask;
+    File trf_img = null;
+    private int PERMISSION_REQUEST_CODE = 200;
+    private int PICK_PHOTO_FROM_CAMERA = 201;
+    private int PICK_PHOTO_FROM_GALLERY = 202;
+    private boolean trfCheckFlag = false;
+    private MyPojo myPojo;
+    private SpinnerDialog spinnerDialog;
+    private ArrayList<String> temparraylist;
+    private ArrayList<String> getProducts;
+    private AdapterBarcodeOutlabs adapterBarcodeOutlabs;
     private boolean flag = true;
     private TextView companycost_test;
     private String currentText;
@@ -175,11 +192,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private String sr_number;
     private String versionNameTopass;
     private int versionCode;
-    BarcodelistModel barcodelist;
     private int pass_to_api;
-    ProgressDialog barProgressDialog;
     private String outputDateStr;
-    ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
     private String message, selectedProduct;
     private String lab_alert_pass_toApi;
     private String passProducts;
@@ -188,17 +202,51 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private DatabaseHelper myDb;
     private String barcode_id;
     private Global globalClass;
-    LinearLayout ll_uploadTRF;
-    RecyclerView rec_trf;
-    LinearLayoutManager linearLayoutManager1;
-    ArrayList<TRFModel> trflist = new ArrayList<>();
-    Activity mActivity;
-    Bitmap bitmapimage;
-    private static final int REQUEST_CAMERA = 1;
-    private static final int SELECT_FILE = 0;
-    Uri imageUri;
-    String userChoosenTask;
-    File trf_img = null;
+
+    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        stringofconvertedTime = null;
+        try {
+            date = new Date();
+            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
+            String convertedDate = sdf_format.format(date);
+            date = inputFormat.parse(time);
+            stringofconvertedTime = outputFormat.format(date);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
+        } catch (ParseException e) {
+            if (time.contains("AM")) {
+                time = time.substring(0, time.length() - 2);
+                time = time + "a.m.";
+            } else if (time.contains("PM")) {
+                time = time.substring(0, time.length() - 2);
+                time = time + "p.m.";
+            }
+            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date1 = null;
+            stringofconvertedTime = null;
+
+            date = new Date();
+            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
+            String convertedDate = sdf_format.format(date);
+            try {
+                date = inputFormat.parse(time);
+            } catch (ParseException e1) {
+                e1.printStackTrace();
+            }
+            stringofconvertedTime = outputFormat.format(date);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
+
+
+            //Format of the date defined in the input String
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringofconvertedTime;
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -506,7 +554,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 String enteredString = s.toString();
-
                 if (s.length() < 8) {
                     flag = true;
                 }
@@ -514,16 +561,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 if (s.length() > 8) {
                     enter_barcode.setText(enteredString.substring(1));
                     Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
-                } else {
-
                 }
 
                 if (s.length() == 8) {
-
-
-                    if (flag == true) {
+                    if (flag) {
                         flag = false;
-
                         if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
                             enter_barcode.setText(s);
                         } else {
@@ -537,43 +579,37 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                             progressDialog.setCancelable(false);
                             progressDialog.show();
 
-
-                            barcodeDetailsdata = Volley.newRequestQueue(Scan_Barcode_Outlabs.this);//2c=/TAM03/TAM03136166236000078/geteditdata
+                            barcodeDetailsdata = Volley.newRequestQueue(Scan_Barcode_Outlabs.this);
                             JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + api_key + "/" + s + "/getcheckbarcode"
                                     , new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    System.out.println("barcode respponse" + response);
-
-                                    Log.e(TAG, "onResponse: " + response);
-                                    String finalJson = response.toString();
-                                    JSONObject parentObjectOtp = null;
+                                    System.out.println("barcode response" + response);
                                     try {
-                                        parentObjectOtp = new JSONObject(finalJson);
-                                        ERROR = parentObjectOtp.getString("ERROR");
-                                        RES_ID = parentObjectOtp.getString("RES_ID");
-                                        barcode = parentObjectOtp.getString("barcode");
-                                        response1 = parentObjectOtp.getString("response");
+                                        progressDialog.dismiss();
+                                        Gson gson = new Gson();
+                                        VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
 
-                                        if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                            progressDialog.dismiss();
-                                            enter_barcode.setText(barcode);
-                                        } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
-                                            GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
+                                        if (responseModel != null) {
+                                            if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                                                enter_barcode.setText(responseModel.getBarcode());
+                                            } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
+                                                GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
+                                            } else {
+                                                enter_barcode.setText("");
+                                                Toast.makeText(Scan_Barcode_Outlabs.this, "" + responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                                            }
                                         } else {
-                                            enter_barcode.setText("");
-                                            progressDialog.dismiss();
-                                            Toast.makeText(Scan_Barcode_Outlabs.this, "" + response1, Toast.LENGTH_SHORT).show();
+                                            TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                         }
-
-
-                                    } catch (JSONException e) {
+                                    } catch (JsonSyntaxException e) {
                                         e.printStackTrace();
                                     }
                                 }
                             }, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    progressDialog.dismiss();
                                     if (error.networkResponse == null) {
                                         if (error.getClass().equals(TimeoutError.class)) {
                                             // Show timeout error message
@@ -581,21 +617,12 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                     }
                                 }
                             });
-                            jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                    300000,
-                                    3,
-                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                            GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
                             barcodeDetailsdata.add(jsonObjectRequestPop);
                             Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
                         }
-
-
                     }
-
-
-                } else {
                 }
-
             }
         });
 
@@ -705,52 +732,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
     }
 
-    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        stringofconvertedTime = null;
-        try {
-            date = new Date();
-            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
-            String convertedDate = sdf_format.format(date);
-            date = inputFormat.parse(time);
-            stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
-        } catch (ParseException e) {
-            if (time.contains("AM")) {
-                time = time.substring(0, time.length() - 2);
-                time = time + "a.m.";
-            } else if (time.contains("PM")) {
-                time = time.substring(0, time.length() - 2);
-                time = time + "p.m.";
-            }
-            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date1 = null;
-            stringofconvertedTime = null;
-
-            date = new Date();
-            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
-            String convertedDate = sdf_format.format(date);
-            try {
-                date = inputFormat.parse(time);
-            } catch (ParseException e1) {
-                e1.printStackTrace();
-            }
-            stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
-
-
-            //Format of the date defined in the input String
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringofconvertedTime;
-    }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -837,36 +818,34 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
             enter_barcode.setText(barcodeDetails);
         } else {
-            barcodeDetailsdata = Volley.newRequestQueue(Scan_Barcode_Outlabs.this);//2c=/TAM03/TAM03136166236000078/geteditdata
+            barcodeDetailsdata = Volley.newRequestQueue(Scan_Barcode_Outlabs.this);
             JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + api_key + "/" + barcodeDetails + "/getcheckbarcode"
                     , new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     System.out.println("barcode respponse" + response);
-
-                    Log.e(TAG, "onResponse: " + response);
-                    String finalJson = response.toString();
-                    JSONObject parentObjectOtp = null;
                     try {
-                        parentObjectOtp = new JSONObject(finalJson);
-                        ERROR = parentObjectOtp.getString("ERROR");
-                        RES_ID = parentObjectOtp.getString("RES_ID");
-                        barcode = parentObjectOtp.getString("barcode");
-                        response1 = parentObjectOtp.getString("response");
+                        Gson gson = new Gson();
+                        VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
 
-                        if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                            outlab_barcode.setText("Barcode:" + barcodeDetails);
-                            for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                                GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(barcodeDetails);
+                        if (responseModel != null) {
+                            if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                                outlab_barcode.setText("Barcode:" + barcodeDetails);
+                                for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+                                    GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(barcodeDetails);
+                                }
+                            } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
+                                GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
+                            } else {
+                                outlab_barcode.setText("");
+                                Toast.makeText(Scan_Barcode_Outlabs.this, "" + responseModel.getResponse(), Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            outlab_barcode.setText("");
-                            Toast.makeText(Scan_Barcode_Outlabs.this, "" + response1, Toast.LENGTH_SHORT).show();
+                            TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
-                    } catch (JSONException e) {
+                    } catch (JsonSyntaxException e) {
                         e.printStackTrace();
                     }
-
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -885,7 +864,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             barcodeDetailsdata.add(jsonObjectRequestPop);
             Log.e(TAG, "passBarcodeData: url" + jsonObjectRequestPop);
         }
-
     }
 
     private boolean checkPermission() {
@@ -1249,10 +1227,10 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
         if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
             barcodes1 = TextUtils.join(",", getBarcodeArrList);
-            if (flagcallonce == false) {
+            if (!flagcallonce) {
                 flagcallonce = true;
                 boolean isInserted = myDb.insertData(barcodes1, json);
-                if (isInserted == true) {
+                if (isInserted) {
                     TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.woeSaved, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                     Intent intent = new Intent(Scan_Barcode_Outlabs.this, SummaryActivity.class);
                     Bundle bundle = new Bundle();
@@ -1275,9 +1253,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.woenotSaved, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 }
             }
-
         } else {
-            if (flagcallonce == false) {
+            if (!flagcallonce) {
                 flagcallonce = true;
                 barProgressDialog = new ProgressDialog(Scan_Barcode_Outlabs.this);
                 barProgressDialog.setTitle("Kindly wait ...");
@@ -1291,39 +1268,32 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
-
                             Log.e(TAG, "onResponse: RESPONSE" + response);
-                            String finalJson = response.toString();
-                            JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                            RES_ID = parentObjectOtp.getString("RES_ID");
-                            barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
-                            message = parentObjectOtp.getString("message");
-                            status = parentObjectOtp.getString("status");
-                            barcode_id = parentObjectOtp.getString("barcode_id");
-                            if (status.equalsIgnoreCase("SUCCESS")) {
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
-                                if (trflist.size() > 0)
-                                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                                else {
-                                    getUploadFileResponse();
-                                }
-                            } else if (status.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
-                            } else {
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
-                                flagcallonce = false;
-                                TastyToast.makeText(Scan_Barcode_Outlabs.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
                             }
+                            Gson woeGson = new Gson();
+                            WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
 
-                        } catch (JSONException e) {
-
+                            if (woeResponseModel != null) {
+                                if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+                                    if (trflist.size() > 0)
+                                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
+                                    else {
+                                        getUploadFileResponse();
+                                    }
+                                } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
+                                    GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
+                                } else {
+                                    flagcallonce = false;
+                                    TastyToast.makeText(Scan_Barcode_Outlabs.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                }
+                            } else {
+                                flagcallonce = false;
+                                TastyToast.makeText(Scan_Barcode_Outlabs.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -1337,10 +1307,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         }
                     }
                 });
-                jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
-                        150000,
-                        3,
-                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                 POstQue.add(jsonObjectRequest1);
                 Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                 Log.e(TAG, "saveandClose: json" + jsonObj);
@@ -1366,6 +1333,4 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 }
-

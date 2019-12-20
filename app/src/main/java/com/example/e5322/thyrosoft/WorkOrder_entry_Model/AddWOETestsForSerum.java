@@ -40,9 +40,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.example.e5322.thyrosoft.WOE.RecheckAllTest;
 import com.example.e5322.thyrosoft.WOE.SummaryAddWoe;
 import com.google.gson.Gson;
 
@@ -144,7 +142,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
 
         days = GlobalClass.getStoreSynctime(AddWOETestsForSerum.this);
 
-        if (days >= Constants.DAYS_CNT) {
+        if (GlobalClass.Dayscnt(AddWOETestsForSerum.this) >= Constants.DAYS_CNT) {
             getAlltTestData();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -159,7 +157,6 @@ public class AddWOETestsForSerum extends AppCompatActivity {
                 getAlltTestData();
             }
         }
-
 
         getBarcodeDetails = getSharedPreferences("AddTestType", MODE_PRIVATE);
         ALERT = getBarcodeDetails.getString("ALERT", null);
@@ -178,9 +175,11 @@ public class AddWOETestsForSerum extends AppCompatActivity {
         SU_CODE2 = getBarcodeDetails.getString("SU_CODE2", null);
         TESTS = getBarcodeDetails.getString("TESTS", null);
         Toast.makeText(mActivity, "" + TESTS, Toast.LENGTH_SHORT).show();
+
         go_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (expAdapter != null) {
                     expAdapter.filterData(sv_testsList1.getQuery().toString());
                     if (!sv_testsList1.getQuery().toString().isEmpty()) {
@@ -238,7 +237,6 @@ public class AddWOETestsForSerum extends AppCompatActivity {
     }
 
     private void getAlltTestData() {
-
         globalClass.showProgressDialog(this);
         requestQueuepoptestILS = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + "" + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
@@ -254,7 +252,6 @@ public class AddWOETestsForSerum extends AppCompatActivity {
                     Gson gson = new Gson();
                     mainModel = new MainModel();
                     mainModel = gson.fromJson(response.toString(), MainModel.class);
-
                     onlySelected = new MainModel();
 
                     SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(AddWOETestsForSerum.this);
@@ -263,11 +260,14 @@ public class AddWOETestsForSerum extends AppCompatActivity {
                     String json22 = gson22.toJson(mainModel);
                     String jsonSelected = gson22.toJson(onlySelected);
                     prefsEditor1.putString("MyObject", json22);
-                    GlobalClass.StoreSyncTime(AddWOETestsForSerum.this);
+                   // GlobalClass.StoreSyncTime(AddWOETestsForSerum.this);
                     prefsEditor1.commit();
 
+
+                    GlobalClass.storeProductsCachingTime(AddWOETestsForSerum.this);
+
+
                     B2B_MASTERSMainModel b2B_mastersMainModel = new B2B_MASTERSMainModel();
-                    // BaseModel baseModelPop = new BaseModel();
                     ArrayList<BaseModel> baseModelProfile = new ArrayList<>();
                     ArrayList<BaseModel> baseModelTest = new ArrayList<>();
 

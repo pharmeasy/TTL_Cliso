@@ -107,25 +107,25 @@ public class ResultDtlAdapter extends BaseAdapter {
             mail.setVisibility(View.VISIBLE);
         }*/
 
-        if (!trackdet.get(position).getChn_pending().toString().equals("")) {
-            if (trackdet.get(position).getChn_pending().toString().equals("null")) {
-                name.setText(trackdet.get(position).getName().toString());
-                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-                barcode.setText(trackdet.get(position).getBarcode().toString());
-                tests.setText(trackdet.get(position).getTests().toString());
+        if (!GlobalClass.isNull(trackdet.get(position).getChn_pending())) {
+            if (trackdet.get(position).getChn_pending().equals("null")) {
+                name.setText(trackdet.get(position).getName());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
                 clon.setVisibility(View.GONE);
             } else {
-                name.setText(trackdet.get(position).getName().toString());
+                name.setText(trackdet.get(position).getName());
                 clon.setVisibility(View.VISIBLE);
-                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-                barcode.setText(trackdet.get(position).getBarcode().toString());
-                tests.setText(trackdet.get(position).getTests().toString());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
             }
         } else {
-            name.setText(trackdet.get(position).getName().toString());
-            Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-            barcode.setText(trackdet.get(position).getBarcode().toString());
-            tests.setText(trackdet.get(position).getTests().toString());
+            name.setText(trackdet.get(position).getName());
+            Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+            barcode.setText(trackdet.get(position).getBarcode());
+            tests.setText(trackdet.get(position).getTests());
             clon.setVisibility(View.GONE);
         }
 
@@ -139,7 +139,7 @@ public class ResultDtlAdapter extends BaseAdapter {
             share.setVisibility(View.INVISIBLE);
         }
 
-        if (!trackdet.get(position).getEmail().equals("null")) {
+        if (!GlobalClass.isNull(trackdet.get(position).getEmail())) {
             mail.setVisibility(View.VISIBLE);
         } else if (trackdet.get(position).getEmail().equals("null")) {
             mail.setVisibility(View.INVISIBLE);
@@ -171,7 +171,7 @@ public class ResultDtlAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent browserIntent = new Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(trackdet.get(position).getPdflink().toString()));
+                        Uri.parse(trackdet.get(position).getPdflink()));
                 mContext.startActivity(browserIntent);
             }
         });
@@ -179,7 +179,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowMailAlert(trackdet.get(position).getPatient_id().toString(), trackdet.get(position).getBarcode().toString(), trackdet.get(position).getEmail().toString(), trackdet.get(position).getDate().toString());
+                ShowMailAlert(trackdet.get(position).getPatient_id(), trackdet.get(position).getBarcode(), trackdet.get(position).getEmail(), trackdet.get(position).getDate());
             }
         });
         return convertView;

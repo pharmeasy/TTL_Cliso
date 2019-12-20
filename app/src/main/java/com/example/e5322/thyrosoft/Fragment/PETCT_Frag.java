@@ -1126,10 +1126,7 @@ public class PETCT_Frag extends Fragment {
     public void onResume() {
         super.onResume();
         try {
-            if (GlobalClass.isNetworkAvailable(getActivity())) {
-                ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
-            }
-
+            ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
         } catch (Exception e) {
             e.printStackTrace();
         }

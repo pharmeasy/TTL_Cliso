@@ -7,10 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
-import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
@@ -41,6 +39,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         final Fragment result;
+
         switch (position) {
 
             case 0:
@@ -59,6 +58,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
+
             case 4:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
@@ -75,6 +75,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
             default:
                 result = null;
                 break;
+
         }
 
         return result;
@@ -88,7 +89,6 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(final int position) {
         switch (position) {
-
             case 0:
                 return resources.getString(R.string.page_1);
             case 1:
@@ -117,10 +117,12 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
      * @param position
      * @return
      */
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
         registeredFragments.put(position, fragment);
+
         return fragment;
     }
 

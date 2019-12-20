@@ -13,4 +13,11 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static VerifyotpController verifyotpController;
     public static GetAvailableStockController getAvailableStockController;
     public static UpdateStockController updateStockController;
+    public static GetOTPController getOTPController;
+    public static GETValidateBSOTPController getValidateBSOTPController;
+    public static BloodSugarMISController bloodSugarMISController;
+    public static GenerateTokenController generateTokenController;
+    public static POSTBookLeadController POSTBookLeadController;
+    public static VersionCheckAPIController versionCheckAPIController;
+
 }

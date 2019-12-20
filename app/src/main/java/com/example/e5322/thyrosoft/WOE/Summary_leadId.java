@@ -34,6 +34,7 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
@@ -57,6 +58,7 @@ import java.util.Date;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Summary_leadId extends AppCompatActivity {
+    public static com.android.volley.RequestQueue POstQue;
     private static String stringofconvertedTime;
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
@@ -64,9 +66,7 @@ public class Summary_leadId extends AppCompatActivity {
     TextView saverepeat, saveclose, id_number, title, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
     ImageView home, back;
-
     SharedPreferences prefs;
-    private String totalAnount;
     SharedPreferences preferences, prefe;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     String getDateTopass, getDate_and_time, get_time;
@@ -75,31 +75,47 @@ public class Summary_leadId extends AppCompatActivity {
     ArrayList<String> getLabNmae;
     BarcodelistModel barcodelist;
     Barcodelist barcodelistData;
-    private String patientYearType, user, passwrd, getFinalSrNO, api_key, status, access;
-    private String patientGender;
-    private String sampleCollectionTime;
-    private String typeName;
-    public static com.android.volley.RequestQueue POstQue;
-    private ProgressDialog progressDialog;
-    private String message, RES_ID, barcode_patient_id;
-    private Global globalClass;
     int passvalue = 0;
-    private String TAG = Summary_leadId.this.getClass().getSimpleName();
-    private String outputDateStr;
     String leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
     String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
     String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData;
-    private String samplCollectiondate, referenceBy, leadREF_ID, labName, leadLABAddress;
     SourceILSMainModel sourceILSMainModel;
     REF_DR[] ref_drs;
     LABS[] labs;
     int convertSrno;
+    LinearLayout ll_patient_age, ll_patient_gender;
+    private String totalAnount;
+    private String patientYearType, user, passwrd, getFinalSrNO, api_key, access;
+    private String patientGender;
+    private String sampleCollectionTime;
+    private String typeName;
+    private ProgressDialog progressDialog;
+    private Global globalClass;
+    private String TAG = Summary_leadId.this.getClass().getSimpleName();
+    private String outputDateStr;
+    private String samplCollectiondate, referenceBy, leadREF_ID, labName, leadLABAddress;
     private String version;
     private int versionCode;
     private String sr_number;
     private int sr_number_pass_to_api;
     private String fulldate;
-    LinearLayout ll_patient_age, ll_patient_gender;
+
+    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
+        Date date = null;
+        try {
+            date = inputFormat.parse(time);
+            stringofconvertedTime = outputFormat.format(date);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringofconvertedTime;
+    }
 
     @SuppressLint("NewApi")
     @Override
@@ -237,25 +253,18 @@ public class Summary_leadId extends AppCompatActivity {
                 getReferenceNmae = new ArrayList<>();
                 getLabNmae = new ArrayList<>();
                 sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
-
                 if (sourceILSMainModel.getMASTERS().getLABS().length != 0) {
                     for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
                         getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
                         labs = sourceILSMainModel.getMASTERS().getLABS();
                     }
-                } else {
-//                    Toast.makeText(Summary_leadId.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
-
                 if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0) {
                     for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
                         getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
                         ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
                     }
-                } else {
-//                    Toast.makeText(Summary_leadId.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 }
-
             }
 
         }, new Response.ErrorListener() {
@@ -339,24 +348,6 @@ public class Summary_leadId extends AppCompatActivity {
         });
     }
 
-    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
-
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:SS");
-        Date date = null;
-        try {
-            date = inputFormat.parse(time);
-            stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringofconvertedTime;
-    }
-
-
     private void saveandClose() {
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -416,7 +407,6 @@ public class Summary_leadId extends AppCompatActivity {
         POstQue = Volley.newRequestQueue(Summary_leadId.this);
 
         MyPojoWoe myPojoWoe = new MyPojoWoe();
-
         Woe woe = new Woe();
         woe.setAADHAR_NO("");
         woe.setADDRESS(leadAddress);
@@ -429,7 +419,6 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setADDITIONAL1("CPL");
         woe.setBCT_ID(leadBCT);
         woe.setBRAND("TTL");
-
         woe.setCAMP_ID("");
         woe.setCONT_PERSON("");
         woe.setCONTACT_NO(leadMOBILE);
@@ -440,7 +429,6 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setGENDER(leadGENDER);
         woe.setLAB_ADDRESS(leadAddress);
         woe.setLAB_ID(leadLAB_ID);
-
         woe.setLAB_NAME(leadLAB_NAME);
         woe.setLEAD_ID(leadLEAD_ID);
         woe.setMAIN_SOURCE(user);
@@ -451,7 +439,6 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setPRODUCT(leadTESTS);
         woe.setPurpose("mobile application");
         woe.setREF_DR_ID(leadREF_ID);
-
         woe.setREF_DR_NAME(leadREF_BY);
         woe.setREMARKS("MOBILE");
         woe.setSPECIMEN_COLLECTION_TIME(getDateTopass + " " + GlobalClass.cutString + ".00");
@@ -466,7 +453,6 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setWO_STAGE(3);
         woe.setULCcode("");
         myPojoWoe.setWoe(woe);
-
         barcodelists = new ArrayList<>();
 
         for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
@@ -478,8 +464,7 @@ public class Summary_leadId extends AppCompatActivity {
         }
         myPojoWoe.setBarcodelistModel(barcodelists);
         myPojoWoe.setWoe_type("WOE");
-        myPojoWoe.setApi_key(api_key);//api_key
-
+        myPojoWoe.setApi_key(api_key);
 
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(myPojoWoe);
@@ -490,36 +475,29 @@ public class Summary_leadId extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
                 try {
                     Log.e(TAG, "onResponse: RESPONSE" + response);
-                    String finalJson = response.toString();
-                    JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                    RES_ID = parentObjectOtp.getString("RES_ID");
-                    barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
-                    message = parentObjectOtp.getString("message");
-                    status = parentObjectOtp.getString("status");
+                    Gson woeGson = new Gson();
+                    WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
                     progressDialog.dismiss();
-                    if (status.equalsIgnoreCase("SUCCESS")) {
-
-                        TastyToast.makeText(Summary_leadId.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        Intent i = new Intent(Summary_leadId.this, ManagingTabsActivity.class);
-                        i.putExtra("passToWoefragment", "frgamnebt");
-                        startActivity(i);
-
-                    } else if (status.equalsIgnoreCase(caps_invalidApikey)) {
-                        GlobalClass.redirectToLogin(Summary_leadId.this);
+                    if (woeResponseModel != null) {
+                        if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+                            TastyToast.makeText(Summary_leadId.this, woeResponseModel.getMessage(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent i = new Intent(Summary_leadId.this, ManagingTabsActivity.class);
+                            i.putExtra("passToWoefragment", "frgamnebt");
+                            startActivity(i);
+                        } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(Summary_leadId.this);
+                        } else {
+                            TastyToast.makeText(Summary_leadId.this, woeResponseModel.getMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
                     } else {
-                        TastyToast.makeText(Summary_leadId.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(Summary_leadId.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
-
-                } catch (JSONException e) {
-
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -528,20 +506,13 @@ public class Summary_leadId extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
                 } else {
-
                     System.out.println(error);
                 }
             }
         });
-        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
         POstQue.add(jsonObjectRequest1);
         Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
         Log.e(TAG, "saveandClose: URL" + jsonObj);
-
-
     }
-
 }

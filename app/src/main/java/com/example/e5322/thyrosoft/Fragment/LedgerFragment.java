@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -16,10 +15,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -27,12 +26,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.LedgerDetailsActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.LedgerSummaryResponseModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,18 +59,13 @@ public class LedgerFragment extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit;
     public static RequestQueue PostQue;
+    TextView open_bal, closing__bal, credit, debit, billed_amt, cash_cheque, credit_limit, txt_unbillwoe, txt_unbill_woe, txt_unbill_material;
     Spinner year, month;
-    private String mParam2;
     Button ledgerdetails;
     ArrayAdapter monthadap;
     LinearLayout parent_ll;
     int monthSEND = 0;
-    private OnFragmentInteractionListener mListener;
     int thisYear = 0;
     LinearLayout offline_img;
     ArrayList<String> years;
@@ -77,6 +73,10 @@ public class LedgerFragment extends RootFragment {
     int thismonth = 0;
     int MonthSEND = 0;
     ProgressDialog barProgressDialog;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private OnFragmentInteractionListener mListener;
     private boolean flagfor1sttime = false;
     private int selectedMonthPosition = 0;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
@@ -118,6 +118,9 @@ public class LedgerFragment extends RootFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_ledger, container, false);
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+
+        String CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
         open_bal = (TextView) view.findViewById(R.id.open_bal);
         credit_limit = (TextView) view.findViewById(R.id.credit_limit);
@@ -128,8 +131,18 @@ public class LedgerFragment extends RootFragment {
         cash_cheque = (TextView) view.findViewById(R.id.cash_cheque);
         offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
-        // TextView dateview = getActivity().findViewById(R.id.show_date);
 
+        txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
+        txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
+
+        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            txt_unbillwoe.setText("Unbilled Scan");
+        } else {
+            txt_unbillwoe.setText("Unbilled WOE");
+        }
+        txt_unbill_material = view.findViewById(R.id.unbilled_material);
+
+        // TextView dateview = getActivity().findViewById(R.id.show_date);
         // dateview.setVisibility(View.GONE);
 
         month = (Spinner) view.findViewById(R.id.month);
@@ -181,6 +194,7 @@ public class LedgerFragment extends RootFragment {
                 }
                 monthadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 month.setAdapter(monthadap);
+
                 if (Integer.parseInt(year.getSelectedItem().toString()) == thisYear) {
                     if (!flagfor1sttime) {
 
@@ -271,14 +285,10 @@ public class LedgerFragment extends RootFragment {
 
 
     private void GetData() {
-
         PostQue = Volley.newRequestQueue(getContext());
 
-
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = null;
         try {
-            // monthSEND= Integer.parseInt(month.getSelectedItem().toString());
-
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
 
             String user = prefs.getString("Username", null);
@@ -286,32 +296,29 @@ public class LedgerFragment extends RootFragment {
             String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
-           /* {
-                "apiKey":"qpa6@YJ9XY@LP8Hzxn4PFz3M5WU4NaGo)bsELEn8lFY=",
-                    "month":"04" ,
-                    "userCode":"TC001" ,
-                    "year":"2018"
-            }*/
-            jsonObject.put("apiKey", api_key);//api_key
-
-
+            LedgerSummaryRequestModel requestModel = new LedgerSummaryRequestModel();
+            requestModel.setApiKey(api_key);
             if (monthSEND < 10) {
-                jsonObject.put(Constants.month, "0" + monthSEND);
+                requestModel.setMonth("0" + monthSEND);
             } else {
-                jsonObject.put(Constants.month, monthSEND);
+                requestModel.setMonth("" + monthSEND);
             }
+            requestModel.setYear(year.getSelectedItem().toString());
+            requestModel.setUserCode(user);
 
-            jsonObject.put(Constants.UserCode_billing, user);
-            jsonObject.put(Constants.year, year.getSelectedItem());
+            Gson gson = new Gson();
+            String json = gson.toJson(requestModel);
 
+            jsonObject = new JSONObject(json);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                com.android.volley.Request.Method.POST, Api.LedgerSummLive, jsonObject,
+        Log.e(TAG, "GetData Request: " + jsonObject.toString());
+        Log.e(TAG, "GetData API: " + Api.LedgerSummLive);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LedgerSummLive, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
@@ -321,58 +328,67 @@ public class LedgerFragment extends RootFragment {
                                 barProgressDialog.dismiss();
                             }
                             Log.e(TAG, "onResponse: RESPONSE" + response);
+                            Gson gson = new Gson();
+                            LedgerSummaryResponseModel responseModel = gson.fromJson(String.valueOf(response),LedgerSummaryResponseModel.class);
 
-                            String responsetoshow = response.optString("response", "");
+                            if (responseModel!=null){
+                                if (!GlobalClass.isNull(responseModel.getResponse())&&responseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)){
+                                    GlobalClass.redirectToLogin(getActivity());
+                                }else {
+                                    SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
 
-                            if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(getActivity());
-                            } else {
+                                    String credit_limit_value = prefs.getString(Constants.credit_limit, null);
+
+                                    NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
+                                    String opening_bal = responseModel.getOpeningBalance();
+                                    String closing_bal = responseModel.getClosingBalance();
+                                    String credit_bal = responseModel.getCreditNotes();
+                                    String debit_bal = responseModel.getDebitNotes();
+                                    String billed_bal = responseModel.getBillAmount();
+                                    String cheque_bal = responseModel.getCashCheque();
+                                    String unbill_woe = responseModel.getUnbilledWOE();
+                                    String unbill_mat = responseModel.getUnbilledMaterial();
 
 
-                                SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
-                                String credit_limit_value = prefs.getString("credit_limit", "");
+                                    int openingbal = Integer.parseInt(opening_bal);
+                                    int closingbal = Integer.parseInt(closing_bal);
+                                    int creditbal = Integer.parseInt(credit_bal);
+                                    int debitbal = Integer.parseInt(debit_bal);
+                                    int billedbal = Integer.parseInt(billed_bal);
+                                    int chequebal = Integer.parseInt(cheque_bal);
+                                    int credit_bal_ltd = Integer.parseInt(credit_limit_value);
+                                    int unbillwoe = Integer.parseInt(unbill_woe);
+                                    int unbillmat = Integer.parseInt(unbill_mat);
 
-                                NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
-                                String opening_bal = response.get(Constants.openingBalance).toString();
-                                String closing_bal = response.get(Constants.closingBalance).toString();
-                                String credit_bal = response.get(Constants.creditNotes).toString();
-                                String debit_bal = response.get(Constants.debitNotes).toString();
-                                String billed_bal = response.get(Constants.billAmount).toString();
-                                String cheque_bal = response.get(Constants.cashCheque).toString();
+                                    String ope_bal_str = numberFormat.format(openingbal);
+                                    String clos_bal_str = numberFormat.format(closingbal);
+                                    String credit_bal_str = numberFormat.format(creditbal);
+                                    String debit_bal_str = numberFormat.format(debitbal);
+                                    String billed_bal_str = numberFormat.format(billedbal);
+                                    String cheque_bal_str = numberFormat.format(chequebal);
+                                    String str_unbillwoe = numberFormat.format(unbillwoe);
+                                    String str_unbillmat = numberFormat.format(unbillmat);
+                                    String credit_bal_str_value = numberFormat.format(credit_bal_ltd);
 
+                                    open_bal.setText(ope_bal_str);
+                                    closing__bal.setText(clos_bal_str);
+                                    credit.setText(credit_bal_str);
+                                    debit.setText(debit_bal_str);
+                                    billed_amt.setText(billed_bal_str);
+                                    cash_cheque.setText(cheque_bal_str);
+                                    txt_unbill_woe.setText(str_unbillwoe);
+                                    txt_unbill_material.setText(str_unbillmat);
 
-                                int openingbal = Integer.parseInt(opening_bal);
-                                int closingbal = Integer.parseInt(closing_bal);
-                                int creditbal = Integer.parseInt(credit_bal);
-                                int debitbal = Integer.parseInt(debit_bal);
-                                int billedbal = Integer.parseInt(billed_bal);
-                                int chequebal = Integer.parseInt(cheque_bal);
-                                int credit_bal_ltd = Integer.parseInt(credit_limit_value);
-
-                                String ope_bal_str = numberFormat.format(openingbal);
-                                String clos_bal_str = numberFormat.format(closingbal);
-                                String credit_bal_str = numberFormat.format(creditbal);
-                                String debit_bal_str = numberFormat.format(debitbal);
-                                String billed_bal_str = numberFormat.format(billedbal);
-                                String cheque_bal_str = numberFormat.format(chequebal);
-                                String credit_bal_str_value = numberFormat.format(credit_bal_ltd);
-
-                                open_bal.setText(ope_bal_str);
-                                closing__bal.setText(clos_bal_str);
-                                credit.setText(credit_bal_str);
-                                debit.setText(debit_bal_str);
-                                billed_amt.setText(billed_bal_str);
-                                cash_cheque.setText(cheque_bal_str);
-                                credit_limit.setText("Credit Limit :" + credit_bal_str_value);
-
-                                JSONArray jsonArray = response.optJSONArray(Constants.billingList);
+                                    credit_limit.setText("Credit Limit :" + credit_bal_str_value);
+                                }
+                            }else {
+                                Toast.makeText(getActivity(), ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                             }
-
                         } catch (Exception e) {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
-                            e.printStackTrace();
+                            Log.e(TAG, "on error-->" + e.getLocalizedMessage());
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {
@@ -384,14 +400,12 @@ public class LedgerFragment extends RootFragment {
                 try {
                     System.out.println("error ala parat " + error);
                 } catch (Exception e) {
-
                     e.printStackTrace();
                 }
             }
         });
-
         queue.add(jsonObjectRequest);
-
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
         Log.e(TAG, "GetData: json" + jsonObject);
     }

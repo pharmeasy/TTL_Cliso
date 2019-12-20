@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -28,8 +27,10 @@ import com.example.e5322.thyrosoft.Adapter.Fragment1_ledgerDet_adapter;
 import com.example.e5322.thyrosoft.Adapter.VIewPagerAdapter_ledgerDet;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,12 +55,8 @@ public class Ledger_details extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static RequestQueue PostQue;
     ViewPager viewpager;
-    private OnFragmentInteractionListener mListener;
     Spinner year, month;
     TextView all, credit, debit;
     int monthSEND = 0;
@@ -68,19 +65,22 @@ public class Ledger_details extends RootFragment {
     ArrayList<String> years;
     ArrayList<String> monthlist;
     int thismonth = 0;
-    private int selectedMonthPosition = 0;
     int yearSpinner = 0;
-    public static RequestQueue PostQue;
     ArrayAdapter monthadap;
     ProgressDialog barProgressDialog;
     Fragment1_ledgerDet_adapter adapter;
-    private String TAG = Ledger_details.class.getSimpleName();
     DateFormatSymbols symbols = new DateFormatSymbols();
     String[] monthNames = symbols.getMonths();
+    int flagforsetFragment = 0;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private OnFragmentInteractionListener mListener;
+    private int selectedMonthPosition = 0;
+    private String TAG = Ledger_details.class.getSimpleName();
     private boolean flagfor1sttime = false;
     private LinearLayout offline_img;
 
-    int flagforsetFragment=0;
     public Ledger_details() {
         // Required empty public constructor
     }
@@ -203,7 +203,6 @@ public class Ledger_details extends RootFragment {
                 }
 
 
-
             }
 
             @Override
@@ -296,7 +295,7 @@ public class Ledger_details extends RootFragment {
                     credit.setTextColor(getResources().getColor(R.color.colorBlack));
 
                 }
-                flagforsetFragment=position;
+                flagforsetFragment = position;
             }
 
             @Override
@@ -304,7 +303,6 @@ public class Ledger_details extends RootFragment {
 
             }
         });
-
 
 
         all.setOnClickListener(new View.OnClickListener() {
@@ -380,7 +378,7 @@ public class Ledger_details extends RootFragment {
         PostQue = Volley.newRequestQueue(getContext());
 
 
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = null;
         try {
             // monthSEND= Integer.parseInt(month.getSelectedItem().toString());
 
@@ -391,28 +389,23 @@ public class Ledger_details extends RootFragment {
             String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
-           /* {
-                "apiKey":"qpa6@YJ9XY@LP8Hzxn4PFz3M5WU4NaGo)bsELEn8lFY=",
-                    "month":"04" ,
-                    "userCode":"TC001" ,
-                    "year":"2018"
-            }*/
+            GlobalClass.MONTH = String.valueOf(monthSEND);
+            GlobalClass.YEAR = String.valueOf(year.getSelectedItem());
 
-
-            jsonObject.put("apiKey", api_key);//api_key
-
+            LedgerSummaryRequestModel requestModel = new LedgerSummaryRequestModel();
+            requestModel.setApiKey(api_key);
             if (monthSEND < 10) {
-                jsonObject.put(Constants.month, "0" + monthSEND);
+                requestModel.setMonth("0" + monthSEND);
             } else {
-                jsonObject.put(Constants.month, monthSEND);
+                requestModel.setMonth("" + monthSEND);
             }
-            GlobalClass.MONTH=String.valueOf(monthSEND);
-            GlobalClass.YEAR=String.valueOf(year.getSelectedItem());
+            requestModel.setYear(year.getSelectedItem().toString());
+            requestModel.setUserCode(user);
 
+            Gson gson = new Gson();
+            String json = gson.toJson(requestModel);
 
-            jsonObject.put(Constants.UserCode_billing, user);
-            jsonObject.put(Constants.year, year.getSelectedItem());
-
+            jsonObject = new JSONObject(json);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -486,13 +479,13 @@ public class Ledger_details extends RootFragment {
                             }
 */
                             viewpager.setAdapter(buildAdapter());
-                            if(flagforsetFragment==0 && viewpager!=null){
+                            if (flagforsetFragment == 0 && viewpager != null) {
                                 viewpager.setCurrentItem(0);
-                            }else if(flagforsetFragment==1){
+                            } else if (flagforsetFragment == 1) {
                                 viewpager.setCurrentItem(1);
-                            }else if(flagforsetFragment==2){
+                            } else if (flagforsetFragment == 2) {
                                 viewpager.setCurrentItem(2);
-                            }else{
+                            } else {
                                 viewpager.setCurrentItem(0);
                             }
 
@@ -516,8 +509,8 @@ public class Ledger_details extends RootFragment {
                 }
             }
         });
-
         queue.add(jsonObjectRequest);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
         Log.e(TAG, "GetData: json" + jsonObject);
     }

@@ -71,6 +71,14 @@
         <item>PGC</item>
     </string-array>
 
+    <string-array name="pmode">
+        <item>Select Payment mode</item>
+        <item>Cash</item>
+        <item>online</item>
+        <item>Card</item>
+    </string-array>
+
+
     <string-array name="mode_spinner_values">
         <item>Select Mode</item>
         <item>Air Cargo</item>

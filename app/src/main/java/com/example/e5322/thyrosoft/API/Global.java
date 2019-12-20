@@ -39,30 +39,30 @@ import static com.example.e5322.thyrosoft.API.Constants.PAYUMONEYKEY_PRODUCT;
 public class Global {
 
     public static int OTP = 0;
-    public static String type ="";
-    public static String Username="";
+    public static String type = "";
+    public static String Username = "";
     public static int BatchCount;
     public static String BatchMocde;
-    public static int Amounttotal ;
-    public static double TotalItemsCount ;
-    public static  double TotalPaymentamount=0;
-    public static  double   addTtoal= 0;
-    public static  double TotalWeight=0;
+    public static int Amounttotal;
+    public static double TotalItemsCount;
+    public static double TotalPaymentamount = 0;
+    public static double addTtoal = 0;
+    public static double TotalWeight = 0;
     public static Matrix matrrix;
-    public static int InDetailsFlag=0;
-    public static int Serachnow=0;
-    public static String mobile ="";
-    public static String newOtp="";
-    public static int detailsscreen=0;
-    public static int searchgetcontext=0;
-    public static String UserName_Profile="";
-    public static int mainActivity=0;
+    public static int InDetailsFlag = 0;
+    public static int Serachnow = 0;
+    public static String mobile = "";
+    public static String newOtp = "";
+    public static int detailsscreen = 0;
+    public static int searchgetcontext = 0;
+    public static String UserName_Profile = "";
+    public static int mainActivity = 0;
     public static String BASE_URL = MAINURL;
     public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
     private Context context;
 
 
-    public  static ArrayList<String> tabname_home = new ArrayList<>();
+    public static ArrayList<String> tabname_home = new ArrayList<>();
 
 
     ProgressDialog progressDialog;
@@ -70,15 +70,17 @@ public class Global {
     public Global(Context context) {
         this.context = context;
     }
+
     public void hideProgressDialog() {
 
         try {
-            if (progressDialog!=null&&progressDialog.isShowing())
+            if (progressDialog != null && progressDialog.isShowing())
                 progressDialog.dismiss();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {
         System.out.println("Logging Checkout event in Fabrics!!");
         try {
@@ -86,15 +88,16 @@ public class Global {
                     .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString("rate"))))
                     .putCurrency(Currency.getInstance("INR"))
                     .putItemCount(count)
-                    .putCustomAttribute("PayType",Paytype)
-                    .putCustomAttribute("Products",jobj.getString("product")));
+                    .putCustomAttribute("PayType", Paytype)
+                    .putCustomAttribute("Products", jobj.getString("product")));
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void showCustomToast(Activity activity, String message) {
-        if (activity!=null) {
+    public static void showCustomToast(Activity activity, String message) {
+
+        if (activity != null) {
             Context context = activity.getApplicationContext();
             LayoutInflater inflater = activity.getLayoutInflater();
 
@@ -111,6 +114,7 @@ public class Global {
             toast.setDuration(Toast.LENGTH_LONG);
             toast.show();
         }
+
     }
 
     public void StartCheckout_EVENTLOGGING1(JSONObject jobj, int count, String Paytype, String Gateway) {
@@ -120,9 +124,9 @@ public class Global {
                     .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString(PAYUMONEYKEY_AMOUNT))))
                     .putCurrency(Currency.getInstance("INR"))
                     .putItemCount(count)
-                    .putCustomAttribute("PayType",Paytype)
-                    .putCustomAttribute("Gateway",Gateway)
-                    .putCustomAttribute("Products",jobj.getString(PAYUMONEYKEY_PRODUCT)));
+                    .putCustomAttribute("PayType", Paytype)
+                    .putCustomAttribute("Gateway", Gateway)
+                    .putCustomAttribute("Products", jobj.getString(PAYUMONEYKEY_PRODUCT)));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -209,17 +213,21 @@ public class Global {
         return boolStatus;
     }
 
-    public static Boolean checkForApi21() {    Boolean boolStatus = false;
+    public static Boolean checkForApi21() {
+        Boolean boolStatus = false;
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-            boolStatus = true;    } else {        boolStatus = false;    }
-        return boolStatus;}
+            boolStatus = true;
+        } else {
+            boolStatus = false;
+        }
+        return boolStatus;
+    }
 
     public void showProgressDialog() {
-        if (progressDialog!=null&&!progressDialog.isShowing())
+        if (progressDialog != null && !progressDialog.isShowing())
 
-            if(!((Activity) context).isFinishing())
-            {
+            if (!((Activity) context).isFinishing()) {
                 progressDialog.show();
             }
     }
@@ -228,6 +236,7 @@ public class Global {
     private class ScaleListener extends ScaleGestureDetector.
             SimpleOnScaleGestureListener {
         private Matrix matrix = new Matrix();
+
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             float scaleFactor = detector.getScaleFactor();

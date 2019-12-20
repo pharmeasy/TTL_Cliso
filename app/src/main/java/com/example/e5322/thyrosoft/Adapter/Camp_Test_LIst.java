@@ -104,13 +104,13 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
         viewHolder.test_rate_cal_txt.setVisibility(View.GONE);
 
 
-        if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+     /*   if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
             viewHolder.txt_type.setText("T");
         } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
             viewHolder.txt_type.setText("P");
         } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
             viewHolder.txt_type.setText("PO");
-        }
+        }*/
         boolean isChecked = false;
         viewHolder.isSelectedDueToParent = false;
         viewHolder.parentTestCode = "";
@@ -290,7 +290,7 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
             super(itemView);
             test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
             test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
-            txt_type = (TextView) itemView.findViewById(R.id.txt_type);
+            //txt_type = (TextView) itemView.findViewById(R.id.txt_type);
             iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
             iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);

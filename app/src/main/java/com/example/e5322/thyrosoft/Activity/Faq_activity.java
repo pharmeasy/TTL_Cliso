@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,38 +32,38 @@ import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQ_Model;
 import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQandANSArray;
 import com.example.e5322.thyrosoft.Fragment.FAQ_Fragment;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.ResponseModels.FAQTypesResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Faq_activity extends AppCompatActivity {
+    public static ArrayList<String> type_spinner_value;
     ImageView add;
-    ImageView back,home;
-
+    ImageView back, home;
     View viewfab;
     FAQ_Model faq_model;
     ExpandableListAdapter_FAQ expandableListAdapter;
     View viewMain;
-    private RequestQueue requestQueueSpinner_value, requestQueue_FAQ;
     View view;
     ExpandableListView expandable_list_faq;
-    public static ArrayList<String> type_spinner_value;
     Spinner category_spinner;
     String user, passwrd, access, api_key, client_type;
+    ProgressDialog barProgressDialog;
+    private RequestQueue requestQueueSpinner_value, requestQueue_FAQ;
     private SharedPreferences prefs;
     private FAQ_Fragment.OnFragmentInteractionListener mListener;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    ProgressDialog barProgressDialog;
     private Global globalClass;
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +72,8 @@ public class Faq_activity extends AppCompatActivity {
 
         expandable_list_faq = (ExpandableListView) findViewById(R.id.faq_list_expandable);
         category_spinner = (Spinner) findViewById(R.id.category_spinner);
-        back=(ImageView)findViewById(R.id.back);
-        home=(ImageView)findViewById(R.id.home);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,10 +95,12 @@ public class Faq_activity extends AppCompatActivity {
         api_key = prefs.getString("API_KEY", null);
         client_type = prefs.getString("CLIENT_TYPE", null);
 
-        if (globalClass.checkForApi21()) {    Window window = getWindow();
+        if (Global.checkForApi21()) {
+            Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(Faq_activity.this);
         Gson gson = new Gson();
@@ -163,72 +164,68 @@ public class Faq_activity extends AppCompatActivity {
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/Get_Faq_Type_Spinner", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                Log.e(TAG, "onResponse: response"+response );
-                String finalJson = response.toString();
-                if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
-
-                JSONObject parentObjectOtp = null;
-                type_spinner_value = new ArrayList<>();
+                Log.e(TAG, "onResponse: response" + response);
                 try {
-                    parentObjectOtp = new JSONObject(finalJson);
-                    JSONArray getSpinner_type = parentObjectOtp.getJSONArray("FAQ_type_spinnner_names");
-                    String get_response = parentObjectOtp.getString("response");
-
-                    if (get_response.equals("Success")) {
-                        for (int i = 0; i < getSpinner_type.length(); i++) {
-                            type_spinner_value.add(getSpinner_type.get(i).toString());
-                        }
-                        ArrayAdapter type_value_spinner = new ArrayAdapter(Faq_activity.this, R.layout.spinnerproperty, type_spinner_value);
-                        category_spinner.setAdapter(type_value_spinner);
-
-                        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(Faq_activity.this);
-                        SharedPreferences.Editor editor = sharedPrefs.edit();
-                        Gson gson = new Gson();
-                        String json = gson.toJson(type_spinner_value);
-                        editor.putString(TAG, json);
-                        editor.commit();
-
-                        getAll_FAQ_data();
-
-                    } else {
-
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
                     }
+                    FAQTypesResponseModel responseModel = new Gson().fromJson(String.valueOf(response), FAQTypesResponseModel.class);
+                    if (responseModel != null) {
+                        if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
+                            if (responseModel.getFAQ_type_spinnner_names() != null && responseModel.getFAQ_type_spinnner_names().size() > 0) {
+                                type_spinner_value = new ArrayList<>();
+                                for (int i = 0; i < responseModel.getFAQ_type_spinnner_names().size(); i++) {
+                                    type_spinner_value.add(responseModel.getFAQ_type_spinnner_names().get(i));
+                                }
+                                ArrayAdapter type_value_spinner = new ArrayAdapter(Faq_activity.this, R.layout.spinnerproperty, type_spinner_value);
+                                category_spinner.setAdapter(type_value_spinner);
 
-                } catch (JSONException e) {
+                                SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(Faq_activity.this);
+                                SharedPreferences.Editor editor = sharedPrefs.edit();
+                                Gson gson = new Gson();
+                                String json = gson.toJson(type_spinner_value);
+                                editor.putString(TAG, json);
+                                editor.apply();
+
+                                getAll_FAQ_data();
+                            } else {
+                                Toast.makeText(Faq_activity.this, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(Faq_activity.this, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(Faq_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JsonSyntaxException e) {
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
                         TastyToast.makeText(Faq_activity.this, "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        // Show timeout error message
                     }
-
                 }
             }
         });
-        jsonObjectRequestProfile.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestProfile);
         requestQueueSpinner_value.add(jsonObjectRequestProfile);
-        Log.e(TAG, "getSpinnerdata: URL"+jsonObjectRequestProfile );
+        Log.e(TAG, "getSpinnerdata: URL" + jsonObjectRequestProfile);
     }
+
     private void getAll_FAQ_data() {
         String getSpinner_value = category_spinner.getSelectedItem().toString();
         requestQueue_FAQ = Volley.newRequestQueue(Faq_activity.this);
-
-
-
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
-                Log.e(TAG, "onResponse: response"+response );
+                Log.e(TAG, "onResponse: response" + response);
                 Gson gson = new Gson();
                 faq_model = gson.fromJson(response.toString(), FAQ_Model.class);
 
@@ -237,22 +234,22 @@ public class Faq_activity extends AppCompatActivity {
                 Gson gson22 = new Gson();
                 String json22 = gson22.toJson(faq_model);
                 prefsEditor1.putString("FAQ_DATA", json22);
-                prefsEditor1.commit();
+                prefsEditor1.apply();
 
-                if (faq_model.getResponse().equals("Success")) {
-                    if (faq_model.getFAQandANSArray() != null) {
-                        ArrayList<FAQandANSArray> faq_list = new ArrayList<>();
-                        for (int i = 0; i < faq_model.getFAQandANSArray().length; i++) {
-                            faq_list.add(faq_model.getFAQandANSArray()[i]);
+                if (faq_model != null) {
+                    if (faq_model.getResponse().equals("Success")) {
+                        if (faq_model.getFAQandANSArray() != null) {
+                            ArrayList<FAQandANSArray> faq_list = new ArrayList<>();
+                            for (int i = 0; i < faq_model.getFAQandANSArray().length; i++) {
+                                faq_list.add(faq_model.getFAQandANSArray()[i]);
+                            }
+                            expandableListAdapter = new ExpandableListAdapter_FAQ(faq_list, Faq_activity.this);
+                            expandable_list_faq.setAdapter(expandableListAdapter);
                         }
-                        expandableListAdapter = new ExpandableListAdapter_FAQ(faq_list, Faq_activity.this);
-                        expandable_list_faq.setAdapter(expandableListAdapter);
                     }
                 } else {
-
-
+                    Toast.makeText(Faq_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -260,18 +257,12 @@ public class Faq_activity extends AppCompatActivity {
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
                         TastyToast.makeText(Faq_activity.this, "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        // Show timeout error message
                     }
-
                 }
             }
         });
-        jsonObjectRequestFAQ.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestFAQ);
         requestQueue_FAQ.add(jsonObjectRequestFAQ);
-        Log.e(TAG, "getAll_FAQ_data: URL"+jsonObjectRequestFAQ );
+        Log.e(TAG, "getAll_FAQ_data: URL" + jsonObjectRequestFAQ);
     }
-
 }
