@@ -630,7 +630,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        ) {
+                ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
@@ -824,7 +824,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        ) {
+                ) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
@@ -3802,7 +3802,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                                                    ) {
+                                            ) {
                                                 TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
@@ -4816,7 +4816,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                                                    ) {
+                                            ) {
                                                 TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
@@ -6019,7 +6019,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (getView() != null) {
             isViewShown = true;
-            ((ManagingTabsActivity) getActivity()).getProfileDetails(getActivity());
+            if (GlobalClass.isNetworkAvailable(getActivity())) {
+                ((ManagingTabsActivity) getActivity()).getProfileDetails(getActivity());
+            }
         } else {
             isViewShown = false;
         }
@@ -6096,6 +6098,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 break;
 
             case R.id.btn_verifyotp:
+
                 if (TextUtils.isEmpty(et_otp.getText().toString())) {
                     Toast.makeText(getActivity(), "Please enter OTP", Toast.LENGTH_SHORT).show();
                 } else {

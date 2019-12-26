@@ -877,6 +877,8 @@ public class Login extends Activity implements View.OnClickListener {
                                         editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
                                         editor.apply();
 
+                                        USER_CODE11=loginResponseModel.getUSER_CODE();
+
                                         FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.TOPIC);
                                         FirebaseMessaging.getInstance().subscribeToTopic(Constants.TOPIC);
                                         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {

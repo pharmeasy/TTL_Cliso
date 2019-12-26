@@ -13,7 +13,6 @@ import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
-import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;
@@ -44,10 +43,12 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 // First Fragment of Second Tab
                 result = new Offline_woe();
                 break;
+
             case 2:
                 // First Fragment of Third Tab
                 result = new TrackDetails();
                 break;
+
             case 3:
                 // First Fragment of Third Tab
                 result = new FilterReport();
@@ -55,21 +56,26 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
             case 4:
                 // First Fragment of Third Tab
-                result = new LedgerFragment();
+                result = new NHFFragment();
                 break;
+
             case 5:
                 // First Fragment of Third Tab
-                result = new Wind_up_fragment();
+                result = new LedgerFragment();
                 break;
             case 6:
                 // First Fragment of Third Tab
-                result = new CHNfragment();
+                result = new Wind_up_fragment();
                 break;
             case 7:
                 // First Fragment of Third Tab
-                result = new BillingSummary();
+                result = new CHNfragment();
                 break;
             case 8:
+                // First Fragment of Third Tab
+                result = new BillingSummary();
+                break;
+            case 9:
                 // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
@@ -83,7 +89,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 9;
+        return 10;
     }
 
     @Override
@@ -98,15 +104,19 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return resources.getString(R.string.page_3);
             case 3:
                 return resources.getString(R.string.page_4);
+
             case 4:
-                return resources.getString(R.string.page_5);
+                return resources.getString(R.string.petct);
+
             case 5:
-                return resources.getString(R.string.page_6);
+                return resources.getString(R.string.page_5);
             case 6:
-                return resources.getString(R.string.page_7);
+                return resources.getString(R.string.page_6);
             case 7:
-                return resources.getString(R.string.page_8);
+                return resources.getString(R.string.page_7);
             case 8:
+                return resources.getString(R.string.page_8);
+            case 9:
                 return resources.getString(R.string.page_9);
 
             default:

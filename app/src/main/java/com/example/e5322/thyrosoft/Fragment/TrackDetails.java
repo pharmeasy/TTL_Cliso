@@ -744,11 +744,15 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                         download.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
-                                                if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
-                                                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
-                                                    startActivity(browserIntent);
-                                                } else {
-                                                    TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                                try {
+                                                    if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
+                                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
+                                                        startActivity(browserIntent);
+                                                    } else {
+                                                        TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
                                                 }
                                             }
                                         });
@@ -1051,11 +1055,13 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         Button ok = dialog.findViewById(R.id.ok);
         dialog.getWindow().setAttributes(lp);
         dialog.show();
+
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 email_id_string = emailid.getText().toString();
+
                 if (!email_id_string.equals("")) {
                     if (!emailid.getText().toString().matches(emailPattern)) {
                         Toast.makeText(getContext(), ToastFile.invalid_eml, Toast.LENGTH_SHORT).show();
@@ -1069,8 +1075,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 //GetData(patient_ID,barcode,email,date);
 //                SendMail();
-
-
             }
         });
 
@@ -1126,10 +1130,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     public void onResponse(JSONObject response) {
                         try {
                             Log.e(TAG, "onResponse: RESPONSE" + response);
-                            /*"name":"SELVI HARSHINI III (14Y\/F)"*/
                             TastyToast.makeText(getContext(), response.optString("response"), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

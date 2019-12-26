@@ -23,12 +23,12 @@ import java.util.Map;
 
 public class POSTBookLeadController {
     private static final String TAG = POSTBookLeadController.class.getSimpleName();
+    ProgressDialog progressDialog;
+    String header;
     private RequestQueue requestQueue;
     private Activity mActivity;
     private GlobalClass globalClass;
     private ConfirmbookDetail confirmbookDetail;
-    ProgressDialog progressDialog;
-    String header;
 
     public POSTBookLeadController(Activity activity, ConfirmbookDetail confirmbookDetail, String header) {
         this.mActivity = activity;
@@ -47,6 +47,7 @@ public class POSTBookLeadController {
             String url = Api.LEAD_BOOKING;
             globalClass.printLog("Error", TAG, "postBookLeadAPI", url);
             globalClass.printLog("Error", TAG, "postBookLeadAPI post data", "" + jsonObject);
+
             JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {

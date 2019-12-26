@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.example.e5322.thyrosoft.Activity.ScanSummaryActivity;
 import com.example.e5322.thyrosoft.R;
 
-public class NHFFragment extends Fragment  {
+public class NHFFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -75,6 +75,7 @@ public class NHFFragment extends Fragment  {
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_entered.setVisibility(View.GONE);
+
                 PETCT_Frag petct_frag = new PETCT_Frag();
                 replaceFragment(petct_frag);
             }
@@ -83,6 +84,7 @@ public class NHFFragment extends Fragment  {
         unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_entered.setVisibility(View.VISIBLE);
                 enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -90,9 +92,9 @@ public class NHFFragment extends Fragment  {
 
                 ScanSummaryActivity scanSummaryActivity = new ScanSummaryActivity();
                 replaceFragment(scanSummaryActivity);
+
             }
         });
-
     }
 
 

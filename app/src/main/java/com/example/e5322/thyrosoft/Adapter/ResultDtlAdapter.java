@@ -89,7 +89,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         }
 
         user_code = sharedpreferences.getString("USER_CODE", null);
-        Log.e(TAG, "<< USER_CODE >> "+user_code );
+        Log.e(TAG, "<< USER_CODE >> " + user_code);
 
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView Refby = (TextView) convertView.findViewById(R.id.Refby);
@@ -129,14 +129,18 @@ public class ResultDtlAdapter extends BaseAdapter {
             clon.setVisibility(View.GONE);
         }
 
-        if (!GlobalClass.isNull(trackdet.get(position).getPdflink())) {
-            download.setVisibility(View.VISIBLE);
-            if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
-                share.setVisibility(View.VISIBLE);
+        try {
+            if (!GlobalClass.isNull(trackdet.get(position).getPdflink())) {
+                download.setVisibility(View.VISIBLE);
+                if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+                    share.setVisibility(View.VISIBLE);
+                }
+            } else if (trackdet.get(position).getPdflink().equals("null")) {
+                download.setVisibility(View.INVISIBLE);
+                share.setVisibility(View.INVISIBLE);
             }
-        } else if (trackdet.get(position).getPdflink().equals("null")) {
-            download.setVisibility(View.INVISIBLE);
-            share.setVisibility(View.INVISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!GlobalClass.isNull(trackdet.get(position).getEmail())) {
@@ -150,9 +154,13 @@ public class ResultDtlAdapter extends BaseAdapter {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackdet.get(position).getPdflink()));
-                    mContext.startActivity(browserIntent);
+                try {
+                    if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackdet.get(position).getPdflink()));
+                        mContext.startActivity(browserIntent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -182,6 +190,7 @@ public class ResultDtlAdapter extends BaseAdapter {
                 ShowMailAlert(trackdet.get(position).getPatient_id(), trackdet.get(position).getBarcode(), trackdet.get(position).getEmail(), trackdet.get(position).getDate());
             }
         });
+
         return convertView;
     }
 

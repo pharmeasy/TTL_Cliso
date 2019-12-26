@@ -298,6 +298,9 @@ public class RateCalculatorFragment extends Fragment {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
+
+        Log.e(TAG, "onCreateView TYPE : "+access );
+
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             linear_layout_data.setVisibility(View.GONE);

@@ -88,20 +88,28 @@ public class PETCT_Frag extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public String centerId = "", centerAddress, centerCity, centerName, price, patientName, mobile, email, remarks;
+    public Button btn_submit, btn_reset;
+    Calendar myCalendar;
+    RadioButton rb_gender, rb_dib, rb_age;
+    Date fromdate;
+    RadioGroup radio_gender, radio_diab, radio_age;
+    ProgressDialog progressDialog;
+    Date To_date;
+    RelativeLayout rel_dob;
+    String user;
+    ImageView enter_arrow_enter, enter_arrow_entered;
     private String myFormat = "dd-MM-yyyy";
     private Spinner spn_city, spn_service, spn_slot;
     private Activity activity;
-    public String centerId = "", centerAddress, centerCity, centerName, price, patientName, mobile, email, remarks;
     private String TAG = PETCT_Frag.class.getSimpleName();
     private EditText edt_name, edt_mname, edt_lname, edt_mobile, edt_email, edt_remarks, edt_coupon, edt_age;
-    public Button btn_submit, btn_reset;
     private Gson gson;
     private ConnectionDetector cd;
     private TextView tv_discount, enter;
     private boolean resultcheck = false;
     private View v;
     private boolean isViewShown = false;
-    Calendar myCalendar;
     private LinearLayout ll_discount, ll_coupon, sub_lin, enter_ll_unselected;
     private Context context;
     private List<CenterList_Model> centerListModels;
@@ -111,7 +119,6 @@ public class PETCT_Frag extends Fragment {
     private int newAmount;
     private String serviceId = "";
     private String couponCode, cal_age;
-    RadioButton rb_gender, rb_dib, rb_age;
     private String fullname, gendername = "", diabeticsname = "", str_slot, str_age = "";
     private String serviceName = "", To_formateDate;
     private DecimalFormat decimalFormat;
@@ -119,29 +126,6 @@ public class PETCT_Frag extends Fragment {
     private String putDate, showDate;
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     private String getFormatDate, from_formateDate;
-    Date fromdate;
-    RadioGroup radio_gender, radio_diab, radio_age;
-    private int mYear, mMonth, mDay;
-    private String header;
-    private String servicetype;
-    private String closingbal;
-    ProgressDialog progressDialog;
-    Date To_date;
-    RelativeLayout rel_dob;
-    String user;
-    ImageView enter_arrow_enter, enter_arrow_entered;
-    private SharedPreferences prefs;
-    private String api_key="";
-
-    public static PETCT_Frag newInstance(String param1, String param2) {
-        PETCT_Frag fragment = new PETCT_Frag();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -157,8 +141,8 @@ public class PETCT_Frag extends Fragment {
             updateLabel();
         }
     };
-
-
+    private int mYear, mMonth, mDay;
+    private String header;
     final DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -179,7 +163,19 @@ public class PETCT_Frag extends Fragment {
 
         }
     };
+    private String servicetype;
+    private String closingbal;
+    private SharedPreferences prefs;
+    private String api_key = "";
 
+    public static PETCT_Frag newInstance(String param1, String param2) {
+        PETCT_Frag fragment = new PETCT_Frag();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -248,11 +244,11 @@ public class PETCT_Frag extends Fragment {
                                 GlobalClass.hideProgress(context, progressDialog);
 
                                 SharedPreferences.Editor saveProfileDetails = getActivity().getSharedPreferences("profile", 0).edit();
-                                saveProfileDetails.putString("balance",response.getString(Constants.balance));
+                                saveProfileDetails.putString("balance", response.getString(Constants.balance));
                                 saveProfileDetails.commit();
 
                                 if (!TextUtils.isEmpty(response.getString(Constants.balance))) {
-                                    closingbal=response.getString(Constants.balance);
+                                    closingbal = response.getString(Constants.balance);
                                     GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(response.getString(Constants.balance)));
                                 } else {
                                     txt_ledgerbal.setText("");
@@ -1126,7 +1122,9 @@ public class PETCT_Frag extends Fragment {
     public void onResume() {
         super.onResume();
         try {
-            ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
+            if (GlobalClass.isNetworkAvailable(getActivity())) {
+                ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

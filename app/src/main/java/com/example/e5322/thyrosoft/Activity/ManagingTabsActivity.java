@@ -278,9 +278,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (name != null) {
             navigationDrawerNameTSP.setText("HI " + name);
             ecode.setText("(" + usercode + ")");
+        } else {
+            getProfileDetails(ManagingTabsActivity.this);
         }
 
-        getProfileDetails(ManagingTabsActivity.this);
 
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
@@ -309,9 +310,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 bundle.putInt("position", 0);
             } else {
                 if (access.equalsIgnoreCase(Constants.ADMIN)) {
-                    bundle.putInt("position", 6);
+                    bundle.putInt("position", 7);
                 } else if (access.equalsIgnoreCase(Constants.STAFF)) {
-                    bundle.putInt("position", 5);
+                    bundle.putInt("position", 6);
                 }
             }
             carouselFragment = new CarouselFragment();
@@ -425,11 +426,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, carouselFragment)
                         .commit();
-
-
             }
-
-
         } else if (id == R.id.ratecal) {
 
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -456,9 +453,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 Intent startIntent = new Intent(ManagingTabsActivity.this, Payment_Activity.class);
                 startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
                 startActivity(startIntent);
-               /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                startActivity(httpIntent);*/
             }
 
 

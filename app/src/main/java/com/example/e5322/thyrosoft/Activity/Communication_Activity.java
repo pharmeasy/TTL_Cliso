@@ -206,7 +206,7 @@ public class Communication_Activity extends AppCompatActivity {
 
     private void Getdata() {
 
-        barProgressDialog = new ProgressDialog(Communication_Activity.this);
+    /*    barProgressDialog = new ProgressDialog(Communication_Activity.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -216,7 +216,9 @@ public class Communication_Activity extends AppCompatActivity {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
         PostQue = Volley.newRequestQueue(Communication_Activity.this);
+*/
 
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Communication_Activity.this);
         JSONObject jsonObject = null;
         try {
             SharedPreferences prefs = Communication_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -250,11 +252,14 @@ public class Communication_Activity extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 try {
                     Log.e(TAG, "onResponse: RESPONSE" + response);
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                  /*  if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
-                    }
+                    }*/
+
+                    GlobalClass.hideProgress(Communication_Activity.this, progressDialog);
 
                     String getResponse = response.optString("response", "");
+
                     if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                         GlobalClass.redirectToLogin(Communication_Activity.this);
                     } else {

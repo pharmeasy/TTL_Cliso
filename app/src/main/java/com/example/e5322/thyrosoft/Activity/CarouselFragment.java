@@ -89,6 +89,7 @@ public class CarouselFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
             nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
             pager.setAdapter(nhf_pageradapter);
@@ -119,6 +120,8 @@ public class CarouselFragment extends Fragment {
         if (Constants.tab_flag.equalsIgnoreCase("1")) {
             if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 pager.setCurrentItem(0);
+            }else{
+                pager.setCurrentItem(4);
             }
             Constants.tab_flag = "0";
         } else {

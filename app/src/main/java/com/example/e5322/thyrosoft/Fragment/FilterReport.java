@@ -34,12 +34,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
 import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
@@ -54,7 +52,6 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -82,8 +79,10 @@ import static java.util.Calendar.YEAR;
  * create an instance of this fragment.
  */
 public class FilterReport extends Fragment implements CAlendar_Inteface {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static RequestQueue PostQue;
@@ -510,6 +509,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             });
         } else if (filterBy.getSelectedItem().equals("Name")) {
+
             searchbarcode.setHint("Search by patient name ");
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -632,7 +632,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     filterPatientsArrayList = new ArrayList<>();
                     String barcode = "";
                     String name = "";
+
                     if (FilterReport != null) {
+
                         for (int i = 0; i < FilterReport.size(); i++) {
 
                             if (filterBy.getSelectedItem().equals("All")) {
@@ -834,9 +836,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                             ReportsResponseModel reportsResponseModel = gson.fromJson(String.valueOf(response), ReportsResponseModel.class);
 
                             if (reportsResponseModel != null) {
-                                if (!GlobalClass.isNull(reportsResponseModel.getResponse())&&reportsResponseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)){
+                                if (!GlobalClass.isNull(reportsResponseModel.getResponse()) && reportsResponseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)) {
                                     GlobalClass.redirectToLogin(getActivity());
-                                }else {
+                                } else {
                                     if (!GlobalClass.isNull(reportsResponseModel.getReportStatus()) && reportsResponseModel.getReportStatus().equalsIgnoreCase("ALLOW")) {
                                         if (reportsResponseModel.getPatients() != null && reportsResponseModel.getPatients().size() > 0) {
                                             FilterReport = reportsResponseModel.getPatients();
