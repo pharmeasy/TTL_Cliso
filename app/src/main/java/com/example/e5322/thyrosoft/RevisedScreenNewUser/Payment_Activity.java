@@ -115,6 +115,7 @@ public class Payment_Activity extends AppCompatActivity {
     private static Global globalData;
     private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
+    public String closing_balance_pref;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
     ImageView back, home;
@@ -126,11 +127,11 @@ public class Payment_Activity extends AppCompatActivity {
     String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
     String strOrderNo = "";
     int ben_count = 0;
+    Double CBamount = 0.0;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
     private int buttonclickFlag = 0;
-    Double CBamount=0.0 ;
     private boolean isemailvalid = false;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
@@ -145,7 +146,6 @@ public class Payment_Activity extends AppCompatActivity {
     private String dataToSave;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
     private String randomTid;
-    public String closing_balance_pref;
     private RequestQueue PostQueOtp;
     private Double Today_bill;
     private String RESPONSE;
@@ -417,6 +417,7 @@ public class Payment_Activity extends AppCompatActivity {
             globalData.showProgressDialog();
             try {
                 PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                Log.e(TAG,"ORDER NO URL ---->"+Api.GenerateId + api_key + "/TSP/Generatedordnum");
                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
                     public String RES_ID;
 
@@ -496,7 +497,6 @@ public class Payment_Activity extends AppCompatActivity {
     }
 
     public void startPayUTransaction(String name, String product, String amount, String orderid) {
-
         merchantKey = PAYUMONEYKEY_MERCHANTKEY;
         String email = email_id;
         String mobile = mobile_pref;
@@ -646,6 +646,98 @@ public class Payment_Activity extends AppCompatActivity {
         }.execute();
     }
 
+    public void getProfileDetails() {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
+        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
+
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                new Response.Listener<JSONObject>() {
+                    public String tsp_img;
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
+                            Log.e(TAG, "onResponse: " + response);
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.closing_balance))) {
+                                closing_balance_pref = response.getString(Constants.closing_balance);
+                            } else {
+                                closing_balance_pref = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.credit_limit))) {
+                                crd_amt = response.getString(Constants.credit_limit);
+                            } else {
+                                crd_amt = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.unbilledMaterial))) {
+                                unbillmt = response.getString(Constants.unbilledMaterial);
+                            } else {
+                                unbillmt = "0";
+                            }
+
+                            unbillwoe = response.getString(Constants.unbilledWOE);
+                            billavg = response.getString(Constants.Billamount);
+                            dayavg = response.getString(Constants.DAYAVG);
+                            Today_bill = Double.parseDouble(unbillmt) + Double.parseDouble(unbillwoe);
+
+                            CBamount = (Double.parseDouble(closing_balance_pref) + Today_bill) - Double.parseDouble(crd_amt);
+
+
+                            if (!TextUtils.isEmpty(billavg)) {
+                                et_avg_bill.setText(billavg);
+                            } else {
+                                et_avg_bill.setText(0);
+                            }
+
+                            if (!TextUtils.isEmpty(dayavg)) {
+                                et_per_day.setText(dayavg);
+                            } else {
+                                et_per_day.setText(0);
+                            }
+
+
+                            edt_closing_bal.setText("" + String.format("%.2f", CBamount));
+
+                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
+                            saveProfileDetails.commit();
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent();
+        intent.putExtra("message", "ok");//Put Message to pass over intent
+        setResult(1, intent);
+    }
+
     class AsyncTaskstartpayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
 
         String orderamount, orderno;
@@ -668,6 +760,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected JSONObject doInBackground(Void... params) {
             String strUrl = BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum";
             Log.e(TAG, "doInBackground: " + strUrl);
+            Log.e(TAG,"CHECKSUM  URL ---->"+BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum");
             jobj = new JSONObject();
             try {
                 jobj.put(PAYUMONEYKEY_APIKEY, APIKEYFORPAYMENTGATEWAY_PAYU);
@@ -1166,100 +1259,5 @@ public class Payment_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void getProfileDetails() {
-
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
-
-        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
-
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
-                new Response.Listener<JSONObject>() {
-                    public String tsp_img;
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
-                            Log.e(TAG, "onResponse: " + response);
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.closing_balance))) {
-                                closing_balance_pref = response.getString(Constants.closing_balance);
-                            } else {
-                                closing_balance_pref = "0";
-                            }
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.credit_limit))) {
-                                crd_amt = response.getString(Constants.credit_limit);
-                            } else {
-                                crd_amt = "0";
-                            }
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.unbilledMaterial))) {
-                                unbillmt = response.getString(Constants.unbilledMaterial);
-                            } else {
-                                unbillmt = "0";
-                            }
-
-                            unbillwoe = response.getString(Constants.unbilledWOE);
-                            billavg = response.getString(Constants.Billamount);
-                            dayavg = response.getString(Constants.DAYAVG);
-                            Today_bill = Double.parseDouble(unbillmt) + Double.parseDouble(unbillwoe);
-
-                            CBamount = (Double.parseDouble(closing_balance_pref) + Today_bill) - Double.parseDouble(crd_amt);
-
-
-                            if (!TextUtils.isEmpty(billavg)) {
-                                et_avg_bill.setText(billavg);
-                            } else {
-                                et_avg_bill.setText(0);
-                            }
-
-                            if (!TextUtils.isEmpty(dayavg)) {
-                                et_per_day.setText(dayavg);
-                            } else {
-                                et_per_day.setText(0);
-                            }
-
-
-                            edt_closing_bal.setText("" + String.format("%.2f", CBamount));
-
-                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
-                            saveProfileDetails.commit();
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    }
-
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Intent intent = new Intent();
-        intent.putExtra("message", "ok");//Put Message to pass over intent
-        setResult(1, intent);
     }
 }

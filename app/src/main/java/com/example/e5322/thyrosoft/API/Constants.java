@@ -26,6 +26,10 @@ public class Constants {
     public static int timeInterval = 0;
     public static String videoName;
 
+    //shared preference Name
+
+    public static String PROFILEPREF = "profile";
+
     public static String APP_ID = "1";
 
     /*TODO * Screen IDs*/
@@ -411,6 +415,9 @@ public class Constants {
     public static String CUSTOMER_EMAIL_ID_COLUMN_NAME = "Email";
     public static String CUSTOMER_NAME_COLUMN_NAME = "Customer Name";
 
+    //Activity redirection KEY
+    public static String COMEFROM = "COMEFROM";
+
 
     //CONSTANTS FOR PAYU------
     public static final String PAYUMONEYKEY_MERCHANTKEY = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "y04wX2" : "xKDXHX";
@@ -540,7 +547,6 @@ public class Constants {
 
     public static String RES0000 = "RES0000";
 
-
     public static String returnToken(Activity mContext) {
         String str = "";
         SharedPreferences sharedPref = mContext.getPreferences(Context.MODE_PRIVATE);
@@ -570,5 +576,7 @@ public class Constants {
             parastart + "Cashback is not applicable on discounted offers" + paraend +
             "</ol>";
 
+    public static final String VIDEOPATH = "Path";
+    public static final String VIDEOID = "id";
 
 }

@@ -336,7 +336,7 @@ public class GlobalClass {
         return activeNetworkInfo != null;
     }
 
-    public static ProgressDialog ShowprogressDialog(Context mContext) {
+    public static ProgressDialog ShowprogressDialog(Context mContext){
 
         ProgressDialog barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");

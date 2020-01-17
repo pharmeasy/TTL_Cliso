@@ -67,6 +67,7 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -812,21 +813,26 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
 
                 String getResponse = response.optString("RESPONSE", "");
-                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+
+                if (TextUtils.isEmpty(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                     redirectToLogin(ProductLisitngActivityNew.this);
                 } else {
-                    Gson gson = new Gson();
-                    mainModel = new MainModel();
-                    mainModel = gson.fromJson(response.toString(), MainModel.class);
-                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
-                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                    Gson gson22 = new Gson();
-                    String json22 = gson22.toJson(mainModel);
-                    prefsEditor1.putString("MyObject", json22);
-                    prefsEditor1.commit();
+                    try {
+                        Gson gson = new Gson();
+                        mainModel = new MainModel();
+                        mainModel = gson.fromJson(response.toString(), MainModel.class);
+                        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
+                        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                        Gson gson22 = new Gson();
+                        String json22 = gson22.toJson(mainModel);
+                        prefsEditor1.putString("MyObject", json22);
+                        prefsEditor1.commit();
 
-                    GlobalClass.storeProductsCachingTime(ProductLisitngActivityNew.this);
-                    callAdapter(mainModel);
+                        GlobalClass.storeProductsCachingTime(ProductLisitngActivityNew.this);
+                        callAdapter(mainModel);
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }

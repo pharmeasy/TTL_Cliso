@@ -38,6 +38,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -158,6 +160,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     Context mContext;
     boolean mobno_verify = false;
     EditText et_mobno;
+    CheckBox chk_otp;
+    LinearLayout lin_ckotp;
     CountDownTimer yourCountDownTimer = null;
     EditText name, age, id_for_woe, barcode_woe, pincode_edt;
     REF_DR[] ref_drs;
@@ -345,7 +349,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private SpinnerDialog spinnerDialog, spinnerDialogRef;
     private String getVial_numbver;
     private boolean flagFromtext = false;
-    private String sctHr, sctMin, sctSEc, getFinalTime, getFinalDate;
+    private String sctHr = "", sctMin = "", sctSEc = "", getFinalTime, getFinalDate;
     private String getAmPm;
     private LABS selectedLABS;
     private String getLabCode;
@@ -408,6 +412,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         et_mobno = viewMain.findViewById(R.id.et_mobno);
         et_otp = viewMain.findViewById(R.id.et_otp);
+
+        chk_otp = viewMain.findViewById(R.id.chk_otp);
+        lin_ckotp = viewMain.findViewById(R.id.lin_ckotp);
 
         male = (ImageView) viewMain.findViewById(R.id.male);
         male_red = (ImageView) viewMain.findViewById(R.id.male_red);
@@ -614,6 +621,33 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
+        chk_otp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btn_snd_otp.setVisibility(View.VISIBLE);
+                    btn_snd_otp.setText("Send OTP");
+                    Disablefields();
+                } else {
+                    btn_snd_otp.setVisibility(View.GONE);
+                    et_mobno.setEnabled(true);
+                    et_mobno.setClickable(true);
+
+                    if (yourCountDownTimer != null) {
+                        yourCountDownTimer.cancel();
+                        yourCountDownTimer = null;
+                        btn_snd_otp.setEnabled(true);
+                        btn_snd_otp.setClickable(true);
+                        lin_otp.setVisibility(View.GONE);
+                        tv_timer.setVisibility(View.GONE);
+                    }
+
+                    Enablefields();
+                }
+
+            }
+        });
+
 
         et_mobno.addTextChangedListener(new TextWatcher() {
             @Override
@@ -670,6 +704,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                                 et_mobno.setText(s);
                                                 mobno_verify = true;
+
+                                                if (chk_otp.isChecked()) {
+                                                    btn_snd_otp.setVisibility(View.VISIBLE);
+                                                } else {
+                                                    btn_snd_otp.setVisibility(View.GONE);
+                                                }
+
                                             } else {
                                                 mobno_verify = false;
                                                 GlobalClass.hideProgress(getActivity(), barProgressDialog);
@@ -906,21 +947,27 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 getDatafetch = new ArrayList();
                 getSubSource = new ArrayList();
 
-                if (myPojo.getMASTERS().getBRAND_LIST() != null) {
+                try {
+                    if (myPojo.getMASTERS().getBRAND_LIST() != null) {
+                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
+                            getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                            spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                            camp_lists = myPojo.getMASTERS().getCAMP_LIST();
+                            // GlobalClass.getcamp_lists=camp_lists;
 
-                    for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
-                        getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                        spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                        camp_lists = myPojo.getMASTERS().getCAMP_LIST();
-                        // GlobalClass.getcamp_lists=camp_lists;
-                        String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
-                        editor.putString("TSPMobileNumber", TspNumber);
-                        editor.commit();
+                            if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
+                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
+                                editor.putString("TSPMobileNumber", TspNumber);
+                                editor.commit();
+                            }
+
+                        }
+
                     }
-
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
 
                 if (myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
                     for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
@@ -991,14 +1038,17 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     e.printStackTrace();
                 }
 
+                String getAddress = "";
 
-                String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
-                ScpAddress.putString("scp_addrr", getAddress);
-                ScpAddress.commit();
+                if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                    getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                    SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                    ScpAddress.putString("scp_addrr", getAddress);
+                    ScpAddress.commit();
+                }
+
 
                 GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
-
                 for (int i = 0; i < GlobalClass.putData.length; i++) {
                     GlobalClass.items.add(GlobalClass.putData[i]);
                 }
@@ -1926,18 +1976,32 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                             } else if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
 
-                                if (Constants.preotp.equalsIgnoreCase("NO")) {
-                                    Enablefields();
-                                    mobile_number_kyc.setVisibility(View.VISIBLE);
-                                    ll_mobileno_otp.setVisibility(View.GONE);
-                                } else if (Constants.preotp.equalsIgnoreCase("YES")) {
-                                    Disablefields();
-                                    et_mobno.setFocusable(true);
-                                    et_mobno.requestFocus();
-                                    mobile_number_kyc.setVisibility(View.GONE);
-                                    ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                } else {
-                                    GlobalClass.redirectToLogin(getActivity());
+                                try {
+                                    if (Constants.preotp.equalsIgnoreCase("NO")) {
+                                        Enablefields();
+                                        mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                    } else if (Constants.preotp.equalsIgnoreCase("YES")) {
+                                        Disablefields();
+                                        et_mobno.setFocusable(true);
+                                        et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
+
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                    } else {
+                                        GlobalClass.redirectToLogin(getActivity());
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
 
@@ -2154,15 +2218,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         if (btechname.getSelectedItem() != null)
                                             btechnameTopass = btechname.getSelectedItem().toString();
 
-                                        if (btechnameTopass != null) {
-                                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
-                                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                    if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
-                                                        btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                        try {
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
                                                     }
                                                 }
-                                            }
 
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
 
 
@@ -2175,7 +2243,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     referredID = "";
                                                     woereferedby = referenceBy;
                                                 } else {
-
                                                     referenceBy = referedbyText.getText().toString();
                                                 }
                                             }
@@ -2386,18 +2453,30 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 });
                             } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
 
-                                if (Constants.preotp.equalsIgnoreCase("NO")) {
-                                    Enablefields();
-                                    Home_mobile_number_kyc.setVisibility(View.VISIBLE);
-                                    ll_mobileno_otp.setVisibility(View.GONE);
-                                } else if (Constants.preotp.equalsIgnoreCase("YES")) {
-                                    Disablefields();
-                                    et_mobno.setFocusable(true);
-                                    et_mobno.requestFocus();
-                                    Home_mobile_number_kyc.setVisibility(View.GONE);
-                                    ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                } else {
-                                    GlobalClass.redirectToLogin(getActivity());
+                                try {
+                                    if (Constants.preotp.equalsIgnoreCase("NO")) {
+                                        Enablefields();
+                                        Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                    } else if (Constants.preotp.equalsIgnoreCase("YES")) {
+                                        Disablefields();
+                                        et_mobno.setFocusable(true);
+                                        et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                    } else {
+                                        GlobalClass.redirectToLogin(getActivity());
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
 
                                 leadlayout.setVisibility(View.GONE);
@@ -2433,6 +2512,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 next_btn.setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
+
                                         nameString = name.getText().toString();
                                         nameString = nameString.replaceAll("\\s+", " ");
                                         sctHr = timehr.getSelectedItem().toString();
@@ -2444,6 +2524,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         String getDateToCompare = getFinalDate + " " + getFinalTime;
 
                                         SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+
                                         try {
                                             dCompare = sdfform.parse(getDateToCompare);
                                         } catch (ParseException e) {
@@ -2487,6 +2568,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         if (btechname.getSelectedItem() != null)
                                             btechnameTopass = btechname.getSelectedItem().toString();
+
 
                                         if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
                                             kycdata = et_mobno.getText().toString();
@@ -3439,6 +3521,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
 
+                                    samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
+                                    et_mobno.getText().clear();
+                                    ll_mobileno_otp.setVisibility(View.GONE);
+                                    et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    lin_otp.setVisibility(View.GONE);
+                                    tv_timer.setVisibility(View.GONE);
+                                    Enablefields();
+
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -3536,17 +3626,21 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (samplecollectionponit.getText().toString() != null && samplecollectionponit.getText().toString().length() > 0)
                                                 getLabName = samplecollectionponit.getText().toString();
 
-                                            /*typename = selectTypeSpinner.getSelectedItem().toString();
-                                            brandNames = no_img_spinner.getSelectedItem().toString();
                                             getVial_numbver = vial_number.getText().toString();
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            // brandNames = no_img_spinner.getSelectedItem().toString();
+
 
                                             ageString = age.getText().toString();
                                             woereferedby = referedbyText.getText().toString();
                                             GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
 
                                             GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+
+                                            getLabName = samplecollectionponit.getText().toString();
                                             kycdata = kyc_format.getText().toString();
-                                            getLabName = samplecollectionponit.getText().toString();*/
+
 
                                             kycdata = "";
                                             btechIDToPass = "";
@@ -3760,7 +3854,32 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
 
 
-                                    mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    if (Constants.preotp.equalsIgnoreCase("NO")) {
+                                        Enablefields();
+                                        mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                    } else if (Constants.preotp.equalsIgnoreCase("YES")) {
+                                        Disablefields();
+                                        et_mobno.setFocusable(true);
+                                        et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
+
+
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                    } else {
+                                        GlobalClass.redirectToLogin(getActivity());
+                                    }
+
+
+                                    //   mobile_number_kyc.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
 
                                     leadlayout.setVisibility(View.GONE);
@@ -3954,7 +4073,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             patientAddressdataToPass = patientAddress.getText().toString();
                                             pincode_pass = pincode_edt.getText().toString();
                                             btechnameTopass = btechname.getSelectedItem().toString();
-                                            kycdata = kyc_format.getText().toString();
+
+                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                                kycdata = et_mobno.getText().toString();
+                                            } else {
+                                                kycdata = kyc_format.getText().toString();
+                                            }
+
                                             labAddressTopass = "";
                                             labIDTopass = "";
                                             getcampIDtoPass = "";
@@ -4156,6 +4281,33 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
 
+
+                                    if (Constants.preotp.equalsIgnoreCase("NO")) {
+                                        Enablefields();
+                                        mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                    } else if (Constants.preotp.equalsIgnoreCase("YES")) {
+                                        Disablefields();
+                                        et_mobno.setFocusable(true);
+                                        et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
+
+
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    } else {
+                                        GlobalClass.redirectToLogin(getActivity());
+                                    }
+
+
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -4168,9 +4320,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
                                     home_layout.setVisibility(View.VISIBLE);
-                                    Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+
                                     vial_number.setVisibility(View.VISIBLE);
-                                    mobile_number_kyc.setVisibility(View.GONE);
                                     labname_linear.setVisibility(View.GONE);
                                     patientAddress.setText("");
                                     ref_check.setVisibility(View.GONE);
@@ -4242,10 +4393,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             btechnameTopass = btechname.getSelectedItem().toString();
                                             //kycdata = home_kyc_format.getText().toString();
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                            /*if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
                                                 kycdata = et_mobno.getText().toString();
                                             } else {
                                                 kycdata = home_kyc_format.getText().toString();
+                                            }*/
+
+                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                                kycdata = et_mobno.getText().toString();
+                                            } else {
+                                                kycdata = kyc_format.getText().toString();
                                             }
 
                                             labIDTopass = "";
@@ -4771,6 +4928,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
                                     } else {
@@ -5180,10 +5345,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         saveDetails.putString("pincode", pincode_pass);
                                                         saveDetails.commit();
                                                     }
-
                                                 }
-
-
                                             }
 
                                         }
@@ -5200,14 +5362,24 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
+                                        } else {
+                                            btn_snd_otp.setVisibility(View.GONE);
+                                        }
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
 
                                    /* mobile_number_kyc.setVisibility(View.GONE);
                                     Home_mobile_number_kyc.setVisibility(View.VISIBLE);*/
+
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
@@ -6066,8 +6238,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     lin_otp.setVisibility(View.GONE);
 
-                                    btn_snd_otp.setText("Send OTP");
+
                                     et_otp.setText("");
+                                    btn_snd_otp.setText("Send OTP");
+                                    lin_ckotp.setVisibility(View.VISIBLE);
 
                                     btn_verifyotp.setVisibility(View.GONE);
                                     lin_otp.setVisibility(View.GONE);
@@ -6095,6 +6269,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     }
                 }
+
                 break;
 
             case R.id.btn_verifyotp:
@@ -6172,6 +6347,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             setCountDownTimer();
 
+
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
@@ -6181,7 +6357,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
     public void onVerifyotp(VerifyotpModel validateOTPmodel) {
-
         if (validateOTPmodel.getResponse().equals("OTP Validated Successfully")) {
             timerflag = true;
             Toast.makeText(getActivity(),
@@ -6219,6 +6394,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             btn_verifyotp.setEnabled(false);
 
             tv_timer.setVisibility(View.GONE);
+
+            lin_ckotp.setVisibility(View.GONE);
 
             Enablefields();
 
@@ -6351,6 +6528,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         btn_clear_data.setEnabled(false);
         btn_clear_data.setClickable(false);
 
+        refby_linear.setVisibility(View.VISIBLE);
+        referedbyText.setVisibility(View.VISIBLE);
+
+        uncheck_ref.setVisibility(View.VISIBLE);
+        ref_check.setVisibility(View.GONE);
+
 /*        btn_next.setClickable(false);
         btn_next.setEnabled(false);
 
@@ -6395,7 +6578,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         spinyr.setEnabled(true);
         spinyr.setClickable(true);
-
 
         timehr.setEnabled(true);
         timehr.setClickable(true);

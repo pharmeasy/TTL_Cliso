@@ -85,6 +85,7 @@ public class VideoActivity extends AppCompatActivity {
     boolean destroy_flag = false;
     boolean back_flag = false;
     boolean backpress_flag = false;
+
     private int b = 0;
     long milliseconds, minutes, seconds;
 
@@ -133,6 +134,7 @@ public class VideoActivity extends AppCompatActivity {
             tv_noDatafound.setVisibility(View.VISIBLE);
             if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
                 videoView.getPlayer().stop();
+                videoView.setVisibility(View.GONE);
                 // videoView.getPlayer().release();
             }
         }
@@ -240,9 +242,7 @@ public class VideoActivity extends AppCompatActivity {
                     } else {
                         showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
                     }
-
                 } else {
-
                     Gson gson = new Gson();
                     String json = prefs_Language.getString("LanguageArryList", "");
                     VideoLangArylist = gson.fromJson(json, new TypeToken<List<VideoLangaugesResponseModel.Outputlang>>() {
@@ -252,6 +252,7 @@ public class VideoActivity extends AppCompatActivity {
                         if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
                             showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
                             tv_noDatafound.setVisibility(View.VISIBLE);
+                            videoView.setVisibility(View.GONE);
                         } else {
                             showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
                         }
@@ -267,6 +268,7 @@ public class VideoActivity extends AppCompatActivity {
             public void onFailure(Call<VideoLangaugesResponseModel> call, Throwable t) {
                 global.hideProgressDialog();
                 tv_noDatafound.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.GONE);
                 global.showCustomToast(mActivity, "Unable to fetch data from server.");
             }
         });
@@ -302,12 +304,15 @@ public class VideoActivity extends AppCompatActivity {
 
                         if (connectionDetector.isConnectingToInternet()) {
                             GetVideosBasedonLanguage(arrayAdapter.getItem(which).getIID_NEW());
-                            if (videoView.getVideoInfo().getUri() != null) {
-                                videoView.getPlayer().stop();
-                                //  videoView.getPlayer().release();
-                                videoView.getPlayer().getDuration();
-                                Log.e(TAG, "GET VIDEO DUR ---->" + videoView.getPlayer().getDuration());
-                            }
+
+                         /*   if (videoView.getVideoInfo().getUri() != null) {
+                                if (videoView.getPlayer().isPlaying()) {
+                                    videoView.getPlayer().stop();
+                                    videoView.setVisibility(View.GONE);
+                                    videoView.getPlayer().getDuration();
+                                    Log.e(TAG, "GET VIDEO DUR ---->" + videoView.getPlayer().getDuration());
+                                }
+                            }*/
 
                             SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
                             SharedPreferences.Editor editor = pref.edit();
@@ -322,6 +327,7 @@ public class VideoActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
+
             builderSingle.show();
         } else {
             global.showCustomToast(mActivity, "List is not available");
@@ -330,6 +336,12 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void GetVideosBasedonLanguage(String LanguageID) {
+
+        if (videoView != null && videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
+            videoView.getPlayer().stop();
+            videoView.setVisibility(View.GONE);
+        }
+
         GetVideoLanguageWiseRequestModel model = new GetVideoLanguageWiseRequestModel();
         model.setApp(Constants.APP_ID);
         model.setLanguage(LanguageID);
@@ -345,18 +357,28 @@ public class VideoActivity extends AppCompatActivity {
                 global.hideProgressDialog();
                 if (response.isSuccessful() && response.body() != null) {
                     VideosResponseModel responseModel = response.body();
+
                     if (!TextUtils.isEmpty(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase("RSS0000") && responseModel.getOutput() != null && responseModel.getOutput().size() > 0) {
                         tv_noDatafound.setVisibility(View.GONE);
                         VideosArylist = new ArrayList<>();
                         VideosArylist = responseModel.getOutput();
+
+                        if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
+                            videoView.getPlayer().stop();
+                            videoView.setVisibility(View.GONE);
+                        }
+
                         DisplayVideosInList();
+
                     } else {
                         recView.setVisibility(View.GONE);
                         tv_noDatafound.setVisibility(View.VISIBLE);
+                        videoView.setVisibility(View.GONE);
 
                     }
                 } else {
                     tv_noDatafound.setVisibility(View.VISIBLE);
+                    videoView.setVisibility(View.GONE);
                     System.out.println("No Videos found");
                 }
             }
@@ -365,6 +387,7 @@ public class VideoActivity extends AppCompatActivity {
             public void onFailure(Call<VideosResponseModel> call, Throwable t) {
                 global.hideProgressDialog();
                 tv_noDatafound.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.GONE);
 
             }
         });
@@ -381,6 +404,7 @@ public class VideoActivity extends AppCompatActivity {
         recView.setLayoutManager(mLayoutManager);
         recView.setVisibility(View.VISIBLE);
 
+
         videoListAdapter = new VideoListAdapter(mActivity, VideosArylist);
 
         videoListAdapter.setOnItemClickListener(new VideoListAdapter.OnItemClickListener() {
@@ -392,9 +416,8 @@ public class VideoActivity extends AppCompatActivity {
                     if (videoView.getVideoInfo().getUri() != null && videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
 
                         if (videoView.getPlayer().isPlaying()) {
-                            //globalclass.showcenterCustomToast(mActivity, "Already Playing");
-                            //  GlobalClass.toastyError(mActivity, "Already Playing", false);
-                            // initializePlayer(SelectedVideo);
+                            videoView.getPlayer().stop();
+                            videoView.setVisibility(View.GONE);
                         } else {
                             if (videoView.getPlayer().getCurrentState() == GiraffePlayer.STATE_PLAYBACK_COMPLETED) {
                                 initializePlayer(SelectedVideo);
@@ -422,10 +445,10 @@ public class VideoActivity extends AppCompatActivity {
     private void initializePlayer(final VideosResponseModel.Outputlang Video) {
         if (videoView.getVideoInfo().getUri() != null) {
             videoView.getPlayer().stop();
-            //   videoView.getPlayer().release();
+            videoView.setVisibility(View.GONE);
         }
 
-        videoView.setVisibility(View.VISIBLE);
+        //   videoView.setVisibility(View.VISIBLE);
 
         videoView.setVideoPath(Video.getPath()).getPlayer().setDisplayModel(GiraffePlayer.DISPLAY_NORMAL);
         videoView.getPlayer().getVideoInfo().setTitle(Video.getTitle()).setAspectRatio(VideoInfo.AR_ASPECT_FIT_PARENT).setBgColor(Color.BLACK).setShowTopBar(true).addOption(Option.create(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "multiple_requests", 1L));
@@ -512,7 +535,8 @@ public class VideoActivity extends AppCompatActivity {
             public void onRelease(GiraffePlayer giraffePlayer) {
                 Log.e(TAG, "onRelease----------------->  " + giraffePlayer.getDuration());
                 if (onpause || stop_flag || back_flag | backpress_flag) {
-                  //  onpause = false;
+
+                    //  onpause = false;
                    /* back_flag = false;
                     stop_flag = false;*/
                     Log.e(TAG, "<---- I AM IN IF ---->");
@@ -586,8 +610,9 @@ public class VideoActivity extends AppCompatActivity {
                                 }
                             }
                             videoListAdapter.notifyDataSetChanged();
+                            videoView.setVisibility(View.VISIBLE);
                         }
-                        videoView.setVisibility(View.VISIBLE);
+                        // videoView.setVisibility(View.VISIBLE);
                     }
 
                     Log.e(TAG, "STATE_PLAYBACK_COMPLETED : " + VideoID);
@@ -624,8 +649,9 @@ public class VideoActivity extends AppCompatActivity {
                             }
                         }
                         videoListAdapter.notifyDataSetChanged();
+                        videoView.setVisibility(View.VISIBLE);
                     }
-                    videoView.setVisibility(View.VISIBLE);
+                    // videoView.setVisibility(View.VISIBLE);
                     Log.e(TAG, "STATE_IDLE : " + VideoID);
                 } else if (oldState == GiraffePlayer.STATE_PLAYBACK_COMPLETED && newState == GiraffePlayer.STATE_PLAYING) {
                     if (VideosArylist != null && VideosArylist.size() > 0) {
@@ -642,8 +668,10 @@ public class VideoActivity extends AppCompatActivity {
                             videoView.getPlayer().seekTo(a);
                         }
                         videoListAdapter.notifyDataSetChanged();
+                        videoView.setVisibility(View.VISIBLE);
                     }
-                    videoView.setVisibility(View.VISIBLE);
+                } else if (oldState == GiraffePlayer.STATE_PLAYING && newState == GiraffePlayer.STATE_RELEASE) {
+                    videoView.setVisibility(View.GONE);
                 } else {
                     videoView.setVisibility(View.VISIBLE);
                 }
@@ -676,6 +704,7 @@ public class VideoActivity extends AppCompatActivity {
             }
 
         });
+
     }
 
     @Override

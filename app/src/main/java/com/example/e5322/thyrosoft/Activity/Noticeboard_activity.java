@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,7 +26,6 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.NoticeBoard_Adapter;
-import com.example.e5322.thyrosoft.Fragment.Noticeboard_Fragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
@@ -133,6 +131,7 @@ public class Noticeboard_activity extends AppCompatActivity {
                         if (noticeBoard_model.getMessages() != null) {
                             array_notice.add(noticeBoard_model);
                             if (array_notice.get(0).getMessages()[0].getMessageCode() != null) {
+
                                 msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
                                 NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(Noticeboard_activity.this, array_notice, msgCode);
 
@@ -183,6 +182,7 @@ public class Noticeboard_activity extends AppCompatActivity {
                                                 }
                                             }
                                         });
+
                                         GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                                         PostQueOtp.add(jsonObjectRequest1);
                                         Log.e(TAG, "onClick: URL" + jsonObjectRequest1);
@@ -209,8 +209,10 @@ public class Noticeboard_activity extends AppCompatActivity {
                 }
             }
         });
+
         GlobalClass.volleyRetryPolicy(jsonObjectRequestProfile);
         requestQueueNoticeBoard.add(jsonObjectRequestProfile);
         Log.e(TAG, "getNoticeBoardData: url" + jsonObjectRequestProfile);
+
     }
 }

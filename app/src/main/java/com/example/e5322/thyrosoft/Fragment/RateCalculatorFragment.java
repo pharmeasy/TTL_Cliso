@@ -299,7 +299,7 @@ public class RateCalculatorFragment extends Fragment {
         api_key = prefs.getString("API_KEY", null);
 
 
-        Log.e(TAG, "onCreateView TYPE : "+access );
+        Log.e(TAG, "onCreateView TYPE : " + access);
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -407,6 +407,7 @@ public class RateCalculatorFragment extends Fragment {
                 String code = "";
                 String product = "";
 
+
                 if (outlabdetails_outLabs != null) {
                     if (outlabdetails_outLabs.size() != 0) {
                         for (int i = 0; i < outlabdetails_outLabs.size(); i++) {
@@ -425,9 +426,8 @@ public class RateCalculatorFragment extends Fragment {
                                     (product != null && product.contains(s1))) {
                                 String testname = outlabdetails_outLabs.get(i).getName();
                                 filteredFiles.add(outlabdetails_outLabs.get(i));
-                            } else {
-
                             }
+
                             outlab_list.setVisibility(View.VISIBLE);
                             containerlist.setVisibility(View.GONE);
                             pop_profile_test_bar.setVisibility(View.GONE);
@@ -484,8 +484,6 @@ public class RateCalculatorFragment extends Fragment {
                             b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
                             testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                         }
-
-
                     }
 
                     callAdapaterTosetData(finalproductlist, testRateMasterModels);
@@ -496,6 +494,7 @@ public class RateCalculatorFragment extends Fragment {
         profile_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //2nd
                 profile_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_box));
                 profile_txt.setTextColor(getResources().getColor(R.color.colorWhite));
@@ -515,6 +514,7 @@ public class RateCalculatorFragment extends Fragment {
                                 finalproductlist.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
                             }
                         }
+
                         callAdapaterTosetData(finalproductlist, totalproductlist);
                     } else {
                         //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
@@ -527,12 +527,11 @@ public class RateCalculatorFragment extends Fragment {
                             b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
                             testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
                         }
-
-
                     }
-
                     callAdapaterTosetData(finalproductlist, testRateMasterModels);
                 }
+
+
             }
         });
 
@@ -641,6 +640,7 @@ public class RateCalculatorFragment extends Fragment {
 */
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
@@ -670,9 +670,33 @@ public class RateCalculatorFragment extends Fragment {
                     prefsEditor1.putString("MyObject", json23);
                     //   GlobalClass.StoreSyncTime(getActivity());
                     prefsEditor1.commit();
+                    try {
+                        if (obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
+                            outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                            outlabdetails_outLabs = new ArrayList<>();
+                            if (outlab_testlist_getalltests != null) {
+                                for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
+                                    if (getSpinnerSelectedItem.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
+                                        if (outlabdetails_outLabs != null) {
+                                            outlabdetails_outLabs = null;
+                                            outlabdetails_outLabs = new ArrayList<>();
+                                            outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                                        }
+                                        //  callAdapterforOutlab();
+                                    }
+                                }
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
 
                     b2bmasterarraylistRate = new ArrayList<>();
                     b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
+
+
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
                     for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {

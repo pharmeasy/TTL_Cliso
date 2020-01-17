@@ -247,8 +247,12 @@ public class Feedback_activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String getFeedback = query.getText().toString();
+                Log.e(TAG, "Feedback length---->" + getFeedback.length());
                 if (getFeedback.equals("")) {
-                    Toast.makeText(Feedback_activity.this, "Kindly give the feedback for app", Toast.LENGTH_SHORT).show();
+                    GlobalClass.toastyError(Feedback_activity.this, "Kindly give the feedback for app", false);
+                }
+                if (getFeedback.length() > 250) {
+                    GlobalClass.toastyError(Feedback_activity.this, "kindly enter feedback upto 250 character", false);
                 } else {
                     if (emoji.equals("")) {
                         Toast.makeText(Feedback_activity.this, "Please select emoji", Toast.LENGTH_SHORT).show();

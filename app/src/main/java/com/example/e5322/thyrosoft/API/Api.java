@@ -34,7 +34,7 @@ public class Api {
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
     public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
-    public static String IMAGE_UPLOAD = "http://www.thyrocare.local/API/";
+    public static String IMAGE_UPLOAD = "http://www.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
@@ -44,6 +44,8 @@ public class Api {
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";
     public static String LEAD_BOOKING = SCANSOAPI + "/LeadBooking/BookLead";
 
+
+    public static String video_data = LIVEAPI + "COMMON.svc/";
     public static String video_url = LIVEAPI + "COMMON.svc/Cliso/Showvideo";
     public static String StockAvailability = LIVEAPI + "COMMON.svc/StockAvailability";
     public static String Materialupdate = LIVEAPI + "COMMON.svc/Materialupdate";

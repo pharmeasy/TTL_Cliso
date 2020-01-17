@@ -61,7 +61,7 @@ public class Faq_activity extends AppCompatActivity {
     private RequestQueue requestQueueSpinner_value, requestQueue_FAQ;
     private SharedPreferences prefs;
     private FAQ_Fragment.OnFragmentInteractionListener mListener;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = getClass().getSimpleName();
     private Global globalClass;
 
     @SuppressLint("NewApi")
@@ -103,6 +103,7 @@ public class Faq_activity extends AppCompatActivity {
         }
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(Faq_activity.this);
+
         Gson gson = new Gson();
         String json = sharedPrefs.getString(TAG, "");
         java.lang.reflect.Type type = new TypeToken<List<String>>() {
@@ -149,6 +150,7 @@ public class Faq_activity extends AppCompatActivity {
     }
 
     private void getSpinnerdata() {
+
         barProgressDialog = new ProgressDialog(Faq_activity.this, R.style.ProgressBarColor);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -161,6 +163,8 @@ public class Faq_activity extends AppCompatActivity {
 
         requestQueueSpinner_value = Volley.newRequestQueue(Faq_activity.this);
 
+        Log.e(TAG, "getSpinnerdata URL : " + Api.static_pages_link + client_type + "/Get_Faq_Type_Spinner");
+
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/Get_Faq_Type_Spinner", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -169,9 +173,12 @@ public class Faq_activity extends AppCompatActivity {
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
+
                     FAQTypesResponseModel responseModel = new Gson().fromJson(String.valueOf(response), FAQTypesResponseModel.class);
+
                     if (responseModel != null) {
                         if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
+
                             if (responseModel.getFAQ_type_spinnner_names() != null && responseModel.getFAQ_type_spinnner_names().size() > 0) {
                                 type_spinner_value = new ArrayList<>();
                                 for (int i = 0; i < responseModel.getFAQ_type_spinnner_names().size(); i++) {
@@ -220,6 +227,7 @@ public class Faq_activity extends AppCompatActivity {
     }
 
     private void getAll_FAQ_data() {
+
         String getSpinner_value = category_spinner.getSelectedItem().toString();
         requestQueue_FAQ = Volley.newRequestQueue(Faq_activity.this);
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {

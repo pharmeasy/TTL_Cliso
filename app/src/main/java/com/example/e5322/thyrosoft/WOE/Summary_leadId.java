@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -49,7 +48,6 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -349,29 +347,31 @@ public class Summary_leadId extends AppCompatActivity {
     }
 
     private void saveandClose() {
-        DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        /*DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
 
         Date date = null;
         try {
             date = inputFormat.parse(samplCollectiondate);
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.e("TAG", e.getLocalizedMessage());
         }
         outputDateStr = outputFormat.format(date);
         //sampleCollectionTime
         GlobalClass.Req_Date_Req(getDate_and_time, "hh:mm a", "HH:mm:ss");
 
-        Log.e(TAG, "fetchData: " + outputDateStr);
+        Log.e(TAG, "fetchData: " + outputDateStr);*/
 
         //  sendFinalWoe();
         labName = leadLAB_NAME;
         if (labName.equals("")) {
             leadLABAddress = "";
         } else {
-            for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
-                if (labName.equals(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName())) {
-                    leadLABAddress = sourceILSMainModel.getMASTERS().getLABS()[i].getLabAddress();
+            if (sourceILSMainModel.getMASTERS().getLABS()!=null){
+                for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
+                    if (labName.equals(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName())) {
+                        leadLABAddress = sourceILSMainModel.getMASTERS().getLABS()[i].getLabAddress();
+                    }
                 }
             }
         }

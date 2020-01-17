@@ -32,7 +32,7 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
     Context mContext;
     SharedPreferences prefs;
     String messages, resId, response1, ack_code, user, passwrd, access, api_key;
-    public static com.android.volley.RequestQueue PostQueOtp;
+ //   public static com.android.volley.RequestQueue PostQueOtp;
     String msgCode;
     String TAG = NoticeBoard_Adapter.class.getSimpleName().toString();
     RefreshNoticeBoard refreshNoticeBoard;
@@ -104,6 +104,7 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
         } else if (noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equals("N")) {
             holder.ack_id.setVisibility(View.VISIBLE);
         }
+
         holder.ack_id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

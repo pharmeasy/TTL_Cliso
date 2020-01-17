@@ -892,6 +892,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         });
 
                                         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                                        a.putExtra(Constants.COMEFROM,true);
                                         startActivity(a);
                                         TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     } else {

@@ -255,9 +255,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             @Override
             public void onGlobalLayout() {
                 int heightDiff = full_ll.getRootView().getHeight() - full_ll.getHeight();
-                if (heightDiff > dpToPx(getContext(), 200)) { // if more than 200 dp, it's probably a keyboard...
-                    // ... do something here
-                }
             }
         });
 

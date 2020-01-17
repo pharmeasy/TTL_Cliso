@@ -130,6 +130,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         }
 
         try {
+
             if (!GlobalClass.isNull(trackdet.get(position).getPdflink())) {
                 download.setVisibility(View.VISIBLE);
                 if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
@@ -139,17 +140,18 @@ public class ResultDtlAdapter extends BaseAdapter {
                 download.setVisibility(View.INVISIBLE);
                 share.setVisibility(View.INVISIBLE);
             }
+
+            if (!GlobalClass.isNull(trackdet.get(position).getEmail())) {
+                mail.setVisibility(View.VISIBLE);
+            } else if (trackdet.get(position).getEmail().equals("null")) {
+                mail.setVisibility(View.INVISIBLE);
+                print.setVisibility(View.INVISIBLE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (!GlobalClass.isNull(trackdet.get(position).getEmail())) {
-            mail.setVisibility(View.VISIBLE);
-        } else if (trackdet.get(position).getEmail().equals("null")) {
-            mail.setVisibility(View.INVISIBLE);
-            print.setVisibility(View.INVISIBLE);
-
-        }
 
         download.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,8 +170,12 @@ public class ResultDtlAdapter extends BaseAdapter {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
-                    sharePDFLink(trackdet.get(position).getPdflink());
+                try {
+                    if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        sharePDFLink(trackdet.get(position).getPdflink());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
@@ -177,17 +183,25 @@ public class ResultDtlAdapter extends BaseAdapter {
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(trackdet.get(position).getPdflink()));
-                mContext.startActivity(browserIntent);
+                try {
+                    Intent browserIntent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(trackdet.get(position).getPdflink()));
+                    mContext.startActivity(browserIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowMailAlert(trackdet.get(position).getPatient_id(), trackdet.get(position).getBarcode(), trackdet.get(position).getEmail(), trackdet.get(position).getDate());
+                try {
+                    ShowMailAlert(trackdet.get(position).getPatient_id(), trackdet.get(position).getBarcode(), trackdet.get(position).getEmail(), trackdet.get(position).getDate());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 

@@ -5,8 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -201,7 +200,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="35dp"
-                        android:layout_weight="1.6"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
                         android:orientation="horizontal"
                         android:padding="5dp">
@@ -222,6 +221,27 @@
                             android:textSize="12sp" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/lin_ckotp"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.6"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
+
+                        <android.support.v7.widget.AppCompatCheckBox
+                            android:id="@+id/chk_otp"
+                            android:layout_width="wrap_content"
+                            android:checked="true"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:text="OTP"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
                     <Button
                         android:id="@+id/btn_sendotp"
                         android:layout_width="0dp"
@@ -235,7 +255,7 @@
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="12sp"
-                        android:textStyle="normal" />
+                        android:textStyle="normal"/>
 
                 </LinearLayout>
 
@@ -921,7 +941,7 @@
                         android:maxLength="10"
                         android:maxLines="1"
                         android:singleLine="true"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
 

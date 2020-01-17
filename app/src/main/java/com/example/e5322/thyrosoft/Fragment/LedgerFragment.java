@@ -135,11 +135,16 @@ public class LedgerFragment extends RootFragment {
         txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
         txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
 
-        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-            txt_unbillwoe.setText("Unbilled Scan");
-        } else {
-            txt_unbillwoe.setText("Unbilled WOE");
+        try {
+            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                txt_unbillwoe.setText("Unbilled Scan");
+            } else {
+                txt_unbillwoe.setText("Unbilled WOE");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         txt_unbill_material = view.findViewById(R.id.unbilled_material);
 
         // TextView dateview = getActivity().findViewById(R.id.show_date);

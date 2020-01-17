@@ -11,6 +11,8 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 android {
     signingConfigs {
         Thyrosoft {
@@ -22,8 +24,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 31
-        versionName "1.0.1.22"
+        versionCode 36
+        versionName "1.0.1.26"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -102,6 +104,9 @@ dependencies {
     //tasty toast animated toast
     implementation 'com.mcxiaoke.volley:library:1.0.19'
 
+    //kotlin
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     //used for volley
     implementation 'de.hdodenhof:circleimageview:2.2.0'
@@ -121,6 +126,8 @@ dependencies {
     // giraffe Video Player Library
     api 'com.github.tcking:giraffeplayer2:0.1.25-lazyLoad'
 
+    //SDP library
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
 
     //used for searchable spinner
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'

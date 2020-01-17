@@ -2,14 +2,15 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -21,6 +22,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,8 +31,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
+import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,8 +51,16 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
+import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
+import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
+import com.example.e5322.thyrosoft.Models.Videopoppost;
+import com.example.e5322.thyrosoft.Models.Videopoppost_response;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.UploadDocument;
@@ -55,11 +70,15 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.Login;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
 import java.io.File;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static com.example.e5322.thyrosoft.API.Constants.NHF;
 
@@ -77,13 +96,29 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     BottomNavigationView bottomNavigationView;
     boolean IsFromNotification;
     int SCRID;
+    private int a = 0;
     private String TAG = getClass().getSimpleName();
     private CarouselFragment carouselFragment;
     private String user, CLIENT_TYPE;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private DatabaseHelper db;
+    boolean iscomfrom;
+    String VideoID;
+    ImageView ic_close;
+    AlertDialog dialog;
+    private VideoView video_view;
+    SeekBar videoseekbar;
+    TextView txt_toltime, txt_ctime;
+    RelativeLayout rel_time;
+    long milliseconds, minutes, seconds;
     private int offline_draft_counts;
+    Handler handler;
+    ImageView ic_play, ic_pause;
+    Runnable runnable;
+    boolean iscomplete = false;
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -118,6 +153,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             return false;
         }
     };
+
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -193,7 +229,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         db.close();
 
         if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-            navigationView.getMenu().findItem(R.id.payment).setVisible(true);
+            navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
             navigationView.getMenu().findItem(R.id.notification).setVisible(true);
@@ -264,12 +300,25 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         String usercode = getProfileName.getString("usercode", null);
         String profile_image = getProfileName.getString("image", null);
 
+     /*   if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+            if (getIntent().hasExtra(Constants.COMEFROM)) {
+                iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
+                if (iscomfrom) {
+                    Log.e(TAG, " COMEFROM -------->" + iscomfrom);
+                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                        CheckVideoData();
+                    }
+                }
+            }
+
+        }*/
+
         if (getIntent().hasExtra(Constants.IsFromNotification)) {
             IsFromNotification = getIntent().getBooleanExtra(Constants.IsFromNotification, false);
             if (IsFromNotification) {
                 if (getIntent().hasExtra("Screen_category")) {
                     SCRID = getIntent().getIntExtra("Screen_category", 0);
-                    Log.e(TAG, "Screen ID ---->" + SCRID);
+                   /* Log.e(TAG, "Screen ID ---->" + SCRID);*/
                     callnotifiedScreen(SCRID);
                 }
             }
@@ -279,24 +328,290 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationDrawerNameTSP.setText("HI " + name);
             ecode.setText("(" + usercode + ")");
         } else {
-            getProfileDetails(ManagingTabsActivity.this);
+            //getProfileDetails(ManagingTabsActivity.this);
         }
 
+        getProfileDetails(ManagingTabsActivity.this);
 
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
                 .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
                 .into(imageViewprofile);
+
+    }
+
+    private void CheckVideoData() {
+
+        GetVideopost_model getVideopost_model = new GetVideopost_model();
+        getVideopost_model.setApp(Constants.APP_ID);
+        getVideopost_model.setSourcedata(USER_CODE);
+
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.video_data).create(APIInteface.class);
+        Call<GetVideoResponse_Model> getVideoResponse_modelCall = apiInteface.getVideoData(getVideopost_model);
+
+        Log.e(TAG, "GET VIDEO URL:" + getVideoResponse_modelCall.request().url());
+        Log.e(TAG, "GET VIDEO BODY :" + new GsonBuilder().create().toJson(getVideopost_model));
+
+        getVideoResponse_modelCall.enqueue(new Callback<GetVideoResponse_Model>() {
+            @Override
+            public void onResponse(Call<GetVideoResponse_Model> call, final retrofit2.Response<GetVideoResponse_Model> response) {
+
+                try {
+                    if (response.body().getResId().equalsIgnoreCase("RSS0000")) {
+                        if (response.body().getOutput() != null || !response.body().getOutput().isEmpty()) {
+                            /*TODO Launching New video Pop up fragment */
+
+                            if (!TextUtils.isEmpty(response.body().getOutput().get(0).getPath())) {
+
+                                LayoutInflater inflater = getLayoutInflater();
+                                View alertLayout = inflater.inflate(R.layout.fragment_newvideo, null);
+                                ic_close = alertLayout.findViewById(R.id.img_close);
+
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                                TextView tv_title = alertLayout.findViewById(R.id.title);
+                                TextView tv_desc = alertLayout.findViewById(R.id.txt_desc);
+
+                                txt_ctime = alertLayout.findViewById(R.id.txt_ctime);
+                                txt_toltime = alertLayout.findViewById(R.id.txt_toltime);
+                                rel_time = alertLayout.findViewById(R.id.rel_time);
+
+                                ic_play = alertLayout.findViewById(R.id.img_start);
+                                ic_pause = alertLayout.findViewById(R.id.img_pause);
+
+                                final LinearLayout linvid = alertLayout.findViewById(R.id.linvid);
+
+                                final LinearLayout layoutVideo = alertLayout.findViewById(R.id.layoutVideo);
+
+                                video_view = alertLayout.findViewById(R.id.video_view);
+                                videoseekbar = alertLayout.findViewById(R.id.seekBar);
+
+                                if (!TextUtils.isEmpty(response.body().getOutput().get(0).getTitle())) {
+                                    tv_title.setText(response.body().getOutput().get(0).getTitle());
+                                }
+
+                                if (!TextUtils.isEmpty(response.body().getOutput().get(0).getDescription())) {
+                                    tv_desc.setText(response.body().getOutput().get(0).getDescription());
+                                }
+
+
+                                layoutVideo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        try {
+                                            if (response.body().getOutput().get(0).getPath() != null) {
+
+                                                linvid.setVisibility(View.VISIBLE);
+                                                layoutVideo.setVisibility(View.GONE);
+                                                video_view.setVisibility(View.VISIBLE);
+
+                                                final MediaController mediaController = new MediaController(ManagingTabsActivity.this);
+                                                mediaController.setAnchorView(video_view);
+                                                video_view.setMediaController(mediaController);
+                                                Uri uri = Uri.parse(response.body().getOutput().get(0).getPath());
+                                                video_view.setVideoURI(uri);
+                                                video_view.requestFocus();
+                                                video_view.start();
+
+                                                mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
+
+                                                rel_time.setVisibility(View.VISIBLE);
+                                                ic_pause.setVisibility(View.VISIBLE);
+
+                                                VideoID = response.body().getOutput().get(0).getId();
+
+                                                ic_pause.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        if (mediaController != null) {
+                                                            video_view.pause();
+                                                            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                            ic_pause.setVisibility(View.INVISIBLE);
+                                                            ic_play.setVisibility(View.VISIBLE);
+                                                            postdata(video_view);
+                                                        }
+                                                    }
+                                                });
+
+                                                ic_play.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        if (mediaController != null) {
+                                                            video_view.start();
+
+                                                            if (iscomplete) {
+                                                                videoseekbar.setProgress(0);
+                                                                video_view.requestFocus();
+                                                            }
+                                                            ic_play.setVisibility(View.INVISIBLE);
+                                                            ic_pause.setVisibility(View.VISIBLE);
+                                                            postdata(video_view);
+                                                        }
+                                                    }
+                                                });
+
+                                                video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                                    @Override
+                                                    public void onCompletion(MediaPlayer mp) {
+                                                        if (mp != null) {
+                                                            iscomplete = true;
+                                                            ic_play.setVisibility(View.VISIBLE);
+                                                            ic_pause.setVisibility(View.INVISIBLE);
+                                                            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                            postdata(video_view);
+                                                        }
+                                                    }
+                                                });
+
+                                                video_view.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                                    @Override
+                                                    public void onPrepared(MediaPlayer mp) {
+                                                        videoseekbar.setMax(video_view.getDuration());
+                                                        milliseconds = video_view.getDuration();
+                                                        minutes = (milliseconds / 1000) / 60;
+                                                        seconds = (milliseconds / 1000) % 60;
+                                                    }
+                                                });
+
+
+                                                videoseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                    @Override
+                                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                                                        if (fromUser) {
+                                                            video_view.seekTo(progress);
+                                                            milliseconds = video_view.getCurrentPosition();
+                                                            minutes = (milliseconds / 1000) / 60;
+                                                            seconds = (milliseconds / 1000) % 60;
+                                                           /* Log.e(TAG, "VIDEO DUR ---->" + video_view.getDuration());
+                                                            Log.e(TAG, "minutes  ---->" + minutes);
+                                                            Log.e(TAG, "seconds---->" + seconds);*/
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onStartTrackingTouch(SeekBar seekBar) {
+                                                        // video_view.seekTo(videoseekbar.getProgress());
+                                                    }
+
+                                                    @Override
+                                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                                        //video_view.seekTo(videoseekbar.getProgress());
+                                                    }
+
+                                                });
+
+
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                });
+
+                                AlertDialog.Builder alert = new AlertDialog.Builder(ManagingTabsActivity.this);
+                                alert.setView(alertLayout);
+
+                                alert.setCancelable(false);
+                                dialog = alert.create();
+                                dialog.show();
+
+                                ic_close.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        if (!TextUtils.isEmpty(response.body().getOutput().get(0).getId())) {
+                                            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                                                closeVideo(response.body().getOutput().get(0).getId(), dialog);
+                                            }
+                                        }
+
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetVideoResponse_Model> call, Throwable t) {
+
+            }
+        });
+
+
+    }
+
+    private Handler mSeekbarUpdateHandler = new Handler();
+    private Runnable mUpdateSeekbar = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                videoseekbar.setProgress(video_view.getCurrentPosition());
+                mSeekbarUpdateHandler.postDelayed(this, 50);
+                txt_toltime.setText(video_view.getDuration());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    private void closeVideo(String id, final AlertDialog dialog) {
+
+        Videopoppost videopoppost = new Videopoppost();
+        videopoppost.setClientid(USER_CODE);
+        videopoppost.setVideoid(id);
+
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.video_data).create(APIInteface.class);
+        Call<Videopoppost_response> videopoppost_responseCall = apiInteface.Videopost(videopoppost);
+
+        Log.e(TAG, "Video post  URL ---->" + videopoppost_responseCall.request().url());
+        Log.e(TAG, "Video post  BODY ---->" + new GsonBuilder().create().toJson(videopoppost));
+
+        videopoppost_responseCall.enqueue(new Callback<Videopoppost_response>() {
+            @Override
+            public void onResponse(Call<Videopoppost_response> call, retrofit2.Response<Videopoppost_response> response) {
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        Log.e(TAG, "RESPONSE ---->" + response.body().getResponse());
+                        dialog.dismiss();
+                        iscomplete = false;
+                    } else {
+                        GlobalClass.toastyError(ManagingTabsActivity.this, response.body().getResponse(), false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Videopoppost_response> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void callnotifiedScreen(int SCRID) {
         if (SCRID == Constants.SCR_1) {
-            Intent startIntent = new Intent(ManagingTabsActivity.this, Payment_Activity.class);
-            startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
-            startActivity(startIntent);
+            if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                Intent startIntent = new Intent(ManagingTabsActivity.this, Payment_Activity.class);
+                startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
+                startActivity(startIntent);
+            }
+
         } else if (SCRID == Constants.SCR_2) {
             if (!CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-                Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, FAQ_activity.class);
                 startActivity(i);
             }
         } else if (SCRID == Constants.SCR_3) {
@@ -559,7 +874,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
-//                    i.putExtra("comefrom", "TSP");
+//              i.putExtra("comefrom", "TSP");
                 startActivity(i);
 
             }
@@ -571,7 +886,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, MyProfile_activity.class);
                 startActivity(i);
-
             }
 
         } else if (id == R.id.broadCast) {
@@ -702,7 +1016,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, Faq_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, FAQ_activity.class);
                 startActivity(i);
 
                 /*FAQ_Fragment faq_fragment = new FAQ_Fragment();
@@ -732,11 +1046,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-
-               /* Contact_list_fragment contact_list_fragment = new Contact_list_fragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_mainLayout, contact_list_fragment, contact_list_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
-
                 Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
                 startActivity(i);
             }
@@ -780,7 +1089,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     public void getProfileDetails(final Context context) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+        //final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
@@ -791,7 +1100,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     public void onResponse(JSONObject response) {
                         try {
                             if (response != null) {
-                                GlobalClass.hideProgress(context, progressDialog);
+                                //  GlobalClass.hideProgress(context, progressDialog);
                                 Log.e(TAG, "onResponse: " + response);
 
                                 Gson gson = new Gson();
@@ -799,7 +1108,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                                 if (responseModel != null) {
                                     Constants.preotp = responseModel.getPriOTP();
-                                    //  Constants.preotp = "NO";
+                                    // Constants.preotp = "NO";
                                     Log.e(TAG, "balance ---->" + responseModel.getBalance());
 
                                     SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
@@ -821,6 +1130,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     saveProfileDetails.putString(Constants.unbilledMaterial, responseModel.getUnbilledmaterial());
                                     saveProfileDetails.apply();
 
+
                                     SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
                                     saveProfileData.putString("name", responseModel.getName());
                                     saveProfileData.putString("usercode", responseModel.getUser_code());
@@ -830,6 +1140,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     saveProfileData.apply();
 
                                     Log.e(TAG, "onResponse: tsp name and code" + responseModel.getName() + " " + responseModel.getUser_code());
+
                                     if (responseModel.getName() != null && responseModel.getUser_code() != null) {
                                         navigationDrawerNameTSP.setText("HI " + responseModel.getName());
                                         ecode.setText("(" + responseModel.getUser_code() + ")");
@@ -856,7 +1167,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                GlobalClass.hideProgress(context, progressDialog);
+                // GlobalClass.hideProgress(context, progressDialog);
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
             }
         });
@@ -967,7 +1278,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (!carouselFragment.onBackPressed()) {
             // container Fragment or its associates couldn't handle the back pressed task
             // delegating the task to super class
-
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(getResources().getString(R.string.close_app));
             builder.setCancelable(false);
@@ -992,4 +1302,43 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             builder.show();
         }
     }
+
+    private void postdata(VideoView videoView) {
+
+        milliseconds = videoView.getCurrentPosition();
+        minutes = (milliseconds / 1000) / 60;
+        seconds = (milliseconds / 1000) % 60;
+        VideoDataposter videoDataposter = new VideoDataposter(ManagingTabsActivity.this, minutes, seconds);
+        videoDataposter.videoDatapost(VideoID, minutes, seconds);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+     /*   try {
+            if (iscomfrom) {
+                if (video_view.getVideoInfo().getUri() != null) {
+                    // stop_flag = true;
+                *//*if (!backpress_flag) {
+
+                }*//*
+                    try {
+                        if (video_view.getPlayer().isPlaying()) {
+                            postdata(video_view.getPlayer());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        super.onPause();*/
+
+    }
+
+
 }

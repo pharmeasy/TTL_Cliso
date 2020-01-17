@@ -1153,7 +1153,11 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                 }
                 //Uptill Here
 
-                imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
+                try {
+                    imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 Bitmap bitmap;
                 try {

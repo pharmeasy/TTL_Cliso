@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,6 +39,7 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONObject;
 
 public class CompanyContact_activity extends AppCompatActivity {
+
     ImageView back, home;
     RecyclerView contact_list;
     Spinner contact_type_spinner;
@@ -64,6 +64,7 @@ public class CompanyContact_activity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
+
         contact_list = (RecyclerView) findViewById(R.id.contact_list);
         contact_type_spinner = (Spinner) findViewById(R.id.contact_type_spinner);
 
@@ -142,6 +143,8 @@ public class CompanyContact_activity extends AppCompatActivity {
                 } else {
                     Toast.makeText(CompanyContact_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         }, new Response.ErrorListener() {
             @Override

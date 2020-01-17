@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -25,7 +23,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -33,7 +30,6 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -47,7 +43,7 @@ public class MyProfile_activity extends AppCompatActivity {
     ImageView aadhar;
     ImageView back, home;
     ImageView profimg;
-    String prof, aadharimg;
+    String prof = "", aadharimg;
     String aadhar_no = "";
     String URL = "";
     Bitmap decodedByte;
@@ -219,17 +215,20 @@ public class MyProfile_activity extends AppCompatActivity {
                                 barProgressDialog.dismiss();
                             }
 
-                            ProfileDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response),ProfileDetailsResponseModel.class);
+                            ProfileDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ProfileDetailsResponseModel.class);
 
-                            if (responseModel!=null){
-                                prof = responseModel.getTsp_image();
-                                checkFileExists(prof);
+                            if (responseModel != null) {
+                                if (responseModel.getTsp_image() != null) {
+                                    prof = responseModel.getTsp_image();
+                                    checkFileExists(prof);
+                                }
 
                                 closing_bal.setText(responseModel.getClosing_balance());
                                 credit_lim.setText(responseModel.getCredit_limit());
                                 dojtxt.setText(responseModel.getDoj());
                                 nametxt.setText(responseModel.getName());
                                 source_codetxt.setText(responseModel.getSource_code());
+
                             } else {
                                 Toast.makeText(MyProfile_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                             }
@@ -242,7 +241,7 @@ public class MyProfile_activity extends AppCompatActivity {
                                 e.printStackTrace();
                             }*/
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "on ERROR ------>" + e.getLocalizedMessage());
                         }
                     }
                 }, new com.android.volley.Response.ErrorListener() {

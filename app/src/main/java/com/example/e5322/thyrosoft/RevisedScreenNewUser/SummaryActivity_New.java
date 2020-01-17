@@ -380,22 +380,26 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             amtcollected.setText(amt_collected);
         }
 
-        if (typename.equalsIgnoreCase("WHATERS")) {
-            ll_patient_age.setVisibility(View.GONE);
-            ll_patient_gender.setVisibility(View.GONE);
-        } else {
-            if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
-                ll_patient_age.setVisibility(View.VISIBLE);
-                txt_pat_age.setText(getFinalAge + " " + getageType);
-            } else {
+        try {
+            if (typename.equalsIgnoreCase("WHATERS")) {
                 ll_patient_age.setVisibility(View.GONE);
-            }
-            if (genderType != null && !genderType.equalsIgnoreCase("")) {
-                ll_patient_gender.setVisibility(View.VISIBLE);
-                txt_pat_gender.setText(genderType);
-            } else {
                 ll_patient_gender.setVisibility(View.GONE);
+            } else {
+                if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
+                    ll_patient_age.setVisibility(View.VISIBLE);
+                    txt_pat_age.setText(getFinalAge + " " + getageType);
+                } else {
+                    ll_patient_age.setVisibility(View.GONE);
+                }
+                if (genderType != null && !genderType.equalsIgnoreCase("")) {
+                    ll_patient_gender.setVisibility(View.VISIBLE);
+                    txt_pat_gender.setText(genderType);
+                } else {
+                    ll_patient_gender.setVisibility(View.GONE);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         pat_amt_collected.setText(amt_collected);

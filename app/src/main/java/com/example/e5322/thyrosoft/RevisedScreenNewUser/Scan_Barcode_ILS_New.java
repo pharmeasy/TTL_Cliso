@@ -740,9 +740,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                 Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
 
-                String getFulltime = sampleCollectionDate + " " + getFinalTime;
-                GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
-                Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                try {
+                    String getFulltime = sampleCollectionDate + " " + getFinalTime;
+                    GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
+                    Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 MyPojoWoe myPojoWoe = new MyPojoWoe();
                 Woe woe = new Woe();
                 woe.setAADHAR_NO("");
@@ -802,6 +808,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     barcodelist.setTESTS(GlobalClass.finalspecimenttypewiselist.get(p).getProducts());
                     barcodelists.add(barcodelist);
                 }
+
                 myPojoWoe.setBarcodelistModel(barcodelists);
                 myPojoWoe.setWoe_type("WOE");
                 myPojoWoe.setApi_key(api_key);//api_key
@@ -814,6 +821,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 Gson gson = new GsonBuilder().create();
                 String json = gson.toJson(myPojoWoe);
                 JSONObject jsonObj = null;
+
                 try {
                     jsonObj = new JSONObject(json);
                 } catch (JSONException e) {
@@ -866,6 +874,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                                     if (woeResponseModel != null) {
                                         barcode_patient_id = woeResponseModel.getBarcode_patient_id();
+
+                                        Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
+
                                         message = woeResponseModel.getMessage();
                                         status = woeResponseModel.getStatus();
                                         barcode_id = woeResponseModel.getBarcode_id();

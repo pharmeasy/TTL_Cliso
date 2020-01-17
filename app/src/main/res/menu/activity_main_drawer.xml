@@ -182,7 +182,7 @@
           <item
               android:id="@+id/vid_leggy"
               android:icon="@drawable/videoicon"
-              android:title="Leggy Video" />
+              android:title="Video" />
 
       </group>
 

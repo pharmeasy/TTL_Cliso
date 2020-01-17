@@ -4,6 +4,8 @@ import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
+import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
+import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
@@ -15,6 +17,8 @@ import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.Models.VerifyotpRequest;
 import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
 import com.example.e5322.thyrosoft.Models.VideoTime_Model;
+import com.example.e5322.thyrosoft.Models.Videopoppost;
+import com.example.e5322.thyrosoft.Models.Videopoppost_response;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
 
 import java.util.List;
@@ -70,5 +74,13 @@ public interface APIInteface {
 
     @POST("OtpVerification")
     Call<VerifyotpModel> Verifyotp(@Body VerifyotpRequest verifyotpRequest);
+
+    @POST("Showvideodata")
+    Call<GetVideoResponse_Model> getVideoData(@Body GetVideopost_model getVideopost_model);
+
+
+    @POST("Videopoppost")
+    Call<Videopoppost_response> Videopost(@Body Videopoppost videopoppost);
+
 
 }

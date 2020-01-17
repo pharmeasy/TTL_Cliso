@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -114,6 +113,9 @@ public class BroadcastActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
         requestQueue = Volley.newRequestQueue(BroadcastActivity.this);
+
+        Log.e(TAG, "Brodcast receiver URL -->" + Api.NoticeBoardData + "" + api_key + "/getNoticeMessages");
+
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

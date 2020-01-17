@@ -117,6 +117,7 @@ public class SplashScreen extends AppCompatActivity {
         }
 
 
+
         if (getIntent().hasExtra("IsFromNotification")) {
             IsFromNotification = getIntent().getBooleanExtra("IsFromNotification", false);
             if (IsFromNotification) {
@@ -164,6 +165,7 @@ public class SplashScreen extends AppCompatActivity {
                     if (user != null && passwrd != null) {
                         Intent intent = new Intent(SplashScreen.this, ManagingTabsActivity.class);
                         intent.putExtra("Screen_category", SCRID);
+                        intent.putExtra(Constants.COMEFROM,true);
                         intent.putExtra(Constants.IsFromNotification, IsFromNotification);
                         startActivity(intent);
                         finish();
@@ -247,6 +249,7 @@ public class SplashScreen extends AppCompatActivity {
         if (user != null && passwrd != null) {
             Intent prefe = new Intent(activity, ManagingTabsActivity.class);
             prefe.putExtra("Screen_category", SCRID);
+            prefe.putExtra(Constants.COMEFROM,true);
             prefe.putExtra(Constants.IsFromNotification, IsFromNotification);
             activity.startActivity(prefe);
             ((Activity) activity).finish();

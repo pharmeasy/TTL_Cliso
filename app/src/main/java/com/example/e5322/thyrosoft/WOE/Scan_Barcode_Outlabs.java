@@ -367,10 +367,15 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         String jsonbtech = appSharedPrefsbtech.getString("getBtechnames", "");
         myPojo = gsonbtech.fromJson(jsonbtech, MyPojo.class);
         labAlerts = new ArrayList<>();
-        if (myPojo.getMASTERS().getLAB_ALERTS() != null) {
-            for (int i = 0; i < myPojo.getMASTERS().getLAB_ALERTS().length; i++) {
-                labAlerts.add(myPojo.getMASTERS().getLAB_ALERTS()[i]);
+
+        try {
+            if (myPojo.getMASTERS().getLAB_ALERTS() != null) {
+                for (int i = 0; i < myPojo.getMASTERS().getLAB_ALERTS().length; i++) {
+                    labAlerts.add(myPojo.getMASTERS().getLAB_ALERTS()[i]);
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         lab_alert_spin.setOnClickListener(new View.OnClickListener() {
@@ -413,19 +418,21 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         //  recycler_barcode.setLayoutManager(linearLayoutManager);
         int totalcount = 0;
         temparraylist = new ArrayList<>();
+        temparraylist.add("Select sample type");
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
-            if (Globaly_Outlab_details.get(i).getSampletype() != null) {
+            if (Globaly_Outlab_details.get(i).getSampletype().length > 0) {
                 for (int j = 0; j < Globaly_Outlab_details.get(i).getSampletype().length; j++) {
                     sample_type_linear.setVisibility(View.VISIBLE);
                     temparraylist.add(Globaly_Outlab_details.get(i).getSampletype()[j].getOutlabsampletype());
                     productName = Globaly_Outlab_details.get(i).getProduct();
-                    sample_type_spinner.setAdapter(new ArrayAdapter<String>(Scan_Barcode_Outlabs.this, R.layout.spinnerproperty, temparraylist));
-                }
 
-            } else {
-                sample_type_linear.setVisibility(View.GONE);
+                }
             }
         }
+
+        sample_type_spinner.setAdapter(new ArrayAdapter<String>(Scan_Barcode_Outlabs.this, R.layout.spinnerproperty, temparraylist));
+
+
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
 
             if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")) {
@@ -459,46 +466,56 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalClass.finalspecimenttypewiselist = new ArrayList<>();
-                getSampleType = sample_type_spinner.getSelectedItem().toString();
-                barcodeDetailsToStore = outlab_barcode.getText().toString();
-                getAmount = setAmt.getText().toString();
-                getWrittenAmt = enterAmt.getText().toString();
 
-                String getTestSelection = show_selected_tests_data.getText().toString();
-                if (barcodeDetailsToStore.length() == 7) {
-                    Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
+                try {
+                    GlobalClass.finalspecimenttypewiselist = new ArrayList<>();
+                    getSampleType = sample_type_spinner.getSelectedItem().toString();
+                    barcodeDetailsToStore = outlab_barcode.getText().toString();
+                    getAmount = setAmt.getText().toString();
+                    getWrittenAmt = enterAmt.getText().toString();
+                    String getTestSelection = show_selected_tests_data.getText().toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (getSampleType.equalsIgnoreCase("Select sample type")) {
+                    TastyToast.makeText(mActivity, "Kindly select sample type", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
                 } else {
-                    getOnlyBrcode = barcodeDetailsToStore.substring(8);
-                    if (barcodeDetailsToStore != null) {
-                        ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
-                        scannedBarcodeDetails.setSpecimen_type(getSampleType);
-                        scannedBarcodeDetails.setProducts(displayslectedtest);
-                        scannedBarcodeDetails.setBarcode(getOnlyBrcode);
-                        GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
-                    }
+                    if (barcodeDetailsToStore.length() == 7) {
+                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
+                    } else {
+                        getOnlyBrcode = barcodeDetailsToStore.substring(8);
+                        if (barcodeDetailsToStore != null) {
+                            ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+                            scannedBarcodeDetails.setSpecimen_type(getSampleType);
+                            scannedBarcodeDetails.setProducts(displayslectedtest);
+                            scannedBarcodeDetails.setBarcode(getOnlyBrcode);
+                            GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
+                        }
 
 //                    String totalamt = setAmt.getText().toString();
 //                    String amountpaid = enterAmt.getText().toString();
 
-                    if (!getWrittenAmt.equals("") && !getAmount.equals("")) {
-                        collectedAmt = Integer.parseInt(getWrittenAmt);
-                        totalAmount = Integer.parseInt(getAmount);
-                    } else {
-                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                    }
-                    if (getOnlyBrcode.equals("") || getOnlyBrcode.equals(null)) {
-                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
-                    } else if (getWrittenAmt.equals("")) {
-                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                    }
+                        if (!getWrittenAmt.equals("") && !getAmount.equals("")) {
+                            collectedAmt = Integer.parseInt(getWrittenAmt);
+                            totalAmount = Integer.parseInt(getAmount);
+                        } else {
+                            Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+                        }
+                        if (getOnlyBrcode.equals(null) || getOnlyBrcode.equals("")) {
+                            Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
+                        } else if (getWrittenAmt.equals("")) {
+                            Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+                        }
 //                    else if(collectedAmt<totalAmount){
 //                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.ent_crt_amt, Toast.LENGTH_SHORT).show();
 //                    }
-                    else {
-                        checklistData();
+                        else {
+                            checklistData();
+                        }
                     }
                 }
+
             }
         });
 
@@ -1038,12 +1055,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         bundle.putString("patient_id", barcode_patient_id);
         bundle.putString("Outlbbarcodes", barcodes1);
         bundle.putParcelableArrayList("sendArraylist", GlobalClass.finalspecimenttypewiselist);
+
         for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
             testToPass = new ArrayList<>();
             testToPass.add(GlobalClass.finalspecimenttypewiselist.get(i).getProducts());
             outTestToSend = GlobalClass.finalspecimenttypewiselist.get(i).getProducts();
             showtest = TextUtils.join(",", testToPass);
         }
+
         bundle.putString("tetsts", displayslectedtest);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -1207,8 +1226,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         }
         myPojoWoe.setBarcodelistModel(barcodelists);
         myPojoWoe.setWoe_type("WOE");
-
-
         myPojoWoe.setApi_key(api_key);//api_key
 
         Gson trfgson1 = new GsonBuilder().create();
@@ -1275,9 +1292,13 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                             }
                             Gson woeGson = new Gson();
                             WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
-
+                            barcode_patient_id = woeResponseModel.getBarcode_patient_id();
+                            Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
+                            message = woeResponseModel.getMessage();
                             if (woeResponseModel != null) {
                                 if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+
+                                    Log.e(TAG, "onResponse message --->: " + message);
                                     if (trflist.size() > 0)
                                         new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
                                     else {

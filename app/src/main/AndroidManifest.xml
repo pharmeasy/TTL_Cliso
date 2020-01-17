@@ -120,6 +120,13 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".Kotlin.KTActivity.FAQ_activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Kotlin.KTActivity.KTNoticeboard_activity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".Activity.VideoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true"
@@ -164,7 +171,7 @@
             android:name=".WOE.MainActivityFirebase"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activity.AccreditationActivity"
+            android:name=".Kotlin.KTActivity.AccreditationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".WOE.Scan_Barcode_Outlabs"
@@ -238,6 +245,10 @@
             android:name=".Activity.Communication_Activity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Activity.ManagingTabsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".Activity.CompanyContact_activity"
             android:screenOrientation="portrait" />
         <activity
@@ -265,10 +276,8 @@
             android:name=".RevisedScreenNewUser.Offline_edt_activity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".Activity.ManagingTabsActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
+
+
         <activity
             android:name=".Activity.VidoePlayerActivity"
             android:screenOrientation="portrait" />
@@ -328,6 +337,7 @@
             android:name=".Cliso_BMC.BMC_StockAvailabilityActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity" />
+
     </application>
 
 </manifest>

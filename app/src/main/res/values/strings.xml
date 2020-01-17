@@ -19,6 +19,9 @@
     <string name="billing">Per Day Billing \n(Last 30 days)</string>
     <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
 
+    <string name="more">More...</string>
+    <string name="less">Less...</string>
+
     <style name="medium_text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBlack</item>
         <item name="android:textSize">18sp</item>
@@ -159,7 +162,6 @@
     <string name="str_age">Please enter Age</string>
 
 
-
     <string name="img_upload">Upload image</string>
     <string name="view_trf_image"><u>View TRF image</u></string>
     <string name="view_receipt_image"><u>View receipt image</u></string>
@@ -199,4 +201,7 @@
     <string name="updateText" translatable="false">Newer version of ThyrosoftLite is available. Click UPDATE to upgrade now !</string>
     <string name="cancel" translatable="false">Cancel</string>
     <string name="update" translatable="false">Update</string>
+
+    <string name="title">Title</string>
+    <string name="desc">Description</string>
 </resources>
