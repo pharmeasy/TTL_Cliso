@@ -7,6 +7,10 @@ import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
+import com.example.e5322.thyrosoft.Models.InsertReasonsReq;
+import com.example.e5322.thyrosoft.Models.InsertScandetailReq;
+import com.example.e5322.thyrosoft.Models.InsertScandetailRes;
+import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
@@ -81,6 +85,12 @@ public interface APIInteface {
 
     @POST("Videopoppost")
     Call<Videopoppost_response> Videopost(@Body Videopoppost videopoppost);
+
+    @POST("insertrodetails")
+    Call<InsertScandetailRes> insertScandetail(@Body InsertScandetailReq insertScandetailReq);
+
+    @POST("insertrodtls")
+    Call<InsertreasonResponse> insertreason(@Body InsertReasonsReq insertReasonsReq);
 
 
 }

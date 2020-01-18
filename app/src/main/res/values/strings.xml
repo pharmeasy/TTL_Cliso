@@ -204,4 +204,12 @@
 
     <string name="title">Title</string>
     <string name="desc">Description</string>
+
+    <string name="rbarcode">Report Barcode</string>
+    <string name="scan_entry">Scan Entry</string>
+    <string name="scan_summ">Scan Summary</string>
+    <string name="tltreport">Report Barcode Scan</string>
+    <string name="btnsubmit">Submit</string>
+    <string name="txt_waste_cnt">Waste count : </string>
+    <string name="reason_waste">Reason for Waste : </string>
 </resources>

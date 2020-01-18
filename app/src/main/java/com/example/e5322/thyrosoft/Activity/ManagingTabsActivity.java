@@ -252,6 +252,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.company_contcat).setVisible(false);
             navigationView.getMenu().findItem(R.id.thyroshop).setVisible(false);
             navigationView.getMenu().findItem(R.id.bs_entry).setVisible(false);
+            navigationView.getMenu().findItem(R.id.rbarcode).setVisible(false);
 
         } else {
             if (access.equals("STAFF")) {
@@ -300,29 +301,19 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         String usercode = getProfileName.getString("usercode", null);
         String profile_image = getProfileName.getString("image", null);
 
-     /*   if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-            if (getIntent().hasExtra(Constants.COMEFROM)) {
-                iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
-                if (iscomfrom) {
-                    Log.e(TAG, " COMEFROM -------->" + iscomfrom);
-                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                        CheckVideoData();
-                    }
-                }
-            }
 
-        }*/
 
-        if (getIntent().hasExtra(Constants.IsFromNotification)) {
+
+        /*if (getIntent().hasExtra(Constants.IsFromNotification)) {
             IsFromNotification = getIntent().getBooleanExtra(Constants.IsFromNotification, false);
             if (IsFromNotification) {
                 if (getIntent().hasExtra("Screen_category")) {
                     SCRID = getIntent().getIntExtra("Screen_category", 0);
-                   /* Log.e(TAG, "Screen ID ---->" + SCRID);*/
+                    *//* Log.e(TAG, "Screen ID ---->" + SCRID);*//*
                     callnotifiedScreen(SCRID);
                 }
             }
-        }
+        }*/
 
         if (name != null) {
             navigationDrawerNameTSP.setText("HI " + name);
@@ -1050,6 +1041,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
+        } else if (id == R.id.rbarcode) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, ReportBarcode_activity.class);
+                startActivity(i);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
