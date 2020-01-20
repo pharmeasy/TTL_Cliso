@@ -117,6 +117,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     ImageView ic_play, ic_pause;
     Runnable runnable;
     boolean iscomplete = false;
+    boolean isVideosee = false;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -302,27 +303,38 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         String profile_image = getProfileName.getString("image", null);
 
 
+        if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+            if (getIntent().hasExtra(Constants.COMEFROM)) {
+                iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
+                if (iscomfrom) {
+                    Log.e(TAG, " COMEFROM -------->" + iscomfrom);
+                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                        CheckVideoData();
+                    }
+                }
+            }
 
+        }
 
-        /*if (getIntent().hasExtra(Constants.IsFromNotification)) {
+        if (getIntent().hasExtra(Constants.IsFromNotification)) {
             IsFromNotification = getIntent().getBooleanExtra(Constants.IsFromNotification, false);
             if (IsFromNotification) {
                 if (getIntent().hasExtra("Screen_category")) {
                     SCRID = getIntent().getIntExtra("Screen_category", 0);
-                    *//* Log.e(TAG, "Screen ID ---->" + SCRID);*//*
+                    Log.e(TAG, "Screen ID ---->" + SCRID);
                     callnotifiedScreen(SCRID);
                 }
             }
-        }*/
+        }
 
         if (name != null) {
             navigationDrawerNameTSP.setText("HI " + name);
             ecode.setText("(" + usercode + ")");
         } else {
-            //getProfileDetails(ManagingTabsActivity.this);
+            getProfileDetails(ManagingTabsActivity.this);
         }
 
-        getProfileDetails(ManagingTabsActivity.this);
+        // getProfileDetails(ManagingTabsActivity.this);
 
         Glide.with(ManagingTabsActivity.this)
                 .load(profile_image)
@@ -332,7 +344,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     private void CheckVideoData() {
-
+        //  final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(this);
         GetVideopost_model getVideopost_model = new GetVideopost_model();
         getVideopost_model.setApp(Constants.APP_ID);
         getVideopost_model.setSourcedata(USER_CODE);
@@ -353,7 +365,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                             /*TODO Launching New video Pop up fragment */
 
                             if (!TextUtils.isEmpty(response.body().getOutput().get(0).getPath())) {
-
+                                //  GlobalClass.hideProgress(ManagingTabsActivity.this, progressDialog);
                                 LayoutInflater inflater = getLayoutInflater();
                                 View alertLayout = inflater.inflate(R.layout.fragment_newvideo, null);
                                 ic_close = alertLayout.findViewById(R.id.img_close);
@@ -405,6 +417,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                                 video_view.setVideoURI(uri);
                                                 video_view.requestFocus();
                                                 video_view.start();
+                                                //isVideosee = true;
 
                                                 mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
 
@@ -517,12 +530,18 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                                         if (!TextUtils.isEmpty(response.body().getOutput().get(0).getId())) {
                                             if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                                                /*if (isVideosee) {
+                                                    mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                    postdata(video_view);
+                                                }*/
                                                 closeVideo(response.body().getOutput().get(0).getId(), dialog);
                                             }
                                         }
 
                                     }
                                 });
+                            } else {
+                                //   GlobalClass.hideProgress(ManagingTabsActivity.this, progressDialog);
                             }
 
                         }
@@ -576,6 +595,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         Log.e(TAG, "RESPONSE ---->" + response.body().getResponse());
                         dialog.dismiss();
                         iscomplete = false;
+                       // isVideosee = false;
                     } else {
                         GlobalClass.toastyError(ManagingTabsActivity.this, response.body().getResponse(), false);
                     }

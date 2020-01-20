@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,7 @@ import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
+import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -85,6 +88,67 @@ public class ReportScanFrag extends Fragment {
 
         txt_barcode = view.findViewById(R.id.txt_barcode);
 
+        edt_wastecnt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(getActivity(), "Please enter valid Waste count", Toast.LENGTH_SHORT).show();
+
+                    if (enteredString.length() > 0) {
+                        edt_wastecnt.setText(enteredString.substring(1));
+                    } else {
+                        edt_wastecnt.setText("");
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ")) {
+                    Toast.makeText(getActivity(), "Please enter valid reason", Toast.LENGTH_SHORT).show();
+
+                    if (enteredString.length() > 0) {
+                        edt_reason.setText(enteredString.substring(1));
+                    } else {
+                        edt_reason.setText("");
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         btn_scansubmit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +185,7 @@ public class ReportScanFrag extends Fragment {
 
 
     }
+
 
     private void insertreason() {
 
@@ -161,7 +226,6 @@ public class ReportScanFrag extends Fragment {
     }
 
     private void insertscandetailData() {
-
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
         InsertScandetailReq insertScandetailReq = new InsertScandetailReq();
         insertScandetailReq.setSource(usercode);

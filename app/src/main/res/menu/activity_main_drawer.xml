@@ -223,6 +223,15 @@
     </group>
 
     <group
+        android:id="@+id/group_rbarcode"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/rbarcode"
+            android:icon="@drawable/ic_report"
+            android:title="@string/rbarcode" />
+    </group>
+
+    <group
         android:id="@+id/group18"
         android:checkableBehavior="single">
         <item
@@ -310,14 +319,7 @@
             android:title="Company Contact" />
     </group>
 
-    <group
-        android:id="@+id/group_rbarcode"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/rbarcode"
-            android:icon="@drawable/company_contact"
-            android:title="@string/rbarcode" />
-    </group>
+
 
     <group
         android:id="@+id/group24"

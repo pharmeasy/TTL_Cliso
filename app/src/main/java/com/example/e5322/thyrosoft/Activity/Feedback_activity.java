@@ -178,6 +178,7 @@ public class Feedback_activity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
             }
         });
+
         cry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,8 +251,7 @@ public class Feedback_activity extends AppCompatActivity {
                 Log.e(TAG, "Feedback length---->" + getFeedback.length());
                 if (getFeedback.equals("")) {
                     GlobalClass.toastyError(Feedback_activity.this, "Kindly give the feedback for app", false);
-                }
-                if (getFeedback.length() > 250) {
+                } else if (getFeedback.length() > 250) {
                     GlobalClass.toastyError(Feedback_activity.this, "kindly enter feedback upto 250 character", false);
                 } else {
                     if (emoji.equals("")) {

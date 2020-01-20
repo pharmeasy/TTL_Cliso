@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.media.ExifInterface;
@@ -1044,6 +1045,18 @@ public class GlobalClass {
         if (activity != null) {
             Context context = activity.getApplicationContext();
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void setBordertoView(Context context, LinearLayout lin_main, int color, int backcolor) {
+
+        GradientDrawable border = new GradientDrawable();
+        border.setColor(backcolor);
+        border.setStroke(1, color); //black border with full opacity
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            lin_main.setBackgroundDrawable(border);
+        } else {
+            lin_main.setBackground(border);
         }
     }
 

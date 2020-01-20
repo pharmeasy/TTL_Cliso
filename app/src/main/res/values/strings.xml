@@ -205,7 +205,7 @@
     <string name="title">Title</string>
     <string name="desc">Description</string>
 
-    <string name="rbarcode">Report Barcode</string>
+    <string name="rbarcode">Report Barcode Scan</string>
     <string name="scan_entry">Scan Entry</string>
     <string name="scan_summ">Scan Summary</string>
     <string name="tltreport">Report Barcode Scan</string>
