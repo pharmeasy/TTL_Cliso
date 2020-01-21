@@ -84,5 +84,6 @@
         android:textColor="@color/primary_text"
         android:scrollbars="none"
         android:groupIndicator="@null"
-        android:dividerHeight="0.5dp"/>
+        android:dividerHeight="0.5dp"
+        ></ExpandableListView>
 </LinearLayout>

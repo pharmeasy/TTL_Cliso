@@ -19,7 +19,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -34,14 +33,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.DeleteWOEResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
@@ -53,7 +49,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -68,8 +63,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class SummaryActivity_New extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
-    public static com.android.volley.RequestQueue sendGPSDetails;
-    public static com.android.volley.RequestQueue POstQue;
     private static String stringofconvertedTime;
     private static String cutString;
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
@@ -79,48 +72,34 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     RecyclerView sample_list;
     String getSelctedTests, passProdcucts;
     int saveSrNumber;
+    public static com.android.volley.RequestQueue sendGPSDetails;
     String getStateName, getCountryName, getCityName;
     AlertDialog.Builder alertDialog;
     SharedPreferences prefs;
     SharedPreferences savepatientDetails;
+    private String totalAmount, amt_collected, patient_id_to_delete_tests;
     SharedPreferences preferences;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     ArrayList<BarcodelistModel> barcodelists;
     ProgressDialog barProgressDialog;
     BarcodelistModel barcodelist;
     Barcodelist barcodelistData;
-    RequestQueue deletePatienDetail;
-    DatabaseHelper myDb;
-    LinearLayout btech_layout, refbylinear;
-    int convertSrno;
-    Date date;
-    Context context1;
-    ImageView back, home;
-    GoogleApiClient mGoogleApiClient;
-    Location mLocation;
-    LocationManager mLocationManager;
-    LocationRequest mLocationRequest;
-    com.google.android.gms.location.LocationListener listener;
-    long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    long FASTEST_INTERVAL = 2000; /* 2 sec */
-    LocationManager locationManager;
-    String getIMEINUMBER;
-    String mobileModel;
-    String latitudePassTOAPI;
-    String longitudePassTOAPI;
-    LinearLayout linamt_collected;
-    TextView amtcollected;
-    private String totalAmount, amt_collected, patient_id_to_delete_tests;
     private String patientName, patientYearType, user, passwrd, access, api_key, status;
     private String patientYear, patientGender;
     private String sampleCollectionDate;
+    public static com.android.volley.RequestQueue POstQue;
+    RequestQueue deletePatienDetail;
     private String message;
+    DatabaseHelper myDb;
     private String ageType;
+
     private String getFinalAddressToPost;
     private String getFinalPhoneNumberToPost;
     private String getFinalEmailIdToPost;
     private String TAG = SummaryActivity_New.this.getClass().getSimpleName();
     private String outputDateStr;
+    LinearLayout btech_layout, refbylinear;
+    int convertSrno;
     private String nameString;
     private String getFinalAge;
     private String saveGenderId;
@@ -128,8 +107,26 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String getageType;
     private String genderType, CollectedAmt;
     private String getFinalDate;
+    Date date;
+    Context context1;
+    ImageView back, home;
     private String version;
     private int versionCode;
+
+    GoogleApiClient mGoogleApiClient;
+    Location mLocation;
+    LocationManager mLocationManager;
+
+    LocationRequest mLocationRequest;
+    com.google.android.gms.location.LocationListener listener;
+    long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
+    long FASTEST_INTERVAL = 2000; /* 2 sec */
+
+    LocationManager locationManager;
+    String getIMEINUMBER;
+    String mobileModel;
+    String latitudePassTOAPI;
+    String longitudePassTOAPI;
     private boolean GpsStatus;
     private String referenceID;
     private Global globalClass;
@@ -148,32 +145,14 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String getBrand_name;
     private String sr_number;
     private int pass_to_api;
+    private String error, pid, barcodes, response1, resID;
     private String getBarcodesOffline;
     private boolean flagforOnce = false;
     private String location, fromcome;
     private LinearLayout ll_location;
     private TextView txt_setLocation;
-
-    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
-
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = null;
-        stringofconvertedTime = null;
-        try {
-            date = new Date();
-            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
-            String convertedDate = sdf_format.format(date);
-            date = inputFormat.parse(convertedDate + time);
-            stringofconvertedTime = outputFormat.format(date);
-            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return stringofconvertedTime;
-    }
+    LinearLayout linamt_collected;
+    TextView amtcollected;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -312,7 +291,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             }
         });
 
-   /*     if (saveGenderId.equalsIgnoreCase("F")) {
+        if (saveGenderId.equalsIgnoreCase("F")) {
             genderType = "Female";
         } else if (saveGenderId.equalsIgnoreCase("M")) {
             genderType = "Male";
@@ -324,25 +303,6 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             ageType = "M";
         } else if (getageType.equalsIgnoreCase("Days")) {
             ageType = "D";
-        }*/
-
-
-        if (!TextUtils.isEmpty(saveGenderId)) {
-            if (saveGenderId.equalsIgnoreCase("F")) {
-                genderType = "Female";
-            } else if (saveGenderId.equalsIgnoreCase("M")) {
-                genderType = "Male";
-            }
-        }
-
-        if (!TextUtils.isEmpty(getageType)) {
-            if (getageType.equalsIgnoreCase("Years")) {
-                ageType = "Y";
-            } else if (getageType.equalsIgnoreCase("Months")) {
-                ageType = "M";
-            } else if (getageType.equalsIgnoreCase("Days")) {
-                ageType = "D";
-            }
         }
 
         finalspecimenttypewiselist = new ArrayList<>();
@@ -373,33 +333,29 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         pat_name.setText(nameString);
 
 
-        if (fromcome.equals("")) {
+        if (fromcome.equals("")){
             linamt_collected.setVisibility(View.GONE);
-        } else {
+        }else {
             linamt_collected.setVisibility(View.VISIBLE);
             amtcollected.setText(amt_collected);
         }
 
-        try {
-            if (typename.equalsIgnoreCase("WHATERS")) {
-                ll_patient_age.setVisibility(View.GONE);
-                ll_patient_gender.setVisibility(View.GONE);
+        if (typename.equalsIgnoreCase("WHATERS")) {
+            ll_patient_age.setVisibility(View.GONE);
+            ll_patient_gender.setVisibility(View.GONE);
+        } else {
+            if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
+                ll_patient_age.setVisibility(View.VISIBLE);
+                txt_pat_age.setText(getFinalAge + " " + getageType);
             } else {
-                if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
-                    ll_patient_age.setVisibility(View.VISIBLE);
-                    txt_pat_age.setText(getFinalAge + " " + getageType);
-                } else {
-                    ll_patient_age.setVisibility(View.GONE);
-                }
-                if (genderType != null && !genderType.equalsIgnoreCase("")) {
-                    ll_patient_gender.setVisibility(View.VISIBLE);
-                    txt_pat_gender.setText(genderType);
-                } else {
-                    ll_patient_gender.setVisibility(View.GONE);
-                }
+                ll_patient_age.setVisibility(View.GONE);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (genderType != null && !genderType.equalsIgnoreCase("")) {
+                ll_patient_gender.setVisibility(View.VISIBLE);
+                txt_pat_gender.setText(genderType);
+            } else {
+                ll_patient_gender.setVisibility(View.GONE);
+            }
         }
 
         pat_amt_collected.setText(amt_collected);
@@ -507,54 +463,52 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         barProgressDialog.setCancelable(false);
 
 
-        if (!flagforOnce) {
+        if (flagforOnce == false) {
             flagforOnce = true;
             deletePatienDetail = Volley.newRequestQueue(context1);
-
-            JSONObject jsonObject = null;
+            JSONObject jsonObjectOtp = new JSONObject();
             try {
-                DeleteWOERequestModel requestModel = new DeleteWOERequestModel();
-                requestModel.setApi_key(api_key);
-                requestModel.setPatient_id(patient_id_to_delete_tests);
-                requestModel.setTsp(user);
 
-                Gson deleteGson = new Gson();
-                String deleteJSON = deleteGson.toJson(requestModel);
-                jsonObject = new JSONObject(deleteJSON);
+                jsonObjectOtp.put("api_key", api_key);
+                jsonObjectOtp.put("Patient_id", patient_id_to_delete_tests);
+                jsonObjectOtp.put("tsp", user);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.e(TAG, "onResponse: " + response);
                     try {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
-                        Gson gson = new Gson();
-                        DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
-                        if (deleteWOEResponseModel != null) {
-                            if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                Intent intent = new Intent(context1, ManagingTabsActivity.class);
-                                startActivity(intent);
-                            } else {
-                                TastyToast.makeText(context1, deleteWOEResponseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            }
+                        String finalJson = response.toString();
+                        JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                        error = parentObjectOtp.getString("error");
+                        pid = parentObjectOtp.getString("pid");
+                        response1 = parentObjectOtp.getString("response");
+                        barcodes = parentObjectOtp.getString("barcodes");
+                        resID = parentObjectOtp.getString("RES_ID");
+
+                        if (resID.equals("RES0000")) {
+                            TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent intent = new Intent(context1, ManagingTabsActivity.class);
+                            startActivity(intent);
                         } else {
-                            TastyToast.makeText(context1, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
+                            TastyToast.makeText(context1, response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
-                    } catch (Exception e) {
+
+                    } catch (JSONException e) {
+                        TastyToast.makeText(context1, response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         e.printStackTrace();
                     }
                 }
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
                     if (error != null) {
                     } else {
 
@@ -564,11 +518,13 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             });
             deletePatienDetail.add(jsonObjectRequest1);
             Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
-            Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
+            Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObjectOtp);
         } else {
             TastyToast.makeText(context1, "Sample not deleted successfully !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
+
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
@@ -606,6 +562,28 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             getCityName = "";
         }
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+
+    public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        stringofconvertedTime = null;
+        try {
+            date = new Date();
+            SimpleDateFormat sdf_format = new SimpleDateFormat("yyyy-MM-dd ");
+            String convertedDate = sdf_format.format(date);
+            date = inputFormat.parse(convertedDate + time);
+            stringofconvertedTime = outputFormat.format(date);
+            cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return stringofconvertedTime;
     }
 
     private void fetchData() {

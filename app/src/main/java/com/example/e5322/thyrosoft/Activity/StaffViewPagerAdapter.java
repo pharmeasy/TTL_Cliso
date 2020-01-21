@@ -7,11 +7,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
-import com.example.e5322.thyrosoft.Fragment.NHFFragment;
+import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
-import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;
@@ -41,7 +41,6 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         final Fragment result;
-
         switch (position) {
 
             case 0:
@@ -60,29 +59,22 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
-
             case 4:
-                // First Fragment of Third Tab
-                result = new NHFFragment();
-                break;
-
-            case 5:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
                 break;
-            case 6:
+            case 5:
                 // First Fragment of Third Tab
                 result = new CHNfragment();
                 break;
 
-            case 7:
+            case 6:
                 // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
             default:
                 result = null;
                 break;
-
         }
 
         return result;
@@ -90,12 +82,13 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 8;
+        return 7;
     }
 
     @Override
     public CharSequence getPageTitle(final int position) {
         switch (position) {
+
             case 0:
                 return resources.getString(R.string.page_1);
             case 1:
@@ -105,12 +98,10 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
             case 3:
                 return resources.getString(R.string.page_4);
             case 4:
-                return resources.getString(R.string.petct);
-            case 5:
                 return resources.getString(R.string.page_6);
-            case 6:
+            case 5:
                 return resources.getString(R.string.page_7);
-            case 7:
+            case 6:
                 return resources.getString(R.string.page_9);
 
             default:
@@ -126,7 +117,6 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
      * @param position
      * @return
      */
-
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         Fragment fragment = (Fragment) super.instantiateItem(container, position);

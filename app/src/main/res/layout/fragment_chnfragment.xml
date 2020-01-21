@@ -31,7 +31,7 @@
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/small_cal"
             android:padding="5dp"
-            android:text="" />
+            android:text="22-09-2018" />
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -51,7 +51,7 @@
             android:layout_height="match_parent"
             android:groupIndicator="@null"
             android:divider="@color/Gray"
-            android:dividerHeight="1dp"/>
+            android:dividerHeight="1dp"></ExpandableListView>
 
         <TextView
             android:id="@+id/no_view"
@@ -63,7 +63,7 @@
             android:gravity="center"
             android:text="No data found"
             android:textColor="@color/colorBlack"
-            android:visibility="gone"/>
+            android:visibility="gone"></TextView>
 
 
     </LinearLayout>

@@ -37,21 +37,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Windup_adapter;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Interface.CountInterface;
-import com.example.e5322.thyrosoft.Models.RequestModels.WindupRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.CommonResponseModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.ConsignmentCountResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.Patients;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Details;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -78,29 +72,11 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
  * Use the {@link Wind_up_fragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Wind_up_fragment extends RootFragment implements CountInterface {
-    static final int DATE_DIALOG_ID = 999;
+public class Wind_up_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static RequestQueue PostQueOtp;
-    public static RequestQueue PostQueueForConsignment;
-    public static InputFilter EMOJI_FILTER = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            for (int index = start; index < end; index++) {
-
-                int type = Character.getType(source.charAt(index));
-
-                if (type == Character.SURROGATE) {
-                    return "";
-                }
-            }
-            return null;
-        }
-    };
     private static ManagingTabsActivity mContext;
     ImageView add, enter_arrow_enterss, enter_arrow_enteredss;
     View viewfab;
@@ -111,10 +87,14 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     EditText edtSearch;
     LinearLayout linearlayout2, pick_up_ll;
     String getDatefromWOE, halfTime, DateToPass;
+    static final int DATE_DIALOG_ID = 999;
     TextView wind_up, woe_cal, wind_up_multiple, pick_up_txt;
     ProgressDialog barProgressDialog;
     RequestQueue requestQueue, requestQueueWindup;
     Button defaultFragment;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
     View view_line, view_line1;
@@ -132,16 +112,29 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     View view_1, view_2;
     LinearLayout offline_img;
     Calendar myCalendar;
+    public static RequestQueue PostQueOtp;
     LinearLayout windup_ll_below;
+    public static RequestQueue PostQueueForConsignment;
     String putDate, getFormatDate, convertedDate;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     SharedPreferences prefs;
     String user, passwrd, access, api_key;
     String blockCharacterSet = "~#^|$%&*!+:`";
-    LinearLayout logistic_ll;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static InputFilter EMOJI_FILTER = new InputFilter() {
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            for (int index = start; index < end; index++) {
+
+                int type = Character.getType(source.charAt(index));
+
+                if (type == Character.SURROGATE) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -153,12 +146,14 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             return null;
         }
     };
+
     private OnFragmentInteractionListener mListener;
     private String countData;
     private String outputDateStr;
     private String passToAPI;
     private String DatePassToApi;
     private String client_type;
+    LinearLayout logistic_ll;
 
     public Wind_up_fragment() {
         // Required empty public constructor
@@ -353,7 +348,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         } else {
 
                         }
-                        windup_adapter = new Windup_adapter(mContext, filterPatientsArrayList, Wind_up_fragment.this);
+                        windup_adapter = new Windup_adapter(mContext, filterPatientsArrayList);
                         recyclerView.setAdapter(windup_adapter);
                     }
                 }
@@ -374,7 +369,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 updateLabel();
             }
         };
-
         woe_cal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -422,55 +416,50 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                 , new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                Log.e(TAG, "response " + response);
+                                System.out.println("barcode respponse" + response);
+                                Log.e(TAG, "onResponse: response" + response);
+                                String finalJson = response.toString();
+                                JSONObject parentObjectOtp = null;
                                 try {
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
+                                    parentObjectOtp = new JSONObject(finalJson);
+                                    String RES_ID = parentObjectOtp.getString("RES_ID");
+                                    String response1 = parentObjectOtp.getString("response");
+                                    if (RES_ID.equals("RES0000")) {
+                                        TastyToast.makeText(mContext, response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                             barProgressDialog.dismiss();
-                                    }
-
-                                    CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
-
-                                    if (responseModel != null) {
-                                        if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                            TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                            Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                            transaction.addToBackStack(null);
-                                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
-
-                                            fetchWoeListDoneByTSP();
-                                        } else {
-                                            Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                                        }*/
+                                        if (mContext instanceof Activity) {
+                                            if (!((Activity) mContext).isFinishing())
+                                                barProgressDialog.dismiss();
                                         }
+                                        fetchWoeListDoneByTSP();
                                     } else {
-                                        Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
                                     }
-                                } catch (JsonSyntaxException e) {
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+
                             }
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                try {
-                                    if (error.networkResponse == null) {
-                                        if (error.getClass().equals(TimeoutError.class)) {
-                                            // Show timeout error message
-                                        }
+                                if (error.networkResponse == null) {
+                                    if (error.getClass().equals(TimeoutError.class)) {
+                                        // Show timeout error message
                                     }
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
-                                            barProgressDialog.dismiss();
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
                         });
-                        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
+                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                300000,
+                                3,
+                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                         requestQueueWindup.add(jsonObjectRequestPop);
                         Log.e(TAG, "onClick: URL" + jsonObjectRequestPop);
+
+
                     }
                 });
 
@@ -498,6 +487,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 barProgressDialog.setCanceledOnTouchOutside(false);
                 barProgressDialog.setCancelable(false);
 
+
                 if (GlobalClass.windupBarcodeList.size() != 0 && GlobalClass.windupBarcodeList != null) {
                     String SEPARATOR = ",";
 
@@ -512,64 +502,60 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     System.out.println(csv);
 
                     PostQueOtp = Volley.newRequestQueue(getContext());
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObjectOtp = new JSONObject();
                     try {
-                        WindupRequestModel requestModel = new WindupRequestModel();
-                        requestModel.setApi_key(api_key);
-                        requestModel.setPatient_id(csv);
-                        requestModel.setTsp(user);
-                        requestModel.setDate(passToAPI);
 
-                        String json = new Gson().toJson(requestModel);
-                        jsonObject = new JSONObject(json);
+                        jsonObjectOtp.put("api_key", api_key);
+                        jsonObjectOtp.put("Patient_id", csv);
+                        jsonObjectOtp.put("tsp", user);
+                        jsonObjectOtp.put("date", passToAPI);
+
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.multiple_windup, jsonObject, new Response.Listener<JSONObject>() {
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.multiple_windup, jsonObjectOtp, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
+
                             Log.e(TAG, "onResponse: " + response);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
-                            CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
-
-                            if (responseModel != null) {
-                                if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                    TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
-                                    GlobalClass.windupBarcodeList = new ArrayList<>();
-                                    Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                    transaction.addToBackStack(null);
-                                    transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
-
+                            String finalJson = response.toString();
+                            JSONObject parentObjectOtp = null;
+                            try {
+                                parentObjectOtp = new JSONObject(finalJson);
+                                String RES_ID = parentObjectOtp.getString("RES_ID");
+                                String response1 = parentObjectOtp.getString("response");
+                                if (RES_ID.equals("RES0000")) {
+                                    TastyToast.makeText(mContext, response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                        barProgressDialog.dismiss();
+                                        GlobalClass.windupBarcodeList = new ArrayList<>();
+                                    }
                                     fetchWoeListDoneByTSP();
                                 } else {
-                                    Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
+                                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                        barProgressDialog.dismiss();
+                                    }
+                                    Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
                                 }
-                            } else {
-                                Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-
                         }
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
                             if (error != null) {
                             } else {
+
                                 System.out.println(error);
                             }
                         }
                     });
                     PostQueOtp.add(jsonObjectRequest1);
-                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
-                    Log.e(TAG, "onClick: json" + jsonObject);
+                    Log.e(TAG, "onClick: json" + jsonObjectOtp);
                     Log.e(TAG, "onClick: url" + jsonObjectRequest1);
+
                 } else {
                    /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
@@ -580,6 +566,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     }
                     Toast.makeText(getContext(), ToastFile.slt_name_for_windup, Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
@@ -592,11 +579,14 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, Api.consignmentperday + user + "/ConfirmConsignmentEntry", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                String finalJson = response.toString();
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-                ConsignmentCountResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ConsignmentCountResponseModel.class);
-
-                if (responseModel != null) {
-                    if (!GlobalClass.isNull(responseModel.getGetCount()) && responseModel.getGetCount().equalsIgnoreCase("0")) {
+                JSONObject parentObjectOtp = null;
+                try {
+                    parentObjectOtp = new JSONObject(finalJson);
+                    String getCount = parentObjectOtp.getString("getCount");
+                    String response1 = parentObjectOtp.getString("Response");
+                    if (getCount.equals("0")) {
                         enterNextFragment();
                     } else {
                         new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
@@ -610,9 +600,10 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                     }
                                 })
                                 .show();
+//                        enterNextFragment();//-- TODO check consignment entry for the day
                     }
-                } else {
-                    Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
@@ -768,7 +759,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 //                    wind_up_multiple.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
 
-                        windup_adapter = new Windup_adapter(mContext, patientsArrayList, Wind_up_fragment.this);
+                        windup_adapter = new Windup_adapter(mContext, patientsArrayList);
                         recyclerView.setAdapter(windup_adapter);
                        /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
@@ -816,8 +807,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                 barProgressDialog.dismiss();
                         }
                     }
-
-
                     /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }*/
@@ -855,12 +844,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         }
     }
 
-
-    @Override
-    public void getclickcount(int count) {
-        wind_up_multiple.setText("Wind up( " + count + " )");
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -875,4 +858,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

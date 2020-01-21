@@ -1,56 +1,56 @@
 package com.example.e5322.thyrosoft.startscreen;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
-import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
-import com.example.e5322.thyrosoft.DownloadInAppTask;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 
 import io.fabric.sdk.android.Fabric;
 
 public class SplashScreen extends AppCompatActivity {
-    private static final int MEGABYTE = 1024 * 1024;
     public static String str_login_test, profile_test;
     public static SharedPreferences sh, profile;
     public static SharedPreferences.Editor editor, editor1;
-    static String path;
     private static String TAG = SplashScreen.class.getSimpleName();
     AlertDialog alert;
     String version;
@@ -62,19 +62,11 @@ public class SplashScreen extends AppCompatActivity {
     String response1;
     String resId;
     ImageView iv;
-    String USER_CODE = "";
-    ProgressDialog barProgressDialog;
-    File ThyrosoftLite;
-    Activity activity;
-    String newToken, storetoken;
-    boolean IsFromNotification;
-    String user, passwrd;
-    int SCRID;
     private int versionCode = 0;
     private String ApkUrl;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
-    private int WRITE_EXTERNAL_STORAGE = 123;
+    String USER_CODE = "";
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -91,14 +83,12 @@ public class SplashScreen extends AppCompatActivity {
         return deletedAll;
     }
 
-
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.splash_screen);
-        activity = SplashScreen.this;
         anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
         iv = (ImageView) findViewById(R.id.logo);
 
@@ -116,236 +106,188 @@ public class SplashScreen extends AppCompatActivity {
             return; // add this to prevent from doing unnecessary stuffs
         }
 
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(SplashScreen.this);
+        firstRunSplash = p.getBoolean("PREFERENCE_FIRSTSPLASH_RUN", false);
 
-
-        if (getIntent().hasExtra("IsFromNotification")) {
-            IsFromNotification = getIntent().getBooleanExtra("IsFromNotification", false);
-            if (IsFromNotification) {
-                if (getIntent().hasExtra("Screen_category")) {
-                    SCRID = getIntent().getIntExtra("Screen_category", 0);
-                    Log.e(TAG, "Screen ID ---->" + SCRID);
-                }
-            }
+        if (firstRunSplash == false) {
+            p.edit().putBoolean("PREFERENCE_FIRSTSPLASH_RUN", true).commit();
+            clearApplicationData();
+        } else {
+            Log.e(TAG, "deleteDir: cache is not cleraed ");
         }
-
-        //  getversion();
+        getversion();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
+        //get the app appVersion Name for display
         version = pInfo.versionName;
+        //get the app appVersion Code for checking
         versionCode = pInfo.versionCode;
+        //display the current appVersion in a TextView
         TextView versionText = (TextView) findViewById(R.id.version);
         versionText.setText(version);
-
         cd = new ConnectionDetector(getApplicationContext());
 
-        SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
-        String api_key = prefs.getString("API_KEY", null);
-        USER_CODE = prefs.getString("USER_CODE", "");
-
-        SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
-        storetoken = fire_pref.getString(Constants.F_TOKEN, "");
-
-        if (cd.isConnectingToInternet()) {
-            callAPICheckVersion();
-        } else {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
-                @Override
-                public void onSuccess(InstanceIdResult instanceIdResult) {
-                    newToken = instanceIdResult.getToken();
-                    Log.e("NewToken----->", newToken);
-
-                    if (user != null && passwrd != null) {
-                        Intent intent = new Intent(SplashScreen.this, ManagingTabsActivity.class);
-                        intent.putExtra("Screen_category", SCRID);
-                        intent.putExtra(Constants.COMEFROM,true);
-                        intent.putExtra(Constants.IsFromNotification, IsFromNotification);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
-                        builder.setMessage(ToastFile.intConnection)
-                                .setCancelable(false)
-                                .setPositiveButton("Retry",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int id) {
-
-                                                Intent intent = getIntent();
-                                                finish();
-                                                startActivity(intent);
-
-                                            }
-                                        });
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
-
-                    }
-                }
-            });
-        }
-    }
-
-    private void callAPICheckVersion() {
-        try {
-            if (ControllersGlobalInitialiser.versionCheckAPIController != null) {
-                ControllersGlobalInitialiser.versionCheckAPIController = null;
-            }
-
-            ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity);
-            ControllersGlobalInitialiser.versionCheckAPIController.checkVersion(true);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getVersionResponse(final String apiVersion, final String apkUrl, String response) {
-        if (apiVersion != null && response.equalsIgnoreCase("Success")) {
-            globalClass.printLog("Error", TAG, "onResponse apiVersion: ", apiVersion);
-            iv.startAnimation(anim);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    String newVersion = apiVersion.replace(".", "");//api
-                    String preversion = version.replace(".", "");//package
-
-                    int intApiVersion = Integer.parseInt(newVersion);//api
-                    int intPkgversion = Integer.parseInt(preversion);//pkg
-
-                    if (intPkgversion < intApiVersion) {
-                        ValidateInstallPermission();
-                        displayUpdateDialog(activity, apkUrl);
-                    } else {
-                        callIntent();
-
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        } else {
-            GlobalClass.showShortToast(activity, response);
-            ActivityCompat.finishAffinity(activity);
-        }
-    }
-
-    private void callIntent() {
-        if (user != null && passwrd != null) {
-            Intent prefe = new Intent(activity, ManagingTabsActivity.class);
-            prefe.putExtra("Screen_category", SCRID);
-            prefe.putExtra(Constants.COMEFROM,true);
-            prefe.putExtra(Constants.IsFromNotification, IsFromNotification);
-            activity.startActivity(prefe);
-            ((Activity) activity).finish();
-        } else {
-            Intent i = new Intent(activity, Login.class);
-            activity.startActivity(i);
-            ((Activity) activity).finish();
-        }
-    }
-
-    private void GetInstallPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!getPackageManager().canRequestPackageInstalls()) {
-                startActivityForResult(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES).setData(Uri.parse(String.format("package:%s", getPackageName()))), 12);
+        if (!isNetworkAvailable()) {
+            SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+            String user = prefs.getString("Username", null);
+            String passwrd = prefs.getString("password", null);
+            String access = prefs.getString("ACCESS_TYPE", null);
+            String api_key = prefs.getString("API_KEY", null);
+            if (user != null && passwrd != null) {
+                Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
+                startActivity(prefe);
+                finish();
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                // Set the Alert Dialog Message
+                builder.setMessage(ToastFile.intConnection)
+                        .setCancelable(false)
+                        .setPositiveButton("Retry",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int id) {
+                                        // Restart the Activity
+                                        Intent intent = getIntent();
+                                        finish();
+                                        startActivity(intent);
+                                    }
+                                });
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         }
     }
 
-    private void displayUpdateDialog(final Activity mActivity, final String apkUrl) {
+    public void clearApplicationData() {
+//        Log.e(TAG, "<< Clear App Data >>");
+        File cacheDirectory = getCacheDir();
+        File applicationDirectory = new File(cacheDirectory.getParent());
+        if (applicationDirectory.exists()) {
+            String[] fileNames = applicationDirectory.list();
+            for (String fileName : fileNames) {
+                if (!fileName.equals("lib")) {
+                    deleteFile(new File(applicationDirectory, fileName));
+                }
+            }
+        }
+    }
 
-        ViewGroup viewGroup = findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(mActivity).inflate(R.layout.updatedialog, viewGroup, false);
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(mActivity);
-        dialog.setView(dialogView);
-        dialog.setCancelable(false);
-        final AlertDialog alertDialog = dialog.create();
-        alertDialog.show();
-        Button btnUpdate = (Button) dialogView.findViewById(R.id.btnUpdate);
-        Button btnCancel = (Button) dialogView.findViewById(R.id.btnCancel);
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
+    private boolean isNetworkAvailable() {
+        // Using ConnectivityManager to check for Network Connection
+        ConnectivityManager connectivityManager = (ConnectivityManager) this
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+
+    private void getversion() {
+        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(SplashScreen.this);
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkVersion, new Response.Listener<JSONObject>() {
             @Override
-            public void onClick(View v) {
+            public void onResponse(JSONObject response) {
                 try {
-                    if (ValidateInstallPermission()) {
-                        alertDialog.dismiss();
-                        callDownLoadData(apkUrl);
+                    Log.e(TAG, "onResponse: response" + response);
+                    Log.e(TAG, "RESPONSE" + String.valueOf(response));
+                    version1 = response.getString("Version");
+                    ApkUrl = response.getString("url");
+                    response1 = response.getString("response");
+                    resId = response.getString("resId");
+
+                    if (version1 != null) {
+                        Log.e(TAG, "onResponse apiVersion: " + version1);
+                        iv.startAnimation(anim);
+                        anim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                String newVersion = version1.replace(".", "");//api
+                                String preversion = version.replace(".", "");//package
+
+                                int intApiVersion = Integer.parseInt(newVersion);//api
+                                int intPkgversion = Integer.parseInt(preversion);//pkg
+                                //46>47intNewVersion
+                                if (intPkgversion >= intApiVersion) {//intPreversion<intNewVersion
+
+                                    SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+                                    String user = prefs.getString("Username", null);
+                                    String passwrd = prefs.getString("password", null);
+                                    String access = prefs.getString("ACCESS_TYPE", null);
+                                    String api_key = prefs.getString("API_KEY", null);
+                                    USER_CODE = prefs.getString("USER_CODE", "");
+                                    if (user != null && passwrd != null) {
+                                        if (USER_CODE.startsWith("BM")) {
+                                            Intent prefe = new Intent(SplashScreen.this, BMC_MainActivity.class);
+                                            startActivity(prefe);
+                                            finish();
+                                        } else {
+                                            Intent prefe = new Intent(SplashScreen.this, ManagingTabsActivity.class);
+                                            startActivity(prefe);
+                                            finish();
+                                        }
+                                    } else {
+                                        Intent i = new Intent(SplashScreen.this, Login.class);
+                                        startActivity(i);
+                                        finish();
+                                    }
+                                } else {
+                                    //oh yeah we do need an upgrade, let the user know send an alert message
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+                                    builder.setCancelable(false);
+                                    builder.setMessage(ToastFile.newer_version)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                //if the user agrees to upgrade
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(ApkUrl));
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            })
+                                            .setNegativeButton("EXIT", new DialogInterface.OnClickListener() {
+                                                @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    finishAffinity();
+                                                }
+                                            });
+                                    builder.create().show();
+                                }
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
                     }
-                } catch (Exception e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-        });
-
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+        }, new Response.ErrorListener() {
             @Override
-            public void onClick(View v) {
-                mActivity.finish();
-                alertDialog.dismiss();
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
             }
         });
-
+        requestQueuepoptestILS.add(jsonObjectRequestPop);
+        Log.e(TAG, "getversion URL: " + jsonObjectRequestPop);
     }
-
-
-    public boolean ValidateInstallPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_EXTERNAL_STORAGE);
-                return false;
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (!getPackageManager().canRequestPackageInstalls()) {
-                GetInstallPermission();
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void callDownLoadData(String url) {
-        ProgressDialog mProgressDialog;
-        mProgressDialog = new ProgressDialog(activity);
-        mProgressDialog.setMessage("Downloading..");
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setCancelable(false);
-
-        // execute this when the downloader must be fired
-        final DownloadInAppTask downloadInAppTask = new DownloadInAppTask((SplashScreen) activity, activity, mProgressDialog, Constants.APK_NAME + ".apk");
-        downloadInAppTask.execute(url);
-
-        mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                downloadInAppTask.cancel(true); //cancel the task
-            }
-        });
-    }
-
 
     @Override
     public void onBackPressed() {
         finish();
         super.onBackPressed();
     }
-
 }

@@ -46,8 +46,6 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
 import com.example.e5322.thyrosoft.Interface.RefreshOfflineWoe;
-import com.example.e5322.thyrosoft.Models.RequestModels.GeoLocationRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
@@ -82,8 +80,54 @@ public class Offline_woe extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    LocationManager locationManager;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
     public static com.android.volley.RequestQueue sendGPSDetails;
+    private String mParam2;
+    private static ManagingTabsActivity mContext;
+    Activity activity;
+    private OnFragmentInteractionListener mListener;
+    private View viewMain;
+    ArrayList<String> errorList;
+    private EditText edtSearch;
+    private RecyclerView recyclerView;
+    private LinearLayout app_bar_layout;
+    private LinearLayoutManager linearLayoutManager;
+    private TextView sync_woe, tvNoDataFound;
+    DatabaseHelper myDb;
+    static Offline_woe fragment;
+    LinearLayout sendwoe_ll, parent_ll;
+    ArrayList<BarcodelistModel> barcodelists;
+    Offline_Woe_Adapter offline_woe_adapter;
+    ArrayList<MyPojoWoe> allWoe;
+    private String version;
+    private String message;
+    MyPojoWoe myPojoWoe;
+    ProgressDialog barProgressDialog;
     public static com.android.volley.RequestQueue POstQue;
+    ArrayList<String> getBarcodeArrList;
+    BarcodelistModel barcodelist;
+    String getIMEINUMBER;
+    String mobileModel, RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
+    String latitudePassTOAPI;
+    String longitudePassTOAPI;
+    SharedPreferences prefs;
+    private String MY_DEBUG_TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private int versionCode;
+    private boolean GpsStatus;
+    private String patientName, patientYearType, user, passwrd, access, api_key, status;
+    GpsTracker gpsTracker;
+    ArrayList<MyPojoWoe> resultList;
+    ArrayList<TRFModel> trflist;
+
+    private ArrayList<MyPojoWoe> filterWoeList;
+    private String text;
+    private String barcode_id;
+    private String barcodeCompare;
+    String blockCharacterSet = "~#^|$%&*!+:`";
+    Activity mActivity;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -99,51 +143,6 @@ public class Offline_woe extends Fragment {
             return null;
         }
     };
-    static Offline_woe fragment;
-    private static ManagingTabsActivity mContext;
-    LocationManager locationManager;
-    Activity activity;
-    ArrayList<String> errorList;
-    DatabaseHelper myDb;
-    LinearLayout sendwoe_ll, parent_ll;
-    ArrayList<BarcodelistModel> barcodelists;
-    Offline_Woe_Adapter offline_woe_adapter;
-    ArrayList<MyPojoWoe> allWoe;
-    MyPojoWoe myPojoWoe;
-    ProgressDialog barProgressDialog;
-    ArrayList<String> getBarcodeArrList;
-    BarcodelistModel barcodelist;
-    String getIMEINUMBER;
-    String mobileModel, RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
-    String latitudePassTOAPI;
-    String longitudePassTOAPI;
-    SharedPreferences prefs;
-    GpsTracker gpsTracker;
-    ArrayList<MyPojoWoe> resultList;
-    ArrayList<TRFModel> trflist;
-    String blockCharacterSet = "~#^|$%&*!+:`";
-    Activity mActivity;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private OnFragmentInteractionListener mListener;
-    private View viewMain;
-    private EditText edtSearch;
-    private RecyclerView recyclerView;
-    private LinearLayout app_bar_layout;
-    private LinearLayoutManager linearLayoutManager;
-    private TextView sync_woe, tvNoDataFound;
-    private String version;
-    private String message;
-    private String MY_DEBUG_TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    private int versionCode;
-    private boolean GpsStatus;
-    private String patientName, patientYearType, user, passwrd, access, api_key, status;
-    private ArrayList<MyPojoWoe> filterWoeList;
-    private String text;
-    private String barcode_id;
-    private String barcodeCompare;
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -494,58 +493,71 @@ public class Offline_woe extends Fragment {
                                         public void onResponse(JSONObject response) {
                                             try {
                                                 Log.e(TAG, "onResponse: RESPONSE" + response);
-                                                barProgressDialog.dismiss();
-                                                Gson woeGson = new Gson();
-                                                WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
-
-                                                if (woeResponseModel != null) {
-                                                    barcode_patient_id = woeResponseModel.getBarcode_patient_id();
-                                                    message = woeResponseModel.getMessage();
-                                                    status = woeResponseModel.getStatus();
-                                                    barcode_id = woeResponseModel.getBarcode_id();
-
-                                                    if (barcode_id.endsWith(",")) {
-                                                        barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
-                                                    }
-
-                                                    if (!GlobalClass.isNull(message) && message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
-                                                        sendGeolocation();
-                                                        sendTrf(finalI);
-                                                    } else if (!GlobalClass.isNull(message) && message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
-                                                        TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                        final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
-                                                        alertDialog.setTitle("Update Ledger !");
-                                                        alertDialog.setMessage(ToastFile.update_ledger);
-                                                        alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                Intent i = new Intent(mContext, Payment_Activity.class);
-                                                                i.putExtra("COMEFROM", "Offline_woe");
-                                                                mContext.startActivity(i);
-                                                            }
-                                                        });
-                                                        alertDialog.show();
-                                                    } else {
-                                                        boolean isUpdated = myDb.updateDataeRROR(barcode_id, message);
-                                                        TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                        Offline_woe fragment1 = new Offline_woe();
-                                                        try {
-                                                            mContext.getSupportFragmentManager().beginTransaction()
-                                                                    .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
-                                                        } catch (IllegalStateException ignored) {
-                                                            // There's no way to avoid getting this if saveInstanceState has already been called.
-                                                        }
-                                                    }
-                                                } else {
-                                                    TastyToast.makeText(mActivity, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                String finalJson = response.toString();
+                                                JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                                RES_ID = parentObjectOtp.getString("RES_ID");
+                                                barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
+                                                message = parentObjectOtp.getString("message");
+                                                status = parentObjectOtp.getString("status");
+                                                barcode_id = parentObjectOtp.getString("barcode_id");
+                                                if (barcode_id.endsWith(",")) {
+                                                    barcode_id = barcode_id.substring(0, barcode_id.length() - 1);
                                                 }
-                                            } catch (Exception e) {
+
+                                                if (message.equalsIgnoreCase("WORK ORDER ENTRY DONE SUCCESSFULLY")) {
+                                                    sendGeolocation();
+                                                    sendTrf(finalI);
+
+                                                } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
+
+                                                    barProgressDialog.dismiss();
+                                                    TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                    final AlertDialog alertDialog = new AlertDialog.Builder(
+                                                            mContext).create();
+
+                                                    // Setting Dialog Title
+                                                    alertDialog.setTitle("Update Ledger !");
+
+                                                    // Setting Dialog Message
+                                                    alertDialog.setMessage(ToastFile.update_ledger);
+                                                    // Setting OK Button
+                                                    alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            Intent i = new Intent(mContext, Payment_Activity.class);
+                                                            i.putExtra("COMEFROM", "Offline_woe");
+                                                            mContext.startActivity(i);
+                                                          /*  Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                                            httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
+                                                            startActivity(httpIntent);*/
+                                                            // Write your code here to execute after dialog closed
+                                                        }
+                                                    });
+                                                    alertDialog.show();
+
+                                                } else {
+                                                    barProgressDialog.dismiss();
+                                                    boolean isUpdated = myDb.updateDataeRROR(barcode_id, message);
+                                                    TastyToast.makeText(mContext, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    Offline_woe fragment1 = new Offline_woe();
+
+                                                    try {
+                                                        mContext.getSupportFragmentManager().beginTransaction()
+                                                                .replace(R.id.fragment_mainLayout, fragment1, fragment1.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+                                                    } catch (IllegalStateException ignored) {
+                                                        // There's no way to avoid getting this if saveInstanceState has already been called.
+                                                    }
+                                                }
+
+                                            } catch (JSONException e) {
+
                                                 e.printStackTrace();
                                             }
                                         }
                                     }, new com.android.volley.Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-                                            barProgressDialog.dismiss();
+
                                             if (error != null) {
                                             } else {
 
@@ -644,34 +656,31 @@ public class Offline_woe extends Fragment {
     }
 
     private void sendGeolocation() {
+
+        barProgressDialog.dismiss();
         //Delete woe from Db
         boolean deletedRows = myDb.deleteData(barcode_id);
         SharedPreferences.Editor editor = mContext.getSharedPreferences("showSelectedTest", 0).edit();
         editor.remove("testsSElected");
         editor.remove("getProductNames");
-        editor.apply();
+        editor.commit();
         sendGPSDetails = Volley.newRequestQueue(mContext);
-
-        JSONObject jsonObject = null;
+        JSONObject jsonObjectOtp = new JSONObject();
         try {
-            GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
-            requestModel.setUsername(user);
-            requestModel.setIMEI(getIMEINUMBER);
-            requestModel.setCity(getCityName);
-            requestModel.setState(getStateName);
-            requestModel.setCountry(getCountryName);
-            requestModel.setLongitude(longitudePassTOAPI);
-            requestModel.setLatitude(latitudePassTOAPI);
-            requestModel.setDeviceName(mobileModel);
+            jsonObjectOtp.put("Username", user);
+            jsonObjectOtp.put("IMEI", getIMEINUMBER);
+            jsonObjectOtp.put("city", getCityName);
+            jsonObjectOtp.put("state", getStateName);
+            jsonObjectOtp.put("country", getCountryName);
+            jsonObjectOtp.put("longitude", longitudePassTOAPI);
+            jsonObjectOtp.put("latitude", latitudePassTOAPI);
+            jsonObjectOtp.put("DeviceName", mobileModel);
 
-            Gson geoGson = new Gson();
-            String json = geoGson.toJson(requestModel);
-            jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -689,8 +698,6 @@ public class Offline_woe extends Fragment {
                         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
                         recyclerView.setAdapter(offline_woe_adapter);
                         TastyToast.makeText(mContext, "" + message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        mContext.getSupportFragmentManager().beginTransaction().remove(new Offline_woe()).commitAllowingStateLoss();
-
                     } else {
                         resultList = getResults();
                         offline_woe_adapter = new Offline_Woe_Adapter(mContext, resultList, fragment, errorList, Offline_woe.this, activity);
@@ -706,6 +713,8 @@ public class Offline_woe extends Fragment {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
+
                 if (error != null) {
                 } else {
                     System.out.println(error);
@@ -713,9 +722,8 @@ public class Offline_woe extends Fragment {
             }
         });
         sendGPSDetails.add(jsonObjectRequest1);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
         Log.e(TAG, "onResponse: url" + jsonObjectRequest1);
-        Log.e(TAG, "onResponse: json" + jsonObject);
+        Log.e(TAG, "onResponse: json" + jsonObjectOtp);
     }
 
     private void sendTrf(int finalI) {
@@ -746,16 +754,6 @@ public class Offline_woe extends Fragment {
         }
     }
 
-    public void setNewFragment() {
-
-        try {
-            getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commitAllowingStateLoss();
-        } catch (IllegalStateException ignored) {
-            // There's no way to avoid getting this if saveInstanceState has already been called.
-        }
-//        adapter.notifyDataSetChanged();
-    }
-
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -770,5 +768,15 @@ public class Offline_woe extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void setNewFragment() {
+
+        try {
+            getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(Offline_woe.this).commitAllowingStateLoss();
+        } catch (IllegalStateException ignored) {
+            // There's no way to avoid getting this if saveInstanceState has already been called.
+        }
+//        adapter.notifyDataSetChanged();
     }
 }

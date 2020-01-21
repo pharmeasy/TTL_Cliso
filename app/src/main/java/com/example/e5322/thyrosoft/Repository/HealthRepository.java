@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.GetAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 
 import java.util.Arrays;
@@ -17,13 +17,13 @@ import retrofit2.Response;
 
 public class HealthRepository {
 
-    APIInteface apiInterface;
+    GetAPIInteface apiInterface;
 
     public HealthRepository() {
     }
 
     public MutableLiveData<List<HealthTipsApiResponseModel.HArt>> getHealthrepositoy() {
-        apiInterface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(APIInteface.class);
+        apiInterface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(GetAPIInteface.class);
         final MutableLiveData<List<HealthTipsApiResponseModel.HArt>> listMutableLiveData = new MutableLiveData<>();
         Call<HealthTipsApiResponseModel> responseCall = apiInterface.getHealth();
         Log.e("TAG", "URL --->" + responseCall.request().url());

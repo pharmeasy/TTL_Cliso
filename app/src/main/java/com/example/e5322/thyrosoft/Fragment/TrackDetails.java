@@ -12,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -46,20 +45,19 @@ import com.example.e5322.thyrosoft.Adapter.TrackDetAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
 import com.example.e5322.thyrosoft.Models.Mail_Model_Receipt;
-import com.example.e5322.thyrosoft.Models.RequestModels.DownloadReceiptRequestModel;
-import com.example.e5322.thyrosoft.Models.RequestModels.TrackBarcodeRequestModel;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.Models.Track_BarcodeModel;
 import com.example.e5322.thyrosoft.Models.getAllDays;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,92 +85,53 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static RequestQueue PostQue;
-    final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    public String Date = "";
     ListView listviewreport;
     View viewresultfrag;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     Spinner spinnertype;
+    public String Date = "";
+    private SimpleDateFormat sdf;
     Calendar myCalendar;
     String user = "";
-    String TAG = ManagingTabsActivity.class.getSimpleName();
+    String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     ArrayList<Mail_Model_Receipt> barCodeDetail = new ArrayList<Mail_Model_Receipt>();
     String api_key = "";
     SharedPreferences sharedpreferences;
     TrackDetAdapter adapter;
+    public static RequestQueue PostQue;
     EditText search;
     long minDate;
     ProgressDialog barProgressDialog_nxt;
     TextView getDate, month_txt;
+    private ResultFragment.OnFragmentInteractionListener mListener;
     Button buttonnow;
     CustomCalendarAdapter customCalendarAdapter;
+    final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
     String Barcodesend = "";
     ImageView download, mail;
     LinearLayout main, searchbarcodelistlinear, offline_img;
     TextView nodata, patient, bill_status, refBy, wo_order, sct, RRT, collected, billed, tedtedat, collectedat, receipt, bvt, nodatatv, set_selectedDate;
     ArrayList<TrackDetModel> trackDetArray = new ArrayList<TrackDetModel>();
     ProgressDialog barProgressDialog;
-    Calendar dateSelected = Calendar.getInstance();
-    DatePickerDialog datePickerDialog;
-    ImageView back_month, next_month;
-    RecyclerView calendarView;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private SimpleDateFormat sdf;
-    private ResultFragment.OnFragmentInteractionListener mListener;
     private String convertedDate;
     private String passToAPI;
     private String datetoPass;
+    private String barcode_response;
     private String date_passto_api;
     private String convertdate;
+    Calendar dateSelected = Calendar.getInstance();
+    DatePickerDialog datePickerDialog;
     private String email_id_string;
+    ImageView back_month, next_month;
+    RecyclerView calendarView;
     private LinearLayoutManager linearLayoutManager;
     private int getPositionToset;
     private ArrayList<getAllDays> SelectedMonthData;
     private String passDateTogetData;
     private String currentMonthString;
     private String getTextofMonth;
-    private String dayToShow, monthToShow;
-    private String getDateToShow, passMonth_Finally;
-    final DatePickerDialog.OnDateSetListener setTime = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-            if (dayOfMonth < 10) {
-                dayToShow = "0" + dayOfMonth;
-            } else {
-                dayToShow = String.valueOf(dayOfMonth);
-            }
-
-            int getMonth_num = monthOfYear;
-            int get_final_month = getMonth_num + 1;
-
-            if (get_final_month < 10) {
-                monthToShow = "0" + get_final_month;
-            } else {
-                monthToShow = String.valueOf(get_final_month);
-            }
-            passMonth_Finally = String.valueOf(get_final_month);
-
-            getDateToShow = dayToShow + "-" + monthToShow + "-" + year;
-
-            getDate.setText(getDateToShow);
-            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                offline_img.setVisibility(View.VISIBLE);
-
-            } else {
-                GetData();
-                offline_img.setVisibility(View.GONE);
-            }
-        }
-    };
 
     public TrackDetails() {
         // Required empty public constructor
@@ -247,42 +206,43 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_track, container, false);
 
-        listviewreport = view.findViewById(R.id.listviewreport);
+        listviewreport = (ListView) view.findViewById(R.id.listviewreport);
         setHasOptionsMenu(true);
-        spinnertype = view.findViewById(R.id.spinnertype);
-        buttonnow = view.findViewById(R.id.buttonnow);
+        spinnertype = (Spinner) view.findViewById(R.id.spinnertype);
+        buttonnow = (Button) view.findViewById(R.id.buttonnow);
 
-        main = view.findViewById(R.id.main);
-        searchbarcodelistlinear = view.findViewById(R.id.searchbarcodelistlinear);
-        nodata = view.findViewById(R.id.nodata); //patient,bill_status,refBy,wo_order,sct,RRT;
-        patient = view.findViewById(R.id.patient);
-        bill_status = view.findViewById(R.id.bill_status);
-        refBy = view.findViewById(R.id.refBy);
-        wo_order = view.findViewById(R.id.wo_order);
-        sct = view.findViewById(R.id.sct);
-        RRT = view.findViewById(R.id.RRT);
-        bvt = view.findViewById(R.id.bvt);
-        month_txt = view.findViewById(R.id.month_txt);
+        main = (LinearLayout) view.findViewById(R.id.main);
+        searchbarcodelistlinear = (LinearLayout) view.findViewById(R.id.searchbarcodelistlinear);
+        nodata = (TextView) view.findViewById(R.id.nodata); //patient,bill_status,refBy,wo_order,sct,RRT;
+        patient = (TextView) view.findViewById(R.id.patient);
+        bill_status = (TextView) view.findViewById(R.id.bill_status);
+        refBy = (TextView) view.findViewById(R.id.refBy);
+        wo_order = (TextView) view.findViewById(R.id.wo_order);
+        sct = (TextView) view.findViewById(R.id.sct);
+        RRT = (TextView) view.findViewById(R.id.RRT);
+        bvt = (TextView) view.findViewById(R.id.bvt);
+        month_txt = (TextView) view.findViewById(R.id.month_txt);
 
-        set_selectedDate = view.findViewById(R.id.set_selectedDate);
-        back_month = view.findViewById(R.id.back_month);
-        next_month = view.findViewById(R.id.next_month);
-        calendarView = view.findViewById(R.id.calendarView);
+        set_selectedDate = (TextView) view.findViewById(R.id.set_selectedDate);
+        back_month = (ImageView) view.findViewById(R.id.back_month);
+        next_month = (ImageView) view.findViewById(R.id.next_month);
+        calendarView = (RecyclerView) view.findViewById(R.id.calendarView);
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         calendarView.setLayoutManager(linearLayoutManager);
 
         // TextView dateview = getActivity().findViewById(R.id.show_date);
         //dateview.setVisibility(View.GONE);
-        collected = view.findViewById(R.id.collected);
-        billed = view.findViewById(R.id.billed);
-        tedtedat = view.findViewById(R.id.tedtedat);
-        collectedat = view.findViewById(R.id.collectedat);
-        download = view.findViewById(R.id.download);
-        mail = view.findViewById(R.id.mail);
-        offline_img = view.findViewById(R.id.offline_img);
+        collected = (TextView) view.findViewById(R.id.collected);
+        billed = (TextView) view.findViewById(R.id.billed);
+        tedtedat = (TextView) view.findViewById(R.id.tedtedat);
+        collectedat = (TextView) view.findViewById(R.id.collectedat);
+        download = (ImageView) view.findViewById(R.id.download);
+        mail = (ImageView) view.findViewById(R.id.mail);
+        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
 
-        search = view.findViewById(R.id.searchView);
+        search = (EditText) view.findViewById(R.id.searchView);
+
 
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
@@ -298,7 +258,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         barProgressDialog = new ProgressDialog(getContext());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
         barProgressDialog.setProgress(0);
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
@@ -319,15 +279,15 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
         setCalendarAdapter(SelectedMonthData);
-        currentMonthString = month + " " + year;
+        currentMonthString=month + " " + year;
 
         month_txt.setText(month + " " + year);
 
-        getTextofMonth = month_txt.getText().toString();
+         getTextofMonth =month_txt.getText().toString();
 
-        if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+        if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
             next_month.setVisibility(View.GONE);
-        } else {
+        }else{
             next_month.setVisibility(View.VISIBLE);
         }
 
@@ -350,10 +310,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 setCalendarAdapter(SelectedMonthData);
 
-                getTextofMonth = month_txt.getText().toString();
-                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+                getTextofMonth =month_txt.getText().toString();
+                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
                     next_month.setVisibility(View.GONE);
-                } else {
+                }else{
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -376,10 +336,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 setCalendarAdapter(SelectedMonthData);
 
-                getTextofMonth = month_txt.getText().toString();
-                if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+                getTextofMonth =month_txt.getText().toString();
+                if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
                     next_month.setVisibility(View.GONE);
-                } else {
+                }else{
                     next_month.setVisibility(View.VISIBLE);
                 }
             }
@@ -436,10 +396,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 // TODO Auto-generated method stub
-                if (s.length() == 0) {
-                    GetData();
-                }
-
             }
 
             @Override
@@ -460,7 +416,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     DownloadReceipt(s1);
                     final List<TrackDetModel> filteredModelList = filter(trackDetArray, s1);
                     try {
-                        if (filteredModelList != null) {
+                        if (filteredModelList.get(0) != null) {
                             listviewreport.setVisibility(View.GONE);
                             offline_img.setVisibility(View.GONE);
                             searchbarcodelistlinear.setVisibility(View.VISIBLE);
@@ -473,11 +429,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                         }
                     } catch (Exception e) {
 //                        Toast.makeText(getActivity(), ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "on errror ---->" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-
-                    callAdapter(trackDetArray);
+                    adapter = new TrackDetAdapter(getContext(), trackDetArray);
+                    listviewreport.setAdapter(adapter);
 
                 }
                 // filter your list from your input
@@ -500,26 +455,13 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 
     @Override
     public void onStart() {
-        getTextofMonth = month_txt.getText().toString();
-        if (getTextofMonth.equalsIgnoreCase(currentMonthString)) {
+        getTextofMonth =month_txt.getText().toString();
+        if(getTextofMonth.equalsIgnoreCase(currentMonthString)){
             next_month.setVisibility(View.GONE);
-        } else {
+        }else{
             next_month.setVisibility(View.VISIBLE);
         }
         super.onStart();
-    }
-
-    private void callAdapter(ArrayList<TrackDetModel> modelArrayList) {
-        if (modelArrayList.size() > 0) {
-            listviewreport.setVisibility(View.VISIBLE);
-            adapter = new TrackDetAdapter(getContext(), trackDetArray);
-            listviewreport.setAdapter(adapter);
-            nodata.setVisibility(View.GONE);
-        } else {
-            listviewreport.setVisibility(View.GONE);
-            nodata.setVisibility(View.VISIBLE);
-        }
-
     }
 
     private void setCalendarAdapter(ArrayList<getAllDays> SelectedMonthData) {
@@ -555,12 +497,54 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         return arrayList;
     }
 
+
+    private String dayToShow, monthToShow;
+    private String getDateToShow, passMonth_Finally;
+    final DatePickerDialog.OnDateSetListener setTime = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+            if (dayOfMonth < 10) {
+                dayToShow = "0" + dayOfMonth;
+            } else {
+                dayToShow = String.valueOf(dayOfMonth);
+            }
+
+            int getMonth_num = monthOfYear;
+            int get_final_month = getMonth_num + 1;
+
+            if (get_final_month < 10) {
+                monthToShow = "0" + get_final_month;
+            } else {
+                monthToShow = String.valueOf(get_final_month);
+            }
+            passMonth_Finally = String.valueOf(get_final_month);
+
+            getDateToShow = dayToShow + "-" + monthToShow + "-" + year;
+
+            getDate.setText(getDateToShow);
+            if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                offline_img.setVisibility(View.VISIBLE);
+
+            } else {
+                GetData();
+                offline_img.setVisibility(View.GONE);
+            }
+        }
+    };
+
     private void DownloadReceipt(String barcode) {  //
 
         PostQue = Volley.newRequestQueue(getContext());
 
         try {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject = new JSONObject();
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
             user = prefs.getString("Username", null);
             String passwrd = prefs.getString("password", null);
@@ -568,14 +552,8 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             api_key = prefs.getString("API_KEY", null);
 
             try {
-                DownloadReceiptRequestModel requestModel = new DownloadReceiptRequestModel();
-                requestModel.setApikey(api_key);
-                requestModel.setBarcode(barcode);
-
-                Gson gson = new Gson();
-                String json = gson.toJson(requestModel);
-                jsonObject = new JSONObject(json);
-
+                jsonObject.put("apikey", api_key);
+                jsonObject.put("barcode", barcode);
                 Barcodesend = barcode;
 
             } catch (JSONException e) {
@@ -632,7 +610,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
 
                 @Override
-                public void retry(VolleyError error) {
+                public void retry(VolleyError error) throws VolleyError {
 
                 }
             });
@@ -651,7 +629,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         barProgressDialog_nxt = new ProgressDialog(getContext());
         barProgressDialog_nxt.setTitle("Kindly wait ...");
         barProgressDialog_nxt.setMessage(ToastFile.processing_request);
-        barProgressDialog_nxt.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        barProgressDialog_nxt.setProgressStyle(barProgressDialog_nxt.STYLE_SPINNER);
         barProgressDialog_nxt.setProgress(0);
         barProgressDialog_nxt.setMax(20);
         barProgressDialog_nxt.show();
@@ -659,7 +637,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         barProgressDialog_nxt.setCancelable(false);
 
         try {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject = new JSONObject();
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
             user = prefs.getString("Username", null);
             String passwrd = prefs.getString("password", null);
@@ -672,21 +650,17 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 java.util.Date date = inputFormat.parse(dateStr);
                 String outputDateStr = outputFormat.format(date);
 
-                TrackBarcodeRequestModel requestModel = new TrackBarcodeRequestModel();
-                requestModel.setApiKey(api_key);
-                requestModel.setBarcode(Barcode);
-                requestModel.setUserCode(user);
-                requestModel.setForwardTo(outputDateStr);
-
-                Gson gson = new Gson();
-                String json = gson.toJson(requestModel);
-                jsonObject = new JSONObject(json);
+                jsonObject.put("apiKey", api_key);
+                jsonObject.put("barcode", Barcode);
+                jsonObject.put("userCode", user);
+                jsonObject.put("forwardTo", outputDateStr);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             RequestQueue queue = Volley.newRequestQueue(getContext());
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Api.trackbarcode, jsonObject,
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.POST, Api.trackbarcode, jsonObject,
                     new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -695,22 +669,58 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     barProgressDialog_nxt.dismiss();
                                 }
                                 Log.e(TAG, "onResponse: URL" + response);
+                                String finalJson = response.toString();
+                                JSONObject parentObject = new JSONObject(finalJson);
+                                barcode_response = parentObject.getString("response");
 
-                                Gson gson = new Gson();
-                                Track_BarcodeModel trackBarcode = gson.fromJson(String.valueOf(response), Track_BarcodeModel.class);
+                                if (barcode_response.equals("INVALID BARCODE")) {
+                                    Toast.makeText(getActivity(), ToastFile.search_using_brcd, Toast.LENGTH_SHORT).show();
+                                    listviewreport.setVisibility(View.VISIBLE);
+                                    offline_img.setVisibility(View.GONE);
+                                    searchbarcodelistlinear.setVisibility(View.GONE);
+                                } else {
+                                    ArrayList<Track_BarcodeModel> trackBarArray = new ArrayList<Track_BarcodeModel>();
+                                    listviewreport.setVisibility(View.GONE);
+                                    offline_img.setVisibility(View.GONE);
+                                    searchbarcodelistlinear.setVisibility(View.VISIBLE);
 
-                                if (trackBarcode != null) {
-                                    if (!GlobalClass.isNull(trackBarcode.getResponse()) && trackBarcode.getResponse().equalsIgnoreCase("INVALID BARCODE")) {
-                                        Toast.makeText(getActivity(), ToastFile.search_using_brcd, Toast.LENGTH_SHORT).show();
-                                        listviewreport.setVisibility(View.VISIBLE);
-                                        offline_img.setVisibility(View.GONE);
-                                        searchbarcodelistlinear.setVisibility(View.GONE);
-                                    } else {
-                                        listviewreport.setVisibility(View.GONE);
-                                        offline_img.setVisibility(View.GONE);
-                                        searchbarcodelistlinear.setVisibility(View.VISIBLE);
+                                    final Track_BarcodeModel trackBarcode = new Track_BarcodeModel();
 
-                                        /*  patient.setText(trackBarcode.getPatient().toString());
+                                    trackBarcode.setBillStatus(response.getString(Constants.billStatus));
+                                    trackBarcode.setBilled(response.getString(Constants.billed));
+                                    trackBarcode.setBvt(response.getString(Constants.bvt));
+                                    trackBarcode.setCollected(response.getString(Constants.collected));
+                                    trackBarcode.setEmail(response.getString(Constants.email));
+                                    trackBarcode.setEtr(response.getString(Constants.etr));
+                                    trackBarcode.setIsOrder(response.getString(Constants.isOrder));
+                                    trackBarcode.setKycType(response.getString(Constants.kycType));
+                                    trackBarcode.setLeadId(response.getString(Constants.leadId));
+                                    trackBarcode.setOrderId(response.getString(Constants.orderId));
+                                    trackBarcode.setOrderNo(response.getString(Constants.orderNo));
+                                    trackBarcode.setPatient(response.getString(Constants.patient));
+                                    trackBarcode.setPendingCancelledTests(response.getString(Constants.pendingCancelledTests));
+                                    trackBarcode.setPortalType(response.getString(Constants.portalType));
+                                    trackBarcode.setRefBy(response.getString(Constants.refBy));
+                                    trackBarcode.setReportAddress(response.getString(Constants.reportAddress));
+                                    trackBarcode.setResId(response.getString(Constants.resId));
+                                    trackBarcode.setResponse(response.getString(Constants.response));
+                                    trackBarcode.setRrt(response.getString(Constants.rrt));
+                                    trackBarcode.setSampleDetails(response.getString(Constants.sampleDetails));
+                                    trackBarcode.setResponse(response.getString(Constants.response));
+                                    trackBarcode.setScp(response.getString(Constants.scp));
+                                    trackBarcode.setSct(response.getString(Constants.sct));
+                                    trackBarcode.setStatus(response.getString(Constants.status));
+                                    trackBarcode.setStatusFlag(response.getString(Constants.statusFlag));
+                                    trackBarcode.setWoeEdit(response.getString(Constants.woeEdit));
+                                    trackBarcode.setWoeStage(response.getString(Constants.woeStage));
+                                    trackBarcode.setWoeTime(response.getString(Constants.woeTime));
+                                    trackBarcode.setWoiLocation(response.getString(Constants.woiLocation));
+                                    trackBarArray.add(trackBarcode);
+
+                                    if (trackBarcode.getCollected().equals("null")) {
+                                        trackBarcode.setCollected("NA");
+                                    }
+                                    patient.setText(trackBarcode.getPatient().toString());
                                     bill_status.setText(trackBarcode.getBillStatus().toString());
                                     refBy.setText(trackBarcode.getRefBy().toString());
                                     wo_order.setText(trackBarcode.getWoeTime().toString());
@@ -720,49 +730,34 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                     collected.setText(trackBarcode.getCollected().toString());
                                     billed.setText(trackBarcode.getBilled().toString());
                                     tedtedat.setText(trackBarcode.getWoiLocation());
-                                    collectedat.setText(trackBarcode.getReportAddress());*/
+                                    collectedat.setText(trackBarcode.getReportAddress());
 
-                                        GlobalClass.SetText(patient, trackBarcode.getPatient());
-                                        GlobalClass.SetText(bill_status, trackBarcode.getBillStatus());
-                                        GlobalClass.SetText(refBy, trackBarcode.getRefBy());
-                                        GlobalClass.SetText(wo_order, trackBarcode.getWoeTime());
-                                        GlobalClass.SetText(sct, trackBarcode.getSct());
-                                        GlobalClass.SetText(bvt, trackBarcode.getBvt());
-                                        GlobalClass.SetText(RRT, trackBarcode.getRrt());
-                                        GlobalClass.SetText(billed, trackBarcode.getBilled());
-                                        GlobalClass.SetText(tedtedat, trackBarcode.getWoiLocation());
-                                        GlobalClass.SetText(collectedat, trackBarcode.getReportAddress());
-                                        GlobalClass.SetText(collected, trackBarcode.getCollected());
+                                    mail.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            SendReceiptMail();
+                                        }
+                                    });
 
-                                        mail.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                SendReceiptMail();
+                                    download.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl()!=null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")){
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
+                                                startActivity(browserIntent);
                                             }
-                                        });
-
-                                        download.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                try {
-                                                    if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
-                                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
-                                                        startActivity(browserIntent);
-                                                    } else {
-                                                        TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
-                                                    }
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
+                                            else {
+                                                TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
                                             }
-                                        });
-                                    }
-                                } else {
-                                    Toast.makeText(getActivity(), ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                                 }
+
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+
                         }
 
                     }, new com.android.volley.Response.ErrorListener() {
@@ -790,7 +785,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
 
                 @Override
-                public void retry(VolleyError error) {
+                public void retry(VolleyError error) throws VolleyError {
 
                 }
             });
@@ -850,7 +845,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + passDateTogetData + "/" + "key/value", jsonObject,
@@ -874,27 +868,27 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
 
                                         JSONObject jsonObject = jsonArray.getJSONObject(j);
                                         TrackDetModel trackdetails = new TrackDetModel();
-                                        trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded));
-                                        trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By));
-                                        trackdetails.setTests(jsonObject.optString(Constants.Tests));
-                                        trackdetails.setBarcode(jsonObject.optString(Constants.barcode));
+                                        trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
+                                        trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
+                                        trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
+                                        trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
                                         //  trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
-                                        trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending));
-                                        trackdetails.setChn_test(jsonObject.optString(Constants.chn_test));
-                                        trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status));
-                                        trackdetails.setDate(jsonObject.optString(Constants.date));
-                                        trackdetails.setEmail(jsonObject.optString(Constants.email));
-                                        trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder));
-                                        trackdetails.setLabcode(jsonObject.optString(Constants.labcode));
-                                        trackdetails.setLeadId(jsonObject.optString(Constants.leadId));
-                                        trackdetails.setName(jsonObject.optString(Constants.name));
-                                        trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id));
-                                        trackdetails.setPdflink(jsonObject.optString(Constants.pdflink));
-                                        trackdetails.setSample_type(jsonObject.optString(Constants.sample_type));
-                                        trackdetails.setScp(jsonObject.optString(Constants.scp));
-                                        trackdetails.setSct(jsonObject.optString(Constants.sct));
-                                        trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2));
-                                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no));
+                                        trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
+                                        trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
+                                        trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
+                                        trackdetails.setDate(jsonObject.optString(Constants.date).toString());
+                                        trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
+                                        trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
+                                        trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
+                                        trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
+                                        trackdetails.setName(jsonObject.optString(Constants.name).toString());
+                                        trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
+                                        trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
+                                        trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
+                                        trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
+                                        trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
+                                        trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
+                                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
                                         trackDetArray.add(trackdetails);
                                     }
                                     if (trackDetArray.size() == 0) {
@@ -943,7 +937,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             }
 
             @Override
-            public void retry(VolleyError error) {
+            public void retry(VolleyError error) throws VolleyError {
 
             }
         });
@@ -983,6 +977,12 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         }
     }
 
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
     public void ShowMailAlert(final String patient_ID, final String barcode, final String email, final String date) {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.mail_alert);
@@ -992,14 +992,14 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.horizontalMargin = 200;
         lp.gravity = Gravity.CENTER;
-        final EditText emailid = dialog.findViewById(R.id.email);
+        final EditText emailid = (EditText) dialog.findViewById(R.id.email);
         if (!email.equals("")) {
             emailid.setText(email);
         } else {
             Toast.makeText(getContext(), ToastFile.crt_eml, Toast.LENGTH_SHORT).show();
         }
-        final Button cancel = dialog.findViewById(R.id.cancel);
-        Button ok = dialog.findViewById(R.id.ok);
+        final Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        Button ok = (Button) dialog.findViewById(R.id.ok);
         dialog.getWindow().setAttributes(lp);
         dialog.show();
         ok.setOnClickListener(new View.OnClickListener() {
@@ -1028,45 +1028,39 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.horizontalMargin = 200;
         lp.gravity = Gravity.CENTER;
-        final EditText emailid = dialog.findViewById(R.id.email);
-        final EditText mob = dialog.findViewById(R.id.mob);
-        final EditText name = dialog.findViewById(R.id.name);
+        final EditText emailid = (EditText) dialog.findViewById(R.id.email);
+        final EditText mob = (EditText) dialog.findViewById(R.id.mob);
+        final EditText name = (EditText) dialog.findViewById(R.id.name);
 
-        if (barCodeDetail.get(0).getEmail() != null && !barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")) {
+        if(barCodeDetail.get(0).getEmail()!=null && !barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")){
             emailid.setText(barCodeDetail.get(0).getEmail());
-        } else {
+        }else{
             emailid.setText("");
         }
 
-        if (barCodeDetail.get(0).getMobile() != null && !barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")) {
+        if(barCodeDetail.get(0).getMobile()!=null && !barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")){
             mob.setText(barCodeDetail.get(0).getMobile());
-        } else {
+        }else{
             mob.setText("");
         }
 
-        if (barCodeDetail.get(0).getName() != null && !barCodeDetail.get(0).getName().equalsIgnoreCase("null")) {
-            name.setText(barCodeDetail.get(0).getName());
-        } else {
-            name.setText("");
-        }
+        name.setText(barCodeDetail.get(0).getName());
 
 
-        final Button cancel = dialog.findViewById(R.id.cancel);
-        Button ok = dialog.findViewById(R.id.ok);
+        final Button cancel = (Button) dialog.findViewById(R.id.cancel);
+        Button ok = (Button) dialog.findViewById(R.id.ok);
         dialog.getWindow().setAttributes(lp);
         dialog.show();
-
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 email_id_string = emailid.getText().toString();
-
                 if (!email_id_string.equals("")) {
                     if (!emailid.getText().toString().matches(emailPattern)) {
                         Toast.makeText(getContext(), ToastFile.invalid_eml, Toast.LENGTH_SHORT).show();
                     } else {
-                        SendMail(mob, name);
+                        SendMail();
                         dialog.dismiss();
                     }
 
@@ -1075,6 +1069,8 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 }
                 //GetData(patient_ID,barcode,email,date);
 //                SendMail();
+
+
             }
         });
 
@@ -1084,12 +1080,11 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                 dialog.cancel();
             }
         });
-
         dialog.setCancelable(false);
         dialog.setCanceledOnTouchOutside(false);
     }
 
-    private void SendMail(EditText mob, EditText name) {
+    private void SendMail() {
 
         PostQue = Volley.newRequestQueue(getContext());
 
@@ -1108,11 +1103,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             String[] twoStringArray = barCodeDetail.get(0).getName().split("\\(", 2); //the main line
 
             jsonObject.put("name", twoStringArray[0]);
-
-            if (!TextUtils.isEmpty(mob.getText().toString())) {
-                jsonObject.put("mob", barCodeDetail.get(0).getMobile());
-            }
-
+            jsonObject.put("mob", barCodeDetail.get(0).getMobile());
             jsonObject.put("email", email_id_string);
 
 
@@ -1120,9 +1111,6 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        Log.e(TAG, "SEND EMAIL RESPONSE ---->" + jsonObject.toString());
-        Log.e(TAG, "SEND EMAIL API ---->" + Api.Receipt_mail);
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.Receipt_mail, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -1130,7 +1118,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                     public void onResponse(JSONObject response) {
                         try {
                             Log.e(TAG, "onResponse: RESPONSE" + response);
+                            /*"name":"SELVI HARSHINI III (14Y\/F)"*/
                             TastyToast.makeText(getContext(), response.optString("response"), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -1150,10 +1141,5 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         Log.e(TAG, "SendMail: " + jsonObjectRequest);
         Log.e(TAG, "SendMail: json" + jsonObject);
 
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }

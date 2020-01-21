@@ -21,18 +21,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
-import com.example.e5322.thyrosoft.Models.RequestModels.TestDetailsRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.TestDetailsResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
-import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,27 +40,26 @@ import java.util.Locale;
 
 
 public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHolder> {
-    public static com.android.volley.RequestQueue POstQueSendEstimation;
-    public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
     View view;
     ManagingTabsActivity mContext;
     ArrayList<Base_Model_Rate_Calculator> base_model_rate_calculators;
     ArrayList<Base_Model_Rate_Calculator> filteredList;
-    Base_Model_Rate_Calculator getSelected_test;
-    Base_Model_Rate_Calculator.Childs selectedchildlist[];
-    ShowChildTestNamesAdapter showChildTestNamesAdapter;
-    RecyclerView testdetails;
-    ArrayList<String> storetestlist;
-    AlertDialog alertDialog, alert;
-    ImageView imageView = null;
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     private List<String> tempselectedTests1;
+    Base_Model_Rate_Calculator getSelected_test;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
+    Base_Model_Rate_Calculator.Childs selectedchildlist[];
     private ArrayList<Base_Model_Rate_Calculator> totalgetAllTests;
     private android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    ShowChildTestNamesAdapter showChildTestNamesAdapter;
+    RecyclerView testdetails;
     private ImageView imgClose;
     private InterfaceRateCAlculator mcallback;
     private LinearLayoutManager linearLayoutManager;
+    ArrayList<String> storetestlist;
+    AlertDialog alertDialog, alert;
+    public static com.android.volley.RequestQueue POstQueSendEstimation;
+    public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
 
     public RateCAlAdapter(ManagingTabsActivity mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, InterfaceRateCAlculator mcallback) {
         this.mContext = mContext;
@@ -86,20 +82,27 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         return vh;
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView test_name_rate_txt, test_rate_cal_txt, txt_type;
+        ImageView iv_checked, iv_unchecked, iv_locked;
+        LinearLayout parent_ll;
+        public boolean isSelectedDueToParent;
+        public String parentTestCode, parentTestname;
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
+            test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
+            txt_type = (TextView) itemView.findViewById(R.id.txt_type);
+            iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
+            iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
+            iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);
+            parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
+        }
     }
 
     @Override
     public void onBindViewHolder(@NonNull final RateCAlAdapter.ViewHolder viewHolder, final int position) {
-
-        viewHolder.lin_color.removeAllViews();
 
         viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
@@ -110,10 +113,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
 
-        /*TODO Below logic for TTL Sample type color code*/
-        if (base_model_rate_calculators != null || base_model_rate_calculators.size() != 0) {
-            SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, base_model_rate_calculators, position);
-            sampleTypeColor.ttlcolor(viewHolder.lin_color);
+        if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+            viewHolder.txt_type.setText("T");
+        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
+            viewHolder.txt_type.setText("P");
+        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
+            viewHolder.txt_type.setText("PO");
         }
 
         if (getSelected_test.getChilds().length != 0) {
@@ -121,57 +126,58 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             viewHolder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    JSONObject jsonObject = null;
+                    JSONObject jsonObjectValidateOtp = new JSONObject();
                     try {
-                        TestDetailsRequestModel requestModel = new TestDetailsRequestModel();
-                        requestModel.setTestName(getSelected_test.getName());
-                        requestModel.setType("PROFILE");
-
-                        Gson gson = new Gson();
-                        String json = gson.toJson(requestModel);
-                        jsonObject = new JSONObject(json);
+                        jsonObjectValidateOtp.put("TestName", getSelected_test.getName());
+                        jsonObjectValidateOtp.put("Type", "PROFILE");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     POstQueSendEstimation = Volley.newRequestQueue(mContext);
 
-                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObjectValidateOtp, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
                                 Log.e(TAG, "onResponse: " + response);
-                                TestDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), TestDetailsResponseModel.class);
-                                if (responseModel != null) {
-                                    if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
-                                        if (responseModel.getTestName() != null && responseModel.getTestName().size() > 0) {
-                                            showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, responseModel.getTestName());
-                                            LayoutInflater li = LayoutInflater.from(mContext);
-                                            View promptsView = li.inflate(R.layout.activity_show_child_list, null);
-                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                                            alertDialogBuilder.setView(promptsView);
-                                            testdetails = (RecyclerView) promptsView.findViewById(R.id.testdetails);
-                                            imgClose = (ImageView) promptsView.findViewById(R.id.imgClose);
-                                            linearLayoutManager = new LinearLayoutManager(mContext);
-                                            testdetails.setLayoutManager(linearLayoutManager);
-                                            testdetails.setAdapter(showChildTestNamesAdapter);
-                                            alertDialog = alertDialogBuilder.create();
-                                            if (!((Activity) mContext).isFinishing()) {
-                                                alertDialog.show();
-                                                //show dialog
-                                            }
-                                            imgClose.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View v) {
-                                                    alertDialog.dismiss();
-                                                }
-                                            });
+                                String finalJson = response.toString();
+                                ArrayList<String> responseFromAPI = new ArrayList<>();
+                                String responsedata = response.getString("response");
+                                JSONArray jsonArray = response.getJSONArray("TestName");
+                                if (jsonArray.length() != 0 || jsonArray != null) {
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        responseFromAPI.add(jsonArray.get(i).toString());
+                                    }
+                                    if (responsedata.equals("Success")) {
+                                        showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, responseFromAPI);
+                                        LayoutInflater li = LayoutInflater.from(mContext);
+                                        View promptsView = li.inflate(R.layout.activity_show_child_list, null);
+                                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                                        alertDialogBuilder.setView(promptsView);
+                                        testdetails = (RecyclerView) promptsView.findViewById(R.id.testdetails);
+                                        imgClose = (ImageView) promptsView.findViewById(R.id.imgClose);
+                                        linearLayoutManager = new LinearLayoutManager(mContext);
+                                        testdetails.setLayoutManager(linearLayoutManager);
+                                        testdetails.setAdapter(showChildTestNamesAdapter);
+                                        alertDialog = alertDialogBuilder.create();
+                                        //alertDialog.show();
+                                        if (!((Activity) mContext).isFinishing()) {
+                                            alertDialog.show();
+                                            //show dialog
                                         }
+                                        imgClose.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                alertDialog.dismiss();
+                                            }
+                                        });
                                     }
                                 } else {
-                                    Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                    TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
-                            } catch (Exception e) {
+                            } catch (JSONException e) {
+                                Toast.makeText(mContext, "" + e, Toast.LENGTH_SHORT).show();
                                 e.printStackTrace();
                             }
                         }
@@ -185,10 +191,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                         }
                     });
                     POstQueSendEstimation.add(jsonObjectRequest1);
-                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                     Log.e(TAG, "onClick: URl" + jsonObjectRequest1);
-                    Log.e(TAG, "onClick: jsonObject " + jsonObject);
-
                     if (getSelected_test.getChilds().length != 0) {
                         storetestlist = new ArrayList<>();
                         for (int i = 0; i < getSelected_test.getChilds().length; i++) {
@@ -205,15 +208,9 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         viewHolder.isSelectedDueToParent = false;
         viewHolder.parentTestCode = "";
 
-
-        /*for (int i = 0; i <selectedTests.get(0).getBarcodes().length ; i++) {
-            Log.e(TAG,"BARCODE TYPE --->"+selectedTests.get(position).getBarcodes());
-        }*/
-
         if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {
                 Base_Model_Rate_Calculator selectedTestModel = selectedTests.get(i);
-
                 if (selectedTestModel.getCode().equals(getSelected_test.getCode())) {
                     viewHolder.iv_checked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
@@ -365,26 +362,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     @Override
     public int getItemCount() {
         return base_model_rate_calculators.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public boolean isSelectedDueToParent;
-        public String parentTestCode, parentTestname;
-        TextView test_name_rate_txt, test_rate_cal_txt;
-        ImageView iv_checked, iv_unchecked, iv_locked;
-        LinearLayout parent_ll, lin_color;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
-            test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
-            /*  txt_type = (TextView) itemView.findViewById(R.id.txt_type);*/
-            iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
-            iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
-            iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);
-            parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
-            lin_color = itemView.findViewById(R.id.lin_color);
-        }
     }
 
 

@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.R;
@@ -141,7 +140,7 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_SelectSampleTypeActivity.this, ManagingTabsActivity.class);
+                Intent i = new Intent(BMC_SelectSampleTypeActivity.this, BMC_MainActivity.class);
                 startActivity(i);
                 finish();
             }

@@ -43,12 +43,12 @@
             android:gravity="center"
             android:src="@drawable/color_homr" />
     </LinearLayout>
-    <!--android:layout_marginBottom="?actionBarSize"-->
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/linear_layout"
-        >
+        android:layout_marginBottom="?actionBarSize">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -712,7 +712,6 @@
         android:layout_alignParentBottom="true"
         android:layout_gravity="center|bottom"
         android:layout_margin="3dp"
-        android:visibility="gone"
         android:background="@drawable/maroon_border_white_bg"
         android:orientation="horizontal"
         android:weightSum="2">
@@ -725,7 +724,7 @@
             android:drawableLeft="@drawable/edt_woe_img"
             android:gravity="right|center"
             android:text="Edit "
-            android:textColor="@color/maroon"/>
+            android:textColor="@color/maroon"></TextView>
 
         <TextView
             android:layout_width="0dp"
@@ -735,7 +734,7 @@
             android:drawableRight="@drawable/gray_delete"
             android:gravity="left|center"
             android:text="/ Delete"
-            android:textColor="@color/maroon"/>
+            android:textColor="@color/maroon"></TextView>
     </LinearLayout>
 
 </RelativeLayout>

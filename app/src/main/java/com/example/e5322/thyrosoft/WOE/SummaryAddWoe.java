@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -26,10 +27,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.ResponseModels.AddRecheckResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -38,6 +37,33 @@ import org.json.JSONObject;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class SummaryAddWoe extends AppCompatActivity {
+    ProgressDialog barProgressDialog;
+    TextView pat_name,pat_test,pat_patient_info,pat_sct,old_tests;
+    EditText add_remark;
+    RequestQueue POstQue;
+    SharedPreferences prefs,getBarcodeDetails;
+    Button addWoeDone;
+    String message,status;
+    String user,passwrd,access,api_key,RES_ID, barcode_patient_id,ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE, SL_NO, STATUS, SU_CODE1, SU_CODE2,TESTS,getTEst;
+     String version;
+     int versionCode;
+    private String ERROR;
+    TextView title;
+    ImageView home,back;
+    private String responseAdd;
+
+    String blockCharacterSetdata = "~#^|$%&*!+:`";
+    private InputFilter filter1 = new InputFilter() {
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+
+            if (source != null && blockCharacterSetdata.contains(("" + source))) {
+                return "";
+            }
+            return null;
+        }
+    };
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -53,48 +79,25 @@ public class SummaryAddWoe extends AppCompatActivity {
             return null;
         }
     };
-    ProgressDialog barProgressDialog;
-    TextView pat_name, pat_test, pat_patient_info, pat_sct, old_tests;
-    EditText add_remark;
-    RequestQueue POstQue;
-    SharedPreferences prefs, getBarcodeDetails;
-    Button addWoeDone;
-    String user, passwrd, access, api_key, RES_ID, barcode_patient_id, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE, SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS, getTEst;
-    String version;
-    int versionCode;
-    TextView title;
-    ImageView home, back;
-    String blockCharacterSetdata = "~#^|$%&*!+:`";
-    private InputFilter filter1 = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-
-            if (source != null && blockCharacterSetdata.contains(("" + source))) {
-                return "";
-            }
-            return null;
-        }
-    };
     private String sr_number;
     private String getTestCodes;
-    private String TAG = SummaryAddWoe.class.getSimpleName().toString();
+    private String TAG=SummaryAddWoe.class.getSimpleName().toString();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary_add_woe);
 
-        pat_name = (TextView) findViewById(R.id.pat_name);
-        pat_test = (TextView) findViewById(R.id.pat_test);
-        pat_patient_info = (TextView) findViewById(R.id.pat_patient_info);
-        pat_sct = (TextView) findViewById(R.id.pat_sct);
-        old_tests = (TextView) findViewById(R.id.old_tests);
-        title = (TextView) findViewById(R.id.title);
-        home = (ImageView) findViewById(R.id.home);
-        back = (ImageView) findViewById(R.id.back);
-        add_remark = (EditText) findViewById(R.id.add_remark);
-        addWoeDone = (Button) findViewById(R.id.addWoeDone);
+        pat_name=(TextView)findViewById(R.id.pat_name);
+        pat_test=(TextView)findViewById(R.id.pat_test);
+        pat_patient_info=(TextView)findViewById(R.id.pat_patient_info);
+        pat_sct=(TextView)findViewById(R.id.pat_sct);
+        old_tests=(TextView)findViewById(R.id.old_tests);
+        title=(TextView)findViewById(R.id.title);
+        home=(ImageView) findViewById(R.id.home);
+        back=(ImageView)findViewById(R.id.back);
+        add_remark=(EditText) findViewById(R.id.add_remark);
+        addWoeDone=(Button) findViewById(R.id.addWoeDone);
 
         title.setText("Summary");
 
@@ -135,7 +138,7 @@ public class SummaryAddWoe extends AppCompatActivity {
         SU_CODE2 = getBarcodeDetails.getString("SU_CODE2", null);
         TESTS = getBarcodeDetails.getString("TESTS", null);
         getTEst = getIntent().getStringExtra("extraAddedTest");
-        getTestCodes = getIntent().getStringExtra("passtoAPI");
+        getTestCodes=getIntent().getStringExtra("passtoAPI");
 
         pat_name.setText(PATIENT);
         pat_test.setText(TESTS);
@@ -164,9 +167,9 @@ public class SummaryAddWoe extends AppCompatActivity {
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0") || enteredString.startsWith("1") ||
-                        enteredString.startsWith("2") || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5") || enteredString.startsWith("6") ||
-                        enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")||  enteredString.startsWith("0")|| enteredString.startsWith("1")||
+                        enteredString.startsWith("2")|| enteredString.startsWith("3")|| enteredString.startsWith("4")|| enteredString.startsWith("5")|| enteredString.startsWith("6")||
+                        enteredString.startsWith("7")|| enteredString.startsWith("8")|| enteredString.startsWith("9")) {
                     Toast.makeText(SummaryAddWoe.this,
                             ToastFile.remark,
                             Toast.LENGTH_SHORT).show();
@@ -193,9 +196,9 @@ public class SummaryAddWoe extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String purpose = add_remark.getText().toString();
-                if (purpose.equals("")) {
-                    Toast.makeText(SummaryAddWoe.this, ToastFile.remark, Toast.LENGTH_SHORT).show();
-                } else {
+                if(purpose.equals("")){
+                    Toast.makeText(SummaryAddWoe.this,  ToastFile.remark, Toast.LENGTH_SHORT).show();
+                }else{
                     barProgressDialog = new ProgressDialog(SummaryAddWoe.this);
                     barProgressDialog.setTitle("Kindly wait ...");
                     barProgressDialog.setMessage(ToastFile.processing_request);
@@ -210,13 +213,13 @@ public class SummaryAddWoe extends AppCompatActivity {
                     JSONObject addrecheck = new JSONObject();
                     try {
                         jsonObjectOtp.put("api_key", api_key);
-                        addrecheck.put("LABCODE", LABCODE);
-                        addrecheck.put("BARCODE", BARCODE);
-                        addrecheck.put("TSP", user);
-                        addrecheck.put("REQ_TESTS", getTestCodes);
-                        addrecheck.put("REQ_TYPE", "ADD");
-                        addrecheck.put("PURPOSE", purpose);
-                        addrecheck.put("ORDERED_TESTS", TESTS);
+                        addrecheck.put("LABCODE",LABCODE);
+                        addrecheck.put("BARCODE",BARCODE);
+                        addrecheck.put("TSP",user);
+                        addrecheck.put("REQ_TESTS",getTestCodes);
+                        addrecheck.put("REQ_TYPE","ADD");
+                        addrecheck.put("PURPOSE",purpose);
+                        addrecheck.put("ORDERED_TESTS",TESTS);
                         jsonObjectOtp.put("addrecheck", addrecheck);
 
                         /*Global.Username = username.getText().toString();*/
@@ -227,48 +230,51 @@ public class SummaryAddWoe extends AppCompatActivity {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
-                                Log.e(TAG, "onResponse: " + response);
-                                Gson gson = new Gson();
-                                AddRecheckResponseModel responseModel = gson.fromJson(String.valueOf(response), AddRecheckResponseModel.class);
-                                if (responseModel != null) {
-                                    if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("DATA INSERTED SUCCESSFULLY")) {
-                                        Intent i = new Intent(SummaryAddWoe.this, ManagingTabsActivity.class);
-                                        i.putExtra("passToWoefragment", "frgamnebt");
-                                        startActivity(i);
-                                        //SummaryActivity_New.this, Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR
-                                        TastyToast.makeText(SummaryAddWoe.this, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                    } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
-                                        GlobalClass.redirectToLogin(SummaryAddWoe.this);
-                                    } else {
-                                        TastyToast.makeText(SummaryAddWoe.this, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                    }
+                                Log.e(TAG, "onResponse: "+response );
+                                String finalJson = response.toString();
+                                JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                ERROR = parentObjectOtp.getString("ERROR");
+                                RES_ID = parentObjectOtp.getString("RES_ID");
+                                responseAdd = parentObjectOtp.getString("response");
+                                if (responseAdd.equalsIgnoreCase("DATA INSERTED SUCCESSFULLY")) {
+                                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                    Intent i = new Intent(SummaryAddWoe.this, ManagingTabsActivity.class);
+                                    i.putExtra("passToWoefragment", "frgamnebt");
+                                    startActivity(i);
+                                    //SummaryActivity_New.this, Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR
+                                    TastyToast.makeText(SummaryAddWoe.this,responseAdd,TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                }else if(ERROR.equalsIgnoreCase(caps_invalidApikey)){
+                                    GlobalClass.redirectToLogin(SummaryAddWoe.this);
                                 } else {
-                                    TastyToast.makeText(SummaryAddWoe.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                    TastyToast.makeText(SummaryAddWoe.this,responseAdd,TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
-                            } catch (Exception e) {
+
+                            } catch (JSONException e) {
+
                                 e.printStackTrace();
                             }
                         }
                     }, new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
                             if (error != null) {
                             } else {
+
                                 System.out.println(error);
                             }
                         }
                     });
-                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+                    jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                            150000,
+                            3,
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     POstQue.add(jsonObjectRequest1);
-                    Log.e(TAG, "onClick: json" + jsonObjectOtp);
-                    Log.e(TAG, "onClick: url" + jsonObjectRequest1);
+                    Log.e(TAG, "onClick: json"+jsonObjectOtp );
+                    Log.e(TAG, "onClick: url"+jsonObjectRequest1 );
+
                 }
+
             }
         });
     }

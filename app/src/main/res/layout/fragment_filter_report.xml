@@ -191,8 +191,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="NO DATA FOUND "
-        android:textColor="@color/maroon"
-        android:layout_marginTop="@dimen/dp_10"
+        android:textColor="@color/red"
         android:visibility="gone" />
 
     <LinearLayout

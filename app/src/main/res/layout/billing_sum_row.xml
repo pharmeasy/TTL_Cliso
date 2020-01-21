@@ -24,7 +24,7 @@
             android:background="@color/colorWhite"
             android:gravity="center"
             android:padding="5dp"
-            android:text=""
+            android:text="29-01-2019"
             android:textColor="@color/DARKGray"
             android:textSize="12dp" />
 

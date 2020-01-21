@@ -29,7 +29,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack"></ImageView>
 
         <TextView
             android:id="@+id/title"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="4"
             android:gravity="center"
-            android:textColor="@color/maroon"/>
+            android:textColor="@color/maroon"></TextView>
 
         <ImageView
             android:id="@+id/home"
@@ -48,7 +48,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack"></ImageView>
     </LinearLayout>
 
 
@@ -163,7 +163,7 @@
                     android:inputType="textCapCharacters"
                     android:maxLength="50"
                     android:maxLines="1"
-                    android:textSize="12sp"/>
+                    android:textSize="12sp"></EditText>
 
                 <requestFocus />
             </LinearLayout>

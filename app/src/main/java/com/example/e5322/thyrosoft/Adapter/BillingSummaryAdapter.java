@@ -26,11 +26,9 @@ import com.example.e5322.thyrosoft.Activity.BillingDetailsActivity;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BillingSummaryMOdel;
-import com.example.e5322.thyrosoft.Models.RequestModels.BillingSummaryRequestModel;
 import com.example.e5322.thyrosoft.Models.billingDetailsModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +53,7 @@ public class BillingSummaryAdapter extends BaseAdapter {
     ArrayList<BillingSummaryMOdel> billdata = new ArrayList<>();
     public static RequestQueue PostQue;
     SharedPreferences sharedpreferences;
-    private String TAG = ManagingTabsActivity.class.getSimpleName();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     ProgressDialog barProgressDialog;
 
     public BillingSummaryAdapter(Context ManagingTabsActivity, ArrayList<BillingSummaryMOdel> arrayList) {
@@ -95,16 +93,16 @@ public class BillingSummaryAdapter extends BaseAdapter {
         barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
         barProgressDialog.setProgress(0);
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        TableRow tr_itlcr= convertView.findViewById(R.id.tr_itlcr);
-        TextView date = convertView.findViewById(R.id.date);
-        TextView wl = convertView.findViewById(R.id.WL);
-        TextView billling = convertView.findViewById(R.id.BILLING);
+        TableRow tr_itlcr=(TableRow) convertView.findViewById(R.id.tr_itlcr);
+        TextView date = (TextView) convertView.findViewById(R.id.date);
+        TextView wl = (TextView) convertView.findViewById(R.id.WL);
+        TextView billling = (TextView) convertView.findViewById(R.id.BILLING);
 
 
         date.setText(billdata.get(position).getBillingDate());
@@ -144,31 +142,31 @@ public class BillingSummaryAdapter extends BaseAdapter {
     }
 
     private void GetData(String Datestr) {
+
         barProgressDialog.show();
         PostQue = Volley.newRequestQueue(mContext);
-        JSONObject jsonObject = null;
+
+        JSONObject jsonObject = new JSONObject();
         try {
 
-            BillingSummaryRequestModel requestModel = new BillingSummaryRequestModel();
-            requestModel.setApiKey(prefs.getString(Constants.API_KEY, ""));
-            requestModel.setDate(Datestr);
-            requestModel.setUserCode(prefs.getString("Username", ""));
-            requestModel.setFromDate("");
-            requestModel.setToDate("");
 
-            Gson gson = new Gson();
-            String json = gson.toJson(requestModel);
-            jsonObject = new JSONObject(json);
+            jsonObject.put(Constants.API_KEY_billing, prefs.getString(Constants.API_KEY, ""));
+            jsonObject.put(Constants.date, Datestr);
+            jsonObject.put(Constants.UserCode_billing, prefs.getString("Username", ""));
+            jsonObject.put(Constants.fromDate, "");
+            jsonObject.put(Constants.toDate, "");
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.billingDetLIVE, jsonObject,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.billingDetLIVE, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
+
                             Log.e(TAG, "onResponse: RESPONSE" + response);
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
@@ -185,16 +183,16 @@ public class BillingSummaryAdapter extends BaseAdapter {
                                         JSONObject jsonObject = jsonArray.getJSONObject(j);
                                         billingDetailsModel billDET = new billingDetailsModel();
 
-                                        billDET.setBarcode(jsonObject.optString(Constants.barcode));
-                                        billDET.setBilledAmount(jsonObject.optString(Constants.billedAmount));
-                                        billDET.setCollectedAmount(jsonObject.optString(Constants.collectedAmount));
-                                        billDET.setPatient(jsonObject.optString(Constants.patient));
-                                        billDET.setTests(jsonObject.optString(Constants.tests));
-                                        billDET.setWoetype(jsonObject.optString(Constants.woetype));
-                                        billDET.setRefId(jsonObject.optString(Constants.refId));
+                                        billDET.setBarcode(jsonObject.optString(Constants.barcode).toString());
+                                        billDET.setBilledAmount(jsonObject.optString(Constants.billedAmount).toString());
+                                        billDET.setCollectedAmount(jsonObject.optString(Constants.collectedAmount).toString());
+                                        billDET.setPatient(jsonObject.optString(Constants.patient).toString());
+                                        billDET.setTests(jsonObject.optString(Constants.tests).toString());
+                                        billDET.setWoetype(jsonObject.optString(Constants.woetype).toString());
+                                        billDET.setRefId(jsonObject.optString(Constants.refId).toString());
 
                                         GlobalClass.billingDETArray.add(billDET);
-                                        GlobalClass.billingDETheaderArray.add(jsonObject.optString(Constants.patient));
+                                        GlobalClass.billingDETheaderArray.add(jsonObject.optString(Constants.patient).toString());
                                     } catch (Exception e) {
                                         if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                             barProgressDialog.dismiss();

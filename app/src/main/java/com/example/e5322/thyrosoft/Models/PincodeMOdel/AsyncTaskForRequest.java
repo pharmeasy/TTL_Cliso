@@ -58,8 +58,6 @@ public class AsyncTaskForRequest {
             apiCallAsyncTask.setApiModel(abstractApiModel);
             apiCallAsyncTask.setProgressBarMessage(context.getResources().getString(R.string.progress_message_SGC_DATA_please_wait));
             apiCallAsyncTask.setProgressBarCancellable(true);
-
-            Log.e("TAG", "getDefaultupload API : "+ AbstractApiModel.SERVER_BASE_API_URL + abstractApiModel.DEFAULTUPLOAD + "/" + APi_key + "/" + Type);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -20,11 +20,11 @@ import java.util.List;
 
 public class HealthArticle_Activity extends AppCompatActivity implements View.OnClickListener {
 
+    private ArrayList<HealthTipsApiResponseModel.HArt> HealthTipsArrylst;
     HealthTipsPagerAdapter mAdapter;
+    private VerticalViewPager healthTipViewpager;
     TextView tvname;
     HealthviewModel healthviewModel;
-    private ArrayList<HealthTipsApiResponseModel.HArt> HealthTipsArrylst;
-    private VerticalViewPager healthTipViewpager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
     private void CallHealthTipsApi() {
         /**Initilize HealthViewmodel */
         healthviewModel = ViewModelProviders.of(HealthArticle_Activity.this).get(HealthviewModel.class);
-
         final Observer<List<HealthTipsApiResponseModel.HArt>> listObserver = new Observer<List<HealthTipsApiResponseModel.HArt>>() {
             @Override
             public void onChanged(List<HealthTipsApiResponseModel.HArt> healthTipsApiResponseModels) {
@@ -61,7 +60,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
                 healthviewModel.setListdata(healthTipsApiResponseModels);
             }
         };
-
         /**getData method is written in Viewmodel,here we observe view */
         healthviewModel.getData(HealthArticle_Activity.this, healthTipViewpager).observe(HealthArticle_Activity.this, listObserver);
     }
@@ -69,7 +67,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.back:
                 finish();
                 break;
@@ -77,8 +74,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
             case R.id.home:
                 startActivity(new Intent(HealthArticle_Activity.this, ManagingTabsActivity.class));
                 break;
-
-
         }
     }
 }

@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -34,6 +33,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -53,15 +53,13 @@ import com.example.e5322.thyrosoft.Models.PincodeMOdel.Neddatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.PgcsResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.ResponseParser;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.UploadDocumentdatamodel;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.WithoutexpiryResponsemodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.pgcdatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.sgcdatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.sgcsResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.uploadspinnerResponseModel;
-import com.example.e5322.thyrosoft.Models.RequestModels.UploadDocumentRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.UploadDocumentResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -103,6 +101,7 @@ public class UploadDocument extends AbstractActivity {
     String type8 = "staff";
     Spinner document_spr, category_spr1, ned_spr, sgc_spr, pgc_spr;
     TableLayout upload_table;
+    private TableRow trm, th;
     String type4 = "Tam03";
     TextView mis, mis2;
     Button btn_submit;
@@ -114,12 +113,17 @@ public class UploadDocument extends AbstractActivity {
     LinearLayout nedll, sgcll, pgcll, expiryll, ll_upload;
     ImageView gtick, back, home;
     String spincode;
+
+    private int mYear, mMonth, mDay;
+    private Calendar fromDt;
     String fromdate1;
     String finalsetfromdate;
+
     ArrayList<String> nedspinnerdata;
     ArrayList<String> sgcspinnerdata;
     ArrayList<String> sgcspinnerdatagetName;
     ArrayList<String> Pgcspinnerdata;
+
     uploadspinnerResponseModel uploadspinnerResponseModels;
     ArrayList<UploadDocumentdatamodel> uploadDocumentdatamodelsarr;
     ArrayList<String> spinnerdata1;
@@ -131,13 +135,17 @@ public class UploadDocument extends AbstractActivity {
     ArrayList<sgcdatamodel> sgcdatamodelsarr;
     PgcsResponseModel pgcsResponseModel;
     ArrayList<pgcdatamodel> pgcdatamodelsarr;
-    private TableRow trm, th;
-    private int mYear, mMonth, mDay;
-    private Calendar fromDt;
+
+
+    WithoutexpiryResponsemodel withoutexpiryResponsemodel;
     private SharedPreferences prefs;
     private String passwrd, api_key, user, mobile_pref, access, email_pref;
+    private String RESPONSE;
+    private String message;
+    private Global globalClass;
+    private String namePassToCode;
     private String passSpinnervalue;
-    private String TAG = UploadDocument.class.getSimpleName();
+    private String TAG = UploadDocument.class.getSimpleName().toString();
     private String picturePath;
     private String selectedSpinItem;
     private String ned_value;
@@ -145,20 +153,9 @@ public class UploadDocument extends AbstractActivity {
     private String edt_remarksUpdate;
     private String exp_Date;
     private RequestQueue PostQueOtp;
+    private String Response;
+    private String ResId;
 
-    public static String ConvertBitmapToString(Bitmap bitmap) {
-        String encodedImage = "";
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        try {
-            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        return encodedImage;
-    }
 
     @SuppressLint("NewApi")
     @Override
@@ -208,7 +205,7 @@ public class UploadDocument extends AbstractActivity {
 //        back = (ImageView) findViewById(R.id.back);
 //        home = (ImageView) findViewById(R.id.home);
 
-        if (Global.checkForApi21()) {
+        if (globalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -502,10 +499,10 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (imageName == null) {
                             TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (TextUtils.isEmpty(edt_remarksUpdate)) {
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (exp_Date.equalsIgnoreCase("")) {
                             TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
@@ -524,10 +521,10 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                             TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
                             uploadDocument();
                         }
@@ -544,10 +541,10 @@ public class UploadDocument extends AbstractActivity {
                             TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
                             TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
                             TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (imageName == null) {
+                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
                             uploadDocument();
                         }
@@ -570,31 +567,27 @@ public class UploadDocument extends AbstractActivity {
         barProgressDialog.show();
 
         PostQueOtp = Volley.newRequestQueue(UploadDocument.this);
-        JSONObject jsonObject = null;
+        JSONObject jsonObjectOtp = new JSONObject();
 
         try {
-            UploadDocumentRequestModel requestModel = new UploadDocumentRequestModel();
-            requestModel.setApikey(api_key);
-            requestModel.setCode(spincode);
-            requestModel.setLetter_type(document_spin_value);
-            requestModel.setPurpose(edt_remarksUpdate);
-            requestModel.setAttached_file(imageName);
-            requestModel.setRemarks(edt_remarksUpdate);
-            requestModel.setENTERED_BY(user);
-            requestModel.setIsB2B("y");
-            requestModel.setExpiryDate(exp_Date);
-            requestModel.setAttached_data(image);
+            jsonObjectOtp.put("apikey", api_key);
+            jsonObjectOtp.put("code", spincode);
+            jsonObjectOtp.put("letter_type", document_spin_value);
+            jsonObjectOtp.put("purpose", edt_remarksUpdate);
+            jsonObjectOtp.put("attached_file", imageName);
+            jsonObjectOtp.put("remarks", edt_remarksUpdate);
+            jsonObjectOtp.put("ENTERED_BY", user);
+            jsonObjectOtp.put("IsB2B", "y");
+            jsonObjectOtp.put("expiryDate", exp_Date);
+            jsonObjectOtp.put("attached_data", image);
 
-            Gson gson = new Gson();
-            String json = gson.toJson(requestModel);
-            jsonObject = new JSONObject(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(TAG + jsonObject);
+        System.out.println(TAG + jsonObjectOtp);
         System.out.println(TAG + Api.uploadDocument);
 
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.uploadDocument, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.uploadDocument, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
 
 
             @Override
@@ -605,29 +598,28 @@ public class UploadDocument extends AbstractActivity {
 
                 try {
                     Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
 
-                    UploadDocumentResponseModel responseModel = new Gson().fromJson(String.valueOf(response), UploadDocumentResponseModel.class);
+                    Response = parentObjectOtp.getString("Response");
+                    message = parentObjectOtp.getString("message");
+                    ResId = parentObjectOtp.getString("ResId");
 
-                    if (responseModel != null) {
-                        if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
-                            TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                            Intent i = new Intent(UploadDocument.this, UploadDocument.class);
-                            startActivity(i);
-                            finish();
-                        }
-                    } else {
-                        Toast.makeText(UploadDocument.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    if (Response.equalsIgnoreCase("Success")) {
+                        TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                        Intent i = new Intent(UploadDocument.this, UploadDocument.class);
+                        startActivity(i);
+                        finish();
                     }
-                } catch (Exception e) {
+
+                } catch (JSONException e) {
+                    TastyToast.makeText(UploadDocument.this, "Document not uploaded successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     e.printStackTrace();
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
                 if (error != null) {
                 } else {
                     System.out.println(error);
@@ -635,11 +627,17 @@ public class UploadDocument extends AbstractActivity {
             }
         });
 
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         PostQueOtp.add(jsonObjectRequest1);
+
+        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObjectOtp);
         Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
+
     }
+
 
     private void fetchpgcspinner() {
 
@@ -692,8 +690,6 @@ public class UploadDocument extends AbstractActivity {
         }
     }
 
-    //method to convert the selected image to base64 encoded string
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -727,6 +723,22 @@ public class UploadDocument extends AbstractActivity {
             }
         }
 
+    }
+
+    //method to convert the selected image to base64 encoded string
+
+    public static String ConvertBitmapToString(Bitmap bitmap) {
+        String encodedImage = "";
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        try {
+            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return encodedImage;
     }
 
     private void Defaultupload() {

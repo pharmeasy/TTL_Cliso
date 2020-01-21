@@ -44,6 +44,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
+                        android:text="name"
                         android:textSize="@dimen/NormalTextSize" />
 
                     <ImageView
@@ -60,18 +61,21 @@
                     android:id="@+id/Refby"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="Ref by Dr. N Suganthi"
                     android:textSize="@dimen/NormalTextSize" />
 
                 <TextView
                     android:id="@+id/barcode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="17267"
                     android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/tests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="T3-T4-T5"
                     android:textSize="@dimen/NormalTextSize" />
 
 
@@ -99,14 +103,6 @@
                         android:layout_height="25dp"
                         android:layout_marginLeft="20dp"
                         android:src="@drawable/print_new" />
-
-                    <ImageView
-                        android:id="@+id/share"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="20dp"
-                        android:visibility="gone"
-                        android:src="@drawable/ic_share" />
                 </LinearLayout>
 
             </LinearLayout>

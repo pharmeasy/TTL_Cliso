@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -31,6 +33,7 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -56,13 +59,14 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
  * create an instance of this fragment.
  */
 public class CHNfragment extends RootFragment {
-    static final int DATE_DIALOG_ID = 0;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static RequestQueue PostQue;
-    static CHNfragment fragment;
+    static final int DATE_DIALOG_ID = 0;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     View view;
     int mYear, mMonth, mDay;
     String yesterdayDate;
@@ -70,37 +74,22 @@ public class CHNfragment extends RootFragment {
     ;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     List<String> items;
+    public static RequestQueue PostQue;
     ProgressDialog barProgressDialog;
     CHN_Adapter adapter;
     TextView selectDate, no_view;
     ExpandableListView ListReportStatus;
     LinearLayout parent_ll;
     LinearLayout offline_img;
-    ArrayList FilterReport;
-    Calendar myCalendar;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private OnFragmentInteractionListener mListener;
+    ArrayList FilterReport;
     private String halfTime;
     private String convertedDate;
     private String outputDateStr;
+    static CHNfragment fragment;
+    Calendar myCalendar;
     private String putDate;
     private String getFormatDate;
-    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-
-
-            updateLabel();
-        }
-    };
 
     public CHNfragment() {
         // Required empty public constructor
@@ -193,6 +182,21 @@ public class CHNfragment extends RootFragment {
         return view;
     }
 
+    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            updateLabel();
+        }
+    };
+
     private void updateLabel() {
         String myFormat = "dd-MM-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
@@ -276,12 +280,22 @@ public class CHNfragment extends RootFragment {
         String access = prefs.getString("ACCESS_TYPE", null);
         String api_key = prefs.getString("API_KEY", null);
 
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("API_Key", api_key);
+            jsonObject.put("result_type", "CHN");
+            jsonObject.put("tsp", user);
+            jsonObject.put("tsp", user);
+            jsonObject.put("date", convertedDate);
+            jsonObject.put("key", "");
+            jsonObject.put("value", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
-
-        String url = Api.Result + "/" + api_key + "/CHN/" + user + "/" + convertedDate + "/key/value";
-        Log.e(TAG, "CHN API -->" + url);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, Api.Result + "/" + api_key + "/" + "CHN" + "/" + user + "/" + convertedDate + "/" + "key/value", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -350,7 +364,10 @@ public class CHNfragment extends RootFragment {
 "RES_ID":"RES0000","pageNo":null,"
 patients":[
 {"Downloaded":null,"Ref_By":"SELF","Tests":"SCRE","barcode":"I4421436","cancel_tests_with_remark":null,"chn_pending":"TSP","chn_test":"SCRE","confirm_status":null,"date":"13-06-2018","email":null,"isOrder":null,"labcode":"15593","leadId":null,"name":"SANJAY  KUMAR (40Y\/M)","patient_id":"BIH03126248462744425","pdflink":null,"sample_type":null,"scp":null,"sct":null,"su_code2":null,"wo_sl_no":null}]
+
+
 ,"reportStatus":"ALLOW","response":"1","totalPages":null
+
 }*/
                                     adapter = new CHN_Adapter(getContext(), FilterReport, items, fragment, convertedDate);
                                     ListReportStatus.setAdapter(adapter);
@@ -370,18 +387,31 @@ patients":[
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
                     System.out.println("error ala parat " + error);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
         queue.add(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: JSON" + jsonObject);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

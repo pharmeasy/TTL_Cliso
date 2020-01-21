@@ -138,9 +138,4 @@
     <dimen name="dp_950">950dp</dimen>
     <dimen name="dp_1000">1000dp</dimen>
     <dimen name="dp_1050">1050dp</dimen>
-    <dimen name="sp_15">15sp</dimen>
-    <dimen name="sp_18">18sp</dimen>
-    <dimen name="sp_14">14sp</dimen>
-    <dimen name="sp_20">20sp</dimen>
-    <dimen name="sp_16">16sp</dimen>
 </resources>

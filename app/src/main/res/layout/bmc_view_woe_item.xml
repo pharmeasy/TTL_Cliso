@@ -18,7 +18,6 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:visibility="gone"
         android:orientation="horizontal">
 
         <ImageView
@@ -30,7 +29,7 @@
             android:src="@drawable/notes"
             android:tag="image_tag" />
     </LinearLayout>
-    <!--android:background="@drawable/left_border_grey"-->
+
     <LinearLayout
         android:id="@+id/linear_summary_open"
         android:layout_width="0dp"
@@ -38,8 +37,10 @@
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
         android:layout_weight="3.8"
+        android:background="@drawable/left_border_grey"
         android:orientation="vertical"
         android:weightSum="4">
+
 
         <TextView
             android:id="@+id/patientName"

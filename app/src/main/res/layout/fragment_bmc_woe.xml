@@ -12,17 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/cement_light"
-            android:gravity="center"
-            android:text="PATIENT DETAILS"
-            android:textColor="@color/maroon"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="43dp"

@@ -19,6 +19,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,22 +50,23 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.RequestModels.ClientRegisterRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.ClientRegisterResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.location.places.Places;
+import com.google.gson.JsonObject;
+import com.sdsmdg.tastytoast.TastyToast;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.gson.Gson;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,11 +83,18 @@ import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
 import static com.example.e5322.thyrosoft.ToastFile.ent_pin;
 
 public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+    ImageView correct_img, cross_img;
+    Spinner sgc_pgc_spinner, brand_spinner, qualification_spinner;
+    LinearLayout brand_name_layout, pincode_layout, mobile_linear_layout, email_linear_layout, client_name_layout, dr_name_layout, brand_name, incharbe_layout, addres_layout_data, qualification_layout, phone_number_layout, website_layout, visiting_card_layout;
+    EditText pincode_edt, mobile_edt, email_edt, client_name_edt, dr_name, incharge_name, phone_number, website_edt, dr_name_edt, addressEdt;
+    Button next_btn_sgc_pgc, visiting_card_btn;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private static final int CAMERA_REQUEST = 1888;
-    private static final int PLACE_PICKER_REQUEST = 1;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+    TextView lattitude_txt, longitude_txt;
+    private String encodedImage;
+    ProgressDialog barProgressDialog;
+
+    String blockCharacterSetdata = "~#^|$%&*!+:`-/|><";
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -100,19 +110,6 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             return null;
         }
     };
-
-    ImageView correct_img, cross_img;
-    Spinner sgc_pgc_spinner, brand_spinner, qualification_spinner;
-    LinearLayout brand_name_layout, pincode_layout, mobile_linear_layout, email_linear_layout, client_name_layout, dr_name_layout, brand_name, incharbe_layout, addres_layout_data, qualification_layout, phone_number_layout, website_layout, visiting_card_layout;
-    EditText pincode_edt, mobile_edt, email_edt, client_name_edt, dr_name, incharge_name, phone_number, website_edt, dr_name_edt, addressEdt;
-    Button next_btn_sgc_pgc, visiting_card_btn;
-    TextView lattitude_txt, longitude_txt;
-    ProgressDialog barProgressDialog;
-    String blockCharacterSetdata = "~#^|$%&*!+:`-/|><";
-    ImageView back, home;
-    LinearLayout latlong;
-    private String encodedImage;
-
     private InputFilter filter1 = new InputFilter() {
 
         @Override
@@ -124,10 +121,10 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             return null;
         }
     };
-
     private String get_Registration_type;
     private String getpincode, getmobile_number, email_address, getclient_name, get_brand_name, get_incharge_name, get_Address, get_phone_number, get_website, get_visiting_card, get_dr_name, get_qualification;
     private String imageName;
+    ImageView back, home;
     private String image;
     private RequestQueue PostQueSGC;
     private RequestQueue PostQueCheckEmail;
@@ -137,29 +134,24 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     private String passwrd;
     private String access;
     private String api_key;
+    private String Response;
+    private Global globalClass;
+    LinearLayout latlong;
+    private String message;
+    private String ResId;
     private String TAG = Sgc_Pgc_Entry_Activity.class.getSimpleName().toString();
     private String finalJson;
     private String entered_mobile_String;
     private String entered_Type_String;
     private String docStatus;
+    private static final int PLACE_PICKER_REQUEST = 1;
+    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
+            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
     private String country, pincode, city;
     private GoogleApiClient mGoogleApiClient;
     private String getLatitude;
     private String getLongitude;
     private double lat, log;
-
-    public static String ConvertBitmapToString(Bitmap bitmap) {
-        String encodedImage = "";
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
-        try {
-            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return encodedImage;
-    }
 
     @SuppressLint("NewApi")
     @Override
@@ -205,7 +197,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             }
         });
 
-        if (GlobalClass.checkForApi21()) {
+        if (globalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -219,7 +211,6 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-
 
         ArrayAdapter sgc_pgc_spinner_adapter = ArrayAdapter.createFromResource(Sgc_Pgc_Entry_Activity.this, R.array.sgc_pgc_entry, R.layout.whitetext_spin);
         sgc_pgc_spinner_adapter.setDropDownViewResource(R.layout.pop_up_spin_sgc);
@@ -429,12 +420,10 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 String enteerdstring = s.toString();
@@ -562,12 +551,10 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
                 }
             }
-
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
             }
@@ -865,7 +852,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                             email_edt.requestFocus();
                             email_edt.setError("Not Valid Email");
                         } else {
-                            uploadClientEntry("SGCEntry", get_brand_name, getclient_name, "", get_incharge_name);
+                            uploadSGCEntry();
                         }
 
                     }
@@ -949,7 +936,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                             email_edt.requestFocus();
                             email_edt.setError("Not Valid Email");
                         } else {
-                            uploadClientEntry("PGCEntry", "", "DR " + get_dr_name, get_qualification, "");
+                            uploadPGCEntry();
                         }
                     }
                 }
@@ -958,93 +945,175 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
     }
 
-    private void uploadClientEntry(final String type, String brandName, String name, String qualification, String inchargeName) {
+    private void uploadPGCEntry() {
         barProgressDialog.show();
 
         PostQuePGC = Volley.newRequestQueue(Sgc_Pgc_Entry_Activity.this);
-        JSONObject jsonObject = null;
+        JSONObject jsonObjectOtp = new JSONObject();
         try {
-            ClientRegisterRequestModel requestModel = new ClientRegisterRequestModel();
-            requestModel.setAddress(get_Address.replace("+", ""));
-            requestModel.setBrand(brandName);
-            requestModel.setChannel("MOBILE APPLICATION");
-            requestModel.setCountry("India");
-            requestModel.setEmail(email_address);
-            requestModel.setInchargeName(inchargeName);
-            requestModel.setName(name);
-            requestModel.setTspOLc(user);
-            requestModel.setVerificationSource("");
-            requestModel.setQualification(qualification);
-            requestModel.setSpeciality("");
-            requestModel.setApikey(api_key);
-            requestModel.setMobile(getmobile_number);
-            requestModel.setPhone_no(get_phone_number);
-            requestModel.setEntryType(get_Registration_type);
-            requestModel.setPincode(getpincode);
-            requestModel.setWebsite(get_website);
-            requestModel.setAPP("B2B");
-            requestModel.setFile(imageName);
-            requestModel.setLatitute(String.valueOf(lat));
-            requestModel.setLongitude(String.valueOf(log));
-            requestModel.setOpType("entry");
-            requestModel.setVisiting_Card(image);
+            jsonObjectOtp.put("Address", get_Address);
+            jsonObjectOtp.put("Brand", "");
+            jsonObjectOtp.put("Channel", "MOBILE APPLICATION");
+            jsonObjectOtp.put("Country", "India");
+            jsonObjectOtp.put("Email", email_address);
+            jsonObjectOtp.put("InchargeName", "");
+            jsonObjectOtp.put("Name", "DR " + get_dr_name);
+            jsonObjectOtp.put("TspOLc", user);
+            jsonObjectOtp.put("VerificationSource", "");
+            jsonObjectOtp.put("Qualification", get_qualification);
+            jsonObjectOtp.put("Speciality", "   ");
+            jsonObjectOtp.put("apikey", api_key);
+            jsonObjectOtp.put("mobile", getmobile_number);
+            jsonObjectOtp.put("phone_no", get_phone_number);
+            jsonObjectOtp.put("EntryType", get_Registration_type);
+            jsonObjectOtp.put("pincode", getpincode);
+            jsonObjectOtp.put("website", get_website);
+            jsonObjectOtp.put("APP", "B2B");
+            jsonObjectOtp.put("File", imageName);
+            jsonObjectOtp.put("Latitute", String.valueOf(lat));
+            jsonObjectOtp.put("Longitude", String.valueOf(log));
+            jsonObjectOtp.put("opType", "entry");
+            jsonObjectOtp.put("Visiting_Card", image);
 
-            String json = new Gson().toJson(requestModel);
-            jsonObject = new JSONObject(json);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.SGCRegistration, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.SGCRegistration, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
                 try {
                     Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
-                    ClientRegisterResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ClientRegisterResponseModel.class);
-                    if (responseModel != null) {
-                        if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                    Response = parentObjectOtp.getString("Response");
+                    message = parentObjectOtp.getString("message");
+                    docStatus = parentObjectOtp.getString("docStatus");
+                    ResId = parentObjectOtp.getString("ResId");
 
-                            if (type.equalsIgnoreCase("PGCEntry")) {
-                                TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "PGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            } else {
-                                TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "SGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            }
+                    if (Response.equals("Success")) {
 
-                            Intent i = new Intent(Sgc_Pgc_Entry_Activity.this, Sgc_Pgc_Entry_Activity.class);
-                            startActivity(i);
-                            finish();
-                        } else if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase(small_invalidApikey)) {
-                            GlobalClass.redirectToLogin(Sgc_Pgc_Entry_Activity.this);
-                        } else {
-                            TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "" + responseModel.getMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        }
+                        Intent i = new Intent(Sgc_Pgc_Entry_Activity.this, Sgc_Pgc_Entry_Activity.class);
+                        startActivity(i);
+                        finish();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "PGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    } else if (Response.equalsIgnoreCase(small_invalidApikey)) {
+                        GlobalClass.redirectToLogin(Sgc_Pgc_Entry_Activity.this);
                     } else {
-                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "" + message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
-                } catch (Exception e) {
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
                 if (error != null) {
                 } else {
+
                     System.out.println(error);
                 }
             }
         });
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         PostQuePGC.add(jsonObjectRequest1);
-        Log.e(TAG, "uploadClientEntry: " + jsonObject);
-        Log.e(TAG, "uploadClientEntry: " + jsonObjectRequest1);
+        Log.e(TAG, "uploadPGCEntry: " + jsonObjectOtp);
+        Log.e(TAG, "uploadPGCEntry: " + jsonObjectRequest1);
+
+    }
+
+    private void uploadSGCEntry() {
+
+
+        barProgressDialog.show();
+
+
+        PostQueSGC = Volley.newRequestQueue(Sgc_Pgc_Entry_Activity.this);
+        JSONObject jsonObjectOtp = new JSONObject();
+        try {
+            jsonObjectOtp.put("Address", get_Address);
+            jsonObjectOtp.put("Brand", get_brand_name);
+            jsonObjectOtp.put("Channel", "MOBILE APPLICATION");
+            jsonObjectOtp.put("Country", "India");
+            jsonObjectOtp.put("Email", email_address);
+            jsonObjectOtp.put("InchargeName", get_incharge_name);
+            jsonObjectOtp.put("Name", getclient_name);
+            jsonObjectOtp.put("TspOLc", user);
+            jsonObjectOtp.put("VerificationSource", "");
+            jsonObjectOtp.put("apikey", api_key);
+            jsonObjectOtp.put("mobile", getmobile_number);
+            jsonObjectOtp.put("phone_no", get_phone_number);
+            jsonObjectOtp.put("EntryType", get_Registration_type);
+            jsonObjectOtp.put("pincode", getpincode);
+            jsonObjectOtp.put("website", get_website);
+            jsonObjectOtp.put("APP", "B2B");
+            jsonObjectOtp.put("File", imageName);
+            jsonObjectOtp.put("Latitute", String.valueOf(lat));
+            jsonObjectOtp.put("Longitude", String.valueOf(log));
+            jsonObjectOtp.put("opType", "entry");
+            jsonObjectOtp.put("Visiting_Card", image);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.SGCRegistration, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                    Response = parentObjectOtp.getString("Response");
+                    message = parentObjectOtp.getString("message");
+                    docStatus = parentObjectOtp.getString("docStatus");
+                    ResId = parentObjectOtp.getString("ResId");
+
+                    if (Response.equals("Success")) {
+                        Intent i = new Intent(Sgc_Pgc_Entry_Activity.this, Sgc_Pgc_Entry_Activity.class);
+                        startActivity(i);
+                        finish();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "SGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                    } else if (Response.equalsIgnoreCase(small_invalidApikey)) {
+                        GlobalClass.redirectToLogin(Sgc_Pgc_Entry_Activity.this);
+                    } else {
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "" + message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                } else {
+
+                    System.out.println(error);
+                }
+            }
+        });
+        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        PostQueSGC.add(jsonObjectRequest1);
+        Log.e(TAG, "uploadSGCEntry: json" + jsonObjectOtp);
+        Log.e(TAG, "uploadSGCEntry: url" + jsonObjectRequest1);
     }
 
     @Override
@@ -1153,11 +1222,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                 }
                 //Uptill Here
 
-                try {
-                    imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                imageName = picturePath.substring(picturePath.lastIndexOf("/") + 1, picturePath.length());
 
                 Bitmap bitmap;
                 try {
@@ -1177,6 +1242,19 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             }
         }
 
+    }
+
+    public static String ConvertBitmapToString(Bitmap bitmap) {
+        String encodedImage = "";
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        try {
+            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return encodedImage;
     }
 
     @Override

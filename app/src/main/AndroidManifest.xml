@@ -18,8 +18,6 @@
         android:required="false" />
     <uses-feature android:name="android.hardware.camera" />
 
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -40,10 +38,8 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
-        android:name=".Controller.ControllersGlobalInitialiser"
         android:allowBackup="true"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:debuggable="true"
@@ -59,9 +55,7 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity
-            android:name=".Activity.Blood_sugar_entry_activity"
-            android:screenOrientation="portrait" />
+        <activity android:name=".Activity.Blood_sugar_entry_activity" />
         <activity android:name=".Activity.CampIntimation" />
         <activity android:name=".BroadcastViewPagerActivity" />
         <activity android:name=".Activity.BroadcastDataActivity" />
@@ -70,7 +64,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBcm2CJDh69483Z9dZrSNRqjX1l-nuNo-o" />
-
 
         <!-- <activity android:name=".startscreen.Splash_screenActivity" /> -->
 
@@ -84,30 +77,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activity.VideoFullScreen"
-            android:screenOrientation="landscape">
-
-        </activity>
-
-        <service android:name=".MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:stopWithTask="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-
-        <activity
-            android:name=".Activity.ConfirmbookDetail"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".startscreen.Login"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
@@ -118,25 +87,9 @@
         <activity
             android:name=".Activity.BillingDetailsActivity"
             android:screenOrientation="portrait" />
-
         <activity
-            android:name=".Kotlin.KTActivity.FAQ_activity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".Kotlin.KTActivity.KTNoticeboard_activity"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".Activity.VideoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait" />
-
-        <activity
-            android:name=".Activity.ReportBarcode_activity"
-            android:screenOrientation="portrait" />
-
-
+            android:name=".Activity.LeggyVideo_Activity"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".Registration.Registration_first_screen"
             android:label="@string/title_activity_main2"
@@ -175,12 +128,23 @@
             android:name=".WOE.MainActivityFirebase"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Kotlin.KTActivity.AccreditationActivity"
+            android:name=".Activity.AccreditationActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".WOE.Scan_Barcode_Outlabs"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
+
+        <service android:name=".MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".WOE.SummaryActivity"
@@ -249,10 +213,6 @@
             android:name=".Activity.Communication_Activity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Activity.ManagingTabsActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".Activity.CompanyContact_activity"
             android:screenOrientation="portrait" />
         <activity
@@ -280,21 +240,24 @@
             android:name=".RevisedScreenNewUser.Offline_edt_activity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait" />
-
-
+        <activity
+            android:name=".Activity.ManagingTabsActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.VidoePlayerActivity"
             android:screenOrientation="portrait" />
 
-        <!--<provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_provider_paths" />
-        </provider>-->
+        <!--
+         <provider
+             android:name="android.support.v4.content.FileProvider"
+             android:authorities="${applicationId}.fileprovider"
+             android:exported="false"
+             android:grantUriPermissions="true">
+             <meta-data
+                 android:name="android.support.FILE_PROVIDER_PATHS"
+                 android:resource="@xml/file_provider_paths" />
+         </provider>
+        -->
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -307,6 +270,9 @@
         </provider>
 
         <activity android:name=".Activity.BroadcastActivity" />
+        <activity
+            android:name=".Cliso_BMC.BMC_MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Cliso_BMC.BMC_ProductListingActivity"
             android:screenOrientation="portrait" />
@@ -334,13 +300,8 @@
         <activity
             android:name=".SpecialOffer.OfferScan_Activity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".Cliso_BMC.BMC_VideoActivity"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".Cliso_BMC.BMC_StockAvailabilityActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity" />
+
+        <activity android:name=".Cliso_BMC.BMC_VideoActivity"/>
 
     </application>
 

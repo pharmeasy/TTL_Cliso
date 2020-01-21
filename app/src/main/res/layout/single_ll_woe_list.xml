@@ -33,7 +33,6 @@
     <LinearLayout
         android:id="@+id/linear_summary_open"
         android:layout_width="0dp"
-        android:padding="@dimen/smallPadding"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"

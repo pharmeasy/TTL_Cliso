@@ -64,10 +64,8 @@ import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +83,69 @@ import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 
 public class SpecialOffer_Activity extends AppCompatActivity implements View.OnClickListener {
 
+    public RadioButton rd_dps, rd_home;
+    public Spinner spin_test, spinyr, timehr, timesecond, timeampm;
+    public TextView dateShow, txt_availcnt, tv_timer, txt_ctime, txt_sctdefault;
+    public Calendar myCalendar;
+    private long minDate;
+
+    public String putDate, getFormatDate, user, api_key, referenceBy = null;
+    public ImageView male, male_red, female, female_red, uncheck_sct, check_sct;
+    boolean genderId = false;
+    boolean sctflag = false;
+    private LinearLayout lin_otp, refby_linear, ref_check_linear, lin_changesct, time_layout;
+    private Button btn_sendotp, btn_verifyotp, btn_next;
+    private EditText et_mobno, et_otp, et_name, et_age;
+    public ImageView ref_check, uncheck_ref;
+    int mYear, mMonth, mDay;
+    String my_var, checktime = "Default";
+    private String sctHr, sctMin, sctSEc, getFinalDate;
+    String strdate;
+    String strtime;
+    public SharedPreferences prefs;
+    public ArrayList<REF_DR> getReferenceName1;
+    private ArrayList<String> btechSpinner;
+    public ArrayList<String> getReferenceNmae;
+    public REF_DR[] ref_drs;
+    public int flagtoAdjustClisk = 0;
+    public String saveGenderId;
     public static ArrayList<BCT_LIST> getBtechList;
+    public int agesinteger;
+    private String str_dps = "DPS", str_home;
+    private ProgressDialog progressDialog;
+    private ArrayList<String> Selcted_Outlab_Test = new ArrayList<>();
+    private boolean timerflag = false;
+    private String TAG = getClass().getSimpleName();
+    private ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
+    private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
+    private TestListAdapter testListAdapter;
+    private ProgressDialog barProgressDialog;
+    private AutoCompleteTextView referedby;
+    private String selecttest_name, btechIDToPass;
+    EditText patientAddress, pincode_edt;
+    ArrayList<BaseModel.Barcodes> barcodesList = new ArrayList<>();
+    String woereferedby, tspaddress, pincode;
+    Spinner btechname;
+    SharedPreferences preferences;
+    private MyPojo myPojo;
+    String myFormat = "dd-MM-yyyy"; //In which you need put here
+    SimpleDateFormat currsdf = new SimpleDateFormat("hh:mm a");
+    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+
+    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+    };
+
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -101,72 +161,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             return null;
         }
     };
-    public RadioButton rd_dps, rd_home;
-    public Spinner spin_test, spinyr, timehr, timesecond, timeampm;
-    public TextView dateShow, txt_availcnt, tv_timer, txt_ctime, txt_sctdefault;
-    public Calendar myCalendar;
-    public String putDate, getFormatDate, user, api_key, referenceBy = null;
-    public ImageView male, male_red, female, female_red, uncheck_sct, check_sct;
-    public ImageView ref_check, uncheck_ref;
-    public SharedPreferences prefs;
-    public ArrayList<REF_DR> getReferenceName1;
-    public ArrayList<String> getReferenceNmae;
-    public REF_DR[] ref_drs;
-    public int flagtoAdjustClisk = 0;
-    public String saveGenderId;
-    public int agesinteger;
-    Date dCompare;
-    boolean genderId = false;
-    boolean sctflag = false;
-    int mYear, mMonth, mDay;
-    String my_var, checktime = "Default";
-    String strdate;
-    String strtime;
-    EditText patientAddress, pincode_edt;
-    ArrayList<BaseModel.Barcodes> barcodesList = new ArrayList<>();
-    String woereferedby, tspaddress, pincode;
-    Spinner btechname;
-    SharedPreferences preferences;
-    String myFormat = "dd-MM-yyyy"; //In which you need put here
-    SimpleDateFormat currsdf = new SimpleDateFormat("hh:mm a");
-    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-    final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-
-        @Override
-        public void onDateSet(DatePicker view, int year, int monthOfYear,
-                              int dayOfMonth) {
-            // TODO Auto-generated method stub
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, monthOfYear);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-
-        }
-    };
-    private long minDate;
-    private LinearLayout lin_otp, refby_linear, ref_check_linear, lin_changesct, time_layout;
-    private Button btn_sendotp, btn_verifyotp, btn_next;
-    private EditText et_mobno, et_otp, et_name, et_age;
-    private String sctHr, sctMin, sctSEc, getFinalDate;
-    private ArrayList<String> btechSpinner;
-    private String str_dps = "DPS", str_home;
-    private ProgressDialog progressDialog;
-    private ArrayList<String> Selcted_Outlab_Test = new ArrayList<>();
-    private boolean timerflag = false;
-    private String TAG = getClass().getSimpleName();
-    private ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
-    private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
-    private TestListAdapter testListAdapter;
-    private ProgressDialog barProgressDialog;
-    private AutoCompleteTextView referedby;
-    private String selecttest_name, btechIDToPass;
-    private MyPojo myPojo;
     private String referredID;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
+
 
         initView();
 
@@ -199,6 +200,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         textwatcher();
         agetextwatcher();
         Disablefields();
+
 
         referedby.addTextChangedListener(new TextWatcher() {
             @Override
@@ -295,9 +297,11 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     agesinteger = Integer.parseInt(s.toString());
-                }
+                } else {
 
+                }
                 String enteredString = s.toString();
+
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     Toast.makeText(SpecialOffer_Activity.this,
                             ToastFile.crt_age,
@@ -308,7 +312,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_age.setText("");
                     }
                 }
-
                 if (et_age.getText().toString().equals("")) {
 
                 } else {
@@ -365,7 +368,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     private void getAllproduct() {
-        final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
+        barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
 
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
@@ -373,11 +376,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-               /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();
-                }*/
-
-                GlobalClass.hideProgress(SpecialOffer_Activity.this, barProgressDialog);
+                }
 
                 String getResponse = response.optString("RESPONSE", "");
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
@@ -397,6 +398,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                             Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
                             product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+
 
                             for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
                                 testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
@@ -432,7 +434,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 R.layout.list_ite, R.id.title, testRateMasterModels);
                         spin_test.setAdapter(testListAdapter);
                         barcodesList.clear();
-
                         spin_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -477,6 +478,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     private void setSpinner() {
+
+
         ArrayList<String> patientsagespinner = new ArrayList<>();
         patientsagespinner.add("Years");
         patientsagespinner.add("Months");
@@ -491,6 +494,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     }
 
     private void listner() {
+
         rd_dps.setOnClickListener(this);
         rd_home.setOnClickListener(this);
 
@@ -507,11 +511,14 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         });
 
         btn_next.setOnClickListener(this);
+
         male.setOnClickListener(this);
         female.setOnClickListener(this);
 
+
         uncheck_sct.setOnClickListener(this);
         check_sct.setOnClickListener(this);
+
 
         btn_sendotp.setOnClickListener(this);
         btn_verifyotp.setOnClickListener(this);
@@ -568,19 +575,26 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         et_otp = findViewById(R.id.et_otp);
         et_name = findViewById(R.id.et_name);
         et_age = findViewById(R.id.et_age);
-
         //   patientAddress = findViewById(R.id.patientAddress);
         //  pincode_edt = findViewById(R.id.pincode_edt);
 
         et_name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
+        //   patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         et_name.setFilters(new InputFilter[]{EMOJI_FILTER});
+        //  patientAddress.setFilters(new InputFilter[]{EMOJI_FILTER});
+
 
         int maxLength = 40;
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(maxLength);
         et_name.setFilters(FilterArray);
+
+      /*  int maxLength1 = 150;
+        InputFilter[] FilterArray1 = new InputFilter[1];
+        FilterArray1[0] = new InputFilter.LengthFilter(maxLength1);
+        patientAddress.setFilters(FilterArray1);
+*/
 
         et_name.addTextChangedListener(new TextWatcher() {
             @Override
@@ -593,12 +607,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
 
-                    if (enteredString.length() > 0) {
-                        et_name.setText(enteredString.substring(1));
-                    } else {
-                        et_name.setText("");
-                    }
                 }
+
             }
 
             @Override
@@ -704,6 +714,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         uncheck_sct = (ImageView) findViewById(R.id.uncheck_sct);
         check_sct = (ImageView) findViewById(R.id.check_sct);
 
+
         //Call getClient Doctor Name API
         if (!GlobalClass.isNetworkAvailable(SpecialOffer_Activity.this)) {
             TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -714,7 +725,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             ControllersGlobalInitialiser.getClientDetail_controller = new GetClientDetail_Controller(SpecialOffer_Activity.this);
             ControllersGlobalInitialiser.getClientDetail_controller.CallgetClient(user, api_key);
-
         }
 
 
@@ -805,10 +815,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         et_mobno.setEnabled(true);
                         et_mobno.setClickable(true);
                         btn_sendotp.setText("Send OTP");
-
-                        btn_sendotp.setClickable(true);
-                        btn_sendotp.setEnabled(true);
-
                         et_otp.setText("");
 
                         btn_verifyotp.setVisibility(View.GONE);
@@ -1020,51 +1026,10 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         } else {
             sendIntent();
         }*/
-        Date getCurrentDateandTime=new Date();
+
 
         String sctSEc = timeampm.getSelectedItem().toString();
         System.out.println("Spinner value -->" + sctSEc);
-
-        sctHr = timehr.getSelectedItem().toString();
-        sctMin = timesecond.getSelectedItem().toString();
-        sctSEc = timeampm.getSelectedItem().toString();
-        String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-        getFinalDate = dateShow.getText().toString();
-
-        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-
-        try {
-            dCompare = sdfform.parse(getDateToCompare);
-
-        } catch (ParseException e) {
-
-            if (getDateToCompare.contains("AM")) {
-                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                getDateToCompare = getDateToCompare + "a.m.";
-            } else if (getDateToCompare.contains("PM")) {
-                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                getDateToCompare = getDateToCompare + "p.m.";
-            }
-
-            String input = getDateToCompare;
-            //Format of the date defined in the input String
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-            //Desired format: 24 hour format: Change the pattern as per the need
-            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            Date date = null;
-            String output = null;
-            try {
-                dCompare = df.parse(input);
-                output = outputformat.format(dCompare);
-                System.out.println(output);
-            } catch (ParseException pe) {
-                pe.printStackTrace();
-            }
-            e.printStackTrace();
-        }
-
 
         if (spin_test.getSelectedItem().toString().equals("Select Test")) {
             Toast.makeText(SpecialOffer_Activity.this, "Please Select Test", Toast.LENGTH_SHORT).show();
@@ -1081,9 +1046,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
             } else if (sctSEc.equals("AM/PM")) {
                 Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-            } else if (dCompare.after(getCurrentDateandTime)) {
-                Toast.makeText(SpecialOffer_Activity.this, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-            }else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
+            } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
                 Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
             } else {
                 sendIntent();
@@ -1133,6 +1096,12 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("age", getFinalAge);
         saveDetails.putString("gender", saveGenderId);
 
+       /* if (sctflag == false) {
+            saveDetails.putString("sct", strtime);
+            saveDetails.putString("date", strdate);
+        } else {
+
+        }*/
 
         if (checktime.equals("Default")) {
             saveDetails.putString("sct", strtime);
@@ -1161,6 +1130,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.putString("getcampIDtoPass", "");
         saveDetails.putString("kycinfo", "");
         saveDetails.putString("WOEbrand", "");
+
+
         saveDetails.putString("SR_NO", "");
         saveDetails.putString("pincode", "");
         saveDetails.commit();
@@ -1224,7 +1195,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
-
         if (validateOTPmodel.getResponse().equals("OTP Generated Successfully to your registered number")) {
             GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
 

@@ -6,7 +6,7 @@
     android:background="@drawable/splash_screen_new"
     android:orientation="vertical"
     android:weightSum="100"
-    tools:context="com.example.e5322.thyrosoft.startscreen.SplashScreen">
+    tools:context="com.example.e5322.thyrosoft.startscreen.Splash_screenActivity">
 
     <LinearLayout
         android:id="@+id/lin_lay"

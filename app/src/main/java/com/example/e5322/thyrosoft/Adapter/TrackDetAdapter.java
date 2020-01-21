@@ -330,7 +330,6 @@ public class TrackDetAdapter extends BaseAdapter {
                         public void onErrorResponse(VolleyError error) {
                             try {
                                 System.out.println("error ala parat " + error);
-                               // TastyToast.makeText(mContext, error.getLocalizedMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

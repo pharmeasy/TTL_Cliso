@@ -24,6 +24,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -59,12 +60,12 @@ public class ComposeCommunication extends RootFragment {
     EditText commuTXT;
     public static RequestQueue PostQue;
     private SimpleDateFormat sdf;
-    String Date = "";
+    String Date="";
     ProgressDialog barProgressDialog;
 
     private OnFragmentInteractionListener mListener;
-    Button sendcomm;
-    private String TAG = getClass().getSimpleName();
+Button sendcomm;
+    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
 
     public ComposeCommunication() {
         // Required empty public constructor
@@ -119,16 +120,16 @@ public class ComposeCommunication extends RootFragment {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_compose_communication, container, false);
-        spinnercomm = (Spinner) view.findViewById(R.id.spinnercomm);
-        sendcomm = (Button) view.findViewById(R.id.sendcomm);
-        commuTXT = (EditText) view.findViewById(R.id.commuTXT);
-        // TextView dateview = getActivity().findViewById(R.id.show_date);
-        //  dateview.setVisibility(View.GONE);
-        String[] string = new String[GlobalClass.commSpinner.size()];
-        for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
-            string[i] = GlobalClass.commSpinner.get(i).getDisplayName();
+        spinnercomm=(Spinner)view.findViewById(R.id.spinnercomm);
+        sendcomm=(Button) view.findViewById(R.id.sendcomm);
+        commuTXT=(EditText) view.findViewById(R.id.commuTXT);
+       // TextView dateview = getActivity().findViewById(R.id.show_date);
+      //  dateview.setVisibility(View.GONE);
+        String[]string = new String[GlobalClass.commSpinner.size()];
+        for(int i = 0; i< GlobalClass.commSpinner.size(); i++){
+            string[i]= GlobalClass.commSpinner.get(i).getDisplayName();
         }
-        Log.e(TAG, "");
+
         commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
 
         commuTXT.addTextChangedListener(new TextWatcher() {
@@ -172,7 +173,7 @@ public class ComposeCommunication extends RootFragment {
         java.util.Date date = inputFormat.parse(Date);
         String outputDateStr = outputFormat.format(date);
 */
-        ArrayAdapter aa = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, string);
+        ArrayAdapter aa = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,string);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnercomm.setAdapter(aa);
 
@@ -183,9 +184,9 @@ public class ComposeCommunication extends RootFragment {
 
 
                 String getCommunication = commuTXT.getText().toString();
-                if (getCommunication.equals("")) {
-                    TastyToast.makeText(getContext(), "Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                } else {
+                if(getCommunication.equals("")){
+                    TastyToast.makeText(getContext(),"Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                }else {
 
                     barProgressDialog = new ProgressDialog(getContext());
                     barProgressDialog.setTitle("Kindly wait ...");
@@ -205,6 +206,7 @@ public class ComposeCommunication extends RootFragment {
         });
 
 
+
         return view;
     }
 
@@ -214,12 +216,12 @@ public class ComposeCommunication extends RootFragment {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            String spinnerItem = spinnercomm.getSelectedItem().toString();
+            String spinnerItem =spinnercomm.getSelectedItem().toString();
 
-            if (spinnercomm.getSelectedItem().equals("WOE & REPORTS")) {
-                spinnerItem = "WOE-REPORTS";
-            } else {
-                spinnerItem = spinnercomm.getSelectedItem().toString();
+            if(spinnercomm.getSelectedItem().equals("WOE & REPORTS")){
+                spinnerItem="WOE-REPORTS";
+            }else{
+                spinnerItem =spinnercomm.getSelectedItem().toString();
             }
 
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -228,12 +230,12 @@ public class ComposeCommunication extends RootFragment {
             String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
-            jsonObject.put("apiKey", api_key);
-            jsonObject.put(Constants.UserCode_billing, user);
-            jsonObject.put("type", "Request");
-            jsonObject.put("communication", commuTXT.getText());
-            jsonObject.put("commId", "");
-            jsonObject.put("forwardTo", spinnerItem);
+            jsonObject.put("apiKey",api_key);
+            jsonObject.put(Constants.UserCode_billing,user);
+            jsonObject.put("type","Request");
+            jsonObject.put("communication",commuTXT.getText());
+            jsonObject.put("commId","");
+            jsonObject.put("forwardTo",spinnerItem );
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -245,11 +247,9 @@ public class ComposeCommunication extends RootFragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            Log.e(TAG, "onResponse: RESPONSE" + response);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
-                            TastyToast.makeText(getContext(), response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Log.e(TAG, "onResponse: RESPONSE"+response );
+                            if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                            TastyToast.makeText(getContext(),response.optString(Constants.response).toString(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
 
                         } catch (Exception e) {
@@ -268,8 +268,8 @@ public class ComposeCommunication extends RootFragment {
         });
 
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "PostData: URL" + jsonObjectRequest);
-        Log.e(TAG, "PostData: json" + jsonObject);
+        Log.e(TAG, "PostData: URL"+ jsonObjectRequest);
+        Log.e(TAG, "PostData: json"+jsonObject );
 
     }
 
@@ -279,6 +279,7 @@ public class ComposeCommunication extends RootFragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
 
     /**

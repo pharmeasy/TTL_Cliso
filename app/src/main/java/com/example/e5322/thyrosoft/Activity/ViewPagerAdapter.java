@@ -11,7 +11,6 @@ import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
-import com.example.e5322.thyrosoft.Fragment.NHFFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
@@ -19,11 +18,23 @@ import com.example.e5322.thyrosoft.Fragment.TrackDetails;
 import com.example.e5322.thyrosoft.Fragment.Wind_up_fragment;
 import com.example.e5322.thyrosoft.R;
 
+
+/**
+ * Created by shahabuddin on 6/6/14.
+ */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+    /**
+     * Create pager adapter
+     *
+     * @param resources
+     * @param fm
+     */
+
 
     public ViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);
@@ -43,39 +54,31 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 // First Fragment of Second Tab
                 result = new Offline_woe();
                 break;
-
             case 2:
                 // First Fragment of Third Tab
                 result = new TrackDetails();
                 break;
-
             case 3:
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
-
             case 4:
-                // First Fragment of Third Tab
-                result = new NHFFragment();
-                break;
-
-            case 5:
                 // First Fragment of Third Tab
                 result = new LedgerFragment();
                 break;
-            case 6:
+            case 5:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
                 break;
-            case 7:
+            case 6:
                 // First Fragment of Third Tab
                 result = new CHNfragment();
                 break;
-            case 8:
+            case 7:
                 // First Fragment of Third Tab
                 result = new BillingSummary();
                 break;
-            case 9:
+            case 8:
                 // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
@@ -89,7 +92,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 10;
+        return 9;
     }
 
     @Override
@@ -104,19 +107,15 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 return resources.getString(R.string.page_3);
             case 3:
                 return resources.getString(R.string.page_4);
-
             case 4:
-                return resources.getString(R.string.petct);
-
-            case 5:
                 return resources.getString(R.string.page_5);
-            case 6:
+            case 5:
                 return resources.getString(R.string.page_6);
-            case 7:
+            case 6:
                 return resources.getString(R.string.page_7);
-            case 8:
+            case 7:
                 return resources.getString(R.string.page_8);
-            case 9:
+            case 8:
                 return resources.getString(R.string.page_9);
 
             default:

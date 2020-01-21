@@ -68,7 +68,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
     boolean flag = false;
     ArrayList<String> getNoStatus = new ArrayList<>();
     private int flagpass = 0;
-    private String TAG = PatientDtailsWoe.class.getSimpleName();
+    private String TAG = PatientDtailsWoe.class.getSimpleName().toString();
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -271,7 +271,6 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             public void onResponse(JSONObject response) {
 
                 Log.e(TAG, "onResponse: " + response);
-
                 try {
                     String finalJson = response.toString();
                     JSONObject parentObjectOtp = new JSONObject(finalJson);
