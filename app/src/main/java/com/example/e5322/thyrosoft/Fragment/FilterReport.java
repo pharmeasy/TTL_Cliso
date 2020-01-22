@@ -29,29 +29,29 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomCalendarAdapter;
 import com.example.e5322.thyrosoft.Adapter.ResultDtlAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
+import com.example.e5322.thyrosoft.Models.ResponseModels.ReportsResponseModel;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.Models.getAllDays;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -79,52 +79,54 @@ import static java.util.Calendar.YEAR;
  * create an instance of this fragment.
  */
 public class FilterReport extends Fragment implements CAlendar_Inteface {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private SimpleDateFormat sdf;
-    private String mParam1;
-    private String mParam2;
+    public static RequestQueue PostQue;
+    public static boolean callOnce = false;
     public String toDate = "";
-    RecyclerView calendarView;
     public String fromDate = "";
     public String Date = "";
     public String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    public GregorianCalendar cal_month, cal_month_copy;
+    RecyclerView calendarView;
     TextView txt_date, nodata, month_txt, showDate;
     ProgressDialog progressDialog;
     Context mContext;
     Spinner spinnertype;
-    public static RequestQueue PostQue;
     ResultDtlAdapter adapter;
     Spinner filterBy;
-    private OnFragmentInteractionListener mListener;
     EditText searchbarcode;
     ListView ListReportStatus;
     Map<Integer, String> myMap;
     ArrayList<TrackDetModel> FilterReport = new ArrayList<TrackDetModel>();
     String send_Date = "";
+    ImageView back_month, next_month;
+    LinearLayout offline_img;
+    CustomCalendarAdapter customCalendarAdapter;
+    String passDateTogetData;
+    LinearLayout full_ll;
+    String user, passwrd, access, api_key, user_code;
+    // TODO: Rename and change types of parameters
+    private SimpleDateFormat sdf;
+    private String mParam1;
+    private String mParam2;
+    private OnFragmentInteractionListener mListener;
     private String showDateTotxt;
     private String passToAPI;
     private String halfTime;
-    ImageView back_month, next_month;
-    LinearLayout offline_img;
     private String responsetoshow;
     private String passToSpinner;
     private ProgressDialog barProgressDialog;
-    CustomCalendarAdapter customCalendarAdapter;
-    public GregorianCalendar cal_month, cal_month_copy;
     //    private CalendarAdapter cal_adapter;
     private TextView tv_month;
     private String getonlyMonth;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<getAllDays> SelectedMonthData;
-    String passDateTogetData;
     private int getPositionToset;
-    public static boolean callOnce = false;
-    LinearLayout full_ll;
     private String currentMonthString;
     private String getTextofMonth;
     private ArrayList<TrackDetModel> filterPatientsArrayList;
@@ -149,6 +151,16 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = null;
+        try {
+            metrics = context.getResources().getDisplayMetrics();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
     }
 
     @Override
@@ -195,7 +207,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
             if (!GlobalClass.isNetworkAvailable(getActivity())) {
                 offline_img.setVisibility(View.VISIBLE);
-
             } else {
                 offline_img.setVisibility(View.GONE);
             }
@@ -233,14 +244,17 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
 
+        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+        user_code = prefs.getString("USER_CODE", null);
 
         full_ll.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 int heightDiff = full_ll.getRootView().getHeight() - full_ll.getHeight();
-                if (heightDiff > dpToPx(getContext(), 200)) { // if more than 200 dp, it's probably a keyboard...
-                    // ... do something here
-                }
             }
         });
 
@@ -253,6 +267,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         System.out.println("Month name:" + month);
         final int year = c.get(YEAR);
         getPositionToset = c.get(Calendar.DATE);
+
         try {
             SelectedMonthData = getAllDaysInMonth(c);
         } catch (ParseException e) {
@@ -339,7 +354,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         spinnertype.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
                 GetData();
             }
 
@@ -415,6 +429,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() == 0) {
+                        GetData();
+                    }
 
                     // TODO Auto-generated method stub
                 }
@@ -431,6 +448,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     filterPatientsArrayList = new ArrayList<>();
                     String barcode = "";
                     String name = "";
+
                     if (FilterReport != null) {
                         for (int i = 0; i < FilterReport.size(); i++) {
 
@@ -449,11 +467,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
 
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
 
                             } else if (filterBy.getSelectedItem().equals("Name")) {
                                 final String text = FilterReport.get(i).getName().toLowerCase();
@@ -467,15 +481,24 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
 
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Barcode")) {
+                                final String text = FilterReport.get(i).getBarcode().toLowerCase();
 
+                                if (FilterReport.get(i).getBarcode() != null || !FilterReport.get(i).getBarcode().equals("")) {
+                                    barcode = FilterReport.get(i).getBarcode().toLowerCase();
+                                }
+
+                                if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
+                                        (barcode != null && barcode.contains(s1))) {
+                                    String testname = FilterReport.get(i).getBarcode();
+                                    filterPatientsArrayList.add(FilterReport.get(i));
+
+                                }
                             }
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -483,10 +506,14 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             });
         } else if (filterBy.getSelectedItem().equals("Name")) {
+
             searchbarcode.setHint("Search by patient name ");
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (s.length() == 0) {
+                        GetData();
+                    }
 
                     // TODO Auto-generated method stub
                 }
@@ -517,13 +544,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 String testname = FilterReport.get(i).getName();
                                 filterPatientsArrayList.add(FilterReport.get(i));
 
-                            } else {
-
                             }
-                            adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                            ListReportStatus.setAdapter(adapter);
+                     /*       adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
+                            ListReportStatus.setAdapter(adapter);*/
 
-
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -538,6 +563,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                     // TODO Auto-generated method stub
+
+                    if (s.length() == 0) {
+                        GetData();
+                    }
                 }
 
                 @Override
@@ -568,11 +597,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 String testname = FilterReport.get(i).getBarcode();
                                 filterPatientsArrayList.add(FilterReport.get(i));
 
-                            } else {
-
                             }
 
-
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -584,7 +611,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             searchbarcode.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                    if (s.length() == 0) {
+                        GetData();
+                    }
                     // TODO Auto-generated method stub
                 }
 
@@ -600,7 +629,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                     filterPatientsArrayList = new ArrayList<>();
                     String barcode = "";
                     String name = "";
+
                     if (FilterReport != null) {
+
                         for (int i = 0; i < FilterReport.size(); i++) {
 
                             if (filterBy.getSelectedItem().equals("All")) {
@@ -617,12 +648,8 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                         (name != null && name.contains(s1))) {
                                     String testname = FilterReport.get(i).getName();
                                     filterPatientsArrayList.add(FilterReport.get(i));
-
-                                } else {
-
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Name")) {
                                 final String text = FilterReport.get(i).getName().toLowerCase();
@@ -639,8 +666,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 } else {
 
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
 
                             } else if (filterBy.getSelectedItem().equals("Barcode")) {
                                 final String text = FilterReport.get(i).getBarcode().toLowerCase();
@@ -657,9 +683,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 } else {
 
                                 }
-                                adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                                ListReportStatus.setAdapter(adapter);
+
                             }
+                            callAdapter(filterPatientsArrayList);
                         }
                     }
                     // filter your list from your input
@@ -694,16 +720,18 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         return view;
     }
 
-    public static float dpToPx(Context context, float valueInDp) {
-        DisplayMetrics metrics = null;
-        try {
-            metrics = context.getResources().getDisplayMetrics();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void callAdapter(ArrayList<TrackDetModel> modelArrayList) {
+        if (modelArrayList.size() > 0) {
+            ListReportStatus.setVisibility(View.VISIBLE);
+            adapter = new ResultDtlAdapter(getActivity(), modelArrayList);
+            ListReportStatus.setAdapter(adapter);
+            nodata.setVisibility(View.GONE);
+        } else {
+            ListReportStatus.setVisibility(View.GONE);
+            nodata.setVisibility(View.VISIBLE);
         }
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
-    }
 
+    }
 
     @Override
     public void onStart() {
@@ -776,152 +804,80 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     }
 
     private void GetData() {
-
-
         barProgressDialog.show();
 
         PostQue = Volley.newRequestQueue(getContext());
 
-        SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        final String user = prefs.getString("Username", null);
-        String passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
-        String api_key = prefs.getString("API_KEY", null);
-
-        JSONObject jsonObject = new JSONObject();
         try {
-            if (spinnertype.getSelectedItem().toString().equals("Select Type") && filterBy.getSelectedItem().toString().equals("Select Filter By")) {
+            if (spinnertype.getSelectedItem().toString().equals("Select Type")) {
                 passToSpinner = "Reported";
             } else {
                 passToSpinner = spinnertype.getSelectedItem().toString();
             }
-            jsonObject.put("API_Key", api_key);
-            jsonObject.put("result_type", passToSpinner);
-            jsonObject.put("tsp", user);
-            jsonObject.put("tsp", user);
-            jsonObject.put("date", GlobalClass.date);
-            jsonObject.put("key", "");
-            jsonObject.put("value", "");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-
-                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/" + passToSpinner + "/" + user + "/" + passDateTogetData + "/" + "key/value", jsonObject,//passToAPI
+                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/" + passToSpinner + "/" + user + "/" + passDateTogetData + "/" + "key/value",//passToAPI
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
-
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
                             Log.e(TAG, "onResponse: RESPONSE" + response);
-                            String reportStatus = response.optString("reportStatus");
-                            responsetoshow = response.optString("response", "");
+                            Gson gson = new Gson();
+                            ReportsResponseModel reportsResponseModel = gson.fromJson(String.valueOf(response), ReportsResponseModel.class);
 
-                            if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(getActivity());
-                            } else {
-                                if (reportStatus.equals("ALLOW")) {
-                                    JSONArray jsonArray = response.optJSONArray(Constants.patients);
-                                    if (jsonArray != null) {
-                                        nodata.setVisibility(View.GONE);
-                                        FilterReport = new ArrayList<TrackDetModel>();
-
-                                        for (int j = 0; j < jsonArray.length(); j++) {
-
-                                            JSONObject jsonObject = jsonArray.getJSONObject(j);
-                                            TrackDetModel trackdetails = new TrackDetModel();
-                                            trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
-                                            trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
-                                            trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
-                                            trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
-                                            // trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
-                                            trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
-                                            trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
-                                            trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
-                                            trackdetails.setDate(jsonObject.optString(Constants.date).toString());
-                                            trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
-                                            trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
-                                            trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
-                                            trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
-                                            trackdetails.setName(jsonObject.optString(Constants.name).toString());
-                                            trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
-                                            trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
-                                            trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
-                                            trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
-                                            trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
-                                            trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
-                                            trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
-
-                                            FilterReport.add(trackdetails);
-                                        }
-                                        adapter = new ResultDtlAdapter(getContext(), FilterReport);
-                                        ListReportStatus.setAdapter(adapter);
-                                        ListReportStatus.setVisibility(View.VISIBLE);
-                                        searchbarcode.setVisibility(View.VISIBLE);
-                                    } else {
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
-                                        ListReportStatus.setVisibility(View.GONE);
-                                        searchbarcode.setVisibility(View.GONE);
-                                        nodata.setVisibility(View.VISIBLE);
-
-                                    }
+                            if (reportsResponseModel != null) {
+                                if (!GlobalClass.isNull(reportsResponseModel.getResponse()) && reportsResponseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)) {
+                                    GlobalClass.redirectToLogin(getActivity());
                                 } else {
-                                    TastyToast.makeText(mContext, responsetoshow, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-
-                                    final AlertDialog alertDialog = new AlertDialog.Builder(
-                                            mContext).create();
-
-                                    // Setting Dialog Title
-                                    alertDialog.setTitle("Update Ledger !");
-
-                                    // Setting Dialog Message
-                                    alertDialog.setMessage(ToastFile.update_ledger);
-                                    // Setting OK Button
-                                    alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                            Intent i = new Intent(mContext, Payment_Activity.class);
-                                            i.putExtra("COMEFROM", "FilterReport");
-                                            mContext.startActivity(i);
-                                           /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                                            httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
-                                            startActivity(httpIntent);*/
-                                            // Write your code here to execute after dialog closed
+                                    if (!GlobalClass.isNull(reportsResponseModel.getReportStatus()) && reportsResponseModel.getReportStatus().equalsIgnoreCase("ALLOW")) {
+                                        if (reportsResponseModel.getPatients() != null && reportsResponseModel.getPatients().size() > 0) {
+                                            FilterReport = reportsResponseModel.getPatients();
+                                            nodata.setVisibility(View.GONE);
+                                            ListReportStatus.setVisibility(View.VISIBLE);
+                                            searchbarcode.setVisibility(View.VISIBLE);
+                                            adapter = new ResultDtlAdapter(getContext(), FilterReport);
+                                            ListReportStatus.setAdapter(adapter);
+                                        } else {
+                                            ListReportStatus.setVisibility(View.GONE);
+                                            searchbarcode.setVisibility(View.GONE);
+                                            nodata.setVisibility(View.VISIBLE);
                                         }
-                                    });
-                                    alertDialog.show();
+                                    } else {
+                                        TastyToast.makeText(mContext, responsetoshow, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                        final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
+                                        alertDialog.setTitle("Update Ledger !");
+                                        alertDialog.setMessage(ToastFile.update_ledger);
+                                        alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent i = new Intent(mContext, Payment_Activity.class);
+                                                i.putExtra("COMEFROM", "FilterReport");
+                                                mContext.startActivity(i);
+                                            }
+                                        });
+                                        alertDialog.show();
+                                    }
                                 }
+                            } else {
+                                Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                             }
                         } catch (Exception e) {
-
-                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }*/
                             if (mContext instanceof Activity) {
                                 if (!((Activity) mContext).isFinishing())
                                     barProgressDialog.dismiss();
                             }
                             e.printStackTrace();
                         }
-
-
                     }
-                }, new com.android.volley.Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
-                /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }*/
                 if (mContext instanceof Activity) {
                     if (!((Activity) mContext).isFinishing())
                         barProgressDialog.dismiss();
@@ -933,26 +889,11 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 }
             }
         });
-        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
-            @Override
-            public int getCurrentTimeout() {
-                return 50000;
-            }
-
-            @Override
-            public int getCurrentRetryCount() {
-                return 50000;
-            }
-
-            @Override
-            public void retry(VolleyError error) throws VolleyError {
-
-            }
-        });
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         queue.add(jsonObjectRequest);
         Log.e(TAG, "onResponse: URL" + jsonObjectRequest);
-        Log.e(TAG, "GetData: json" + jsonObject);
     }
+
 
     @Override
     public void onPassDateandPos(int position, String pasDate) {

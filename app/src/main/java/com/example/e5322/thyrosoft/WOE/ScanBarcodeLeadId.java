@@ -269,8 +269,6 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
                 if (GlobalClass.finalspecimenttypewiselist != null) {
                     for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-
-
                         if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() == null || GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equals("")) {
                             Toast.makeText(ScanBarcodeLeadId.this, ToastFile.pls_scn_br + GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type(), Toast.LENGTH_SHORT).show();
                         }else if(dateTocompare.after(getCurrentDate)){
@@ -390,52 +388,33 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
     private void passBarcodeData(String getBracode) {
         boolean isbacodeduplicate = false;
-
         Log.e(TAG, "passBarcodeData: get the barcode number " + getBracode);
-
-
         for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
             if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
                 if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(getBracode)) {
                     isbacodeduplicate = true;
                 }
-            } else {
-
             }
         }
-        if (isbacodeduplicate == true) {
+        if (isbacodeduplicate) {
             Toast.makeText(ScanBarcodeLeadId.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-
                 if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-
                     GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(getBracode);
                     Log.e(TAG, "passBarcodeData: show barcode" + getBracode);
                 }
             }
         }
-
-//        for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-//
-//            if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-//                GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(getBracode);
-//                Log.e(TAG, "passBarcodeData: show barcode" + GlobalClass.finalspecimenttypewiselist.get(i));
-//            }
-//        }
         recycler_barcode_leads.removeAllViews();
-
         leadIdAdapter = new LeadIdAdapter(ScanBarcodeLeadId.this, GlobalClass.finalspecimenttypewiselist, this);
-
         leadIdAdapter.setOnItemClickListener(new LeadIdAdapter.OnItemClickListener() {
             @Override
             public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
-
                 if (GlobalClass.specimenttype != null) {
                     GlobalClass.specimenttype = "";
                 }
                 GlobalClass.specimenttype = Specimenttype;
-
                 scanIntegrator = new IntentIntegrator(activity);
                 scanIntegrator.initiateScan();
             }

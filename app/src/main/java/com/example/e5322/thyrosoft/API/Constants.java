@@ -16,12 +16,79 @@ public class Constants {
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
-    public static int DAYS_CNT = 2;
+    public static int DAYS_CNT = 1;
+    public static String APPID = "6";
+    public static String TOPIC = "CLISO_ALLDEVICE";
+    public static String APPNAME = "CLISO";
 
+    public static String setVideoUrl = "VideoURL";
+    public static String setFullScreen;
+    public static int timeInterval = 0;
+    public static String videoName;
+
+    //shared preference Name
+
+    public static String PROFILEPREF = "profile";
+
+    public static String APP_ID = "1";
+
+    /*TODO * Screen IDs*/
+    public static String IsFromNotification = "IsFromNotification";
+    public static int SCR_1 = 1;
+    public static int SCR_2 = 2;
+    public static int SCR_3 = 3;
+    public static int SCR_4 = 4;
+    public static int SCR_5 = 5;
 
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
 
+    public static String APK_NAME = "ThyrosoftLite.apk";
+    public static String availcoupon = "Avail Coupon";
+    public static String APKTYPE = "application/vnd.android.package-archive";
+
+    public static final String PNAME = "pname";
+    public static final String FNAME = "fname";
+    public static final String MKNAME = "mname";
+    public static final String LNAME = "lname";
+    public static final String PGENDER = "pgender";
+    public static final String PDIEB = "diabetics";
+    public static final String PDOB = "dob";
+    public static final String appointdate = "appointdate";
+    public static final String PMOB = "pmobileno";
+    public static final String PEMAIL = "p_emailid";
+    public static final String PCITY = "city";
+    public static final String PREMARK = "remark";
+    public static final String SERVICETYPE = "servicetype";
+    public static final String AVAILBAL = "availbal";
+    public static final String PAID_BAL = "paidbal";
+    public static final String HEADER = "header";
+    public static final String CALAGE = "calage";
+    public static final String CENTERID = "centerid";
+    public static final String SERVICEID = "serviceid";
+    public static final String AMT_Coll = "amtcoll";
+    public static final String SLOT = "slot";
+
+    public static final String STAFF = "STAFF";
+    public static final String ADMIN = "ADMIN";
+    public static final String NHF = "NHF";
+
+    public static final String DATEFORMATE = "dd-MM-yyyy";
+    public static final String YEARFORMATE = "yyyy-MM-dd";
+    public static final String NHF_Whatsapp = "8422849939";
+
+    public static final String PREF_PRODUCTS_CACHING = "syncpref";
+
+    public static final String SH_FIRE = "sharefirebase";
+    public static final String F_TOKEN = "token";
+    public static final String servertoken = "IsTokensendToServer";
+
+
+    //NHF Login
+
+    public static final String NHF_EMAIL = "COMM_NHF";
+
+    public static String tab_flag = "0";
 
     //login details//
     public static String Status = "Status";
@@ -212,9 +279,9 @@ public class Constants {
     public static final String debitNotes = "debitNotes";
     public static final String openingBalance = "openingBalance";
 
-
     public static final String unbilledMaterial = "Unbilledmaterial";
     public static final String unbilledWOE = "UnbilledWOE";
+    //public static String setVideoUrl="VideoURL";
 
     public static final String ledgerListDetails = "ledgerListDetails";
 
@@ -229,14 +296,18 @@ public class Constants {
     public static final String aadhar_no = "aadhar_no";
     public static final String address = "address";
     public static final String closing_balance = "closing_balance";
+    public static final String balance = "balance";
     public static final String credit_limit = "credit_limit";
     public static final String doj = "doj";
     public static final String mobile = "mobile";
     public static final String pincode = "pincode";
     public static final String source_code = "source_code";
+    public static final String Billamount = "Billamount";
+    public static final String DAYAVG = "Days";
 
     public static final String tsp_image = "tsp_image";
     public static final String user_code = "user_code";
+    public static String preotp = "PreOTP";
 
 
     public static final String automail = "automail";
@@ -343,6 +414,9 @@ public class Constants {
     public static String CUSTOMER_PHONE_NO_COLUMN_NAME = "Customer Mobile Number";
     public static String CUSTOMER_EMAIL_ID_COLUMN_NAME = "Email";
     public static String CUSTOMER_NAME_COLUMN_NAME = "Customer Name";
+
+    //Activity redirection KEY
+    public static String COMEFROM = "COMEFROM";
 
 
     //CONSTANTS FOR PAYU------
@@ -454,6 +528,24 @@ public class Constants {
 
     public static int Imagepadding = 25;
 
+    public static int PAYAMOUNT = 5000;
+
+    public static String THYROTEST = "Thyro";
+    public static String THYRONAME = "";
+
+    /**
+     * test Color Code
+     */
+    public static final String EDTA = "EDTA";
+    public static final String SERUM = "SERUM";
+    public static final String URINE = "URINE";
+    public static final String FLUORIDE = "FLUORIDE";
+    public static final String LITHIUMHEPARIN = "LITHIUM HEPARIN";
+    public static final String SODIUMHEPARIN = "SODIUM HEPARIN";
+    // public static String GENRATE_OTP_API_KEY = "sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
+    public static String GENRATE_OTP_API_KEY = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
+
+    public static String RES0000 = "RES0000";
 
     public static String returnToken(Activity mContext) {
         String str = "";
@@ -484,5 +576,7 @@ public class Constants {
             parastart + "Cashback is not applicable on discounted offers" + paraend +
             "</ol>";
 
+    public static final String VIDEOPATH = "Path";
+    public static final String VIDEOID = "id";
 
 }

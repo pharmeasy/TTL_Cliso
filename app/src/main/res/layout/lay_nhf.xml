@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.CampIntimation">
+
+
+    <LinearLayout
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/enter_entered_border_curve"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/enter_ll_unselected"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/enter"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:gravity="center"
+                android:text="ENTER"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/enter_arrow_enter"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-1dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/rev_triangle"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/unchecked_entered_ll"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/enetered"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:background="@color/lightgray"
+                android:gravity="center"
+                android:text="SUMMARY"
+                android:textColor="@color/colorBlack" />
+
+            <ImageView
+                android:id="@+id/enter_arrow_entered"
+                android:layout_width="20dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="-1dp"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/rev_triangle"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/fragment_mainLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</LinearLayout>
+

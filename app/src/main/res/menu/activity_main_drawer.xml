@@ -108,6 +108,17 @@
     </group>
 
     <group
+        android:id="@+id/group222"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/stock_availability"
+            android:icon="@drawable/ic_material"
+            android:title="Stock Availability"
+            android:visible="false" />
+
+    </group>
+
+    <group
         android:id="@+id/group10"
         android:checkableBehavior="single">
         <item
@@ -146,14 +157,14 @@
             android:title="SGC PGC Entry" />
     </group>
 
-    <!-- <group
+     <group
          android:checkableBehavior="single">
          <item
-             android:id="@+id/blood_s_entry"
-             android:icon="@drawable/sgc_pgc_d"
+             android:id="@+id/bs_entry"
+             android:icon="@drawable/ic_bsentry"
              android:visible="true"
-             android:title="Blood Sugar entry" />
-     </group>-->
+             android:title="@string/bs_bp_entry" />
+     </group>
 
     <group
         android:id="@+id/group14"
@@ -165,15 +176,15 @@
     </group>
 
 
-    <group
-        android:id="@+id/group_video"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/vid_leggy"
-            android:icon="@drawable/videoicon"
-            android:title="Leggy Video" />
+      <group
+          android:id="@+id/group_video"
+          android:checkableBehavior="single">
+          <item
+              android:id="@+id/vid_leggy"
+              android:icon="@drawable/videoicon"
+              android:title="Video" />
 
-    </group>
+      </group>
 
     <group
         android:id="@+id/group25"
@@ -209,6 +220,15 @@
             android:id="@+id/feedback"
             android:icon="@drawable/feedback"
             android:title="Feedback" />
+    </group>
+
+    <group
+        android:id="@+id/group_rbarcode"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/rbarcode"
+            android:icon="@drawable/ic_report"
+            android:title="@string/rbarcode" />
     </group>
 
     <group
@@ -298,6 +318,8 @@
             android:icon="@drawable/company_contact"
             android:title="Company Contact" />
     </group>
+
+
 
     <group
         android:id="@+id/group24"

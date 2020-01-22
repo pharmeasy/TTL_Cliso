@@ -15,8 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,6 +31,7 @@ import com.example.e5322.thyrosoft.Adapter.Company_Adapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Company_Contact_Model;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.ViewModel.Cmpdt_Viewmodel;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -38,18 +39,19 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONObject;
 
 public class CompanyContact_activity extends AppCompatActivity {
+
     ImageView back, home;
     RecyclerView contact_list;
     Spinner contact_type_spinner;
-    private RequestQueue requestQueue_CompanyContact;
     Company_Contact_Model company_contact_model;
     LinearLayoutManager linearLayoutManager;
     Company_Adapter company_adapter;
     ImageView add;
+    Cmpdt_Viewmodel cmpdt_viewmodel;
+    private RequestQueue requestQueue_CompanyContact;
     private String passSpinner_value;
     private String TAG = CompanyContact_activity.class.getSimpleName().toString();
     private Global globalClass;
-    Cmpdt_Viewmodel cmpdt_viewmodel;
 
     @SuppressLint("NewApi")
     @Override
@@ -62,6 +64,7 @@ public class CompanyContact_activity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
+
         contact_list = (RecyclerView) findViewById(R.id.contact_list);
         contact_type_spinner = (Spinner) findViewById(R.id.contact_type_spinner);
 
@@ -86,7 +89,7 @@ public class CompanyContact_activity extends AppCompatActivity {
         contact_list.setLayoutManager(linearLayoutManager);
         ArrayAdapter company_spinner = ArrayAdapter.createFromResource(CompanyContact_activity.this, R.array.company_contact_spinner_values, R.layout.spinnerproperty);
         contact_type_spinner.setAdapter(company_spinner);
-        getCompany_contact_details();
+//        getCompany_contact_details();
 
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
@@ -112,7 +115,7 @@ public class CompanyContact_activity extends AppCompatActivity {
         String getSpinnertype = contact_type_spinner.getSelectedItem().toString();
         requestQueue_CompanyContact = Volley.newRequestQueue(CompanyContact_activity.this);
 
-        if (getSpinnertype.equals("STATE OFFICER")) {
+        if (getSpinnertype.equalsIgnoreCase("STATE OFFICER")) {
             passSpinner_value = "STATE%20OFFICER";
         } else {
             passSpinner_value = getSpinnertype;
@@ -129,12 +132,19 @@ public class CompanyContact_activity extends AppCompatActivity {
                 Gson gson = new Gson();
                 company_contact_model = gson.fromJson(response.toString(), Company_Contact_Model.class);
 
-
-                if (company_contact_model.getResponse().equals("Success")) {
-                    company_adapter = new Company_Adapter(CompanyContact_activity.this, company_contact_model.getContact_Array_list());
-                    contact_list.setAdapter(company_adapter);
-                    company_adapter.notifyDataSetChanged();
+                if (company_contact_model != null) {
+                    if (!GlobalClass.isNull(company_contact_model.getResponse()) && company_contact_model.getResponse().equalsIgnoreCase("Success")) {
+                        company_adapter = new Company_Adapter(CompanyContact_activity.this, company_contact_model.getContact_Array_list());
+                        contact_list.setAdapter(company_adapter);
+                        company_adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(CompanyContact_activity.this, company_contact_model.getResponse(), Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(CompanyContact_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -146,11 +156,7 @@ public class CompanyContact_activity extends AppCompatActivity {
                 }
             }
         });
-
-        jsonObjectRequestFAQ.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestFAQ);
         requestQueue_CompanyContact.add(jsonObjectRequestFAQ);
         Log.e(TAG, "getCompany_contact_details: URL" + jsonObjectRequestFAQ);
 

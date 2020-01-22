@@ -36,19 +36,35 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
+import com.example.e5322.thyrosoft.Models.FirebaseModel;
+import com.example.e5322.thyrosoft.Models.Firebasepost;
+import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
+import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Login extends Activity implements View.OnClickListener {
     public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
@@ -60,7 +76,7 @@ public class Login extends Activity implements View.OnClickListener {
     TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
-    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, Login_Type, Status, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
     ProgressDialog barProgressDialog;
     Handler updateBarHandler;
     String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
@@ -72,6 +88,7 @@ public class Login extends Activity implements View.OnClickListener {
     int startRange = 1000, endRange = 9999;
     EditText edt_reg_otp;
     Button reg_otp_ok;
+    String newToken;
     private String TAG = Login.class.getSimpleName().toString();
     private GlobalClass globalClass;
 
@@ -662,7 +679,6 @@ public class Login extends Activity implements View.OnClickListener {
 
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String[] permissions, int[] grantResults) {
@@ -744,11 +760,9 @@ public class Login extends Activity implements View.OnClickListener {
 
     }
 
-
     private void generateRandomString() {
         randomNumber = random.nextInt((endRange - startRange) + startRange) + startRange + "";
     }
-
 
     @Override
     public void onClick(View v) {
@@ -817,14 +831,19 @@ public class Login extends Activity implements View.OnClickListener {
         } else {
             try {
                 PostQue = Volley.newRequestQueue(Login.this);
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = null;
                 try {
-                    jsonObject.put("passWord", pass);
-                    jsonObject.put("portalType", "ThyrosoftLite");
-                    jsonObject.put("userCode", User);
+                    LoginRequestModel requestModel = new LoginRequestModel();
+                    requestModel.setPortalType("ThyrosoftLite");
+                    requestModel.setUserCode(User);
+                    requestModel.setPassWord(pass);
+
+                    Gson gson = new Gson();
+                    String postData = gson.toJson(requestModel);
+                    jsonObject = new JSONObject(postData);
 
                     /*Global.Username = username.getText().toString();*/
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 RequestQueue queue = Volley.newRequestQueue(Login.this);
@@ -835,65 +854,57 @@ public class Login extends Activity implements View.OnClickListener {
                             barProgressDialog.dismiss();
                         }
                         Log.e(TAG, "onResponse: " + response);
-                        // String Status = response.get(Constants.Status).toString();
-                        // JSONObject time=response.getJSONObject("time");
-
                         try {
-                            String finalJson = response.toString();
-                            JSONObject parentObject = new JSONObject(finalJson);
+                            if (response != null) {
+                                Gson gson = new Gson();
+                                LoginResponseModel loginResponseModel = gson.fromJson(String.valueOf(response), LoginResponseModel.class);
 
-                            Status = parentObject.getString("RESPONSE");
-                            Login_Type = parentObject.getString("ACCESS_TYPE");
+                                if (loginResponseModel != null) {
+                                    if (!GlobalClass.isNull(loginResponseModel.getRES_ID()) && loginResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                                        SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
+                                        editor.putString("Username", User);
+                                        editor.putString("password", pass);
+                                        editor.putString("ACCESS_TYPE", loginResponseModel.getACCESS_TYPE());
+                                        editor.putString("API_KEY", loginResponseModel.getAPI_KEY());
+                                        editor.putString("email", loginResponseModel.getEMAIL());
+                                        editor.putString("mobile_user", loginResponseModel.getMOBILE());
+                                        editor.putString("CLIENT_TYPE", loginResponseModel.getCLIENT_TYPE());
+                                        editor.putString("NAME", loginResponseModel.getNAME());
+                                        editor.putString("RES_ID", loginResponseModel.getRES_ID());
+                                        editor.putString("URL", loginResponseModel.getURL());
+                                        editor.putString("USER_CODE", loginResponseModel.getUSER_CODE());
+                                        editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
+                                        editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
+                                        editor.apply();
 
+                                        USER_CODE11=loginResponseModel.getUSER_CODE();
 
-                            if (Status.equals("AUTHENTICATION FAILED")) {
-                                Toast.makeText(Login.this, ToastFile.incrt_log, Toast.LENGTH_SHORT).show();
-                            } else {
-                                ACCESS_TYPE11 = parentObject.getString("ACCESS_TYPE");
-                                API_KEY11 = parentObject.getString("API_KEY");
-                                CLIENT_TYPE11 = parentObject.getString("CLIENT_TYPE");
-                                EMAIL11 = parentObject.getString("EMAIL");
-                                EXISTS11 = parentObject.getString("EXISTS");
-                                MOBILE11 = parentObject.getString("MOBILE");
-                                NAME11 = parentObject.getString("NAME");
-                                RESPONSE11 = parentObject.getString("RESPONSE");
-                                RES_ID11 = parentObject.getString("RES_ID");
-                                URL11 = parentObject.getString("URL");
-                                USER_CODE11 = parentObject.getString("USER_CODE");
-                                USER_TYPE11 = parentObject.getString("USER_TYPE");
-                                VERSION_NO11 = parentObject.getString("VERSION_NO");
+                                        FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.TOPIC);
+                                        FirebaseMessaging.getInstance().subscribeToTopic(Constants.TOPIC);
+                                        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {
+                                            @Override
+                                            public void onSuccess(InstanceIdResult instanceIdResult) {
+                                                newToken = instanceIdResult.getToken();
+                                                Log.e("NewToken----->", newToken);
+                                                storeRegIdInPref(newToken);
+                                                pushToken();
+                                            }
+                                        });
 
-                                SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
-                                editor.putString("Username", User);
-                                editor.putString("password", pass);
-                                editor.putString("ACCESS_TYPE", ACCESS_TYPE11);
-                                editor.putString("API_KEY", API_KEY11);
-                                editor.putString("email", EMAIL11);
-                                editor.putString("mobile_user", MOBILE11);
-                                editor.putString("CLIENT_TYPE", CLIENT_TYPE11);
-                                editor.putString("NAME", nameFromLoginApi);
-                                editor.putString("RES_ID", res_id);
-                                editor.putString("URL", uil_from_login);
-                                editor.putString("USER_CODE", USER_CODE11);
-                                editor.putString("USER_TYPE", USER_TYPE11);
-                                editor.putString("VERSION_NO", VERSION_NO11);
-                                editor.apply();
-
-                                if (USER_CODE11.startsWith("BM")) {
-                                    Intent a = new Intent(Login.this, BMC_MainActivity.class);
-                                    startActivity(a);
-                                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                        Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                                        a.putExtra(Constants.COMEFROM,true);
+                                        startActivity(a);
+                                        TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                    } else {
+                                        TastyToast.makeText(getApplicationContext(), loginResponseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                    }
                                 } else {
-                                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                    startActivity(a);
-                                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                    TastyToast.makeText(getApplicationContext(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
                             }
-
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        /* Toast.makeText(Login.this, "" + response, Toast.LENGTH_SHORT).show();*/
                     }
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
@@ -909,12 +920,51 @@ public class Login extends Activity implements View.OnClickListener {
                 queue.add(jsonObjectRequest);
                 Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest);
                 Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
-
             } catch (Exception ex) {
                 Toast.makeText(this, "URL not found", Toast.LENGTH_SHORT).show();
                 // Message.message(Login.this, "");
             }
         }
+    }
+
+    private void storeRegIdInPref(String token) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(Constants.F_TOKEN, token);
+        editor.putString(Constants.servertoken, "no");
+        editor.apply();
+    }
+
+    public void pushToken() {
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.PushToken).create(APIInteface.class);
+        Firebasepost firebasepost = new Firebasepost();
+        firebasepost.setClient_Id(USER_CODE11);
+        firebasepost.setAppName(Constants.APPNAME);
+        firebasepost.setEnterBy(USER_CODE11);
+        firebasepost.setToken(newToken);
+        firebasepost.setTopic(Constants.TOPIC);
+
+
+        Call<FirebaseModel> responseCall = apiInterface.pushtoken(firebasepost);
+        Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
+        Log.e("TAG", "PUSH URL" + responseCall.request().url());
+        responseCall.enqueue(new Callback<FirebaseModel>() {
+            @Override
+            public void onResponse(Call<FirebaseModel> call, Response<FirebaseModel> response) {
+                try {
+                    if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000))
+                        Log.e(TAG, "o n R e s p o n s e : " + response.body().getResponse());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FirebaseModel> call, Throwable t) {
+                Log.e(TAG, "o n E r r o r ---->" + t.getLocalizedMessage());
+            }
+        });
     }
 
     @Override

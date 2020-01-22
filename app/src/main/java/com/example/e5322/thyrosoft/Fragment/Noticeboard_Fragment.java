@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -59,7 +60,7 @@ public class Noticeboard_Fragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private static ManagingTabsActivity mContext;
-    View viewfab,view,viewresultfrag,viewnoticeboard;
+    View viewfab, view, viewresultfrag, viewnoticeboard;
     RecyclerView noticeboard_list;
     String msgCode;
     private OnFragmentInteractionListener mListener;
@@ -69,8 +70,9 @@ public class Noticeboard_Fragment extends Fragment {
     NoticeBoard_Model noticeBoard_model;
     SharedPreferences prefs;
     LinearLayoutManager linearLayoutManager;
-    String user, passwrd, access, api_key;
-    private String TAG=Noticeboard_Fragment.class.getSimpleName().toString();
+    LinearLayout lin_cmsoon;
+    String user, passwrd, access, CLIENT_TYPE, api_key;
+    private String TAG = Noticeboard_Fragment.class.getSimpleName().toString();
 
     public Noticeboard_Fragment() {
         // Required empty public constructor
@@ -109,30 +111,26 @@ public class Noticeboard_Fragment extends Fragment {
         mContext = (ManagingTabsActivity) getActivity();
 
 
-       // View view3 = getActivity().findViewById(R.id.show_date);
+        // View view3 = getActivity().findViewById(R.id.show_date);
         //view3.setVisibility(View.GONE);
 
-
-
-
-
-
-
-
-
-
-
-
         viewnoticeboard = (View) inflater.inflate(R.layout.fragment_noticeboard_, container, false);
-        noticeboard_list= (RecyclerView) viewnoticeboard.findViewById(R.id.noticeboard_list);
+        noticeboard_list = (RecyclerView) viewnoticeboard.findViewById(R.id.noticeboard_list);
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         noticeboard_list.setLayoutManager(linearLayoutManager);
+
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-        getNoticeBoardData();
+
+        lin_cmsoon = view.findViewById(R.id.lin_cmsoon);
+
+        Log.e(TAG, "onCreateView: "+TAG );
+
+
 
         barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -174,33 +172,37 @@ public class Noticeboard_Fragment extends Fragment {
 
     private void getNoticeBoardData() {
         requestQueueNoticeBoard = Volley.newRequestQueue(getContext());
-            JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData+""+api_key+"/getNoticeMessages", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.e(TAG, "onResponse: "+response );
+                Log.e(TAG, "onResponse: " + response);
                 Gson gson = new Gson();
                 noticeBoard_model = new NoticeBoard_Model();
-                noticeBoard_model=gson.fromJson(response.toString(), NoticeBoard_Model.class);
+                noticeBoard_model = gson.fromJson(response.toString(), NoticeBoard_Model.class);
 
                 ArrayList<NoticeBoard_Model> array_notice = new ArrayList<>();
 
 
-                if(noticeBoard_model.getMessages()!=null){
+                if (noticeBoard_model.getMessages() != null) {
                     array_notice.add(noticeBoard_model);
-                    if(array_notice.get(0).getMessages()[0].getMessageCode()!=null){
+                    if (array_notice.get(0).getMessages()[0].getMessageCode() != null) {
                         msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
-                        NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(getContext(),array_notice,msgCode);
+                        NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(getContext(), array_notice, msgCode);
                         noticeboard_list.setAdapter(noticeBoard_adapter);
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
-                }
-                   else{
-                        if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
-                        Toast.makeText(getActivity(), ""+noticeBoard_model.getResponse().toString(), Toast.LENGTH_SHORT).show();
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
+                    } else {
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
+                        Toast.makeText(getActivity(), "" + noticeBoard_model.getResponse().toString(), Toast.LENGTH_SHORT).show();
                     }
-                }
-                else{
+                } else {
                     //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -208,7 +210,7 @@ public class Noticeboard_Fragment extends Fragment {
             public void onErrorResponse(VolleyError error) {
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
-                        TastyToast.makeText(getContext(),"Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(getContext(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         // Show timeout error message
                     }
 
@@ -220,7 +222,7 @@ public class Noticeboard_Fragment extends Fragment {
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueNoticeBoard.add(jsonObjectRequestProfile);
-        Log.e(TAG, "getNoticeBoardData: url"+jsonObjectRequestProfile );
+        Log.e(TAG, "getNoticeBoardData: url" + jsonObjectRequestProfile);
     }
 
     private boolean isNetworkAvailable() {
@@ -237,7 +239,6 @@ public class Noticeboard_Fragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
 
 
     /**

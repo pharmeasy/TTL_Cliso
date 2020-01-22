@@ -8,6 +8,9 @@ import android.support.v4.content.FileProvider;
 import java.io.File;
 import java.io.IOException;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+
 public class FileOpen {
 
     public static void openFile(Activity context, File url) throws IOException {
@@ -22,6 +25,7 @@ public class FileOpen {
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         // Check what kind of file you are trying to open, by comparing the url with extensions.
         // When the if condition is matched, plugin sets the correct intent (mime) type,
         // so Android knew what application to use to open the file
@@ -37,6 +41,7 @@ public class FileOpen {
         } else if(url.toString().contains(".xls") || url.toString().contains(".xlsx")) {
             // Excel file
             intent.setDataAndType(path, "application/vnd.ms-excel");
+         //   intent.setDataAndType(path,"application/x-excel");
         } else if(url.toString().contains(".zip") || url.toString().contains(".rar")) {
             // WAV audio file
             intent.setDataAndType(path, "application/x-wav");

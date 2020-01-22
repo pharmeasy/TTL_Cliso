@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -30,7 +32,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_MainActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -114,22 +115,23 @@ public class Payment_Activity extends AppCompatActivity {
     private static Global globalData;
     private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
+    public String closing_balance_pref;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
     ImageView back, home;
-    EditText edt_enter_amt, edt_closing_bal;
+    EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
-    String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode;
+    String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
     android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
     String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
     String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
     String strOrderNo = "";
     int ben_count = 0;
+    Double CBamount = 0.0;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
     private int buttonclickFlag = 0;
-    int CBamount = 0;
     private boolean isemailvalid = false;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
@@ -144,9 +146,8 @@ public class Payment_Activity extends AppCompatActivity {
     private String dataToSave;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
     private String randomTid;
-    public String closing_balance_pref;
     private RequestQueue PostQueOtp;
-    private int Today_bill;
+    private Double Today_bill;
     private String RESPONSE;
     private String ordno;
     private boolean flagForOnce = false;
@@ -166,6 +167,9 @@ public class Payment_Activity extends AppCompatActivity {
         btn_payu = (Button) findViewById(R.id.btn_payu);
         edt_enter_amt = (EditText) findViewById(R.id.edt_enter_amt);
         edt_closing_bal = (EditText) findViewById(R.id.edt_closing_bal);
+        et_avg_bill = findViewById(R.id.edt_per_billing);
+        et_per_day = findViewById(R.id.edt_day_per);
+
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
 
@@ -177,12 +181,14 @@ public class Payment_Activity extends AppCompatActivity {
 
         cd = new ConnectionDetector(Payment_Activity.this);
 
+
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
         name_tsp = getProfileName.getString("name", null);
         usercode = getProfileName.getString("user_code", null);
         email_id = getProfileName.getString("email", null);
         address_pref = getProfileName.getString("address", null);
         pincode_pref = getProfileName.getString("pincode", null);
+        billavg = getProfileName.getString(Constants.Billamount, null);
 
         // closing_balance_pref = getProfileName.getString("closing_balance", null);
 
@@ -240,6 +246,7 @@ public class Payment_Activity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
 
@@ -254,14 +261,7 @@ public class Payment_Activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (COME_FROM_SCREEN.equalsIgnoreCase("BMC_WOE_EditActivity") || COME_FROM_SCREEN.equalsIgnoreCase("BMC_Scan_BarcodeActivity")) {
-                    Intent i = new Intent(Payment_Activity.this, BMC_MainActivity.class);
-                    startActivity(i);
-                    finish();
-                } else {
-                    GlobalClass.goToHome(Payment_Activity.this);
-                }
+                GlobalClass.goToHome(Payment_Activity.this);
 
             }
         });
@@ -367,13 +367,13 @@ public class Payment_Activity extends AppCompatActivity {
 
                 Log.e(TAG, "Entered Amount ----->" + amountTopass);
 
-                Log.e(TAG, "CB Amount ----->" + closing_balance_pref);
+                Log.e(TAG, "CB Amount ----->" + CBamount);
 
                 if (amountTopass.equals("")) {
                     Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
-                } else if (CBamount < 5000) {
+                } else if (CBamount < Constants.PAYAMOUNT) {
 
-                    if (Integer.parseInt(amountTopass) >= 5000) {
+                    if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
                         gotopayGatway();
                     } else {
                         new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
@@ -388,8 +388,7 @@ public class Payment_Activity extends AppCompatActivity {
                                 .show();
                     }
 
-                } else if (5000 <= CBamount) {
-
+                } else if (Constants.PAYAMOUNT <= CBamount) {
                     if (Integer.parseInt(amountTopass) >= CBamount) {
                         gotopayGatway();
                     } else {
@@ -418,6 +417,7 @@ public class Payment_Activity extends AppCompatActivity {
             globalData.showProgressDialog();
             try {
                 PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                Log.e(TAG,"ORDER NO URL ---->"+Api.GenerateId + api_key + "/TSP/Generatedordnum");
                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
                     public String RES_ID;
 
@@ -434,12 +434,9 @@ public class Payment_Activity extends AppCompatActivity {
 
                             if (RESPONSE.equals("SUCCESS")) {
                                 startPayUTransaction(name_tsp, "", amountTopass, ordno);
-                            } else {
-
                             }
 
                         } catch (JSONException e) {
-
                             e.printStackTrace();
                         }
                     }
@@ -500,7 +497,6 @@ public class Payment_Activity extends AppCompatActivity {
     }
 
     public void startPayUTransaction(String name, String product, String amount, String orderid) {
-
         merchantKey = PAYUMONEYKEY_MERCHANTKEY;
         String email = email_id;
         String mobile = mobile_pref;
@@ -650,6 +646,98 @@ public class Payment_Activity extends AppCompatActivity {
         }.execute();
     }
 
+    public void getProfileDetails() {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
+        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
+
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                new Response.Listener<JSONObject>() {
+                    public String tsp_img;
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
+                            Log.e(TAG, "onResponse: " + response);
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.closing_balance))) {
+                                closing_balance_pref = response.getString(Constants.closing_balance);
+                            } else {
+                                closing_balance_pref = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.credit_limit))) {
+                                crd_amt = response.getString(Constants.credit_limit);
+                            } else {
+                                crd_amt = "0";
+                            }
+
+                            if (!TextUtils.isEmpty(response.getString(Constants.unbilledMaterial))) {
+                                unbillmt = response.getString(Constants.unbilledMaterial);
+                            } else {
+                                unbillmt = "0";
+                            }
+
+                            unbillwoe = response.getString(Constants.unbilledWOE);
+                            billavg = response.getString(Constants.Billamount);
+                            dayavg = response.getString(Constants.DAYAVG);
+                            Today_bill = Double.parseDouble(unbillmt) + Double.parseDouble(unbillwoe);
+
+                            CBamount = (Double.parseDouble(closing_balance_pref) + Today_bill) - Double.parseDouble(crd_amt);
+
+
+                            if (!TextUtils.isEmpty(billavg)) {
+                                et_avg_bill.setText(billavg);
+                            } else {
+                                et_avg_bill.setText(0);
+                            }
+
+                            if (!TextUtils.isEmpty(dayavg)) {
+                                et_per_day.setText(dayavg);
+                            } else {
+                                et_per_day.setText(0);
+                            }
+
+
+                            edt_closing_bal.setText("" + String.format("%.2f", CBamount));
+
+                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
+                            saveProfileDetails.commit();
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent();
+        intent.putExtra("message", "ok");//Put Message to pass over intent
+        setResult(1, intent);
+    }
+
     class AsyncTaskstartpayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
 
         String orderamount, orderno;
@@ -672,6 +760,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected JSONObject doInBackground(Void... params) {
             String strUrl = BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum";
             Log.e(TAG, "doInBackground: " + strUrl);
+            Log.e(TAG,"CHECKSUM  URL ---->"+BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum");
             jobj = new JSONObject();
             try {
                 jobj.put(PAYUMONEYKEY_APIKEY, APIKEYFORPAYMENTGATEWAY_PAYU);
@@ -1083,7 +1172,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected JSONObject doInBackground(Void... params) {
 
 
-            String strUrl = Api.GenerateTid + "PaymentGateway.svc/PaymentLog_franchise";
+            String strUrl = Api.THYROCARE + "PaymentGateway.svc/PaymentLog_franchise";
             Log.e(TAG, "doInBackground: " + strUrl);
             System.out.println(strUrl);
 
@@ -1171,59 +1260,4 @@ public class Payment_Activity extends AppCompatActivity {
             }
         }
     }
-
-    public void getProfileDetails() {
-
-        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
-
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
-                new Response.Listener<JSONObject>() {
-                    public String tsp_img;
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            Log.e(TAG, "onResponse: " + response);
-                            closing_balance_pref = response.getString(Constants.closing_balance);
-                            crd_amt = response.getString(Constants.credit_limit);
-                            unbillmt = response.getString(Constants.unbilledMaterial);
-                            unbillwoe = response.getString(Constants.unbilledWOE);
-                            Today_bill = Integer.parseInt(unbillmt) + Integer.parseInt(unbillwoe);
-                            CBamount = (Integer.parseInt(closing_balance_pref) + Today_bill) - Integer.parseInt(crd_amt);
-                            Log.e(TAG, "CBAMT --->" + CBamount);
-
-                            edt_closing_bal.setText(closing_balance_pref);
-
-
-                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
-                            saveProfileDetails.commit();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    }
-
-
 }

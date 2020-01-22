@@ -82,7 +82,7 @@ public class SummaryFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String version;
     private int versionCode,passvalue;
-    private String TAG=ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
 
     public SummaryFragment() {
         // Required empty public constructor

@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.Adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -8,34 +7,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.CampIntimation;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
-import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
 import com.example.e5322.thyrosoft.Interface.SendTestListfromCampList;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.Consignment_entry_form;
-import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -104,13 +88,13 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
         viewHolder.test_rate_cal_txt.setVisibility(View.GONE);
 
 
-        if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+     /*   if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
             viewHolder.txt_type.setText("T");
         } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
             viewHolder.txt_type.setText("P");
         } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
             viewHolder.txt_type.setText("PO");
-        }
+        }*/
         boolean isChecked = false;
         viewHolder.isSelectedDueToParent = false;
         viewHolder.parentTestCode = "";
@@ -290,7 +274,7 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
             super(itemView);
             test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
             test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
-            txt_type = (TextView) itemView.findViewById(R.id.txt_type);
+            //txt_type = (TextView) itemView.findViewById(R.id.txt_type);
             iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
             iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);

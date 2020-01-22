@@ -40,6 +40,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -356,7 +357,7 @@ public class BMC_SummaryActivity extends AppCompatActivity implements GoogleApiC
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BMC_SummaryActivity.this, BMC_MainActivity.class);
+                Intent i = new Intent(BMC_SummaryActivity.this, ManagingTabsActivity.class);
                 startActivity(i);
                 finish();
             }
@@ -480,7 +481,7 @@ public class BMC_SummaryActivity extends AppCompatActivity implements GoogleApiC
 
                         if (resID.equals("RES0000")) {
                             TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            Intent intent = new Intent(context1, BMC_MainActivity.class);
+                            Intent intent = new Intent(context1, ManagingTabsActivity.class);
                             startActivity(intent);
                         } else {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -564,7 +565,7 @@ public class BMC_SummaryActivity extends AppCompatActivity implements GoogleApiC
         editor.commit();
         GlobalClass.setflagToRefreshData = true;
 
-        Intent i = new Intent(BMC_SummaryActivity.this, BMC_MainActivity.class);
+        Intent i = new Intent(BMC_SummaryActivity.this, ManagingTabsActivity.class);
         i.putExtra("passToWoefragment", "frgamnebt");
         startActivity(i);
         finish();
@@ -654,7 +655,7 @@ public class BMC_SummaryActivity extends AppCompatActivity implements GoogleApiC
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(BMC_SummaryActivity.this, BMC_MainActivity.class);
+        Intent i = new Intent(BMC_SummaryActivity.this, ManagingTabsActivity.class);
         startActivity(i);
         finish();
     }

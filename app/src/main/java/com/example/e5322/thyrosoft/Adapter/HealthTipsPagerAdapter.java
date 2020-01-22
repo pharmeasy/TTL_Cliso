@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,9 @@ public class HealthTipsPagerAdapter extends PagerAdapter {
         tv_readMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context, HealthTipsDetail_Activity.class).putExtra("url", HealthTipsArrylst.get(position).getArtical_link()));
+                context.startActivity(new Intent(context, HealthTipsDetail_Activity.class).putExtra("url",
+                        HealthTipsArrylst.get(position).getArtical_link()));
+                Log.e("TAG", " ARTICAL LINK : "+ HealthTipsArrylst.get(position).getArtical_link());
             }
         });
 

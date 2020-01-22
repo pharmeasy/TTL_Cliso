@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,18 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.Activity.Noticeboard_activity;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
-import com.sdsmdg.tastytoast.TastyToast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -36,25 +25,27 @@ import java.util.ArrayList;
  * Created by e5322 on 28-05-2018.
  */
 
-public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapter.ViewHolder>  {
+public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapter.ViewHolder> {
     private ArrayList<NoticeBoard_Model> noticeboard_simple_models_list;
     private int resource;
     private LayoutInflater inflater;
     Context mContext;
     SharedPreferences prefs;
     String messages, resId, response1, ack_code, user, passwrd, access, api_key;
-    public static com.android.volley.RequestQueue PostQueOtp;
+ //   public static com.android.volley.RequestQueue PostQueOtp;
     String msgCode;
     String TAG = NoticeBoard_Adapter.class.getSimpleName().toString();
     RefreshNoticeBoard refreshNoticeBoard;
+
     public NoticeBoard_Adapter(Context context, ArrayList<NoticeBoard_Model> array_notice, String msgCode1) {
         mContext = context;
         noticeboard_simple_models_list = array_notice;
         msgCode = msgCode1;
 
     }
-    public void clickListerforAckNoticeboard(RefreshNoticeBoard refreshNoticeBoard ){
-        this.refreshNoticeBoard=refreshNoticeBoard;
+
+    public void clickListerforAckNoticeboard(RefreshNoticeBoard refreshNoticeBoard) {
+        this.refreshNoticeBoard = refreshNoticeBoard;
     }
 
 
@@ -113,15 +104,17 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
         } else if (noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equals("N")) {
             holder.ack_id.setVisibility(View.VISIBLE);
         }
+
         holder.ack_id.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(refreshNoticeBoard!=null){
+                if (refreshNoticeBoard != null) {
                     refreshNoticeBoard.onClickAcknowledge(noticeboard_simple_models_list.get(0).getMessages()[position].getMessageCode());
                 }
 
             }
         });
+
         ack_code = noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged();
         holder.senderId.setText(noticeboard_simple_models_list.get(0).getMessages()[position].getEnterBy());
         holder.msgtext.setText(Html.fromHtml(noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeMessage()));
@@ -131,8 +124,6 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
 
         holder.notice_date.setText(noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeDate());
 
-//        Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-//        emailIntent.setData(Uri.parse());
     }
 
     @Override

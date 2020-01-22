@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -26,6 +25,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Interface.CountInterface;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Summary_Activity_WOE;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
@@ -42,6 +42,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHolder> {
 
+    private final CountInterface countInterface;
     private ArrayList<Patients> patients;
     private ArrayList<Patients> searchBarcode;
 
@@ -55,20 +56,20 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
     boolean flag = false;
     ArrayList<String> getNoStatus = new ArrayList<>();
     private String TAG = Windup_adapter.class.getSimpleName().toString();
+    int clickcount = 0;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView patientName;
         public TextView testName;
 
-        public TextView puttestName,show_amt_txt;
+        public TextView puttestName, show_amt_txt;
 
         public ImageView image_tag;
         public CardView linear;
         public RecyclerView barcode_and_sample_recycler;
         public LinearLayoutManager linearLayoutManager;
         GridLayoutManager gridLayoutManager;
-
         ImageView checkbox, iv_checked_img;
 
         public ViewHolder(View v) {
@@ -92,9 +93,10 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public Windup_adapter(Context context, ArrayList<Patients> patientsArray) {
+    public Windup_adapter(Context context, ArrayList<Patients> patientsArray, CountInterface countInterface) {
         this.patients = patientsArray;
         this.context1 = context;
+        this.countInterface = countInterface;
     }
 
     // Create new views (invoked by the layout manager)
@@ -114,7 +116,6 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         summary_model = new Summary_model();
-
         holder.linear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -185,10 +186,11 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
             public void onClick(View v) {
                 patientId = patients.get(position).getPatient_id().toString();
                 GlobalClass.windupBarcodeList.add(patientId);
+                clickcount = clickcount + 1;
                 patients.get(position).flag = false;
                 holder.iv_checked_img.setVisibility(View.VISIBLE);
                 holder.checkbox.setVisibility(View.GONE);
-
+                countInterface.getclickcount(clickcount);
 
             }
         });
@@ -198,8 +200,10 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
                 patientId = patients.get(position).getPatient_id().toString();
                 GlobalClass.windupBarcodeList.remove(patientId);
                 patients.get(position).flag = true;
+                clickcount = clickcount - 1;
                 holder.iv_checked_img.setVisibility(View.GONE);
                 holder.checkbox.setVisibility(View.VISIBLE);
+                countInterface.getclickcount(clickcount);
             }
         });
     }

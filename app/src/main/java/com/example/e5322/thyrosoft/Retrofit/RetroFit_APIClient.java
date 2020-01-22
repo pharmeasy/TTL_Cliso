@@ -12,6 +12,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.e5322.thyrosoft.API.Global.BASE_URL;
+
 public class RetroFit_APIClient {
 
     public static RetroFit_APIClient apiClient;
@@ -39,9 +41,9 @@ public class RetroFit_APIClient {
         }
         client.addInterceptor(interceptor);
 
-        client.readTimeout(60, TimeUnit.SECONDS);
-        client.writeTimeout(60, TimeUnit.SECONDS);
-        client.connectTimeout(60, TimeUnit.SECONDS);
+        client.readTimeout(1, TimeUnit.MINUTES);
+        client.writeTimeout(30 , TimeUnit.SECONDS);
+        client.connectTimeout(15, TimeUnit.SECONDS);
         client.addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -54,6 +56,16 @@ public class RetroFit_APIClient {
                 .baseUrl(BASE_URL)
                 .client(client.build())
                 /*  .addConverterFactory(ScalarsConverterFactory.create())*/
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        return retrofit;
+    }
+
+    public Retrofit retro(){
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 

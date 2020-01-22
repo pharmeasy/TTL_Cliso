@@ -10,12 +10,17 @@
     <string name="windup">Are you want to wind up all test</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="bs_pt_name">Name:</string>
-    <string name="bs_enter_mobile_number">Mobile number:</string>
-    <string name="bs_enter_email_address">Email ID:</string>
-    <string name="bs_age">Age:</string>
-    <string name="bs_value">Value:</string>
+    <string name="bs_pt_name">Name*</string>
+    <string name="bs_enter_mobile_number">Mobile number*</string>
+    <string name="bs_enter_email_address">Email ID</string>
+    <string name="bs_age">Age*</string>
+    <string name="bs_value">Value*</string>
     <string name="upload_trf">*Upload TRF</string>
+    <string name="billing">Per Day Billing \n(Last 30 days)</string>
+    <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
+
+    <string name="more">More...</string>
+    <string name="less">Less...</string>
 
     <style name="medium_text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBlack</item>
@@ -62,6 +67,9 @@
     <string name="progress_message_SGC_DATA_please_wait">Fetching SGC Data, Please wait ....</string>
 
     <string name="plz_chk_internet">Please check your internet connection</string>
+    <string name="digits">0123456789</string>
+    <string name="mobile">Mobile No.<font color="#e90f1e">*</font></string>
+    <string name="email">Email ID </string>
 
     <!--<-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;NITIN-&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
     <string name="enter_pincode">Enter Pincode</string>
@@ -75,7 +83,6 @@
     <string name="enter_mobile_number">Enter Mobile Number</string>
     <string name="amt_str">Enter Minimum Amount of,\n Rs 5,000 to Proceed</string>
     <string name="multiple_amt">You have to enter amount in multiples of 5000</string>
-    <string name="include_outstd">Your outstanding \n (including unbilled woe)</string>
     <string name="page_1">Woe</string>
     <string name="page_2">Offline Wind - Up</string>
     <string name="page_3">Receipt</string>
@@ -85,9 +92,124 @@
     <string name="page_7">CHN</string>
     <string name="page_8">Billing</string>
     <string name="page_9">Rate calculator</string>
+    <string name="petct">PET CT</string>
+    <string name="remarks_val">Remarks should not start with special characters</string>
+    <string name="space_val_remarks">Remarks should not start with space</string>
+    <string name="email_no_space">Email ID should not start with space</string>
+
+    <string name="name_digits_no_space">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="dot">:</string>
+    <string name="fstname">Patient name</string>
+    <string name="fname">First name*</string>
+    <string name="middle_name">Middle name</string>
+    <string name="last_name">Last name*</string>
+    <string name="l_name">Last name</string>
+
+
+    <string name="gender">Gender : </string>
+    <string name="diabetes">Diabetes : </string>
+    <string name="date">DOB :</string>
+    <string name="app_date">Appointment Date :</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="city">City </string>
+    <string name="remarks">Remarks</string>
+    <string name="amt_coll">Amount Collected</string>
+    <string name="remarks_digits">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.,-</string>
+    <string name="couponCharacters">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-0123456789</string>
+    <string name="coupon">Coupon Code*</string>
+    <string name="applycoupon">Apply</string>
+    <string name="submit">Submit</string>
+    <string name="scansumm">Scan Summary</string>
+    <string name="paynow">Pay Now</string>
+    <string name="confirmbook">Confirm Booking</string>
+    <string name="str_about_pet_ct">ABOUT PET CT SCAN</string>
+    <string name="nodata">No Data Available</string>
+
+    <string-array name="arr_city">
+        <item>Select City*</item>
+    </string-array>
+
+    <string-array name="arr_book">
+        <item>Select Service Type*</item>
+    </string-array>
+
+    <string name="str_legderbal">Ledger Balance</string>
+    <string name="str_enter_name">Please Enter Name</string>
+    <string name="str_enter_email">Please Enter Email id</string>
+    <string name="str_select_city">Please Enter City</string>
+    <string name="str_enter_coupon">Please Enter Coupon Code</string>
+    <string name="space_val_name">Name should not start with space</string>
+    <string name="space_val_amt">amount should not start with space</string>
+    <string name="enter_amt">Please enter collected amount</string>
+    <string name="str_register_txt">Not registered ?<u>Register Now</u></string>
+    <string name="valid_name">Enter valid name</string>
+    <string name="str_enter_mobile_number">Please Enter Mobile Number</string>
+    <string name="str_should_be_ten_digits">Mobile number should be of 10 digits</string>
+    <string name="str_valid_mobile_no">Please Enter valid Mobile Number</string>
+    <string name="str_val_city">Please Select City</string>
+    <string name="str_val_bookType">Please Select Service Type</string>
+    <string name="str_slot">Please Select slot</string>
+
+    <string name="str_gender_val">Please Select gender</string>
+    <string name="str_diab_val">Please Select Diabetes</string>
+
+    <string name="str_dob_val">Please Select DOB</string>
+    <string name="str_appdt_val">Please Select Appointment Date</string>
+    <string name="str_slc">Please Select DOB or Age</string>
+    <string name="str_age">Please enter Age</string>
+
 
     <string name="img_upload">Upload image</string>
     <string name="view_trf_image"><u>View TRF image</u></string>
     <string name="view_receipt_image"><u>View receipt image</u></string>
+    <string name="stock_digits">0123456789-.</string>
+    <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
+    <string name="bs_bp_entry">BS &amp; BP entry</string>
+    <string name="send_otp">Send OTP</string>
+    <string name="reset">Reset</string>
+    <string name="receipt">Receipt</string>
+    <string name="verify_otp">Verify OTP</string>
+    <string name="please_wait_00_00">Please wait 00:00</string>
+    <string name="str_resend_otp"><u>Resend OTP</u></string>
+    <string name="verified">Verified</string>
+    <string name="bs_otp">OTP*</string>
+    <string name="number_digits">0123456789</string>
+    <string name="pincode_mand">Pincode*</string>
+    <string name="collected_amount">Collected amount</string>
+    <string name="verify">Verify</string>
+    <string name="re_upload">Re-upload</string>
+    <string name="image_uploaded"><u>Image uploaded</u></string>
+    <string name="choose_file">Choose file</string>
+    <string name="rupeeSymbol">₹</string>
+    <string name="upload_voice_message">Upload voice message</string>
+    <string name="reupload_voice_message">Re-upload voice message</string>
+    <string name="upload_image">Upload image</string>
+    <string name="re_upload_image">Re-upload image</string>
+    <string name="start_record">Click on below icon to start recording</string>
+    <string name="stop_record">Click on below icon to stop recording</string>
+    <string name="discard">Discard</string>
+    <string name="upload">Upload</string>
+    <string name="stop">Stop</string>
+    <string name="play">Play</string>
+    <string name="play_recorded_audio">Play recorded audio</string>
+    <string name="cmsoon">Coming Soon...</string>
 
+
+    <string name="updateText" translatable="false">Newer version of ThyrosoftLite is available. Click UPDATE to upgrade now !</string>
+    <string name="cancel" translatable="false">Cancel</string>
+    <string name="update" translatable="false">Update</string>
+
+    <string name="title">Title</string>
+    <string name="desc">Description</string>
+
+    <string name="rbarcode">Report Barcode Scan</string>
+    <string name="scan_entry">Scan Entry</string>
+    <string name="scan_summ">Scan Summary</string>
+    <string name="tltreport">Report Barcode Scan</string>
+    <string name="btnsubmit">Submit</string>
+    <string name="txt_waste_cnt">Waste count : </string>
+    <string name="reason_waste">Reason for Waste : </string>
 </resources>

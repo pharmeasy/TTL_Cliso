@@ -29,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -46,22 +47,22 @@ import static android.content.Context.MODE_PRIVATE;
  */
 
 public class ResultDtlAdapter extends BaseAdapter {
-    ImageView mail, clon, print;
+    public static RequestQueue PostQue;
     final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    ImageView mail, clon, print;
     Context mContext;
     ArrayList<TrackDetModel> trackdet = new ArrayList<>();
     int selectedPosition = 0;
     int[] SelectedArray;
-    public static RequestQueue PostQue;
     SharedPreferences sharedpreferences;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName();
+    private String user_code;
 
-    public ResultDtlAdapter(Context ManagingTabsActivity, ArrayList<TrackDetModel> arrayList) {
-        sharedpreferences = ManagingTabsActivity.getSharedPreferences(Constants.MyPREFERENCES, Context.MODE_PRIVATE);
-        mContext = ManagingTabsActivity;
+    public ResultDtlAdapter(Context context, ArrayList<TrackDetModel> arrayList) {
+        sharedpreferences = context.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        mContext = context;
         trackdet = arrayList;
         SelectedArray = new int[arrayList.size()];
-
     }
 
     @Override
@@ -87,12 +88,16 @@ public class ResultDtlAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.single_result_details, parent, false);
         }
 
+        user_code = sharedpreferences.getString("USER_CODE", null);
+        Log.e(TAG, "<< USER_CODE >> " + user_code);
+
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView Refby = (TextView) convertView.findViewById(R.id.Refby);
         TextView barcode = (TextView) convertView.findViewById(R.id.barcode);
         TextView tests = (TextView) convertView.findViewById(R.id.tests);
         ImageView download = (ImageView) convertView.findViewById(R.id.download);
         ImageView print = (ImageView) convertView.findViewById(R.id.print);
+        ImageView share = (ImageView) convertView.findViewById(R.id.share);
         mail = (ImageView) convertView.findViewById(R.id.mail);
         clon = (ImageView) convertView.findViewById(R.id.colon);
 
@@ -102,73 +107,113 @@ public class ResultDtlAdapter extends BaseAdapter {
             mail.setVisibility(View.VISIBLE);
         }*/
 
-        if (!trackdet.get(position).getChn_pending().toString().equals("")) {
-            if (trackdet.get(position).getChn_pending().toString().equals("null")) {
-                name.setText(trackdet.get(position).getName().toString());
-                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-                barcode.setText(trackdet.get(position).getBarcode().toString());
-                tests.setText(trackdet.get(position).getTests().toString());
+        if (!GlobalClass.isNull(trackdet.get(position).getChn_pending())) {
+            if (trackdet.get(position).getChn_pending().equals("null")) {
+                name.setText(trackdet.get(position).getName());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
                 clon.setVisibility(View.GONE);
             } else {
-                name.setText(trackdet.get(position).getName().toString());
+                name.setText(trackdet.get(position).getName());
                 clon.setVisibility(View.VISIBLE);
-                Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-                barcode.setText(trackdet.get(position).getBarcode().toString());
-                tests.setText(trackdet.get(position).getTests().toString());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
             }
-
         } else {
-            name.setText(trackdet.get(position).getName().toString());
-            Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
-            barcode.setText(trackdet.get(position).getBarcode().toString());
-            tests.setText(trackdet.get(position).getTests().toString());
+            name.setText(trackdet.get(position).getName());
+            Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+            barcode.setText(trackdet.get(position).getBarcode());
+            tests.setText(trackdet.get(position).getTests());
             clon.setVisibility(View.GONE);
         }
 
-        if (!trackdet.get(position).getPdflink().equals("null")) {
-            download.setVisibility(View.VISIBLE);
-        } else if (trackdet.get(position).getPdflink().equals("null")) {
-            download.setVisibility(View.INVISIBLE);
-        }
-        if (!trackdet.get(position).getEmail().equals("null")) {
-            mail.setVisibility(View.VISIBLE);
-        } else if (trackdet.get(position).getEmail().equals("null")) {
-            mail.setVisibility(View.INVISIBLE);
-            print.setVisibility(View.INVISIBLE);
+        try {
 
+            if (!GlobalClass.isNull(trackdet.get(position).getPdflink())) {
+                download.setVisibility(View.VISIBLE);
+                if (!GlobalClass.isNull(user_code) && user_code.startsWith("BM")) {
+                    share.setVisibility(View.VISIBLE);
+                }
+            } else if (trackdet.get(position).getPdflink().equals("null")) {
+                download.setVisibility(View.INVISIBLE);
+                share.setVisibility(View.INVISIBLE);
+            }
+
+            if (!GlobalClass.isNull(trackdet.get(position).getEmail())) {
+                mail.setVisibility(View.VISIBLE);
+            } else if (trackdet.get(position).getEmail().equals("null")) {
+                mail.setVisibility(View.INVISIBLE);
+                print.setVisibility(View.INVISIBLE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
-                    Intent browserIntent = new Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(trackdet.get(position).getPdflink().toString()));
-                    mContext.startActivity(browserIntent);
+                try {
+                    if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackdet.get(position).getPdflink()));
+                        mContext.startActivity(browserIntent);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
 
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        sharePDFLink(trackdet.get(position).getPdflink());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent browserIntent = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(trackdet.get(position).getPdflink().toString()));
-                mContext.startActivity(browserIntent);
-
+                try {
+                    Intent browserIntent = new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(trackdet.get(position).getPdflink()));
+                    mContext.startActivity(browserIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ShowMailAlert(trackdet.get(position).getPatient_id().toString(), trackdet.get(position).getBarcode().toString(), trackdet.get(position).getEmail().toString(), trackdet.get(position).getDate().toString());
+                try {
+                    ShowMailAlert(trackdet.get(position).getPatient_id(), trackdet.get(position).getBarcode(), trackdet.get(position).getEmail(), trackdet.get(position).getDate());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
+
         return convertView;
+    }
+
+    private void sharePDFLink(String pdflink) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        share.putExtra(Intent.EXTRA_TEXT, pdflink);
+        mContext.startActivity(Intent.createChooser(share, "Share PDF link!"));
     }
 
     private void GetData(String patient_ID, String barcode, String email, String date) {

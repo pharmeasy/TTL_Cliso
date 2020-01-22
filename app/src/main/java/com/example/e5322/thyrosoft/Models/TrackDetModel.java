@@ -8,19 +8,13 @@ import java.util.ArrayList;
 
 public class TrackDetModel {
 
-
     String Downloaded;
     String Ref_By;
     String Tests;
     String barcode;
-
-
     ArrayList<CancelledModel> cancel_tests_with_remark;
     String chn_pending;
-
-
     ArrayList<chn_test> chn_test_list;
-
     String chn_test;
     String confirm_status;
     String date;
@@ -36,8 +30,6 @@ public class TrackDetModel {
     String sct;
     String su_code2;
     String wo_sl_no;
-
-
 
     public String getDownloaded() {
         return Downloaded;

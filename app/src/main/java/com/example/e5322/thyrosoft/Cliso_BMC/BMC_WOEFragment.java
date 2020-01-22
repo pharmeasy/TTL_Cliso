@@ -340,19 +340,19 @@ public class BMC_WOEFragment extends Fragment {
     }
 
     private void enterCurrentFragment() {
-        BMC_WOEFragment a2Fragment = new BMC_WOEFragment();
+        BMC_WOEFragment bmc_woeFragment = new BMC_WOEFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         // Store the Fragment in stack
         transaction.addToBackStack(null);
-        transaction.replace(R.id.frame_layout, a2Fragment).commit();
+        transaction.replace(R.id.frame_layout, bmc_woeFragment).commit();
     }
 
     private void enterNextFragment() {
-        BMC_NEW_WOEFragment a2Fragment = new BMC_NEW_WOEFragment();
+        BMC_NEW_WOEFragment bmc_new_woeFragment = new BMC_NEW_WOEFragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         // Store the Fragment in stack
         transaction.addToBackStack(null);
-        transaction.replace(R.id.frame_layout, a2Fragment).commit();
+        transaction.replace(R.id.frame_layout, bmc_new_woeFragment).commit();
     }
 
     private void fetchWoeListDoneByTSP() {

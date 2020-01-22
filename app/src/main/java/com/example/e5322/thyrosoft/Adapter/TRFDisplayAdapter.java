@@ -73,7 +73,7 @@ public class TRFDisplayAdapter extends RecyclerView.Adapter<TRFDisplayAdapter.My
 
                 File file = trfModelArrayList.get(pos).getTrf_image();
                 if (file != null)
-                    GlobalClass.showImageDialog(activity, file);
+                    GlobalClass.showImageDialog(activity, file,"",1);
                 else
                     Toast.makeText(activity, "Image not found", Toast.LENGTH_SHORT).show();
 

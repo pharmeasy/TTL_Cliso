@@ -4,11 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,28 +23,27 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MyProfile_activity extends AppCompatActivity {
-    TextView nametxt, dojtxt, source_codetxt, closing_bal, credit_lim, txt_unbillwoe, txt_unbillmt;
+    public static RequestQueue PostQue;
+    TextView nametxt, dojtxt, source_codetxt, closing_bal, credit_lim;
     Button view_aadhar, pref;
     ProgressDialog barProgressDialog;
     ImageView aadhar;
     ImageView back, home;
-
     ImageView profimg;
-    String prof, aadharimg;
-    public static RequestQueue PostQue;
+    String prof = "", aadharimg;
     String aadhar_no = "";
     String URL = "";
     Bitmap decodedByte;
@@ -55,7 +53,7 @@ public class MyProfile_activity extends AppCompatActivity {
     private String api_key;
     private Global globalClass;
     private String access;
-    private String TAG = MyProfile_activity.class.getSimpleName().toString();
+    private String TAG = MyProfile_activity.class.getSimpleName();
 
     @SuppressLint("NewApi")
     @Override
@@ -68,9 +66,6 @@ public class MyProfile_activity extends AppCompatActivity {
         source_codetxt = (TextView) findViewById(R.id.source_code);
         closing_bal = (TextView) findViewById(R.id.closing_bal);
         credit_lim = (TextView) findViewById(R.id.credit_lim);
-        txt_unbillwoe = findViewById(R.id.txt_unbill_woe);
-        txt_unbillmt = findViewById(R.id.txt_unbill_mt);
-
 
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -95,7 +90,7 @@ public class MyProfile_activity extends AppCompatActivity {
 
         SharedPreferences getshared = getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
-        if (globalClass.checkForApi21()) {
+        if (Global.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -116,8 +111,6 @@ public class MyProfile_activity extends AppCompatActivity {
             String doj = getshared.getString("doj", "");
             String source_code = getshared.getString("source_code", null);
             String tsp_img = getshared.getString("tsp_image", null);
-            String unbillwoe = getshared.getString(Constants.unbilledWOE, null);
-            String unbillmt = getshared.getString(Constants.unbilledMaterial, null);
 
             if (tsp_img != null) {
                 checkFileExists(tsp_img);
@@ -132,8 +125,6 @@ public class MyProfile_activity extends AppCompatActivity {
             credit_lim.setText(credit_limit);
             dojtxt.setText(doj);
             nametxt.setText(name);
-            txt_unbillwoe.setText(unbillwoe);
-            txt_unbillmt.setText(unbillmt);
             source_codetxt.setText(source_code);
 
         } else {
@@ -204,11 +195,7 @@ public class MyProfile_activity extends AppCompatActivity {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-
         PostQue = Volley.newRequestQueue(MyProfile_activity.this);
-
-        JSONObject jsonObject = new JSONObject();
-
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -216,17 +203,9 @@ public class MyProfile_activity extends AppCompatActivity {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-        try {
-            jsonObject.put("API_Key", api_key);
-            jsonObject.put("tsp", user);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         RequestQueue queue = Volley.newRequestQueue(MyProfile_activity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile", jsonObject,
+                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -235,63 +214,67 @@ public class MyProfile_activity extends AppCompatActivity {
                             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                 barProgressDialog.dismiss();
                             }
-                         /*   Glide.with(MyProfile_activity.this)
-                                    .load(response.getString(Constants.tsp_image)+".jpg")
 
-                                    .into(profimg);
-*/
-                            checkFileExists(response.getString(Constants.tsp_image));
-                            prof = response.getString(Constants.tsp_image);
-                            String ac_code = response.getString(Constants.ac_code);
-                            String address = response.getString(Constants.address);
-                            String email = response.getString(Constants.email);
-                            String mobile = response.getString(Constants.mobile);
-                            String pincode = response.getString(Constants.pincode);
-                            String user_code = response.getString(Constants.user_code);
+                            ProfileDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ProfileDetailsResponseModel.class);
 
-                            closing_bal.setText(response.getString(Constants.closing_balance));
-                            credit_lim.setText(response.getString(Constants.credit_limit));
-                            dojtxt.setText(response.getString(Constants.doj));
-                            nametxt.setText(response.getString(Constants.name));
-                            source_codetxt.setText(response.getString(Constants.source_code));
+                            if (responseModel != null) {
+                                if (responseModel.getTsp_image() != null) {
+                                    prof = responseModel.getTsp_image();
+                                    checkFileExists(prof);
+                                }
 
+                                closing_bal.setText(responseModel.getClosing_balance());
+                                credit_lim.setText(responseModel.getCredit_limit());
+                                dojtxt.setText(responseModel.getDoj());
+                                nametxt.setText(responseModel.getName());
+                                source_codetxt.setText(responseModel.getSource_code());
 
-                            try {
+                            } else {
+                                Toast.makeText(MyProfile_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            }
+
+                            /*try {
                                 String decode = response.getString(Constants.aadhar_no).substring(response.getString(Constants.aadhar_no).lastIndexOf(",") + 1);
                                 byte[] decodedString = Base64.decode(decode, Base64.DEFAULT);
                                 decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
                             } catch (Exception e) {
                                 e.printStackTrace();
-                            }
-
-
+                            }*/
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e(TAG, "on ERROR ------>" + e.getLocalizedMessage());
                         }
-
-
                     }
                 }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 try {
-                    System.out.println("error ala parat " + error);
+                    Toast.makeText(MyProfile_activity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: json" + jsonObject);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
     }
 
     public void checkFileExists(String str) {
-
         String url = str;
         if (!url.equals("")) {
             CheckFileExistTask task = new CheckFileExistTask();
+            task.execute(url);
+        }
+    }
+
+    public void checkFileExists_Aadhar(String str, View view) {
+        String url = str;
+        if (!url.equals("")) {
+            CheckFileExistTask_Aadhar task = new CheckFileExistTask_Aadhar();
             task.execute(url);
         }
     }
@@ -314,39 +297,24 @@ public class MyProfile_activity extends AppCompatActivity {
                 con.setRequestMethod("HEAD");
                 // get returned code
                 return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-
             } catch (Exception e) {
                 e.printStackTrace();
-
                 return false;
-
             }
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            // Update status message
-            if (result == true) {
+            if (result) {
                 Glide.with(MyProfile_activity.this)
                         .load(prof)
                         .into(profimg);
-
             } else {
                 Glide.with(MyProfile_activity.this)
                         .load("")
                         .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.user_profile))
                         .into(profimg);
-
             }
-        }
-    }
-
-    public void checkFileExists_Aadhar(String str, View view) {
-
-        String url = str;
-        if (!url.equals("")) {
-            CheckFileExistTask_Aadhar task = new CheckFileExistTask_Aadhar();
-            task.execute(url);
         }
     }
 
@@ -368,30 +336,23 @@ public class MyProfile_activity extends AppCompatActivity {
                 con.setRequestMethod("HEAD");
                 // get returned code
                 return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-
             } catch (Exception e) {
                 e.printStackTrace();
-
                 return false;
-
             }
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
-            // Update status message
-            if (result == true) {
+            if (result) {
                 Glide.with(MyProfile_activity.this)
                         .load(aadharimg)
-
                         .into(aadhar);
-
             } else {
                 Glide.with(MyProfile_activity.this)
                         .load("")
                         .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.userprofile))
                         .into(aadhar);
-
             }
         }
     }

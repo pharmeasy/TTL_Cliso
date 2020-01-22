@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -46,16 +45,13 @@ public class BroadcastActivity extends AppCompatActivity {
     RecyclerView rvBroadcast;
     LinearLayoutManager linearLayoutManager;
     BroadcastAdapter broadcastAdapter;
-    RequestQueue requestQueue, requestQueue1;
+    RequestQueue requestQueue;
     ProgressDialog progressDialog;
     NoticeBoard_Model noticeBoard_model;
-    private Global globalClass;
     SharedPreferences prefs;
     String api_key, user, passwrd, access, msgCode;
-
-    String TAG = BroadcastActivity.class.getName().toString();
+    String TAG = BroadcastActivity.class.getName();
     private LinearLayout offline_ll;
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -71,7 +67,6 @@ public class BroadcastActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         rvBroadcast.setLayoutManager(linearLayoutManager);
 
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,12 +80,11 @@ public class BroadcastActivity extends AppCompatActivity {
             }
         });
 
-        if (globalClass.checkForApi21()) {
+        if (Global.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -106,8 +100,6 @@ public class BroadcastActivity extends AppCompatActivity {
             offline_ll.setVisibility(View.GONE);
             rvBroadcast.setVisibility(View.VISIBLE);
         }
-
-
     }
 
     private void getBroadcastData() {
@@ -121,11 +113,10 @@ public class BroadcastActivity extends AppCompatActivity {
         progressDialog.setCancelable(false);
         progressDialog.show();
         requestQueue = Volley.newRequestQueue(BroadcastActivity.this);
-        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
-            private String resIdFromApi;
-            private String response1;
-            private String messages;
 
+        Log.e(TAG, "Brodcast receiver URL -->" + Api.NoticeBoardData + "" + api_key + "/getNoticeMessages");
+
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: " + response);
@@ -142,19 +133,17 @@ public class BroadcastActivity extends AppCompatActivity {
 
                     ArrayList<NoticeBoard_Model> array_notice = new ArrayList<>();
 
-
                     if (noticeBoard_model.getMessages() != null) {
                         array_notice.add(noticeBoard_model);
                         if (array_notice.get(0).getMessages()[0].getMessageCode() != null) {
                             msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
                             broadcastAdapter = new BroadcastAdapter(BroadcastActivity.this, array_notice);
                             rvBroadcast.setAdapter(broadcastAdapter);
-
                         } else {
                             Toast.makeText(BroadcastActivity.this, "" + noticeBoard_model.getResponse().toString(), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        //Toast.makeText(BroadcastActivity.this, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BroadcastActivity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -172,12 +161,9 @@ public class BroadcastActivity extends AppCompatActivity {
                 }
             }
         });
-        jsonObjectRequestProfile.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestProfile);
         requestQueue.add(jsonObjectRequestProfile);
-        Log.e(TAG, "getBroadcstData: url" + jsonObjectRequestProfile);
+        Log.e(TAG, "getBroadcastData: url" + jsonObjectRequestProfile);
     }
 
 }

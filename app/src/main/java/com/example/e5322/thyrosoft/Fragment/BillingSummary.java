@@ -14,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -24,24 +25,23 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.BillingSummaryAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.BillingSummaryMOdel;
+import com.example.e5322.thyrosoft.Models.RequestModels.BillingSummaryRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.BillingSummaryResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,22 +56,15 @@ public class BillingSummary extends RootFragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private SimpleDateFormat sdf;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public static RequestQueue PostQue;
     public String toDateTxt = "";
     public String fromDateTxt = "";
     public String Date = "", tempMonth = "";
-    private OnFragmentInteractionListener mListener;
     TextView txtFromDate, txt_to_date;
-    private int mYear, mMonth, mDay;
-    public static RequestQueue PostQue;
-    ProgressDialog barProgressDialog;
+    // ProgressDialog barProgressDialog;
     SharedPreferences sharedpreferences;
     ListView list_billingSummary;
     BillingSummaryAdapter adapter;
-    private DatePicker dpAppointmentDate;
     String user;
     String passwrd;
     LinearLayout parent_ll;
@@ -82,6 +75,13 @@ public class BillingSummary extends RootFragment {
     int fromday, frommonth, fromyear;
     SharedPreferences prefsBilling;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private SimpleDateFormat sdf;
+    // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
+    private OnFragmentInteractionListener mListener;
+    private int mYear, mMonth, mDay;
+    private DatePicker dpAppointmentDate;
     private Date result, fromDate, toDate;
     private SimpleDateFormat format;
 
@@ -152,7 +152,7 @@ public class BillingSummary extends RootFragment {
         offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
 
-        barProgressDialog = new ProgressDialog(getContext());
+  /*      barProgressDialog = new ProgressDialog(getContext());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -160,6 +160,9 @@ public class BillingSummary extends RootFragment {
         barProgressDialog.setMax(20);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
+*/
+
+        //  ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getContext());
 
         txtFromDate.setText(fromDateTxt);
         txt_to_date.setText(toDateTxt);
@@ -282,11 +285,11 @@ public class BillingSummary extends RootFragment {
 
 
     private void GetData() {
-        barProgressDialog.show();
+        final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
 
         PostQue = Volley.newRequestQueue(getContext());
 
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = null;
         try {
             String inputDate = txtFromDate.getText().toString();
             String inputDate1 = txt_to_date.getText().toString();
@@ -312,12 +315,16 @@ public class BillingSummary extends RootFragment {
             }
             String outputDateStr1 = outputFormat.format(date1);
 
+            BillingSummaryRequestModel requestModel = new BillingSummaryRequestModel();
+            requestModel.setApiKey(api_key);
+            requestModel.setDate(Date);
+            requestModel.setUserCode(user);
+            requestModel.setFromDate(outputDateStr);
+            requestModel.setToDate(outputDateStr1);
 
-            jsonObject.put("apiKey", api_key);
-            jsonObject.put(Constants.date, Date);
-            jsonObject.put(Constants.UserCode_billing, user);
-            jsonObject.put(Constants.fromDate, outputDateStr);
-            jsonObject.put(Constants.toDate, outputDateStr1);
+            Gson gson = new Gson();
+            String json = gson.toJson(requestModel);
+            jsonObject = new JSONObject(json);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -331,53 +338,21 @@ public class BillingSummary extends RootFragment {
                     public void onResponse(JSONObject response) {
                         Log.e(TAG, "onResponse: " + response);
                         try {
+                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
-
-                            String responsetoshow = response.optString("response", "");
-
-                            if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(getActivity());
-                            } else {
-                                JSONArray jsonArray = response.optJSONArray(Constants.billingList);
-                                if (jsonArray != null) {
-
-                                    ArrayList<BillingSummaryMOdel> billingsumArray = new ArrayList<BillingSummaryMOdel>();
-                                    for (int j = 0; j < jsonArray.length(); j++) {
-                                        try {
-                                            JSONObject jsonObject = jsonArray.getJSONObject(j);
-                                            BillingSummaryMOdel billsum = new BillingSummaryMOdel();
-
-                                            billsum.setBilledAmount(jsonObject.optString(Constants.billedAmount).toString());
-                                            billsum.setBillingDate(jsonObject.optString(Constants.billingDate).toString());
-                                            billsum.setWorkLoad(jsonObject.optString(Constants.workLoad).toString());
-
-
-                                            billingsumArray.add(billsum);
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-
-                                    if (billingsumArray.size() == 0) {
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
-
-                                    } else {
-                                        adapter = new BillingSummaryAdapter(getContext(), billingsumArray);
+                            BillingSummaryResponseModel responseModel = new Gson().fromJson(String.valueOf(response), BillingSummaryResponseModel.class);
+                            if (responseModel != null) {
+                                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase(Constants.caps_invalidApikey)) {
+                                    GlobalClass.redirectToLogin(getActivity());
+                                } else {
+                                    if (responseModel.getBillingList() != null && responseModel.getBillingList().size() > 0) {
+                                        adapter = new BillingSummaryAdapter(getContext(), responseModel.getBillingList());
                                         list_billingSummary.setAdapter(adapter);
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
-
                                     }
                                 }
+                            } else {
+                                Toast.makeText(getActivity(), ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                             }
-
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -392,11 +367,10 @@ public class BillingSummary extends RootFragment {
                 }
             }
         });
-
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         queue.add(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
         Log.e(TAG, "GetData: json" + jsonObject);
-
     }
 
 

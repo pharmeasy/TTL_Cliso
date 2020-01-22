@@ -18,7 +18,6 @@ import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -190,8 +189,8 @@ public class RecheckAllTest extends AppCompatActivity {
             }
         });
 
-        int days = GlobalClass.getStoreSynctime(RecheckAllTest.this);
-        if (days >= Constants.DAYS_CNT) {
+
+        if (GlobalClass.Dayscnt(RecheckAllTest.this) >= Constants.DAYS_CNT) {
             getAlltTestData();
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -388,18 +387,12 @@ public class RecheckAllTest extends AppCompatActivity {
                         elements = TESTS.split(",");
                     fixedLenghtList = Arrays.asList(elements);
                     sample_type_array = new ArrayList<String>(fixedLenghtList);
-
-
                     if (mainModel.getB2B_MASTERS().getPOP().size() != 0 && !mainModel.getB2B_MASTERS().getPOP().isEmpty()) {
-
-
                         for (int i = 0; i < mainModel.getB2B_MASTERS().getPOP().size(); i++) {
-
                             for (int j = 0; j < mainModel.getB2B_MASTERS().getPOP().get(i).getBarcodes().length; j++) {
                                 for (int k = 0; k < sample_type_array.size(); k++) {
                                     if (mainModel.getB2B_MASTERS().getPOP().get(i).getBarcodes()[j].getCode().equals(sample_type_array.get(k))) {
                                         baseModelPop.add(mainModel.getB2B_MASTERS().getPOP().get(i));
-
                                         if (baseModelPop != null) {
                                             for (int m = 0; m < baseModelPop.size(); m++) {
                                                 if (baseModelPop.get(m).getChilds() != null) {
@@ -516,9 +509,10 @@ public class RecheckAllTest extends AppCompatActivity {
                 }
 
                 // onlySelected
-
-                GlobalClass.StoreSyncTime(RecheckAllTest.this);
+                /*GlobalClass.StoreSyncTime(RecheckAllTest.this);*/
+                GlobalClass.storeProductsCachingTime(RecheckAllTest.this);
                 globalClass.dismissProgressDialog();
+
             }
         }, new Response.ErrorListener() {
             @Override

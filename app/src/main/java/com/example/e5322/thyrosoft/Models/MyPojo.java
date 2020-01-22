@@ -5,6 +5,7 @@ package com.example.e5322.thyrosoft.Models;
  */
 
 public class MyPojo {
+
     private MASTERS MASTERS;
 
     private String RESPONSE;
