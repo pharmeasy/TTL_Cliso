@@ -13,8 +13,10 @@ import com.example.e5322.thyrosoft.Models.InsertReasonsReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailRes;
 import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
+import com.example.e5322.thyrosoft.Models.OTPCreditMISRequestModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
+import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
@@ -96,6 +98,9 @@ public interface APIInteface {
 
     @POST("displayrodeails")
     Call<GetScanResponse> getMIS(@Body GetScanReq getScanReq);
+
+    @POST("OtpLedgermis")
+    Call<OTPCreditResponseModel> OTPCreditMIS(@Body OTPCreditMISRequestModel creditMISRequestModel);
 
 
 }

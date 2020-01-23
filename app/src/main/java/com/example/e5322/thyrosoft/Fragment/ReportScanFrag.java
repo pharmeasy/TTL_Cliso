@@ -101,6 +101,7 @@ public class ReportScanFrag extends Fragment {
         btn_scansubmit = view.findViewById(R.id.btn_scansubmit);
         btn_reason_submit = view.findViewById(R.id.btn_reason_submit);
         lin_reason = view.findViewById(R.id.lin_reason);
+
         lin_reason.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,6 +122,7 @@ public class ReportScanFrag extends Fragment {
 
         edt_wastecnt.setFilters(new InputFilter[]{EMOJI_FILTER});
         int maxLength = 4;
+
         edt_wastecnt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 
         edt_wastecnt.addTextChangedListener(new TextWatcher() {

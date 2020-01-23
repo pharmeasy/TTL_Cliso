@@ -167,6 +167,17 @@
      </group>
 
     <group
+        android:id="@+id/group555"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/otp_credit"
+            android:icon="@drawable/ic_otp_credit_mis"
+            android:title="OTP credit"
+            android:visible="true" />
+
+    </group>
+
+    <group
         android:id="@+id/group14"
         android:checkableBehavior="single">
         <item

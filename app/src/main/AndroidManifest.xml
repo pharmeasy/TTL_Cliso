@@ -140,6 +140,9 @@
             android:name=".Kotlin.KTActivity.KTReportBarcode_activity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".Activity.OTPCreditMISActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".Registration.Registration_first_screen"

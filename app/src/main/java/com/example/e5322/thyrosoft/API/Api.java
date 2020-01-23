@@ -44,6 +44,9 @@ public class Api {
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";
     public static String LEAD_BOOKING = SCANSOAPI + "/LeadBooking/BookLead";
 
+
+
+    public static String OTP_CREDIT_MIS = LIVEAPI + "COMMON.svc/";
     public static String insertscandetail= LIVEAPI + "REPORT.svc/";
     public static String video_data = LIVEAPI + "COMMON.svc/";
     public static String video_url = LIVEAPI + "COMMON.svc/Cliso/Showvideo";

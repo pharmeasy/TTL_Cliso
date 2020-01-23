@@ -118,7 +118,7 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Start_New_Woe.OnFragmentInteractionListener} interface
+ * {@link OnFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link Start_New_Woe#newInstance} factory method to
  * create an instance of this fragment.
@@ -132,7 +132,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private static final String ARG_PARAM2 = "param2";
     // private static final String TAG = "LocationActivity";
     // TODO: Rename and change types of parameters
-    public static com.android.volley.RequestQueue PostQueOtp;
+    public static RequestQueue PostQueOtp;
     public static ArrayList<BCT_LIST> getBtechList;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -209,7 +209,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     TextView woedatestage, patientnamestage, subsourcestage, address, sctdata, testsubsource, amtcollected, scp_default;
     EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number, et_otp;
     Spinner btechname, deliveymode, camp_spinner_olc;
-    ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
+    ArrayList<BarcodelistModel> barcodelists;
     TextView radio, tv_timer;
     LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data, ll_mobileno_otp, lin_otp;
     WOE_Model_Patient_Details woe_model_patient_details;
@@ -237,7 +237,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     ScrollView scrollView2;
     Button btn_clear_data;
     String getDatefromWOE, halfTime, DateToPass;
-    TextView enetered, enter;
+    TextView enetered, enter,tv_mob_note;
     Date getCurrentDateandTime;
     ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
     int flagtoAdjustClisk = 0;
@@ -274,7 +274,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private String campname;
     private String campID;
     private String outputDateStr;
-    private Start_New_Woe.OnFragmentInteractionListener mListener;
+    private OnFragmentInteractionListener mListener;
     private LocationManager mLocationManager;
 
     private InputFilter filter1 = new InputFilter() {
@@ -475,6 +475,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
         enetered = (TextView) viewMain.findViewById(R.id.enetered);
         enter = (TextView) viewMain.findViewById(R.id.enter);
+        tv_mob_note = (TextView) viewMain.findViewById(R.id.tv_mob_note);
         enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
         enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
         uncheck_ref = (ImageView) viewMain.findViewById(R.id.uncheck_ref);
@@ -1661,6 +1662,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
                                 et_mobno.getText().clear();
                                 ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
                                 et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                 lin_otp.setVisibility(View.GONE);
                                 tv_timer.setVisibility(View.GONE);
@@ -1679,7 +1681,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 leadbarcodelayout.setVisibility(View.GONE);
 
                                 mobile_number_kyc.setVisibility(View.GONE);
-                                ll_mobileno_otp.setVisibility(View.GONE);
 
                                 labname_linear.setVisibility(View.VISIBLE);
                                 Home_mobile_number_kyc.setVisibility(View.GONE);
@@ -1981,6 +1982,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -1997,6 +1999,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
+
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -2458,6 +2462,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         Home_mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -2472,6 +2477,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
                                         Home_mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -2798,6 +2804,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 ref_check.setVisibility(View.GONE);
                                 labname_linear.setVisibility(View.GONE);
                                 ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
                                 mobile_number_kyc.setVisibility(View.GONE);
                                 Home_mobile_number_kyc.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.VISIBLE);
@@ -3067,6 +3074,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             } else if (selectTypeSpinner.getSelectedItem().equals("ORDERS")) {
                                 Enablefields();
                                 ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
                                 leadlayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.VISIBLE);
                                 barcode_layout.setVisibility(View.GONE);
@@ -3320,6 +3328,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 barcode_woe.setText("");
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
                                 pincode_linear_data.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.VISIBLE);
@@ -3409,6 +3418,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             } else if (selectTypeSpinner.getSelectedItem().equals("RECHECK")) {
                                 barcode_woe.setText("");
                                 ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
                                 leadbarcodelayout.setVisibility(View.GONE);
                                 id_layout.setVisibility(View.GONE);
                                 pincode_linear_data.setVisibility(View.GONE);
@@ -3524,6 +3534,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
                                     et_mobno.getText().clear();
                                     ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
                                     et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     lin_otp.setVisibility(View.GONE);
                                     tv_timer.setVisibility(View.GONE);
@@ -3858,6 +3869,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -3874,6 +3886,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -4286,6 +4299,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -4302,6 +4316,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
                                         Home_mobile_number_kyc.setVisibility(View.GONE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
@@ -4612,6 +4627,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     et_mobno.getText().clear();
                                     ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
                                     et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     lin_otp.setVisibility(View.GONE);
                                     tv_timer.setVisibility(View.GONE);
@@ -4924,6 +4940,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -4938,6 +4955,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -5358,6 +5376,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
                                     } else if (Constants.preotp.equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
@@ -5372,6 +5391,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
                                         mobile_number_kyc.setVisibility(View.GONE);
                                         ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
 
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
