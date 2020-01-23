@@ -90,6 +90,7 @@ public class ReportScanFrag extends Fragment {
     }
 
     private void initView(View view) {
+
         SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         usercode = prefs.getString("USER_CODE", "");
 
@@ -120,7 +121,7 @@ public class ReportScanFrag extends Fragment {
 
         edt_wastecnt.setFilters(new InputFilter[]{EMOJI_FILTER});
         int maxLength = 4;
-        edt_wastecnt.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxLength)});
+        edt_wastecnt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
 
         edt_wastecnt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,7 +157,7 @@ public class ReportScanFrag extends Fragment {
 
         edt_reason.setFilters(new InputFilter[]{EMOJI_FILTER});
         int maxreason = 500;
-        edt_reason.setFilters(new InputFilter[] {new InputFilter.LengthFilter(maxreason)});
+        edt_reason.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxreason)});
 
         edt_reason.addTextChangedListener(new TextWatcher() {
             @Override
@@ -269,7 +270,7 @@ public class ReportScanFrag extends Fragment {
 
             @Override
             public void onFailure(Call<InsertreasonResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(getContext(), progressDialog);
             }
         });
     }
@@ -295,8 +296,6 @@ public class ReportScanFrag extends Fragment {
                 try {
                     if (response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
                         GlobalClass.hideProgress(getContext(), progressDialog);
-                        Log.e(TAG, "DATA SUBMITEED SUCCESSS ");
-                        GlobalClass.hideProgress(getContext(), progressDialog);
                         btn_scansubmit.setClickable(true);
                         btn_scansubmit.setEnabled(true);
                         txt_barcode.setText("");
@@ -315,7 +314,7 @@ public class ReportScanFrag extends Fragment {
 
             @Override
             public void onFailure(Call<InsertScandetailRes> call, Throwable t) {
-
+                GlobalClass.hideProgress(getContext(), progressDialog);
             }
         });
 

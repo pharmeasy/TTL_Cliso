@@ -53,6 +53,7 @@ import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTReportBarcode_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -543,7 +544,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                                 closeVideo(response.body().getOutput().get(0).getId(), dialog);
                                             }
                                         }
-
                                     }
                                 });
                             } else {

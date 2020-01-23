@@ -136,6 +136,10 @@
             android:name=".Activity.ReportBarcode_activity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".Kotlin.KTActivity.KTReportBarcode_activity"
+            android:screenOrientation="portrait" />
+
 
         <activity
             android:name=".Registration.Registration_first_screen"

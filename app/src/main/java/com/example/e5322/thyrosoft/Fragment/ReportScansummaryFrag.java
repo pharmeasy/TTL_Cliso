@@ -125,12 +125,9 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
                 GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
             }
         }
-
-
     }
 
     private void GetMIS() {
-
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
         String formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, to_date.getText().toString());
         GetScanReq getScanReq = new GetScanReq();
@@ -174,6 +171,7 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
             @Override
             public void onFailure(Call<GetScanResponse> call, Throwable t) {
                 Log.e(TAG, "onFailure: " + t.getLocalizedMessage());
+                GlobalClass.hideProgress(getContext(), progressDialog);
             }
         });
     }
