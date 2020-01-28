@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -82,8 +83,9 @@ public class Offline_woe extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static com.android.volley.RequestQueue sendGPSDetails;
-    public static com.android.volley.RequestQueue POstQue;
+    /*    public static com.android.volley.RequestQueue sendGPSDetails;
+        public static com.android.volley.RequestQueue POstQue;*/
+    RequestQueue POstQue;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -650,7 +652,7 @@ public class Offline_woe extends Fragment {
         editor.remove("testsSElected");
         editor.remove("getProductNames");
         editor.apply();
-        sendGPSDetails = Volley.newRequestQueue(mContext);
+        RequestQueue sendGPSDetails = Volley.newRequestQueue(mContext);
 
         JSONObject jsonObject = null;
         try {

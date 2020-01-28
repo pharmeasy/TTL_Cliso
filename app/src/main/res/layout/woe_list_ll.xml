@@ -183,7 +183,7 @@
             android:layout_height="0dp"
             android:layout_weight="8.9"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <pl.droidsonroids.gif.GifImageView
                 android:layout_width="match_parent"

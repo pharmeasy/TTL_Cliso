@@ -441,6 +441,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 barcodesList.addAll(Arrays.asList(testRateMasterModels.get(position).getBarcodes()));
                                 if (testRateMasterModels.get(position).getBillrate() != null)
                                     txt_availcnt.setText(testRateMasterModels.get(position).getBillrate());
+
                                 Log.e(TAG, "onItemSelected barcodesList size : " + barcodesList.size());
 
 
@@ -451,6 +452,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                             }
                         });
+
 
                     }
 
@@ -1020,7 +1022,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         } else {
             sendIntent();
         }*/
-        Date getCurrentDateandTime=new Date();
+        Date getCurrentDateandTime = new Date();
 
         String sctSEc = timeampm.getSelectedItem().toString();
         System.out.println("Spinner value -->" + sctSEc);
@@ -1083,7 +1085,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
             } else if (dCompare.after(getCurrentDateandTime)) {
                 Toast.makeText(SpecialOffer_Activity.this, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-            }else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
+            } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
                 Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
             } else {
                 sendIntent();

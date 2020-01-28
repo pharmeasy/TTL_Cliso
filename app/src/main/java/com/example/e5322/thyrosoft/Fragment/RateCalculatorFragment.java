@@ -463,6 +463,7 @@ public class RateCalculatorFragment extends Fragment {
                 test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
                 finalproductlist = new ArrayList<>();
                 ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
+
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
@@ -490,6 +491,7 @@ public class RateCalculatorFragment extends Fragment {
                 }
             }
         });
+
 
         profile_txt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -654,14 +656,9 @@ public class RateCalculatorFragment extends Fragment {
                     Gson gson = new Gson();
                     mainModel = new GetMainModel();
                     mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
-                 /*   if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }*/
+
                     GlobalClass.hideProgress(getActivity(), progressDialog);
-                 /*   if (mContext instanceof Activity) {
-                        if (!((Activity) mContext).isFinishing())
-                            barProgressDialog.dismiss();
-                    }*/
+
                     SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
                     SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                     Gson gson22 = new Gson();
@@ -670,6 +667,10 @@ public class RateCalculatorFragment extends Fragment {
                     prefsEditor1.putString("MyObject", json23);
                     //   GlobalClass.StoreSyncTime(getActivity());
                     prefsEditor1.commit();
+
+
+
+
                     try {
                         if (obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
                             outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
@@ -694,23 +695,30 @@ public class RateCalculatorFragment extends Fragment {
 
 
                     b2bmasterarraylistRate = new ArrayList<>();
-                    b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
 
+                    //  if (mainModelRate != null && mainModelRate.B2B_MASTERS != null) {
+                    b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
+                    // }
+                    //finalproductlist.add(b2bmasterarraylistRate.get(0).getTESTS());
 
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
-                    for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                            finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-                            testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                    if (b2bmasterarraylistRate != null) {
+                        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                            for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                                finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                                testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+
+                            }
                         }
-
-
+                        finalproductlist.clear();
+                        finalproductlist.addAll(testRateMasterModels);
+                        callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                     }
 
-                    callAdapaterTosetData(finalproduct_list, testRateMasterModels);
+
                 }
 
 

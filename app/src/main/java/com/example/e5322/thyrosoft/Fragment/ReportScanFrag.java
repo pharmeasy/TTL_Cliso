@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -108,6 +110,13 @@ public class ReportScanFrag extends Fragment {
                 edt_reason.requestFocus();
                 edt_reason.setFocusable(true);
                 edt_reason.setCursorVisible(true);
+
+                InputMethodManager inputMethodManager =
+                        (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(
+                        lin_reason.getApplicationWindowToken(),
+                        InputMethodManager.SHOW_FORCED, 0);
+
             }
         });
 

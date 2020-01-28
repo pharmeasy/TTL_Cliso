@@ -112,7 +112,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     LinearLayout linearlayout2, pick_up_ll;
     String getDatefromWOE, halfTime, DateToPass;
     TextView wind_up, woe_cal, wind_up_multiple, pick_up_txt;
-    ProgressDialog barProgressDialog;
+    //  ProgressDialog barProgressDialog;
     RequestQueue requestQueue, requestQueueWindup;
     Button defaultFragment;
     RecyclerView recyclerView;
@@ -408,7 +408,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                             e.printStackTrace();
                         }
                         DatePassToApi = outputFormat.format(date);
-                        barProgressDialog = new ProgressDialog(getContext());
+                        final ProgressDialog barProgressDialog = new ProgressDialog(getContext());
                         barProgressDialog.setTitle("Kindly wait ...");
                         barProgressDialog.setMessage(ToastFile.processing_request);
                         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -424,10 +424,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                             public void onResponse(JSONObject response) {
                                 Log.e(TAG, "response " + response);
                                 try {
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
-                                            barProgressDialog.dismiss();
-                                    }
+                                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
                                     CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
 
@@ -459,10 +456,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                             // Show timeout error message
                                         }
                                     }
-                                    if (mContext instanceof Activity) {
-                                        if (!((Activity) mContext).isFinishing())
-                                            barProgressDialog.dismiss();
-                                    }
+                                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -488,7 +482,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             @Override
             public void onClick(View v) {
 
-                barProgressDialog = new ProgressDialog(getActivity());
+                final ProgressDialog barProgressDialog = new ProgressDialog(getActivity());
                 barProgressDialog.setTitle("Kindly wait ...");
                 barProgressDialog.setMessage(ToastFile.processing_request);
                 barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -530,9 +524,9 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         @Override
                         public void onResponse(JSONObject response) {
                             Log.e(TAG, "onResponse: " + response);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
+
+                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
                             CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
 
                             if (responseModel != null) {
@@ -557,9 +551,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
+                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
                             if (error != null) {
                             } else {
                                 System.out.println(error);
@@ -574,10 +566,8 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                    /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }*/
-                    if (mContext instanceof Activity) {
-                        if (!((Activity) mContext).isFinishing())
-                            barProgressDialog.dismiss();
-                    }
+                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
                     Toast.makeText(getContext(), ToastFile.slt_name_for_windup, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -693,7 +683,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
     private void fetchWoeListDoneByTSP() {
 
-        barProgressDialog = new ProgressDialog(getActivity());
+        final ProgressDialog barProgressDialog = new ProgressDialog(getActivity());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
@@ -761,23 +751,16 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                             for (int j = 0; j < patientsArrayList.size(); j++) {
                                 getWindupCount.add(String.valueOf(patientsArrayList.get(j).getConfirm_status().equals("NO")));
                             }
-                            //getWindupCount.add(String.valueOf(woe_model_patient_details.getPatients().get(i).getConfirm_status().equals("NO")));
-                            //patients.get(position).getConfirm_status().equals("YES")
+
                         }
-//                    wind_up.setVisibility(View.GONE);
-//                    wind_up_multiple.setVisibility(View.GONE);
+
                         recyclerView.setVisibility(View.VISIBLE);
 
                         windup_adapter = new Windup_adapter(mContext, patientsArrayList, Wind_up_fragment.this);
                         recyclerView.setAdapter(windup_adapter);
-                       /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }*/
 
-                        if (mContext instanceof Activity) {
-                            if (!((Activity) mContext).isFinishing())
-                                barProgressDialog.dismiss();
-                        }
+
+                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
                         ArrayList<String> getNoStatus = new ArrayList<>();
                         for (int i = 0; i < patientsArrayList.size(); i++) {
@@ -800,31 +783,18 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                             wind_up.setText("Wind up (" + "0)");
                             wind_up_multiple.setText("Wind up (" + "0)");
                         }
-//                    if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+
                     } else {
                         recyclerView.setVisibility(View.INVISIBLE);
                         wind_up.setVisibility(View.GONE);
                         wind_up_multiple.setVisibility(View.GONE);
                         view_1.setVisibility(View.GONE);
                         view_2.setVisibility(View.GONE);
-                        //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
-                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }*/
-                        if (mContext instanceof Activity) {
-                            if (!((Activity) mContext).isFinishing())
-                                barProgressDialog.dismiss();
-                        }
+
+                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
                     }
 
-
-                    /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }*/
-                    if (mContext instanceof Activity) {
-                        if (!((Activity) mContext).isFinishing())
-                            barProgressDialog.dismiss();
-                    }
+                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
                 }
 
 
@@ -835,6 +805,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 if (error.networkResponse == null) {
                     if (error.getClass().equals(TimeoutError.class)) {
                         // Show timeout error message
+                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
                     }
                 }
             }

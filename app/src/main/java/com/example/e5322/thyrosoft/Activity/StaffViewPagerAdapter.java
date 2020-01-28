@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -36,6 +37,11 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
     public StaffViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);
         this.resources = resources;
+    }
+
+    @Override
+    public Parcelable saveState() {
+        return null;
     }
 
     @Override

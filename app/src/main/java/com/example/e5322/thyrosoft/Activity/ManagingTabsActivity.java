@@ -257,7 +257,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.rbarcode).setVisible(false);
 
         } else {
-
             if (access.equals("STAFF")) {
                 //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
                 //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
@@ -406,6 +405,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     public void onClick(View v) {
 
                                         try {
+
                                             if (response.body().getOutput().get(0).getPath() != null) {
 
                                                 linvid.setVisibility(View.VISIBLE);
@@ -469,7 +469,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                                             postdata(video_view);
                                                             mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
                                                             dialog.dismiss();
-                                                            ;
                                                         }
                                                     }
                                                 });
@@ -544,10 +543,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                                 closeVideo(response.body().getOutput().get(0).getId(), dialog);
                                             }
                                         }
+
                                     }
                                 });
-                            } else {
-                                //   GlobalClass.hideProgress(ManagingTabsActivity.this, progressDialog);
                             }
 
                         }

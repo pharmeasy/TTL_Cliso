@@ -232,9 +232,9 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 age_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
 
                 if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")) {
-                    if (selectType_txt.getText().equals("HOME") ||selectType_txt.getText().equals("DPS")){
+                    if (selectType_txt.getText().equals("HOME") || selectType_txt.getText().equals("DPS")) {
                         labname_linear.setVisibility(View.GONE);
-                    }else {
+                    } else {
                         labname_linear.setVisibility(View.VISIBLE);
                     }
 
@@ -246,7 +246,16 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+            try {
+                if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null && GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null &&
+                        !TextUtils.isEmpty(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME())) {
+                    referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -295,10 +304,10 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                     //spinyr.setSelection(0);
                     age_type = "Y";
                 } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
-                   // spinyr.setSelection(1);
+                    // spinyr.setSelection(1);
                     age_type = "M";
                 } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("D")) {
-                  //  spinyr.setSelection(2);
+                    //  spinyr.setSelection(2);
                     age_type = "D";
                 }
 

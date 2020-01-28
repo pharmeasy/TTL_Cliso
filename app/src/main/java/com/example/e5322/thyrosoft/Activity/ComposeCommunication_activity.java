@@ -104,6 +104,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private boolean flag = false;
     private boolean audioflag = false;
     private String temp_audioPath = null;
+    boolean mediarecorderflag = false;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -118,10 +119,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
 
         initUI();
 
-        if(!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
+        if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
             offline_img.setVisibility(View.VISIBLE);
             parent_ll.setVisibility(View.GONE);
-        }else {
+        } else {
             offline_img.setVisibility(View.GONE);
             parent_ll.setVisibility(View.VISIBLE);
         }
@@ -659,6 +660,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         try {
                             mediaRecorder.prepare();
                             mediaRecorder.start();
+                            mediarecorderflag = true;
                         } catch (IllegalStateException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -682,7 +684,11 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 } else {
                     ButtonClicked = false;
                     try {
-                        mediaRecorder.stop();
+                        if (mediarecorderflag) {
+                            mediaRecorder.stop();
+                            mediarecorderflag = false;
+                        }
+
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
@@ -763,7 +769,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
-                Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
+              //  Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -774,7 +780,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     mediaPlayer.stop();
                     mediaPlayer.release();
                 }
-                Toast.makeText(activity, "Recording stopped", Toast.LENGTH_LONG).show();
+                //Toast.makeText(activity, "Recording stopped", Toast.LENGTH_LONG).show();
             }
         });
 

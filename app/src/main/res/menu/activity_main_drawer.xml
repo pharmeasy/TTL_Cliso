@@ -173,8 +173,8 @@
             android:id="@+id/otp_credit"
             android:icon="@drawable/ic_otp_credit_mis"
             android:title="OTP credit"
-            android:visible="true" />
-
+            />
+;
     </group>
 
     <group

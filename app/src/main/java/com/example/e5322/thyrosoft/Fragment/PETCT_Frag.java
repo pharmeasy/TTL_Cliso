@@ -911,7 +911,13 @@ public class PETCT_Frag extends Fragment {
                         }
 
                         if (cd.isConnectingToInternet()) {
-                            setServiceData(servicelist);
+                            if (servicelist.size() == 2) {
+                                servicelist.remove(0);
+                                setServiceData(servicelist);
+                            } else {
+                                setServiceData(servicelist);
+                            }
+
                         } else {
                             GlobalClass.toastyError(context, MessageConstants.CHECK_INTERNET_CONN, false);
                         }

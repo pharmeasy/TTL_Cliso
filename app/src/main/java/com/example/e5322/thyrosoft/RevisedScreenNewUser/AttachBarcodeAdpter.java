@@ -70,7 +70,9 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
     private ProgressDialog progressDialog;
     private SharedPreferences prefs;
     private String response1;
-    private boolean setFlagToBack=false;
+    private boolean setFlagToBack = false;
+
+    boolean preventUpdate = false;
 
     public AttachBarcodeAdpter(Offline_edt_activity offline_edt_activity, ArrayList<ScannedBarcodeDetails> setAllTestWithBArcodeList) {
         this.mContext = offline_edt_activity;
@@ -119,7 +121,7 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
             public void onClick(View v) {
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
                 holder.barcode_linear.setVisibility(View.GONE);
-                setFlagToBack=true;
+                setFlagToBack = true;
             }
         });
 
@@ -152,23 +154,23 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
                 String enteredString = s.toString();
 
                 previouseBarcode = holder.enter_barcode.getText().toString();
-                if (storeflag == true) {
+
+           /*     if (storeflag == true) {
                     if (previouseBarcode.equals("")) {
                         holder.reenter.setText("");
                     }
                 } else {
-
                     holder.reenter.setText(enteredString);
-                }
+                }*/
+
 
                 if (enteredString.length() > 8) {
 
                     Toast.makeText(mContext, "Barcode length should be 8 digits", Toast.LENGTH_SHORT).show();
                     holder.reenter.setText("");
 
-                } else {
-
                 }
+
                 //getData = reg_pincode.getText().toString();
                 if (s.length() == 8) {
                     afterBarcode = s.toString();
@@ -218,7 +220,7 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView barcodescanbtn;
         EditText enter_barcode, reenter;
-        ImageView img_edt, setback,element1_iv;
+        ImageView img_edt, setback, element1_iv;
         LinearLayout linearEditbarcode, barcode_linear;
 
         public ViewHolder(View itemView) {
@@ -291,10 +293,10 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
                     for (int i = 0; i < scannedBarcodeDetails.size(); i++) {
                         if (scannedBarcodeDetails.get(i).getBarcode() != null) {
                             if (scannedBarcodeDetails.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
-                                if(setFlagToBack==true){
+                                if (setFlagToBack == true) {
                                     Toast.makeText(mContext, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
                                     enter_barcode.setText("");
-                                }else{
+                                } else {
 
                                 }
                                 flag = true;

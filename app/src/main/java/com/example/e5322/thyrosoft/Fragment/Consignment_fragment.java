@@ -2282,72 +2282,36 @@ Consignment_fragment extends RootFragment {
                                 e.printStackTrace();
                             }
 
-                            /*if (d_convert.equals(compare)) {
-                                dispatch_time.setText("");
-                                Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
+
+
+                            if (d_convert!=null && compare!=null){
+                                if (d_convert.equals(compare) && compare != null) {
+                                    dispatch_time.setText("");
+                                    Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
 //                                dispatch_time.setError(ToastFile.dispt_tm_condition);
-                            } else if (d_convert.after(new Date())) {
-                                dispatch_time.setText("");
-                                Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
+                                } else if (d_convert.after(new Date())) {
+                                    dispatch_time.setText("");
+                                    Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
 //                                dispatch_time.setError(ToastFile.dispt_tm_condition);
-                            } else {
-                                total_time = getDateToShow + " " + getTimetoPass;
-                                total_time = GlobalClass.convertDate(total_time);
-
-                                dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
-
-                                if(arr_date_time!=null){
-                                    if (arr_date_time.before(dispatch_date_time)) {
-                                        dispatch_time.setText(getDateToShow + " " + getTimetoPass);
-                                    } else {
-                                        dispatch_time.setHint("Dispatch Time");
-                                        TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                    }
-                                }else{
-                                    dispatch_time.setText(getDateToShow + " " + getTimetoPass);
-                                    dispatch_time.setError(null);
-                                }*/
-
-                            if (d_convert.equals(compare) && compare != null) {
-                                dispatch_time.setText("");
-                                Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
-//                                dispatch_time.setError(ToastFile.dispt_tm_condition);
-                            } else if (d_convert.after(new Date())) {
-                                dispatch_time.setText("");
-                                Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
-//                                dispatch_time.setError(ToastFile.dispt_tm_condition);
-                            } else {
-                                total_time = getDateToShow + " " + getTimetoPass;
-                                total_time = GlobalClass.convertDate(total_time);
-
-                                dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
-
-                                if (arr_date_time != null) {
-                                    if (arr_date_time.after(dispatch_date_time) && !arr_date_time.equals(dispatch_date_time)) {
-                                        dispatch_time.setText(getDateToShow + " " + getTimetoPass);
-                                    } else {
-                                        expected_arrival_time.setText("");
-                                        TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                    }
                                 } else {
-                                    dispatch_time.setText(getDateToShow + " " + getTimetoPass);
-                                    dispatch_time.setError(null);
+                                    total_time = getDateToShow + " " + getTimetoPass;
+                                    total_time = GlobalClass.convertDate(total_time);
+
+                                    dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
+
+                                    if (arr_date_time != null) {
+                                        if (arr_date_time.after(dispatch_date_time) && !arr_date_time.equals(dispatch_date_time)) {
+                                            dispatch_time.setText(getDateToShow + " " + getTimetoPass);
+                                        } else {
+                                            expected_arrival_time.setText("");
+                                            TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                        }
+                                    } else {
+                                        dispatch_time.setText(getDateToShow + " " + getTimetoPass);
+                                        dispatch_time.setError(null);
+                                    }
                                 }
                             }
-                            /*else {
-                                total_time = getDateToShow + " " + getTimetoPass;
-                                total_time = GlobalClass.convertDate(total_time);
-
-                                dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
-
-                                if (arr_date_time.before(dispatch_date_time)) {
-                                    dispatch_time.setText(getDateToShow + " " + getTimetoPass);
-                                } else {
-                                    dispatch_time.setHint("Dispatch Time");
-                                    TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                }
-
-                            }*/
 
                         }
                     }, CalendarHour, CalendarMinute, false);

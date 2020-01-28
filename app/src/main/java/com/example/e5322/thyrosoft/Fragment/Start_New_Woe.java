@@ -237,7 +237,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     ScrollView scrollView2;
     Button btn_clear_data;
     String getDatefromWOE, halfTime, DateToPass;
-    TextView enetered, enter,tv_mob_note;
+    TextView enetered, enter, tv_mob_note;
     Date getCurrentDateandTime;
     ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
     int flagtoAdjustClisk = 0;
@@ -969,11 +969,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                if (myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
-                    for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
-                        getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
+                if (myPojo != null) {
+                    if (myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
+                        for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
+                            getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
+                        }
                     }
+
                 }
 
                 spinnerTypeName = new ArrayList<>();
@@ -1581,12 +1583,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     }
                                 }
 
+                                if (myPojo != null) {
+                                    if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                        String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
 
-                                String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                        SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                                        ScpAddress.putString("scp_addrr", getAddress);
+                                        ScpAddress.commit();
+                                    }
+                                }
 
-                                SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
-                                ScpAddress.putString("scp_addrr", getAddress);
-                                ScpAddress.commit();
 
                                 GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
                                 for (int i = 0; i < GlobalClass.putData.length; i++) {
@@ -4845,7 +4851,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
                                                 final String getFinalDate = dateShow.getText().toString();
 
-                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                if (referenceBy.equalsIgnoreCase("SELF") || TextUtils.isEmpty(referredID)) {
                                                     new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
                                                             .setContentText("You can register the PGC to avoid 10 Rs debit")
                                                             .setConfirmText("Ok")
@@ -5811,7 +5817,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             prefsEditor1.commit();
 
                             getBtechList = new ArrayList<>();
-                            if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                            if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
                                 for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
                                     // Toast.makeText(MainActivity.this, ""+myPojo.getMASTERS().getBCT_LIST().length, Toast.LENGTH_SHORT).show();
@@ -5825,7 +5831,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                             btechSpinner = new ArrayList<>();
 
-                            if (getBtechList.size() != 0) {
+                            if (getBtechList != null && getBtechList.size() != 0) {
                                 for (int i = 0; i < getBtechList.size(); i++) {
                                     btechSpinner.add(getBtechList.get(i).getNAME());
                                     btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
@@ -5865,7 +5871,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void fetchData() {
-
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         barProgressDialog = new ProgressDialog(getActivity());
         barProgressDialog.setTitle("Kindly wait ...");

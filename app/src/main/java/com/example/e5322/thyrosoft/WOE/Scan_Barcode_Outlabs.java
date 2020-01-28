@@ -164,7 +164,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private TextView companycost_test;
     private String currentText;
     private String barcodeDetailsToStore;
-    private String getOnlyBrcode;
+    private String getOnlyBrcode="";
     private String getTypeName;
     private ImageView back;
     private ImageView element1_iv;
@@ -484,7 +484,16 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     if (barcodeDetailsToStore.length() == 7) {
                         Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
                     } else {
-                        getOnlyBrcode = barcodeDetailsToStore.substring(8);
+
+
+                        try {
+                            if (!TextUtils.isEmpty(barcodeDetailsToStore)) {
+                                getOnlyBrcode = barcodeDetailsToStore.substring(8);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                         if (barcodeDetailsToStore != null) {
                             ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
                             scannedBarcodeDetails.setSpecimen_type(getSampleType);

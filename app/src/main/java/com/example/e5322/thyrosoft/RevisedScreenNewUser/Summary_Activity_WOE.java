@@ -145,7 +145,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
             }
         });
 
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().equals(null)) {
+        if (GlobalClass.summary_models.get(0).getWoeditlist() != null) {
             if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
                 saveAgeType = "Year";
             } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {

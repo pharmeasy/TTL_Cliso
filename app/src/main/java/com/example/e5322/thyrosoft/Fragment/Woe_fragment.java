@@ -188,7 +188,7 @@ public class Woe_fragment extends RootFragment {
 
 
         unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
-        offline_img = (LinearLayout) viewMain.findViewById(R.id.offline_img);
+        offline_img =  viewMain.findViewById(R.id.offline_img);
         wind_up_ll = (LinearLayout) viewMain.findViewById(R.id.wind_up_ll);
         enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
         enetered = (TextView) viewMain.findViewById(R.id.enetered);
