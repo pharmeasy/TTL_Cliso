@@ -213,5 +213,6 @@
     <string name="txt_waste_cnt">Waste count : </string>
     <string name="reason_waste">Reason for Waste : </string>
     <string name="str_mob_credit">Mobile no. gives you credit</string>
+    <string name="searchtest">Search Test Name</string>
 
 </resources>

@@ -441,10 +441,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 barcodesList.addAll(Arrays.asList(testRateMasterModels.get(position).getBarcodes()));
                                 if (testRateMasterModels.get(position).getBillrate() != null)
                                     txt_availcnt.setText(testRateMasterModels.get(position).getBillrate());
-
                                 Log.e(TAG, "onItemSelected barcodesList size : " + barcodesList.size());
-
-
                             }
 
                             @Override

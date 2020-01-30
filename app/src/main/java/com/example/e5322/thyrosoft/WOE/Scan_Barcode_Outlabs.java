@@ -223,6 +223,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 time = time.substring(0, time.length() - 2);
                 time = time + "p.m.";
             }
+
             SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
             SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date1 = null;

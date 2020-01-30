@@ -44,16 +44,15 @@ public class ScansummAdapter extends RecyclerView.Adapter<ScansummAdapter.Viewho
 
                 ScansummaryModel scansummaryModel = scansummlist.get(i);
 
-                GlobalClass.SetText(viewholder.txt_bkdt, scansummaryModel.getAPPOINTMENT_DATE()+"/"+scansummaryModel.getBOOKEDAT());
+                GlobalClass.SetText(viewholder.txt_bkdt, scansummaryModel.getBOOKEDAT());
                 GlobalClass.SetText(viewholder.txt_apppointdt, scansummaryModel.getAPPOINTMENT_DATE());
                 GlobalClass.SetText(viewholder.txt_appointfixon, scansummaryModel.getAPPOINTMENT_DATE());
 
-                GlobalClass.SetText(viewholder.txt_leadid, scansummaryModel.getLEAD_ID());
+                GlobalClass.SetText(viewholder.txt_leadid, scansummaryModel.getLEAD_ID()+" / "+scansummaryModel.getMOBILE());
                 GlobalClass.SetText(viewholder.txt_name, scansummaryModel.getNAME());
-                GlobalClass.SetText(viewholder.txt_mobno, scansummaryModel.getMOBILE());
-                GlobalClass.SetText(viewholder.txt_leadsts, scansummaryModel.getSTATUS());
+                GlobalClass.SetText(viewholder.txt_leadsts, scansummaryModel.getSTATUS()+" / Rs : "+scansummaryModel.getBilling_Rate());
 
-                GlobalClass.SetText(viewholder.txt_billing, "Rs "+scansummaryModel.getBilling_Rate());
+        /*        GlobalClass.SetText(viewholder.txt_billing, "Rs "+scansummaryModel.getBilling_Rate());*/
 
                 viewholder.btn_receipt.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -93,12 +92,10 @@ public class ScansummAdapter extends RecyclerView.Adapter<ScansummAdapter.Viewho
             txt_bkdt = itemView.findViewById(R.id.txt_bk_dt);
             txt_leadid = itemView.findViewById(R.id.txt_leadid);
             txt_name = itemView.findViewById(R.id.txt_name);
-            txt_mobno = itemView.findViewById(R.id.txt_mobile);
             txt_leadsts = itemView.findViewById(R.id.txt_leadsts);
             txt_appointfixon = itemView.findViewById(R.id.txt_app_fix);
             txt_apppointdt = itemView.findViewById(R.id.txt_app_dt);
             btn_receipt = itemView.findViewById(R.id.btn_receipt);
-            txt_billing = itemView.findViewById(R.id.txt_billing);
 
         }
     }

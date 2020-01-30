@@ -7,7 +7,7 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+    /*public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
@@ -20,10 +20,11 @@ public class Api {
     public static String IMAGE_UPLOAD = "http://www.thyrocare.com/API/";
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
-    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";*/
+
 
     //TODO staging
-   /* public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String SGC = "http://www.thyrocare.com/API_BETA/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
@@ -37,7 +38,7 @@ public class Api {
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
     public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
-    public static String count = LIVEAPI + "WO.svc/";*/
+    public static String count = LIVEAPI + "WO.svc/";
 
     //TODO SCANSO
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";

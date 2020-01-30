@@ -77,6 +77,8 @@ public class ScanSummaryActivity extends Fragment {
     ArrayList<ScansummaryModel> scansummaryModelArrayList;
     ScansummAdapter scansummAdapter;
     List<ScansummaryModel> modelList;
+    public static String CURR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    public static String OUTPUT_FORMAT = "dd-MM-yyyy hh:mm aa";
 
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -90,6 +92,7 @@ public class ScanSummaryActivity extends Fragment {
             updateLabel();
         }
     };
+
 
     final DatePickerDialog.OnDateSetListener date1 = new DatePickerDialog.OnDateSetListener() {
 
@@ -124,6 +127,7 @@ public class ScanSummaryActivity extends Fragment {
 
     };
 
+
     private String user;
 
 
@@ -149,7 +153,7 @@ public class ScanSummaryActivity extends Fragment {
     }
 
 
-    private void  updateLabel() {
+    private void updateLabel() {
         putDate = sdf.format(myCalendar.getTime());
         getFormatDate = sdf.format(myCalendar.getTime());
 
@@ -372,9 +376,9 @@ public class ScanSummaryActivity extends Fragment {
                                 String strappo = appodt[0];
 
                                 ScansummaryModel scansummaryModel = new ScansummaryModel();
-                                scansummaryModel.setBOOKEDAT(GlobalClass.formatDate(Constants.YEARFORMATE, Constants.DATEFORMATE, strbkt));
+                                scansummaryModel.setBOOKEDAT(GlobalClass.formatDate(CURR_FORMAT, OUTPUT_FORMAT, scansummaryModelArrayList.get(i).getBOOKEDAT()));
                                 scansummaryModel.setADDRESS(scansummaryModelArrayList.get(i).getADDRESS());
-                                scansummaryModel.setAPPOINTMENT_DATE(GlobalClass.formatDate(Constants.YEARFORMATE, Constants.DATEFORMATE, strappo));
+                                scansummaryModel.setAPPOINTMENT_DATE(GlobalClass.formatDate(CURR_FORMAT, OUTPUT_FORMAT, scansummaryModelArrayList.get(i).getAPPOINTMENT_DATE()));
                                 scansummaryModel.setMOBILE(scansummaryModelArrayList.get(i).getMOBILE());
                                 scansummaryModel.setCENTERID(scansummaryModelArrayList.get(i).getCENTERID());
                                 scansummaryModel.setLEAD_ID(scansummaryModelArrayList.get(i).getLEAD_ID());

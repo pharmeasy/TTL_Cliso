@@ -194,7 +194,8 @@ public class RateCalculatorFragment extends Fragment {
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
     private String TAG = getClass().getSimpleName();
     private TextView txt_more;
-
+    // ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
+    // ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
 
     public RateCalculatorFragment() {
         // Required empty public constructor
@@ -669,10 +670,8 @@ public class RateCalculatorFragment extends Fragment {
                     prefsEditor1.commit();
 
 
-
-
                     try {
-                        if (obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
+                        if (obj != null && obj.getB2B_MASTERS() != null && obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
                             outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
                             outlabdetails_outLabs = new ArrayList<>();
                             if (outlab_testlist_getalltests != null) {
@@ -690,7 +689,7 @@ public class RateCalculatorFragment extends Fragment {
 
                         }
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Log.e(TAG, "ON ERROR MESSAGE -->" + e.getLocalizedMessage());
                     }
 
 
@@ -699,10 +698,11 @@ public class RateCalculatorFragment extends Fragment {
                     //  if (mainModelRate != null && mainModelRate.B2B_MASTERS != null) {
                     b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
                     // }
-                    //finalproductlist.add(b2bmasterarraylistRate.get(0).getTESTS());
+
 
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
+
                     if (b2bmasterarraylistRate != null) {
                         for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                             for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
@@ -710,14 +710,10 @@ public class RateCalculatorFragment extends Fragment {
                                 b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
                                 b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
                                 testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-
                             }
                         }
-                        finalproductlist.clear();
-                        finalproductlist.addAll(testRateMasterModels);
                         callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                     }
-
 
                 }
 
