@@ -63,21 +63,25 @@ class KTReportBarcode_activity : AppCompatActivity(), View.OnClickListener {
         replaceFragment(reportScanFrag)
 
         scan_ll_unselected!!.setOnClickListener {
+
             txt_scan!!.background = resources.getDrawable(R.drawable.enter_button)
             enter_arrow_enter!!.visibility = View.VISIBLE
             txt_scansumm!!.setBackgroundColor(resources.getColor(R.color.lightgray))
             enter_arrow_entered!!.visibility = View.GONE
             val petct_frag = KTReportScanFrag()
             replaceFragment(petct_frag)
+
         }
 
         unchecked_scansumm_ll!!.setOnClickListener {
+
             txt_scansumm!!.background = resources.getDrawable(R.drawable.enter_button)
             enter_arrow_entered!!.visibility = View.VISIBLE
             txt_scan!!.setBackgroundColor(resources.getColor(R.color.lightgray))
             enter_arrow_enter!!.visibility = View.GONE
             val scanSummaryActivity = ReportScansummaryFrag()
             replaceFragment(scanSummaryActivity)
+
         }
 
     }

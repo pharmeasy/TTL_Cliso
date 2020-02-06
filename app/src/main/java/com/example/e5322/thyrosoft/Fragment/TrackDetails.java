@@ -745,12 +745,17 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                             @Override
                                             public void onClick(View v) {
                                                 try {
-                                                    if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
-                                                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
-                                                        startActivity(browserIntent);
+                                                    if (barCodeDetail.get(0).getResponse().equalsIgnoreCase("NO RECORDS FOUND")) {
+                                                        GlobalClass.toastyError(getActivity(), barCodeDetail.get(0).getResponse(), false);
                                                     } else {
-                                                        TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                                        if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
+                                                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(barCodeDetail.get(0).getUrl()));
+                                                            startActivity(browserIntent);
+                                                        } else {
+                                                            TastyToast.makeText(getActivity(), "Receipt is not generated yet!", TastyToast.LENGTH_LONG, TastyToast.WARNING);
+                                                        }
                                                     }
+
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
                                                 }

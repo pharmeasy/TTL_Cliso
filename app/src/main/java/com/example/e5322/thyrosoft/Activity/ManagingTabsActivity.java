@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.SQLException;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -53,6 +54,7 @@ import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTReportBarcode_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -224,12 +226,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         USER_CODE = prefs.getString("USER_CODE", null);
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
-        db = new DatabaseHelper(ManagingTabsActivity.this);
-        db.open();
-        offline_draft_counts = db.getProfilesCount();
-        db.close();
+        try {
+            db = new DatabaseHelper(ManagingTabsActivity.this);
+            db.open();
+            offline_draft_counts = db.getProfilesCount();
+            db.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-        if (CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+        if (!TextUtils.isEmpty(CLIENT_TYPE) && CLIENT_TYPE.equalsIgnoreCase(NHF)) {
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
@@ -1034,8 +1040,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
 
             }
-
-
         } else if (id == R.id.faq_data) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1140,6 +1144,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                 if (responseModel != null) {
                                     Constants.preotp = responseModel.getPriOTP();
                                     // Constants.preotp = "NO";
+
+                                    if (TextUtils.isEmpty(Constants.preotp)){
+                                        Constants.preotp="";
+                                    }
+
                                     Log.e(TAG, "balance ---->" + responseModel.getBalance());
 
                                     SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();

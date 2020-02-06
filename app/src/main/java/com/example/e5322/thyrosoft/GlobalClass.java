@@ -433,12 +433,15 @@ public class GlobalClass {
     }
 
     public static void redirectToLogin(Activity activity) {
-        TastyToast.makeText(activity, relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO);
-
-        Intent i = new Intent(activity, Login.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(i);
-        clearPreference(activity);
+        try {
+            TastyToast.makeText(activity, relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO);
+            Intent i = new Intent(activity, Login.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            activity.startActivity(i);
+            clearPreference(activity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
@@ -1059,6 +1062,30 @@ public class GlobalClass {
             lin_main.setBackground(border);
         }
     }
+
+    public static void showCustomToast(Activity activity, String message) {
+
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            LayoutInflater inflater = activity.getLayoutInflater();
+
+            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
+            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
+            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
+
+            relItem.getBackground().setAlpha(204);
+            txtToast.setText(message);
+
+            Toast toast = new Toast(context);
+            toast.setView(toastRoot);
+            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+    }
+
+
 
 
 }

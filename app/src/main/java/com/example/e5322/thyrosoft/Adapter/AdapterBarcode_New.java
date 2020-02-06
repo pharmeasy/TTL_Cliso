@@ -16,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -238,17 +237,17 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                     holder.scanBarcode.setText(searchBarcode);
                 } else {
                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-/*                    progressDialog = new ProgressDialog(context);
+                    final ProgressDialog progressDialog = new ProgressDialog(context);
                     progressDialog.setTitle("Kindly wait...");
                     progressDialog.setMessage(ToastFile.processing_request);
                     progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
                     progressDialog.setProgress(0);
                     progressDialog.setMax(20);
                     progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.setCancelable(false);*/
-                    //progressDialog.show();
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
-                    final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+                    // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
                     System.out.println("barcode url  --> " + Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode");
                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode"
@@ -469,16 +468,20 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             int position = (int) enter_barcode.getTag();
 
-            String enteredString = s.toString();
-            if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                Toast.makeText(context,
-                        ToastFile.crt_brcd,
-                        Toast.LENGTH_SHORT).show();
-                if (enteredString.length() > 0) {
-                    enter_barcode.setText(enteredString.substring(1));
-                } else {
-                    enter_barcode.setText("");
+            try {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(context,
+                            ToastFile.crt_brcd,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        enter_barcode.setText(enteredString.substring(1));
+                    } else {
+                        enter_barcode.setText("");
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             // Do whatever you want with position
@@ -515,7 +518,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     enter_barcode.setText(searchBarcode);
                                 } else {
                                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-                              /*      progressDialog = new ProgressDialog(context);
+                                    final ProgressDialog progressDialog = new ProgressDialog(context);
                                     progressDialog.setTitle("Kindly wait ...");
                                     progressDialog.setMessage(ToastFile.processing_request);
                                     progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
@@ -523,9 +526,9 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     progressDialog.setMax(20);
                                     progressDialog.setCanceledOnTouchOutside(false);
                                     progressDialog.setCancelable(false);
-                                    progressDialog.show();*/
+                                    progressDialog.show();
 
-                                    final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+                                    // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
                                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
                                             , new Response.Listener<JSONObject>() {
@@ -583,7 +586,6 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
                 }
 
-            } else {
             }
         }
     }

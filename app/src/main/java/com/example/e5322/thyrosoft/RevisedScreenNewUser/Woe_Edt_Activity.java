@@ -265,19 +265,21 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             try {
                 //Converting the input String to Date
-                date = sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
-                //Changing the format of date and storing it in String
-                output = sdfOutput.format(date);
-                //Displaying the date
-                System.out.println(output);
+                if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null) {
+                    date = sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+                    //Changing the format of date and storing it in String
+                    output = sdfOutput.format(date);
+                    //Displaying the date
+                    System.out.println(output);
+                    sct_txt.setText(output);
+                }
+
             } catch (ParseException pe) {
                 pe.printStackTrace();
             }
 
-            sct_txt.setText(output);
 
             ArrayList<String> getOnlyBarcodes = new ArrayList<>();
-
             try {
                 if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
                     for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {

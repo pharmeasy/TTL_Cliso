@@ -30,8 +30,9 @@ public class ReportBarcode_activity extends AppCompatActivity implements View.On
 
 
         TextView txttitle = findViewById(R.id.txt_name);
-        txttitle.setText( getResources().getString(R.string.tltreport));
+        txttitle.setText(getResources().getString(R.string.tltreport));
         txttitle.setTextColor(getResources().getColor(R.color.maroon));
+
 
         scan_ll_unselected = (LinearLayout) findViewById(R.id.scan_ll_unselected);
         unchecked_scansumm_ll = (LinearLayout) findViewById(R.id.unchecked_scansumm_ll);

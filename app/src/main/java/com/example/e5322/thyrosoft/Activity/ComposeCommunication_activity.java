@@ -778,14 +778,15 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             public void onClick(View v) {
                 try{
                     if (mediaPlayer != null) {
-                        mediaPlayer.stop();
-                        mediaPlayer.release();
+                        if (mediaPlayer.isPlaying()){
+                            mediaPlayer.stop();
+                            mediaPlayer.release();
+                        }
+
                     }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-
-                //Toast.makeText(activity, "Recording stopped", Toast.LENGTH_LONG).show();
             }
         });
 

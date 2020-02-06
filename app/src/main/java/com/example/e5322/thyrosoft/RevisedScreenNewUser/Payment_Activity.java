@@ -112,7 +112,7 @@ import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 public class Payment_Activity extends AppCompatActivity {
 
     private static Activity context;
-    private static Global globalData;
+    //  private static Global globalData;
     private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
     public String closing_balance_pref;
@@ -211,7 +211,7 @@ public class Payment_Activity extends AppCompatActivity {
 
         getProfileDetails();
 
-        globalData = new Global(Payment_Activity.this);
+        //globalData = new Global(Payment_Activity.this);
         title.setText("Online Payment");
         txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
         txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
@@ -414,16 +414,18 @@ public class Payment_Activity extends AppCompatActivity {
 
     private void gotopayGatway() {
         if (cd.isConnectingToInternet()) {
-            globalData.showProgressDialog();
+            //globalData.showProgressDialog();
+            final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
             try {
                 PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
-                Log.e(TAG,"ORDER NO URL ---->"+Api.GenerateId + api_key + "/TSP/Generatedordnum");
+                Log.e(TAG, "ORDER NO URL ---->" + Api.GenerateId + api_key + "/TSP/Generatedordnum");
                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
                     public String RES_ID;
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        globalData.hideProgressDialog();
+                        // globalData.hideProgressDialog();
+                        GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                         try {
                             Log.e(TAG, "onResponse: " + response);
                             String finalJson = response.toString();
@@ -443,10 +445,12 @@ public class Payment_Activity extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        globalData.hideProgressDialog();
+                        //globalData.hideProgressDialog();
+                        GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                         if (error != null) {
                         } else {
-                            globalData.hideProgressDialog();
+                            //   globalData.hideProgressDialog();
+                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                             System.out.println(error);
                         }
                     }
@@ -482,7 +486,7 @@ public class Payment_Activity extends AppCompatActivity {
 
                             new AsyncTaskVerifypayUmoneyTransaction(Payu_response).execute();
                         else
-                            globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -542,7 +546,7 @@ public class Payment_Activity extends AppCompatActivity {
         if (cd.isConnectingToInternet())
             new AsyncTaskstartpayUmoneyTransaction(mPaymentParams).execute();
         else
-            globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
 
         //TODO It is recommended to generate hash from server only. Keep your key and salt in server side hash generation code.
         // generateHashFromServer(mPaymentParams);
@@ -743,7 +747,7 @@ public class Payment_Activity extends AppCompatActivity {
         String orderamount, orderno;
         PaymentParams mPayment_Params;
         JSONObject jobj, jobj1, postdata;
-
+        ProgressDialog progressDialog;
 
         public AsyncTaskstartpayUmoneyTransaction(PaymentParams mPaymentParams) {
             this.mPayment_Params = mPaymentParams;
@@ -752,15 +756,15 @@ public class Payment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            globalData.setLoadingGIF(Payment_Activity.this);
-            globalData.showProgressDialog();
+            GlobalClass.setLoadingGIF(Payment_Activity.this);
+            progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
         }
 
         @Override
         protected JSONObject doInBackground(Void... params) {
             String strUrl = BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum";
             Log.e(TAG, "doInBackground: " + strUrl);
-            Log.e(TAG,"CHECKSUM  URL ---->"+BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum");
+            Log.e(TAG, "CHECKSUM  URL ---->" + BASE_URL_TOCHECK + "PaymentGateway.svc/PayUChecksum");
             jobj = new JSONObject();
             try {
                 jobj.put(PAYUMONEYKEY_APIKEY, APIKEYFORPAYMENTGATEWAY_PAYU);
@@ -891,7 +895,7 @@ public class Payment_Activity extends AppCompatActivity {
 
                                 new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else
-                                globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
                             launchSdkUI(payuHashes);// Start PayU transaction request.
 
                         } else {
@@ -908,7 +912,7 @@ public class Payment_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            globalData.hideProgressDialog();
+            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
         }
     }
 
@@ -982,7 +986,7 @@ public class Payment_Activity extends AppCompatActivity {
                         System.out.println("Response from server: " + value);
                         if (value.equalsIgnoreCase("SUCCESS")) {
 
-                            globalData.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..");
+                            GlobalClass.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..");
                             System.out.println("Successful");
 
                         } else {
@@ -1005,6 +1009,7 @@ public class Payment_Activity extends AppCompatActivity {
 
         String orderamount, orderno;
         JSONObject mPayU_response, postdata;
+        ProgressDialog progressDialog;
 
         public AsyncTaskVerifypayUmoneyTransaction(JSONObject mPayUresponse) {
 
@@ -1014,8 +1019,8 @@ public class Payment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            globalData.setLoadingGIF(Payment_Activity.this);
-            globalData.showProgressDialog();
+            GlobalClass.setLoadingGIF(Payment_Activity.this);
+            progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
 
         }
 
@@ -1094,7 +1099,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected void onPostExecute(JSONObject result) {
             super.onPostExecute(result);
 
-            globalData.hideProgressDialog();
+            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
             try {
                 if (result != null) {
                     Log.e(TAG, "onPostExecute: " + result);
@@ -1114,7 +1119,7 @@ public class Payment_Activity extends AppCompatActivity {
                                 flag_for_same_orderno = false;// this flag is to use same order no if transaction fails
                                 new AsyncTaskupdatepaymentstatus(postdata, SUCCESS).execute();
                             } else {
-                                globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
                             }
                         } else {
                             postdata.put(CLIENT_STATUS, FAILURE);
@@ -1123,7 +1128,7 @@ public class Payment_Activity extends AppCompatActivity {
                                 flag_for_same_orderno = true; // this flag is to use same order no transaction fails
                                 new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
                             } else {
-                                globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
                             }
                         }
 
@@ -1135,7 +1140,7 @@ public class Payment_Activity extends AppCompatActivity {
                             flag_for_same_orderno = true; // this flag is to use same order no transaction fails
                             new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
                         } else {
-                            globalData.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
                         }
 
                     }
@@ -1146,13 +1151,14 @@ public class Payment_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            globalData.hideProgressDialog();
+            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
         }
     }
 
     class AsyncTaskupdatepaymentstatus extends AsyncTask<Void, Void, JSONObject> {
         JSONObject postdata = new JSONObject();
         String paymentstatus, currency;
+        ProgressDialog progressDialog;
 
         public AsyncTaskupdatepaymentstatus(JSONObject result, String paymentstatus) {
             this.postdata = result;
@@ -1163,8 +1169,8 @@ public class Payment_Activity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            globalData.setLoadingGIF(Payment_Activity.this);
-            globalData.showProgressDialog();
+            GlobalClass.setLoadingGIF(Payment_Activity.this);
+            progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
 
         }
 
@@ -1217,7 +1223,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected void onPostExecute(JSONObject result) {
             super.onPostExecute(result);
             try {
-                globalData.hideProgressDialog();
+                GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                 if (updatepayment_status_code == 200) {
                     if (result != null) {
                         Log.e(TAG, "onPostExecute: " + result);

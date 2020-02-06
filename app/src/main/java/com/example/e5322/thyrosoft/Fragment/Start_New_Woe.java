@@ -373,6 +373,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
      * @return A new instance of fragment Start_New_Woe.
      */
 
+
     // TODO: Rename and change types and number of parameters
     public static Start_New_Woe newInstance(String param1, String param2) {
         Start_New_Woe fragment = new Start_New_Woe();
@@ -969,8 +970,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 if (myPojo != null) {
-                    if (myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
+                    if (myPojo.getMASTERS()!=null && myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
                         for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
                             getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
                         }
@@ -982,7 +984,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 getTypeListfirst = new ArrayList<>();
 
                 try {
-                    if (myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                    if (myPojo!=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
                         if (myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type() != null) {
                             for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
                                 getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
@@ -990,7 +992,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     }
 
-                    if (myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                    if (myPojo!=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getBRAND_LIST()!=null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
                         if (myPojo.getMASTERS().getBRAND_LIST().length > 1) {
                             if (myPojo.getMASTERS().getBRAND_LIST()[1] != null) {
                                 Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type();
@@ -1043,18 +1045,20 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 String getAddress = "";
 
-                if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                if (myPojo!=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getTSP_MASTER() != null) {
                     getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                     SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
                     ScpAddress.putString("scp_addrr", getAddress);
                     ScpAddress.commit();
                 }
 
-
-                GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
-                for (int i = 0; i < GlobalClass.putData.length; i++) {
-                    GlobalClass.items.add(GlobalClass.putData[i]);
+                if (myPojo!=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getLAB_ALERTS()!=null){
+                    GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
+                    for (int i = 0; i < GlobalClass.putData.length; i++) {
+                        GlobalClass.items.add(GlobalClass.putData[i]);
+                    }
                 }
+
 
                 ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, spinnerBrandName);
                 adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1583,23 +1587,35 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     }
                                 }
 
-                                if (myPojo != null) {
-                                    if (myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                        String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
 
-                                        SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
-                                        ScpAddress.putString("scp_addrr", getAddress);
-                                        ScpAddress.commit();
+                                try {
+                                    if (myPojo != null) {
+                                        if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                            String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+
+                                            SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                                            ScpAddress.putString("scp_addrr", getAddress);
+                                            ScpAddress.commit();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
+                                    GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
+                                }
+
+
+                                if (GlobalClass.putData != null) {
+                                    for (int i = 0; i < GlobalClass.putData.length; i++) {
+                                        //                    System.out.println("length of arraylist"+GlobalClass.putData.length);
+                                        //                    Toast.makeText(getActivity(), "length of arraylist :"+GlobalClass.putData[i], Toast.LENGTH_SHORT).show();
+                                        GlobalClass.items.add(GlobalClass.putData[i]);
                                     }
                                 }
 
-
-                                GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
-                                for (int i = 0; i < GlobalClass.putData.length; i++) {
-                                    //                    System.out.println("length of arraylist"+GlobalClass.putData.length);
-                                    //                    Toast.makeText(getActivity(), "length of arraylist :"+GlobalClass.putData[i], Toast.LENGTH_SHORT).show();
-                                    GlobalClass.items.add(GlobalClass.putData[i]);
-                                }
                                 // Spinner adapter
 
                                 ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
@@ -3155,18 +3171,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         } else {
                                                             Gson gson = new Gson();
                                                             Log.e(TAG, "onResponse: RESPONSE" + response);
-                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                                                barProgressDialog.dismiss();
-                                                            }*/
-                                                           /* if (mContext instanceof Activity) {
-                                                                if (!((Activity) mContext).isFinishing())
-                                                                    barProgressDialog.dismiss();
-                                                            }*/
 
-
-//                                                    getLeadId= getId.toString();
                                                             leadOrderIdMainModel = new LeadOrderIdMainModel();
                                                             leadOrderIdMainModel = gson.fromJson(response.toString(), LeadOrderIdMainModel.class);
+
                                                             if (leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
                                                                 GlobalClass.hideProgress(getActivity(), pd_dialog);
                                                                 for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
@@ -3207,6 +3215,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                     editor.commit();
 
                                                                 }
+
                                                                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LeadOrderID", MODE_PRIVATE);
 
                                                                 leadAddress = sharedPreferences.getString("ADDRESS", null);
@@ -3262,6 +3271,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                             editor.putString("SR_NO", getVial_numbver);
                                                                             // To retrieve object in second Activity
                                                                             startActivity(i);
+
                                                                         }
                                                                     });
                                                                 }
@@ -3310,6 +3320,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             vial_number.setError(ToastFile.vial_no);
                                             Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                                         }
+
                                         if (getLead.equals("")) {
                                             Toast.makeText(getActivity(), "Please enter lead", Toast.LENGTH_SHORT).show();
                                         } else if (getLead.length() < 10) {
@@ -3324,7 +3335,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             editor.putString("SR_NO", getVial_numbver);
                                             // To retrieve object in second Activity
                                             startActivity(i);
-
                                         }
                                     }
                                 });
@@ -5403,8 +5413,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
 
-                                   /* mobile_number_kyc.setVisibility(View.GONE);
-                                    Home_mobile_number_kyc.setVisibility(View.VISIBLE);*/
+
 
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
                                     leadlayout.setVisibility(View.GONE);
@@ -5783,11 +5792,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 }
             }
         });
+
         jsonObjectRequestProfile.setRetryPolicy(new DefaultRetryPolicy(
                 150000,
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueueAddRecheck.add(jsonObjectRequestProfile);
+        jsonObjectRequestProfile.setShouldCache(false);
         Log.e(TAG, "RecheckType: URL" + jsonObjectRequestProfile);
     }
 
@@ -5863,6 +5874,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 }
             });
             requestQueue.add(jsonObjectRequest2);
+            jsonObjectRequest2.setShouldCache(false);
             GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
             Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
         } catch (Exception e) {

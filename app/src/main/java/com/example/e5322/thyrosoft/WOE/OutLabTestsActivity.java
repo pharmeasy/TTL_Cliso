@@ -4,11 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -45,10 +43,8 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
-import com.itextpdf.text.pdf.parser.Line;
 
 import org.json.JSONObject;
 
@@ -195,30 +191,33 @@ public class OutLabTestsActivity extends AppCompatActivity {
                 String code = "";
                 String product = "";
 
-                if (outlabdetails_outLabs.size() != 0) {
-                    for (int i = 0; i < outlabdetails_outLabs.size(); i++) {
-                        final String text = outlabdetails_outLabs.get(i).getName().toLowerCase();
-                        if (outlabdetails_outLabs.get(i).getName() != null || !outlabdetails_outLabs.get(i).getName().equals("")) {
-                            name = outlabdetails_outLabs.get(i).getName().toLowerCase();
-                        }
-                        if (outlabdetails_outLabs.get(i).getCode() != null || !outlabdetails_outLabs.get(i).getCode().equals("")) {
-                            code = outlabdetails_outLabs.get(i).getCode().toLowerCase();
-                        }
-                        if (outlabdetails_outLabs.get(i).getProduct() != null || !outlabdetails_outLabs.get(i).getProduct().equals("")) {
-                            product = outlabdetails_outLabs.get(i).getProduct().toLowerCase();
-                        }
-                        if (text.contains(s1) || (name != null && name.contains(s1)) ||
-                                (code != null && code.contains(s1)) ||
-                                (product != null && product.contains(s1))) {
-                            String testname = outlabdetails_outLabs.get(i).getName();
-                            filteredFiles.add(outlabdetails_outLabs.get(i));
-                        } else {
+                if (outlabdetails_outLabs != null) {
+                    if (outlabdetails_outLabs.size() != 0) {
+                        for (int i = 0; i < outlabdetails_outLabs.size(); i++) {
+                            final String text = outlabdetails_outLabs.get(i).getName().toLowerCase();
+                            if (outlabdetails_outLabs.get(i).getName() != null || !outlabdetails_outLabs.get(i).getName().equals("")) {
+                                name = outlabdetails_outLabs.get(i).getName().toLowerCase();
+                            }
+                            if (outlabdetails_outLabs.get(i).getCode() != null || !outlabdetails_outLabs.get(i).getCode().equals("")) {
+                                code = outlabdetails_outLabs.get(i).getCode().toLowerCase();
+                            }
+                            if (outlabdetails_outLabs.get(i).getProduct() != null || !outlabdetails_outLabs.get(i).getProduct().equals("")) {
+                                product = outlabdetails_outLabs.get(i).getProduct().toLowerCase();
+                            }
+                            if (text.contains(s1) || (name != null && name.contains(s1)) ||
+                                    (code != null && code.contains(s1)) ||
+                                    (product != null && product.contains(s1))) {
+                                String testname = outlabdetails_outLabs.get(i).getName();
+                                filteredFiles.add(outlabdetails_outLabs.get(i));
+                            } else {
 
+                            }
+                            OutLabAdapter outLabRecyclerView = new OutLabAdapter(OutLabTestsActivity.this, filteredFiles);
+                            outlab_list.setAdapter(outLabRecyclerView);
                         }
-                        OutLabAdapter outLabRecyclerView = new OutLabAdapter(OutLabTestsActivity.this, filteredFiles);
-                        outlab_list.setAdapter(outLabRecyclerView);
                     }
                 }
+
             }
         });
 
@@ -233,18 +232,24 @@ public class OutLabTestsActivity extends AppCompatActivity {
 
             if (obj != null) {
                 if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                    outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                    if (obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
+                        outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                    }
+
                     outlabdetails_outLabs = new ArrayList<>();
-                    for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
-                        if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
-                            if (outlabdetails_outLabs != null) {
-                                outlabdetails_outLabs = null;
-                                outlabdetails_outLabs = new ArrayList<>();
-                                outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                    if (outlab_testlist_getalltests != null) {
+                        for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
+                            if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
+                                if (outlabdetails_outLabs != null) {
+                                    outlabdetails_outLabs = null;
+                                    outlabdetails_outLabs = new ArrayList<>();
+                                    outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                                }
+                                callAdapter();
                             }
-                            callAdapter();
                         }
                     }
+
                 } else {
                     getAlltTestData();
                 }
@@ -286,27 +291,36 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         barProgressDialog.dismiss();
                     }
 
-           /*         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(OutLabTestsActivity.this);
-                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                    Gson gson22 = new Gson();
-                    String json22 = gson22.toJson(mainModel);
-                    prefsEditor1.putString("MyObject", json22);
-                    GlobalClass.StoreSyncTime(OutLabTestsActivity.this);
-                    prefsEditor1.commit();*/
-
                     GlobalClass.storeProductsCachingTime(OutLabTestsActivity.this);
 
-                    outlab_testlist_getalltests = mainModel.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                    try {
+                        if (mainModel != null && mainModel.getB2B_MASTERS() != null && mainModel.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
+                            outlab_testlist_getalltests = mainModel.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
                     outlabdetails_outLabs = new ArrayList<>();
-                    for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
-                        if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
-                            if (outlabdetails_outLabs != null) {
-                                outlabdetails_outLabs = null;
-                                outlabdetails_outLabs = new ArrayList<>();
-                                outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+
+                    try {
+                        if (outlab_testlist_getalltests != null) {
+                            for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
+                                if (brandName.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
+                                    if (outlabdetails_outLabs != null) {
+                                        outlabdetails_outLabs = null;
+                                        outlabdetails_outLabs = new ArrayList<>();
+                                        outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                                    }
+                                }
                             }
                         }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+
                     callAdapter();
                 }
             }
@@ -320,12 +334,14 @@ public class OutLabTestsActivity extends AppCompatActivity {
                 }
             }
         });
+
         jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
                 300000,
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "getAlltTestData: URL" + jsonObjectRequestPop);
+
     }
 
     private void callAdapter() {

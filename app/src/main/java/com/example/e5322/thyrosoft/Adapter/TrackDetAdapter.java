@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Mail_Model_Receipt;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
@@ -302,22 +303,27 @@ public class TrackDetAdapter extends BaseAdapter {
                                         model.setResponse(response.optString("response"));
                                         model.setTest(response.optString("test"));
                                         model.setUrl(response.optString("url"));
+                                        model.setRes_id(response.optString("res_id"));
                                         barCodeDetail.add(model);
 
 
 /*{"address":"","amount":"200","amount_word":"Two Hundred ","email":"sarathykodai@gmail.com","mobile":"9842187270","name":"MRS LINDA (31Y\/F)",
 "orderdate":"31-05-2018","res_id":"RES0000","response":"SUCCESS","test":",FT3,FT4,TSH","url":"https:\\www.thyrocare.com\\Wellness\\AutoReceipt\\G7919583.pdf"}*/
+                                        if (model.getRes_id().equalsIgnoreCase(Constants.RES0000)) {
+                                            if (model.getUrl().equalsIgnoreCase("null")) {
+                                                TastyToast.makeText(mContext, model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
-                                        if (model.getUrl().equalsIgnoreCase("null")) {
-                                            TastyToast.makeText(mContext, model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                            } else {
+                                                Intent browserIntent = new Intent(
+                                                        Intent.ACTION_VIEW,
+                                                        Uri.parse(model.getUrl()));
+                                                mContext.startActivity(browserIntent);
 
+                                            }
                                         } else {
-                                            Intent browserIntent = new Intent(
-                                                    Intent.ACTION_VIEW,
-                                                    Uri.parse(model.getUrl()));
-                                            mContext.startActivity(browserIntent);
-
+                                            GlobalClass.toastyError(mContext, model.getResponse(), false);
                                         }
+
 
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -330,7 +336,7 @@ public class TrackDetAdapter extends BaseAdapter {
                         public void onErrorResponse(VolleyError error) {
                             try {
                                 System.out.println("error ala parat " + error);
-                               // TastyToast.makeText(mContext, error.getLocalizedMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                // TastyToast.makeText(mContext, error.getLocalizedMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

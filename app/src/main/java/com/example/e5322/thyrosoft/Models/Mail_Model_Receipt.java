@@ -16,9 +16,18 @@ public class Mail_Model_Receipt {
     String orderdate;
     String test;
     String url;
+    String res_id;
 
     public String getResponse() {
         return response;
+    }
+
+    public String getRes_id() {
+        return res_id;
+    }
+
+    public void setRes_id(String res_id) {
+        this.res_id = res_id;
     }
 
     public void setResponse(String response) {

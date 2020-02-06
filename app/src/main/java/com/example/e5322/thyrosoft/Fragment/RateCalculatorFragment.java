@@ -291,6 +291,7 @@ public class RateCalculatorFragment extends Fragment {
 
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         before_discount_layout2.setVisibility(View.GONE);
+
         SearchManager searchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -379,6 +380,7 @@ public class RateCalculatorFragment extends Fragment {
                 getRatesofB2bandB2C(getSpinnerSelectedItem);
             }
 
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -422,6 +424,7 @@ public class RateCalculatorFragment extends Fragment {
                             if (outlabdetails_outLabs.get(i).getProduct() != null || !outlabdetails_outLabs.get(i).getProduct().equals("")) {
                                 product = outlabdetails_outLabs.get(i).getProduct().toLowerCase();
                             }
+
                             if (text.contains(s1) || (name != null && name.contains(s1)) ||
                                     (code != null && code.contains(s1)) ||
                                     (product != null && product.contains(s1))) {
@@ -463,18 +466,24 @@ public class RateCalculatorFragment extends Fragment {
                 test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                 test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
                 finalproductlist = new ArrayList<>();
-                ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
 
+                ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
-                        b2bmasterarraylistRate.add(obj.B2B_MASTERS);
 
-                        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                            for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                                finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                        if (obj.B2B_MASTERS!=null){
+                            b2bmasterarraylistRate.add(obj.B2B_MASTERS);
+                        }
+
+                        if (b2bmasterarraylistRate!=null){
+                            for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                                    finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                }
                             }
                         }
+
                         callAdapaterTosetData(finalproductlist, totalproductlist);
 
                     }
@@ -694,10 +703,7 @@ public class RateCalculatorFragment extends Fragment {
 
 
                     b2bmasterarraylistRate = new ArrayList<>();
-
-                    //  if (mainModelRate != null && mainModelRate.B2B_MASTERS != null) {
                     b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
-                    // }
 
 
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
@@ -729,16 +735,17 @@ public class RateCalculatorFragment extends Fragment {
                 }
             }
         });
+
         jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
                 300000,
                 3,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
+
     }
 
     private void getDataFromSharedPref() {
-
         SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
         Gson gsondtaa = new Gson();
         String jsondata = appSharedPrefsdata.getString("MyObject", "");
@@ -751,27 +758,33 @@ public class RateCalculatorFragment extends Fragment {
                 getAllTests = new ArrayList<>();
                 totalproductlist = new ArrayList<>();
 
-                finalproductlist = new ArrayList<Base_Model_Rate_Calculator>();
+                finalproductlist = new ArrayList<>();
                 for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+
                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
                         finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                         b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
                         getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                     }
+
                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
                         b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
                         getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
                     }
+
                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
                         b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
                         b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
                         getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                     }
+
                 }
+
                 totalproductlist = getAllTests;
                 callAdapaterTosetData(finalproductlist, totalproductlist);
+
             } else {
                 //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                 getAllproduct();
@@ -787,6 +800,7 @@ public class RateCalculatorFragment extends Fragment {
             @Override
             public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
                 System.out.println("check changed");
+                selectedTestsListRateCal = null;
                 selectedTestsListRateCal = selectedTests;
                 // expAdapter.notifyDataSetChanged();
                 if (selectedTestsListRateCal.size() != 0) {
@@ -806,8 +820,10 @@ public class RateCalculatorFragment extends Fragment {
                     for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
                         totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                     }
+
                     System.out.println("Total value  :" + totalcount);
-                    displayslectedtestRateCal = TextUtils.join(",", getOnlyTestCode);
+//                    displayslectedtestRateCal = TextUtils.join(",", getOnlyTestCode);
+                    displayslectedtestRateCal = null;
                     displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
                     testToPassToAPI = TextUtils.join(",", getOnlyTestCode);
 
@@ -818,7 +834,20 @@ public class RateCalculatorFragment extends Fragment {
                         offline_img.setVisibility(View.GONE);
                         linear_layout_data.setVisibility(View.VISIBLE);
                         fetchData();
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e(TAG, "------run on UI thread----- ");
+                                before_discount_layout2.setVisibility(View.GONE);
+                                before_discount_layout2.setVisibility(View.VISIBLE);
+                            }
+                        });
                     }
+
+
+                    before_discount_layout2.invalidate();
+                    before_discount_layout2.postInvalidate();
 
                 } else if (selectedTestsListRateCal.size() == 0) {
                     show_selected_tests_list_test_ils1.setText("");
@@ -977,6 +1006,9 @@ public class RateCalculatorFragment extends Fragment {
             e.printStackTrace();
         }
 
+        Log.e(TAG, "FETCH DATA --->" + jsonObject);
+        Log.e(TAG, "FETCH DATA URL--->" + Api.RateCal);
+
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.RateCal, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1000,8 +1032,10 @@ public class RateCalculatorFragment extends Fragment {
                             args.putParcelableArrayList("send", selectedTestsListRateCal);
 
                             before_discount_layout2.setVisibility(View.VISIBLE);
+                            Log.e(TAG, "onResponse: " + displayslectedtestRateCalToShow);
                             show_selected_tests_list_test_ils1.setText(displayslectedtestRateCalToShow);
                             show_rates.setText(responseModel.getB2C());
+
 
                             if (access.equals("ADMIN")) {
                                 show_b2b_rates.setText(String.valueOf(totalcount));

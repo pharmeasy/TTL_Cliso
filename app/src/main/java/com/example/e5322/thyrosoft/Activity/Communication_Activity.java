@@ -68,6 +68,7 @@ public class Communication_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.fragment_communication);
 
         /*if (getIntent().getExtras() != null) {
@@ -89,12 +90,14 @@ public class Communication_Activity extends AppCompatActivity {
         expandlistcommunication = (ExpandableListView) findViewById(R.id.expandlistcommunication);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,8 +107,10 @@ public class Communication_Activity extends AppCompatActivity {
                 GlobalClass.goToHome(Communication_Activity.this);
             }
         });
+
         Log.e(TAG, "");
-       /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
+
+        /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
         FromCPL.setTextColor(getResources().getColor(R.color.colorWhite));
         ToCPL.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         ToCPL.setTextColor(getResources().getColor(R.color.colorBlack));*/
@@ -123,6 +128,7 @@ public class Communication_Activity extends AppCompatActivity {
         unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 FromCPL.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_enter.setVisibility(View.GONE);
                 ToCPL.setBackground(getResources().getDrawable(R.drawable.enter_button));
@@ -219,6 +225,7 @@ public class Communication_Activity extends AppCompatActivity {
 */
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Communication_Activity.this);
+
         JSONObject jsonObject = null;
         try {
             SharedPreferences prefs = Communication_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -251,11 +258,8 @@ public class Communication_Activity extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.e(TAG, "onResponse: RESPONSE" + response);
-                  /*  if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }*/
 
+                    Log.e(TAG, "onResponse: RESPONSE" + response);
                     GlobalClass.hideProgress(Communication_Activity.this, progressDialog);
 
                     String getResponse = response.optString("response", "");
@@ -267,9 +271,11 @@ public class Communication_Activity extends AppCompatActivity {
                         communicationRepsponseModel = new CommunicationRepsponseModel();
                         communicationRepsponseModel = gson.fromJson(response.toString(), CommunicationRepsponseModel.class);
                         GlobalClass.commSpinner = new ArrayList<CommunicationMaster>();
+
                         for (int i = 0; i < communicationRepsponseModel.getCommunicationMaster().length; i++) {
                             GlobalClass.commSpinner.add(communicationRepsponseModel.getCommunicationMaster()[i]);
                         }
+
                         setAdapter();
                     }
                 } catch (Exception e) {
@@ -293,6 +299,7 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void setAdapter() {
+
         if (communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
             expandlistcommunication.setVisibility(View.VISIBLE);
             adapter = new ExpandableListCommunication(Communication_Activity.this, communicationRepsponseModel.getInboxes(), new Interface_Pass_CommunicationValue() {
@@ -313,6 +320,7 @@ public class Communication_Activity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.postResponseToCommunication, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
@@ -343,12 +351,14 @@ public class Communication_Activity extends AppCompatActivity {
                             }
                         }
                     });
+
                     PostQueOtp.add(jsonObjectRequest1);
                     GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                     Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
                     Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
                 }
             });
+
             expandlistcommunication.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         } else {

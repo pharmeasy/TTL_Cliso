@@ -79,7 +79,7 @@ public class LedgerFragment extends RootFragment {
     private OnFragmentInteractionListener mListener;
     private boolean flagfor1sttime = false;
     private int selectedMonthPosition = 0;
-    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = getClass().getSimpleName();
 
     public LedgerFragment() {
         // Required empty public constructor
@@ -410,6 +410,8 @@ public class LedgerFragment extends RootFragment {
             }
         });
         queue.add(jsonObjectRequest);
+        /*TODO below line is added for handle out of memory for Volly*/
+        jsonObjectRequest.setShouldCache(false);
         GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
         Log.e(TAG, "GetData: json" + jsonObject);
