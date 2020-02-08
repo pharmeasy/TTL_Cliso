@@ -114,7 +114,7 @@ class KTNoticeboard_activity : AppCompatActivity() {
                             array_notice.add(noticeBoard_model)
                             if (array_notice[0].messages[0].messageCode != null) {
                                 msgCode = array_notice[0].messages[0].messageCode
-                                 val noticeBoard_adapter=Noticeboard_Adapter(this@KTNoticeboard_activity,array_notice,msgCode)
+                                val noticeBoard_adapter = Noticeboard_Adapter(this@KTNoticeboard_activity, array_notice, msgCode)
                             }
 
                         }

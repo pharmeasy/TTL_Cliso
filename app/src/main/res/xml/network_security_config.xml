@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-<!--<domain-config cleartextTrafficPermitted="true">-->
-<!--    <domain includeSubdomains="true">www.charbi.com</domain>-->
-<!--    <domain includeSubdomains="true">www.thyrocare.com</domain>-->
-<!--    <domain includeSubdomains="true">www.charbi.local</domain>-->
-<!--    <domain includeSubdomains="true">http://stagingscanso.nueclear.com</domain>-->
-<!--    <domain includeSubdomains="true">http://scanso.nueclear.com</domain>-->
-<!--</domain-config>-->
     <base-config cleartextTrafficPermitted="true" />
 </network-security-config>

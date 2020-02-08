@@ -309,6 +309,8 @@ public class Constants {
     public static final String user_code = "user_code";
     public static String preotp = "PreOTP";
 
+    public static String DAC = "DAC";
+
 
     public static final String automail = "automail";
     public static final String autosms = "autosms";

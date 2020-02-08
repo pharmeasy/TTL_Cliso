@@ -11,6 +11,7 @@ public class MessageConstants {
     public static String TOKEN_NOT_FOUND = "Token not found";
     public static CharSequence AUTH_FAILED = "Authorization has been denied for this request.";
     public static String PRICEERROR = "NHF rate is zero";
+    public static String NODATA="No Data Available";
 
     public static String BAKTOST = "Kindly click on reset button to back";
 }

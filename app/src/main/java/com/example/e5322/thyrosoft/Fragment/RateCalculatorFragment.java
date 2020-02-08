@@ -22,6 +22,7 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -232,7 +233,10 @@ public class RateCalculatorFragment extends Fragment {
 
         go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
         companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
+
         show_selected_tests_list_test_ils1 = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils1);
+        show_selected_tests_list_test_ils1.setMovementMethod(new ScrollingMovementMethod());
+
         show_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rates);
         b2b_rate_adm = (TextView) viewrate_calfrag.findViewById(R.id.b2b_rate_adm);
         b2bratell = (TextView) viewrate_calfrag.findViewById(R.id.b2bratell);
@@ -286,13 +290,15 @@ public class RateCalculatorFragment extends Fragment {
 
         outlabtestsearch = (EditText) viewrate_calfrag.findViewById(R.id.outlabtestsearch);
         show_selected_tests_list_test_ils = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils);
+        show_selected_tests_list_test_ils.setMovementMethod(new ScrollingMovementMethod());
+
         lineargetselectedtestforILS = (LinearLayout) viewrate_calfrag.findViewById(R.id.lineargetselectedtestforILS);
         lineargetselectedtestforILS.setVisibility(View.GONE);
 
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         before_discount_layout2.setVisibility(View.GONE);
 
-        SearchManager searchManager = (SearchManager) mContext.getSystemService(Context.SEARCH_SERVICE);
+
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -472,11 +478,11 @@ public class RateCalculatorFragment extends Fragment {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                         b2bmasterarraylistRate = new ArrayList<>();
 
-                        if (obj.B2B_MASTERS!=null){
+                        if (obj.B2B_MASTERS != null) {
                             b2bmasterarraylistRate.add(obj.B2B_MASTERS);
                         }
 
-                        if (b2bmasterarraylistRate!=null){
+                        if (b2bmasterarraylistRate != null) {
                             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                                 for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
                                     finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
