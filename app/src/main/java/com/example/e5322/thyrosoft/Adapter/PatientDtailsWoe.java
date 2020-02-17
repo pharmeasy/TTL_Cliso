@@ -50,6 +50,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.ViewHolder> {
     private ArrayList<Patients> patients;
+    public LinearLayoutManager linearLayoutManager;
     private ArrayList<Patients> searchBarcode;
     AlertDialog.Builder builder;
     String user, passwrd, genderId, access, api_key, error, pid, response1, barcodes, resID, saveAgeType, getBtechName;
@@ -78,7 +79,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         public ImageView image_tag;
         public RecyclerView barcode_and_sample_recycler;
         public LinearLayout linear;
-        public LinearLayoutManager linearLayoutManager;
+
         public LinearLayout linear_summary_open;
         ImageView deleteWoe;
 
@@ -89,10 +90,10 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             put_testName = (TextView) v.findViewById(R.id.puttestName);
             image_tag = (ImageView) v.findViewById(R.id.imageView);
             linear = (LinearLayout) v.findViewById(R.id.linear);
-//            linearLayoutManager = new LinearLayoutManager(context1);
-            gridLayoutManager = new GridLayoutManager(context1, 2);
+            linearLayoutManager = new LinearLayoutManager(context1);
+            //gridLayoutManager = new GridLayoutManager(context1, 2);
             barcode_and_sample_recycler = (RecyclerView) v.findViewById(R.id.barcode_and_sample_recycler);
-            barcode_and_sample_recycler.setLayoutManager(gridLayoutManager);
+            barcode_and_sample_recycler.setLayoutManager(linearLayoutManager);
             linear_summary_open = (LinearLayout) v.findViewById(R.id.linear_summary_open);
             deleteWoe = (ImageView) v.findViewById(R.id.deleteWoe);
             searchBarcode = new ArrayList<>();
@@ -179,12 +180,13 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         ArrayList<String> listOfSampleString = new ArrayList<String>(fixedSampleList);
         ArrayList<String> listOfBarcodeString = new ArrayList<String>(fixedBarcodeList);
 
-        if (listOfSampleString.size() < 2) {
+       /* if (listOfSampleString.size() < 2) {
             gridLayoutManager = new GridLayoutManager(context1, 1);
         } else {
             gridLayoutManager = new GridLayoutManager(context1, 2);
-        }
-        holder.barcode_and_sample_recycler.setLayoutManager(gridLayoutManager);
+        }*/
+
+        holder.barcode_and_sample_recycler.setLayoutManager(linearLayoutManager);
         SampleTypeAdpaterWithBarcode outLabRecyclerView = new SampleTypeAdpaterWithBarcode(context1, listOfSampleString, listOfBarcodeString);
         holder.barcode_and_sample_recycler.setAdapter(outLabRecyclerView);
 

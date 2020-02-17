@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.SharedPreferences;
@@ -297,7 +296,6 @@ public class RateCalculatorFragment extends Fragment {
 
         before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         before_discount_layout2.setVisibility(View.GONE);
-
 
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -645,18 +643,6 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     private void getAllproduct() {
-/*
-        barProgressDialog = new ProgressDialog(mContext);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-*/
-
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
 
         RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(mContext);
@@ -715,16 +701,20 @@ public class RateCalculatorFragment extends Fragment {
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
 
-                    if (b2bmasterarraylistRate != null) {
-                        for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                            for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                                finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
-                                b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-                                testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                    try {
+                        if (b2bmasterarraylistRate != null) {
+                            for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                                    finalproduct_list.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                    b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                                    b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                                    testRateMasterModels.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                }
                             }
+                            callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                         }
-                        callAdapaterTosetData(finalproduct_list, testRateMasterModels);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
 
                 }
@@ -872,10 +862,19 @@ public class RateCalculatorFragment extends Fragment {
         String jsondata = appSharedPrefsdata.getString("MyObject", "");
         GetMainModel obj = gsondtaa.fromJson(jsondata, GetMainModel.class);
 
+
         if (getSpinnerSelectedItem != null && !getSpinnerSelectedItem.equals("")) {
             if (getSpinnerSelectedItem.equals("TTL")) {
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+
+                        poptab.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
+                        poptab.setTextColor(getResources().getColor(R.color.colorWhite));
+                        profile_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                        profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
+                        test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+                        test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
+
                         callAdapter(obj);
                         outlabtestsearch.setVisibility(View.GONE);
                         lineargetselectedtestforILS.setVisibility(View.GONE);
@@ -903,6 +902,7 @@ public class RateCalculatorFragment extends Fragment {
                 }
 
             } else {
+
                 outlab_list.setVisibility(View.VISIBLE);
                 outlabtestsearch.setVisibility(View.VISIBLE);
                 containerlist.setVisibility(View.GONE);
@@ -910,6 +910,11 @@ public class RateCalculatorFragment extends Fragment {
                 search_option_ttl.setVisibility(View.GONE);
                 before_discount_layout2.setVisibility(View.GONE);
 
+                if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
+                    Selcted_Outlab_Test.clear();
+                    showTestNmaes.clear();
+                    lineargetselectedtestforILS.setVisibility(View.GONE);
+                }
 
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
@@ -923,6 +928,7 @@ public class RateCalculatorFragment extends Fragment {
                                     outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
                                 }
                                 callAdapterforOutlab();
+
                             }
                         }
                     }
@@ -938,6 +944,7 @@ public class RateCalculatorFragment extends Fragment {
                     "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+
                     try {
                         Log.e(TAG, "onResponse: " + response);
                         Gson gson = new Gson();
@@ -1058,9 +1065,11 @@ public class RateCalculatorFragment extends Fragment {
                             GlobalClass.redirectToLogin(mContext);
                         } else {
                             TastyToast.makeText(mContext, "" + responseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            Log.e(TAG, "TOAST MSG ------>" + responseModel.getRESPONSE());
                         }
                     } else {
                         Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "TOAST MSG ------>" + responseModel.getRESPONSE());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1274,10 +1283,13 @@ public class RateCalculatorFragment extends Fragment {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
+
                     Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);
+
                     holder.checked.setVisibility(View.VISIBLE);
                     holder.check.setVisibility(View.GONE);
+
                     showTestNmaes.add(outlabdetails_outLabs.get(position).getName().toString());
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);
                     show_selected_tests_list_test_ils.setVisibility(View.VISIBLE);
@@ -1288,9 +1300,12 @@ public class RateCalculatorFragment extends Fragment {
                         out_lab_cost_b2b.setVisibility(View.VISIBLE);
                         b2bratell.setVisibility(View.VISIBLE);
                     } else {
+                        out_lab_cost_b2b.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                         out_lab_cost_b2b.setVisibility(View.GONE);
                         b2bratell.setVisibility(View.GONE);
+
                     }
+
                     show_selected_tests_list_test_ils.setText("");
                     out_lab_cost.setText("");
                     out_lab_cost_b2b.setText("");
@@ -1319,7 +1334,6 @@ public class RateCalculatorFragment extends Fragment {
                     Selcted_Outlab_Test.remove(outlabdetails_outLabs.get(position));
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);
                     showTestNmaes.remove(outlabdetails_outLabs.get(position).getName().toString());
-
                     holder.check.setVisibility(View.VISIBLE);
                     holder.checked.setVisibility(View.GONE);
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);

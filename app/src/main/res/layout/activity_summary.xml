@@ -55,6 +55,7 @@
         android:layout_below="@+id/linear_layout"
         android:layout_margin="10dp"
         android:layout_marginBottom="5dp"
+        android:layout_above="@+id/delete_patient_test"
         android:background="@drawable/corner_curve_cement_bg"
         android:orientation="vertical">
 
@@ -627,7 +628,7 @@
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="7dp"
                 android:id="@+id/sample_list"
-                ></android.support.v7.widget.RecyclerView>
+                />
 
 
 

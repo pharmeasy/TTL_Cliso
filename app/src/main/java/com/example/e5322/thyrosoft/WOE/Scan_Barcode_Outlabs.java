@@ -164,7 +164,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private TextView companycost_test;
     private String currentText;
     private String barcodeDetailsToStore;
-    private String getOnlyBrcode="";
+    private String getOnlyBrcode = "";
     private String getTypeName;
     private ImageView back;
     private ImageView element1_iv;
@@ -321,8 +321,12 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             }
         });
 
+
         myDb = new DatabaseHelper(Scan_Barcode_Outlabs.this);
         Intent intent = getIntent();
+        if (intent.hasExtra("FinalBarcodeList"))
+            finalspecimenttypewiselist = intent.getExtras().getParcelableArrayList("FinalBarcodeList");
+
         getTypeName = intent.getStringExtra("getTypeName");
 
         linearLayoutManager1 = new LinearLayoutManager(Scan_Barcode_Outlabs.this);

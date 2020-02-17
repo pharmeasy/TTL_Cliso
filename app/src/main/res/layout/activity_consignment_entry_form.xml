@@ -495,7 +495,7 @@
                     android:layout_weight="4"
                     android:background="@drawable/barcode_button"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="Renter barcode"
+                    android:hint="Re-enter barcode"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
                     android:textSize="15sp" />
@@ -638,7 +638,7 @@
                     android:layout_weight="4"
                     android:background="@drawable/barcode_button"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="Renter barcode"
+                    android:hint="Re-enter barcode"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
                     android:textSize="15sp" />

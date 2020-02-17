@@ -18,6 +18,10 @@
     <string name="upload_trf">*Upload TRF</string>
     <string name="billing">Per Day Billing \n(Last 30 days)</string>
     <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
+    <string name="alphachar">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890 .,-|@</string>
+    <string name="email_id">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890@_.</string>
+    <string name="alphabets">QWERTYUIOPASDFGHJKLZXCVBNM qwertyuioplkjhgfdsazxcvbnm</string>
+
 
     <string name="more">More...</string>
     <string name="less">Less...</string>

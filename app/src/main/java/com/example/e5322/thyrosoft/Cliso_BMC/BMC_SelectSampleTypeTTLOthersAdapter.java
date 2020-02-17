@@ -12,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.Activity.Cliso_SelctSampleActivity;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
+import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 
@@ -32,6 +34,7 @@ public class BMC_SelectSampleTypeTTLOthersAdapter extends RecyclerView.Adapter<B
         this.bmcBaseModelArrayList = TTLOthersSelectedList;
         this.BMC_TTLOthersBarcodeDetailsList = BMC_TTLOthersBarcodeDetailsList;
     }
+
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;

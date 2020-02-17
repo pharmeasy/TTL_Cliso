@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_summary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:id="@+id/activity_summary"
     tools:context=".Fragment.SummaryFragment">
+
     <LinearLayout
+        android:id="@+id/linear_layout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/linear_layout"
-        android:orientation="horizontal"
         android:background="@color/cement_light"
-        android:weightSum="5"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="5">
+
         <ImageView
-            android:src="@drawable/color_back"
-            android:layout_weight="0.5"
+            android:id="@+id/back"
+            style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/back"
-            android:visibility="gone"
-            style="@style/heading_text"
+            android:layout_weight="0.5"
             android:gravity="center"
-            ></ImageView>
+            android:src="@drawable/color_back"
+            android:visibility="gone" />
 
         <TextView
-            android:layout_weight="4"
+            android:id="@+id/title"
+            style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/title"
-            android:textColor="@color/maroon"
-            style="@style/heading_text"
-            android:textStyle="bold"
-            android:text="Summary"
+            android:layout_weight="4"
             android:gravity="center"
-            ></TextView>
+            android:text="Summary"
+            android:textColor="@color/maroon"
+            android:textStyle="bold" />
 
         <ImageView
-            android:src="@drawable/color_homr"
-            android:layout_weight="0.5"
+            android:id="@+id/home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/home"
+            android:layout_weight="0.5"
             android:gravity="center"
-            ></ImageView>
+            android:src="@drawable/color_homr" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
         android:layout_below="@+id/linear_layout"
         android:layout_margin="10dp"
+        android:layout_above="@+id/delete_patient_test"
         android:layout_marginBottom="5dp"
         android:background="@drawable/corner_curve_cement_bg"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="10dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/underline_grey"
             android:gravity="center"
             android:text="Patient Info"
@@ -74,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -104,10 +104,10 @@
                     android:id="@+id/pat_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="TTL/ILS"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
@@ -118,8 +118,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -128,12 +128,12 @@
                 android:id="@+id/sct_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="SCT "
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -148,10 +148,10 @@
                     android:id="@+id/pat_sct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="05-12-2018  09:35 am"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
@@ -159,12 +159,12 @@
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/refbylinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-            android:id="@+id/refbylinear"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -173,12 +173,12 @@
                 android:id="@+id/ref_by_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Ref By "
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -193,10 +193,10 @@
                     android:id="@+id/pat_ref"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Self"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
@@ -207,8 +207,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -217,12 +217,12 @@
                 android:id="@+id/patient_name_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Patient Name "
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -237,22 +237,22 @@
                     android:id="@+id/pat_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ll_patient_age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/ll_patient_age"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -289,13 +289,14 @@
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ll_patient_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/ll_patient_gender"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -338,22 +339,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-            android:visibility="gone"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Sr no :"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -368,38 +369,39 @@
                     android:id="@+id/serial_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/btechlinear"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
-            android:visibility="gone"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
-            android:id="@+id/btechlinear"
+            android:visibility="gone"
             android:weightSum="5">
 
             <TextView
+                android:id="@+id/btechtile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="BTECH "
-                android:id="@+id/btechtile"
 
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -414,36 +416,37 @@
                     android:id="@+id/btech"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/SGCLinearid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
-            android:visibility="gone"
-            android:id="@+id/SGCLinearid"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="SGC :"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -458,36 +461,37 @@
                     android:id="@+id/pat_sgc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/linear_scp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-            android:visibility="gone"
-            android:id="@+id/linear_scp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="SCP :"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -502,35 +506,36 @@
                     android:id="@+id/pat_scp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
                     android:textColor="@color/grey"
                     android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
-            android:visibility="gone"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="5">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Amount Collected :"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
@@ -557,21 +562,20 @@
 
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/sample_info_drawable"
             android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/underline_white"
                 android:gravity="center"
                 android:text="Sample Info"
@@ -579,12 +583,12 @@
                 android:textSize="14dp"
                 android:textStyle="bold" />
 
-            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginRight="7dp"
                 android:layout_marginTop="-1dp"
+                android:layout_marginRight="7dp"
                 android:background="@drawable/corner_grey_bg"
                 android:orientation="horizontal"
                 android:weightSum="5">
@@ -593,16 +597,16 @@
                     android:id="@+id/test_tv"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="2dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_weight="1.4"
-                    android:paddingBottom="3dp"
                     android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
                     android:text="Test "
-                    android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -614,10 +618,10 @@
                         android:id="@+id/tests"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="6dp"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginRight="5dp"
                         android:layout_marginTop="6dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="6dp"
                         android:text="T3-T4-TSH"
                         android:textColor="@color/grey"
                         android:textSize="14sp" />
@@ -626,14 +630,12 @@
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/sample_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="5dp"
                 android:layout_marginRight="7dp"
-                android:id="@+id/sample_list"
-                ></android.support.v7.widget.RecyclerView>
-
+                android:layout_marginBottom="5dp" />
 
 
         </LinearLayout>
@@ -641,67 +643,67 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/delete_patient_test_water"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="3dp"
-        android:visibility="gone"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center|bottom"
-        android:id="@+id/delete_patient_test_water"
+        android:layout_margin="3dp"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_alignParentLeft="true">
+        android:visibility="gone"
+        android:weightSum="2">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1.1"
             android:layout_height="match_parent"
+            android:layout_weight="1.1"
             android:background="@color/colorWhite"
-            android:text="Delete "
             android:gravity="right|center"
-            android:textColor="@color/maroon"
-            />
+            android:text="Delete "
+            android:textColor="@color/maroon" />
+
         <ImageView
             android:layout_width="20dp"
             android:layout_height="match_parent"
             android:background="@color/colorWhite"
             android:gravity="left|center"
-            android:src="@drawable/gray_delete"
-            />
+            android:src="@drawable/gray_delete" />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/delete_patient_test"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="3dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center|bottom"
+        android:layout_margin="3dp"
         android:background="@drawable/maroon_border_white_bg"
-        android:id="@+id/delete_patient_test"
         android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_alignParentLeft="true">
+        android:weightSum="2">
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@color/colorWhite"
-            android:text="Edit "
             android:drawableLeft="@drawable/edt_woe_img"
             android:gravity="right|center"
-            android:textColor="@color/maroon"
-            />
+            android:text="Edit "
+            android:textColor="@color/maroon" />
+
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:background="@color/colorWhite"
-            android:text="/ Delete"
-            android:gravity="left|center"
             android:drawableRight="@drawable/gray_delete"
-            android:textColor="@color/maroon"
-            />
+            android:gravity="left|center"
+            android:text="/ Delete"
+            android:textColor="@color/maroon" />
     </LinearLayout>
 
 </RelativeLayout>

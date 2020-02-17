@@ -1,11 +1,8 @@
 package com.example.e5322.thyrosoft.Kotlin.KTActivity
 
 import android.annotation.TargetApi
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.util.DisplayMetrics
@@ -24,8 +21,6 @@ import com.example.e5322.thyrosoft.Kotlin.KTModels.PromoterFaq
 import com.example.e5322.thyrosoft.Kotlin.KTRetrofit.KTAPIInteface
 import com.example.e5322.thyrosoft.Kotlin.KTRetrofit.KTRetrofitClient
 import com.example.e5322.thyrosoft.R
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_faq_.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -89,9 +84,8 @@ class FAQ_activity : AppCompatActivity() {
     }
 
     fun getAll_FAQ_data() {
-
         val progressDialog = KTGlobalclass().ShowprogressDialog(this@FAQ_activity)
-        val apiInteface = KTRetrofitClient().getInstance()!!.getClient(Api.FAQAPI + Constants.DAC+"/")!!.create(KTAPIInteface::class.java)
+        val apiInteface = KTRetrofitClient().getInstance()!!.getClient(Api.FAQAPI + Constants.DAC + "/")!!.create(KTAPIInteface::class.java)
         val responsecall: Call<KTFAQandANSArray?> = apiInteface.getFAQ()
         Log.e(TAG, "FAQ URL ---->" + responsecall.request().url())
 
@@ -106,13 +100,13 @@ class FAQ_activity : AppCompatActivity() {
 
                     if (response.body()!!.RESPONSE.equals(Constants.SUCCESS, ignoreCase = true)) {
                         val faqmodel = response.body()
-                         if (!faqmodel!!.promoterFaqList.isEmpty()) {
-                             KTGlobalclass().hideProgress(this@FAQ_activity, progressDialog)
+                        if (!faqmodel!!.promoterFaqList.isEmpty()) {
+                            KTGlobalclass().hideProgress(this@FAQ_activity, progressDialog)
                             faq_list_expandable.visibility = View.VISIBLE
                             expandableListAdapter = KTExpandableListAdapter_FAQ(response.body()!!.promoterFaqList as java.util.ArrayList<PromoterFaq>, this@FAQ_activity)
                             faq_list_expandable.setAdapter(expandableListAdapter)
                         } else {
-                             KTGlobalclass().hideProgress(this@FAQ_activity, progressDialog)
+                            KTGlobalclass().hideProgress(this@FAQ_activity, progressDialog)
                             GlobalClass.toastyError(this@FAQ_activity, MessageConstants.NODATA, false)
                             faq_list_expandable.visibility = View.GONE
                         }

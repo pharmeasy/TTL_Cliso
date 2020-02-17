@@ -506,7 +506,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
             card_view = (CardView) itemView.findViewById(R.id.card_view);
 
 //            linearLayoutManager = new LinearLayoutManager(context1);
-            gridLayoutManager = new GridLayoutManager(mContext, 2);
+            gridLayoutManager = new GridLayoutManager(mContext, 1);
             barcode_and_sample_recycler = (RecyclerView) itemView.findViewById(R.id.barcode_and_sample_recycler);
             barcode_and_sample_recycler.setLayoutManager(gridLayoutManager);
             linear_summary_open = (LinearLayout) itemView.findViewById(R.id.linear_summary_open);

@@ -705,7 +705,7 @@
                                 android:layout_weight="4"
                                 android:background="@color/white"
                                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                                android:hint="Renter barcode"
+                                android:hint="Re-enter barcode"
                                 android:inputType="textCapCharacters"
                                 android:maxLength="11"
                                 android:textColorHint="@color/grey"
@@ -888,7 +888,7 @@
                                 android:layout_weight="4"
                                 android:background="@color/white"
                                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                                android:hint="Renter barcode"
+                                android:hint="Re-enter barcode"
                                 android:inputType="textCapCharacters"
                                 android:maxLength="8"
                                 android:textSize="15sp" />

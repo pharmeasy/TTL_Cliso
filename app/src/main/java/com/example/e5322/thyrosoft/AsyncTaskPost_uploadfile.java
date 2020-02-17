@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
 
     ProgressDialog barProgressDialog;
+    Scan_Barcode_Outlabs_Activity scan_barcode_outlabs_activity;
+    Context context;
     private int flag;
     @SuppressLint("StaticFieldLeak")
     private Scan_Barcode_Outlabs scan_barcode_outlabs;
@@ -39,13 +42,11 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
     private Activity mActivity;
     private String apiKey, sourceCode, patientID;
     private ArrayList<TRFModel> trfModelArrayList;
-
     private String TAG = AsyncTaskPost_uploadfile.class.getSimpleName();
     private int status_code;
     @SuppressLint("StaticFieldLeak")
     private Scan_Barcode_ILS_New scan_barcode_ils_new;
     private Offline_woe offline_woe;
-    Context context;
 
     public AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs scan_barcode_outlabs, Activity mActivity, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
         this.scan_barcode_outlabs = scan_barcode_outlabs;
@@ -80,6 +81,18 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         status_code = 0;
         flag = 2;
     }
+
+    public AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity scan_barcode_outlabs_activity, Activity mActivity, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
+        this.scan_barcode_outlabs_activity = scan_barcode_outlabs_activity;
+        this.mActivity = mActivity;
+        this.apiKey = apiKey;
+        this.sourceCode = sourceCode;
+        this.patientID = patientID;
+        this.trfModelArrayList = trfModelArrayList;
+        status_code = 0;
+        flag = 3;
+    }
+
 
    /* public AsyncTaskPost_Multipartfile(Context context, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
         this.context=context;
@@ -171,14 +184,14 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                     if (flag == 0) {
                         scan_barcode_outlabs.getUploadFileResponse();
                     }
-
                     if (flag == 1)
                         scan_barcode_ils_new.getUploadFileResponse();
-
-                    if (flag ==2){
-                        offline_woe=new Offline_woe();
+                    if (flag == 2) {
+                        offline_woe = new Offline_woe();
                     }
-
+                    if (flag == 3) {
+                        scan_barcode_outlabs_activity.getUploadFileResponse();
+                    }
                 } else {
                     Toast.makeText(mActivity, response, Toast.LENGTH_SHORT).show();
                     Toast.makeText(mActivity, ToastFile.IMAGE_UPLOAD_FAILED, Toast.LENGTH_LONG).show();

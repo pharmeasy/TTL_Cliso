@@ -51,6 +51,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -84,6 +85,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import id.zelory.compressor.Compressor;
 
@@ -212,6 +216,19 @@ public class GlobalClass {
         this.context = context;
     }
 
+    public static String generateBookingID() {
+        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder random = new StringBuilder();
+        Random rnd = new Random();
+        while (random.length() < 6) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * alphanumeric.length());
+            random.append(alphanumeric.charAt(index));
+        }
+        String generatedstr = random.toString();
+        return generatedstr;
+    }
+
+
     public static Date dateFromString(String dateStr, SimpleDateFormat dateFormat) {
 
         Date date = null;
@@ -222,6 +239,51 @@ public class GlobalClass {
         }
 
         return date;
+    }
+
+    public static ProgressDialog progress(Context context, boolean autcancel) {
+
+
+        ProgressDialog progress = new ProgressDialog(context);
+        progress.setTitle("Kindly Wait..");
+        progress.setMessage("Processing Request");
+        progress.setCanceledOnTouchOutside(autcancel);
+        progress.setCancelable(autcancel);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        return progress;
+    }
+
+
+    public static void ShowError(final Activity activity, String title, String message, final boolean setFinish) {
+        try {
+            CFAlertDialog.Builder builder = new CFAlertDialog.Builder(activity)
+                    .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setMessage(message)
+                    .addButton("OK", -1, activity.getResources().getColor(R.color.maroon), CFAlertDialog.CFAlertActionStyle.POSITIVE, CFAlertDialog.CFAlertActionAlignment.END, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                            if (setFinish) {
+                                activity.finish();
+                            }
+                        }
+                    });
+
+            builder.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Boolean isValidEmail(String email) {
+        Pattern pattern;
+        Matcher matcher;
+        final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+        pattern = Pattern.compile(EMAIL_PATTERN);
+        matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 
     public static Bitmap rotateImage(Bitmap source, float angle) {
@@ -337,7 +399,7 @@ public class GlobalClass {
         return activeNetworkInfo != null;
     }
 
-    public static ProgressDialog ShowprogressDialog(Context mContext){
+    public static ProgressDialog ShowprogressDialog(Context mContext) {
 
         ProgressDialog barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -1022,6 +1084,7 @@ public class GlobalClass {
         }
 
     }
+
     public void showupdate(String msg) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setTitle(null);
@@ -1084,8 +1147,6 @@ public class GlobalClass {
         }
 
     }
-
-
 
 
 }

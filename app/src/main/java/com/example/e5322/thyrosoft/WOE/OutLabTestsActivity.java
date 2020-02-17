@@ -38,13 +38,16 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Activity.Cliso_SelctSampleActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
@@ -56,6 +59,21 @@ import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 
 public class OutLabTestsActivity extends AppCompatActivity {
     private static final String TAG = OutLabTestsActivity.class.getSimpleName();
+    public static InputFilter EMOJI_FILTER = new InputFilter() {
+
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            for (int index = start; index < end; index++) {
+
+                int type = Character.getType(source.charAt(index));
+
+                if (type == Character.SURROGATE) {
+                    return "";
+                }
+            }
+            return null;
+        }
+    };
     RecyclerView outlab_list;
     EditText outlabtestsearch;
     List<String> showTestNmaes = new ArrayList<>();
@@ -78,21 +96,6 @@ public class OutLabTestsActivity extends AppCompatActivity {
     private String getTypeName;
     private ImageView back;
     private ImageView home;
-    public static InputFilter EMOJI_FILTER = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            for (int index = start; index < end; index++) {
-
-                int type = Character.getType(source.charAt(index));
-
-                if (type == Character.SURROGATE) {
-                    return "";
-                }
-            }
-            return null;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,12 +152,17 @@ public class OutLabTestsActivity extends AppCompatActivity {
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent;
                 if (show_selected_tests_list_test_ils.getText().toString().equals("")) {
                     Toast.makeText(OutLabTestsActivity.this, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     if (Selcted_Outlab_Test != null) {
                         String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
-                        Intent intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
+                        if (Selcted_Outlab_Test.size() == 1) {
+                            intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
+                        } else {
+                            intent = new Intent(OutLabTestsActivity.this, Cliso_SelctSampleActivity.class);
+                        }
                         Bundle bundle = new Bundle();
                         Log.e(TAG, "onClick: " + Selcted_Outlab_Test.size());
                         bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
@@ -163,6 +171,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         GlobalClass.selectedTestnamesOutlab = sendTestNames;
                         intent.putExtras(bundle);
                         startActivity(intent);
+
                     }
                 }
             }
@@ -223,7 +232,11 @@ public class OutLabTestsActivity extends AppCompatActivity {
 
 
         if (GlobalClass.Dayscnt(OutLabTestsActivity.this) >= Constants.DAYS_CNT) {
-            getAlltTestData();
+            if (!GlobalClass.isNetworkAvailable(OutLabTestsActivity.this)) {
+                TastyToast.makeText(OutLabTestsActivity.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+            } else {
+                getAlltTestData();
+            }
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
             Gson gson = new Gson();
@@ -251,10 +264,18 @@ public class OutLabTestsActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    getAlltTestData();
+                    if (!GlobalClass.isNetworkAvailable(OutLabTestsActivity.this)) {
+                        TastyToast.makeText(OutLabTestsActivity.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        getAlltTestData();
+                    }
                 }
             } else {
-                getAlltTestData();
+                if (!GlobalClass.isNetworkAvailable(OutLabTestsActivity.this)) {
+                    TastyToast.makeText(OutLabTestsActivity.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                } else {
+                    getAlltTestData();
+                }
             }
         }
 
@@ -262,7 +283,6 @@ public class OutLabTestsActivity extends AppCompatActivity {
     }
 
     private void getAlltTestData() {
-
         barProgressDialog = new ProgressDialog(OutLabTestsActivity.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -284,9 +304,20 @@ public class OutLabTestsActivity extends AppCompatActivity {
                 if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
                     redirectToLogin(OutLabTestsActivity.this);
                 } else {
+            /*        Gson gson = new Gson();
+                    mainModel = new MainModel();
+                    mainModel = gson.fromJson(response.toString(), MainModel.class);*/
+
                     Gson gson = new Gson();
                     mainModel = new MainModel();
                     mainModel = gson.fromJson(response.toString(), MainModel.class);
+                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(OutLabTestsActivity.this);
+                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                    Gson gson22 = new Gson();
+                    String json22 = gson22.toJson(mainModel);
+                    prefsEditor1.putString("MyObject", json22);
+                    prefsEditor1.commit();
+
                     if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
                     }
@@ -350,10 +381,14 @@ public class OutLabTestsActivity extends AppCompatActivity {
 
     }
 
-    private class OutLabAdapter extends RecyclerView.Adapter<OutLabAdapter.ViewHolder> {
-        boolean flag = true;
-        Context context;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
+    private class OutLabAdapter extends RecyclerView.Adapter<OutLabAdapter.ViewHolder> {
+        Context context;
         ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs;
 
         public OutLabAdapter(OutLabTestsActivity outLabTestsActivity, ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs) {
@@ -382,27 +417,27 @@ public class OutLabTestsActivity extends AppCompatActivity {
                     holder.un_check.setVisibility(View.GONE);
                 }
             }
+
+            holder.parent_ll.setTag(outlabdetails_outLabs.get(position));
             holder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if (holder.un_check.getVisibility() == View.VISIBLE) {
+
                         if (brandName.equals("TTL-OTHERS")) {
                             if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
-//                            Alter box
-                                Selcted_Outlab_Test.clear();
+                                //  Selcted_Outlab_Test.clear();
                                 Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                                 notifyDataSetChanged();
-
                             } else {
                                 Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                             }
+
                             if (showTestNmaes != null && showTestNmaes.size() > 0) {
-//                            Alter box
-                                showTestNmaes.clear();
+                                //showTestNmaes.clear();
                                 showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
                                 notifyDataSetChanged();
-
                             } else {
                                 showTestNmaes.add(outlabdetails_outLabs.get(position).getName());
                             }
@@ -445,6 +480,11 @@ public class OutLabTestsActivity extends AppCompatActivity {
         }
 
         @Override
+        public long getItemId(int position) {
+            return super.getItemId(position);
+        }
+
+        @Override
         public int getItemViewType(int position) {
             return position;
         }
@@ -465,11 +505,5 @@ public class OutLabTestsActivity extends AppCompatActivity {
                 parent_ll = (LinearLayout) itemView.findViewById(R.id.parent_ll);
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

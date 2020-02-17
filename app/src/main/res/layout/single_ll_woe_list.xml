@@ -82,7 +82,7 @@
                 android:layout_marginLeft="3dp"
                 android:layout_weight="3.4"
                 android:maxLines="2"
-                android:text="Android Version sijhdjkhsjkhfjkhdjkhjkdfjkhdfjdfjksdjdjdhjkdhjksdhjkhjksdfjdfjkdjksd"
+                android:text="Android Version"
                 android:textColor="@color/grey"
                 android:textSize="9sp" />
         </LinearLayout>

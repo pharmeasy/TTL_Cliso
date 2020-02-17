@@ -548,6 +548,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 scanIntegrator.initiateScan();
             }
         });
+
         recycler_barcode.setAdapter(bmc_scanBarcodeAdapter);
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -827,6 +828,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                         if (POstQue == null) {
                             POstQue = Volley.newRequestQueue(BMC_Scan_BarcodeActivity.this);
                         }
+
                         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {

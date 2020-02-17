@@ -1,4 +1,4 @@
-package com.example.e5322.thyrosoft.Cliso_BMC;
+package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,15 +17,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_Scan_BarcodeActivity;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_SelectSampleTypeTTLAdapter;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_SelectSampleTypeTTLOthersAdapter;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
-import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.WOE.ProductWithBarcode;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,45 +53,35 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
     BMC_SelectSampleTypeTTLOthersAdapter bmc_selectSampleTypeTTLOthersAdapter;
     BMC_SelectSampleTypeTTLAdapter bmc_selectSampleTypeTTLAdapter;
     ScannedBarcodeDetails scannedBarcodeDetails;
-    private MyPojo myPojo;
+    ArrayList<String> getTestNameToPAss;
     private ArrayList<String> temparraylist;
     private ArrayList<ProductWithBarcode> getproductDetailswithBarcodes;
     private String getAmount;
     private String testsnames;
     private String user, passwrd, access, api_key;
     private String TAG = BMC_SelectSampleTypeActivity.this.getClass().getSimpleName();
-    private Global globalClass;
     private String testsCodesPassingToProduct;
     private ArrayList<String> locationlist;
     private boolean sampleTypeNULL = false;
     private AlertDialog.Builder alertDialogBuilder;
-    ArrayList<String> getTestNameToPAss;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bmc_select_sample_type);
-
-        rec_sample_type_ttlothers = (RecyclerView) findViewById(R.id.rec_sample_type_ttlothers);
-        rec_sample_type_ttl = (RecyclerView) findViewById(R.id.rec_sample_type_ttl);
-        show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
-        tv_ttl = (TextView) findViewById(R.id.tv_ttl);
-        title = (TextView) findViewById(R.id.title);
-        next = (Button) findViewById(R.id.next);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-
-        prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        brandName = prefe.getString("WOEbrand", null);
-        typeName = prefe.getString("woetype", null);
-
-        if (globalClass.checkForApi21()) {
+        if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
+
+        initUI();
+
+        prefe = getSharedPreferences(Constants.PREF_SAVEPATIENTDETAILS, MODE_PRIVATE);
+        brandName = prefe.getString("WOEbrand", null);
+        typeName = prefe.getString("woetype", null);
 
         title.setText("Select sample types");
 
@@ -100,28 +90,24 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
         BMC_FinalBarcodeDetailsList = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
-        selctedTest = bundle.getParcelableArrayList("key");
+        selctedTest = bundle.getParcelableArrayList("getOutlablist");
 
-        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        prefs = getSharedPreferences(Constants.PREF_USER_DETAILS, MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-        SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(BMC_SelectSampleTypeActivity.this);
-        Gson gsonbtech = new Gson();
-        String jsonbtech = appSharedPrefsbtech.getString("getBtechnames", "");
-        myPojo = gsonbtech.fromJson(jsonbtech, MyPojo.class);
-
         getTestNameToPAss = new ArrayList<>();
         getAmount = bundle.getString("payment");
         testsnames = bundle.getString("writeTestName");
+        testsnames = bundle.getString("selectedTest");
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
         testsCodesPassingToProduct = TextUtils.join(",", getTestNameToPAss);
 
         show_selected_tests_data.setText(testsnames);
         System.out.println("" + selctedTest.toString());
-        prefs = getSharedPreferences("showSelectedTest", MODE_PRIVATE);
+        prefs = getSharedPreferences(Constants.PREF_SHOWSELECTEDTEST, MODE_PRIVATE);
 
         linearLayoutManager = new LinearLayoutManager(BMC_SelectSampleTypeActivity.this);
         rec_sample_type_ttlothers.setLayoutManager(linearLayoutManager);
@@ -131,21 +117,7 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
 
         temparraylist = new ArrayList<>();
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(BMC_SelectSampleTypeActivity.this, ManagingTabsActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
+        initListeners();
 
         //TODO display TTL test sample types
         if (selctedTest != null) {
@@ -210,7 +182,9 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
         if (BMC_TTLOthersBarcodeDetailsList != null) {
             BMC_TTLOthersBarcodeDetailsList = null;
         }
+
         BMC_TTLOthersBarcodeDetailsList = new ArrayList<>();
+
         for (int i = 0; i < TTLOthersSelectedList.size(); i++) {
             ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
             scannedBarcodeDetails.setLocation("TTL-OTHERS");
@@ -231,11 +205,39 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
             }
         });
         rec_sample_type_ttlothers.setAdapter(bmc_selectSampleTypeTTLOthersAdapter);
+    }
+
+    private void initUI() {
+        rec_sample_type_ttlothers = (RecyclerView) findViewById(R.id.rec_sample_type_ttlothers);
+        rec_sample_type_ttl = (RecyclerView) findViewById(R.id.rec_sample_type_ttl);
+        show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
+        tv_ttl = (TextView) findViewById(R.id.tv_ttl);
+        title = (TextView) findViewById(R.id.title);
+        next = (Button) findViewById(R.id.next);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+    }
+
+    private void initListeners() {
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(BMC_SelectSampleTypeActivity.this);
+            }
+        });
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String selectedTestNames = show_selected_tests_data.getText().toString();
+
                 for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
                     if (BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type() == null || BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type().isEmpty()) {
                         sampleTypeNULL = true;
@@ -305,11 +307,5 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        finish();
-        super.onBackPressed();
     }
 }

@@ -535,6 +535,10 @@ public class Constants {
     public static String THYROTEST = "Thyro";
     public static String THYRONAME = "";
 
+    public static String PREF_SAVEPATIENTDETAILS = "savePatientDetails";
+    public static String PREF_USER_DETAILS = "Userdetails";
+    public static String PREF_SHOWSELECTEDTEST = "showSelectedTest";
+
     /**
      * test Color Code
      */

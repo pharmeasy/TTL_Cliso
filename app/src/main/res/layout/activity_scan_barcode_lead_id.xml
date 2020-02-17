@@ -243,7 +243,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:background="@drawable/barcode_button"
-                    android:hint="Renter barcode"
+                    android:hint="Re-enter barcode"
                     android:maxLength="8" />
 
                 <ImageView

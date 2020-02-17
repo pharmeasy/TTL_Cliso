@@ -128,6 +128,10 @@
             android:visible="false" />
     </group>
 
+
+
+
+
     <group
         android:id="@+id/group11"
         android:checkableBehavior="single">
@@ -198,6 +202,16 @@
       </group>
 
     <group
+        android:id="@+id/group211"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/leadgenrate"
+            android:icon="@drawable/leadc"
+            android:title="Generate Lead" />
+
+    </group>
+
+    <group
         android:id="@+id/group25"
         android:checkableBehavior="single">
         <item
@@ -205,6 +219,8 @@
             android:icon="@drawable/cart"
             android:title="Download Thyroshop" />
     </group>
+
+
 
     <group
         android:id="@+id/group15"
@@ -223,6 +239,8 @@
             android:icon="@drawable/notification"
             android:title="Notification" />
     </group>
+
+
 
     <group
         android:id="@+id/group17"

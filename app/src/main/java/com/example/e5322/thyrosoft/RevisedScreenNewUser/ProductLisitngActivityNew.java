@@ -772,7 +772,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
         if (GlobalClass.Dayscnt(ProductLisitngActivityNew.this) >= Constants.DAYS_CNT) {
-            getAllproduct();
+            if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+            } else {
+                getAllproduct();
+            }
         } else {
             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
             Gson gson = new Gson();
@@ -783,10 +787,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                     callAdapter(obj);
                 } else {
-                    getAllproduct();
+                    if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                        TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        getAllproduct();
+                    }
                 }
             } else {
-                getAllproduct();
+                if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                    TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                } else {
+                    getAllproduct();
+                }
             }
         }
     }
@@ -818,6 +830,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     redirectToLogin(ProductLisitngActivityNew.this);
                 } else {
                     try {
+
                         Gson gson = new Gson();
                         mainModel = new MainModel();
                         mainModel = gson.fromJson(response.toString(), MainModel.class);

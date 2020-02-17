@@ -862,6 +862,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
 
+        } else if (id == R.id.leadgenrate) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, LeadGenerationActivity.class);
+                startActivity(i);
+
+            }
+
         } else if (id == R.id.ledger) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1145,8 +1154,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     Constants.preotp = responseModel.getPriOTP();
                                     // Constants.preotp = "NO";
 
-                                    if (TextUtils.isEmpty(Constants.preotp)){
-                                        Constants.preotp="";
+                                    if (TextUtils.isEmpty(Constants.preotp)) {
+                                        Constants.preotp = "";
                                     }
 
                                     Log.e(TAG, "balance ---->" + responseModel.getBalance());
