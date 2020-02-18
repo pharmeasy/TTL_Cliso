@@ -76,6 +76,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -144,6 +145,7 @@ public class RateCalculatorFragment extends Fragment {
     Button resetbutton;
     List<String> showTestNmaesRateCal;
     List<String> getOnlyTestCode;
+    List<String> getOnlyTestCode1;
     List<String> passToApi;
     Test_Rate_Fragment test_rate_fragment;
     SharedPreferences prefs;
@@ -235,6 +237,7 @@ public class RateCalculatorFragment extends Fragment {
 
         show_selected_tests_list_test_ils1 = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils1);
         show_selected_tests_list_test_ils1.setMovementMethod(new ScrollingMovementMethod());
+
 
         show_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rates);
         b2b_rate_adm = (TextView) viewrate_calfrag.findViewById(R.id.b2b_rate_adm);
@@ -802,14 +805,25 @@ public class RateCalculatorFragment extends Fragment {
                 if (selectedTestsListRateCal.size() != 0) {
                     showTestNmaesRateCal = new ArrayList<>();
                     getOnlyTestCode = new ArrayList<>();
+                    HashSet<String> hashSet = new HashSet<String>();
                     ArrayList<Integer> Totalcunt = new ArrayList<>();
+
                     for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                         showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
                         if (selectedTestsListRateCal.get(i).getBarcodes().length != 0)
                             for (int j = 0; j < selectedTestsListRateCal.get(i).getBarcodes().length; j++) {
                                 getOnlyTestCode.add(selectedTestsListRateCal.get(i).getBarcodes()[j].getCode());
+
                             }
                     }
+
+
+                    if (getOnlyTestCode != null) {
+                        hashSet.addAll(getOnlyTestCode);
+                        getOnlyTestCode.clear();
+                        getOnlyTestCode.addAll(hashSet);
+                    }
+
 
                     totalcount = 0;
 
@@ -818,7 +832,7 @@ public class RateCalculatorFragment extends Fragment {
                     }
 
                     System.out.println("Total value  :" + totalcount);
-//                    displayslectedtestRateCal = TextUtils.join(",", getOnlyTestCode);
+
                     displayslectedtestRateCal = null;
                     displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
                     testToPassToAPI = TextUtils.join(",", getOnlyTestCode);
@@ -867,7 +881,7 @@ public class RateCalculatorFragment extends Fragment {
             if (getSpinnerSelectedItem.equals("TTL")) {
                 if (obj != null) {
                     if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-
+                        show_selected_tests_list_test_ils1.scrollTo(0, 0);
                         poptab.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
                         poptab.setTextColor(getResources().getColor(R.color.colorWhite));
                         profile_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
@@ -902,7 +916,7 @@ public class RateCalculatorFragment extends Fragment {
                 }
 
             } else {
-
+                show_selected_tests_list_test_ils.scrollTo(0, 0);
                 outlab_list.setVisibility(View.VISIBLE);
                 outlabtestsearch.setVisibility(View.VISIBLE);
                 containerlist.setVisibility(View.GONE);
@@ -1033,6 +1047,7 @@ public class RateCalculatorFragment extends Fragment {
                     if (responseModel != null) {
                         if (!GlobalClass.isNull(responseModel.getRESID()) && responseModel.getRESID().equalsIgnoreCase(Constants.RES0000)) {
                             test_rate_fragment = new Test_Rate_Fragment();
+
                             Bundle args = new Bundle();
                             args.putString("B2B", responseModel.getB2B());
                             args.putString("B2C", responseModel.getB2C());

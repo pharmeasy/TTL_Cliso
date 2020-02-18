@@ -326,7 +326,7 @@ public class INAPP_UPDATE implements ActivityCompat.OnRequestPermissionsResultCa
 
             if (apkFile.exists()) {
                 Uri uri_path;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                     uri_path = FileProvider.getUriForFile(context, context.getPackageName() + ".imageprovider", apkFile);
                     Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
                     intent.setDataAndType(uri_path, Constants.APKTYPE);
