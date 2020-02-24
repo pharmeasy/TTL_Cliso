@@ -798,10 +798,11 @@ public class RateCalculatorFragment extends Fragment {
         rateCAlAdapter = new RateCAlAdapter(mContext, finalproductlist, totalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
             @Override
             public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
+
                 System.out.println("check changed");
                 selectedTestsListRateCal = null;
                 selectedTestsListRateCal = selectedTests;
-                // expAdapter.notifyDataSetChanged();
+
                 if (selectedTestsListRateCal.size() != 0) {
                     showTestNmaesRateCal = new ArrayList<>();
                     getOnlyTestCode = new ArrayList<>();
@@ -843,12 +844,12 @@ public class RateCalculatorFragment extends Fragment {
                     } else {
                         offline_img.setVisibility(View.GONE);
                         linear_layout_data.setVisibility(View.VISIBLE);
+
                         fetchData();
 
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.e(TAG, "------run on UI thread----- ");
                                 before_discount_layout2.setVisibility(View.GONE);
                                 before_discount_layout2.setVisibility(View.VISIBLE);
                             }
@@ -863,10 +864,13 @@ public class RateCalculatorFragment extends Fragment {
                     show_selected_tests_list_test_ils1.setText("");
                     show_rates.setText("0");
                     before_discount_layout2.setVisibility(View.GONE);
+
                 }
             }
         });
+
         containerlist.setAdapter(rateCAlAdapter);
+
     }
 
     private void getRatesofB2bandB2C(String getSpinnerSelectedItem) {

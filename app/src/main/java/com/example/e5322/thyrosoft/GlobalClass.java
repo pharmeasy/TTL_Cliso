@@ -10,6 +10,8 @@ import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,6 +21,7 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.media.ExifInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -26,6 +29,7 @@ import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,6 +59,7 @@ import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
@@ -77,6 +82,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -91,6 +98,8 @@ import java.util.regex.Pattern;
 
 import id.zelory.compressor.Compressor;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.ToastFile.relogin;
 
@@ -216,17 +225,6 @@ public class GlobalClass {
         this.context = context;
     }
 
-    public static String generateBookingID() {
-        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder random = new StringBuilder();
-        Random rnd = new Random();
-        while (random.length() < 6) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * alphanumeric.length());
-            random.append(alphanumeric.charAt(index));
-        }
-        String generatedstr = random.toString();
-        return generatedstr;
-    }
 
 
     public static Date dateFromString(String dateStr, SimpleDateFormat dateFormat) {
@@ -253,6 +251,49 @@ public class GlobalClass {
         return progress;
     }
 
+    public static boolean checkAudioPermission(Activity mActivity) {
+        int result = ContextCompat.checkSelfPermission(mActivity, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(mActivity, RECORD_AUDIO);
+        return result == PackageManager.PERMISSION_GRANTED && result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    public static String generateBookingID() {
+        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder random = new StringBuilder();
+        Random rnd = new Random();
+        while (random.length() < 6) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * alphanumeric.length());
+            random.append(alphanumeric.charAt(index));
+        }
+        String generatedstr = random.toString();
+        return generatedstr;
+    }
+
+    public static void requestAudioPermission(Activity activity, int code) {
+        ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, code);
+    }
+
+    public static boolean isWhatsApp(Activity mActivity) {
+        try {
+            PackageManager pm = mActivity.getPackageManager();
+            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            Global.showCustomToast(mActivity, MessageConstants.WHATSAPP_NOT_INSTALLED);
+        }
+        return false;
+    }
+
+    public static URL buildWhatsappUrl(Uri myUri) {
+        URL finalUrl = null;
+        try {
+            finalUrl = new URL(myUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return finalUrl;
+    }
 
     public static void ShowError(final Activity activity, String title, String message, final boolean setFinish) {
         try {

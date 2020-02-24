@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -81,6 +80,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private static Dialog dialog;
     Spinner spinnercomm;
     EditText commuTXT;
+    boolean isrecording = false;
     ImageView back, home, iv_tick_voice, iv_tick_img, iv_preview, iv_playAudio;
     LinearLayout parent_ll, offline_img;
     Button sendcomm, btn_reset;
@@ -683,15 +683,20 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     }
                 } else {
                     ButtonClicked = false;
+
                     try {
                         if (mediarecorderflag) {
-                            mediaRecorder.stop();
-                            mediarecorderflag = false;
+                            if (mediaRecorder != null) {
+                                mediaRecorder.release();
+                                mediaRecorder.stop();
+                                mediarecorderflag = false;
+                            }
                         }
 
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
+
                     tv_record_title.setText(getString(R.string.start_record));
                     closeButton.setClickable(true);
                     img_record.setImageResource(R.drawable.ic_start_record);
@@ -769,22 +774,22 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
-              //  Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
+                //  Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
             }
         });
 
         btn_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try{
+                try {
                     if (mediaPlayer != null) {
-                        if (mediaPlayer.isPlaying()){
+                        if (mediaPlayer.isPlaying()) {
                             mediaPlayer.stop();
                             mediaPlayer.release();
                         }
 
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

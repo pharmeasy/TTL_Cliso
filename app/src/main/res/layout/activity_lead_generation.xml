@@ -28,7 +28,7 @@
             android:layout_gravity="center"
             android:layout_weight="4"
             android:gravity="center"
-            android:text="Lead Generation"
+            android:text="Generate Lead"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -66,8 +66,7 @@
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="Enter Name*"
                     android:maxLength="40"
-                    android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                    android:padding="@dimen/_5sdp" />
 
                 <EditText
                     android:id="@+id/edt_mobile"
@@ -81,7 +80,7 @@
                     android:inputType="number"
                     android:maxLength="10"
                     android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                    />
 
                 <EditText
                     android:id="@+id/edt_mail"
@@ -92,10 +91,10 @@
                     android:digits="@string/email_id"
                     android:drawableLeft="@drawable/email24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Email*"
+                    android:hint="Email"
                     android:maxLength="60"
                     android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                   />
 
                 <EditText
                     android:id="@+id/edt_address"
@@ -105,10 +104,11 @@
                     android:background="@drawable/custom_border_edittext_blue"
                     android:drawableLeft="@drawable/address"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Address*"
+                    android:digits="@string/addressvalidation"
+                    android:hint="Address"
                     android:maxLength="200"
                     android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                    />
 
                 <EditText
                     android:id="@+id/edt_pincode"
@@ -118,19 +118,103 @@
                     android:background="@drawable/custom_border_edittext_blue"
                     android:drawableLeft="@drawable/pincode24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Pincode*"
+                    android:hint="Pincode"
                     android:inputType="number"
                     android:maxLength="6"
-                    android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                    android:padding="@dimen/_5sdp" />
 
                 <Spinner
                     android:id="@+id/spr_package"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
                     android:background="@drawable/grey_curve_border"
                     android:padding="@dimen/_5sdp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_5"
+                    android:padding="@dimen/_5sdp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/rel_upload_img"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2">
+
+                        <TextView
+                            android:id="@+id/tv_upload_img"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/light_custom_border"
+                            android:hint="Prescription"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_18" />
+
+                        <ImageView
+                            android:id="@+id/img_upload_img"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/dp_3"
+                            app:srcCompat="@drawable/ic_camera_black" />
+
+                        <ImageView
+                            android:id="@+id/img_tick"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/dp_3"
+                            android:visibility="invisible"
+                            app:srcCompat="@drawable/ic_tick_green" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rel_upload_voice"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        android:layout_weight="1.4">
+
+                        <TextView
+                            android:id="@+id/tv_upload_voice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/light_custom_border"
+                            android:hint="Voice"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_18" />
+
+                        <ImageView
+                            android:id="@+id/img_upload_voice"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/dp_3"
+                            app:srcCompat="@drawable/ic_record_voice" />
+
+                        <ImageView
+                            android:id="@+id/img_tick2"
+                            android:layout_width="@dimen/dp_30"
+                            android:layout_height="@dimen/dp_35"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerInParent="true"
+                            android:layout_marginRight="@dimen/dp_3"
+                            android:visibility="invisible"
+                            app:srcCompat="@drawable/ic_tick_green" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/edt_remarks"
@@ -140,10 +224,11 @@
                     android:background="@drawable/custom_border_edittext_blue"
                     android:drawableLeft="@drawable/remark24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Remarks"
+                    android:hint="Test/Profiles/Scans"
+                    android:digits="@string/addressvalidation"
                     android:maxLength="200"
                     android:padding="@dimen/_5sdp"
-                    android:textColorHint="@color/black" />
+                    />
 
             </LinearLayout>
 

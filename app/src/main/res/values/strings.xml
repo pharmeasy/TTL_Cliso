@@ -205,7 +205,13 @@
     <string name="updateText" translatable="false">Newer version of ThyrosoftLite is available. Click UPDATE to upgrade now !</string>
     <string name="cancel" translatable="false">Cancel</string>
     <string name="update" translatable="false">Update</string>
+    <string name="addressvalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./-</string>
+    <string name="emailIDandMobilenumberValidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!#$%&amp;\'*+-/=?^_`{|}~.@</string>
+    <string name="Namevalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
 
+    <string name="Name_and_number_validation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</string>
+    <string name="CouponCodeValidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-</string>
+    <string name="Mobile_no_validation">1234567890</string>
     <string name="title">Title</string>
     <string name="desc">Description</string>
 
@@ -218,5 +224,12 @@
     <string name="reason_waste">Reason for Waste : </string>
     <string name="str_mob_credit">Mobile no. gives you credit</string>
     <string name="searchtest">Search Test Name</string>
+
+    <string name="booking_id">Lead ID</string>
+    <string name="tv_mob_no">Mobile number</string>
+    <string name="tv_email">Email ID</string>
+    <string name="tv_addr">Address</string>
+    <string name="test_subject">Test details</string>
+
 
 </resources>

@@ -515,6 +515,16 @@ public class Constants {
 
     public static final String BOOKING_API_KEY = "DAuWZtKHyVb8OhjhHSuAwCB6uAyzVzASVTxXcCT8@0fkrvZ5fG9lw533tKKmxVnu";
 
+
+
+    //Log types
+    public static String ERROR = "Error";
+    public static String INFO = "Info";
+    public static String DEBUG = "Debug";
+    public static String WARNING = "Warning";
+    public static String SOUT = "sout";
+
+
     public static final String DSA = "DSA";
     public static final String DOMAIN_VALUE = "DSAWTCAPP";
     public static final String ORDER_NO = "OrderNo";

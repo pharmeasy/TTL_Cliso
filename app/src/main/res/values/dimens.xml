@@ -8,6 +8,20 @@
     <dimen name="NormalTextSize">15sp</dimen>
     <dimen name="NormalTextSize1">11sp</dimen>
     <dimen name="smallPadding">5dp</dimen>
+
+    <dimen name="watsappSize">14sp</dimen>
+
+    //Size in DP
+    <dimen name="corner">1dp</dimen>
+    <dimen name="verysmallpadding">2dp</dimen>
+    <dimen name="verysmallpadding1">3dp</dimen>
+    <dimen name="smallPadding11">7dp</dimen>
+    <dimen name="mediumPadding">10dp</dimen>
+    <dimen name="mediumPadding1">13dp</dimen>
+    <dimen name="largePadding">15dp</dimen>
+    <dimen name="largerPadding11">30dp</dimen>
+    <dimen name="largerPadding111">40dp</dimen>
+
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_2">2dp</dimen>
     <dimen name="dp_3">3dp</dimen>

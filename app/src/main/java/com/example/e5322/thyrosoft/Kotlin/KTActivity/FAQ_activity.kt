@@ -28,7 +28,6 @@ import retrofit2.Response
 
 class FAQ_activity : AppCompatActivity() {
 
-
     var type_spinner_value: ArrayList<String>? = null
     var user: String? = null
     var passwrd: kotlin.String? = null
@@ -84,6 +83,7 @@ class FAQ_activity : AppCompatActivity() {
     }
 
     fun getAll_FAQ_data() {
+
         val progressDialog = KTGlobalclass().ShowprogressDialog(this@FAQ_activity)
         val apiInteface = KTRetrofitClient().getInstance()!!.getClient(Api.FAQAPI + Constants.DAC + "/")!!.create(KTAPIInteface::class.java)
         val responsecall: Call<KTFAQandANSArray?> = apiInteface.getFAQ()
