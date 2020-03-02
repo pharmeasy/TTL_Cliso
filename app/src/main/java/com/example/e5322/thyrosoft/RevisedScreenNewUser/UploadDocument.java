@@ -485,9 +485,17 @@ public class UploadDocument extends AbstractActivity {
             @Override
 
             public void onClick(View v) {
-                selectedSpinItem = category_spr1.getSelectedItem().toString();
-                document_spin_value = document_spr.getSelectedItem().toString();
-                edt_remarksUpdate = edt_remarks.getText().toString();
+                if (!TextUtils.isEmpty(category_spr1.getSelectedItem().toString())) {
+                    selectedSpinItem = category_spr1.getSelectedItem().toString();
+                }
+
+                if (!TextUtils.isEmpty(document_spr.getSelectedItem().toString())) {
+                    document_spin_value = document_spr.getSelectedItem().toString();
+                }
+
+                if (!TextUtils.isEmpty(edt_remarks.getText().toString())) {
+                    edt_remarksUpdate = edt_remarks.getText().toString();
+                }
 
                 if (selectedSpinItem != null && document_spin_value != null && edt_remarksUpdate != null) {
                     if (selectedSpinItem.equalsIgnoreCase("NED")) {

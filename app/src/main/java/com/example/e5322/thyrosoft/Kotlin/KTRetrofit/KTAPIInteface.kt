@@ -1,10 +1,7 @@
 package com.example.e5322.thyrosoft.Kotlin.KTRetrofit
 
 import com.example.e5322.thyrosoft.Kotlin.KTModels.*
-import com.example.e5322.thyrosoft.Models.GetScanReq
-import com.example.e5322.thyrosoft.Models.GetScanResponse
-import com.example.e5322.thyrosoft.Models.InsertreasonResponse
-import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel
+import com.example.e5322.thyrosoft.Models.NoticeBoard_Model
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,12 +13,15 @@ interface KTAPIInteface {
     fun getFAQspin(): Call<FAQSpinmodel?>?
 
     @GET("getNoticeMessages")
-    fun getNoticeboard():Call<Noticeboardmodel?>
+    fun getNoticeboard():Call<NoticeBoard_Model?>
 
     @GET("DynamicFaq")
     fun getFAQ():Call<KTFAQandANSArray?>
 
     @POST("insertrodtls")
      fun insertreason(@Body ktInsertReasonsReq: KTInsertReasonsReq): Call<KTInsertreasonResponse>
+
+    @POST("COMMON.svc/acknowledgeNotice")
+    fun postack(@Body ktAcknowledmentreq: KTAcknowledmentreq): Call<KTAcknowledeResponse>
 
 }

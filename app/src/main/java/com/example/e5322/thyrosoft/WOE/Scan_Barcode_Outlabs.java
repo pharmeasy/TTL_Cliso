@@ -797,7 +797,10 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     return;
                 }
                 try {
-                    trf_img = FileUtil.from(this, data.getData());
+                    if (data.getData() != null) {
+                        trf_img = FileUtil.from(this, data.getData());
+                    }
+
                     Uri uri = data.getData();
                     bitmapimage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
@@ -1014,7 +1017,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         bitmapimage = null;
         if (data != null) {
             try {
-                trf_img = FileUtil.from(this, data.getData());
+                if (data.getData() != null) {
+                    trf_img = FileUtil.from(this, data.getData());
+                }
                 Uri uri = data.getData();
                 bitmapimage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));

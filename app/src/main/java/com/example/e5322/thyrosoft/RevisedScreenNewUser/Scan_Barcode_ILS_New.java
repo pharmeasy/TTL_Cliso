@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -379,12 +378,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         getFinalPhoneNumberToPost = GlobalClass.getPhoneNumberTofinalPost;
         getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
 
-        barProgressDialog = new ProgressDialog(Scan_Barcode_ILS_New.this);
+/*        barProgressDialog = new ProgressDialog(Scan_Barcode_ILS_New.this);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
         barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+        barProgressDialog.setCancelable(false);*/
 
         pass_to_api = Integer.parseInt(sr_number);
 
@@ -854,7 +853,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 } else {
                     if (!flagcallonce) {
                         flagcallonce = true;
-                        barProgressDialog.show();
+                        /*barProgressDialog.show();*/
+
+                        barProgressDialog = GlobalClass.ShowprogressDialog(Scan_Barcode_ILS_New.this);
                         //POstQue = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
                         if (POstQue == null) {
                             POstQue = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
@@ -863,10 +864,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             @Override
                             public void onResponse(JSONObject response) {
                                 try {
-                                    if (Scan_Barcode_ILS_New.this instanceof Activity) {
+                                /*    if (Scan_Barcode_ILS_New.this instanceof Activity) {
                                         if (!((Activity) Scan_Barcode_ILS_New.this).isFinishing())
                                             barProgressDialog.dismiss();
-                                    }
+                                    }*/
+
+                                    GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
+
                                     Log.e(TAG, "onResponse: RESPONSE" + response);
 
                                     Gson woeGson = new Gson();
@@ -974,10 +978,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         }, new com.android.volley.Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                if (Scan_Barcode_ILS_New.this instanceof Activity) {
+                                /*if (Scan_Barcode_ILS_New.this instanceof Activity) {
                                     if (!((Activity) Scan_Barcode_ILS_New.this).isFinishing())
                                         barProgressDialog.dismiss();
-                                }
+                                }*/
+                                GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
                                 flagcallonce = false;
                                 if (error != null) {
                                 } else {
@@ -1104,7 +1109,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     return;
                 }
                 try {
-                    trf_img = FileUtil.from(this, data.getData());
+                    if (data.getData() != null) {
+                        trf_img = FileUtil.from(this, data.getData());
+                    }
                     Uri uri = data.getData();
                     bitmapimage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
 
@@ -1171,7 +1178,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
     @Override
     public void onBackPressed() {
-        hideProgress();
+        GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
         finish();
         super.onBackPressed();
     }
@@ -1292,7 +1299,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         bitmapimage = null;
         if (data != null) {
             try {
-                trf_img = FileUtil.from(this, data.getData());
+                if (data.getData() != null) {
+                    trf_img = FileUtil.from(this, data.getData());
+                }
+
                 Uri uri = data.getData();
                 bitmapimage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
@@ -1355,30 +1365,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 camera.deleteImage();
             }
             camera = null;
-            hideProgress();
+            GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    public void hideProgress() {
-        if (barProgressDialog != null) {
-            if (barProgressDialog.isShowing()) { //check if dialog is showing.
 
-                //get the Context object that was used to great the dialog
-                Context context = ((ContextWrapper) barProgressDialog.getContext()).getBaseContext();
-
-                //if the Context used here was an activity AND it hasn't been finished or destroyed
-                //then dismiss it
-                if (context instanceof Activity) {
-                    if (!((Activity) context).isFinishing() && !((Activity) context).isDestroyed())
-                        barProgressDialog.dismiss();
-                } else //if the Context used wasnt an Activity, then dismiss it too
-                    barProgressDialog.dismiss();
-            }
-            barProgressDialog = null;
-        }
-
-    }
 }

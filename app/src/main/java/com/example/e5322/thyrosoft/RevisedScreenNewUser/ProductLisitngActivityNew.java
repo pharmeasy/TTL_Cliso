@@ -420,10 +420,13 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         Log.e(TAG, "onResponse: RESPONSE" + response);
 
 
-                        if (ProductLisitngActivityNew.this instanceof Activity) {
+                        /*if (ProductLisitngActivityNew.this instanceof Activity) {
                             if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
                                 barProgressDialog.dismiss();
                         }
+*/
+
+                        GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
 
                         Gson gson = new Gson();
                         ulcResponseModel = new ULCResponseModel();
@@ -632,10 +635,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                 /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                                     barProgressDialog.dismiss();
                                                 }*/
-                                                if (ProductLisitngActivityNew.this instanceof Activity) {
+                                              /*  if (ProductLisitngActivityNew.this instanceof Activity) {
                                                     if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
                                                         barProgressDialog.dismiss();
-                                                }
+                                                }*/
+
+                                                GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
                                                 Log.e(TAG, "onResponse: RESPONSE" + response);
                                                 String finalJson = response.toString();
                                                 JSONObject parentObjectOtp = new JSONObject(finalJson);
@@ -707,10 +712,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                            /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                                                 barProgressDialog.dismiss();
                                             }*/
-                                            if (ProductLisitngActivityNew.this instanceof Activity) {
+                                          /*  if (ProductLisitngActivityNew.this instanceof Activity) {
                                                 if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
                                                     barProgressDialog.dismiss();
-                                            }
+                                            }*/
+                                            GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
                                             if (error != null) {
                                             } else {
 
@@ -820,9 +826,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
+
+                GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
 
                 String getResponse = response.optString("RESPONSE", "");
 

@@ -518,7 +518,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     enter_barcode.setText(searchBarcode);
                                 } else {
                                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-                                    final ProgressDialog progressDialog = new ProgressDialog(context);
+                             /*       final ProgressDialog progressDialog = new ProgressDialog(context);
                                     progressDialog.setTitle("Kindly wait ...");
                                     progressDialog.setMessage(ToastFile.processing_request);
                                     progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
@@ -527,8 +527,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     progressDialog.setCanceledOnTouchOutside(false);
                                     progressDialog.setCancelable(false);
                                     progressDialog.show();
-
-                                    // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+*/
+                                    final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
                                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
                                             , new Response.Listener<JSONObject>() {
@@ -544,6 +544,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                                 RES_ID = parentObjectOtp.getString("RES_ID");
                                                 barcode = parentObjectOtp.getString("barcode");
                                                 response1 = parentObjectOtp.getString("response");
+
                                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                                                     enter_barcode.setText(searchBarcode);
                                                     GlobalClass.hideProgress(context, progressDialog);

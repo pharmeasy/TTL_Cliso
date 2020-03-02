@@ -668,11 +668,11 @@ public class RateCalculatorFragment extends Fragment {
                     SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                     Gson gson22 = new Gson();
                     String json23 = gson22.toJson(mainModelRate);
-                    // callAdapter(mainModelRate);
                     prefsEditor1.putString("MyObject", json23);
-                    //   GlobalClass.StoreSyncTime(getActivity());
                     prefsEditor1.commit();
 
+                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
+                    getRatesofB2bandB2C(getSpinnerSelectedItem);
 
                     try {
                         if (obj != null && obj.getB2B_MASTERS() != null && obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {

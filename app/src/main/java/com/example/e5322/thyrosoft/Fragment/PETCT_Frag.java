@@ -105,6 +105,7 @@ public class PETCT_Frag extends Fragment {
     private String TAG = PETCT_Frag.class.getSimpleName();
     private EditText edt_name, edt_mname, edt_lname, edt_mobile, edt_email, edt_remarks, edt_coupon, edt_age;
     private Gson gson;
+    private String CLIENT_TYPE;
     private ConnectionDetector cd;
     private TextView tv_discount, enter;
     private boolean resultcheck = false;
@@ -204,6 +205,7 @@ public class PETCT_Frag extends Fragment {
     private void getAPIKeyDetails() {
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         api_key = prefs.getString("API_KEY", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
     }
 
 
@@ -896,7 +898,7 @@ public class PETCT_Frag extends Fragment {
                     if (response.body() != null) {
                         GlobalClass.hideProgress(getContext(), progressDialog);
                         ArrayList<String> servicelist = new ArrayList<>();
-                        servicelist.add("Select Service Type*");
+                        servicelist.add("Select Scan Type*");
                         serviceListModels = new ArrayList<>();
                         serviceListModels.addAll(response.body());
 
@@ -912,7 +914,7 @@ public class PETCT_Frag extends Fragment {
 
                         if (cd.isConnectingToInternet()) {
                             if (servicelist.size() == 2) {
-                                servicelist.remove(0);
+                                // servicelist.remove(0);
                                 setServiceData(servicelist);
                             } else {
                                 setServiceData(servicelist);
@@ -936,10 +938,16 @@ public class PETCT_Frag extends Fragment {
 
     }
 
-    private void setServiceData(ArrayList<String> bookType) {
+    private void setServiceData(final ArrayList<String> bookType) {
         ArrayAdapter<String> bookAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, bookType);
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spn_service.setAdapter(bookAdapter);
+
+        if (bookType != null) {
+            if (bookType.size() == 2) {
+                spn_service.setSelection(1);
+            }
+        }
 
         spn_service.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -993,32 +1001,52 @@ public class PETCT_Frag extends Fragment {
     }
 
     private void showDialog(final boolean b) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(ToastFile.update_ledger);
-        builder.setCancelable(false);
-        builder.setPositiveButton("UPDATE LEDGER",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,
-                                        int id) {
-                        startActivityForResult(new Intent(context, Payment_Activity.class), 1);
-                        dialog.dismiss();
-                    }
-                });
+        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            LayoutInflater inflater = getLayoutInflater();
+            View alertLayout = inflater.inflate(R.layout.lay_dialog, null);
 
-        builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (b == false) {
+
+            AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+            alert.setView(alertLayout);
+            alert.setCancelable(false);
+            alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                } else {
-                    spn_service.setSelection(0);
                 }
+            });
+            AlertDialog dialog = alert.create();
+            dialog.show();
 
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage(ToastFile.update_ledger);
+            builder.setCancelable(false);
+            builder.setPositiveButton("UPDATE LEDGER",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog,
+                                            int id) {
+                            startActivityForResult(new Intent(context, Payment_Activity.class), 1);
+                            dialog.dismiss();
+                        }
+                    });
 
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+            builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (b == false) {
+                        dialog.dismiss();
+                    } else {
+                        spn_service.setSelection(0);
+                    }
+                }
+            });
+
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
     }
 
 

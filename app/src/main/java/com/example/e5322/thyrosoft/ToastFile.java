@@ -134,6 +134,7 @@ public class ToastFile {
     public static String scp_not_mapped = "SCP is not mapped under this code,Please register SCP then try to do WOE";
     public static String surelogout = "Are you sure you want to Logout?";
     public static String update_ledger = "Please update your ledger balance";
+    public static String update_ledger1 = "We will get back to you,once payment option integrated";
     public static String slt_smaller_date_than_crnt = "Please select To Date smaller than current Date";
     public static String newer_version = "There is newer version of this application available, click OK to upgrade now?";
     public static String offline_tool = "Would you like to go with Offline Mode ?";

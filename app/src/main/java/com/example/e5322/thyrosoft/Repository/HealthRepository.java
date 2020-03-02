@@ -30,8 +30,15 @@ public class HealthRepository {
         responseCall.enqueue(new Callback<HealthTipsApiResponseModel>() {
             @Override
             public void onResponse(Call<HealthTipsApiResponseModel> call, Response<HealthTipsApiResponseModel> response) {
-                listMutableLiveData.setValue(Arrays.asList(response.body().getHArt()));
-                Log.e("TGA", "onResponse: " + listMutableLiveData.toString());
+                try {
+                    if (response.body().getHArt().length != 0) {
+                        listMutableLiveData.setValue(Arrays.asList(response.body().getHArt()));
+                        Log.e("TGA", "onResponse: " + listMutableLiveData.toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override

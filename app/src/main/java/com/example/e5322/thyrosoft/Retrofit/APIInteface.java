@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Retrofit;
 
+import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledeResponse;
+import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledmentreq;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
@@ -46,6 +48,8 @@ public interface APIInteface {
 
     @GET("{passSpinner_value}/{Contact_Details}")
     Call<Cmpdt_Model.ContactArrayListBean> getemployeedt(@Path("passSpinner_value") String passSpinner_value, @Path("Contact_Details") String Contact_Details);
+
+
 
 /*    @GET("Showlang")
     Call<Language_Model> getlanguage();*/

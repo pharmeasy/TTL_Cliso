@@ -25,9 +25,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Adapter.NoticeBoard_Adapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
+import com.example.e5322.thyrosoft.Kotlin.KTAdapter.NoticeBoard_Adapter;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.Models.RequestModels.AckNoticeRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.AckNoticeResponseModel;
@@ -134,6 +134,15 @@ public class Noticeboard_activity extends AppCompatActivity {
 
                                 msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
                                 NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(Noticeboard_activity.this, array_notice, msgCode);
+
+
+                                noticeBoard_adapter.clickListerforAckNoticeboard(new RefreshNoticeBoard() {
+                                    @Override
+                                    public void onClickAcknowledge(String msgCode) {
+
+                                    }
+                                });
+
 
                                 noticeBoard_adapter.clickListerforAckNoticeboard(new RefreshNoticeBoard() {
                                     @Override

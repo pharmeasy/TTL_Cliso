@@ -54,7 +54,7 @@ import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
-import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTReportBarcode_activity;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTNoticeboard_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -139,7 +139,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     return true;
 
                 case R.id.loud:
-                    Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                    Intent k = new Intent(ManagingTabsActivity.this, KTNoticeboard_activity.class);
                     startActivity(k);
                     return true;
 
@@ -892,7 +892,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, KTNoticeboard_activity.class);
                 startActivity(i);
             }
 

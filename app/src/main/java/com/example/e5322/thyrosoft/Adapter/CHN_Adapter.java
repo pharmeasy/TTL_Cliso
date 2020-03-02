@@ -59,13 +59,13 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
     ProgressDialog barProgressDialog;
     private String eneterString;
     private String error;
-    private String TAG= ManagingTabsActivity.class.getSimpleName().toString();
+    private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private String RES_ID;
     private String response1;
     private String getSLNumber;
     CHNfragment mCHNfragment;
     String convertedDate;
-    boolean serFlagVisible=true;
+    boolean serFlagVisible = true;
 
     private String blockCharacterSet = "#$^*+-/|><";
 
@@ -216,7 +216,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             Refby.setText("Ref by:" + List.get(groupPosition).getRef_By().toString());
             barcode.setText(List.get(groupPosition).getBarcode().toString());
             tests.setText(List.get(groupPosition).getTests().toString());
-            test_name.setText(List.get(groupPosition).getChn_test().toString() );
+            test_name.setText(List.get(groupPosition).getChn_test().toString());
 //            test_value.setText(List.get(groupPosition).get().toString());
 
 
@@ -227,18 +227,18 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             enter_chn_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(serFlagVisible==true){
+                    if (serFlagVisible == true) {
 
-                        getName=List.get(groupPosition).getName().toString();
-                        if(getName.equals(List.get(groupPosition).getName().toString())){
-                            getSL_No=List.get(groupPosition).getLabcode().toString();
+                        getName = List.get(groupPosition).getName().toString();
+                        if (getName.equals(List.get(groupPosition).getName().toString())) {
+                            getSL_No = List.get(groupPosition).getLabcode().toString();
                         }
                         chn_remark_layout.setVisibility(View.VISIBLE);
-                        serFlagVisible=false;
+                        serFlagVisible = false;
                         enter_chn_btn.setText("Hide Remark");
-                    }else if(serFlagVisible==false){
+                    } else if (serFlagVisible == false) {
                         chn_remark_layout.setVisibility(View.GONE);
-                        serFlagVisible=true;
+                        serFlagVisible = true;
                         enter_chn_btn.setText("Enter CHN");
                     }
 
@@ -250,9 +250,9 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     String getVAlue = enter_remark.getText().toString();
                     if (getVAlue.equals("")) {
-                        Toast.makeText(mContext,  ToastFile.remark, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, ToastFile.remark, Toast.LENGTH_SHORT).show();
                     } else if (getVAlue.length() < 3) {
-                        Toast.makeText(mContext,  ToastFile.remark, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, ToastFile.remark, Toast.LENGTH_SHORT).show();
                     } else {
                         System.out.println("" + List);
                         PostArray = new JSONArray();
@@ -401,7 +401,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                         try {
 
                             String finalJson = response.toString();
-                            Log.e(TAG, "onResponse: RESPONSE"+response );
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
                             JSONObject parentObjectOtp = new JSONObject(finalJson);
 
                             error = parentObjectOtp.getString("error");
@@ -409,13 +409,17 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                             response1 = parentObjectOtp.getString("response");
 
                             if (response1.equals("CHN Details Updated Successfully")) {
-                                if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
                                 TastyToast.makeText(mContext, "" + response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                 mCHNfragment.setNewFragment();
                                 GlobalClass.passDate = GlobalClass.CHN_Date;
 
                             } else {
-                                if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
                                 TastyToast.makeText(mContext, "" + response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             }
                         } catch (Exception e) {
@@ -450,8 +454,8 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             }
         });
         queue.add(jsonObjectRequest);
-        Log.e(TAG, "onResponse: URL"+jsonObjectRequest );
-        Log.e(TAG, "onResponse: JSON"+jsonObject );
+        Log.e(TAG, "onResponse: URL" + jsonObjectRequest);
+        Log.e(TAG, "onResponse: JSON" + jsonObject);
     }
 
 //    class MyTextWatcher implements TextWatcher {

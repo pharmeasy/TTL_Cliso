@@ -151,7 +151,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         prefs_user = mActivity.getSharedPreferences("Userdetails", 0);
 
         init();
-        GetpackageAPI();
+      //  GetpackageAPI();
         initlistner();
 
         DisplayMetrics displayMetrics = new DisplayMetrics();

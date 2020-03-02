@@ -21,7 +21,13 @@
     <string name="alphachar">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890 .,-|@</string>
     <string name="email_id">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890@_.</string>
     <string name="alphabets">QWERTYUIOPASDFGHJKLZXCVBNM qwertyuioplkjhgfdsazxcvbnm</string>
-
+    <string name="text_with_bullet"> \u2022</string>
+    <string name="bnkname">Bank Name : AXIS BANK</string>
+    <string name="branchname">Branch Name : SANPADA</string>
+    <string name="acholdername">Account Holders Name : NUECLEAR HEALTHCARE LIMITED</string>
+    <string name="acno">Account Number : 911020012308803</string>
+    <string name="ifsc">IFSC Code for NEFT/RTGS : UTIB0000641</string>
+    <string name="mk_payment">To make payment, you may transfer via NEFT, RTGS and Bank Transfer to</string>
 
     <string name="more">More...</string>
     <string name="less">Less...</string>

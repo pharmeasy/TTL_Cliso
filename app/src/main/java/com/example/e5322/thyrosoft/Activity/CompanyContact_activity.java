@@ -50,7 +50,7 @@ public class CompanyContact_activity extends AppCompatActivity {
     Cmpdt_Viewmodel cmpdt_viewmodel;
     private RequestQueue requestQueue_CompanyContact;
     private String passSpinner_value;
-    private String TAG = CompanyContact_activity.class.getSimpleName().toString();
+    private String TAG = CompanyContact_activity.class.getSimpleName();
     private Global globalClass;
 
     @SuppressLint("NewApi")
@@ -160,17 +160,6 @@ public class CompanyContact_activity extends AppCompatActivity {
         requestQueue_CompanyContact.add(jsonObjectRequestFAQ);
         Log.e(TAG, "getCompany_contact_details: URL" + jsonObjectRequestFAQ);
 
-        /**MVVM Pattern*/
-
-        /*cmpdt_viewmodel = ViewModelProviders.of(CompanyContact_activity.this).get(Cmpdt_Viewmodel.class);
-        Observer<Cmpdt_Model.ContactArrayListBean> cmpdt_modelObserver = new Observer<Cmpdt_Model.ContactArrayListBean>() {
-            @Override
-            public void onChanged(@Nullable Cmpdt_Model.ContactArrayListBean contactArrayListBean) {
-                cmpdt_viewmodel.setdata(contactArrayListBean, CompanyContact_activity.this, company_adapter, contact_list);
-            }
-        };
-
-        cmpdt_viewmodel.getempdata().observe(CompanyContact_activity.this, cmpdt_modelObserver);*/
 
     }
 
