@@ -713,36 +713,48 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                 getBrand_name = savepatientDetails.getString("WOEbrand", null);
                 getPincode = savepatientDetails.getString("pincode", null);
-                sampleCollectionDate = getFinalDate;
 
-                String getOnlyTime = getFinalTime.substring(0, getFinalTime.length() - 3);
+                if (!TextUtils.isEmpty(getFinalDate)) {
+                    sampleCollectionDate = getFinalDate;
+                }
+
+            /*    String getOnlyTime = "";
+
+                if (!TextUtils.isEmpty(getFinalTime)) {
+                    getOnlyTime = getFinalTime.substring(0, getFinalTime.length() - 3);
+                }*/
+
                 DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
                 Date date = null;
 
-                try {
-                    date = inputFormat.parse(sampleCollectionDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                outputDateStr = outputFormat.format(date);
+                if (!TextUtils.isEmpty(sampleCollectionDate)) {
+                    try {
+                        date = inputFormat.parse(sampleCollectionDate);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    outputDateStr = outputFormat.format(date);
 
-                //sampleCollectionTime
-                Log.e(TAG, "fetchData: " + outputDateStr);
-                if (getageType.equalsIgnoreCase("Years")) {
-                    ageType = "Y";
-                } else if (getageType.equalsIgnoreCase("Months")) {
-                    ageType = "M";
-                } else if (getageType.equalsIgnoreCase("Days")) {
-                    ageType = "D";
+                    //sampleCollectionTime
+                    Log.e(TAG, "fetchData: " + outputDateStr);
                 }
 
-                Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                if (!TextUtils.isEmpty(getageType)) {
+                    if (getageType.equalsIgnoreCase("Years")) {
+                        ageType = "Y";
+                    } else if (getageType.equalsIgnoreCase("Months")) {
+                        ageType = "M";
+                    } else if (getageType.equalsIgnoreCase("Days")) {
+                        ageType = "D";
+                    }
+                  //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                }
 
                 try {
                     String getFulltime = sampleCollectionDate + " " + getFinalTime;
                     GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
-                    Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                  //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -146,6 +146,7 @@ public class Offline_woe extends Fragment {
     private String text;
     private String barcode_id;
     private String barcodeCompare;
+    RequestQueue sendGPSDetails;
     private InputFilter filter = new InputFilter() {
 
         @Override
@@ -652,7 +653,11 @@ public class Offline_woe extends Fragment {
         editor.remove("testsSElected");
         editor.remove("getProductNames");
         editor.apply();
-        RequestQueue sendGPSDetails = Volley.newRequestQueue(mContext);
+
+        if (sendGPSDetails == null) {
+            sendGPSDetails = Volley.newRequestQueue(mContext);
+        }
+
 
         JSONObject jsonObject = null;
         try {

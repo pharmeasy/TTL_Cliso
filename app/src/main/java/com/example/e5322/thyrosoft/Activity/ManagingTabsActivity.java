@@ -1056,10 +1056,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 Intent i = new Intent(ManagingTabsActivity.this, FAQ_activity.class);
                 startActivity(i);
 
-                /*FAQ_Fragment faq_fragment = new FAQ_Fragment();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_mainLayout, faq_fragment, faq_fragment.getClass().getSimpleName()).addToBackStack(null).commit();
-*/
             }
 
         } else if (id == R.id.accr_data) {
@@ -1127,7 +1123,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         }
         return isPop;
-
     }
 
     public void getProfileDetails(final Context context) {

@@ -7,7 +7,7 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-/*    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
@@ -21,11 +21,10 @@ public class Api {
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
-    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";*/
-
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
 
     //TODO staging
-
+/*
     public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String SGC = "http://www.thyrocare.com/API_BETA/BDN/api/";
@@ -38,12 +37,10 @@ public class Api {
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
     public static String IMAGE_UPLOAD = "http://www.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
-      public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
-    public static String count = LIVEAPI + "WO.svc/";
-
-
+    public static String count = LIVEAPI + "WO.svc/";*/
 
 
     //TODO SCANSO
@@ -101,7 +98,7 @@ public class Api {
     public static String checkNumber = LIVEAPI + "WO.svc/ValidateMob/";//lead id
     public static String static_pages_link = Static_API + "FAQ.svc/";
     public static String GenerateId = THYROCARE + "ORDER.svc/";
-    public static String upload_documnet = SGC + "UploadDocument/PostRegister";
+    public static String uploaddocumnet = SGC + "UploadDocument/PostRegister";
     public static String UPLOAD_TRF_RECEIPT = IMAGE_UPLOAD + "PICKSO/api/Datasheetupload/B2BDatasheet";
     public static String POST_GENERATE_OTP = "common.svc/otp";
     public static String VERIFY_OTP_BS = "BloodSugarEntry/VerifyMobileRes/";

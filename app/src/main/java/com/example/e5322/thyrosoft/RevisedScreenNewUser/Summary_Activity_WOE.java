@@ -174,44 +174,52 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         GlobalClass.barcodelists = new ArrayList<>();
         ArrayList<String> getNames = new ArrayList<>();
 
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
-            pat_type.setText("EQNX" + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
-        } else {
-            pat_type.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().toString() + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
-                    GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());//getMAIN_SOURCE
+
+        if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null && GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null) {
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("WHATERS")) {
+                pat_type.setText("EQNX" + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
+            } else {
+                pat_type.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().toString() + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE() + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO() + "/" +
+                        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());//getMAIN_SOURCE
+            }
         }
 
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equalsIgnoreCase("")) {
-            pat_sct.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
-        } else {
-            pat_sct.setVisibility(View.GONE);
+        if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null && GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null) {
+            if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME().equalsIgnoreCase("")) {
+                pat_sct.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+            } else {
+                pat_sct.setVisibility(View.GONE);
+            }
         }
 
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("")) {
-            pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
-            ll_patient_age.setVisibility(View.GONE);
-            ll_patient_gender.setVisibility(View.GONE);
-        } else {
-            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE().equalsIgnoreCase("")
-                    && saveAgeType != null && !saveAgeType.equalsIgnoreCase("")) {
-                ll_patient_age.setVisibility(View.VISIBLE);
+        if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null && GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null) {
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("")) {
                 pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
-                txt_pat_age.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() + " " + saveAgeType);
-            } else {
                 ll_patient_age.setVisibility(View.GONE);
-            }
-            if (genderId != null && !genderId.equalsIgnoreCase("")) {
-                ll_patient_gender.setVisibility(View.VISIBLE);
-                txt_pat_gender.setText(genderId);
-            } else {
                 ll_patient_gender.setVisibility(View.GONE);
+            } else {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE().equalsIgnoreCase("")
+                        && saveAgeType != null && !saveAgeType.equalsIgnoreCase("")) {
+                    ll_patient_age.setVisibility(View.VISIBLE);
+                    pat_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+                    txt_pat_age.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE() + " " + saveAgeType);
+                } else {
+                    ll_patient_age.setVisibility(View.GONE);
+                }
+                if (genderId != null && !genderId.equalsIgnoreCase("")) {
+                    ll_patient_gender.setVisibility(View.VISIBLE);
+                    txt_pat_gender.setText(genderId);
+                } else {
+                    ll_patient_gender.setVisibility(View.GONE);
+                }
             }
         }
+
 
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equals(null) || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equalsIgnoreCase("")) {
             pat_ref.setVisibility(View.GONE);
@@ -382,6 +390,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         Log.e(TAG, "Delete WOE -->" + jsonObjectOtp.toString());
 
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {

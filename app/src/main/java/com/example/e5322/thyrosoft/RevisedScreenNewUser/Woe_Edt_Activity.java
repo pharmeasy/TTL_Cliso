@@ -436,12 +436,19 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             }
         }
 
-        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setPATIENT_NAME(getName);
-        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE(getAge);
-        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE_TYPE(age_type);
-        GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setGENDER(saveGenderId);
-        String brand_type_to_send = brand_name.getText().toString();
-        String type_to_send = selectType_txt.getText().toString();
+
+        String brand_type_to_send = null;
+        String type_to_send = null;
+        try {
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setPATIENT_NAME(getName);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE(getAge);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE_TYPE(age_type);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setGENDER(saveGenderId);
+            brand_type_to_send = brand_name.getText().toString();
+            type_to_send = selectType_txt.getText().toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
         String getDateTopass = GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME();
