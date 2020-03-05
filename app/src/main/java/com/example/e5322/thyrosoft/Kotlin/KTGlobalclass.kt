@@ -244,6 +244,16 @@ class KTGlobalclass {
                 matrix, true)
     }
 
+    fun DisplayImage(activity: Context, Url: String?, imageView: ImageView?) { //            Glide.get(mActivity).clearMemory();
+        Glide.with(activity).load(Url)
+                .asBitmap()
+                .placeholder(R.drawable.userprofile).dontAnimate() //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+//                    .skipMemoryCache(true)
+                .error(R.drawable.userprofile)
+                .fitCenter()
+                .into(imageView)
+    }
+
 
     @Throws(IOException::class)
     fun copyFile(sourceFile: File?, destFile: File) {

@@ -45,7 +45,9 @@ public class GetOTPController {
 
             Log.e(TAG, "viewSendOTPAPI" + url);
             Log.e(TAG, "viewSendOTP params" + jsonObject);
+
             final ProgressDialog finalProgressDialog = progressDialog;
+
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {

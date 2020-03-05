@@ -15,6 +15,9 @@ interface KTAPIInteface {
     @GET("getNoticeMessages")
     fun getNoticeboard():Call<NoticeBoard_Model?>
 
+    @GET("Contact_Details")
+    fun getnoticedetail():Call<KTCompanydt_Response>
+
     @GET("DynamicFaq")
     fun getFAQ():Call<KTFAQandANSArray?>
 

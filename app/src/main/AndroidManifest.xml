@@ -97,6 +97,10 @@
         </service>
 
         <activity
+            android:name=".Kotlin.KTActivity.KTCompanyContact_activity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".Activity.ConfirmbookDetail"
             android:screenOrientation="portrait" />
         <activity

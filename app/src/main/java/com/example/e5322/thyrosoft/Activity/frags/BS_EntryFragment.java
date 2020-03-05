@@ -102,7 +102,7 @@ public class BS_EntryFragment extends Fragment {
     private int LOCATION_PERMISSION_REQUEST_CODE = 199;
     private SharedPreferences prefs;
     private CountDownTimer countDownTimer;
-    private String user,passwrd,access,api_key,USER_CODE;
+    private String user, passwrd, access, api_key, USER_CODE;
 
     public BS_EntryFragment() {
         // Required empty public constructor
@@ -697,7 +697,7 @@ public class BS_EntryFragment extends Fragment {
             try {
                 String imageurl = camera.getCameraBitmapPath();
                 imageFile = new File(imageurl);
-                Log.e(TAG,   "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
+                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
                 if (imageFile != null && imageFile.exists()) {
                     correct_img.setVisibility(View.VISIBLE);
                     btn_choose_file.setText(getString(R.string.re_upload));
@@ -718,7 +718,7 @@ public class BS_EntryFragment extends Fragment {
             }
             try {
                 imageFile = FileUtil.from(activity, data.getData());
-                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())) );
+                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
                 imageFile = GlobalClass.getCompressedFile(activity, imageFile);
                 Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
                 if (imageFile != null && imageFile.exists()) {

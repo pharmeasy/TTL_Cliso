@@ -87,6 +87,7 @@ public class CompanyContact_activity extends AppCompatActivity {
 
         linearLayoutManager = new LinearLayoutManager(CompanyContact_activity.this);
         contact_list.setLayoutManager(linearLayoutManager);
+
         ArrayAdapter company_spinner = ArrayAdapter.createFromResource(CompanyContact_activity.this, R.array.company_contact_spinner_values, R.layout.spinnerproperty);
         contact_type_spinner.setAdapter(company_spinner);
 //        getCompany_contact_details();
@@ -177,4 +178,5 @@ public class CompanyContact_activity extends AppCompatActivity {
         Glide.get(this).clearMemory();
         super.onLowMemory();
     }
+
 }

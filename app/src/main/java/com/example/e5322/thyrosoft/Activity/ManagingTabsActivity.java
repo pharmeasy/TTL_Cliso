@@ -54,6 +54,7 @@ import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTCompanyContact_activity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTNoticeboard_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
@@ -1079,7 +1080,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, KTCompanyContact_activity.class);
                 startActivity(i);
             }
 
