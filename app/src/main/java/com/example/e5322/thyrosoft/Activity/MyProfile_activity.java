@@ -77,14 +77,14 @@ public class MyProfile_activity extends AppCompatActivity {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GlobalClass.goToHome(MyProfile_activity.this);
             }
         });
-//        view_aadhar = (Button) findViewById(R.id.view_aadhar);
-//        pref = (Button) findViewById(R.id.pref);
+
 
         profimg = (ImageView) findViewById(R.id.profimg);
 
@@ -130,57 +130,6 @@ public class MyProfile_activity extends AppCompatActivity {
         } else {
             GetData();
         }
-/*
-        view_aadhar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(MyProfile_activity.this);
-                dialog.setContentView(R.layout.aadhar_imag_view);
-                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                lp.copyFrom(dialog.getWindow().getAttributes());
-                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
-                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                lp.horizontalMargin = 200;
-                lp.gravity = Gravity.CENTER;
-                ImageView crossclose = (ImageView) dialog.findViewById(R.id.crossclose);
-                aadhar = (ImageView) dialog.findViewById(R.id.aadhar);
-            */
-/*    Glide.with(MyProfile_activity.this)
-                        .load(aadhar_no+".jpg")
-
-                        .into(aadhar);
-*//*
-
-
-
-                //    checkFileExists_Aadhar(aadhar_no, view);
-                aadhar.setImageBitmap(decodedByte);
-                dialog.getWindow().setAttributes(lp);
-                dialog.show();
-                crossclose.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        dialog.cancel();
-
-                    }
-                });
-                dialog.setCancelable(false);
-                dialog.setCanceledOnTouchOutside(false);
-            }
-        });
-*/
-      /*  pref.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Prefrences filt = new Prefrences();
-                android.support.v4.app.FragmentManager fragmentManager = ((AppCompatActivity) MyProfile_activity.this).getSupportFragmentManager();
-                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_mainLayout, filt);
-                fragmentTransaction.commit();
-
-            }
-        });*/
 
     }
 
@@ -218,6 +167,7 @@ public class MyProfile_activity extends AppCompatActivity {
                             ProfileDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ProfileDetailsResponseModel.class);
 
                             if (responseModel != null) {
+
                                 if (responseModel.getTsp_image() != null) {
                                     prof = responseModel.getTsp_image();
                                     checkFileExists(prof);
@@ -233,13 +183,6 @@ public class MyProfile_activity extends AppCompatActivity {
                                 Toast.makeText(MyProfile_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
                             }
 
-                            /*try {
-                                String decode = response.getString(Constants.aadhar_no).substring(response.getString(Constants.aadhar_no).lastIndexOf(",") + 1);
-                                byte[] decodedString = Base64.decode(decode, Base64.DEFAULT);
-                                decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }*/
                         } catch (Exception e) {
                             Log.e(TAG, "on ERROR ------>" + e.getLocalizedMessage());
                         }
@@ -249,14 +192,15 @@ public class MyProfile_activity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 try {
                     Toast.makeText(MyProfile_activity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                   /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
                         barProgressDialog.dismiss();
-                    }
+                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
+
         queue.add(jsonObjectRequest);
         GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         GlobalClass.volleyRetryPolicy(jsonObjectRequest);
@@ -271,13 +215,6 @@ public class MyProfile_activity extends AppCompatActivity {
         }
     }
 
-    public void checkFileExists_Aadhar(String str, View view) {
-        String url = str;
-        if (!url.equals("")) {
-            CheckFileExistTask_Aadhar task = new CheckFileExistTask_Aadhar();
-            task.execute(url);
-        }
-    }
 
     private class CheckFileExistTask extends AsyncTask<String, Void, Boolean> {
         @Override
@@ -318,43 +255,5 @@ public class MyProfile_activity extends AppCompatActivity {
         }
     }
 
-    private class CheckFileExistTask_Aadhar extends AsyncTask<String, Void, Boolean> {
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            try {
-                // This connection won't follow redirects returned by the remote server.
-                HttpURLConnection.setFollowRedirects(false);
-                // Open connection to the remote server
-                java.net.URL url = new URL(params[0]);
-                HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                // Set request method
-                con.setRequestMethod("HEAD");
-                // get returned code
-                return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
-                Glide.with(MyProfile_activity.this)
-                        .load(aadharimg)
-                        .into(aadhar);
-            } else {
-                Glide.with(MyProfile_activity.this)
-                        .load("")
-                        .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.userprofile))
-                        .into(aadhar);
-            }
-        }
-    }
 
 }

@@ -91,7 +91,6 @@ class KTCompanyContact_activity : AppCompatActivity(), View.OnClickListener {
             }
 
             override fun onResponse(call: Call<KTCompanydt_Response>, response: Response<KTCompanydt_Response>) {
-
                 try {
                     if (response.body()!!.response.equals("Success", true)) {
                         KTGlobalclass().hideProgress(this@KTCompanyContact_activity, progressDialog)
@@ -115,7 +114,6 @@ class KTCompanyContact_activity : AppCompatActivity(), View.OnClickListener {
             R.id.home -> {
                 KTGlobalclass().goToHome(this@KTCompanyContact_activity)
             }
-
         }
     }
 }

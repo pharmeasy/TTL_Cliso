@@ -4,11 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public  class ProductWithBarcode implements Parcelable {
-    String barcode,product;
+    String barcode,product,fasting;
 
     protected ProductWithBarcode(Parcel in) {
         barcode = in.readString();
         product = in.readString();
+        fasting = in.readString();
     }
 
     public ProductWithBarcode() {
@@ -42,6 +43,14 @@ public  class ProductWithBarcode implements Parcelable {
         this.product = product;
     }
 
+    public String getFasting() {
+        return fasting;
+    }
+
+    public void setFasting(String fasting) {
+        this.fasting = fasting;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -51,5 +60,6 @@ public  class ProductWithBarcode implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(barcode);
         dest.writeString(product);
+        dest.writeString(fasting);
     }
 }

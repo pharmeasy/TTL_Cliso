@@ -98,9 +98,7 @@ public class Feedback_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_feedback);
-        /*if (getIntent().getExtras() != null) {
-            comefrom = getIntent().getExtras().getString("comefrom");
-        }*/
+
         cry = (ImageView) findViewById(R.id.cry);
         sad = (ImageView) findViewById(R.id.sad);
         happy = (ImageView) findViewById(R.id.happy);
@@ -111,11 +109,7 @@ public class Feedback_activity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-//       excited= (ImageView)findViewById(R.id.excited);
-//        sad_cry_layout=(LinearLayout)findViewById(R.id.sad_cry_layout);
-//        editremark=(EditText) findViewById(R.id.editremark);
         query = (EditText) findViewById(R.id.query);
-//        query.setFilters(new InputFilter[] { filter });
         query.setFilters(new InputFilter[]{filter});
         query.setFilters(new InputFilter[]{filter1});
         query.setFilters(new InputFilter[]{EMOJI_FILTER});
@@ -141,9 +135,6 @@ public class Feedback_activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (comefrom.equals("BMC"))
-                    startActivity(new Intent(Feedback_activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                else*/
                 GlobalClass.goToHome(Feedback_activity.this);
             }
         });
@@ -216,33 +207,6 @@ public class Feedback_activity extends AppCompatActivity {
                 happy.setImageDrawable(getResources().getDrawable(R.drawable.happy_shadow_img));
             }
         });
-
-
-       /* query.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() >= 1) {
-                    submitcomment.setEnabled(true);
-                    submitcomment.setClickable(true);
-                    submitcomment.setBackground(getResources().getDrawable(R.drawable.white_border_marron_bg_corner));
-                } else {
-                    submitcomment.setEnabled(false);
-                    submitcomment.setClickable(false);
-                    submitcomment.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
 
         submitcomment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,6 +293,7 @@ public class Feedback_activity extends AppCompatActivity {
         });
         GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
         PostQueOtp.add(jsonObjectRequest1);
+
         Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
         Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
     }

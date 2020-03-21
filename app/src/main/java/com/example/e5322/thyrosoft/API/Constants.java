@@ -47,6 +47,7 @@ public class Constants {
     public static String availcoupon = "Avail Coupon";
     public static String APKTYPE = "application/vnd.android.package-archive";
 
+    //TODO PET CT Constant
     public static final String PNAME = "pname";
     public static final String FNAME = "fname";
     public static final String MKNAME = "mname";
@@ -514,7 +515,6 @@ public class Constants {
     public static final String GOOGLEPLUS_BUTTON = "GooglePlus Button";
 
     public static final String BOOKING_API_KEY = "DAuWZtKHyVb8OhjhHSuAwCB6uAyzVzASVTxXcCT8@0fkrvZ5fG9lw533tKKmxVnu";
-
 
 
     //Log types

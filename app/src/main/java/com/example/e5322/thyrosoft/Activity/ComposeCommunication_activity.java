@@ -688,7 +688,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         if (mediarecorderflag) {
                             if (mediaRecorder != null) {
                                 mediaRecorder.release();
-                                mediaRecorder.stop();
+                               // mediaRecorder.stop();
                                 mediarecorderflag = false;
                             }
                         }

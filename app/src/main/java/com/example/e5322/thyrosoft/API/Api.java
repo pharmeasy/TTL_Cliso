@@ -7,7 +7,7 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-   /* public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+  /*  public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
@@ -45,8 +45,6 @@ public class Api {
     //TODO SCANSO
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";
     public static String LEAD_BOOKING = SCANSOAPI + "/LeadBooking/BookLead";
-
-
     public static String OTP_CREDIT_MIS = LIVEAPI + "COMMON.svc/";
     public static String FAQAPI = THYROCARE + "MASTER.svc/";
     public static String insertscandetail = LIVEAPI + "REPORT.svc/";

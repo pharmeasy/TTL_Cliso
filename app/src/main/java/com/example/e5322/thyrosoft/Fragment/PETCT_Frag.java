@@ -127,6 +127,7 @@ public class PETCT_Frag extends Fragment {
     private String putDate, showDate;
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     private String getFormatDate, from_formateDate;
+
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -224,16 +225,15 @@ public class PETCT_Frag extends Fragment {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return date;
     }
 
     public void getProfileDetails(final Context context) {
+
         RequestQueue queue = Volley.newRequestQueue(context);
-
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -284,6 +284,7 @@ public class PETCT_Frag extends Fragment {
 
 
     private void initUI(View v) {
+
         SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
         closingbal = preferences.getString("balance", "");
         Log.e(TAG, "BALANCE ---->" + closingbal);
@@ -304,8 +305,8 @@ public class PETCT_Frag extends Fragment {
         btn_submit = (Button) v.findViewById(R.id.btn_submit);
         rel_dob = v.findViewById(R.id.rel_dob);
 
-        btn_reset = (Button) v.findViewById(R.id.btn_reset);
-        tv_discount = (TextView) v.findViewById(R.id.tv_discount);
+        btn_reset = v.findViewById(R.id.btn_reset);
+        tv_discount = v.findViewById(R.id.tv_discount);
         spn_city = v.findViewById(R.id.spn_city);
         spn_service = v.findViewById(R.id.spn_service);
         spn_slot = v.findViewById(R.id.spn_slot);
@@ -439,7 +440,6 @@ public class PETCT_Frag extends Fragment {
             ControllersGlobalInitialiser.generateTokenController = new GenerateTokenController(activity, PETCT_Frag.this);
             ControllersGlobalInitialiser.generateTokenController.generateToken(true, jsonObject);
         } else {
-            //  GlobalClass.hideProgress(context, progressDialog);
             GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
         }
 
@@ -966,7 +966,7 @@ public class PETCT_Frag extends Fragment {
 
                     Log.e(TAG, "service type ---> " + servicetype);
 
-                    if (!servicetype.equalsIgnoreCase("Select Service Type*")) {
+                    if (!servicetype.equalsIgnoreCase("Select Scan Type*")) {
                         if (spn_city.getSelectedItem().toString().equalsIgnoreCase("Select City*")) {
                             spn_service.setSelection(0);
                             tv_discount.setVisibility(View.GONE);
@@ -986,6 +986,7 @@ public class PETCT_Frag extends Fragment {
                             patientName = edt_name.getText().toString().trim() + " " + edt_mname.getText().toString().trim() + " " + edt_lname.getText().toString().trim();
                         }
                     } else {
+                        edt_name.getText().clear();
                         sub_lin.setVisibility(View.GONE);
                         tv_discount.setVisibility(View.GONE);
                     }

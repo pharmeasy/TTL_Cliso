@@ -175,28 +175,30 @@ public class AdapterBarcodeOutlabs extends RecyclerView.Adapter<AdapterBarcodeOu
 
             searchBarcode = GlobalClass.finalspecimenttypewiselist.get(position).getBarcode();
             checkBarcode();
-
             holder.scanBarcode.setText("Barcode" + " : " + searchBarcode);
-
         } else {
             holder.scanBarcode.setText("Barcode");
         }
+
         System.out.println("Barcode :::: " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
+
         holder.img_edt.setVisibility(View.VISIBLE);
         holder.linearEditbarcode.setVisibility(View.GONE);
-
         holder.scanBarcode.setOnClickListener(onScanbarcodeClickListener);
         holder.scanBarcode.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
 
         holder.img_edt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (searchBarcode != null) {
                     holder.enter_barcode.setText(searchBarcode);
                     holder.reenter.setText(searchBarcode);
                 }
+
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
                 holder.barcode_linear.setVisibility(View.GONE);
+
             }
         });
 

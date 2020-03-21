@@ -146,12 +146,11 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
         mActivity = LeadGenerationActivity.this;
         cd = new ConnectionDetector(mActivity);
-        lead_id = GlobalClass.generateBookingID();
+        // lead_id = GlobalClass.generateBookingID();
 
         prefs_user = mActivity.getSharedPreferences("Userdetails", 0);
 
         init();
-      //  GetpackageAPI();
         initlistner();
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -167,11 +166,11 @@ public class LeadGenerationActivity extends AppCompatActivity {
         }
     }
 
-    private void GetpackageAPI() {
-        leadRequestModel = new LeadRequestModel();
-        leadRequestModel.setRef_code("CLISO");
-        leadController = new LeadController(this, mActivity);
-        leadController.CallAPI(leadRequestModel);
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        lead_id = GlobalClass.generateBookingID();
     }
 
     private void initlistner() {
@@ -214,6 +213,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,9 +257,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     if (Validate()) {
                         if (edt_mail.getText().toString().length() > 0) {
                             if (emailValidation()) {
-
                                 nameWithProperSpacing = edt_name.getText().toString().toUpperCase().trim();
-                                name=nameWithProperSpacing.replaceAll("\\s+", " ");
+                                name = nameWithProperSpacing.replaceAll("\\s+", " ");
 
                                 mobile = edt_mobile.getText().toString();
                                 email = edt_mail.getText().toString();
@@ -274,11 +273,11 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     }
                                 }
                             }
-                        }else {
+                        } else {
                             if (checkRemarksValidation()) {
                                 if (cd.isConnectingToInternet()) {
                                     nameWithProperSpacing = edt_name.getText().toString().toUpperCase().trim();
-                                    name=nameWithProperSpacing.replaceAll("\\s+", " ");
+                                    name = nameWithProperSpacing.replaceAll("\\s+", " ");
 
                                     mobile = edt_mobile.getText().toString();
                                     email = edt_mail.getText().toString();
@@ -373,6 +372,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(LeadGenerationActivity.this);
         builder.setTitle("Upload Prescription !");
         final CharSequence[] finalItems = items;
+
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -393,6 +393,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 GlobalClass.printLog(Constants.ERROR, TAG, "Image path:-", "" + imagefile);
             }
         });
+
         builder.show();
     }
 
@@ -402,7 +403,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_PHOTO_FROM_CAMERA);*/
 
         buildCamera();
-
         try {
             camera.takePicture();
         } catch (Exception e) {
@@ -422,56 +422,19 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 .build(this);
     }
 
-/*    private void SetModel() {
-        try {
-            if (is_booking == 1) {
-                pass_product = tests;
-                pass_rate = Rate;
-                pass_reportcode = Product_id;
-            }
-            postLeadDataModel = new PostLeadDataModel();
-
-            postLeadDataModel.setApi_key("DAuWZtKHyVb8OhjhHSuAwCB6uAyzVzASVTxXcCT8@0fkrvZ5fG9lw533tKKmxVnu");
-            postLeadDataModel.setOrderid(GlobalClass.generateBookingID());
-            postLeadDataModel.setAddress(edt_address.getText().toString());
-            postLeadDataModel.setPincode(edt_pincode.getText().toString());
-            postLeadDataModel.setProduct(pass_product);
-            postLeadDataModel.setMobile(edt_mobile.getText().toString());
-            postLeadDataModel.setEmail(edt_mail.getText().toString());
-            postLeadDataModel.setTsp("");
-            postLeadDataModel.setService_type("H");
-            postLeadDataModel.setOrder_by(edt_name.getText().toString());
-            postLeadDataModel.setReport_code(pass_reportcode);
-            postLeadDataModel.setRate(pass_rate);
-            postLeadDataModel.setHc(0);
-            postLeadDataModel.setReports("N");
-            postLeadDataModel.setRef_code(mobile);
-            postLeadDataModel.setPay_type("Postpaid");
-            postLeadDataModel.setBencount("1");
-            postLeadDataModel.setBendataxml("<NewDataSet><Ben_details><Name>" + edt_name.getText().toString() + "</Name></Ben_details></NewDataSet>");
-            postLeadDataModel.setRemarks(edt_remarks.getText().toString() + " ~" + spr_package.getSelectedItem().toString() + " ~CLISO");
-            postLeadDataModel.setIs_booking(is_booking);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }*/
-
     private boolean Validate() {
-
         if (edt_name.getText().toString().equals("")) {
             edt_name.setError("Enter Valid Name");
             edt_name.requestFocus();
             return false;
         }
 
-
         if (edt_name.getText().toString().length() < 2) {
             edt_name.setError("Minimum length should be 2");
             edt_name.requestFocus();
             return false;
         }
+
         if (edt_name.getText().toString().startsWith(" ")) {
             edt_name.setError("Cannot start with Space");
             edt_name.requestFocus();
@@ -618,6 +581,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
 
         // edt_address.setFilters(new InputFilter[]{EMOJI_FILTER});
+
         edt_address.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -627,12 +591,15 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+
                     Toast.makeText(LeadGenerationActivity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+
                     if (enteredString.length() > 0) {
                         edt_address.setText(enteredString.substring(1));
                     } else {
                         edt_address.setText("");
                     }
+
                 }
 
             }
@@ -656,6 +623,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+
                     TastyToast.makeText(LeadGenerationActivity.this, ToastFile.crt_txt, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
@@ -663,6 +631,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     } else {
                         edt_remarks.setText("");
                     }
+
                 }
             }
 
@@ -686,33 +655,18 @@ public class LeadGenerationActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void CallLeadResponse(ArrayList<LeadResponseModel.ProductlistBean> productlist) {
-      /*  if (package_names != null) {
-            package_names = null;
-        }
-        package_names = new ArrayList<>();
-
-        package_names.add("Select Package*");
-
-        leadResponseModel = productlist;*/
 
         leadResponseModel = new ArrayList<>();
-
         LeadResponseModel.ProductlistBean ent = new LeadResponseModel.ProductlistBean();
         ent.setProduct_name("Select Package*");
         leadResponseModel.add(ent);
 
         if (productlist != null) {
             for (int i = 0; i < productlist.size(); i++) {
-
                 leadResponseModel.add(productlist.get(i));
-
-               /* if (productlist.get(i).getProduct_name() != null) {
-                    package_names.add(leadResponseModel.get(i).getProduct_name());
-                }*/
             }
 
         }
@@ -888,7 +842,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             if (mediarecorderflag) {
                                 if (mediaRecorder != null) {
                                     mediaRecorder.release();
-                                    mediaRecorder.stop();
                                     mediarecorderflag = false;
                                 }
                             }
@@ -905,7 +858,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         btn_discard.setEnabled(true);
                         btn_discard.setBackgroundResource(R.drawable.bg_bg1);
                         GlobalClass.showCustomToast(mActivity, "Recording completed");
-
                     }
                 }
             });
@@ -930,9 +882,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
             String imageurl = camera.getCameraBitmapPath();
             imagefile = new File(imageurl);
 
-            /*photo = (Bitmap) data.getExtras().get("data");
-            storeCapturedPhoto(photo);
-            imagefile = new File(path);*/
         }
     }
 
@@ -951,7 +900,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
             this.type = type;
             this.imagefile = imagefile;
             this.f_AudioSavePathInDevice = f_AudioSavePathInDevice;
-
             status_code = 0;
         }
 
@@ -1074,7 +1022,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         note = (TextView) CustomDialogforSuccess.findViewById(R.id.note);
 
 
-
                         ll_email_id.setVisibility(View.GONE);
                         ll_remarks.setVisibility(View.GONE);
                         ll_address.setVisibility(View.GONE);
@@ -1087,6 +1034,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             @Override
                             public void onClick(View view) {
                                 CustomDialogforSuccess.dismiss();
+                                LeadGenerationActivity.this.onResume();
                             }
                         });
 
@@ -1311,6 +1259,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
             return json;
         }
 
+
         @Override
         protected void onPostExecute(JSONObject result) {
             super.onPostExecute(result);
@@ -1350,5 +1299,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
         }
     }
+
 
 }

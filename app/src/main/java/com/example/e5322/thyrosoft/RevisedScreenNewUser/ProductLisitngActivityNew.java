@@ -757,9 +757,29 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 } else {
                     int sum = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
+                    List<String> codelist = new ArrayList<>();
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
                         getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+                        codelist.add(Selcted_Outlab_Test.get(i).getCode());
+                    }
+
+                    if (codelist!=null){
+                        for (int i = 0; i < codelist.size(); i++) {
+                            if (codelist.get(i).contains("PPBS")&& codelist.get(i).contains("RBS")){
+                                codelist.remove("RBS");
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                        for (int j=0;j<codelist.size();j++){
+                            if (Selcted_Outlab_Test.get(i).getCode().equalsIgnoreCase(codelist.get(j))){
+                                showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
+                                getTExtdata = TextUtils.join(",", showTestNmaes);
+                            }
+                        }
+
                     }
 
                     String testsCodesPassing = TextUtils.join(",", getTestNameLits);
@@ -772,6 +792,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
+
                 }
             }
         });

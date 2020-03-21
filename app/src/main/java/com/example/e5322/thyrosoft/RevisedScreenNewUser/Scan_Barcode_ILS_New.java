@@ -447,7 +447,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
         Log.e(TAG, "TRF list " + trflist.size());
 
-        testsCodesPassingToProduct = TextUtils.join(",", getTestNameToPAss);
+        if (getTestNameToPAss.contains("PPBS") && getTestNameToPAss.contains("RBS")) {
+            getTestNameToPAss.remove("RBS");
+            testsCodesPassingToProduct = TextUtils.join(",", getTestNameToPAss);
+        } else {
+            testsCodesPassingToProduct = TextUtils.join(",", getTestNameToPAss);
+        }
+
 
         setAmt.setText(getAmount);
         show_selected_tests_data.setText(testsnames);
@@ -503,6 +509,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     temparraylist.add(selctedTest.get(i).getBarcodes()[j].getSpecimen_type());
                     productWithBarcode.setBarcode(selctedTest.get(i).getBarcodes()[j].getSpecimen_type());
                     productWithBarcode.setProduct(selctedTest.get(i).getBarcodes()[j].getCode());
+                    productWithBarcode.setFasting(selctedTest.get(i).getFasting());
                     getproductDetailswithBarcodes.add(productWithBarcode);
                     saveLocation.add(selctedTest.get(i).getLocation());
                 }
@@ -552,23 +559,29 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
                 if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
                     setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
+
                 }
             }
+
             scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
+
+
             for (int j = 0; j < setSpecimenTypeCodes.size(); j++) {
-
-
                 HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
-
                 //Creating Arraylist without duplicate values
                 List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
                 String setProducts = TextUtils.join(",", listWithoutDuplicates);
                 HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
+                if (test.contains("RBS") && test.contains("PPBS")) {
+                    test.remove("RBS");
+                }
                 String setFinalProducts = TextUtils.join(",", test);
                 scannedBarcodeDetails.setProducts(setFinalProducts);
             }
             GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
         }
+
+
 
         if (typeName.equals("ILS")) {
             if (selctedTest.size() != 0) {
@@ -748,13 +761,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (getageType.equalsIgnoreCase("Days")) {
                         ageType = "D";
                     }
-                  //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                    //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
                 }
 
                 try {
                     String getFulltime = sampleCollectionDate + " " + getFinalTime;
                     GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
-                  //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+                    //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

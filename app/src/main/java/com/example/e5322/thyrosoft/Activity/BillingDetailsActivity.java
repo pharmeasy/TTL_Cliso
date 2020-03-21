@@ -1,7 +1,5 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -66,6 +64,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
         lvExp = (ExpandableListView) findViewById(R.id.expandlist);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,7 +82,6 @@ public class BillingDetailsActivity extends AppCompatActivity {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //
                 saveExcelFile();
             }
         });
@@ -121,7 +119,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
             }
 
             WritableCellFormat cellFormat = new WritableCellFormat(cellFont);
-            try {
+            try{
                 cellFormat.setBackground(Colour.YELLOW);
             } catch (WriteException e) {
                 e.printStackTrace();
@@ -158,19 +156,14 @@ public class BillingDetailsActivity extends AppCompatActivity {
                 sheet.setColumnView(5, 15);
                 sheet.setColumnView(6, 15);
 
-
                 sheet.addCell(new Label(0, i + 1, GlobalClass.billingDETArray.get(i).getBarcode()));
-
-
                 sheet.addCell(new Label(1, i + 1, GlobalClass.billingDETArray.get(i).getBilledAmount()));
                 sheet.addCell(new Label(2, i + 1, GlobalClass.billingDETArray.get(i).getCollectedAmount()));
                 sheet.addCell(new Label(3, i + 1, GlobalClass.billingDETArray.get(i).getPatient()));
                 sheet.addCell(new Label(4, i + 1, GlobalClass.billingDETArray.get(i).getTests()));
                 sheet.addCell(new Label(5, i + 1, GlobalClass.billingDETArray.get(i).getWoetype()));
                 sheet.addCell(new Label(6, i + 1, GlobalClass.billingDETArray.get(i).getRefId()));
-
-
-            }       //String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TODO_SUBJECT));
+            }
 
 
             workbook.write();

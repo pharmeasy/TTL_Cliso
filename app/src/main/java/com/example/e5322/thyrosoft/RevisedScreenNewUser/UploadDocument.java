@@ -72,7 +72,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -146,11 +148,13 @@ public class UploadDocument extends AbstractActivity {
     private String exp_Date;
     private RequestQueue PostQueOtp;
 
+
     public static String ConvertBitmapToString(Bitmap bitmap) {
         String encodedImage = "";
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
         try {
             encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -158,6 +162,19 @@ public class UploadDocument extends AbstractActivity {
         }
 
         return encodedImage;
+    }
+
+    public String getBase64Image(Bitmap bitmap) {
+        try {
+            ByteBuffer buffer = ByteBuffer.allocate(bitmap.getRowBytes() *
+                    bitmap.getHeight());
+            bitmap.copyPixelsToBuffer(buffer);
+            byte[] data = buffer.array();
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @SuppressLint("NewApi")
@@ -615,13 +632,14 @@ public class UploadDocument extends AbstractActivity {
                     Log.e(TAG, "onResponse: " + response);
 
                     UploadDocumentResponseModel responseModel = new Gson().fromJson(String.valueOf(response), UploadDocumentResponseModel.class);
-
                     if (responseModel != null) {
                         if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
                             TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                             Intent i = new Intent(UploadDocument.this, UploadDocument.class);
                             startActivity(i);
                             finish();
+                        } else {
+                            Toast.makeText(UploadDocument.this, ToastFile.IMAGEERROR, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(UploadDocument.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
@@ -724,7 +742,21 @@ public class UploadDocument extends AbstractActivity {
                 try {
                     bitmap = BitmapFactory.decodeStream(UploadDocument.this.getContentResolver().openInputStream(targetUri));
                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 500, 500, false);
-                    image = ConvertBitmapToString(resizedBitmap);
+
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+                    byte[] imageInByte = byteArrayOutputStream.toByteArray();
+                    long lengthbmp = imageInByte.length;
+                    Log.e(TAG_FRAGMENT, "IMG LENGTH --->" + lengthbmp);
+
+                    String imglength = readableFileSize(lengthbmp);
+                    Log.e(TAG_FRAGMENT, imglength);
+                    if (imglength.contains("MB")) {
+                        image = ConvertBitmapToString(resizedBitmap);
+                    } else {
+                        Log.e(TAG_FRAGMENT, "FILE SIZE IN KB--->");
+                        image = getBase64Image(resizedBitmap);
+                    }
                     gtick.setVisibility(View.VISIBLE);
                     preview_img_txt.setVisibility(View.VISIBLE);
 
@@ -735,6 +767,15 @@ public class UploadDocument extends AbstractActivity {
             }
         }
 
+    }
+
+    public String readableFileSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB", "PB", "EB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        String result = null;
+        result = new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
+        return result;
     }
 
     private void Defaultupload() {

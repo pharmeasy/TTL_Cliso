@@ -110,6 +110,7 @@ public class ToastFile {
     public static String crt_txt = "Please enter correct text";
     public static String xl_dtl = "Billing details excel created";
     public static String something_went_wrong = "Something went wrong. Try after some time";
+    public static String IMAGEERROR = "Selected image have some problem,kindly select another image";
     public static String first_ent_brcd = "First enter the barcode in above field";
     public static String brcd_not_match = "Barcode not matching, Please enter correct barcode";
     public static String ent_brcd = "Enter Barcode";
