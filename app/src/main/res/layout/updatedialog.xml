@@ -44,4 +44,16 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/txt_browser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/browser"
+        android:textColor="@color/maroon"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:textSize="@dimen/_10sdp"/>
+
 </LinearLayout>

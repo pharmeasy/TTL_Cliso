@@ -299,8 +299,7 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-
-        if (communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
+        if (communicationRepsponseModel!=null && communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
             expandlistcommunication.setVisibility(View.VISIBLE);
             adapter = new ExpandableListCommunication(Communication_Activity.this, communicationRepsponseModel.getInboxes(), new Interface_Pass_CommunicationValue() {
                 @Override

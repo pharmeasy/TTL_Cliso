@@ -115,29 +115,33 @@ class KTNoticeboard_activity : AppCompatActivity() {
             override fun onResponse(call: Call<NoticeBoard_Model?>, response: retrofit2.Response<NoticeBoard_Model?>) {
                 KTGlobalclass().hideProgress(this@KTNoticeboard_activity, progressDialog)
                 val noticeBoard_model = response.body()
-                Log.e(TAG, "on Sucess --->" + noticeBoard_model!!.resId)
-                if (noticeBoard_model != null) {
-                    if (!KTGlobalclass().isNull(noticeBoard_model.response) && noticeBoard_model.response.equals(Constants.caps_invalidApikey, ignoreCase = true)) {
-                        KTGlobalclass().redirectToLogin(this@KTNoticeboard_activity)
-                    } else {
-                        val array_notice = ArrayList<NoticeBoard_Model>()
-                        if (noticeBoard_model.messages != null) {
-                            array_notice.add(noticeBoard_model)
-                            if (array_notice[0].messages[0].messageCode != null) {
-                                 var msgCode = array_notice[0].messages[0].messageCode
-                                val noticeBoard_adapter = com.example.e5322.thyrosoft.Kotlin.KTAdapter.NoticeBoard_Adapter(this@KTNoticeboard_activity, array_notice, msgCode)
-                                noticeboard_list!!.adapter = noticeBoard_adapter
+//                Log.e(TAG, "on Sucess --->" + noticeBoard_model!!.resId)
+                try {
+                    if (noticeBoard_model != null) {
+                        if (!KTGlobalclass().isNull(noticeBoard_model.response) && noticeBoard_model.response.equals(Constants.caps_invalidApikey, ignoreCase = true)) {
+                            KTGlobalclass().redirectToLogin(this@KTNoticeboard_activity)
+                        } else {
+                            val array_notice = ArrayList<NoticeBoard_Model>()
+                            if (noticeBoard_model.messages != null) {
+                                array_notice.add(noticeBoard_model)
+                                if (array_notice[0].messages[0].messageCode != null) {
+                                    var msgCode = array_notice[0].messages[0].messageCode
+                                    val noticeBoard_adapter = com.example.e5322.thyrosoft.Kotlin.KTAdapter.NoticeBoard_Adapter(this@KTNoticeboard_activity, array_notice, msgCode)
+                                    noticeboard_list!!.adapter = noticeBoard_adapter
 
 
-                                noticeBoard_adapter!!.clickListerforAckNoticeboard(object : RefreshNoticeBoard {
-                                    override fun onClickAcknowledge(msgCode: String?) {
-                                        postack(msgCode);
-                                    }
-                                })
+                                    noticeBoard_adapter!!.clickListerforAckNoticeboard(object : RefreshNoticeBoard {
+                                        override fun onClickAcknowledge(msgCode: String?) {
+                                            postack(msgCode);
+                                        }
+                                    })
+                                }
+
                             }
-
                         }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
             }
@@ -175,7 +179,6 @@ class KTNoticeboard_activity : AppCompatActivity() {
 
         })
     }
-
 
 
 /*    private fun getNoticeBoardData() {

@@ -757,30 +757,19 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 } else {
                     int sum = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
-                    List<String> codelist = new ArrayList<>();
+                    boolean ppbsflag = false;
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
                         getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
-                        codelist.add(Selcted_Outlab_Test.get(i).getCode());
                     }
 
-                    if (codelist!=null){
-                        for (int i = 0; i < codelist.size(); i++) {
-                            if (codelist.get(i).contains("PPBS")&& codelist.get(i).contains("RBS")){
-                                codelist.remove("RBS");
-                            }
-                        }
-                    }
 
-                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                        for (int j=0;j<codelist.size();j++){
-                            if (Selcted_Outlab_Test.get(i).getCode().equalsIgnoreCase(codelist.get(j))){
-                                showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
-                                getTExtdata = TextUtils.join(",", showTestNmaes);
-                            }
-                        }
-
+                    if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
+                        showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
+                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                    getTExtdata = displayslectedtest;
 
                     String testsCodesPassing = TextUtils.join(",", getTestNameLits);
                     String payment = String.valueOf(sum);
@@ -792,7 +781,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
-
                 }
             }
         });
@@ -1205,6 +1193,17 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                 Selcted_Outlab_Test.add(testRateMasterModel);
                                                 showTestNmaes.clear();
                                                 showTestNmaes.add(testRateMasterModel.getName());
+
+                                                if (Selcted_Outlab_Test != null) {
+                                                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                                                        if (Selcted_Outlab_Test.get(i).getCode().contains("PPBS") &&
+                                                                Selcted_Outlab_Test.get(i).getCode().contains("RBS")) {
+                                                            Selcted_Outlab_Test.remove(Selcted_Outlab_Test.get(i));
+                                                            showTestNmaes.remove(testRateMasterModel.getName());
+                                                        }
+                                                    }
+
+                                                }
                                                 String displayslectedtest = TextUtils.join(",", showTestNmaes);
                                                 show_selected_tests_list_test_ils1.setText(displayslectedtest);
                                                 notifyDataSetChanged();

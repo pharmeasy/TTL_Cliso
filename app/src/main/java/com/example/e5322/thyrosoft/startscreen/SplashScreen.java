@@ -279,6 +279,15 @@ public class SplashScreen extends AppCompatActivity {
         alertDialog.show();
         Button btnUpdate = (Button) dialogView.findViewById(R.id.btnUpdate);
         Button btnCancel = (Button) dialogView.findViewById(R.id.btnCancel);
+        TextView txt_browser=dialogView.findViewById(R.id.txt_browser);
+        txt_browser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(apkUrl));
+                startActivity(intent);
+                finish();
+            }
+        });
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override

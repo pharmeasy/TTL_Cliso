@@ -207,6 +207,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
             if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
                 holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
 
+
                 SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
                 setBarcodeDetails.setSpecimenType(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
                 setBarcodeDetails.setBarcode_number(searchBarcode);
@@ -340,7 +341,23 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
 
         } else {
-            holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+            if (GlobalClass.finalspecimenttypewiselist != null) {
+                if (GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
+                    if (GlobalClass.finalspecimenttypewiselist.get(position).getFasting().equalsIgnoreCase("FASTING")) {
+                        if (fromcome==0){
+                            holder.scanBarcode.setText(" (F) "+GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                        }else {
+                            holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                        }
+
+                    }else {
+                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                    }
+                } else {
+                    holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                }
+            }
+
         }
 
         System.out.println("Barcode :::: " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());

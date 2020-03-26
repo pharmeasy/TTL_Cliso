@@ -9,6 +9,7 @@ public class ScannedBarcodeDetails implements Parcelable {
     String TESTS;
     String Remark;
     String Location;
+    String fasting;
 
     protected ScannedBarcodeDetails(Parcel in) {
         SAMPLE_TYPE = in.readString();
@@ -16,6 +17,7 @@ public class ScannedBarcodeDetails implements Parcelable {
         TESTS = in.readString();
         Remark = in.readString();
         Location = in.readString();
+        fasting=in.readString();
     }
 
     @Override
@@ -25,6 +27,7 @@ public class ScannedBarcodeDetails implements Parcelable {
         dest.writeString(TESTS);
         dest.writeString(Remark);
         dest.writeString(Location);
+        dest.writeString(fasting);
     }
 
     @Override
@@ -43,6 +46,14 @@ public class ScannedBarcodeDetails implements Parcelable {
             return new ScannedBarcodeDetails[size];
         }
     };
+
+    public String getFasting() {
+        return fasting;
+    }
+
+    public void setFasting(String fasting) {
+        this.fasting = fasting;
+    }
 
     public String getLocation() {
         return Location;

@@ -175,6 +175,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
     LinearLayout ll_uploadTRF;
+    boolean fast_flag = false;
     RecyclerView rec_trf;
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
@@ -445,6 +446,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
 
 
+        for (int i = 0; i < selctedTest.size(); i++) {
+            if (getTestNameToPAss.contains("PPBS") && getTestNameToPAss.contains("RBS")) {
+                if (selctedTest.get(i).getProduct().equalsIgnoreCase("RBS")) {
+                    selctedTest.remove(selctedTest.get(i));
+                }
+            }
+        }
+
+
         Log.e(TAG, "TRF list " + trflist.size());
 
         if (getTestNameToPAss.contains("PPBS") && getTestNameToPAss.contains("RBS")) {
@@ -474,6 +484,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
             }
         });
+
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -547,40 +558,47 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
         setAmt.setText(String.valueOf(getAmount));
 
-        Set<String> hs = new HashSet<>();
-        hs.addAll(temparraylist);
-        temparraylist.clear();
-        temparraylist.addAll(hs);
+
+        if (!temparraylist.contains("FLUORIDE")) {
+            Set<String> hs = new HashSet<>();
+            hs.addAll(temparraylist);
+            temparraylist.clear();
+            temparraylist.addAll(hs);
+        }
 
         for (int i = 0; i < temparraylist.size(); i++) {
-
             ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
             setSpecimenTypeCodes = new ArrayList<>();
+
             for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
                 if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
                     setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
-
                 }
             }
 
             scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
-
+            scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(i).getFasting());
 
             for (int j = 0; j < setSpecimenTypeCodes.size(); j++) {
-                HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
-                //Creating Arraylist without duplicate values
-                List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
-                String setProducts = TextUtils.join(",", listWithoutDuplicates);
-                HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
-                if (test.contains("RBS") && test.contains("PPBS")) {
-                    test.remove("RBS");
+                if (getproductDetailswithBarcodes.get(i).getBarcode().equalsIgnoreCase("FLUORIDE")){
+                    scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(i).getProduct());
+                }else {
+                    HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
+                    //Creating Arraylist without duplicate values
+                    List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
+                    String setProducts = TextUtils.join(",", listWithoutDuplicates);
+                    HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
+                    if (test.contains("RBS") && test.contains("PPBS")) {
+                        test.remove("RBS");
+                    }
+                    String setFinalProducts = TextUtils.join(",", test);
+                    scannedBarcodeDetails.setProducts(setFinalProducts);
                 }
-                String setFinalProducts = TextUtils.join(",", test);
-                scannedBarcodeDetails.setProducts(setFinalProducts);
+
             }
+
             GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
         }
-
 
 
         if (typeName.equals("ILS")) {

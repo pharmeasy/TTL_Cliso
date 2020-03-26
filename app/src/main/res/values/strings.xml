@@ -31,6 +31,7 @@
 
     <string name="more">More...</string>
     <string name="less">Less...</string>
+    <string name="browser">Download via link</string>
 
     <style name="medium_text" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBlack</item>
