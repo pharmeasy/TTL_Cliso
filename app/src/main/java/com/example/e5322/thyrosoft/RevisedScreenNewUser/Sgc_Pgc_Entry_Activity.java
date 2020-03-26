@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
@@ -343,9 +344,11 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             public void afterTextChanged(Editable s) {
                 entered_Type_String = sgc_pgc_spinner.getSelectedItem().toString();
                 entered_mobile_String = s.toString();
+
                 if (entered_mobile_String.length() == 10) {
                     barProgressDialog.show();
                     try {
+
                         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                         String URL = Api.checkValidEmail;
                         JSONObject jsonBody = new JSONObject();
@@ -357,9 +360,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                             @Override
                             public void onResponse(String response) {
                                 Log.e(TAG, "onResponse: " + response);
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
+                               GlobalClass.hideProgress(Sgc_Pgc_Entry_Activity.this,barProgressDialog);
                                 if (response.contains("\"TRUE\"")) {
 
                                 } else {
@@ -371,9 +372,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
+                                GlobalClass.hideProgress(Sgc_Pgc_Entry_Activity.this,barProgressDialog);
                                 Log.e("VOLLEY", error.toString());
                             }
                         }) {
@@ -505,10 +504,13 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             @Override
             public void afterTextChanged(Editable s) {
                 String enteredString = s.toString();
-                if (enteredString.length() > 30) {
-                    client_name_edt.setText(enteredString.substring(1));
-                    Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter maximum 30 characters", Toast.LENGTH_SHORT).show();
+                if (!TextUtils.isEmpty(enteredString)){
+                    if (enteredString.length() > 30) {
+                        client_name_edt.setText(enteredString.substring(1));
+                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter maximum 30 characters", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
         });
 
@@ -715,13 +717,12 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                             @Override
                             public void onResponse(String response) {
                                 Log.e(TAG, "onResponse: " + response);
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
-                                if (response.equalsIgnoreCase("\"TRUE\"")) {
+
+                                GlobalClass.hideProgress(Sgc_Pgc_Entry_Activity.this,barProgressDialog);
+
+                                if (response.equalsIgnoreCase("\"TRUE\"")){
 
                                 } else {
-
                                     email_edt.requestFocus();
                                     email_edt.setError(response);
                                     email_edt.setText("");
@@ -730,9 +731,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                    barProgressDialog.dismiss();
-                                }
+                               GlobalClass.hideProgress(Sgc_Pgc_Entry_Activity.this,barProgressDialog);
                                 Log.e("VOLLEY", error.toString());
                             }
                         }) {
@@ -796,14 +795,13 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                             Toast.makeText(Sgc_Pgc_Entry_Activity.this, "URL is invalid!", Toast.LENGTH_LONG).show();
                         }
                     }
-//                     get_visiting_card = encodedImage.toString();
+
                     if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.setError("Enter latitude");
                     } else if (getLongitude.equalsIgnoreCase("")) {
                         longitude_txt.setError("Enter correct longitude");
                     } else if (getpincode.equals("")) {
                         pincode_edt.setError("Enter correct Pincode");
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Pincode", Toast.LENGTH_SHORT).show();
                     } else if (getpincode.length() < 6) {
                         pincode_edt.setError("Enter 6 digits Pincode");
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_pin, Toast.LENGTH_SHORT).show();
@@ -910,23 +908,20 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     } else if (email_address.equals("")) {
                         email_edt.requestFocus();
                         email_edt.setError("Please enter Email address");
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter Email address", Toast.LENGTH_SHORT).show();
+
                     } else if (get_dr_name.equals("")) {
                         dr_name_edt.requestFocus();
                         dr_name_edt.setError(ToastFile.crt_name_woe);
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
+
                     } else if (get_dr_name.length() < 2) {
                         dr_name_edt.requestFocus();
                         dr_name_edt.setError(ToastFile.crt_name_woe);
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
                     } else if (get_Address.equals("")) {
                         addressEdt.requestFocus();
                         addressEdt.setError(ToastFile.ent_addr);
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (get_Address.length() < 25) {
                         addressEdt.requestFocus();
                         addressEdt.setError(ToastFile.addre25long);
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (image == null) {
                         cross_img.setVisibility(View.VISIBLE);
                         correct_img.setVisibility(View.GONE);

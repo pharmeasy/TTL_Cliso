@@ -194,9 +194,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 
         if (savedInstanceState == null) {
-            // withholding the previously created fragment from being created again
-            // On orientation change, it will prevent fragment recreation
-            // its necessary to reserving the fragment stack inside each tab
             initScreen();
         } else {
             // restoring the previously created fragment
@@ -212,7 +209,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
-//        View headerView =(View) LayoutInflater.inflate(R.layout.nav_header_main, navigationView, false);
 
         navigationView.addHeaderView(headerView);
         navigationDrawerNameTSP = (TextView) headerView.findViewById(R.id.navigationDrawerNameTSP);
@@ -284,15 +280,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
-                //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
-                //  navigationView.getMenu().findItem(R.id.woe).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.result).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.ledger).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.billing).setVisible(true);
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);
@@ -310,28 +297,38 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         String usercode = getProfileName.getString("usercode", null);
         String profile_image = getProfileName.getString("image", null);
 
-        if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
-            if (getIntent().hasExtra(Constants.COMEFROM)) {
-                iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
-                if (iscomfrom) {
-                    Log.e(TAG, " COMEFROM -------->" + iscomfrom);
-                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                        CheckVideoData();
+        try {
+            if (!TextUtils.isEmpty(CLIENT_TYPE)){
+                if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+                    if (getIntent().hasExtra(Constants.COMEFROM)) {
+                        iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
+                        if (iscomfrom) {
+                            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                                CheckVideoData();
+                            }
+                        }
                     }
                 }
             }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
-        if (getIntent().hasExtra(Constants.IsFromNotification)) {
-            IsFromNotification = getIntent().getBooleanExtra(Constants.IsFromNotification, false);
-            if (IsFromNotification) {
-                if (getIntent().hasExtra("Screen_category")) {
-                    SCRID = getIntent().getIntExtra("Screen_category", 0);
-                    Log.e(TAG, "Screen ID ---->" + SCRID);
-                    callnotifiedScreen(SCRID);
+        try {
+            if (getIntent().hasExtra(Constants.IsFromNotification)) {
+                IsFromNotification = getIntent().getBooleanExtra(Constants.IsFromNotification, false);
+                if (IsFromNotification) {
+                    if (getIntent().hasExtra("Screen_category")) {
+                        SCRID = getIntent().getIntExtra("Screen_category", 0);
+                        Log.e(TAG, "Screen ID ---->" + SCRID);
+                        callnotifiedScreen(SCRID);
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (name != null) {
@@ -500,21 +497,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                                             milliseconds = video_view.getCurrentPosition();
                                                             minutes = (milliseconds / 1000) / 60;
                                                             seconds = (milliseconds / 1000) % 60;
-                                                           /* Log.e(TAG, "VIDEO DUR ---->" + video_view.getDuration());
-                                                            Log.e(TAG, "minutes  ---->" + minutes);
-                                                            Log.e(TAG, "seconds---->" + seconds);*/
 
                                                         }
                                                     }
 
                                                     @Override
                                                     public void onStartTrackingTouch(SeekBar seekBar) {
-                                                        // video_view.seekTo(videoseekbar.getProgress());
                                                     }
 
                                                     @Override
                                                     public void onStopTrackingTouch(SeekBar seekBar) {
-                                                        //video_view.seekTo(videoseekbar.getProgress());
                                                     }
 
                                                 });
@@ -539,16 +531,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     @Override
                                     public void onClick(View v) {
 
-                                        if (!TextUtils.isEmpty(response.body().getOutput().get(0).getId())) {
-                                            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                                                ic_close.setClickable(false);
-                                                ic_close.setEnabled(false);
-                                                if (isVideosee) {
-                                                    mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
-                                                    postdata(video_view);
+                                        try {
+                                            if (!TextUtils.isEmpty(response.body().getOutput().get(0).getId())) {
+                                                if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                                                    ic_close.setClickable(false);
+                                                    ic_close.setEnabled(false);
+                                                    if (isVideosee) {
+                                                        mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                        postdata(video_view);
+                                                    }
+                                                    closeVideo(response.body().getOutput().get(0).getId(), dialog);
                                                 }
-                                                closeVideo(response.body().getOutput().get(0).getId(), dialog);
                                             }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
 
                                     }
@@ -708,8 +704,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, carouselFragment)
                         .commit();
-
-
             }
         } else if (id == R.id.offlinewoe) {
             Bundle bundle = new Bundle();
@@ -720,8 +714,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             fragmentManager.beginTransaction()
                     .replace(R.id.container, carouselFragment)
                     .commit();
-
-
         } else if (id == R.id.chn) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -800,7 +792,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
-//                i.putExtra("comefrom", "TSP");
                 startActivity(i);
             }
 

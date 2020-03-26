@@ -58,7 +58,6 @@ public class Feedback_activity extends AppCompatActivity {
     ImageView cry, sad, happy;
     View view;
     ImageView back, home;
-    // ProgressDialog barProgressDialog;
     Button submitcomment;
     EditText query;
     String blockCharacterSetdata = "~#^|$%&*!+:`";

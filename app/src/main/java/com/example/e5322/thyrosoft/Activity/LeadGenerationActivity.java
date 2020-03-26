@@ -88,8 +88,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
     LeadController leadController;
     LeadRequestModel leadRequestModel;
     TextView tv_reset;
-    PostLeadResponseController postLeadResponseController;
-    PostLeadDataModel postLeadDataModel;
     LeadDataResponseModel leadDataResponseModel;
     private MediaRecorder mediaRecorder;
     String TAG = getClass().getSimpleName();
@@ -340,7 +338,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         edt_address.setText("");
         edt_pincode.setText("");
         edt_remarks.setText("");
-        //  spr_package.setSelection(0);
+
 
         img_tick.setVisibility(View.INVISIBLE);
         img_tick2.setVisibility(View.INVISIBLE);
