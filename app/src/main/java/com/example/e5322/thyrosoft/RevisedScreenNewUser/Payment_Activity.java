@@ -112,6 +112,8 @@ import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 public class Payment_Activity extends AppCompatActivity {
 
     private static Activity context;
+    //  private static Global globalData;
+    private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
     public String closing_balance_pref;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
@@ -120,22 +122,35 @@ public class Payment_Activity extends AppCompatActivity {
     EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
     String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
+    android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
+    String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
+    String strOrderNo = "";
+    int ben_count = 0;
     Double CBamount = 0.0;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
+    private int buttonclickFlag = 0;
+    private boolean isemailvalid = false;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
     // This sets the configuration
     private PayuConfig payuConfig;
     // Used when generating hash from SDK
+    private PayUChecksum checksum;
+    private String _appointmentDate, _displaydate, _displaytime, _pinCode, _strTID, _straddress, _strlandmark, _access_token, _merchantid, _orderid, _curreny, _amount, _redirect_url, _cancel_url, _rsa_key_url, _responsedata;
     private String amountTopass;
     private Global globalClass;
+    private String appointmentDate;
+    private String dataToSave;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
+    private String randomTid;
     private RequestQueue PostQueOtp;
     private Double Today_bill;
     private String RESPONSE;
     private String ordno;
+    private boolean flagForOnce = false;
     private String COME_FROM_SCREEN = "";
     private String unbillwoe, unbillmt, crd_amt;
 
@@ -175,6 +190,8 @@ public class Payment_Activity extends AppCompatActivity {
         pincode_pref = getProfileName.getString("pincode", null);
         billavg = getProfileName.getString(Constants.Billamount, null);
 
+        // closing_balance_pref = getProfileName.getString("closing_balance", null);
+
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
@@ -194,7 +211,7 @@ public class Payment_Activity extends AppCompatActivity {
 
         getProfileDetails();
 
-
+        //globalData = new Global(Payment_Activity.this);
         title.setText("Online Payment");
         txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
         txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));

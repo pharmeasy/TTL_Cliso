@@ -109,11 +109,8 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -1158,14 +1155,45 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             });
         }
 
-        List<String> hourSin= Arrays.asList("HR","01","02","03","04","05","06","07","08","09","10","11","12");
+        ArrayList<String> hourSin = new ArrayList<>();
+        hourSin.add("HR");
+        hourSin.add("01");
+        hourSin.add("02");
+        hourSin.add("03");
+        hourSin.add("04");
+        hourSin.add("05");
+        hourSin.add("06");
+        hourSin.add("07");
+        hourSin.add("08");
+        hourSin.add("09");
+        hourSin.add("10");
+        hourSin.add("11");
+        hourSin.add("12");
 
-        List<String> minuteSpin = Arrays.asList("MIN","00","05","10","15","20","25","30","35","40","45","50","55");
+        ArrayList<String> minuteSpin = new ArrayList<>();
+        minuteSpin.add("MIN");
+        minuteSpin.add("00");
+        minuteSpin.add("05");
+        minuteSpin.add("10");
+        minuteSpin.add("15");
+        minuteSpin.add("20");
+        minuteSpin.add("25");
+        minuteSpin.add("30");
+        minuteSpin.add("35");
+        minuteSpin.add("40");
+        minuteSpin.add("45");
+        minuteSpin.add("50");
+        minuteSpin.add("55");
 
-        List<String> ampmSpine = Arrays.asList("AM/PM","AM","PM");
+        ArrayList<String> ampmSpine = new ArrayList<>();
+        ampmSpine.add("AM/PM");
+        ampmSpine.add("AM");
+        ampmSpine.add("PM");
 
-        List<String> patientsagespinner = Arrays.asList("Years","Months","Days");
-
+        ArrayList<String> patientsagespinner = new ArrayList<>();
+        patientsagespinner.add("Years");
+        patientsagespinner.add("Months");
+        patientsagespinner.add("Days");
 
         Date setDateToSpin = new Date();
 
@@ -1214,14 +1242,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         namestr = name.getText().toString();
         saveGenderId = "";
 
-        if (patientsagespinner!=null){
-            ArrayAdapter<String> adap = new ArrayAdapter<String>(
-                    mContext, R.layout.name_age_spinner, patientsagespinner);
-            adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinyr.setAdapter(adap);
-            spinyr.setSelection(0);
-        }
+        ArrayAdapter<String> adap = new ArrayAdapter<String>(
+                mContext, R.layout.name_age_spinner, patientsagespinner);
+        adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinyr.setAdapter(adap);
+        spinyr.setSelection(0);
 
+        //vadapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         name.setFilters(new InputFilter[]{EMOJI_FILTER});
         patientAddress.setFilters(new InputFilter[]{EMOJI_FILTER});
@@ -1407,6 +1434,23 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         return viewMain;
     }
 
+    private DatePicker findDatePicker(ViewGroup group) {
+        if (group != null) {
+            for (int i = 0, j = group.getChildCount(); i < j; i++) {
+                View child = group.getChildAt(i);
+                if (child instanceof DatePicker) {
+                    return (DatePicker) child;
+                } else if (child instanceof ViewGroup) {
+                    DatePicker result = findDatePicker((ViewGroup) child);
+                    if (result != null)
+                        return result;
+                }
+            }
+        }
+        return null;
+
+    }
+
     private void enterNextFragment() {
         Woe_fragment a2Fragment = new Woe_fragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
@@ -1439,7 +1483,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
-                            if (myPojo!=null && myPojo.getRESPONSE() != null && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
+                            if (myPojo.getRESPONSE() != null && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
@@ -1461,7 +1505,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 getSubSource = new ArrayList();
 
                                 try {
-                                    if (myPojo!=null  && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
+                                    if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
                                         for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                                             getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                                             spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
@@ -1539,23 +1583,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                 if (GlobalClass.putData != null) {
                                     for (int i = 0; i < GlobalClass.putData.length; i++) {
+                                        //                    System.out.println("length of arraylist"+GlobalClass.putData.length);
+                                        //                    Toast.makeText(getActivity(), "length of arraylist :"+GlobalClass.putData[i], Toast.LENGTH_SHORT).show();
                                         GlobalClass.items.add(GlobalClass.putData[i]);
                                     }
                                 }
 
                                 // Spinner adapter
-                                try {
-                                    if (spinnerBrandName!=null){
-                                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                                                mContext, R.layout.name_age_spinner, spinnerBrandName);
-                                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        brand_spinner.setAdapter(adapter2);
-                                        brand_spinner.setSelection(0);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
 
+                                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                                        mContext, R.layout.name_age_spinner, spinnerBrandName);
+                                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                brand_spinner.setAdapter(adapter2);
+                                brand_spinner.setSelection(0);
 
                                 startDataSetting();
                             }
@@ -2059,9 +2099,24 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                                     String getResponse = response;
                                                                     if (response.equals("\"proceed\"")) {
 
+                                                                        /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }*/
+                                                                        /*if (mContext instanceof Activity) {
+                                                                            if (!((Activity) mContext).isFinishing())
+                                                                                barProgressDialog.dismiss();
+                                                                        }*/
                                                                         GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                                                         kyc_format.setText(checkNumber);
                                                                     } else {
+                                                                         /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                            barProgressDialog.dismiss();
+                                                                        }*/
+                                                                       /* if (mContext instanceof Activity) {
+                                                                            if (!((Activity) mContext).isFinishing())
+                                                                                barProgressDialog.dismiss();
+                                                                        }*/
+
                                                                         GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                                                         kyc_format.setText("");
                                                                         TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -2164,7 +2219,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         try {
                                             if (btechnameTopass != null) {
-                                                if (myPojo!=null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                                                         if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
@@ -2197,22 +2252,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
 
 
-                                        try {
-                                            if (woereferedby != null) {
-                                                if (obj != null && obj.getMASTERS()!=null && obj.getMASTERS().getREF_DR()!=null) {
-                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                            referenceBy = woereferedby;
-                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                        }
+                                        if (woereferedby != null) {
+                                            if (obj != null) {
+                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        referenceBy = woereferedby;
+                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                     }
                                                 }
-                                            } else {
-                                                referenceBy = woereferedby;
-                                                referredID = "";
                                             }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                        } else {
+                                            referenceBy = woereferedby;
+                                            referredID = "";
                                         }
 
 
@@ -2315,7 +2366,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                                 @Override
                                                                 public void onClick(SweetAlertDialog sDialog) {
-                                                                    if (myPojo !=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                                    if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                                         getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                                     }
 

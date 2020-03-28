@@ -1,6 +1,8 @@
 package com.example.e5322.thyrosoft.Retrofit;
 
 
+import com.example.e5322.thyrosoft.Models.AppuserReq;
+import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.LeadRequestModel;
@@ -22,5 +24,10 @@ public interface PostAPIInteface {
 
     @POST("ORDER.svc/PostorderdataPromo")
     Call<LeadDataResponseModel> PostdataLead(@Body PostLeadDataModel postLeadDataModel);
+
+    @POST("order.svc/Appuser")
+    Call<AppuserResponse> PostUserLog(@Body AppuserReq appuserReq);
+
+
 
 }

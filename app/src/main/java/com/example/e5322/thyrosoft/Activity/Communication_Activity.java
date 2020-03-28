@@ -68,8 +68,12 @@ public class Communication_Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         setContentView(R.layout.fragment_communication);
 
+        /*if (getIntent().getExtras() != null) {
+            comefrom = getIntent().getExtras().getString("comefrom");
+        }*/
 
         FromCPL = (TextView) findViewById(R.id.FromCPL);
         ToCPL = (TextView) findViewById(R.id.ToCPL);
@@ -97,12 +101,19 @@ public class Communication_Activity extends AppCompatActivity {
         home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                /*if (comefrom.equals("BMC"))
+                    startActivity(new Intent(Communication_Activity.this, BMC_MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                else*/
                 GlobalClass.goToHome(Communication_Activity.this);
             }
         });
 
         Log.e(TAG, "");
+
+        /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
+        FromCPL.setTextColor(getResources().getColor(R.color.colorWhite));
+        ToCPL.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+        ToCPL.setTextColor(getResources().getColor(R.color.colorBlack));*/
 
         FromCPL.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
@@ -128,7 +139,7 @@ public class Communication_Activity extends AppCompatActivity {
                 } else {
                     try {
 
-                        if (communicationRepsponseModel != null && communicationRepsponseModel.getSents() != null && communicationRepsponseModel.getSents().length > 0) {
+                        if (communicationRepsponseModel.getSents() != null && communicationRepsponseModel.getSents().length > 0) {
                             adapterSents = new ExpandableListCommunicationSents(Communication_Activity.this, communicationRepsponseModel.getSents());
                             expandlistcommunication.setAdapter(adapterSents);
                             offline_img.setVisibility(View.GONE);
@@ -176,6 +187,14 @@ public class Communication_Activity extends AppCompatActivity {
         });
 
 
+        /*if (!GlobalClass.isNetworkAvailable(Communication_Activity.this)) {
+            offline_img.setVisibility(View.VISIBLE);
+            expandlistcommunication.setVisibility(View.GONE);
+        } else {
+            Getdata();
+            offline_img.setVisibility(View.GONE);
+            expandlistcommunication.setVisibility(View.VISIBLE);
+        }*/
     }
 
     @Override
@@ -192,6 +211,19 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void Getdata() {
+
+    /*    barProgressDialog = new ProgressDialog(Communication_Activity.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        PostQue = Volley.newRequestQueue(Communication_Activity.this);
+*/
+
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Communication_Activity.this);
 
         JSONObject jsonObject = null;
@@ -240,13 +272,9 @@ public class Communication_Activity extends AppCompatActivity {
                         communicationRepsponseModel = gson.fromJson(response.toString(), CommunicationRepsponseModel.class);
                         GlobalClass.commSpinner = new ArrayList<CommunicationMaster>();
 
-                        if (communicationRepsponseModel != null && communicationRepsponseModel.getCommunicationMaster()
-                                != null) {
-                            for (int i = 0; i < communicationRepsponseModel.getCommunicationMaster().length; i++) {
-                                GlobalClass.commSpinner.add(communicationRepsponseModel.getCommunicationMaster()[i]);
-                            }
+                        for (int i = 0; i < communicationRepsponseModel.getCommunicationMaster().length; i++) {
+                            GlobalClass.commSpinner.add(communicationRepsponseModel.getCommunicationMaster()[i]);
                         }
-
 
                         setAdapter();
                     }
@@ -271,7 +299,8 @@ public class Communication_Activity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        if (communicationRepsponseModel != null && communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
+
+        if (communicationRepsponseModel.getInboxes() != null && communicationRepsponseModel.getInboxes().length > 0) {
             expandlistcommunication.setVisibility(View.VISIBLE);
             adapter = new ExpandableListCommunication(Communication_Activity.this, communicationRepsponseModel.getInboxes(), new Interface_Pass_CommunicationValue() {
                 @Override

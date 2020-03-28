@@ -78,7 +78,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -107,6 +106,7 @@ public class UploadDocument extends AbstractActivity {
     Spinner document_spr, category_spr1, ned_spr, sgc_spr, pgc_spr;
     TableLayout upload_table;
     String type4 = "Tam03";
+    TextView mis, mis2;
     Button btn_submit;
     String image = "";
     String imageName;
@@ -222,6 +222,8 @@ public class UploadDocument extends AbstractActivity {
         gtick.setVisibility(View.GONE);
         preview_img_txt.setVisibility(View.GONE);
 
+//        back = (ImageView) findViewById(R.id.back);
+//        home = (ImageView) findViewById(R.id.home);
 
         if (Global.checkForApi21()) {
             Window window = getWindow();
@@ -242,7 +244,21 @@ public class UploadDocument extends AbstractActivity {
         APi_key = api_key;
 
         title.setText("Upload Document");
+      /*  back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(UploadDocument.this);
+            }
+        });*/
 
+
+        //btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
 
         edt_purpose.addTextChangedListener(new TextWatcher() {
             @Override
@@ -262,8 +278,14 @@ public class UploadDocument extends AbstractActivity {
                             Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         edt_purpose.setText(enteredString.substring(1));
+                       /*btn_submit.setBackground(getResources().getDrawable(R.drawable.next_button));
+                        btn_submit.setEnabled(true);
+                        btn_submit.setClickable(true);*/
                     } else {
                         edt_purpose.setText("");
+                       /* btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
+                        btn_submit.setEnabled(false);
+                        btn_submit.setClickable(false);*/
                     }
                 }
             }
@@ -393,7 +415,10 @@ public class UploadDocument extends AbstractActivity {
 
         Defaultupload();
 
-        List<String> spinnerArray2 = Arrays.asList("NED","SGC","PGC");
+        List<String> spinnerArray2 = new ArrayList<String>();
+        spinnerArray2.add("NED");
+        spinnerArray2.add("SGC");
+        spinnerArray2.add("PGC");
 
         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                 UploadDocument.this, R.layout.upload_document_spin, spinnerArray2);
@@ -410,7 +435,6 @@ public class UploadDocument extends AbstractActivity {
 
                     expiryll.setVisibility(View.VISIBLE);
                     passSpinnervalue = category_spr1.getSelectedItem().toString();
-
                     fetchtDocumentpinner();
 
                 } else if (category_spr1.getSelectedItem().equals("SGC")) {
@@ -439,9 +463,9 @@ public class UploadDocument extends AbstractActivity {
         ll_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
                 startActivityForResult(intent, 0);
 
             }
@@ -454,7 +478,6 @@ public class UploadDocument extends AbstractActivity {
                 File imgFile = new File(picturePath);
 
                 if (imgFile.exists()) {
-
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     LayoutInflater li = LayoutInflater.from(UploadDocument.this);
                     View promptsView = li.inflate(R.layout.custom_dialog_imageviewer, null);
@@ -465,6 +488,8 @@ public class UploadDocument extends AbstractActivity {
                     alertDialogBuilder.setView(promptsView);
                     final ImageView userInput = (ImageView) promptsView
                             .findViewById(R.id.img_show);
+                    // set dialog message
+                    // crete alert dialog
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     // show it
                     alertDialog.show();

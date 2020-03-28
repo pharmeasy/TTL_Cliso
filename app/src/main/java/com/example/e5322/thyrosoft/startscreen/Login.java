@@ -12,9 +12,12 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -40,6 +43,8 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
+import com.example.e5322.thyrosoft.Models.AppuserReq;
+import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
@@ -47,6 +52,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -76,7 +82,7 @@ public class Login extends Activity implements View.OnClickListener {
     TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
-    String RESPONSE1, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    String RESPONSE1,islogin, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
     ProgressDialog barProgressDialog;
     Handler updateBarHandler;
     String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
@@ -891,6 +897,8 @@ public class Login extends Activity implements View.OnClickListener {
                                             }
                                         });
 
+
+                                        taguser("login");
                                         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
                                         a.putExtra(Constants.COMEFROM,true);
                                         startActivity(a);
@@ -925,6 +933,55 @@ public class Login extends Activity implements View.OnClickListener {
                 // Message.message(Login.this, "");
             }
         }
+    }
+
+    private void taguser(final String modtype) {
+        final String IMEI = getDeviceIMEI();
+        final String androidOS = Build.VERSION.RELEASE;
+        islogin="Y";
+
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        AppuserReq appuserReq = new AppuserReq();
+        appuserReq.setAppId(Constants.USER_APPID);
+        appuserReq.setIMIENo(IMEI);
+        appuserReq.setIslogin(islogin);
+        appuserReq.setModType(modtype);
+        appuserReq.setOS(androidOS);
+        appuserReq.setToken("");
+        appuserReq.setUserID(User);
+        appuserReq.setVersion(version);
+
+        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
+        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
+        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
+
+        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
+            @Override
+            public void onResponse(Call<AppuserResponse> call, Response<AppuserResponse> response) {
+                try {
+                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
+                        SharedPreferences.Editor editor = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
+                        editor.putInt(Constants.SHR_APPID,Constants.USER_APPID);
+                        editor.putString(Constants.SHR_IMEI,IMEI);
+                        editor.putString(Constants.SHR_ISLOGIN,islogin);
+                        editor.putString(Constants.SHR_MODTYPE,modtype);
+                        editor.putString(Constants.SHR_OS,androidOS);
+                        editor.putString(Constants.SHR_VERSION,version);
+                        editor.commit();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AppuserResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void storeRegIdInPref(String token) {
@@ -965,6 +1022,30 @@ public class Login extends Activity implements View.OnClickListener {
                 Log.e(TAG, "o n E r r o r ---->" + t.getLocalizedMessage());
             }
         });
+    }
+
+    public String getDeviceIMEI() {
+        String deviceUniqueIdentifier = null;
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return false;
+            }
+            deviceUniqueIdentifier = tm.getDeviceId();
+        }
+
+        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+
+        return deviceUniqueIdentifier;
     }
 
     @Override

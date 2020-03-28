@@ -549,6 +549,16 @@ public class Constants {
     public static String PREF_USER_DETAILS = "Userdetails";
     public static String PREF_SHOWSELECTEDTEST = "showSelectedTest";
 
+
+    //   USER LOG SHAREDPREF KEY
+    public static String SHR_USERLOG="Userlog";
+    public static String SHR_APPID= "sappId";
+    public static String SHR_IMEI= "imei";
+    public static String SHR_ISLOGIN= "islogin";
+    public static String SHR_MODTYPE= "modtype";
+    public static String SHR_OS= "os";
+    public static String SHR_VERSION= "version";
+    public static final int USER_APPID=3;
     /**
      * test Color Code
      */

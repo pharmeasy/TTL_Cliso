@@ -568,7 +568,7 @@
                         android:background="@drawable/background_edt"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890"
                         android:ems="10"
-                        android:hint="ENTER ID OR MOBILE NUMBER"
+                        android:hint="ENTER ID"
                         android:inputType="textCapCharacters"
                         android:maxLength="10"
                         android:textColor="@color/DARKGray"
@@ -603,9 +603,11 @@
                         android:maxLength="8"
                         android:textColor="@color/DARKGray"
                         android:textSize="12sp">
+
                         <requestFocus />
                     </EditText>
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/leadbarcodelayout"
