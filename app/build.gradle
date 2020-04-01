@@ -80,6 +80,7 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     //cardview view for gridview
+    implementation 'com.google.firebase:firebase-dynamic-links:17.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.xwray:passwordview:1.0'
     //used for password visibility

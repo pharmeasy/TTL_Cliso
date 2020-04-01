@@ -963,6 +963,7 @@ public class Login extends Activity implements View.OnClickListener {
                         Log.e(TAG, "RES---->" + response.body().getRESPONSE());
                         SharedPreferences.Editor editor = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
                         editor.putInt(Constants.SHR_APPID,Constants.USER_APPID);
+                        editor.putString(Constants.UserName,User);
                         editor.putString(Constants.SHR_IMEI,IMEI);
                         editor.putString(Constants.SHR_ISLOGIN,islogin);
                         editor.putString(Constants.SHR_MODTYPE,modtype);

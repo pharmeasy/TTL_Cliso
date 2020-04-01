@@ -597,7 +597,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="7dp"
-                android:layout_marginBottom="5dp"></android.support.v7.widget.RecyclerView>
+                android:layout_marginBottom="5dp"/>
 
 
         </LinearLayout>
@@ -629,6 +629,5 @@
             android:gravity="center"
             android:text="   Save and close" />
     </LinearLayout>
-
 
 </RelativeLayout>

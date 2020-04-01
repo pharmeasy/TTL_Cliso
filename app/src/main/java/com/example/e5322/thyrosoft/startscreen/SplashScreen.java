@@ -46,7 +46,10 @@ import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.GsonBuilder;
@@ -60,15 +63,17 @@ import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int MEGABYTE = 1024 * 1024;
-    public static String str_login_test, profile_test;
+    private static final int REQUEST_READ_PHONE_STATE = 110;
+    public static String str_login_test, profile_test, IMEI;
     public static SharedPreferences sh, profile;
     public static SharedPreferences.Editor editor, editor1;
     SharedPreferences shr_user_log;
     String androidOS, shr_osversion, shr_versionname;
     static String path;
+
     private static String TAG = SplashScreen.class.getSimpleName();
     AlertDialog alert;
-    String strmodtype, IMEI;
+    String strmodtype;
     String version, islogin;
     Boolean isInternetPresent = false;  // flag for Internet connection status
     ConnectionDetector cd;   // Connection detector class
@@ -87,7 +92,8 @@ public class SplashScreen extends AppCompatActivity {
     String user, passwrd;
     int SCRID;
     private int versionCode = 0;
-    private String ApkUrl;
+    private boolean isfirsttime;
+    private String ApkUrl, username;
     private GlobalClass globalClass;
     private boolean firstRunSplash;
     private int WRITE_EXTERNAL_STORAGE = 123;
@@ -128,6 +134,12 @@ public class SplashScreen extends AppCompatActivity {
         }
 
 
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_READ_PHONE_STATE);
+        }
+
         if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
             return; // add this to prevent from doing unnecessary stuffs
@@ -144,7 +156,6 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
 
-        //  getversion();
         PackageInfo pInfo = null;
         try {
             pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -161,29 +172,24 @@ public class SplashScreen extends AppCompatActivity {
 
         shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
 
-        if (shr_user_log.getBoolean("my_first_time", true)) {
-            //the app is being launched for first time, do something
-            Log.d("Comments", "First time");
-
-            // first time task
-
-            // record the fact that the app has been started at least once
-            shr_user_log.edit().putBoolean("my_first_time", false).commit();
-            taguser("install");
-        }
 
         try {
+            isfirsttime=shr_user_log.getBoolean("my_first_time",true);
             shr_osversion = shr_user_log.getString(Constants.SHR_OS, null);
             shr_versionname = shr_user_log.getString(Constants.SHR_VERSION, null);
+            username = shr_user_log.getString(Constants.SHR_USERNAME, null);
             androidOS = Build.VERSION.RELEASE;
-            if (!androidOS.equalsIgnoreCase(shr_osversion)) {
+            if (shr_osversion != null && !androidOS.equalsIgnoreCase(shr_osversion)) {
                 taguser("osupdated");
             }
 
-            if (!version.equalsIgnoreCase(shr_versionname)){
-                taguser("updated");
+            try {
+                if (shr_versionname != null && !version.equalsIgnoreCase(shr_versionname)) {
+                    taguser("updated");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,9 +205,53 @@ public class SplashScreen extends AppCompatActivity {
 
         SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
         storetoken = fire_pref.getString(Constants.F_TOKEN, "");
+        CallFirebaseDynamicLinkListeners();
+    }
 
+    private void CallFirebaseDynamicLinkListeners() {
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+
+                            deepLink = pendingDynamicLinkData.getLink();
+                            System.out.println("Dynamic Link : " + deepLink.toString());
+                            String SrcID = String.valueOf(deepLink.getQueryParameter("ScreenID"));
+                            int ScreenID = 0;
+                            try {
+                                ScreenID = Integer.parseInt(SrcID);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+                            IsFromNotification = true;
+                            SCRID = ScreenID;
+
+                            GoAhead();
+                        } else {
+                            GoAhead();
+                        }
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        GoAhead();
+                        Log.w(TAG, "getDynamicLink:onFailure", e);
+                    }
+                });
+
+    }
+
+    private void GoAhead() {
         if (cd.isConnectingToInternet()) {
-            callAPICheckVersion();
+            if (!isfirsttime){
+                callAPICheckVersion();
+            }
         } else {
             FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
                 @Override
@@ -241,6 +291,7 @@ public class SplashScreen extends AppCompatActivity {
         }
     }
 
+
     private void callAPICheckVersion() {
         try {
             if (ControllersGlobalInitialiser.versionCheckAPIController != null) {
@@ -277,7 +328,6 @@ public class SplashScreen extends AppCompatActivity {
                         displayUpdateDialog(activity, apkUrl);
                     } else {
                         callIntent();
-
                     }
 
 
@@ -295,8 +345,9 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void taguser(String modtype) {
+
+
         strmodtype = modtype;
-        IMEI = getDeviceIMEI(SplashScreen.this);
         androidOS = Build.VERSION.RELEASE;
         if (strmodtype.equalsIgnoreCase("install")) {
             islogin = "N";
@@ -304,7 +355,7 @@ public class SplashScreen extends AppCompatActivity {
             islogin = "Y";
         }
 
-
+        IMEI = getDeviceIMEI();
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
         AppuserReq appuserReq = new AppuserReq();
         appuserReq.setAppId(Constants.USER_APPID);
@@ -313,7 +364,12 @@ public class SplashScreen extends AppCompatActivity {
         appuserReq.setModType(strmodtype);
         appuserReq.setOS(androidOS);
         appuserReq.setToken("");
-        appuserReq.setUserID("");
+        if (islogin.equalsIgnoreCase("Y")) {
+            appuserReq.setUserID(username);
+        } else {
+            appuserReq.setUserID("");
+        }
+
         appuserReq.setVersion(version);
 
         Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
@@ -335,6 +391,10 @@ public class SplashScreen extends AppCompatActivity {
                         editor.putString(Constants.SHR_MODTYPE, strmodtype);
                         editor.putString(Constants.SHR_OS, androidOS);
                         editor.putString(Constants.SHR_VERSION, version);
+                        if (islogin.equalsIgnoreCase("Y")) {
+                            editor.putString(Constants.UserName, username)
+                            ;
+                        }
                         editor.commit();
 
                     }
@@ -457,7 +517,7 @@ public class SplashScreen extends AppCompatActivity {
                 downloadInAppTask.cancel(true); //cancel the task
             }
         });
-        taguser("update");
+
     }
 
 
@@ -472,46 +532,64 @@ public class SplashScreen extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(SplashScreen.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            //SEY SOMTHING LIKE YOU CANT ACCESS WITHOUT PERMISSION
+            Log.e(TAG, "Permision not granted");
         } else {
-            doSomthing();
+            Log.e(TAG, "Permision  granted");
+
         }
     }
 
-    private void doSomthing() {
-        IMEI=getDeviceIMEI(SplashScreen.this);
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    doSomthing();
-                } else if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    //SEY SOMTHING LIKE YOU CANT ACCESS WITHOUT PERMISSION
-                    //you can show something to user and open setting -> apps -> youApp -> permission
-                    // or unComment below code to show permissionRequest Again
-                    //ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
+            case REQUEST_READ_PHONE_STATE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.e(TAG, "PERMISITON GRANTED");
+                    if (shr_user_log.getBoolean("my_first_time", true)) {
+                        //the app is being launched for first time, do something
+                        Log.e("Comments", "First time");
+
+                        // first time task
+
+                        // record the fact that the app has been started at least once
+                        shr_user_log.edit().putBoolean("my_first_time", false).commit();
+                        taguser("install");
+                        isfirsttime=shr_user_log.getBoolean("my_first_time",true);
+                        if(!isfirsttime){
+                            if (cd.isConnectingToInternet()){
+                                callAPICheckVersion();
+                            }
+                        }
+
+                    }
+
                 }
-            }
+                break;
         }
     }
 
-
-    @SuppressLint("HardwareIds")
-    public static String getDeviceIMEI(Activity activity) {
-
+    public String getDeviceIMEI() {
         String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE);
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
-                ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            else
-                deviceUniqueIdentifier = tm.getDeviceId();
-            if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length())
-                deviceUniqueIdentifier = "0";
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return false;
+            }
+            deviceUniqueIdentifier = tm.getDeviceId();
         }
+
+        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+
         return deviceUniqueIdentifier;
     }
 
