@@ -82,7 +82,7 @@ public class Login extends Activity implements View.OnClickListener {
     TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
-    String RESPONSE1,islogin, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
+    String RESPONSE1, islogin, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
     ProgressDialog barProgressDialog;
     Handler updateBarHandler;
     String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
@@ -160,6 +160,8 @@ public class Login extends Activity implements View.OnClickListener {
             }
         }, 1000);
 
+        SharedPreferences shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
+        shr_user_log.edit().putBoolean("my_first_time", false).commit();
 
         /* checkPermissionREAD_EXTERNAL_STORAGE(context);*/
 //        if (checkAndRequestPermissions()) {
@@ -883,7 +885,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
                                         editor.apply();
 
-                                        USER_CODE11=loginResponseModel.getUSER_CODE();
+                                        USER_CODE11 = loginResponseModel.getUSER_CODE();
 
                                         FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.TOPIC);
                                         FirebaseMessaging.getInstance().subscribeToTopic(Constants.TOPIC);
@@ -900,7 +902,7 @@ public class Login extends Activity implements View.OnClickListener {
 
                                         taguser("login");
                                         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                        a.putExtra(Constants.COMEFROM,true);
+                                        a.putExtra(Constants.COMEFROM, true);
                                         startActivity(a);
                                         TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     } else {
@@ -938,7 +940,7 @@ public class Login extends Activity implements View.OnClickListener {
     private void taguser(final String modtype) {
         final String IMEI = getDeviceIMEI();
         final String androidOS = Build.VERSION.RELEASE;
-        islogin="Y";
+        islogin = "Y";
 
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
         AppuserReq appuserReq = new AppuserReq();
@@ -962,13 +964,13 @@ public class Login extends Activity implements View.OnClickListener {
                     if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
                         Log.e(TAG, "RES---->" + response.body().getRESPONSE());
                         SharedPreferences.Editor editor = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
-                        editor.putInt(Constants.SHR_APPID,Constants.USER_APPID);
-                        editor.putString(Constants.UserName,User);
-                        editor.putString(Constants.SHR_IMEI,IMEI);
-                        editor.putString(Constants.SHR_ISLOGIN,islogin);
-                        editor.putString(Constants.SHR_MODTYPE,modtype);
-                        editor.putString(Constants.SHR_OS,androidOS);
-                        editor.putString(Constants.SHR_VERSION,version);
+                        editor.putInt(Constants.SHR_APPID, Constants.USER_APPID);
+                        editor.putString(Constants.UserName, User);
+                        editor.putString(Constants.SHR_IMEI, IMEI);
+                        editor.putString(Constants.SHR_ISLOGIN, islogin);
+                        editor.putString(Constants.SHR_MODTYPE, modtype);
+                        editor.putString(Constants.SHR_OS, androidOS);
+                        editor.putString(Constants.SHR_VERSION, version);
                         editor.commit();
                     }
                 } catch (Exception e) {

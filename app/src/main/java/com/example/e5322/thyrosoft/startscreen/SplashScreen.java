@@ -92,7 +92,7 @@ public class SplashScreen extends AppCompatActivity {
     String user, passwrd;
     int SCRID;
     private int versionCode = 0;
-    private boolean isfirsttime;
+    private boolean isfirsttime=true;
     private String ApkUrl, username;
     private GlobalClass globalClass;
     private boolean firstRunSplash;

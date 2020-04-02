@@ -745,7 +745,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                             @Override
                                             public void onClick(View v) {
                                                 try {
-                                                    if (barCodeDetail.get(0).getResponse().equalsIgnoreCase("NO RECORDS FOUND")) {
+                                                    if (barCodeDetail.get(0).getResponse()==null || barCodeDetail.get(0).getResponse().equalsIgnoreCase("NO RECORDS FOUND")) {
                                                         GlobalClass.toastyError(getActivity(), barCodeDetail.get(0).getResponse(), false);
                                                     } else {
                                                         if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {
