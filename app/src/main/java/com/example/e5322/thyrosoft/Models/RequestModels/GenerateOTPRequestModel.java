@@ -1,10 +1,18 @@
 package com.example.e5322.thyrosoft.Models.RequestModels;
 
 public class GenerateOTPRequestModel {
-    private String api_key,mobile,type;
+    private String api_key,mobile,type,AccessToken;
 
     public String getApi_key() {
         return api_key;
+    }
+
+    public String getAccessToken() {
+        return AccessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        AccessToken = accessToken;
     }
 
     public void setApi_key(String api_key) {

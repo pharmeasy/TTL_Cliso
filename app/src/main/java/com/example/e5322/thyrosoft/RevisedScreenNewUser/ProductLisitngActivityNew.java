@@ -757,7 +757,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 } else {
                     int sum = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
-                    boolean ppbsflag = false;
+
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
                         getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());

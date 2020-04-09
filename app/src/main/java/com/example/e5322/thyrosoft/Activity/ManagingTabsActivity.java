@@ -1222,9 +1222,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void logout() {
-        SharedPreferences.Editor userlog = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE).edit();
-        userlog.clear();
-        userlog.apply();
+//        SharedPreferences.Editor userlog = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE).edit();
+//        userlog.clear();
+//        userlog.apply();
 
         SharedPreferences.Editor getProfileName = getSharedPreferences("profilename", MODE_PRIVATE).edit();
         getProfileName.clear();

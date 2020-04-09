@@ -344,13 +344,13 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
             if (GlobalClass.finalspecimenttypewiselist != null) {
                 if (GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
                     if (GlobalClass.finalspecimenttypewiselist.get(position).getFasting().equalsIgnoreCase("FASTING")) {
-                        if (fromcome==0){
-                            holder.scanBarcode.setText(" (F) "+GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-                        }else {
+                        if (fromcome == 0) {
+                            holder.scanBarcode.setText(" (F) " + GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                        } else {
                             holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
                         }
 
-                    }else {
+                    } else {
                         holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
                     }
                 } else {
@@ -535,17 +535,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                     enter_barcode.setText(searchBarcode);
                                 } else {
                                     barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-                             /*       final ProgressDialog progressDialog = new ProgressDialog(context);
-                                    progressDialog.setTitle("Kindly wait ...");
-                                    progressDialog.setMessage(ToastFile.processing_request);
-                                    progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                                    progressDialog.setProgress(0);
-                                    progressDialog.setMax(20);
-                                    progressDialog.setCanceledOnTouchOutside(false);
-                                    progressDialog.setCancelable(false);
-                                    progressDialog.show();
-*/
-                                    final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+
+                                    final ProgressDialog showprogressDialog = GlobalClass.ShowprogressDialog(context);
 
                                     JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
                                             , new Response.Listener<JSONObject>() {
@@ -564,15 +555,15 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
                                                 if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                                                     enter_barcode.setText(searchBarcode);
-                                                    GlobalClass.hideProgress(context, progressDialog);
+                                                    GlobalClass.hideProgress(context, showprogressDialog);
 
                                                 } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
-                                                    GlobalClass.hideProgress(context, progressDialog);
+                                                    GlobalClass.hideProgress(context, showprogressDialog);
                                                     GlobalClass.redirectToLogin(((Activity) context));
                                                 } else {
                                                     enter_barcode.setText("");
                                                     storeResponse = response1;
-                                                    GlobalClass.hideProgress(context, progressDialog);
+                                                    GlobalClass.hideProgress(context, showprogressDialog);
                                                     Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
                                                 }
 

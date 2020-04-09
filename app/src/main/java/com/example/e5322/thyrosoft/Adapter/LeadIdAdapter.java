@@ -73,7 +73,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView scanBarcode;
         public EditText enter_barcode, reenter;
-        public ImageView img_edt, setback,element1_iv;
+        public ImageView img_edt, setback, element1_iv;
 
         LinearLayout linearEditbarcode, barcode_linear;
 
@@ -121,6 +121,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 holder.barcode_linear.setVisibility(View.VISIBLE);
             }
         });
+
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
         holder.element1_iv.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
         holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
@@ -176,6 +177,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+
         if (GlobalClass.finalspecimenttypewiselist.get(position).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(position).getBarcode().isEmpty()) {
             searchBarcode = GlobalClass.finalspecimenttypewiselist.get(position).getBarcode();
             // checkBarcode(position, searchBarcode);
@@ -247,7 +249,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 } else {
 
                 }
-                //getData = reg_pincode.getText().toString();
+
                 if (s.length() == 8) {
                     afterBarcode = s.toString();
 
@@ -368,7 +370,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                                         , new Response.Listener<JSONObject>() {
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        Log.e(TAG, "onResponse: Response"+response );
+                                        Log.e(TAG, "onResponse: Response" + response);
                                         System.out.println("barcode respponse" + response);
                                         String finalJson = response.toString();
                                         JSONObject parentObjectOtp = null;
@@ -381,12 +383,12 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                                             if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                                                 enter_barcode.setText(searchBarcode);
                                                 progressDialog.dismiss();
-                                            } else if(ERROR.equalsIgnoreCase(caps_invalidApikey)){
-                                                if(progressDialog!=null && progressDialog.isShowing()){
+                                            } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                                                if (progressDialog != null && progressDialog.isShowing()) {
                                                     progressDialog.dismiss();
                                                 }
                                                 GlobalClass.redirectToLogin(context);
-                                            }else {
+                                            } else {
                                                 enter_barcode.setText("");
                                                 storeResponse = response1;
                                                 progressDialog.dismiss();
@@ -413,7 +415,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                                         3,
                                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                                 barcodeDetails.add(jsonObjectRequestPop);
-                                Log.e(TAG, "afterTextChanged: URL"+jsonObjectRequestPop );
+                                Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
                             }
 
                         }

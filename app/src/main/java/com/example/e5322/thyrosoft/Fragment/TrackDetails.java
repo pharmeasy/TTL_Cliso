@@ -590,6 +590,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                             Log.e(TAG, "onResponse: RESPONSE" + response);
                             try { //Track_BarcodeModel
                                 barCodeDetail = new ArrayList<Mail_Model_Receipt>();
+
                                 Mail_Model_Receipt model = new Mail_Model_Receipt();
                                 model.setAddress(response.optString("address"));
                                 model.setAmount(response.optString("amount"));
@@ -600,9 +601,8 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                 model.setOrderdate(response.optString("orderdate"));
                                 model.setTest(response.optString("test"));
                                 model.setUrl(response.optString("url"));
+                                model.setResponse(response.optString("response"));
                                 barCodeDetail.add(model);
-/*{"address":"","amount":"200","amount_word":"Two Hundred ","email":"sarathykodai@gmail.com","mobile":"9842187270","name":"MRS LINDA (31Y\/F)",
-"orderdate":"31-05-2018","res_id":"RES0000","response":"SUCCESS","test":",FT3,FT4,TSH","url":"https:\\www.thyrocare.com\\Wellness\\AutoReceipt\\G7919583.pdf"}*/
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -745,7 +745,7 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
                                             @Override
                                             public void onClick(View v) {
                                                 try {
-                                                    if (barCodeDetail.get(0).getResponse()==null || barCodeDetail.get(0).getResponse().equalsIgnoreCase("NO RECORDS FOUND")) {
+                                                    if (barCodeDetail.get(0).getResponse() == null || barCodeDetail.get(0).getResponse().equalsIgnoreCase("NO RECORDS FOUND")) {
                                                         GlobalClass.toastyError(getActivity(), barCodeDetail.get(0).getResponse(), false);
                                                     } else {
                                                         if (!barCodeDetail.get(0).getUrl().isEmpty() && barCodeDetail.get(0).getUrl() != null && !barCodeDetail.get(0).getUrl().equalsIgnoreCase("null")) {

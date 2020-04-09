@@ -41,7 +41,6 @@ public class Api {
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
     public static String count = LIVEAPI + "WO.svc/";
 
-
     //TODO SCANSO
     public static String gettoken = SCANSOAPI + "Login/RegisteredUser";
     public static String LEAD_BOOKING = SCANSOAPI + "/LeadBooking/BookLead";

@@ -7,7 +7,9 @@ import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.LeadRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
+import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -16,6 +18,9 @@ public interface PostAPIInteface {
 
     @POST("COMMON.svc/Showvideo")
     Call<VideosResponseModel> getVideobasedOnLanguage(@Body GetVideoLanguageWiseRequestModel languageWiseRequestModel);
+
+    @POST("COMMON.svc/Token")
+    Call<Tokenresponse> getotptoken(@Body OTPrequest otPrequest);
 
 
     @POST("order.svc/Leads_products")

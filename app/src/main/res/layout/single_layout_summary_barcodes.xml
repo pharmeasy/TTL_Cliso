@@ -37,7 +37,6 @@
             android:layout_marginTop="6dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="6dp"
-            android:text="KKNG0000"
             android:textColor="@color/grey"
             android:textSize="14sp" />
 
@@ -49,7 +48,6 @@
             android:layout_marginTop="6dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="6dp"
-            android:text="Sr. No:01"
             android:textColor="@color/grey"
             android:textSize="14sp" />
     </LinearLayout>

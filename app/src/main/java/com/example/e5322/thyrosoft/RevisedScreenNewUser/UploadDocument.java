@@ -536,7 +536,7 @@ public class UploadDocument extends AbstractActivity {
                         } else {
                             uploadDocument();
                         }
-                    } else if (selectedSpinItem.equalsIgnoreCase("SGC")) {
+                    } else if (!TextUtils.isEmpty(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("SGC")) {
                         ned_value = sgc_spr.getSelectedItem().toString();
                         exp_Date = "";
 

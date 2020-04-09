@@ -290,7 +290,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         Bundle bundle = getIntent().getExtras();
         selctedTest = bundle.getParcelableArrayList("key");
         myDb = new DatabaseHelper(getApplicationContext());
+
         CheckGpsStatus();
+
         if (GpsStatus == true) {
             gpsTracker = new GpsTracker(Scan_Barcode_ILS_New.this);
             if (gpsTracker.canGetLocation()) {

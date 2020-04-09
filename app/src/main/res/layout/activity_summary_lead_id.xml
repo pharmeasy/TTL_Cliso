@@ -27,7 +27,7 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack"/>
 
         <TextView
             android:id="@+id/title"

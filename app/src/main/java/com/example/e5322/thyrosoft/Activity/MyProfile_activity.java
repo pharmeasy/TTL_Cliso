@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.Activity;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -242,15 +243,19 @@ public class MyProfile_activity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Boolean result) {
-            if (result) {
-                Glide.with(MyProfile_activity.this)
-                        .load(prof)
-                        .into(profimg);
-            } else {
-                Glide.with(MyProfile_activity.this)
-                        .load("")
-                        .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.user_profile))
-                        .into(profimg);
+            try {
+                if (result) {
+                    Glide.with(MyProfile_activity.this)
+                            .load(prof)
+                            .into(profimg);
+                } else {
+                    Glide.with(MyProfile_activity.this)
+                            .load("")
+                            .placeholder(MyProfile_activity.this.getResources().getDrawable(R.drawable.user_profile))
+                            .into(profimg);
+                }
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

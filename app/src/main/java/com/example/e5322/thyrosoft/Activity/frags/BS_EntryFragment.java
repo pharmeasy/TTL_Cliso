@@ -2,9 +2,11 @@ package com.example.e5322.thyrosoft.Activity.frags;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +31,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -42,10 +47,16 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
+import com.example.e5322.thyrosoft.Models.Tokenresponse;
+import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mindorks.paracamera.Camera;
 
 import org.json.JSONException;
@@ -57,6 +68,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.regex.Pattern;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CAMERA;
@@ -65,6 +80,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class BS_EntryFragment extends Fragment {
+    public static  String OTPAPPID="9";
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -256,7 +272,8 @@ public class BS_EntryFragment extends Fragment {
                         validMobileNumber = false;
                     } else {
                         if (cd.isConnectingToInternet()) {
-                            callGenerateOTP(mobile_number);
+                            generateToken();
+                            //callGenerateOTP(mobile_number);
                         } else {
                             Global.showCustomToast(activity, ToastFile.intConnection);
                         }
@@ -454,7 +471,8 @@ public class BS_EntryFragment extends Fragment {
                     Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
                 } else {
                     if (cd.isConnectingToInternet()) {
-                        callGenerateOTP(mobile_number);
+                      //  callGenerateOTP(mobile_number);
+                        generateToken();
                     } else {
                         Global.showCustomToast(activity, ToastFile.intConnection);
                     }
@@ -476,13 +494,14 @@ public class BS_EntryFragment extends Fragment {
         });
     }
 
-    private void callGenerateOTP(String mobile_number) {
+    private void callGenerateOTP(String mobile_number, String token) {
         JSONObject jsonObject = null;
         try {
             GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
             requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
             requestModel.setMobile(mobile_number);
             requestModel.setType("SENDOTPALL");
+            requestModel.setAccessToken(token);
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
@@ -944,6 +963,51 @@ public class BS_EntryFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void generateToken() {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+       int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog=GlobalClass.ShowprogressDialog(getContext());
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        OTPrequest otPrequest=new OTPrequest();
+        otPrequest.setAppId(OTPAPPID);
+        otPrequest.setPurpose("OTP");
+        otPrequest.setVersion(""+versionCode);
+        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<Tokenresponse>() {
+            @Override
+            public void onResponse(Call<Tokenresponse> call, Response<Tokenresponse> response) {
+                GlobalClass.hideProgress(getContext(),progressDialog);
+                try {
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)){
+                        if (!TextUtils.isEmpty(response.body().getToken())){
+                            Log.e(TAG,"TOKEN--->"+response.body().getToken());
+                            callGenerateOTP(mobile_number,response.body().getToken());
+                        }
+                    }else {
+                        Toast.makeText(getContext(),response.body().getResponse(),Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tokenresponse> call, Throwable t) {
+
+            }
+        });
     }
 
 }

@@ -290,6 +290,8 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                     for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
                         if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() == null || GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equals("")) {
                             Toast.makeText(ScanBarcodeLeadId.this, ToastFile.pls_scn_br + GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type(), Toast.LENGTH_SHORT).show();
+                            flagintent = false;
+                            break;
                         } else if (dateTocompare.after(getCurrentDate)) {
                             Toast.makeText(ScanBarcodeLeadId.this, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                         } else {
