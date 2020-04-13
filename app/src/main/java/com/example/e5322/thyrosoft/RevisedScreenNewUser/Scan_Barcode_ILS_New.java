@@ -513,6 +513,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         }
 
 
+        List<String> productlist = new ArrayList<>();
         if (selctedTest != null) {
             getproductDetailswithBarcodes = new ArrayList<>();
             saveLocation = new ArrayList<>();
@@ -561,45 +562,74 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         setAmt.setText(String.valueOf(getAmount));
 
 
-        if (!temparraylist.contains("FLUORIDE")) {
-            Set<String> hs = new HashSet<>();
-            hs.addAll(temparraylist);
-            temparraylist.clear();
-            temparraylist.addAll(hs);
-        }
+//        if (!temparraylist.contains("FLUORIDE")) {
+//            Set<String> hs = new HashSet<>();
+//            hs.addAll(temparraylist);
+//            temparraylist.clear();
+//            temparraylist.addAll(hs);
+//        }
+
+//        List<String> fluoridetest = new ArrayList<>();
+//        for (int i = 0; i < temparraylist.size(); i++) {
+//            if (temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
+//                fluoridetest.add(temparraylist.get(i));
+//                temparraylist.remove(i);
+//            }
+//        }
 
         for (int i = 0; i < temparraylist.size(); i++) {
-            ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
-            setSpecimenTypeCodes = new ArrayList<>();
+            if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
+                Set<String> hs = new HashSet<>();
+                hs.addAll(temparraylist);
+                temparraylist.clear();
+                temparraylist.addAll(hs);
+            }
+        }
 
-            for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
-                if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
-                    setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
-                }
+
+
+
+        for (int i = 0; i < temparraylist.size(); i++) {
+           if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")){
+               ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+               setSpecimenTypeCodes = new ArrayList<>();
+
+               for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
+                   if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
+                       setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
+                   }
+               }
+
+               scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
+
+               for (int k = 0; k < setSpecimenTypeCodes.size(); k++) {
+
+                   HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
+                   List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
+                   String setProducts = TextUtils.join(",", listWithoutDuplicates);
+                   HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
+                   if (test.contains("RBS") && test.contains("PPBS")) {
+                       test.remove("RBS");
+                   }
+                   String setFinalProducts = TextUtils.join(",", test);
+                   scannedBarcodeDetails.setProducts(setFinalProducts);
+
+               }
+
+               GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
+
+           }
+        }
+
+        for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
+            if (getproductDetailswithBarcodes.get(j).getBarcode().equalsIgnoreCase("FLUORIDE")) {
+                ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+                scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(j).getFasting());
+                scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(j).getProduct());
+                scannedBarcodeDetails.setSpecimen_type(getproductDetailswithBarcodes.get(j).getBarcode());
+                GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
             }
 
-            scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
-            scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(i).getFasting());
-
-            for (int j = 0; j < setSpecimenTypeCodes.size(); j++) {
-                if (getproductDetailswithBarcodes.get(i).getBarcode().equalsIgnoreCase("FLUORIDE")){
-                    scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(i).getProduct());
-                }else {
-                    HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
-                    //Creating Arraylist without duplicate values
-                    List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
-                    String setProducts = TextUtils.join(",", listWithoutDuplicates);
-                    HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
-                    if (test.contains("RBS") && test.contains("PPBS")) {
-                        test.remove("RBS");
-                    }
-                    String setFinalProducts = TextUtils.join(",", test);
-                    scannedBarcodeDetails.setProducts(setFinalProducts);
-                }
-
-            }
-
-            GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
         }
 
 

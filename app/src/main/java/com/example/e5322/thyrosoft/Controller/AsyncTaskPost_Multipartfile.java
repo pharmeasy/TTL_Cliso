@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 
 public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
 
+
     BS_EntryFragment bs_entryFragment;
     BS_POSTDataModel BSPostDataModel;
     private int flag;

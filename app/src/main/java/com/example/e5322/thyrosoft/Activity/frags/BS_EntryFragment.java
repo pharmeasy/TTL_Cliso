@@ -46,11 +46,12 @@ import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
+import com.example.e5322.thyrosoft.Models.EmailModel;
+import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
-import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
@@ -80,7 +81,7 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 public class BS_EntryFragment extends Fragment {
-    public static  String OTPAPPID="9";
+    public static String OTPAPPID = "9";
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -450,10 +451,16 @@ public class BS_EntryFragment extends Fragment {
             public void onClick(View v) {
                 if (Validation()) {
 //                    if (global.checkMultipleValidation(Integer.parseInt(edt_collamount.getText().toString()))) {
-                    if (checkLocationPerm())
-                        callPOSTAPI();
-                    else
+                    if (checkLocationPerm()) {
+                        if (edt_email.getText().length() > 0) {
+                            emailvalidationapi(edt_email.getText().toString());
+                        } else {
+                            callPOSTAPI();
+                        }
+                    } else {
                         requestLocationPerm();
+                    }
+
                     /*} else
                         Global.showCustomToast(activity, ToastFile.ENTER_VALID_AMOUNT);*/
                 }
@@ -471,7 +478,7 @@ public class BS_EntryFragment extends Fragment {
                     Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
                 } else {
                     if (cd.isConnectingToInternet()) {
-                      //  callGenerateOTP(mobile_number);
+                        //  callGenerateOTP(mobile_number);
                         generateToken();
                     } else {
                         Global.showCustomToast(activity, ToastFile.intConnection);
@@ -793,16 +800,7 @@ public class BS_EntryFragment extends Fragment {
             edt_age.requestFocus();
             return false;
         }
-        /*if (edt_collamount.getText().toString().length() == 0) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_COLL_AMOUNT);
-            edt_collamount.requestFocus();
-            return false;
-        }
-        if (Integer.parseInt(edt_collamount.getText().toString()) > 25) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_VALID_AMOUNT);
-            edt_collamount.requestFocus();
-            return false;
-        }*/
+
         if (GlobalClass.isNull(gender)) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_GENDER);
             return false;
@@ -833,17 +831,8 @@ public class BS_EntryFragment extends Fragment {
         if (correct_img.getVisibility() == View.GONE) {
             Global.showCustomToast(getActivity(), ToastFile.UPLOAD_IMAGE);
             return false;
-        }  /*else if ((edt_val.getText().toString().length() > 0)) {
-            enteredVal = Integer.parseInt(edt_val.getText().toString());
-            if (((enteredVal >= minValue) && (enteredVal <= maxValue))) {
-                return true;
-            } else {
-                Global.showCustomToast(getActivity(), "Enter valid value !");
-                edt_val.requestFocus();
-                edt_val.setText("");
-                return false;
-            }
-        }*/
+        }
+
         if (imageFile == null && !imageFile.exists()) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_IMAGE);
             return false;
@@ -974,13 +963,13 @@ public class BS_EntryFragment extends Fragment {
         }
 
 
-       int versionCode = pInfo.versionCode;
-        final ProgressDialog progressDialog=GlobalClass.ShowprogressDialog(getContext());
+        int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
         PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
-        OTPrequest otPrequest=new OTPrequest();
+        OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
-        otPrequest.setVersion(""+versionCode);
+        otPrequest.setVersion("" + versionCode);
         Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
         Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
         Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
@@ -988,15 +977,15 @@ public class BS_EntryFragment extends Fragment {
         responseCall.enqueue(new Callback<Tokenresponse>() {
             @Override
             public void onResponse(Call<Tokenresponse> call, Response<Tokenresponse> response) {
-                GlobalClass.hideProgress(getContext(),progressDialog);
+                GlobalClass.hideProgress(getContext(), progressDialog);
                 try {
-                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)){
-                        if (!TextUtils.isEmpty(response.body().getToken())){
-                            Log.e(TAG,"TOKEN--->"+response.body().getToken());
-                            callGenerateOTP(mobile_number,response.body().getToken());
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (!TextUtils.isEmpty(response.body().getToken())) {
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                            callGenerateOTP(mobile_number, response.body().getToken());
                         }
-                    }else {
-                        Toast.makeText(getContext(),response.body().getResponse(),Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1009,5 +998,40 @@ public class BS_EntryFragment extends Fragment {
             }
         });
     }
+
+
+    private void emailvalidationapi(String email) {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        EmailModel emailModel = new EmailModel();
+        emailModel.setAppID("5");
+        emailModel.setEmailID(email);
+
+        Call<EmailValidationResponse> responseCall = apiInterface.getvalidemail(emailModel);
+        Log.e(TAG, "EMAIL  LIST BODY ---->" + new GsonBuilder().create().toJson(emailModel));
+        Log.e(TAG, "EMAIL LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<EmailValidationResponse>() {
+            @Override
+            public void onResponse(Call<EmailValidationResponse> call, Response<EmailValidationResponse> response) {
+                GlobalClass.hideProgress(getContext(), progressDialog);
+                try {
+                    if (response.body().getSucess().equalsIgnoreCase("TRUE")) {
+                        callPOSTAPI();
+                    } else {
+                        Toast.makeText(getContext(), "Kindly enter valid email ID", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EmailValidationResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
 
 }
