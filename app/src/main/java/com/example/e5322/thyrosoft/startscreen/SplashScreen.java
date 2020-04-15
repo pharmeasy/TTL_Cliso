@@ -20,6 +20,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +98,7 @@ public class SplashScreen extends AppCompatActivity {
     private GlobalClass globalClass;
     private boolean firstRunSplash;
     private int WRITE_EXTERNAL_STORAGE = 123;
+    SharedPreferences.Editor editoractivity;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -170,30 +172,30 @@ public class SplashScreen extends AppCompatActivity {
 
         cd = new ConnectionDetector(getApplicationContext());
 
-//        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
-//
-//
-//        try {
-//            isfirsttime=shr_user_log.getBoolean("my_first_time",true);
-//            shr_osversion = shr_user_log.getString(Constants.SHR_OS, null);
-//            shr_versionname = shr_user_log.getString(Constants.SHR_VERSION, null);
-//            username = shr_user_log.getString(Constants.SHR_USERNAME, null);
-//            androidOS = Build.VERSION.RELEASE;
-//            if (shr_osversion != null && !androidOS.equalsIgnoreCase(shr_osversion)) {
-//                taguser("osupdated");
-//            }
-//
-//            try {
-//                if (shr_versionname != null && !version.equalsIgnoreCase(shr_versionname)) {
-//                    taguser("updated");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        androidOS = Build.VERSION.RELEASE;
+        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
+        editoractivity = shr_user_log.edit();
+        isfirsttime = shr_user_log.getBoolean("my_first_time", true);
+
+
+
+        if (!isfirsttime) {
+            Log.e(TAG, "android os --->" + androidOS + "  shred OS--->" + shr_user_log.getString(Constants.SHR_OS, ""));
+            if (androidOS.equalsIgnoreCase(shr_user_log.getString(Constants.SHR_OS, ""))) {
+                shr_user_log.getString(Constants.SHR_MODTYPE, "");
+            } else if (shr_user_log.getString(Constants.SHR_OS, "") != androidOS) {
+                editoractivity.putString(Constants.SHR_OS, androidOS);
+                editoractivity.putString(Constants.SHR_MODTYPE, "OS UPDATED");
+                editoractivity.apply();
+            }
+
+            if (shr_user_log != null && !version.equalsIgnoreCase(shr_user_log.getString(Constants.SHR_VERSION, ""))) {
+                editoractivity.putString(Constants.SHR_VERSION, version);
+                editoractivity.putString(Constants.SHR_MODTYPE, "VERSION UPDATED");
+                editoractivity.apply();
+            }
+        }
+
 
 
         SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -249,9 +251,10 @@ public class SplashScreen extends AppCompatActivity {
 
     private void GoAhead() {
         if (cd.isConnectingToInternet()) {
-           // if (!isfirsttime){
+            if (!isfirsttime){
                 callAPICheckVersion();
-            //}
+                taguser();
+            }
         } else {
             FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
                 @Override
@@ -412,6 +415,71 @@ public class SplashScreen extends AppCompatActivity {
 //
 //    }
 
+
+    private void taguser() {
+        IMEI = getDeviceIMEI();
+
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
+        AppuserReq appuserReq = new AppuserReq();
+        appuserReq.setAppId(Constants.USER_APPID);
+        appuserReq.setIMIENo(IMEI);
+        appuserReq.setIslogin(shr_user_log.getString(Constants.SHR_ISLOGIN, ""));
+        appuserReq.setModType(shr_user_log.getString(Constants.SHR_MODTYPE, ""));
+        appuserReq.setOS(shr_user_log.getString(Constants.SHR_OS, ""));
+        appuserReq.setToken(shr_user_log.getString(Constants.SHR_TOKEN, ""));
+        if (!TextUtils.isEmpty(shr_user_log.getString(Constants.SHR_USERNAME, ""))) {
+            appuserReq.setUserID(shr_user_log.getString(Constants.SHR_USERNAME, ""));
+        } else {
+            appuserReq.setUserID("");
+        }
+
+        appuserReq.setVersion(shr_user_log.getString(Constants.SHR_VERSION, ""));
+
+        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
+        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
+        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
+
+        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
+            @Override
+            public void onResponse(Call<AppuserResponse> call, Response<AppuserResponse> response) {
+                try {
+                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+
+                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
+
+                        editoractivity = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
+                        editoractivity.putInt(Constants.SHR_APPID, Constants.USER_APPID);
+                        editoractivity.putString(Constants.SHR_IMEI, IMEI);
+                        editoractivity.putString(Constants.SHR_TOKEN,shr_user_log.getString(Constants.SHR_TOKEN,""));
+                        editoractivity.putString(Constants.SHR_ISLOGIN, shr_user_log.getString(Constants.SHR_ISLOGIN, ""));
+                        editoractivity.putString(Constants.SHR_MODTYPE, shr_user_log.getString(Constants.SHR_MODTYPE, ""));
+                        editoractivity.putString(Constants.SHR_OS, shr_user_log.getString(Constants.SHR_OS, ""));
+                        editoractivity.putString(Constants.SHR_VERSION, shr_user_log.getString(Constants.SHR_VERSION, ""));
+                        islogin = shr_user_log.getString(Constants.SHR_ISLOGIN, "");
+                        try {
+                            if (islogin.equalsIgnoreCase("Y")){
+                                editoractivity.putString(Constants.SHR_VERSION, shr_user_log.getString(Constants.SHR_VERSION, ""));
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        editoractivity.apply();
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AppuserResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
     private void callIntent() {
         if (user != null && passwrd != null) {
             Intent prefe = new Intent(activity, ManagingTabsActivity.class);
@@ -540,57 +608,64 @@ public class SplashScreen extends AppCompatActivity {
     }
 
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
-//        switch (requestCode) {
-//            case REQUEST_READ_PHONE_STATE:
-//                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                    Log.e(TAG, "PERMISITON GRANTED");
-//                    if (shr_user_log.getBoolean("my_first_time", true)) {
-//                        //the app is being launched for first time, do something
-//                        Log.e("Comments", "First time");
-//
-//                        // first time task
-//
-//                        // record the fact that the app has been started at least once
-//                        shr_user_log.edit().putBoolean("my_first_time", false).commit();
-//                        taguser("install");
-//                        isfirsttime=shr_user_log.getBoolean("my_first_time",true);
-//                        if(!isfirsttime){
-//                            if (cd.isConnectingToInternet()){
-//                                callAPICheckVersion();
-//                            }
-//                        }
-//
-//                    }
-//
-//                }
-//                break;
-//        }
-//    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_PHONE_STATE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.e(TAG, "PERMISITON GRANTED");
+                    if (shr_user_log.getBoolean("my_first_time", true)) {
+                        //the app is being launched for first time, do something
+                        Log.e("Comments", "First time");
 
-//    public String getDeviceIMEI() {
-//        String deviceUniqueIdentifier = null;
-//        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-//        if (null != tm) {
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//                // TODO: Consider calling
-//                //    ActivityCompat#requestPermissions
-//                // here to request the missing permissions, and then overriding
-//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                //                                          int[] grantResults)
-//                // to handle the case where the user grants the permission. See the documentation
-//                // for ActivityCompat#requestPermissions for more details.
-//                //return false;
-//            }
-//            deviceUniqueIdentifier = tm.getDeviceId();
-//        }
-//
-//        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
-//            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-//        }
-//
-//        return deviceUniqueIdentifier;
-//    }
+                        // first time task
+
+                        // record the fact that the app has been started at least once
+                        editoractivity.putBoolean("my_first_time", false).apply();
+                        isfirsttime = shr_user_log.getBoolean("my_first_time", true);
+                        Log.e(TAG, "isfirsttime in onrequest --->" + isfirsttime);
+                        if (!isfirsttime) {
+                            if (cd.isConnectingToInternet()) {
+                                editoractivity.putBoolean("my_first_time", false);
+                                editoractivity.putString(Constants.SHR_MODTYPE, "INSTALL");
+                                editoractivity.putString(Constants.SHR_ISLOGIN, "N");
+                                editoractivity.putString(Constants.SHR_OS, androidOS);
+                                editoractivity.putString(Constants.SHR_VERSION, version);
+                                editoractivity.apply();
+                                taguser();
+                                callAPICheckVersion();
+                            }
+                        }
+
+                    }
+
+                }
+                break;
+        }
+    }
+
+    public String getDeviceIMEI() {
+        String deviceUniqueIdentifier = null;
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return false;
+            }
+            deviceUniqueIdentifier = tm.getDeviceId();
+        }
+
+        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+
+        return deviceUniqueIdentifier;
+    }
 
 }

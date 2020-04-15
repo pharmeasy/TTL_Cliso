@@ -557,6 +557,7 @@ public class Constants {
     public static String SHR_ISLOGIN= "islogin";
     public static String SHR_MODTYPE= "modtype";
     public static String SHR_OS= "os";
+    public static String SHR_TOKEN= "token";
     public static String SHR_USERNAME= "username";
     public static String SHR_VERSION= "version";
     public static final int USER_APPID=5;

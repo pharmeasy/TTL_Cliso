@@ -97,7 +97,6 @@ import java.util.Set;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
-
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;

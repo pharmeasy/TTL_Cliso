@@ -97,6 +97,9 @@ public class Login extends Activity implements View.OnClickListener {
     String newToken;
     private String TAG = Login.class.getSimpleName().toString();
     private GlobalClass globalClass;
+    SharedPreferences.Editor editorUserActivity;
+     SharedPreferences shr_user_log;
+    private String androidOS;
 
     @SuppressLint("NewApi")
     @Override
@@ -160,8 +163,19 @@ public class Login extends Activity implements View.OnClickListener {
             }
         }, 1000);
 
-        SharedPreferences shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
-        shr_user_log.edit().putBoolean("my_first_time", false).commit();
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        version = pInfo.versionName;
+        androidOS = Build.VERSION.RELEASE;
+
+        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
+        editorUserActivity = shr_user_log.edit();
+        editorUserActivity.putBoolean("my_first_time", false).commit();
 
         /* checkPermissionREAD_EXTERNAL_STORAGE(context);*/
 //        if (checkAndRequestPermissions()) {
@@ -189,14 +203,7 @@ public class Login extends Activity implements View.OnClickListener {
 
         username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        //get the app appVersion Name for display
-        version = pInfo.versionName;
+
 
         password.addTextChangedListener(new TextWatcher() {
             @Override
@@ -898,9 +905,16 @@ public class Login extends Activity implements View.OnClickListener {
                                                 pushToken();
                                             }
                                         });
+                                        newToken=FirebaseInstanceId.getInstance().getToken();
+                                        editorUserActivity.putString(Constants.SHR_MODTYPE, "LOGIN");
+                                        editorUserActivity.putString(Constants.SHR_ISLOGIN, "Y");
+                                        editorUserActivity.putString(Constants.SHR_USERNAME, User.trim());
+                                        editorUserActivity.putString(Constants.SHR_VERSION, version);
+                                        editorUserActivity.putString(Constants.SHR_TOKEN,newToken);
+                                        editorUserActivity.putString(Constants.SHR_OS, androidOS);
+                                        editorUserActivity.apply();
 
-
-                                       // taguser("login");
+                                        taguser();
                                         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
                                         a.putExtra(Constants.COMEFROM, true);
                                         startActivity(a);
@@ -937,55 +951,57 @@ public class Login extends Activity implements View.OnClickListener {
         }
     }
 
-//    private void taguser(final String modtype) {
-//        final String IMEI = getDeviceIMEI();
-//        final String androidOS = Build.VERSION.RELEASE;
-//        islogin = "Y";
-//
-//        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
-//        AppuserReq appuserReq = new AppuserReq();
-//        appuserReq.setAppId(Constants.USER_APPID);
-//        appuserReq.setIMIENo(IMEI);
-//        appuserReq.setIslogin(islogin);
-//        appuserReq.setModType(modtype);
-//        appuserReq.setOS(androidOS);
-//        appuserReq.setToken("");
-//        appuserReq.setUserID(User);
-//        appuserReq.setVersion(version);
-//
-//        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
-//        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
-//        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
-//
-//        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
-//            @Override
-//            public void onResponse(Call<AppuserResponse> call, Response<AppuserResponse> response) {
-//                try {
-//                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-//                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
-//                        SharedPreferences.Editor editor = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
-//                        editor.putInt(Constants.SHR_APPID, Constants.USER_APPID);
-//                        editor.putString(Constants.UserName, User);
-//                        editor.putString(Constants.SHR_IMEI, IMEI);
-//                        editor.putString(Constants.SHR_ISLOGIN, islogin);
-//                        editor.putString(Constants.SHR_MODTYPE, modtype);
-//                        editor.putString(Constants.SHR_OS, androidOS);
-//                        editor.putString(Constants.SHR_VERSION, version);
-//                        editor.commit();
-//                    }
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<AppuserResponse> call, Throwable t) {
-//
-//            }
-//        });
-//
-//    }
+    private void taguser() {
+        final String IMEI = getDeviceIMEI();
+        final String androidOS = Build.VERSION.RELEASE;
+
+
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
+        AppuserReq appuserReq = new AppuserReq();
+        appuserReq.setAppId(Constants.USER_APPID);
+        appuserReq.setIMIENo(IMEI);
+        appuserReq.setIslogin(shr_user_log.getString(Constants.SHR_ISLOGIN,""));
+        appuserReq.setModType(shr_user_log.getString(Constants.SHR_MODTYPE,""));
+        appuserReq.setOS(shr_user_log.getString(Constants.SHR_OS,""));
+        appuserReq.setToken(shr_user_log.getString(Constants.SHR_TOKEN,""));
+        appuserReq.setUserID(shr_user_log.getString(Constants.SHR_USERNAME,""));
+        appuserReq.setVersion(shr_user_log.getString(Constants.SHR_VERSION,""));
+
+        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
+        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
+        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
+
+        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
+            @Override
+            public void onResponse(Call<AppuserResponse> call, Response<AppuserResponse> response) {
+                try {
+                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
+                        editorUserActivity = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
+                        editorUserActivity.putInt(Constants.SHR_APPID, Constants.USER_APPID);
+                        editorUserActivity.putString(Constants.SHR_IMEI, IMEI);
+                        editorUserActivity.putString(Constants.SHR_USERNAME, User);
+                        editorUserActivity.putString(Constants.SHR_ISLOGIN, islogin);
+                        editorUserActivity.putString(Constants.SHR_MODTYPE, shr_user_log.getString(Constants.SHR_MODTYPE,""));
+                        editorUserActivity.putString(Constants.SHR_OS, androidOS);
+                        editorUserActivity.putString(Constants.SHR_TOKEN,shr_user_log.getString(Constants.SHR_TOKEN,""));
+                        editorUserActivity.putString(Constants.SHR_VERSION, version);
+                        editorUserActivity.apply();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AppuserResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
 
     private void storeRegIdInPref(String token) {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
@@ -1027,29 +1043,29 @@ public class Login extends Activity implements View.OnClickListener {
         });
     }
 
-//    public String getDeviceIMEI() {
-//        String deviceUniqueIdentifier = null;
-//        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-//        if (null != tm) {
-//            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//                // TODO: Consider calling
-//                //    ActivityCompat#requestPermissions
-//                // here to request the missing permissions, and then overriding
-//                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                //                                          int[] grantResults)
-//                // to handle the case where the user grants the permission. See the documentation
-//                // for ActivityCompat#requestPermissions for more details.
-//                //return false;
-//            }
-//            deviceUniqueIdentifier = tm.getDeviceId();
-//        }
-//
-//        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
-//            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-//        }
-//
-//        return deviceUniqueIdentifier;
-//    }
+    public String getDeviceIMEI() {
+        String deviceUniqueIdentifier = null;
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+        if (null != tm) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                //return false;
+            }
+            deviceUniqueIdentifier = tm.getDeviceId();
+        }
+
+        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
+            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+
+        return deviceUniqueIdentifier;
+    }
 
     @Override
     public void onBackPressed() {
