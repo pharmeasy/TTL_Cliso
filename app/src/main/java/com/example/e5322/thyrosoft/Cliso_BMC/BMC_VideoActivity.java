@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import org.json.JSONException;
@@ -91,7 +92,7 @@ public class BMC_VideoActivity extends AppCompatActivity {
                 Toast.makeText(BMC_VideoActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(this);
         requestQueue.add(stringRequest);
     }
 }

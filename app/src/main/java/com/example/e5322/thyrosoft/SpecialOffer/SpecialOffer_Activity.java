@@ -367,7 +367,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     private void getAllproduct() {
         final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
 
-        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
+        RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproductsOffer", new Response.Listener<JSONObject>() {
             @Override

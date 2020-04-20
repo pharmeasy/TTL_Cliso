@@ -55,7 +55,7 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
                 @Override
                 public void run() {
                     int linecount = myViewHolder.tv_description.getLineCount();
-                    Log.e(TAG, "Number of lines is " + linecount);
+                   // Log.e(TAG, "Number of lines is " + linecount);
                     if (myViewHolder.tv_description.getLineCount() >= 3) {
                         myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.more) + "</u>"));
                         myViewHolder.tv_show.setVisibility(View.VISIBLE);

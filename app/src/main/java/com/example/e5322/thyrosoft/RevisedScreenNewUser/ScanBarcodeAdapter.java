@@ -157,7 +157,7 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
                 if (!GlobalClass.isNetworkAvailable(mContext)) {
                     holder.barcodescanbtn.setText(searchBarcode);
                 } else {
-                    barcodeDetails = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
+                    barcodeDetails = GlobalClass.setVolleyReq(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(mContext);
                     progressDialog.setTitle("Kindly wait ...");
                     progressDialog.setMessage(ToastFile.processing_request);
@@ -472,7 +472,7 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
                                     enter_barcode.setText(searchBarcode);
                                 } else {
 
-                                    barcodeDetails = Volley.newRequestQueue(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
+                                    barcodeDetails = GlobalClass.setVolleyReq(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
                                     progressDialog = new ProgressDialog(mContext);
                                     progressDialog.setTitle("Kindly wait ...");
                                     progressDialog.setMessage(ToastFile.processing_request);

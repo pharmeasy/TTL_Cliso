@@ -56,8 +56,13 @@ public class VerifyotpController {
 
         verifyotpRequest.setMobile(chechnumber);
         verifyotpRequest.setOTP(otp);
+        APIInteface apiInterface;
+       if (flag==1){
+           apiInterface = RetroFit_APIClient.getInstance().getClient(specialOffer_activity, Api.OTPgenegrate).create(APIInteface.class);
+       }else {
+           apiInterface = RetroFit_APIClient.getInstance().getClient(start_new_woe.getActivity(), Api.OTPgenegrate).create(APIInteface.class);
+       }
 
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.OTPgenegrate).create(APIInteface.class);
         Call<VerifyotpModel> responseCall = apiInterface.Verifyotp(verifyotpRequest);
         Log.e("TAG", "Verify otp reuest --->" + new GsonBuilder().create().toJson(verifyotpRequest));
         Log.e("TAG", "Verify otp URL --->" + responseCall.request().url());

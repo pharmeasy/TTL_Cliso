@@ -35,6 +35,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -271,7 +272,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                 if (hasFocus) {
 
                 } else if (!search_barcode.equals("")) {
-                    barcodeDetails = Volley.newRequestQueue(Consignment_entry_form.this);//2c=/TAM03/TAM03136166236000078/geteditdata
+                    barcodeDetails = GlobalClass.setVolleyReq(Consignment_entry_form.this);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(Consignment_entry_form.this);
                     progressDialog.setTitle("Kindly wait ...");
                     progressDialog.setMessage(ToastFile.processing_request);
@@ -325,7 +326,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                 if (hasFocus) {
 
                 } else if (!bsv_search_barcode.equals("")) {
-                    barcodeDetails = Volley.newRequestQueue(Consignment_entry_form.this);//2c=/TAM03/TAM03136166236000078/geteditdata
+                    barcodeDetails = GlobalClass.setVolleyReq(Consignment_entry_form.this);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(Consignment_entry_form.this);
                     progressDialog.setTitle("Kindly wait ...");
                     progressDialog.setMessage(ToastFile.processing_request);
@@ -836,7 +837,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
-                        PostQueAirCargo = Volley.newRequestQueue(Consignment_entry_form.this);
+                        PostQueAirCargo = GlobalClass.setVolleyReq(Consignment_entry_form.this);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
                             jsonObjectOtp.put("API_KEY", api_key);
@@ -1019,7 +1020,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
-                        PostQueAirCargo = Volley.newRequestQueue(Consignment_entry_form.this);
+                        PostQueAirCargo = GlobalClass.setVolleyReq(Consignment_entry_form.this);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
                             jsonObjectOtp.put("API_KEY", api_key);
@@ -1174,7 +1175,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
-                        PostQueAirCargo = Volley.newRequestQueue(Consignment_entry_form.this);
+                        PostQueAirCargo = GlobalClass.setVolleyReq(Consignment_entry_form.this);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
                             jsonObjectOtp.put("API_KEY", api_key);
@@ -1332,7 +1333,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
-                        PostQueAirCargo = Volley.newRequestQueue(Consignment_entry_form.this);
+                        PostQueAirCargo = GlobalClass.setVolleyReq(Consignment_entry_form.this);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
                             jsonObjectOtp.put("API_KEY", api_key);
@@ -1474,7 +1475,7 @@ public class Consignment_entry_form extends AppCompatActivity {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
-                        PostQueAirCargo = Volley.newRequestQueue(Consignment_entry_form.this);
+                        PostQueAirCargo = GlobalClass.setVolleyReq(Consignment_entry_form.this);
                         JSONObject jsonObjectOtp = new JSONObject();
                         try {
                             jsonObjectOtp.put("API_KEY", api_key);
@@ -1555,7 +1556,7 @@ public class Consignment_entry_form extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String passDate = sdf.format(d);
 
-        requestQueue = Volley.newRequestQueue(Consignment_entry_form.this);
+        requestQueue = GlobalClass.setVolleyReq(Consignment_entry_form.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + user + "/" + passDate + "/getsamplecount", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

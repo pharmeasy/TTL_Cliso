@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -51,6 +52,7 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
     private String showDate, To_formateDate, usercode;
     String TAG = getClass().getSimpleName();
     Date fromdate;
+    Activity activity;
     private SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATEFORMATE, Locale.US);
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -76,7 +78,7 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        activity = getActivity();
         initView(view);
 
     }
@@ -135,7 +137,7 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
         getScanReq.setSource(usercode);
 
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.insertscandetail).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
         Call<GetScanResponse> getScanResponseCall = apiInteface.getMIS(getScanReq);
 
         Log.e(TAG, "MIS URL --->" + getScanResponseCall.request().url());

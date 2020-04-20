@@ -509,7 +509,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
         if (!flagforOnce) {
             flagforOnce = true;
-            deletePatienDetail = Volley.newRequestQueue(context1);
+            deletePatienDetail = GlobalClass.setVolleyReq(context1);
 
             JSONObject jsonObject = null;
             try {

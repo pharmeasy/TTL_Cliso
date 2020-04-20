@@ -356,7 +356,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                         } else {
                             if (flag == false) {
                                 flag = true;
-                                barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                                barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                                 progressDialog = new ProgressDialog(context);
                                 progressDialog.setTitle("Kindly wait ...");
                                 progressDialog.setMessage(ToastFile.processing_request);

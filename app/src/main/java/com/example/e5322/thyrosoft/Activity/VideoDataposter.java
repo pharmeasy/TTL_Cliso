@@ -26,6 +26,7 @@ public class VideoDataposter {
     String usercode;
     long minutes, seconds;
 
+
     public VideoDataposter(Context context, long minutes, long seconds) {
         this.context = context;
         this.minutes = minutes;
@@ -41,7 +42,7 @@ public class VideoDataposter {
 
             if (minutes != 0 || seconds != 0) {
 
-                APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(APIInteface.class);
+                APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.LIVEAPI).create(APIInteface.class);
 
                 PostVideoTime_module postVideoTime_module = new PostVideoTime_module();
                 postVideoTime_module.setClientId(usercode);

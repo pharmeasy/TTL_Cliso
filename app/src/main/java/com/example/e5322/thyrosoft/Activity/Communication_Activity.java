@@ -110,10 +110,6 @@ public class Communication_Activity extends AppCompatActivity {
 
         Log.e(TAG, "");
 
-        /* FromCPL.setBackgroundColor(getResources().getColor(R.color.orange));
-        FromCPL.setTextColor(getResources().getColor(R.color.colorWhite));
-        ToCPL.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        ToCPL.setTextColor(getResources().getColor(R.color.colorBlack));*/
 
         FromCPL.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
@@ -253,6 +249,8 @@ public class Communication_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        Log.e(TAG,"COMMAPI-->"+Api.commGetLive);
+        Log.e(TAG,"COMMAPI BODY-->"+jsonObject);
         RequestQueue queue = Volley.newRequestQueue(Communication_Activity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.commGetLive, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
             @Override

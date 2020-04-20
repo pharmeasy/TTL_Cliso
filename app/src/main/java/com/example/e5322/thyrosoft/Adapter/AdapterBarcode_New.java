@@ -237,7 +237,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                 if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
                     holder.scanBarcode.setText(searchBarcode);
                 } else {
-                    barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                    barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                     final ProgressDialog progressDialog = new ProgressDialog(context);
                     progressDialog.setTitle("Kindly wait...");
                     progressDialog.setMessage(ToastFile.processing_request);
@@ -534,7 +534,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                                 if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
                                     enter_barcode.setText(searchBarcode);
                                 } else {
-                                    barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                                    barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
 
                                     final ProgressDialog showprogressDialog = GlobalClass.ShowprogressDialog(context);
 

@@ -346,7 +346,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                 if (entered_mobile_String.length() == 10) {
                     barProgressDialog.show();
                     try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        RequestQueue requestQueue = GlobalClass.setVolleyReq(getApplicationContext());
                         String URL = Api.checkValidEmail;
                         JSONObject jsonBody = new JSONObject();
                         jsonBody.put("type", entered_Type_String);
@@ -704,7 +704,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
                     barProgressDialog.show();
                     try {
-                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                        RequestQueue requestQueue = GlobalClass.setVolleyReq(getApplicationContext());
                         String URL = Api.checkValidEmail;
                         JSONObject jsonBody = new JSONObject();
                         jsonBody.put("type", get_Registration_type);
@@ -961,7 +961,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     private void uploadClientEntry(final String type, String brandName, String name, String qualification, String inchargeName) {
         barProgressDialog.show();
 
-        PostQuePGC = Volley.newRequestQueue(Sgc_Pgc_Entry_Activity.this);
+        PostQuePGC = GlobalClass.setVolleyReq(Sgc_Pgc_Entry_Activity.this);
         JSONObject jsonObject = null;
         try {
             ClientRegisterRequestModel requestModel = new ClientRegisterRequestModel();
@@ -1212,37 +1212,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
         mGoogleApiClient.stopAutoManage(Sgc_Pgc_Entry_Activity.this);
         mGoogleApiClient.disconnect();
     }
-/*    //    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//
-////            Bitmap converetdImage = getResizedBitmap(photo, 100);
-//
-//            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-////            converetdImage.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
-//            byte[] b = baos.toByteArray();
-//
-//            encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-//            System.out.println("" + encodedImage);
-//
-//        }
-//    }
 
-//    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-//        int width = image.getWidth();
-//        int height = image.getHeight();
-//        System.out.println("height of image" + height);
-//
-//        float bitmapRatio = (float) width / (float) height;
-//        if (bitmapRatio > 1) {
-//            width = maxSize;
-//            height = (int) (width / bitmapRatio);
-//        } else {
-//            height = maxSize;
-//            width = (int) (height * bitmapRatio);
-//        }
-//        return Bitmap.createScaledBitmap(image, width, height, true);
-//    }*/
 
 
 }

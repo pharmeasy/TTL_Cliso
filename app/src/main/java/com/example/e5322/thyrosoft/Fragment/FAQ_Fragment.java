@@ -29,6 +29,7 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.ExpandableListAdapter_FAQ;
 import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQ_Model;
 import com.example.e5322.thyrosoft.FAQ_Main_Model.FAQandANSArray;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
@@ -173,7 +174,7 @@ public class FAQ_Fragment extends Fragment {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        requestQueueSpinner_value = Volley.newRequestQueue(mContext);
+        requestQueueSpinner_value = GlobalClass.setVolleyReq(mContext);
 
         JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/Get_Faq_Type_Spinner", new Response.Listener<JSONObject>() {
             @Override
@@ -238,7 +239,7 @@ public class FAQ_Fragment extends Fragment {
 
     private void getAll_FAQ_data() {
         String getSpinner_value = category_spinner.getSelectedItem().toString();
-        requestQueue_FAQ = Volley.newRequestQueue(mContext);
+        requestQueue_FAQ = GlobalClass.setVolleyReq(mContext);
 
         Log.e(TAG,"FAQ API--->"+Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ");
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + client_type + "/" + getSpinner_value + "/GetAllFAQ", new Response.Listener<JSONObject>() {

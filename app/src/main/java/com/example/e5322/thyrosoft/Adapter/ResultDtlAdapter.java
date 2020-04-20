@@ -218,7 +218,7 @@ public class ResultDtlAdapter extends BaseAdapter {
 
     private void GetData(String patient_ID, String barcode, String email, String date) {
 
-        PostQue = Volley.newRequestQueue(mContext);
+        PostQue = GlobalClass.setVolleyReq(mContext);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -236,7 +236,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.postmailLive, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

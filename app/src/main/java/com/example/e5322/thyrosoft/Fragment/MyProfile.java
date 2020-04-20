@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 
@@ -233,7 +234,7 @@ public class MyProfile extends Fragment {
         barProgressDialog.setCancelable(false);
 
 
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = new JSONObject();
 
@@ -254,7 +255,7 @@ public class MyProfile extends Fragment {
         }
 
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

@@ -703,7 +703,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         } else {
                             flag = false;
                             barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
-                            RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
                             StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + s, new
                                     Response.Listener<String>() {
                                         @Override
@@ -1426,7 +1426,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             barProgressDialog.show();
             barProgressDialog.setCanceledOnTouchOutside(false);
             barProgressDialog.setCancelable(false);
-            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+            RequestQueue requestQueue = GlobalClass.setVolleyReq(mContext);
             String url = Api.getData + api_key + "/" + user + "/B2BAPP/getwomaster";
             Log.e(TAG, "request API: " + url);
             JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
@@ -2049,7 +2049,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     barProgressDialog.setCanceledOnTouchOutside(false);
                                                     barProgressDialog.setCancelable(false);
 
-                                                    RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                    RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
                                                     StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                             Response.Listener<String>() {
                                                                 @Override
@@ -3081,7 +3081,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     final ProgressDialog pd_dialog = GlobalClass.ShowprogressDialog(getActivity());
                                                     String getId = s.toString();
                                                     String getLeadId = getId.toString();
-                                                    requestQueueNoticeBoard = Volley.newRequestQueue(getActivity());
+                                                    requestQueueNoticeBoard = GlobalClass.setVolleyReq(getActivity());
                                                     JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.ValidateWorkOrderLeadId + api_key
                                                             + "/" + user + "/" + getLeadId + "/TTL/getorderdetails", new Response.Listener<JSONObject>() {
                                                         @Override
@@ -3933,7 +3933,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.show();
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
-                                                        RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -4998,7 +4998,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         barProgressDialog.show();
                                                         barProgressDialog.setCanceledOnTouchOutside(false);
                                                         barProgressDialog.setCancelable(false);
-                                                        RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
                                                         StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                                 Response.Listener<String>() {
                                                                     @Override
@@ -5696,7 +5696,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void RecheckType(String passBarcode) {
-        requestQueueAddRecheck = Volley.newRequestQueue(getActivity());
+        requestQueueAddRecheck = GlobalClass.setVolleyReq(getActivity());
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
         String url = Api.addTestsUsingBarcode + api_key + "/" + user + "/" + passBarcode + "/getbarcodedtl";
         Log.e(TAG, "RECHEKC API ====>" + url);
@@ -5786,7 +5786,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void getTspNumber() {
         try {
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
             JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user +
                     "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
@@ -5865,7 +5865,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void fetchData() {
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
         barProgressDialog = new ProgressDialog(getActivity());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);

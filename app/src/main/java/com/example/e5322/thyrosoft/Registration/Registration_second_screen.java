@@ -31,6 +31,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.PincodeModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -62,7 +63,7 @@ public class Registration_second_screen extends Activity {
         setContentView(R.layout.activity_next_registration_second);
 
         context=this;
-        requestQueue = Volley.newRequestQueue(context);
+        requestQueue = GlobalClass.setVolleyReq(context);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
 

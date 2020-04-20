@@ -594,7 +594,7 @@ public class UploadDocument extends AbstractActivity {
         barProgressDialog.setCancelable(false);
         barProgressDialog.show();
 
-        PostQueOtp = Volley.newRequestQueue(UploadDocument.this);
+        PostQueOtp = GlobalClass.setVolleyReq(UploadDocument.this);
         JSONObject jsonObject = null;
 
         try {

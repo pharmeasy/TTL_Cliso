@@ -205,7 +205,7 @@ public class SummaryAddWoe extends AppCompatActivity {
                     barProgressDialog.show();
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
-                    POstQue = Volley.newRequestQueue(SummaryAddWoe.this);
+                    POstQue = GlobalClass.setVolleyReq(SummaryAddWoe.this);
                     JSONObject jsonObjectOtp = new JSONObject();
                     JSONObject addrecheck = new JSONObject();
                     try {

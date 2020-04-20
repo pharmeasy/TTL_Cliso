@@ -372,7 +372,7 @@ public class Edit_Woe extends Fragment {
 
 
 
-        POstQue = Volley.newRequestQueue(getContext());
+        POstQue = GlobalClass.setVolleyReq(getContext());
         MyPojoWoe myPojoWoe = new MyPojoWoe();
 
         if(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE()!=null){

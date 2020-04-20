@@ -636,7 +636,7 @@ public class PETCT_Frag extends Fragment {
     private void getSlot(String centerId) {
         if (cd.isConnectingToInternet()) {
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-            APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SCANSOAPI).create(APIInteface.class);
+            APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
             Call<List<SlotModel>> responseCall = apiInterface.getslot(header, GlobalClass.formatDate("dd-mm-yyyy", "yyyy-mm-dd", txt_appdate.getText().toString()), centerId);
             Log.e("TAG", "SLOT URL --->" + responseCall.request().url());
 
@@ -886,7 +886,7 @@ public class PETCT_Frag extends Fragment {
 
     private void callServiceTypesAPI(String centerId) {
         progressDialog = GlobalClass.ShowprogressDialog(context);
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SCANSOAPI).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
         Log.e(TAG, "HEADER ----->" + header);
         Call<List<ServiceModel>> responseCall = apiInterface.getservicelist(header, centerId, user);
         Log.e("TAG", "SERVICE URL --->" + responseCall.request().url());
@@ -1079,7 +1079,7 @@ public class PETCT_Frag extends Fragment {
     private void getCenterList(TokenModel tokenResponseModel) {
         progressDialog = GlobalClass.ShowprogressDialog(context);
         header = tokenResponseModel.getToken_type() + " " + tokenResponseModel.getAccess_token();
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SCANSOAPI).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
         Call<List<CenterList_Model>> responseCall = apiInterface.getcenterList(header, user);
         Log.e("TAG", "header --->" + header);
         Log.e("TAG", "S C A N S O URL --->" + responseCall.request().url());

@@ -986,7 +986,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
             barProgressDialog.setCanceledOnTouchOutside(false);
             barProgressDialog.setCancelable(false);
             Log.e(TAG, "callWOMasterAPI: ");
-            RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+            RequestQueue requestQueue = GlobalClass.setVolleyReq(mContext);
             JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -1202,7 +1202,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
                                                     barProgressDialog.show();
                                                     barProgressDialog.setCanceledOnTouchOutside(false);
                                                     barProgressDialog.setCancelable(false);
-                                                    RequestQueue reques5tQueueCheckNumber = Volley.newRequestQueue(getActivity());
+                                                    RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
                                                     StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
                                                             Response.Listener<String>() {
                                                                 @Override
@@ -1511,7 +1511,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
 
     private void getTspNumber() {
         try {
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
             JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -1582,7 +1582,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
     }
 
     private void fetchData() {
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
         barProgressDialog = new ProgressDialog(getActivity());
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -1818,7 +1818,7 @@ public class BMC_NEW_WOEFragment extends Fragment {
     }
 
     private void getProfileDetails() {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {

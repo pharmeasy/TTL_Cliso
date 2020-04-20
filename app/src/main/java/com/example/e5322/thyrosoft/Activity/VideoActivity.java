@@ -208,7 +208,7 @@ public class VideoActivity extends AppCompatActivity {
 
     private void CallVideoLanguagesAPI() {
         global.showProgressDialog();
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(APIInteface.class);
         Call<VideoLangaugesResponseModel> responseCall = apiInterface.getVideoLanguages();
         Log.e(TAG, "V I D E O U R L ---->" + responseCall.request().url());
 
@@ -345,7 +345,7 @@ public class VideoActivity extends AppCompatActivity {
         GetVideoLanguageWiseRequestModel model = new GetVideoLanguageWiseRequestModel();
         model.setApp(Constants.APP_ID);
         model.setLanguage(LanguageID);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(PostAPIInteface.class);
         Call<VideosResponseModel> responseCall = apiInterface.getVideobasedOnLanguage(model);
         Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
         Log.e(TAG, "VIDEO LIST URL ---->" + responseCall.request().url());
@@ -414,8 +414,7 @@ public class VideoActivity extends AppCompatActivity {
 
                 try {
                     if (videoView.getVideoInfo().getUri() != null && videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
-
-                        if (videoView.getPlayer().isPlaying()) {
+                        if (!videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
                             videoView.getPlayer().stop();
                             videoView.setVisibility(View.GONE);
                         } else {
@@ -535,10 +534,6 @@ public class VideoActivity extends AppCompatActivity {
             public void onRelease(GiraffePlayer giraffePlayer) {
                 Log.e(TAG, "onRelease----------------->  " + giraffePlayer.getDuration());
                 if (onpause || stop_flag || back_flag | backpress_flag) {
-
-                    //  onpause = false;
-                   /* back_flag = false;
-                    stop_flag = false;*/
                     Log.e(TAG, "<---- I AM IN IF ---->");
                 } else {
                     postdata(giraffePlayer);
@@ -672,6 +667,7 @@ public class VideoActivity extends AppCompatActivity {
                     }
                 } else if (oldState == GiraffePlayer.STATE_PLAYING && newState == GiraffePlayer.STATE_RELEASE) {
                     videoView.setVisibility(View.GONE);
+                    videoListAdapter.notifyDataSetChanged();
                 } else {
                     videoView.setVisibility(View.VISIBLE);
                 }

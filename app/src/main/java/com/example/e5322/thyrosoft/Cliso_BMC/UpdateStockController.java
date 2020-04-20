@@ -34,7 +34,7 @@ public class UpdateStockController {
     public void UpdateAvailableStock(JSONObject jsonObject) {
         try {
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(mActivity);
-            requestQueue = Volley.newRequestQueue(mActivity);
+            requestQueue = GlobalClass.setVolleyReq(mActivity);
             String url = Api.Materialupdate;
             Log.e(TAG, "UpdateAvailableStockAPI: " + url);
             Log.e(TAG, "UpdateAvailableStockAPI gson: " + jsonObject);

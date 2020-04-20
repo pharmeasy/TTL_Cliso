@@ -1,13 +1,12 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.SQLException;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -15,19 +14,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -56,13 +52,12 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTCompanyContact_activity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTNoticeboard_activity;
-import com.example.e5322.thyrosoft.Models.AppuserReq;
-import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -70,7 +65,6 @@ import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
@@ -98,8 +92,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     public static String getdate;
     private static android.support.v4.app.FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
-    SharedPreferences.Editor editorUserActivity;
-    SharedPreferences shr_user_log;
+/*    SharedPreferences.Editor editorUserActivity;
+    SharedPreferences shr_user_log;*/
     String restoredText;
     String passwrd, access, api_key, USER_CODE;
     SharedPreferences prefs;
@@ -131,7 +125,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     Runnable runnable;
     boolean iscomplete = false;
     boolean isVideosee = false;
-
+    Activity activity;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -189,14 +183,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ll);
-
+        activity = this;
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         bottomNavigationView.setItemIconTintList(null);
 
-        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
-        editorUserActivity = shr_user_log.edit();
+       /* shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
+        editorUserActivity = shr_user_log.edit();*/
 
         if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
@@ -370,7 +364,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         getVideopost_model.setApp(Constants.APP_ID);
         getVideopost_model.setSourcedata(USER_CODE);
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.video_data).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.video_data).create(APIInteface.class);
         Call<GetVideoResponse_Model> getVideoResponse_modelCall = apiInteface.getVideoData(getVideopost_model);
 
         Log.e(TAG, "GET VIDEO URL:" + getVideoResponse_modelCall.request().url());
@@ -605,7 +599,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         videopoppost.setClientid(USER_CODE);
         videopoppost.setVideoid(id);
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.video_data).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.video_data).create(APIInteface.class);
         Call<Videopoppost_response> videopoppost_responseCall = apiInteface.Videopost(videopoppost);
 
         Log.e(TAG, "Video post  URL ---->" + videopoppost_responseCall.request().url());
@@ -980,13 +974,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                            // Toast.makeText(getApplicationContext(), "You have successfully logout", Toast.LENGTH_LONG).show();
                             distoye();
-                            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)){
-                                taguser();
-                            }
+                            new LogUserActivityTagging(activity, Constants.LOGOUT);
                             logout();
-
                         }
                     })
                     .setNegativeButton("No", null)
@@ -1239,13 +1229,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void logout() {
-        editorUserActivity.putString(Constants.SHR_MODTYPE, "LOGOUT");
-        editorUserActivity.putString(Constants.SHR_ISLOGIN, "N");
-        editorUserActivity.putString(Constants.SHR_USERNAME, "");
-        editorUserActivity.putString(Constants.SHR_VERSION, shr_user_log.getString(Constants.SHR_VERSION,""));
-        editorUserActivity.putString(Constants.SHR_TOKEN,shr_user_log.getString(Constants.SHR_TOKEN,""));
-        editorUserActivity.putString(Constants.SHR_OS, shr_user_log.getString(Constants.SHR_OS,""));
-        editorUserActivity.apply();
 
         SharedPreferences.Editor getProfileName = getSharedPreferences("profilename", MODE_PRIVATE).edit();
         getProfileName.clear();
@@ -1384,89 +1367,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onPause() {
         super.onPause();
-        /*   try {
-            if (iscomfrom) {
-                if (video_view.getVideoInfo().getUri() != null) {
-                    // stop_flag = true;
-                *//*if (!backpress_flag) {
 
-                }*//*
-                    try {
-                        if (video_view.getPlayer().isPlaying()) {
-                            postdata(video_view.getPlayer());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        super.onPause();*/
-
-    }
-    private void taguser() {
-        final String IMEI = getDeviceIMEI();
-        final String androidOS = Build.VERSION.RELEASE;
-
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
-        AppuserReq appuserReq = new AppuserReq();
-        appuserReq.setAppId(Constants.USER_APPID);
-        appuserReq.setIMIENo(IMEI);
-        appuserReq.setIslogin(shr_user_log.getString(Constants.SHR_ISLOGIN, ""));
-        appuserReq.setModType("LOGOUT");
-        appuserReq.setOS(shr_user_log.getString(Constants.SHR_OS, ""));
-        appuserReq.setToken(shr_user_log.getString(Constants.SHR_TOKEN,""));
-        appuserReq.setUserID(shr_user_log.getString(Constants.SHR_USERNAME, ""));
-        appuserReq.setVersion(shr_user_log.getString(Constants.SHR_VERSION, ""));
-
-        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
-        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
-        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
-
-        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
-            @Override
-            public void onResponse(Call<AppuserResponse> call, retrofit2.Response<AppuserResponse> response) {
-                try {
-                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AppuserResponse> call, Throwable t) {
-
-            }
-        });
-
-    }
-    public String getDeviceIMEI() {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                //return false;
-            }
-            deviceUniqueIdentifier = tm.getDeviceId();
-        }
-
-        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
-            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-
-        return deviceUniqueIdentifier;
     }
 
 }

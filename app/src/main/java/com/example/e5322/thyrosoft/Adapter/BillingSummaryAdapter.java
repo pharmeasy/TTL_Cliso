@@ -145,7 +145,7 @@ public class BillingSummaryAdapter extends BaseAdapter {
 
     private void GetData(String Datestr) {
         barProgressDialog.show();
-        PostQue = Volley.newRequestQueue(mContext);
+        PostQue = GlobalClass.setVolleyReq(mContext);
         JSONObject jsonObject = null;
         try {
 
@@ -163,7 +163,7 @@ public class BillingSummaryAdapter extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.billingDetLIVE, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override

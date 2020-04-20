@@ -65,6 +65,7 @@ public class ScanSummaryActivity extends Fragment {
     private String putDate;
     private String showDate;
     Date fromdate, To_date;
+    Activity mActivity;
     private String getFormatDate;
     private long minDate;
     private String from_formateDate, To_formateDate;
@@ -142,7 +143,7 @@ public class ScanSummaryActivity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
-
+        mActivity=getActivity();
         preferences = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = preferences.getString("Username", null);
 
@@ -343,7 +344,7 @@ public class ScanSummaryActivity extends Fragment {
         String str_todt = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, to_date.getText().toString());
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.SCANSOAPI).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.SCANSOAPI).create(APIInteface.class);
         Call<List<ScansummaryModel>> responseCall = apiInterface.getsummarydetail(header, str_frmdt, str_todt, user);
 
         Log.e("TAG", "S U M M A R Y  U R L --->" + responseCall.request().url());

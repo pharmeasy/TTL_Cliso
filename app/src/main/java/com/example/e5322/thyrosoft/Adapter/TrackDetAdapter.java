@@ -141,7 +141,7 @@ public class TrackDetAdapter extends BaseAdapter {
                 barProgressDialog_nxt.setCanceledOnTouchOutside(false);
                 barProgressDialog_nxt.setCancelable(false);
 
-                PostQue = Volley.newRequestQueue(mContext);
+                PostQue = GlobalClass.setVolleyReq(mContext);
 
 
                 try {
@@ -162,7 +162,7 @@ public class TrackDetAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    RequestQueue queue = Volley.newRequestQueue(mContext);
+                    RequestQueue queue = GlobalClass.setVolleyReq(mContext);
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                             Request.Method.POST, Api.downloadreceipt, jsonObject,
                             new com.android.volley.Response.Listener<JSONObject>() {
@@ -254,7 +254,7 @@ public class TrackDetAdapter extends BaseAdapter {
                 barProgressDialog_nxt.setCanceledOnTouchOutside(false);
                 barProgressDialog_nxt.setCancelable(false);
 
-                PostQue = Volley.newRequestQueue(mContext);
+                PostQue = GlobalClass.setVolleyReq(mContext);
 
 
                 try {
@@ -275,7 +275,7 @@ public class TrackDetAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    RequestQueue queue = Volley.newRequestQueue(mContext);
+                    RequestQueue queue = GlobalClass.setVolleyReq(mContext);
                     Log.e(TAG, "Post Data---" + jsonObject.toString());
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                             Request.Method.POST, Api.downloadreceipt, jsonObject,
@@ -381,7 +381,7 @@ public class TrackDetAdapter extends BaseAdapter {
                 barProgressDialog_nxt.setCanceledOnTouchOutside(false);
                 barProgressDialog_nxt.setCancelable(false);
 
-                PostQue = Volley.newRequestQueue(mContext);
+                PostQue = GlobalClass.setVolleyReq(mContext);
 
 
                 try {
@@ -402,7 +402,7 @@ public class TrackDetAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    RequestQueue queue = Volley.newRequestQueue(mContext);
+                    RequestQueue queue = GlobalClass.setVolleyReq(mContext);
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                             Request.Method.POST, Api.downloadreceipt, jsonObject,
                             new com.android.volley.Response.Listener<JSONObject>() {
@@ -584,7 +584,7 @@ public class TrackDetAdapter extends BaseAdapter {
     }
 
     private void SendMail() {
-        PostQue = Volley.newRequestQueue(mContext);
+        PostQue = GlobalClass.setVolleyReq(mContext);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -608,7 +608,7 @@ public class TrackDetAdapter extends BaseAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.Receipt_mail, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

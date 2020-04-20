@@ -367,7 +367,7 @@ public class BMC_WOEFragment extends Fragment {
         barProgressDialog.setCancelable(false);
 
 
-        requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -413,7 +413,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 barProgressDialog.setCanceledOnTouchOutside(false);
                 barProgressDialog.setCancelable(false);
                 checkUlcNumber = ulc_code_edt.getText().toString();
-                RequestQueue requestQueueULC = Volley.newRequestQueue(ProductLisitngActivityNew.this);
+                RequestQueue requestQueueULC = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
                 JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getData + api_key + "/" + checkUlcNumber + "/" + user + "/getcheckulc", new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -626,7 +626,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     barProgressDialog.setCancelable(false);
                                     barProgressDialog.show();
 
-                                    RequestQueue POstQue = Volley.newRequestQueue(ProductLisitngActivityNew.this);
+                                    RequestQueue POstQue = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
                                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                                         @Override
                                         public void onResponse(JSONObject response) {
@@ -829,7 +829,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        RequestQueue requestQueuepoptestILS = Volley.newRequestQueue(this);
+        RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproducts");
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override

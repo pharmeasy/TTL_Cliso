@@ -1,6 +1,8 @@
 package com.example.e5322.thyrosoft.Repository;
 
+import android.app.Activity;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.util.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
@@ -22,8 +24,8 @@ public class HealthRepository {
     public HealthRepository() {
     }
 
-    public MutableLiveData<List<HealthTipsApiResponseModel.HArt>> getHealthrepositoy() {
-        apiInterface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(APIInteface.class);
+    public MutableLiveData<List<HealthTipsApiResponseModel.HArt>> getHealthrepositoy(Context context) {
+        apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.BASE_URL_TOCHECK).create(APIInteface.class);
         final MutableLiveData<List<HealthTipsApiResponseModel.HArt>> listMutableLiveData = new MutableLiveData<>();
         Call<HealthTipsApiResponseModel> responseCall = apiInterface.getHealth();
         Log.e("TAG", "URL --->" + responseCall.request().url());

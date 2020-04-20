@@ -56,12 +56,17 @@ public class ValidateMob_Controller {
             postValidateRequest.setPurpose("woe");
 
         postValidateRequest.setMobile(chechnumber);
+        APIInteface apiInterface;
+        if (flag == 1) {
+            apiInterface = RetroFit_APIClient.getInstance().getClient(specialOffer_activity, Api.OTPgenegrate).create(APIInteface.class);
+        } else {
+            apiInterface = RetroFit_APIClient.getInstance().getClient(start_new_woe.getActivity(), Api.OTPgenegrate).create(APIInteface.class);
+        }
 
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.OTPgenegrate).create(APIInteface.class);
 
         Call<ValidateOTPmodel> responseCall = apiInterface.ValidateMob(postValidateRequest);
         Log.e("TAG", "Validate Mobile URL --->" + responseCall.request().url());
-       // Log.e("TAG", "Validate Mobile Request --->" + new GsonBuilder().create().toJson(responseCall));
+        // Log.e("TAG", "Validate Mobile Request --->" + new GsonBuilder().create().toJson(responseCall));
 
         final ProgressDialog finalProgressDialog = progressDialog;
 

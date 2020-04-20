@@ -48,18 +48,22 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
+import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MyHurlStack;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
@@ -237,6 +241,50 @@ public class GlobalClass {
         }
 
         return date;
+    }
+    public static String getHeaderValue(Context pContext) {
+        String header;
+        header = Constants.APPNAME+"/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + getSerialnum(pContext);
+        System.out.println(header);
+        return header;
+    }
+
+    public static String getSerialnum(Context pContext) {
+        String imeiNo = "";
+        try {
+            imeiNo = Settings.Secure.getString(pContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imeiNo;
+    }
+
+    public static RequestQueue setVolleyReq(Context mContext) {
+        HttpStack stack = new MyHurlStack(mContext);
+        return Volley.newRequestQueue(mContext,stack);
+    }
+    public static String getversion(Context context){
+        String version="";
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+        return version;
+    }
+
+    public static int getversioncode(Context context){
+        int versionCode;
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        versionCode = pInfo.versionCode;
+        return versionCode;
     }
 
     public static ProgressDialog progress(Context context, boolean autcancel) {

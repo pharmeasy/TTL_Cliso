@@ -1,6 +1,10 @@
 package com.example.e5322.thyrosoft.Retrofit;
 
+import android.app.Activity;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BuildConfig;
+import com.example.e5322.thyrosoft.GlobalClass;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -27,27 +31,27 @@ public class RetroFit_APIClient {
     }
 
 
-    public Retrofit getClient(String BASE_URL) {
+    public Retrofit getClient(final Activity activity, String BASE_URL) {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 
         if (BuildConfig.DEBUG) {
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);   // development build
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+             // development build
         } else {
-            interceptor.setLevel(HttpLoggingInterceptor.Level.NONE);    // production build
+            interceptor.setLevel(HttpLoggingInterceptor.Level.NONE);// production build
 //            interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);    // production build
         }
         client.addInterceptor(interceptor);
-
         client.readTimeout(1, TimeUnit.MINUTES);
         client.writeTimeout(30 , TimeUnit.SECONDS);
         client.connectTimeout(15, TimeUnit.SECONDS);
         client.addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request request = chain.request();
+                Request request = chain.request().newBuilder().addHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(activity)).build();
                 return chain.proceed(request);
             }
         });

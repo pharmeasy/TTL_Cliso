@@ -343,7 +343,7 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
     }
 
     private void getDataFromServer() {
-        RequestQueue requestQueue = Volley.newRequestQueue(BMC_WOE_SummaryActivity.this);
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(BMC_WOE_SummaryActivity.this);
 
         JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.getBCTforSummary + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
             @Override
@@ -389,7 +389,7 @@ public class BMC_WOE_SummaryActivity extends AppCompatActivity {
 
     private void deletePatientDetailsandTest() {
 
-        deletePatienDetail = Volley.newRequestQueue(BMC_WOE_SummaryActivity.this);
+        deletePatienDetail = GlobalClass.setVolleyReq(BMC_WOE_SummaryActivity.this);
         JSONObject jsonObjectOtp = new JSONObject();
         try {
             jsonObjectOtp.put("api_key", api_key);

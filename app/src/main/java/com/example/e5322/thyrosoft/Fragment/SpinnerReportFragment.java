@@ -110,7 +110,7 @@ public class SpinnerReportFragment extends Fragment {
 
     private void GetData() {
 
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
 
 
@@ -125,7 +125,7 @@ public class SpinnerReportFragment extends Fragment {
 
 
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.ResultLIVE+"/"+api_key+"/"+ GlobalClass.type+"/"+user+"/"+ GlobalClass.date+"/"+"key/value", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

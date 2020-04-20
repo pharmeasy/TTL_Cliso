@@ -134,7 +134,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    POstQueSendEstimation = Volley.newRequestQueue(mContext);
+                    POstQueSendEstimation = GlobalClass.setVolleyReq(mContext);
 
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override

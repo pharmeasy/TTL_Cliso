@@ -112,7 +112,7 @@ public class FirstFragment extends Fragment {
     private void GetData() {
 
 
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
 
         JSONObject jsonObject = new JSONObject();
@@ -144,7 +144,7 @@ public class FirstFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.LedgerDetLive, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +57,7 @@ public class ReportScanFrag extends Fragment {
     String TAG = getClass().getSimpleName(), usercode;
     Button btn_scansubmit, btn_reason_submit;
     LinearLayout lin_reason;
+    Activity activity;
 
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
@@ -86,6 +88,7 @@ public class ReportScanFrag extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        activity=getActivity();
         scanIntegrator = IntentIntegrator.forSupportFragment(this);
         initView(view);
 
@@ -249,7 +252,7 @@ public class ReportScanFrag extends Fragment {
         insertScandetailReq.setRemarks(edt_reason.getText().toString());
         insertScandetailReq.setRowaste(edt_wastecnt.getText().toString());
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.insertscandetail).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
         Call<InsertreasonResponse> insertScandetailResCall = apiInteface.insertreason(insertScandetailReq);
 
         Log.e(TAG, "URL ---->" + insertScandetailResCall.request().url());
@@ -294,7 +297,7 @@ public class ReportScanFrag extends Fragment {
         insertScandetailReq.setSource(usercode);
         insertScandetailReq.setBarcode(txt_barcode.getText().toString());
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(Api.insertscandetail).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
         Call<InsertScandetailRes> insertScandetailResCall = apiInteface.insertScandetail(insertScandetailReq);
 
         Log.e(TAG, "URL ---->" + insertScandetailResCall.request().url());

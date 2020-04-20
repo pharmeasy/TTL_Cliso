@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Controller;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 
@@ -36,7 +37,7 @@ public class PostLeadResponseController {
     public void CallAPI() {
         progress.show();
 
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.THYROCARE).create(PostAPIInteface.class);
         Call<LeadDataResponseModel> responseCall = apiInterface.PostdataLead(postLeadDataModel);
 
         responseCall.enqueue(new Callback<LeadDataResponseModel>() {

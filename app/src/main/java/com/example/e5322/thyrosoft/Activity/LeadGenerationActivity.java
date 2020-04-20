@@ -1083,11 +1083,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                 emailintent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
                                 if (type.contains("TEST")) {
                                     emailintent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.test_subject));
-                                  /*  if (email.isEmpty() && address.isEmpty() && remarks.isEmpty()) {
-                                        emailintent.putExtra(Intent.EXTRA_TEXT, "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile);
-                                    } else {
-                                        emailintent.putExtra(Intent.EXTRA_TEXT, "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile + "\n" + "Email ID :- " + email + "\n" + "Address :- " + address + "\n" + "Remarks :- " + remarks);
-                                    }*/
+
                                     emailintent.putExtra(Intent.EXTRA_TEXT, "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile);
                                 }
                                 emailintent.setType("message/rfc822");
@@ -1183,11 +1179,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
         final String PARAM_TEXT = "text";
         String TEXT_VALUE = null;
         if (type.contains("TEST")) {
-          /*  if (email_id.isEmpty() && city.isEmpty() && remarks.isEmpty()) {
-                TEXT_VALUE = "Test details" + "\n" + "Lead ID :- " + booking_id + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile;
-            } else {
-                TEXT_VALUE = "Test details" + "\n" + "Lead ID :- " + booking_id + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile + "\n" + "Email ID :- " + email_id + "\n" + "Address :- " + city + "\n" + "Remarks :- " + remarks;
-            }*/
             TEXT_VALUE = "Test details" + "\n" + "Lead ID :- " + booking_id + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile;
         }
         String newUrl = BASE_URL + "send";
@@ -1295,8 +1286,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     }
                 }
             }
-
-
         }
     }
 

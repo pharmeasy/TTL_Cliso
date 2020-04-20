@@ -38,7 +38,7 @@ public class VersionCheckAPIController {
                 globalClass.showupdate(MessageConstants.CHECKING_UPDATE_PLEASE_WAIT);
             }
             if (requestQueue == null)
-                requestQueue = Volley.newRequestQueue(mactivity);
+                requestQueue = GlobalClass.setVolleyReq(mactivity);
             String url = Api.checkVersion;
             globalClass.printLog("Error", TAG, "VersionCheckAPI", url);
 

@@ -356,7 +356,7 @@ public class Wor_Order_Entry_List extends Fragment {
 //                        barProgressDialog.show();
 //                        barProgressDialog.setCanceledOnTouchOutside(false);
 //                        barProgressDialog.setCancelable(false);
-//                        requestQueueWindup = Volley.newRequestQueue(getContext());//2c=/TAM03/TAM03136166236000078/geteditdata
+//                        requestQueueWindup = GlobalClass.setVolleyReq(getContext());//2c=/TAM03/TAM03136166236000078/geteditdata
 //                        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.windupApi + "" + api_key + "/" + user + "/" + DatePassToApi + "/getwowindup"
 //                                , new Response.Listener<JSONObject>() {
 //                            @Override
@@ -441,7 +441,7 @@ public class Wor_Order_Entry_List extends Fragment {
 //                    System.out.println(csv);
 //
 //
-//                    PostQueOtp = Volley.newRequestQueue(getContext());
+//                    PostQueOtp = GlobalClass.setVolleyReq(getContext());
 //                    JSONObject jsonObjectOtp = new JSONObject();
 //                    try {
 //
@@ -563,7 +563,7 @@ public class Wor_Order_Entry_List extends Fragment {
         }
         passToAPI = outputFormat.format(date);
 
-        requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

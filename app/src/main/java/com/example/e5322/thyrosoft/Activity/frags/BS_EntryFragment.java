@@ -965,7 +965,7 @@ public class BS_EntryFragment extends Fragment {
 
         int versionCode = pInfo.versionCode;
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
@@ -1002,7 +1002,7 @@ public class BS_EntryFragment extends Fragment {
 
     private void emailvalidationapi(String email) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.THYROCARE).create(PostAPIInteface.class);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
         EmailModel emailModel = new EmailModel();
         emailModel.setAppID("5");
         emailModel.setEmailID(email);

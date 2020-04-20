@@ -180,7 +180,7 @@ class KTNoticeboard_activity : AppCompatActivity() {
 
 /*    private fun getNoticeBoardData() {
         val progressDialog = GlobalClass.ShowprogressDialog(this@KTNoticeboard_activity)
-        requestQueueNoticeBoard = Volley.newRequestQueue(this@KTNoticeboard_activity)
+        requestQueueNoticeBoard = GlobalClass.setVolleyReq(this@KTNoticeboard_activity)
         val jsonObjectRequestProfile = JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", Response.Listener { response ->
             Log.e(TAG, "onResponse: $response")
             GlobalClass.hideProgress(this@KTNoticeboard_activity, progressDialog)
@@ -198,7 +198,7 @@ class KTNoticeboard_activity : AppCompatActivity() {
 
 
                             noticeBoard_adapter.clickListerforAckNoticeboard(RefreshNoticeBoard { msgCode ->
-                                PostQueOtp = Volley.newRequestQueue(this@KTNoticeboard_activity)
+                                PostQueOtp = GlobalClass.setVolleyReq(this@KTNoticeboard_activity)
                                 var jsonObject: JSONObject? = null
                                 try {
                                     val requestModel = AckNoticeRequestModel()

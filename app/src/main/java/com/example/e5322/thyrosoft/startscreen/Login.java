@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.startscreen;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,9 +14,6 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -41,10 +37,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
-import com.example.e5322.thyrosoft.Models.AppuserReq;
-import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
@@ -52,7 +47,6 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -97,16 +91,17 @@ public class Login extends Activity implements View.OnClickListener {
     String newToken;
     private String TAG = Login.class.getSimpleName().toString();
     private GlobalClass globalClass;
-    SharedPreferences.Editor editorUserActivity;
-     SharedPreferences shr_user_log;
+    /*SharedPreferences.Editor editorUserActivity;
+    SharedPreferences shr_user_log;*/
     private String androidOS;
+    Activity activity;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        activity = this;
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         forgotpassword = (TextView) findViewById(R.id.forgotpass);
@@ -122,46 +117,7 @@ public class Login extends Activity implements View.OnClickListener {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.VIBRATE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.RECEIVE_SMS) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(Login.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(Login.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.CAMERA,
-                                    Manifest.permission.READ_CONTACTS,
-                                    Manifest.permission.WRITE_CONTACTS,
-                                    Manifest.permission.CALL_PHONE,
-                                    Manifest.permission.ACCESS_NETWORK_STATE,
-                                    Manifest.permission.ACCESS_FINE_LOCATION,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.VIBRATE,
-                                    Manifest.permission.WAKE_LOCK,
-                                    Manifest.permission.READ_PHONE_STATE,
-                                    Manifest.permission.INTERNET},
-                            1001);
 
-
-                } else {
-                    // switchToActivity(activity, LoginScreenActivity.class, new Bundle());
-                    // goAhead();
-                }
-            }
-        }, 1000);
 
         PackageInfo pInfo = null;
         try {
@@ -173,9 +129,9 @@ public class Login extends Activity implements View.OnClickListener {
         version = pInfo.versionName;
         androidOS = Build.VERSION.RELEASE;
 
-        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
-        editorUserActivity = shr_user_log.edit();
-        editorUserActivity.putBoolean("my_first_time", false).commit();
+//        shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
+//        editorUserActivity = shr_user_log.edit();
+//        editorUserActivity.putBoolean(Constants.SHR_FIRSTINSTALL, false).commit();
 
         /* checkPermissionREAD_EXTERNAL_STORAGE(context);*/
 //        if (checkAndRequestPermissions()) {
@@ -189,6 +145,7 @@ public class Login extends Activity implements View.OnClickListener {
                 return false;
             }
         });
+
         password.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -202,7 +159,6 @@ public class Login extends Activity implements View.OnClickListener {
         });
 
         username.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
 
 
         password.addTextChangedListener(new TextWatcher() {
@@ -568,8 +524,8 @@ public class Login extends Activity implements View.OnClickListener {
                                                     if (edt_reg_otp.getText().toString().equals("")) {
                                                         Toast.makeText(Login.this, ToastFile.crt_otp, Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                        POstQueValidateOTP = Volley.newRequestQueue(Login.this);
-
+                                                       // POstQueValidateOTP = Volley.newRequestQueue(Login.this);
+                                                        POstQueValidateOTP=GlobalClass.setVolleyReq(Login.this);
 
                                                         JSONObject jsonObjectValidateOtp = new JSONObject();
                                                         try {
@@ -694,23 +650,6 @@ public class Login extends Activity implements View.OnClickListener {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // do your stuff
-                } else {
-                    Toast.makeText(Login.this, "GET_ACCOUNTS Denied",
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions,
-                        grantResults);
-        }
-    }
 
     private void generateEmailPhoneOTP() {
 
@@ -718,7 +657,7 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void sendOtp() {
 
-        generateOTP = Volley.newRequestQueue(Login.this);
+        generateOTP = GlobalClass.setVolleyReq(Login.this);;
 
         JSONObject jsonObjectOtp = new JSONObject();
         try {
@@ -861,7 +800,7 @@ public class Login extends Activity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                RequestQueue queue = Volley.newRequestQueue(Login.this);
+                RequestQueue queue =  GlobalClass.setVolleyReq(Login.this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -905,16 +844,9 @@ public class Login extends Activity implements View.OnClickListener {
                                                 pushToken();
                                             }
                                         });
-                                        newToken=FirebaseInstanceId.getInstance().getToken();
-                                        editorUserActivity.putString(Constants.SHR_MODTYPE, "LOGIN");
-                                        editorUserActivity.putString(Constants.SHR_ISLOGIN, "Y");
-                                        editorUserActivity.putString(Constants.SHR_USERNAME, User.trim());
-                                        editorUserActivity.putString(Constants.SHR_VERSION, version);
-                                        editorUserActivity.putString(Constants.SHR_TOKEN,newToken);
-                                        editorUserActivity.putString(Constants.SHR_OS, androidOS);
-                                        editorUserActivity.apply();
 
-                                        taguser();
+                                        new LogUserActivityTagging(activity, Constants.SHLOGIN);
+
                                         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
                                         a.putExtra(Constants.COMEFROM, true);
                                         startActivity(a);
@@ -951,56 +883,7 @@ public class Login extends Activity implements View.OnClickListener {
         }
     }
 
-    private void taguser() {
-        final String IMEI = getDeviceIMEI();
-        final String androidOS = Build.VERSION.RELEASE;
 
-
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
-        AppuserReq appuserReq = new AppuserReq();
-        appuserReq.setAppId(Constants.USER_APPID);
-        appuserReq.setIMIENo(IMEI);
-        appuserReq.setIslogin(shr_user_log.getString(Constants.SHR_ISLOGIN,""));
-        appuserReq.setModType(shr_user_log.getString(Constants.SHR_MODTYPE,""));
-        appuserReq.setOS(shr_user_log.getString(Constants.SHR_OS,""));
-        appuserReq.setToken(shr_user_log.getString(Constants.SHR_TOKEN,""));
-        appuserReq.setUserID(shr_user_log.getString(Constants.SHR_USERNAME,""));
-        appuserReq.setVersion(shr_user_log.getString(Constants.SHR_VERSION,""));
-
-        Call<AppuserResponse> appuserResponseCall = postAPIInteface.PostUserLog(appuserReq);
-        Log.e(TAG, "TAG USER API ---->" + appuserResponseCall.request().url());
-        Log.e(TAG, "REQ Body ---->" + new GsonBuilder().create().toJson(appuserReq));
-
-        appuserResponseCall.enqueue(new Callback<AppuserResponse>() {
-            @Override
-            public void onResponse(Call<AppuserResponse> call, Response<AppuserResponse> response) {
-                try {
-                    if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                        Log.e(TAG, "RES---->" + response.body().getRESPONSE());
-                        editorUserActivity = getSharedPreferences(Constants.SHR_USERLOG, 0).edit();
-                        editorUserActivity.putInt(Constants.SHR_APPID, Constants.USER_APPID);
-                        editorUserActivity.putString(Constants.SHR_IMEI, IMEI);
-                        editorUserActivity.putString(Constants.SHR_USERNAME, User);
-                        editorUserActivity.putString(Constants.SHR_ISLOGIN, islogin);
-                        editorUserActivity.putString(Constants.SHR_MODTYPE, shr_user_log.getString(Constants.SHR_MODTYPE,""));
-                        editorUserActivity.putString(Constants.SHR_OS, androidOS);
-                        editorUserActivity.putString(Constants.SHR_TOKEN,shr_user_log.getString(Constants.SHR_TOKEN,""));
-                        editorUserActivity.putString(Constants.SHR_VERSION, version);
-                        editorUserActivity.apply();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<AppuserResponse> call, Throwable t) {
-
-            }
-        });
-
-    }
 
 
     private void storeRegIdInPref(String token) {
@@ -1012,7 +895,7 @@ public class Login extends Activity implements View.OnClickListener {
     }
 
     public void pushToken() {
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.PushToken).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.PushToken).create(APIInteface.class);
         Firebasepost firebasepost = new Firebasepost();
         firebasepost.setClient_Id(USER_CODE11);
         firebasepost.setAppName(Constants.APPNAME);
@@ -1043,7 +926,7 @@ public class Login extends Activity implements View.OnClickListener {
         });
     }
 
-    public String getDeviceIMEI() {
+/*    public String getDeviceIMEI() {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm) {
@@ -1065,7 +948,7 @@ public class Login extends Activity implements View.OnClickListener {
         }
 
         return deviceUniqueIdentifier;
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

@@ -356,7 +356,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        PostQue = Volley.newRequestQueue(mContext);
+        PostQue = GlobalClass.setVolleyReq(mContext);
 
             /*{ "api_key": “",
 "tsp": "",
@@ -392,7 +392,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             e.printStackTrace();
         }
 
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST, Api.chn_update, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

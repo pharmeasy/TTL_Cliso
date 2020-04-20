@@ -30,7 +30,7 @@ public class Cmpdt_Viewmodel extends AndroidViewModel {
     public MutableLiveData<Cmpdt_Model.ContactArrayListBean> getempdata() {
         listBeanMutableLiveData = new MutableLiveData<>();
         cmpdt_repository = new Cmpdt_Repository();
-        listBeanMutableLiveData = cmpdt_repository.getEmpdt();
+        listBeanMutableLiveData = cmpdt_repository.getEmpdt(companyContact_activity);
         return listBeanMutableLiveData;
     }
 

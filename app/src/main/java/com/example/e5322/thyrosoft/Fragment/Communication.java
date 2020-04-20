@@ -187,7 +187,7 @@
 //        barProgressDialog.show();
 //        barProgressDialog.setCanceledOnTouchOutside(false);
 //        barProgressDialog.setCancelable(false);
-//        PostQue = Volley.newRequestQueue(getContext());
+//        PostQue = GlobalClass.setVolleyReq(getContext());
 //
 //        JSONObject jsonObject = new JSONObject();
 //        try {
@@ -208,7 +208,7 @@
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }
-//        RequestQueue queue = Volley.newRequestQueue(getContext());
+//        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
 //        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.commGetLive, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
 //                    @Override
 //                    public void onResponse(JSONObject response) {

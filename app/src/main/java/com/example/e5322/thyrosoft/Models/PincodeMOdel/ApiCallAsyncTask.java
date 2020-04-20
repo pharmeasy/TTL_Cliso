@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Process;
 
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.ApiCallAsyncTaskDelegate;
 import com.example.e5322.thyrosoft.Interface.AppConstants;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -246,7 +248,6 @@ public class ApiCallAsyncTask extends AsyncTask<Void, Void, String> implements
 
                     jsonPostResponse = apiCall
                             .jsonFromUrlPostURLEncodedRequest(requestModel);
-
                 } else if (httpMethod == POST_METHOD) {
 
                     jsonPostResponse = apiCall

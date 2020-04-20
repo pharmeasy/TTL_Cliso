@@ -332,7 +332,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
     }
 
     private void getDataFromServer() {
-        RequestQueue requestQueue = Volley.newRequestQueue(Summary_Activity_WOE.this);
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(Summary_Activity_WOE.this);
 
         JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.getBCTforSummary + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
             @Override
@@ -381,7 +381,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
 
     private void deletePatientDetailsandTest() {
 
-        deletePatienDetail = Volley.newRequestQueue(Summary_Activity_WOE.this);
+        deletePatienDetail = GlobalClass.setVolleyReq(Summary_Activity_WOE.this);
         JSONObject jsonObjectOtp = new JSONObject();
         try {
             jsonObjectOtp.put("api_key", api_key);

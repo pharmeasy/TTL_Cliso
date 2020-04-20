@@ -184,7 +184,7 @@ public class BMC_ScanBarcodeAdapter extends RecyclerView.Adapter<BMC_ScanBarcode
                 if (!GlobalClass.isNetworkAvailable(context)) {
                     Toast.makeText(context, ToastFile.intConnection, Toast.LENGTH_SHORT).show();
                 } else {
-                    barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                    barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(context);
                     progressDialog.setTitle("Kindly wait...");
                     progressDialog.setMessage(ToastFile.processing_request);
@@ -451,7 +451,7 @@ public class BMC_ScanBarcodeAdapter extends RecyclerView.Adapter<BMC_ScanBarcode
                                 if (!GlobalClass.isNetworkAvailable(context)) {
                                     Toast.makeText(context, ToastFile.intConnection, Toast.LENGTH_SHORT).show();
                                 } else {
-                                    barcodeDetails = Volley.newRequestQueue(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                                    barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                                     progressDialog = new ProgressDialog(context);
                                     progressDialog.setTitle("Kindly wait ...");
                                     progressDialog.setMessage(ToastFile.processing_request);

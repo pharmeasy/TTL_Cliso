@@ -463,7 +463,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        POstQue = Volley.newRequestQueue(Woe_Edt_Activity.this);
+        POstQue = GlobalClass.setVolleyReq(Woe_Edt_Activity.this);
         MyPojoWoe myPojoWoe = new MyPojoWoe();
 
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE() != null) {

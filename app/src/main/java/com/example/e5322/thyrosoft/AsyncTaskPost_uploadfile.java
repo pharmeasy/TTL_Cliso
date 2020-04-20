@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Models.TRFModel;
@@ -128,6 +129,8 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(strUrl);
+            httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+            httpPost.setEntity(builder.build());
 
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 

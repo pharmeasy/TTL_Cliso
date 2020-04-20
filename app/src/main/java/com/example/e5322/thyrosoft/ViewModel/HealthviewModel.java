@@ -44,7 +44,7 @@ public class HealthviewModel extends AndroidViewModel {
             this.healthTipViewpager = healthTipViewpager;
             listMutableLiveData = new MutableLiveData<>();
             healthRepository = new HealthRepository();
-            listMutableLiveData = healthRepository.getHealthrepositoy();
+            listMutableLiveData = healthRepository.getHealthrepositoy(context);
 
         }
         return this.listMutableLiveData;

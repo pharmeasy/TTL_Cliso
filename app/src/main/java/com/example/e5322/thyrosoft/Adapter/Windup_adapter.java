@@ -210,7 +210,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
 
 
     private void getPatientDetails() {
-        requestQueuePatientDetails = Volley.newRequestQueue(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
+        requestQueuePatientDetails = GlobalClass.setVolleyReq(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getPartientDetailsList + "" + api_key + "/" + "" + user + "/" + "" + patientId + "/" + "geteditdata", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -187,7 +187,7 @@ public class RecheckWoeActivity extends AppCompatActivity {
                 if (purpose.equals("")) {
                     Toast.makeText(RecheckWoeActivity.this, ToastFile.remark, Toast.LENGTH_SHORT).show();
                 } else {
-                    POstQue = Volley.newRequestQueue(RecheckWoeActivity.this);
+                    POstQue = GlobalClass.setVolleyReq(RecheckWoeActivity.this);
                     barProgressDialog = new ProgressDialog(RecheckWoeActivity.this);
                     barProgressDialog.setTitle("Kindly wait ...");
                     barProgressDialog.setMessage(ToastFile.processing_request);
@@ -197,7 +197,7 @@ public class RecheckWoeActivity extends AppCompatActivity {
                     barProgressDialog.show();
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
-                    POstQue = Volley.newRequestQueue(RecheckWoeActivity.this);
+                    POstQue = GlobalClass.setVolleyReq(RecheckWoeActivity.this);
                     JSONObject jsonObjectOtp = new JSONObject();
                     JSONObject addrecheck = new JSONObject();
                     try {

@@ -9,6 +9,7 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
 
     public static GetHealthTipsController GetHealthTipsController;
     public static GetClientDetail_Controller getClientDetail_controller;
+    public static LogUserActivityController logUserActivityController;
     public static ValidateMob_Controller validateMob_controller;
     public static VerifyotpController verifyotpController;
     public static GetAvailableStockController getAvailableStockController;

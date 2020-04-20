@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -223,7 +224,7 @@ public class Prefrences extends Fragment {
     }
 
     private void PostData() {
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
 
         JSONObject jsonObject = new JSONObject();
@@ -281,7 +282,7 @@ public class Prefrences extends Fragment {
         }
 
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST, Api.PostPref, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
@@ -318,7 +319,7 @@ public class Prefrences extends Fragment {
     private void GetPrefrences() {
 
         if(barProgressDialog!=null && barProgressDialog.isShowing()){               barProgressDialog.dismiss();}
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = new JSONObject();
 
@@ -336,7 +337,7 @@ public class Prefrences extends Fragment {
         }
 
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/getpreference", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

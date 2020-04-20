@@ -258,7 +258,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        deletePatienDetail = Volley.newRequestQueue(context1);
+        deletePatienDetail = GlobalClass.setVolleyReq(context1);
         JSONObject jsonObjectOtp = new JSONObject();
         try {
             jsonObjectOtp.put("api_key", api_key);
@@ -320,7 +320,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
     }
 
     private void getPatientDetails() {
-        requestQueuePatientDetails = Volley.newRequestQueue(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
+        requestQueuePatientDetails = GlobalClass.setVolleyReq(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getPartientDetailsList + "" + api_key + "/" + "" + user + "/" + "" + patientId + "/" + "geteditdata", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

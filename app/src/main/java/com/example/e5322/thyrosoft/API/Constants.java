@@ -11,7 +11,7 @@ import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
  */
 
 public class Constants {
-
+    public static String HEADER_USER_AGENT = "User-Agent";
 
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
@@ -556,11 +556,15 @@ public class Constants {
     public static String SHR_IMEI= "imei";
     public static String SHR_ISLOGIN= "islogin";
     public static String SHR_MODTYPE= "modtype";
+    public static String SHR_FIRSTINSTALL= "isfirstinstall";
     public static String SHR_OS= "os";
     public static String SHR_TOKEN= "token";
     public static String SHR_USERNAME= "username";
     public static String SHR_VERSION= "version";
     public static final int USER_APPID=5;
+
+    public static String SHLOGIN= "LOGIN";
+    public static String LOGOUT= "LOGOUT";
     /**
      * test Color Code
      */

@@ -279,7 +279,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        POstQue = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
+        POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
 
         linearLayoutManager1 = new LinearLayoutManager(Scan_Barcode_ILS_New.this);
         rec_trf.setLayoutManager(linearLayoutManager1);
@@ -930,9 +930,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         /*barProgressDialog.show();*/
 
                         barProgressDialog = GlobalClass.ShowprogressDialog(Scan_Barcode_ILS_New.this);
-                        //POstQue = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
+                        //POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
                         if (POstQue == null) {
-                            POstQue = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
+                            POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
                         }
                         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                             @Override
@@ -964,7 +964,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                             editor.remove("testsSElected");
                                             editor.remove("getProductNames");
                                             editor.apply();
-                                            sendGPSDetails = Volley.newRequestQueue(Scan_Barcode_ILS_New.this);
+                                            sendGPSDetails = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
                                             JSONObject jsonObject = null;
                                             try {
                                                 GeoLocationRequestModel requestModel = new GeoLocationRequestModel();

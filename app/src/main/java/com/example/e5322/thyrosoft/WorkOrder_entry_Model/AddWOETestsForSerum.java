@@ -238,7 +238,7 @@ public class AddWOETestsForSerum extends AppCompatActivity {
 
     private void getAlltTestData() {
         globalClass.showProgressDialog(this);
-        requestQueuepoptestILS = Volley.newRequestQueue(this);
+        requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + "" + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
 
 

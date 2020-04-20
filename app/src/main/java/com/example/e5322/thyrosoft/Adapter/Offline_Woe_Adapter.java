@@ -205,7 +205,7 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
                     barProgressDialog.show();
-                    POstQue = Volley.newRequestQueue(mContext);
+                    POstQue = GlobalClass.setVolleyReq(mContext);
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {

@@ -305,7 +305,7 @@ public class Payment_Activity extends AppCompatActivity {
                         if (cd.isConnectingToInternet()) {
                             globalData.showProgressDialog();
                             try {
-                                PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                                PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
                                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
                                     public String RES_ID;
 
@@ -417,7 +417,7 @@ public class Payment_Activity extends AppCompatActivity {
             //globalData.showProgressDialog();
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
             try {
-                PostQueOtp = Volley.newRequestQueue(Payment_Activity.this);
+                PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
                 Log.e(TAG, "ORDER NO URL ---->" + Api.GenerateId + api_key + "/TSP/Generatedordnum");
                 JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
                     public String RES_ID;
@@ -652,7 +652,7 @@ public class Payment_Activity extends AppCompatActivity {
 
     public void getProfileDetails() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
-        RequestQueue queue = Volley.newRequestQueue(Payment_Activity.this);
+        RequestQueue queue = GlobalClass.setVolleyReq(Payment_Activity.this);
 
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
@@ -1069,7 +1069,9 @@ public class Payment_Activity extends AppCompatActivity {
                 strJson = jobj.toString();
                 System.out.println("Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
+               // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setEntity(se);
+                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -1193,6 +1195,7 @@ public class Payment_Activity extends AppCompatActivity {
                 System.out.println("Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
+                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);

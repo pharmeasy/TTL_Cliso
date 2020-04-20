@@ -287,7 +287,7 @@ public class BillingSummary extends RootFragment {
     private void GetData() {
         final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
 
-        PostQue = Volley.newRequestQueue(getContext());
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = null;
         try {
@@ -330,7 +330,7 @@ public class BillingSummary extends RootFragment {
             e.printStackTrace();
         }
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.billingSUMLIVE, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

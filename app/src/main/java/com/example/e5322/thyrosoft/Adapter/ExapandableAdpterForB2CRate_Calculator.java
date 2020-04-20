@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
@@ -196,7 +197,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                     barProgressDialog.show();
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
-                    POstQueSendEstimation = Volley.newRequestQueue(activity);
+                    POstQueSendEstimation = GlobalClass.setVolleyReq(activity);
 
                     JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObjectValidateOtp, new com.android.volley.Response.Listener<JSONObject>() {
 

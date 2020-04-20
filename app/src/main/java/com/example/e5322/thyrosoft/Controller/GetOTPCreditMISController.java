@@ -34,7 +34,7 @@ public class GetOTPCreditMISController {
     public void getOTPCreditMISResponse(OTPCreditMISRequestModel requestModel) {
         ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(mActivity);
 
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(Api.OTP_CREDIT_MIS).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.OTP_CREDIT_MIS).create(APIInteface.class);
         Call<OTPCreditResponseModel> responseCall = apiInterface.OTPCreditMIS(requestModel);
         Log.e(TAG, "OTPCreditMIS request --->" + new GsonBuilder().create().toJson(requestModel));
         Log.e(TAG, "OTPCreditMIS URL --->" + responseCall.request().url());

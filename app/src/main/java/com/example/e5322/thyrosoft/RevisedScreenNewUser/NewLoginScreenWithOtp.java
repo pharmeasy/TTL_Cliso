@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -254,7 +255,7 @@ public class NewLoginScreenWithOtp extends Activity {
 
     private void sendOtp() {
 
-        generateOTP = Volley.newRequestQueue(NewLoginScreenWithOtp.this);
+        generateOTP = GlobalClass.setVolleyReq(NewLoginScreenWithOtp.this);
 
         JSONObject jsonObjectOtp = new JSONObject();
         try {

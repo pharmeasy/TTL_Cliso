@@ -197,7 +197,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-        PostQue = Volley.newRequestQueue(mContext);
+        PostQue = GlobalClass.setVolleyReq(mContext);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -212,7 +212,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        RequestQueue queue = Volley.newRequestQueue(mContext);
+        RequestQueue queue = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 com.android.volley.Request.Method.POST, Api.postcancellead, jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {

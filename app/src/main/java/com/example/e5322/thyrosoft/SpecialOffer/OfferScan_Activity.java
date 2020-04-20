@@ -450,7 +450,7 @@ public class OfferScan_Activity extends AppCompatActivity implements RecyclerInt
                         flagcallonce = true;
 
                         if (POstQue == null) {
-                            POstQue = Volley.newRequestQueue(OfferScan_Activity.this);
+                            POstQue = GlobalClass.setVolleyReq(OfferScan_Activity.this);
                         }
 
                         Log.e(TAG, "Post WOE Entry ---->" + jsonObj.toString());
@@ -479,7 +479,7 @@ public class OfferScan_Activity extends AppCompatActivity implements RecyclerInt
                                         editor.commit();
 
                                         getUploadFileResponse();
-                                        //  sendGPSDetails = Volley.newRequestQueue(OfferScan_Activity.this);
+                                        //  sendGPSDetails = GlobalClass.setVolleyReq(OfferScan_Activity.this);
                                         JSONObject jsonObjectOtp = new JSONObject();
 
                                  /*       try {
