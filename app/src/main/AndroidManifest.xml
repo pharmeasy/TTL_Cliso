@@ -71,7 +71,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBcm2CJDh69483Z9dZrSNRqjX1l-nuNo-o" /> <!-- <activity android:name=".startscreen.Splash_screenActivity" /> -->
+            android:value="AIzaSyBqIc3xZfNaH4sn03oC8e5luuJVQ9zbEIU" /> <!-- <activity android:name=".startscreen.Splash_screenActivity" /> -->
         <activity
             android:name=".startscreen.SplashScreen"
             android:screenOrientation="portrait">
