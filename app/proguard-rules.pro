@@ -19,3 +19,18 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-ignorewarnings
+
+-keep class * {
+    public private *;}
+
+-dontwarn org.apache.commons.**
+-keep class org.apache.http.** { *; }
+-dontwarn org.apache.http.**
+-dontoptimize
+
+
+
+-dontobfuscate
+-keep class com.example.e5322.thyrosoft.Models.** { *; }
