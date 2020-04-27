@@ -1373,6 +1373,7 @@ string order_information
 string redirect_back_to_merchant
 string redirection_text
 string resuming_your_transaction
+string save
 string save_card
 string sbi
 string search_menu_title

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
+
+
+    <ImageView
+        android:id="@+id/triangle_bottom"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="-8dp"
+        android:background="@drawable/corner"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/parent_question_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/filled_round_rect"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/respond_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/right_angled_triangle_maroon_nb" />
+
+            <TextView
+                android:id="@+id/tvResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/maroon"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="Give Response"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/commHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="10dp"
+            android:text="Hello" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="name"
+                android:textColor="@color/red"
+                android:textSize="@dimen/NormalTextSize" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="data"
+                android:textColor="@color/colortoolbar"
+                android:textSize="@dimen/NormalTextSize1" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/view_response_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginBottom="15dp">
+
+            <TextView
+                android:id="@+id/tvViewResponse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/maroon"
+                android:gravity="center_vertical"
+                android:padding="5dp"
+                android:text="View Response"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/right_angled_triangle_maroon_comm" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

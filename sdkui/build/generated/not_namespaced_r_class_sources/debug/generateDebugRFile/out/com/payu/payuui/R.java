@@ -1430,23 +1430,24 @@ public final class R {
         public static int redirect_back_to_merchant = 0x7f1500ae;
         public static int redirection_text = 0x7f1500af;
         public static int resuming_your_transaction = 0x7f1500b0;
-        public static int save_card = 0x7f1500b1;
-        public static int sbi = 0x7f1500b2;
-        public static int search_menu_title = 0x7f1500b3;
-        public static int select_bank = 0x7f1500b4;
-        public static int show_less = 0x7f1500b5;
-        public static int show_more = 0x7f1500b6;
-        public static int sp_internet_restored_ttl = 0x7f1500b7;
-        public static int status_bar_notification_info_overflow = 0x7f1500b8;
-        public static int status_unknown_redirect_to_merchant = 0x7f1500b9;
-        public static int surepay_js = 0x7f1500ba;
-        public static int text_enter_cvv = 0x7f1500bb;
-        public static int text_or = 0x7f1500bc;
-        public static int title_activity_payments = 0x7f1500bd;
-        public static int vpa_text = 0x7f1500be;
-        public static int vpa_text_less = 0x7f1500bf;
-        public static int vpa_text_more = 0x7f1500c0;
-        public static int year_format = 0x7f1500c1;
+        public static int save = 0x7f1500b1;
+        public static int save_card = 0x7f1500b2;
+        public static int sbi = 0x7f1500b3;
+        public static int search_menu_title = 0x7f1500b4;
+        public static int select_bank = 0x7f1500b5;
+        public static int show_less = 0x7f1500b6;
+        public static int show_more = 0x7f1500b7;
+        public static int sp_internet_restored_ttl = 0x7f1500b8;
+        public static int status_bar_notification_info_overflow = 0x7f1500b9;
+        public static int status_unknown_redirect_to_merchant = 0x7f1500ba;
+        public static int surepay_js = 0x7f1500bb;
+        public static int text_enter_cvv = 0x7f1500bc;
+        public static int text_or = 0x7f1500bd;
+        public static int title_activity_payments = 0x7f1500be;
+        public static int vpa_text = 0x7f1500bf;
+        public static int vpa_text_less = 0x7f1500c0;
+        public static int vpa_text_more = 0x7f1500c1;
+        public static int year_format = 0x7f1500c2;
     }
     public static final class style {
         private style() {}

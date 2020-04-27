@@ -1,0 +1,372 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?android:windowBackground">
+
+    <LinearLayout
+        android:id="@+id/linearlayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_background"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/title_txt"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/cement_light"
+            android:gravity="center"
+            android:text="PATIENT DETAILS"
+            android:textColor="@color/maroon"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/enter_entered_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/enter_entered_border_curve"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/enter_ll_unselected"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/enter"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:background="@color/lightgray"
+                    android:gravity="center"
+                    android:text="Enter"
+                    android:textColor="@color/colorBlack" />
+
+                <ImageView
+                    android:id="@+id/enter_arrow_enter"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-1dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/rev_triangle"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/unchecked_entered_ll"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/enetered"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="Entered"
+                    android:textColor="@color/colorBlack" />
+
+                <ImageView
+                    android:id="@+id/enter_arrow_entered"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-1dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/rev_triangle"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/enter_entered_layout_consign"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/enter_entered_border_curve"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/enter_ll_unselected_consign"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/enter_consign"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:background="@color/lightgray"
+                    android:gravity="center"
+                    android:text="Wind-Up"
+                    android:textColor="@color/colorBlack" />
+
+                <ImageView
+                    android:id="@+id/enter_arrow_enterss"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-1dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/rev_triangle"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/unchecked_entered_ll_consign"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="4">
+
+                <TextView
+                    android:id="@+id/enetered_consign"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:text="Consignment Entry"
+                    android:textColor="@color/colorBlack" />
+
+                <ImageView
+                    android:id="@+id/enter_arrow_enteredss"
+                    android:layout_width="20dp"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-1dp"
+                    android:layout_weight="1"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/rev_triangle"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/wind_up_ll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearlayout3"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp"
+                android:layout_weight="1"
+                android:background="@drawable/grey_curve_border"
+                android:orientation="horizontal"
+                android:weightSum="10">
+
+                <EditText
+                    android:id="@+id/edtSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_toStartOf="@+id/imgSearch"
+                    android:layout_toLeftOf="@+id/imgSearch"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz "
+                    android:drawableRight="@drawable/ic_search_black_24dp"
+                    android:ems="10"
+                    android:gravity="center|left"
+                    android:hint=" Search by patient name or barcode"
+                    android:imeOptions="actionSearch"
+                    android:padding="5dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="18dp"
+                    android:textColorHint="@color/grey"
+                    android:textSize="13dp" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="95"
+                android:scrollbars="vertical"/>
+
+            <LinearLayout
+                android:id="@+id/logistic_ll"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/maroon_rect_box"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <!--android:textColor="@color/grey"-->
+                <LinearLayout
+                    android:id="@+id/pick_up_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="3"
+                        android:text="Pick up Cost"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/pick_up_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:text="100 Rs."
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="center"
+                android:background="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/windup_ll_below"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/maroon_rect_box"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/wind_up_multiple"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/cloud_upload"
+                    android:gravity="center|left"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="6dp"
+                    android:paddingBottom="10dp"
+                    android:text="Wind-Up"
+                    android:textColor="@color/white"
+                    android:textSize="11dp" />
+                <!--android:textColor="@color/grey"-->
+
+                <View
+                    android:id="@+id/view_1"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
+
+                <TextView
+                    android:id="@+id/wind_up"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/cloud_upload"
+                    android:gravity="center|left"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="6dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="11dp"/>
+
+                <View
+                    android:id="@+id/view_2"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/white" />
+
+                <TextView
+                    android:id="@+id/woe_cal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:drawableLeft="@drawable/wind_cal"
+                    android:gravity="center|left"
+                    android:paddingLeft="6dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="6dp"
+                    android:paddingBottom="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="11dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/offline_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="100dp"
+            android:layout_weight="3"
+            android:src="@drawable/offline_gifimg" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="top|center"
+            android:text="  Sorry ! You are offline..."
+            android:textColor="@color/maroon"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</FrameLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colortoolbar">#7a7a7b</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorBlack">#121111</color>
+    <color name="colorGray">#cfcdcd</color>
+    <color name="DARKGray">#494444</color>
+    <color name="lightgray">#e2dede</color>
+    <color name="Gray">#bcb5b5</color>
+    <color name="userloginColor">#941010</color>
+    <color name="Graytoolbar">#747474</color>
+    <color name="light_white">#FEFEFE</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="billing_child">#D16B7E</color>
+    <color name="colorlevendor">#a67eb7</color>
+    <color name="colorred">#d64351</color>
+    <!--<color name="maroon">#9b202b</color>-->
+    <color name="cement_light">#2aa2afaa</color>
+    <color name="maroon">#B00020</color>
+    <color name="limaroon">#B00020</color>
+    <color name="dismaroon">#EFB97474</color>
+    <color name="lightestgrey">#ededed</color>
+    <color name="tabindicatorColor">#FDAE31</color>
+    <color name="marronFaint">#dc989e</color>
+    <color name="colorlevendor2">#892fe6</color>
+    <color name="hintcolor">#1a1b1b</color>
+    <color name="button_color">#05128c</color>
+    <color name="color_maroon">#800000</color>
+    <color name="WOE">#1db8e2</color>
+    <color name="hint">#a6a6a6</color>
+    <color name="toolbar">#222222</color>
+
+    <color name="WOEtext">#20b7d9</color>
+    <color name="entered">#44dac6</color>
+    <color name="enteredtext">#44dac6</color>
+    <color name="imported">#4bd4a6</color>
+    <color name="importedtext">#bf901a</color>
+    <color name="confirmed">#6a7393</color>
+    <color name="confirmedtext">#a9189a</color>
+    <color name="reported">#da806c</color>
+    <color name="reportedtext">#827eca</color>
+    <color name="light_gray">#d9d7d7</color>
+    <color name="noticeboard_gray">#c6c5c5</color>
+
+
+    <color name="orange">#FF5600</color>
+
+    <color name="edta">#76448A</color>
+    <color name="serum">#d4ac0d</color>
+    <color name="urine">#f9e79f</color>
+    <color name="flouride">#ABB2B9</color>
+    <color name="lithium">#1D8348</color>
+    <color name="sodium">#82e0aa</color>
+    <color name="other">#e67e22</color>
+
+    <color name="darkgreen">#128c2e</color>
+    <color name="green">#18ac3a</color>
+    <color name="red">#f97d7b</color>
+
+
+    <color name="primary_text">#FFFFFF</color>
+
+
+    <color name="white">#ffffff</color>
+    <color name="gray">#FF8B8888</color>
+    <color name="blue">#8DD6F0</color>
+    <color name="textColor">#808080</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="contentDividerLine">#e0e0e0</color>
+    <!-- Status Colors -->
+    <color name="grey">#828080</color>
+
+    <color name="light_pink">#F5D2D9</color>
+</resources>

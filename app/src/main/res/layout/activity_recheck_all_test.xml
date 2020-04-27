@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".WOE.RecheckAllTest">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/linear_layout"
+        android:orientation="horizontal"
+        android:background="@color/cement_light"
+        android:textColor="@color/colorBlack"
+        style="@style/heading_text"
+        android:weightSum="5"
+        android:gravity="center">
+        <ImageView
+            android:src="@drawable/color_back"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/back"
+            android:textColor="@color/colorBlack"
+            style="@style/heading_text"
+            android:gravity="center"
+            ></ImageView>
+
+        <TextView
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/title"
+            android:textColor="@color/maroon"
+            style="@style/heading_text"
+            android:gravity="center"
+            ></TextView>
+
+        <ImageView
+            android:src="@drawable/color_homr"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/home"
+            android:textColor="@color/colorBlack"
+            style="@style/heading_text"
+            android:gravity="center"
+            ></ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/selected_test_display"
+        >
+        <LinearLayout
+            android:orientation="vertical"
+            android:background="@drawable/button_background"
+            android:id="@+id/lineargetselectedtestforILS"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="5"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:layout_gravity="center"
+                    android:text=" Selected Tests"
+                    android:textColor="@color/colorBlack"
+                    />
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Reset"
+                    android:layout_margin="5dp"
+                    android:id="@+id/resetbutton"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/colorGray" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Selected Test"
+                android:textColor="@color/colorBlack"
+                android:id="@+id/show_selected_tests_list_test_ils"
+                android:gravity="center|left"
+                android:padding="5dp"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:id="@+id/search_option"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/sv_testsList1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_save"
+            android:layout_alignParentStart="true"
+            app:queryHint="Search Test Name"
+            android:iconifiedByDefault="false">
+
+        </android.support.v7.widget.SearchView>
+
+
+    </LinearLayout>
+
+
+    <ExpandableListView
+        android:layout_weight="5"
+        android:id="@+id/exp_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/ll_btn"
+        android:layout_below="@+id/search_option"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp">
+    </ExpandableListView>
+
+    <LinearLayout
+        android:layout_weight="0.5"
+        android:id="@+id/ll_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/purple_btn_bg"
+            android:minEms="8"
+            android:text="Next"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>

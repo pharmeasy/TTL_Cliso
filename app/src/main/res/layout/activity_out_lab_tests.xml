@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context="com.example.e5322.thyrosoft.WOE.OutLabTestsActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/linear_layout"
+        android:orientation="horizontal"
+        android:background="@color/colorWhite"
+        android:textColor="@color/colorBlack"
+        style="@style/heading_text"
+        android:weightSum="5"
+        android:gravity="center">
+        <ImageView
+            android:src="@drawable/color_back"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/back"
+            android:background="@color/colorWhite"
+            android:textColor="@color/colorBlack"
+            style="@style/heading_text"
+            android:gravity="center"
+            ></ImageView>
+
+        <TextView
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/title"
+            android:background="@color/colorWhite"
+            android:textColor="@color/maroon"
+            style="@style/heading_text"
+            android:gravity="center" />
+
+        <ImageView
+            android:src="@drawable/color_homr"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/home"
+            android:background="@color/colorWhite"
+            android:textColor="@color/colorBlack"
+            style="@style/heading_text"
+            android:gravity="center"
+            ></ImageView>
+    </LinearLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:minHeight="20dp"
+        android:hint="Search"
+        android:textSize="12sp"
+        android:layout_margin="5dp"
+        android:id="@+id/outlabtestsearch"
+        android:drawableLeft="@drawable/ic_search_black_36dp"
+        android:background="@drawable/border_background" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@drawable/button_background"
+        android:id="@+id/lineargetselectedtestforILS"
+        android:layout_width="match_parent"
+        android:layout_margin="5dp"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="5"
+            android:layout_weight="3">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center"
+                android:text=" Select Test"
+                android:textSize="14sp"
+                android:textColor="@color/colorBlack" />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Reset"
+                android:visibility="gone"
+                android:layout_margin="5dp"
+                android:id="@+id/resetbutton" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorGray" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Selected Tests"
+            android:layout_weight="5"
+            android:textSize="14sp"
+            android:textColor="@color/colorBlack"
+            android:id="@+id/show_selected_tests_list_test_ils"
+            android:gravity="center|left"
+            android:padding="5dp"
+            />
+    </LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/outlab_list"
+        android:background="@drawable/button_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:layout_weight="8">
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Next"
+        android:id="@+id/next_btn"
+        android:background="@drawable/next_button"
+        android:textColor="@color/colorWhite"
+        />
+</LinearLayout>

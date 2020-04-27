@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        tools:context=".RevisedScreenNewUser.Consignment_entry_form">
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/view">
+
+            <LinearLayout
+                android:id="@+id/packaging_details_ll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/consignment_number_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/consignment_edt_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_margin="2dp"
+                        android:background="@color/white"
+                        android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
+                        android:hint="Consignment No*"
+                        android:maxLength="15"
+                        android:paddingBottom="5dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/maroon"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/packaging_spinner_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/packaging_dtl_edt_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/maroon"
+                        android:hint="packging details"
+                        android:padding="5dp"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/consignment_name_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_weight="1"
+                        android:text="* Click to scan consignment barcode"
+                        android:textColor="@color/maroon"
+                        android:textSize="9dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="2"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+
+                        <ImageView
+                            android:id="@+id/img_scan_consignment_barcode"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/scan_barcode" />
+
+                        <Button
+                            android:id="@+id/consignment_barcd_btn"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="4"
+                            android:background="@color/maroon"
+                            android:hint="Consignment Barcode"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:id="@+id/img_edt_consignment"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:background="@drawable/corner_curve_maroon"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/edit_consign"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lineareditbarcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_margin="2dp"
+                    android:background="@color/maroon"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/enter_barcode"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_margin="5dp"
+                        android:background="@color/white"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                        android:hint="Enter barcode"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="15"
+                        android:paddingLeft="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
+                        android:textSize="15sp" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="5"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/reenter"
+                            android:layout_width="0dp"
+                            android:layout_height="20dp"
+                            android:layout_weight="4"
+                            android:background="@color/white"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                            android:hint="Re-enter barcode"
+                            android:inputType="textCapCharacters"
+                            android:maxLength="11"
+                            android:paddingLeft="5dp"
+                            android:textColor="@color/maroon"
+                            android:textColorHint="@color/grey"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/setback"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/upbarcode" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/expected_spinner_transit_time_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/transit_time_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/maroon"
+                        android:buttonTint="@color/maroon"
+                        android:hint="packging details"
+                        android:padding="5dp"
+                        android:textSize="12dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/temperature_spinner_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="horizontal">
+
+                    <Spinner
+                        android:id="@+id/consignment_temp_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/maroon"
+                        android:buttonTint="@color/maroon"
+                        android:hint="packging details"
+                        android:padding="5dp"
+                        android:textSize="12dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/total_sample_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:id="@+id/total_consignment_edt_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:digits="0123456789"
+                        android:gravity="center|left"
+                        android:inputType="number"
+                        android:paddingLeft="10dp"
+                        android:text="Total Sample: 58"
+                        android:textColor="@color/maroon"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/rpl_edt_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:digits="0123456789"
+                        android:gravity="center|left"
+                        android:inputType="number"
+                        android:paddingLeft="10dp"
+                        android:text="RPL: 09"
+                        android:textColor="@color/maroon"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/cpl_edt_txt"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:digits="0123456789"
+                        android:gravity="center|left"
+                        android:inputType="number"
+                        android:paddingLeft="10dp"
+                        android:text="CPL :49"
+                        android:textColor="@color/maroon"
+                        android:textSize="12dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/bsv_barcode_scanning_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:orientation="vertical"
+                    android:weightSum="3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_weight="1"
+                        android:text="* Click to scan BSV barcode"
+                        android:textColor="@color/maroon"
+                        android:textSize="9dp" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="2"
+                        android:orientation="horizontal"
+                        android:weightSum="5">
+
+                        <ImageView
+                            android:id="@+id/img_scan_bsv_barcode"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_margin="0dp"
+                            android:layout_weight="1"
+                            android:src="@drawable/scan_barcode" />
+
+                        <Button
+                            android:id="@+id/bsv_barcode_scanning"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_weight="4"
+                            android:background="@color/maroon"
+                            android:hint="BSV Barcode"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/white"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:id="@+id/img_edt_bsv"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.5"
+                            android:background="@drawable/corner_curve_maroon"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/edit_consign"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lineareditbarcodebsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_margin="2dp"
+                    android:background="@color/maroon"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/enter_barcodebsv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="@color/white"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                        android:hint="Enter barcode"
+                        android:inputType="textCapCharacters"
+                        android:maxLength="8"
+                        android:paddingLeft="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
+                        android:textSize="15sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_weight="5"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/reenterbsv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="4"
+                            android:background="@color/white"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+                            android:hint="Re-enter barcode"
+                            android:inputType="textCapCharacters"
+                            android:maxLength="8"
+                            android:paddingLeft="5dp"
+                            android:textColor="@color/maroon"
+                            android:textColorHint="@color/grey"
+                            android:textSize="15sp" />
+
+                        <ImageView
+                            android:id="@+id/setbackbsv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:src="@drawable/upbarcode" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/submit_ll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/white_corner_bg"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/next_button"
+                        android:paddingLeft="50dp"
+                        android:paddingRight="50dp"
+                        android:text="Submit"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="15sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/btn_to_pre_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/maroon_border_white_bg"
+                    android:gravity="bottom|end"
+                    android:orientation="horizontal"
+                    android:weightSum="5">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/profile_image"
+                        android:layout_width="0dp"
+                        android:layout_height="41dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
+                        android:src="@drawable/rewind"
+                        app:civ_border_color="@color/maroon"
+                        app:civ_border_width="2dp"
+                        app:civ_fill_color="@color/maroon" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left|center"
+                        android:layout_weight="4"
+                        android:text="Previous"
+                        android:textColor="@color/maroon"
+                        android:textSize="20dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</FrameLayout>

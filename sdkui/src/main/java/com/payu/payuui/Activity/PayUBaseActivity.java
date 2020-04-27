@@ -51,7 +51,7 @@ import java.util.regex.Pattern;
 /**
  * This activity is where you get the payment options.
  */
-public class PayUBaseActivity extends FragmentActivity implements PaymentRelatedDetailsListener, ValueAddedServiceApiListener, View.OnClickListener {
+public class  PayUBaseActivity extends FragmentActivity implements PaymentRelatedDetailsListener, ValueAddedServiceApiListener, View.OnClickListener {
 
     public Bundle bundle;
     private ArrayList<String> paymentOptionsList = new ArrayList<String>();

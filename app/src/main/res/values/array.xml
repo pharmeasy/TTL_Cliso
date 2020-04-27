@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Sources">
+        <item>Select Source</item>
+        <item>Newspaper / Magazine</item>
+        <item>Online Adverstidement</item>
+        <item>Google search</item>
+        <item>Friends / Colleagues</item>
+        <item>Existing Frachiesee</item>
+        <item>Availed Service</item>
+        <item>Others</item>
+    </string-array>
+
+
+    <string-array name="Patientsagespinner">
+        <item>Years</item>
+        <item>Months</item>
+        <item>Days</item>
+    </string-array>
+
+
+    <string-array name="Patientspinyrday">
+        <item>Years</item>
+        <item>Days</item>
+    </string-array>
+
+
+    <string-array name="Patientspinyr">
+        <item>Years</item>
+    </string-array>
+
+
+    <string-array name="hours">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+
+    <string-array name="minutes">
+        <item>00</item>
+        <item>05</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>35</item>
+        <item>40</item>
+        <item>45</item>
+        <item>50</item>
+        <item>55</item>
+    </string-array>
+
+    <string-array name="timeformat">
+        <item>AM</item>
+        <item>PM</item>
+    </string-array>
+
+    <string-array name="sgc_pgc_entry">
+        <item>SGC</item>
+        <item>PGC</item>
+    </string-array>
+
+    <string-array name="pmode">
+        <item>Select Payment mode</item>
+        <item>Cash</item>
+        <item>online</item>
+        <item>Card</item>
+    </string-array>
+
+
+    <string-array name="mode_spinner_values">
+        <item>Select Mode</item>
+        <item>Air Cargo</item>
+        <item>Bus</item>
+        <item>Courier</item>
+        <item>Hand Delivery</item>
+        <item>LME</item>
+    </string-array>
+
+   <!-- <string-array name="filght_spinner_values">
+        <item>Select Airlines</item>
+        <item>JET Airways</item>
+        <item>Indian Airlines</item>
+        <item>Others</item>
+
+    </string-array>-->
+
+     <string-array name="filght_spinner_values">
+       <item>Select Airlines</item>
+       <item>Air India</item>
+       <item>Indigo</item>
+       <item>Spice jet</item>
+
+   </string-array>
+
+    <string-array name="packaging_dtl_edt_txt_values">
+        <item>Select packaging details</item>
+        <item>Thermocol box with cooled gel pack</item>
+        <item>Chiller box with cooled gel pack</item>
+    </string-array>
+
+    <string-array name="bus_spinner_values">
+        <item>Select Bus name</item>
+        <item>AARTHI TRAVELS</item>
+        <item>TNSTC</item>
+        <item>OTHERS</item>
+    </string-array>
+
+    <string-array name="consignment_temp_spinner_values">
+        <item>Select Temperature of the Consignment</item>
+        <item>Between 4C to 12C</item>
+        <item>Between 12C - 25C</item>
+    </string-array>
+
+    <string-array name="sgc_brand">
+        <item>TTL</item>
+        <item>MPL</item>
+    </string-array>
+
+
+    <string-array name="dr_qualification">
+        <item>MBBS</item>
+        <item>RADIOLOGIST</item>
+        <item>PHD</item>
+        <item>BAMS</item>
+        <item>BHMS</item>
+        <item>MD</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="company_contact_spinner_values">
+        <item>MANAGER</item>
+        <item>STATE OFFICER</item>
+        <item>SUPPORT</item>
+    </string-array>
+
+
+</resources>

@@ -980,11 +980,11 @@ public final class R {
         public static int order_information = 0x7f1500ad;
         public static int redirect_back_to_merchant = 0x7f1500ae;
         public static int resuming_your_transaction = 0x7f1500b0;
-        public static int sp_internet_restored_ttl = 0x7f1500b7;
-        public static int status_bar_notification_info_overflow = 0x7f1500b8;
-        public static int status_unknown_redirect_to_merchant = 0x7f1500b9;
-        public static int surepay_js = 0x7f1500ba;
-        public static int text_or = 0x7f1500bc;
+        public static int sp_internet_restored_ttl = 0x7f1500b8;
+        public static int status_bar_notification_info_overflow = 0x7f1500b9;
+        public static int status_unknown_redirect_to_merchant = 0x7f1500ba;
+        public static int surepay_js = 0x7f1500bb;
+        public static int text_or = 0x7f1500bd;
     }
     public static final class style {
         private style() {}

@@ -15,6 +15,7 @@
     <string name="expires">Expires:</string>
     <string name="enter_card_details">Enter Card Details</string>
     <string name="save_card">Save card for faster checkouts.</string>
+    <string name="save">Save</string>
     <string name="enable_one_click_checkout">Enable one click checkout.</string>
 
     <string name="choose_bank">Choose Your Bank</string>
