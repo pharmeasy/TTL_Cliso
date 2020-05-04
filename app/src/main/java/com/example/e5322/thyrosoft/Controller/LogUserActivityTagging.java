@@ -38,6 +38,8 @@ public class LogUserActivityTagging {
             SharedPreferences.Editor editorUserActivity = sharedPreferencesUserActivity.edit();
             Boolean isFirstInstall = sharedPreferencesUserActivity.getBoolean(Constants.SHR_FIRSTINSTALL, true);
 
+            Log.e("ISFIRSTINSTALL---",""+isFirstInstall);
+
             if (isFirstInstall) {
                 editorUserActivity.putBoolean(Constants.SHR_FIRSTINSTALL, false);
                 editorUserActivity.putString(Constants.SHR_MODTYPE, "INSTALL");

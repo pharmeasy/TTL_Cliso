@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/radiogrp2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:weightSum="2"
+            android:layout_margin="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/by_missed"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dp_10"
+                android:buttonTint="@color/maroon"
+                android:checked="true"
+                android:text="@string/misscallccc"
+                android:textSize="@dimen/_12sdp" />
+
+            <RadioButton
+                android:id="@+id/by_generate"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dp_10"
+                android:buttonTint="@color/maroon"
+                android:text="@string/generateccc"
+                android:textSize="@dimen/_12sdp" />
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edt_firstname"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/custom_border_edittext_blue"
+                android:digits="@string/alphabets"
+                android:drawableLeft="@drawable/profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="First Name*"
+                android:textSize="@dimen/_12sdp"
+                android:maxLength="20"
+                android:padding="@dimen/_5sdp" />
+
+            <EditText
+                android:id="@+id/edt_lastname"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/custom_border_edittext_blue"
+                android:digits="@string/alphabets"
+                android:drawableLeft="@drawable/profile"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Last Name*"
+                android:textSize="@dimen/_12sdp"
+                android:maxLength="20"
+                android:padding="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/lin_missed_verify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edt_missed_mobile"
+                android:layout_width="0dp"
+                android:layout_weight="1.8"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/custom_border_edittext_blue"
+                android:drawableLeft="@drawable/mobile"
+                android:drawablePadding="@dimen/_2sdp"
+                android:hint="Mobile Number*"
+                android:textSize="@dimen/_12sdp"
+                android:inputType="number"
+                android:maxLength="10"
+                android:padding="@dimen/_5sdp" />
+
+
+            <Button
+                android:id="@+id/btn_generate"
+                android:layout_width="0dp"
+                android:layout_weight="1.2"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
+                android:textSize="@dimen/_10sdp"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="@color/maroon"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_missedcall_mob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|left"
+            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/_3sdp"
+            android:text=""
+            android:textAllCaps="false"
+            android:textColor="@color/maroon"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/lin_generate_verify"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edt_verifycc"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/custom_border_edittext_blue"
+                android:drawablePadding="@dimen/_2sdp"
+                android:hint="Verify CCC"
+                android:textSize="@dimen/_12sdp"
+                android:inputType="number"
+                android:maxLength="6"
+                android:padding="@dimen/_5sdp" />
+
+            <Button
+                android:id="@+id/btn_verify"
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
+                android:textSize="@dimen/_10sdp"
+                android:text="Verify"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btn_resend"
+                android:layout_width="0dp"
+                android:layout_weight="0.8"
+                android:layout_height="@dimen/_26sdp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
+                android:textSize="@dimen/_10sdp"
+                android:text="Resend"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_presciption"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="@string/pescription"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:drawablePadding="@dimen/_2sdp"
+                />
+
+            <Button
+                android:id="@+id/btn_choosefile_presc"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@string/chfile" />
+
+            <TextView
+                android:id="@+id/txt_nofilepresc"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_2sdp"
+                android:textSize="@dimen/_12sdp"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_adhar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="@string/adhar"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:drawablePadding="@dimen/_2sdp"
+                />
+
+            <Button
+                android:id="@+id/btn_choosefile_adhar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@string/chfile" />
+
+            <TextView
+                android:id="@+id/txt_nofileadhar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_2sdp"
+                android:textSize="@dimen/_12sdp"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/txt_trf"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:text="@string/trf"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:drawablePadding="@dimen/_2sdp"
+                />
+
+            <Button
+                android:id="@+id/btn_choosefile_trf"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:textSize="@dimen/_12sdp"
+                android:textColor="@color/black"
+                android:textAllCaps="false"
+                android:text="@string/chfile" />
+
+            <TextView
+                android:id="@+id/txt_nofiletrf"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/_2sdp"
+                android:textSize="@dimen/_12sdp"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5sdp" />
+
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_26sdp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/white"
+            android:background="@color/maroon"
+            android:textAllCaps="false"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="@string/submit" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

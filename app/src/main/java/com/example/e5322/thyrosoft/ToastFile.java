@@ -170,4 +170,11 @@ public class ToastFile {
     public static String PINCODE_6_DIGITS = "Pincode should be of 6 digits";
     public static String ENTER_EMAIL = "Please enter email ID";
     public static String VALID_EMAIL = "Please enter valid Email Id";
+
+    public static String ENTER_FNAME = "Please enter First name";
+    public static String ENTER_LNAME = "Please enter Last name";
+    public static String SELECT_PIMAGE = "Select the prescription image";
+    public static String SELECT_ADHIMAGE = "Select the adhar/passport image";
+    public static String SELECT_TRFDHIMAGE = "Select the trf image";
+
 }

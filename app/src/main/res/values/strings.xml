@@ -179,6 +179,7 @@
     <string name="stock_digits">0123456789-.</string>
     <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
     <string name="bs_bp_entry">BS &amp; BP entry</string>
+    <string name="covid_reg">Covid Registration</string>
     <string name="send_otp">Send OTP</string>
     <string name="reset">Reset</string>
     <string name="receipt">Receipt</string>
@@ -207,7 +208,8 @@
     <string name="play">Play</string>
     <string name="play_recorded_audio">Play recorded audio</string>
     <string name="cmsoon">Coming Soon...</string>
-
+<string name="misscallccc">By using missed call CCC</string>
+    <string name="generateccc">By using Generate CCC</string>
 
     <string name="updateText" translatable="false">Newer version of ThyrosoftLite is available. Click UPDATE to upgrade now !</string>
     <string name="cancel" translatable="false">Cancel</string>
@@ -237,6 +239,12 @@
     <string name="tv_email">Email ID</string>
     <string name="tv_addr">Address</string>
     <string name="test_subject">Test details</string>
+    <string name="pescription">Prescription*</string>
+    <string name="adhar">Adhar/passport*</string>
+    <string name="trf">TRF*</string>
+    <string name="chfile">Choose File*</string>
+    <string name="nofilechoosen">No file chosen</string>
+    <string name="view"> <u>Preview</u></string>
 
 
 </resources>

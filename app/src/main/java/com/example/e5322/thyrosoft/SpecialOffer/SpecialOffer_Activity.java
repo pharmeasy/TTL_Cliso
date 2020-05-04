@@ -792,7 +792,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             case R.id.rd_home:
                 str_dps = rd_home.getText().toString();
-
                 break;
 
             case R.id.btn_sendotp:
@@ -1315,8 +1314,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         check_sct.setEnabled(false);
         check_sct.setClickable(false);
-
-
     }
 
 

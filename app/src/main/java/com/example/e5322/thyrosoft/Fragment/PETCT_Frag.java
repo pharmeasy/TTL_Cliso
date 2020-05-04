@@ -638,7 +638,7 @@ public class PETCT_Frag extends Fragment {
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
             APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
             Call<List<SlotModel>> responseCall = apiInterface.getslot(header, GlobalClass.formatDate("dd-mm-yyyy", "yyyy-mm-dd", txt_appdate.getText().toString()), centerId);
-          //  Log.e("TAG", "SLOT URL --->" + responseCall.request().url());
+            Log.e("TAG", "SLOT URL --->" + responseCall.request().url());
 
             responseCall.enqueue(new Callback<List<SlotModel>>() {
                 @Override
@@ -887,9 +887,9 @@ public class PETCT_Frag extends Fragment {
     private void callServiceTypesAPI(String centerId) {
         progressDialog = GlobalClass.ShowprogressDialog(context);
         APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
-        //Log.e(TAG, "HEADER ----->" + header);
+        Log.e(TAG, "HEADER ----->" + header);
         Call<List<ServiceModel>> responseCall = apiInterface.getservicelist(header, centerId, user);
-       // Log.e("TAG", "SERVICE URL --->" + responseCall.request().url());
+        Log.e("TAG", "SERVICE URL --->" + responseCall.request().url());
 
         responseCall.enqueue(new Callback<List<ServiceModel>>() {
             @Override
@@ -1081,8 +1081,8 @@ public class PETCT_Frag extends Fragment {
         header = tokenResponseModel.getToken_type() + " " + tokenResponseModel.getAccess_token();
         APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
         Call<List<CenterList_Model>> responseCall = apiInterface.getcenterList(header, user);
-       // Log.e("TAG", "header --->" + header);
-        //Log.e("TAG", "S C A N S O URL --->" + responseCall.request().url());
+        Log.e("TAG", "header --->" + header);
+        Log.e("TAG", "S C A N S O URL --->" + responseCall.request().url());
 
 
         responseCall.enqueue(new Callback<List<CenterList_Model>>() {

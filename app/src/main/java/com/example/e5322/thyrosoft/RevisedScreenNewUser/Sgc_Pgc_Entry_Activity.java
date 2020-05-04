@@ -1024,10 +1024,12 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
-
+            Log.e("Req body--->",json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Log.e("SGC API--->",Api.SGCRegistration);
 
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.SGCRegistration, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
