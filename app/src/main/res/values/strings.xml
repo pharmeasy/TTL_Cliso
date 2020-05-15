@@ -133,11 +133,16 @@
     <string name="coupon">Coupon Code*</string>
     <string name="applycoupon">Apply</string>
     <string name="submit">Submit</string>
+    <string name="btnreset">Reset</string>
     <string name="scansumm">Scan Summary</string>
     <string name="paynow">Pay Now</string>
     <string name="confirmbook">Confirm Booking</string>
     <string name="str_about_pet_ct">ABOUT PET CT SCAN</string>
     <string name="nodata">No Data Available</string>
+    <string name="googlemapkey">AIzaSyBqIc3xZfNaH4sn03oC8e5luuJVQ9zbEIU</string>
+    <string name="enterccc">Enter CCC</string>
+    <string name="btngenerateccc">Generate CCC</string>
+    <string name="reset_mob">Reset Number?</string>
 
     <string-array name="arr_city">
         <item>Select City*</item>
@@ -240,9 +245,10 @@
     <string name="tv_addr">Address</string>
     <string name="test_subject">Test details</string>
     <string name="pescription">Prescription*</string>
-    <string name="adhar">Adhar/passport*</string>
+    <string name="adhar">Aadhaar/passport*</string>
     <string name="trf">TRF*</string>
     <string name="chfile">Choose File*</string>
+    <string name="uploadfile">Upload*</string>
     <string name="nofilechoosen">No file chosen</string>
     <string name="view"> <u>Preview</u></string>
 

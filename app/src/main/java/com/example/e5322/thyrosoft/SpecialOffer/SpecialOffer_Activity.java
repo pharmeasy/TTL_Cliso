@@ -1,7 +1,9 @@
 package com.example.e5322.thyrosoft.SpecialOffer;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -15,7 +17,6 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,13 +38,13 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.TestListAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetClientDetail_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -393,15 +394,16 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                     String testtype = "";
                     if (mainModel.B2B_MASTERS != null) {
-                        for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                        if (!b2bmasterarraylist.get(0).getTESTS().isEmpty()) {
+                            for (int i = 0; i < b2bmasterarraylist.size(); i++) {
 
-                            Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
-                            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+                                Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
 
-                            for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                                Selcted_Outlab_Test.add(product_rate_masterModel.getTestRateMasterModels().get(j).getRate().getB2c());
-                            }
+                                for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                                    testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                                    Selcted_Outlab_Test.add(product_rate_masterModel.getTestRateMasterModels().get(j).getRate().getB2c());
+                                }
 
 
 
@@ -425,8 +427,25 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                                 testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
                             }*/
 
-                        }
+                            }
+                        } else {
 
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SpecialOffer_Activity.this);
+                            // Set the Alert Dialog Message
+                            builder.setMessage("Special offer tests is not mapped to this login");
+                            builder.setCancelable(false);
+                            builder.setPositiveButton("Ok",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog,
+                                                            int id) {
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+
+                        }
 
                         testListAdapter = new TestListAdapter(SpecialOffer_Activity.this,
                                 R.layout.list_ite, R.id.title, testRateMasterModels);

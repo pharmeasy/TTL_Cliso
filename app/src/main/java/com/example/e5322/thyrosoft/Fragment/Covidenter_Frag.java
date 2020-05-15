@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,8 +32,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,23 +43,33 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.CovidReg_Activity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
+import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
+import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
+import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.MissedcallAPI_Response;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
+import com.sdsmdg.tastytoast.TastyToast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,12 +87,14 @@ import static android.app.Activity.RESULT_OK;
 public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     Activity activity;
     ConnectionDetector cd;
+    Drawable imgotp;
     CountDownTimer countDownTimer;
     public RadioButton by_missed, by_generate;
-    LinearLayout lin_by_missed, lin_by_generate, lin_generate_verify;
+    LinearLayout lin_by_missed, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_trf_images;
+    RelativeLayout rel_adhar1, rel_adhar2, rel_trf1, rel_trf2, rel_mobno;
     Button btn_choosefile_presc, btn_choosefile_adhar, btn_choosefile_trf;
-    Button btn_generate, btn_submit, btn_verify, btn_resend;
-    TextView txt_nofilepresc, txt_nofileadhar, txt_nofiletrf, tv_timer, tv_missedcall_mob;
+    Button btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
+    TextView txt_nofilepresc, txt_nofileadhar, txt_nofiletrf, tv_timer, tv_resetno, tv_mobileno;
     private int PERMISSION_REQUEST_CODE = 200;
     private int PICK_PHOTO_FROM_GALLERY = 202;
     private static final int REQUEST_CAMERA = 1;
@@ -92,11 +107,15 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     Bitmap bitmapimage;
     File presc_file = null;
     File aadhar_file = null;
+    File aadhar_file1 = null;
     File trf_file = null;
+    File trf_file1 = null;
     boolean ispresciption, isadhar, istrf;
     EditText edt_fname, edt_lname, edt_missed_mobile, edt_verifycc;
     SharedPreferences preferences;
     String usercode, apikey;
+    boolean verifyotp = false;
+    ImageView img_pres_close, img_pres_preview, img_close_adhar1, img_close_adhar2, img_adhar_preview1, img_adhar_preview2, img_close_trf1, img_trf_preview1, img_close_trf2, img_trf_preview2;
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
@@ -140,13 +159,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         edt_verifycc = view.findViewById(R.id.edt_verifycc);
 
         edt_fname.setFilters(new InputFilter[]{EMOJI_FILTER});
-        int maxLength = 20;
+        int maxLength = 16;
         InputFilter[] FilterArray = new InputFilter[1];
         FilterArray[0] = new InputFilter.LengthFilter(maxLength);
         edt_fname.setFilters(FilterArray);
 
+        int maxLength1 = 16;
         edt_lname.setFilters(new InputFilter[]{EMOJI_FILTER});
-        FilterArray[0] = new InputFilter.LengthFilter(maxLength);
+        FilterArray[0] = new InputFilter.LengthFilter(maxLength1);
         edt_lname.setFilters(FilterArray);
 
         //TODO Buttons
@@ -156,21 +176,52 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_generate = view.findViewById(R.id.btn_generate);
         btn_verify = view.findViewById(R.id.btn_verify);
         btn_resend = view.findViewById(R.id.btn_resend);
+        btn_reset = view.findViewById(R.id.btn_reset);
         btn_submit = view.findViewById(R.id.btn_submit);
 
-        btn_generate.setText("Get Missed call");
+        btn_generate.setText(getResources().getString(R.string.enterccc));
+
+        //TODO IMAGEVIEW
+
+        img_pres_close = view.findViewById(R.id.img_pres_close);
+        img_pres_preview = view.findViewById(R.id.img_pres_preview);
+
+        img_close_adhar1 = view.findViewById(R.id.img_close_adhar1);
+        img_close_adhar2 = view.findViewById(R.id.img_close_adhar2);
+
+        img_close_trf1 = view.findViewById(R.id.img_close_trf1);
+        img_close_trf2 = view.findViewById(R.id.img_close_trf2);
+
+        img_adhar_preview1 = view.findViewById(R.id.img_adhar_preview1);
+        img_adhar_preview2 = view.findViewById(R.id.img_adhar_preview2);
+
+        img_trf_preview1 = view.findViewById(R.id.img_trf_preview1);
+        img_trf_preview2 = view.findViewById(R.id.img_trf_preview2);
+
 
         //TODO LinearLaypouts
         lin_by_missed = view.findViewById(R.id.lin_missed_verify);
         lin_generate_verify = view.findViewById(R.id.lin_generate_verify);
+        lin_pres_preview = view.findViewById(R.id.lin_pres_preview);
+        lin_adhar_images = view.findViewById(R.id.lin_adhar_images);
+        lin_trf_images = view.findViewById(R.id.lin_trf_images);
+
+        //TODO Relativelayout
+        rel_mobno = view.findViewById(R.id.rel_mobno);
+
+        rel_adhar1 = view.findViewById(R.id.rel_adhar1);
+        rel_adhar2 = view.findViewById(R.id.rel_adhar2);
+
+        rel_trf1 = view.findViewById(R.id.rel_trf1);
+        rel_trf2 = view.findViewById(R.id.rel_trf2);
 
         //TODO Textviews
         txt_nofilepresc = view.findViewById(R.id.txt_nofilepresc);
         txt_nofileadhar = view.findViewById(R.id.txt_nofileadhar);
         txt_nofiletrf = view.findViewById(R.id.txt_nofiletrf);
-        tv_missedcall_mob = view.findViewById(R.id.tv_missedcall_mob);
         tv_timer = view.findViewById(R.id.tv_timer);
-
+        tv_resetno = view.findViewById(R.id.tv_resetno);
+        tv_mobileno = view.findViewById(R.id.tv_mobileno);
         by_missed = (RadioButton) view.findViewById(R.id.by_missed);
         by_generate = (RadioButton) view.findViewById(R.id.by_generate);
 
@@ -181,7 +232,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_choosefile_adhar.setOnClickListener(this);
         btn_choosefile_trf.setOnClickListener(this);
         btn_resend.setOnClickListener(this);
+        btn_reset.setOnClickListener(this);
         btn_verify.setOnClickListener(this);
+        tv_resetno.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
 
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
@@ -193,6 +246,21 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofiletrf.setOnClickListener(this);
 
         btn_generate.setOnClickListener(this);
+
+        img_pres_preview.setOnClickListener(this);
+        img_pres_close.setOnClickListener(this);
+
+        img_close_adhar1.setOnClickListener(this);
+        img_close_adhar2.setOnClickListener(this);
+
+        img_adhar_preview1.setOnClickListener(this);
+        img_adhar_preview2.setOnClickListener(this);
+
+        img_close_trf1.setOnClickListener(this);
+        img_close_trf2.setOnClickListener(this);
+
+        img_trf_preview1.setOnClickListener(this);
+        img_trf_preview2.setOnClickListener(this);
 
 
         edt_fname.addTextChangedListener(new TextWatcher() {
@@ -250,28 +318,99 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             }
         });
 
+        edt_missed_mobile.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                ) {
+                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                    if (enteredString.length() > 0) {
+                        edt_missed_mobile.setText(enteredString.substring(1));
+                    } else {
+                        edt_missed_mobile.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                final String checkNumber = s.toString();
+            }
+        });
+
     }
 
     @Override
     public void onClick(View view) {
 
         switch (view.getId()) {
+            case R.id.btn_reset:
+                clearonreset();
+                break;
             case R.id.btn_submit:
                 if (Validation()) {
+                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        GlobalClass.showAlertDialog(getActivity());
+                    } else {
+                        if (ControllersGlobalInitialiser.covidmultipart_controller != null) {
+                            ControllersGlobalInitialiser.covidmultipart_controller = null;
+                        }
+                        String fullname = edt_fname.getText().toString().trim() + " " + edt_lname.getText().toString().trim();
+                        Log.e("NAME LENGHTH---->", "" + fullname.length());
+                        Covidpostdata covidpostdata = new Covidpostdata();
+                        covidpostdata.setSOURCECODE(usercode);
+                        covidpostdata.setMOBILE(edt_missed_mobile.getText().toString());
+                        covidpostdata.setNAME(fullname);
+                        covidpostdata.setPRESCRIPTION(presc_file);
 
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            covidpostdata.setADHAR(aadhar_file);
+                            covidpostdata.setADHAR1(aadhar_file1);
+                        } else if (aadhar_file != null && aadhar_file1 == null) {
+                            covidpostdata.setADHAR(aadhar_file);
+                        } else {
+                            covidpostdata.setADHAR(aadhar_file1);
+                        }
+
+                        if (trf_file != null && trf_file1 != null) {
+                            covidpostdata.setTRF(trf_file);
+                            covidpostdata.setTRF1(trf_file1);
+                        } else if (trf_file != null && trf_file1 == null) {
+                            covidpostdata.setTRF(trf_file);
+                        } else {
+                            covidpostdata.setTRF(trf_file1);
+                        }
+                        new Covidmultipart_controller(Covidenter_Frag.this, activity, covidpostdata).execute();
+
+                    }
                 }
                 break;
 
             case R.id.btn_verify:
-                if (!TextUtils.isEmpty(edt_verifycc.getText().toString())) {
-                    if (cd.isConnectingToInternet()) {
-                        validateotp();
+                if (!TextUtils.isEmpty(edt_missed_mobile.getText().toString())) {
+                    if (!TextUtils.isEmpty(edt_verifycc.getText().toString())) {
+                        if (cd.isConnectingToInternet()) {
+                            validateotp();
+                        } else {
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                        }
                     } else {
-                        GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
                     }
-
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
                 }
 
                 break;
@@ -281,8 +420,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.by_missed:
-                lin_by_missed.setVisibility(View.VISIBLE);
-                btn_generate.setText("Get Missed call");
+                btn_generate.setText(getResources().getString(R.string.enterccc));
                 clearfields();
                 break;
 
@@ -291,103 +429,274 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.by_generate:
-                btn_generate.setText("Generate CCC");
+                btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+                btn_generate.setVisibility(View.VISIBLE);
+                btn_resend.setVisibility(View.VISIBLE);
                 clearfields();
                 break;
 
+            case R.id.tv_resetno:
+                lin_by_missed.setVisibility(View.VISIBLE);
+                lin_generate_verify.setVisibility(View.GONE);
+                edt_missed_mobile.setEnabled(true);
+                edt_missed_mobile.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+                btn_generate.setVisibility(View.VISIBLE);
+                btn_generate.setEnabled(true);
+                tv_resetno.setVisibility(View.GONE);
+                edt_verifycc.getText().clear();
+                tv_mobileno.setVisibility(View.GONE);
+                rel_mobno.setVisibility(View.GONE);
+
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer = null;
+                    tv_timer.setVisibility(View.GONE);
+                }
+
+                break;
+
             case R.id.btn_choosefile_presc:
-                if (checkPermission()) {
-                    ispresciption = true;
-                    isadhar = false;
-                    istrf = false;
-                    selectImage();
+                if (verifyotp) {
+                    if (checkPermission()) {
+
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image");
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            istrf = false;
+                            selectImage();
+                        }
+                    } else {
+                        requestPermission();
+                    }
                 } else {
-                    requestPermission();
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
                 }
                 break;
 
             case R.id.btn_choosefile_adhar:
-                if (checkPermission()) {
-                    ispresciption = false;
-                    isadhar = true;
-                    istrf = false;
-                    selectImage();
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            istrf = false;
+                            selectImage();
+                        }
+
+                    } else {
+                        requestPermission();
+                    }
+
                 } else {
-                    requestPermission();
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
                 }
+
                 break;
             case R.id.btn_choosefile_trf:
-                if (checkPermission()) {
-                    ispresciption = false;
-                    isadhar = false;
-                    istrf = true;
-                    selectImage();
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (trf_file != null && trf_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = true;
+                            selectImage();
+                        }
+                    } else {
+                        requestPermission();
+                    }
                 } else {
-                    requestPermission();
-                }
-                break;
-            case R.id.txt_nofilepresc:
-                if (txt_nofilepresc.getText().toString().equalsIgnoreCase(getResources().getString(R.string.view))) {
-                    GlobalClass.showImageDialog(activity, presc_file, "", 1);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
                 }
                 break;
 
-            case R.id.txt_nofileadhar:
-                if (txt_nofileadhar.getText().toString().equalsIgnoreCase(getResources().getString(R.string.view))) {
-                    GlobalClass.showImageDialog(activity, aadhar_file, "", 1);
+
+            case R.id.img_pres_close:
+                presc_file = null;
+                txt_nofilepresc.setVisibility(View.VISIBLE);
+                txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+                lin_pres_preview.setVisibility(View.GONE);
+                break;
+
+            case R.id.img_pres_preview:
+                GlobalClass.showImageDialog(activity, presc_file, "", 1);
+                break;
+
+            case R.id.img_close_adhar1:
+                aadhar_file = null;
+                rel_adhar1.setVisibility(View.GONE);
+                if (rel_adhar2.getVisibility() == View.VISIBLE) {
+                    txt_nofileadhar.setVisibility(View.GONE);
+                } else {
+                    txt_nofileadhar.setVisibility(View.VISIBLE);
+                    lin_adhar_images.setVisibility(View.GONE);
                 }
                 break;
 
-            case R.id.txt_nofiletrf:
-                if (txt_nofiletrf.getText().toString().equalsIgnoreCase(getResources().getString(R.string.view))) {
-                    GlobalClass.showImageDialog(activity, trf_file, "", 1);
+            case R.id.img_close_adhar2:
+                aadhar_file1 = null;
+                rel_adhar2.setVisibility(View.GONE);
+                if (rel_adhar1.getVisibility() == View.VISIBLE) {
+                    txt_nofileadhar.setVisibility(View.GONE);
+                } else {
+                    txt_nofileadhar.setVisibility(View.VISIBLE);
+                    lin_adhar_images.setVisibility(View.GONE);
                 }
                 break;
+
+            case R.id.img_adhar_preview1:
+                GlobalClass.showImageDialog(activity, aadhar_file, "", 1);
+                break;
+            case R.id.img_adhar_preview2:
+                GlobalClass.showImageDialog(activity, aadhar_file1, "", 1);
+                break;
+
+            case R.id.img_close_trf1:
+                trf_file = null;
+                rel_trf1.setVisibility(View.GONE);
+                if (rel_trf2.getVisibility() == View.VISIBLE) {
+                    txt_nofiletrf.setVisibility(View.GONE);
+                } else {
+                    txt_nofiletrf.setVisibility(View.VISIBLE);
+                    lin_trf_images.setVisibility(View.GONE);
+                }
+                break;
+
+            case R.id.img_close_trf2:
+                trf_file1 = null;
+                rel_trf2.setVisibility(View.GONE);
+                if (rel_trf1.getVisibility() == View.VISIBLE) {
+                    txt_nofiletrf.setVisibility(View.GONE);
+                } else {
+                    txt_nofiletrf.setVisibility(View.VISIBLE);
+                    lin_trf_images.setVisibility(View.GONE);
+                }
+                break;
+
+            case R.id.img_trf_preview1:
+                GlobalClass.showImageDialog(activity, trf_file, "", 1);
+                break;
+            case R.id.img_trf_preview2:
+                GlobalClass.showImageDialog(activity, trf_file1, "", 1);
+                break;
+
         }
     }
 
-    private void genrateflow() {
-        if (mobilenovalidation()) {
-            if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
-                if (cd.isConnectingToInternet()) {
-                    generateOtP(edt_missed_mobile.getText().toString());
-                } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
-                }
+    private void clearonreset() {
 
-            } else {
-                if (cd.isConnectingToInternet()) {
-                    callmissedcallAPI();
-                } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
-                }
+        edt_fname.setFocusable(true);
+        edt_fname.setCursorVisible(true);
+        edt_fname.getText().clear();
+        edt_lname.getText().clear();
+        edt_missed_mobile.getText().clear();
+        edt_verifycc.getText().clear();
+        edt_missed_mobile.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        edt_missed_mobile.setEnabled(true);
+        edt_missed_mobile.setClickable(true);
+        btn_generate.setVisibility(View.VISIBLE);
+        btn_generate.setEnabled(true);
+        btn_generate.setClickable(true);
+        btn_verify.setClickable(true);
+        btn_verify.setEnabled(true);
+        btn_resend.setEnabled(true);
+        btn_resend.setClickable(true);
+        tv_mobileno.setVisibility(View.GONE);
+        rel_mobno.setVisibility(View.GONE);
+        lin_by_missed.setVisibility(View.VISIBLE);
 
-            }
+        if (by_missed.isChecked()) {
+            btn_generate.setText(getResources().getString(R.string.enterccc));
+        } else {
+            btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+        }
+
+        timerflag = false;
+        verifyotp = false;
+        presc_file = null;
+        aadhar_file = null;
+        aadhar_file1 = null;
+
+        trf_file = null;
+        trf_file1 = null;
+
+        lin_generate_verify.setVisibility(View.GONE);
+        tv_resetno.setVisibility(View.GONE);
+
+        lin_pres_preview.setVisibility(View.GONE);
+        lin_adhar_images.setVisibility(View.GONE);
+        lin_trf_images.setVisibility(View.GONE);
+
+        rel_adhar1.setVisibility(View.GONE);
+        rel_adhar2.setVisibility(View.GONE);
+
+        rel_trf1.setVisibility(View.GONE);
+        rel_trf2.setVisibility(View.GONE);
+
+        txt_nofilepresc.setVisibility(View.VISIBLE);
+        txt_nofileadhar.setVisibility(View.VISIBLE);
+        txt_nofiletrf.setVisibility(View.VISIBLE);
+
+        txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofilepresc.setTextColor(getResources().getColor(R.color.black));
+        txt_nofilepresc.setPaintFlags(0);
+
+        txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofileadhar.setTextColor(getResources().getColor(R.color.black));
+        txt_nofileadhar.setPaintFlags(0);
+
+        txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofiletrf.setTextColor(getResources().getColor(R.color.black));
+        txt_nofiletrf.setPaintFlags(0);
 
 
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            tv_timer.setVisibility(View.GONE);
         }
     }
 
-    private void callmissedcallAPI() {
+    private void mobileverify(String mobileno) {
+
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
-        Call<MissedcallAPI_Response> missedcallAPI_responseCall = postAPIInteface.missedcallapi();
-        missedcallAPI_responseCall.enqueue(new Callback<MissedcallAPI_Response>() {
+        CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
+        coVerifyMobReq.setApi_key(apikey);
+        coVerifyMobReq.setMobile(mobileno);
+        coVerifyMobReq.setScode(usercode);
+
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
+        Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
+        covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
             @Override
-            public void onResponse(Call<MissedcallAPI_Response> call, Response<MissedcallAPI_Response> response) {
+            public void onResponse(Call<COVerifyMobileResponse> call, Response<COVerifyMobileResponse> response) {
+                Log.e(TAG, "on Response-->" + response.body().getResponse());
                 GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        tv_missedcall_mob.setVisibility(View.VISIBLE);
-                        tv_missedcall_mob.setText("Give missed call on " + response.body().getMobile()
-                                + " / " + response.body().getMobile1()
-                                +" numbers to generate CCC");
-
-                        //setCountDownTimer();
-                        lin_generate_verify.setVisibility(View.VISIBLE);
-                        lin_by_missed.setVisibility(View.VISIBLE);
-                        btn_generate.setText("Get Missed call");
                         disablefields();
+                    } else {
+                        if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
+                            generateOtP(edt_missed_mobile.getText().toString());
+                        } else {
+                            lin_by_missed.setVisibility(View.GONE);
+                            tv_mobileno.setVisibility(View.VISIBLE);
+                            tv_mobileno.setText(edt_missed_mobile.getText().toString());
+                            rel_mobno.setVisibility(View.VISIBLE);
+                            lin_generate_verify.setVisibility(View.VISIBLE);
+                            tv_resetno.setVisibility(View.VISIBLE);
+                            btn_resend.setVisibility(View.GONE);
+                            tv_resetno.setText(getResources().getString(R.string.reset_mob));
+                            tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -395,12 +704,26 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<MissedcallAPI_Response> call, Throwable t) {
+            public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
 
             }
         });
+
     }
 
+    private void genrateflow() {
+        if (mobilenovalidation()) {
+            if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
+                if (cd.isConnectingToInternet()) {
+                    mobileverify(edt_missed_mobile.getText().toString());
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                }
+            } else {
+                mobileverify(edt_missed_mobile.getText().toString());
+            }
+        }
+    }
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
@@ -492,35 +815,64 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + presc_file;
                     presc_file = new File(destFile);
                     GlobalClass.copyFile(new File(imageurl), presc_file);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(presc_file.length())));
-                    txt_nofilepresc.setText(getResources().getString(R.string.view));
-                    txt_nofilepresc.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofilepresc.setPaintFlags(txt_nofilepresc.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    ispresciption = false;
+                    lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_nofilepresc.setVisibility(View.GONE);
+                    if (presc_file != null) {
+                        ispresciption = false;
+                    }
+
                 } else if (isadhar) {
-                    bitmapimage = camera.getCameraBitmap();
-                    String imageurl = camera.getCameraBitmapPath();
-                    aadhar_file = new File(imageurl);
-                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file;
-                    aadhar_file = new File(destFile);
-                    GlobalClass.copyFile(new File(imageurl), aadhar_file);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(aadhar_file.length())));
-                    txt_nofileadhar.setText(getResources().getString(R.string.view));
-                    txt_nofileadhar.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofileadhar.setPaintFlags(txt_nofileadhar.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    isadhar = false;
+                    if (rel_adhar1.getVisibility() == View.VISIBLE) {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        aadhar_file1 = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file1;
+                        aadhar_file1 = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), aadhar_file1);
+                        rel_adhar2.setVisibility(View.VISIBLE);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                    } else {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        aadhar_file = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file;
+                        aadhar_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), aadhar_file);
+                        rel_adhar1.setVisibility(View.VISIBLE);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                    }
+
+                    if (aadhar_file != null && aadhar_file1 != null) {
+                        isadhar = false;
+                    }
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+
                 } else {
-                    bitmapimage = camera.getCameraBitmap();
-                    String imageurl = camera.getCameraBitmapPath();
-                    trf_file = new File(imageurl);
-                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file;
-                    trf_file = new File(destFile);
-                    GlobalClass.copyFile(new File(imageurl), trf_file);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_file.length())));
-                    txt_nofiletrf.setText(getResources().getString(R.string.view));
-                    txt_nofiletrf.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofiletrf.setPaintFlags(txt_nofiletrf.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                    istrf = false;
+
+                    if (rel_trf1.getVisibility() == View.VISIBLE) {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        trf_file1 = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file1;
+                        trf_file1 = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), trf_file1);
+                        rel_trf2.setVisibility(View.VISIBLE);
+                        txt_nofiletrf.setVisibility(View.GONE);
+                    } else {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        trf_file = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file;
+                        trf_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), trf_file);
+                        rel_trf1.setVisibility(View.VISIBLE);
+                        txt_nofiletrf.setVisibility(View.GONE);
+                    }
+
+                    if (trf_file != null && trf_file1 != null) {
+                        istrf = false;
+                    }
+                    lin_trf_images.setVisibility(View.VISIBLE);
                 }
 
 
@@ -540,36 +892,73 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     }
                     Uri uri = data.getData();
                     bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(presc_file.length())));
                     presc_file = GlobalClass.getCompressedFile(activity, presc_file);
-                    Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(presc_file.length())));
-                    txt_nofilepresc.setText(getResources().getString(R.string.view));
-                    txt_nofilepresc.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofilepresc.setPaintFlags(txt_nofilepresc.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_nofilepresc.setVisibility(View.GONE);
+                    if (presc_file != null) {
+                        ispresciption = false;
+                    }
                 } else if (isadhar) {
-                    if (data.getData() != null) {
-                        aadhar_file = FileUtil.from(activity, data.getData());
+                    if (rel_adhar1.getVisibility() == View.VISIBLE) {
+                        if (data.getData() != null) {
+                            if (aadhar_file1 == null) {
+                                aadhar_file1 = FileUtil.from(activity, data.getData());
+                            }
+                        }
+                        Uri uri = data.getData();
+                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                        aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
+                        rel_adhar2.setVisibility(View.VISIBLE);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                    } else {
+                        if (data.getData() != null) {
+                            if (aadhar_file == null) {
+                                aadhar_file = FileUtil.from(activity, data.getData());
+                            }
+                        }
+                        Uri uri = data.getData();
+                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                        aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
+                        rel_adhar1.setVisibility(View.VISIBLE);
+                        txt_nofileadhar.setVisibility(View.GONE);
                     }
-                    Uri uri = data.getData();
-                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(aadhar_file.length())));
-                    aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
-                    Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(aadhar_file.length())));
-                    txt_nofileadhar.setText(getResources().getString(R.string.view));
-                    txt_nofileadhar.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofileadhar.setPaintFlags(txt_nofileadhar.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                    if (aadhar_file != null && aadhar_file1 != null) {
+                        isadhar = false;
+                    }
+
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+
+
                 } else if (istrf) {
-                    if (data.getData() != null) {
-                        trf_file = FileUtil.from(activity, data.getData());
+                    if (rel_trf1.getVisibility() == View.VISIBLE) {
+                        if (data.getData() != null) {
+                            if (trf_file1 == null) {
+                                trf_file1 = FileUtil.from(activity, data.getData());
+                            }
+                        }
+                        Uri uri = data.getData();
+                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                        trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
+                        rel_trf2.setVisibility(View.VISIBLE);
+                        txt_nofiletrf.setVisibility(View.GONE);
+
+                    } else {
+                        if (data.getData() != null) {
+                            trf_file = FileUtil.from(activity, data.getData());
+                        }
+                        Uri uri = data.getData();
+                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+                        trf_file = GlobalClass.getCompressedFile(activity, trf_file);
+                        rel_trf1.setVisibility(View.VISIBLE);
+                        txt_nofiletrf.setVisibility(View.GONE);
                     }
-                    Uri uri = data.getData();
-                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_file.length())));
-                    trf_file = GlobalClass.getCompressedFile(activity, trf_file);
-                    Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(trf_file.length())));
-                    txt_nofiletrf.setText(getResources().getString(R.string.view));
-                    txt_nofiletrf.setTextColor(getResources().getColor(R.color.maroon));
-                    txt_nofiletrf.setPaintFlags(txt_nofiletrf.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                    if (trf_file != null && trf_file1 != null) {
+                        istrf = false;
+                    }
+
+                    lin_trf_images.setVisibility(View.VISIBLE);
                 }
 
             } catch (IOException e) {
@@ -646,12 +1035,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             return false;
         }
 
-        if (aadhar_file == null) {
+        if (aadhar_file == null && aadhar_file1 == null) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_ADHIMAGE);
             return false;
         }
 
-        if (trf_file == null) {
+        if (trf_file == null && trf_file1 == null) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_TRFDHIMAGE);
             return false;
         }
@@ -669,9 +1058,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (timerflag == false) {
                     btn_resend.setEnabled(false);
                     btn_resend.setClickable(false);
+                    btn_resend.setVisibility(View.GONE);
                     tv_timer.setVisibility(View.VISIBLE);
                 } else {
                     tv_timer.setVisibility(View.GONE);
+                    btn_resend.setVisibility(View.VISIBLE);
                 }
 
                 long time = millisUntilFinished / 1000;
@@ -682,6 +1073,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 tv_timer.setVisibility(View.GONE);
                 btn_resend.setEnabled(true);
                 btn_resend.setClickable(true);
+                btn_resend.setVisibility(View.VISIBLE);
 
                 edt_missed_mobile.setEnabled(true);
                 edt_missed_mobile.setClickable(true);
@@ -694,7 +1086,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void clearfields() {
-        lin_generate_verify.setVisibility(View.GONE);
         edt_fname.setFocusable(true);
         edt_fname.setCursorVisible(true);
         edt_fname.getText().clear();
@@ -703,17 +1094,63 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         edt_verifycc.getText().clear();
         edt_missed_mobile.setEnabled(true);
         edt_missed_mobile.setClickable(true);
+        edt_missed_mobile.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        btn_generate.setVisibility(View.VISIBLE);
         btn_generate.setEnabled(true);
         btn_generate.setClickable(true);
         btn_verify.setClickable(true);
         btn_verify.setEnabled(true);
         btn_resend.setEnabled(true);
         btn_resend.setClickable(true);
-        tv_missedcall_mob.setVisibility(View.GONE);
+        btn_resend.setVisibility(View.VISIBLE);
+        lin_by_missed.setVisibility(View.VISIBLE);
+        tv_mobileno.setVisibility(View.GONE);
+        rel_mobno.setVisibility(View.GONE);
+
+        if (by_missed.isChecked()) {
+            btn_generate.setText(getResources().getString(R.string.enterccc));
+        } else {
+            btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+        }
+
         timerflag = false;
+        verifyotp = false;
         presc_file = null;
         aadhar_file = null;
+        aadhar_file1 = null;
+
         trf_file = null;
+        trf_file1 = null;
+
+        lin_generate_verify.setVisibility(View.GONE);
+        tv_resetno.setVisibility(View.GONE);
+
+        lin_pres_preview.setVisibility(View.GONE);
+        lin_adhar_images.setVisibility(View.GONE);
+        lin_trf_images.setVisibility(View.GONE);
+
+        rel_adhar1.setVisibility(View.GONE);
+        rel_adhar2.setVisibility(View.GONE);
+
+        rel_trf1.setVisibility(View.GONE);
+        rel_trf2.setVisibility(View.GONE);
+
+        txt_nofilepresc.setVisibility(View.VISIBLE);
+        txt_nofileadhar.setVisibility(View.VISIBLE);
+        txt_nofiletrf.setVisibility(View.VISIBLE);
+
+        txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofilepresc.setTextColor(getResources().getColor(R.color.black));
+        txt_nofilepresc.setPaintFlags(0);
+
+        txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofileadhar.setTextColor(getResources().getColor(R.color.black));
+        txt_nofileadhar.setPaintFlags(0);
+
+        txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
+        txt_nofiletrf.setTextColor(getResources().getColor(R.color.black));
+        txt_nofiletrf.setPaintFlags(0);
+
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -724,19 +1161,45 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void disablefields() {
+
+        imgotp = getContext().getResources().getDrawable(R.drawable.otpverify);
+        imgotp.setBounds(40, 40, 40, 40);
+
+        edt_missed_mobile.setCompoundDrawablesWithIntrinsicBounds(null, null, imgotp, null);
         edt_missed_mobile.setEnabled(false);
         btn_generate.setEnabled(false);
         btn_resend.setEnabled(false);
+        btn_resend.setVisibility(View.GONE);
+        rel_mobno.setVisibility(View.GONE);
+        edt_missed_mobile.setClickable(false);
+        btn_generate.setClickable(false);
+        btn_generate.setVisibility(View.GONE);
+        btn_resend.setClickable(false);
+        lin_by_missed.setVisibility(View.VISIBLE);
+
 
         edt_missed_mobile.setClickable(false);
         btn_generate.setClickable(false);
         btn_resend.setClickable(false);
+
+        lin_generate_verify.setVisibility(View.GONE);
+        tv_resetno.setVisibility(View.GONE);
+
+        timerflag = true;
+        verifyotp = true;
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            tv_timer.setVisibility(View.GONE);
+        }
     }
 
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
         coviDgetotp_req.setMobile(mobileno);
@@ -750,10 +1213,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         setCountDownTimer();
+                        lin_by_missed.setVisibility(View.GONE);
+                        tv_mobileno.setVisibility(View.VISIBLE);
+                        tv_mobileno.setText(edt_missed_mobile.getText().toString());
+                        rel_mobno.setVisibility(View.VISIBLE);
                         lin_generate_verify.setVisibility(View.VISIBLE);
-                        lin_by_missed.setVisibility(View.VISIBLE);
-                        btn_generate.setText("Generate CCC");
-                        disablefields();
+                        tv_resetno.setVisibility(View.VISIBLE);
+                        tv_resetno.setText(getResources().getString(R.string.reset_mob));
+                        tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -768,12 +1235,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void validateotp() {
+
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
         covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
+        covid_validateotp_req.setScode(usercode);
 
         Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
         covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
@@ -782,15 +1251,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        edt_missed_mobile.setEnabled(false);
-                        btn_generate.setEnabled(false);
-                        btn_resend.setEnabled(false);
-                        tv_timer.setVisibility(View.GONE);
-                        edt_missed_mobile.setClickable(false);
-                        btn_generate.setClickable(false);
-                        btn_resend.setClickable(false);
-                        lin_generate_verify.setVisibility(View.GONE);
-                        timerflag = true;
+                        disablefields();
+                    } else {
+                        GlobalClass.showCustomToast(activity, response.body().getResponse());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -823,4 +1286,24 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         return true;
     }
 
+    public void getUploadResponse(String response) {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(response);
+            String RESPONSE = jsonObject.optString("Response");
+            String RESPONSEID = jsonObject.optString("ResId");
+
+            if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
+                Global.showCustomToast(activity, RESPONSE);
+                Intent intent = new Intent(activity, CovidReg_Activity.class);
+                activity.startActivity(intent);
+                activity.finish();
+                clearfields();
+            } else {
+                //showOKDialog(RESPONSE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 }

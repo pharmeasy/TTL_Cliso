@@ -1,25 +1,16 @@
 package com.example.e5322.thyrosoft.Models;
 
-public class Covid_validateotp_req {
+public class CoVerifyMobReq {
 
     /**
-     * Mobile : 9137985277
+     * Mobile : 9004844180
      * Api_key : nVBoST2makVq5DlPRE@WVj3M5WU4NaGo)bsELEn8lFY=
-     * Otp : 3521
+     * Scode : TAM03
      */
 
     private String Mobile;
     private String Api_key;
-    private String Otp;
     private String Scode;
-
-    public String getScode() {
-        return Scode;
-    }
-
-    public void setScode(String scode) {
-        Scode = scode;
-    }
 
     public String getMobile() {
         return Mobile;
@@ -37,11 +28,11 @@ public class Covid_validateotp_req {
         this.Api_key = Api_key;
     }
 
-    public String getOtp() {
-        return Otp;
+    public String getScode() {
+        return Scode;
     }
 
-    public void setOtp(String Otp) {
-        this.Otp = Otp;
+    public void setScode(String Scode) {
+        this.Scode = Scode;
     }
 }

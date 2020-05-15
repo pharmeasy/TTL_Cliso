@@ -78,7 +78,6 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
                 startActivity(new Intent(HealthArticle_Activity.this, ManagingTabsActivity.class));
                 break;
 
-
         }
     }
 }

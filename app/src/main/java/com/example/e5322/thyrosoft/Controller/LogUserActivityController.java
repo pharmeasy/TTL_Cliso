@@ -26,13 +26,13 @@ public class LogUserActivityController {
 
             PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
             Call<AppuserResponse> responseModelCall = apiInterface.PostUserLog(requestModel);
-            Log.e("TAG","API REQ--->"+responseModelCall.request().url());
-             Log.e("TAG","API BODY--->"+new GsonBuilder().create().toJson(requestModel));
+            Log.e("TAG", "API REQ--->" + responseModelCall.request().url());
+            Log.e("TAG", "API BODY--->" + new GsonBuilder().create().toJson(requestModel));
             responseModelCall.enqueue(new Callback<AppuserResponse>() {
                 @Override
                 public void onResponse(Call<AppuserResponse> call, retrofit2.Response<AppuserResponse> response) {
                     AppuserResponse responseModel = response.body();
-                    Log.e("TAG","RESPONSE-->"+responseModel.getRESPONSE());
+                    Log.e("TAG", "RESPONSE-->" + responseModel.getRESPONSE());
                 }
 
                 @Override

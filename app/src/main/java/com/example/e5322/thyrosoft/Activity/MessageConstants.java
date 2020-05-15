@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
 public class MessageConstants {
+    public static String VERIFY = "Verify otp first";
     public static String PLEASEENTERSCANOPINION = "Please enter Scan Opinion";
     public static String PLEASEENTERCLINICALOPINION = "Please enter Clinical Opinion";
     public static String CHECKING_UPDATE_PLEASE_WAIT = "Checking for update. Please wait..";

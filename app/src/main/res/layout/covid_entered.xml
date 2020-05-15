@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <LinearLayout
@@ -61,7 +61,7 @@
                     android:drawablePadding="@dimen/dp_3"
                     android:hint="Search"
                     android:maxLength="15"
-                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnm-"
+                    android:digits="0123456789qwertzuiopasdfghjklyxcvbnm- "
                     android:fontFamily="sans-serif-medium"
                     android:paddingLeft="14dp"
                     android:textAlignment="viewStart"
@@ -71,9 +71,9 @@
 
                 <ImageView
                     android:layout_alignParentRight="true"
-                    android:layout_width="@dimen/dp_12"
-                    android:layout_height="@dimen/dp_12"
-                    android:layout_marginRight="5dp"
+                    android:layout_width="@dimen/dp_16"
+                    android:layout_height="@dimen/dp_16"
+                    android:layout_marginRight="10dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/search_red" />
 
@@ -87,6 +87,17 @@
             android:id="@+id/recy_covidmis"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:id="@+id/txt_nodata"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_12sdp"
+            android:textColor="@color/maroon"
+            android:textAlignment="center"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
     </LinearLayout>
 
 

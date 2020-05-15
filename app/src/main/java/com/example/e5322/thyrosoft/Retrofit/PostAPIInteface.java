@@ -4,9 +4,13 @@ package com.example.e5322.thyrosoft.Retrofit;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
+import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
+import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
+import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
+import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.EmailModel;
@@ -15,7 +19,6 @@ import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.LeadRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
-import com.example.e5322.thyrosoft.Models.MissedcallAPI_Response;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
@@ -36,11 +39,15 @@ public interface PostAPIInteface {
     @POST("Common.svc/PatientDetails")
     Call<Covidmis_response> getcovidmis(@Body CovidMIS_req covidMIS_req);
 
+    @POST("COMMON.svc/VerifyMobile")
+    Call<COVerifyMobileResponse> covmobileVerification(@Body CoVerifyMobReq coVerifyMobReq);
+
+    @POST("Common.svc/CovidAccess")
+    Call<CovidaccessRes> checkcovidaccess(@Body CovidAccessReq covidaccessRes);
+
     @POST("Common.svc/GeneratedOtp")
     Call<Covidotpresponse> generateotp(@Body COVIDgetotp_req coviDgetotp_req);
 
-    @POST("Common.svc/CallOTP")
-    Call<MissedcallAPI_Response> missedcallapi();
 
     @POST("Common.svc/Verifyotp")
     Call<Covid_validateotp_res> validateotp(@Body Covid_validateotp_req covid_validateotp_req);

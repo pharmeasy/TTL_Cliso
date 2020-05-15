@@ -22,6 +22,7 @@ public class RateCalB2B_MASTERS_Main_Model implements Parcelable{
     ArrayList<OUTLAB_TESTLIST_GETALLTESTS> OUTLAB_TESTLIST;
     ArrayList<Base_Model_Rate_Calculator> POP ;
     ArrayList<Base_Model_Rate_Calculator> PROFILE;
+    ArrayList<Base_Model_Rate_Calculator> SMT;
     ArrayList<SAMPLE_TYPESList> SAMPLE_TYPES;
     ArrayList<Base_Model_Rate_Calculator>  TESTS;
     ArrayList<com.example.e5322.thyrosoft.MainModelForAllTests.WHATER_TESTLIST> WHATER_TESTLIST;
@@ -72,6 +73,14 @@ public class RateCalB2B_MASTERS_Main_Model implements Parcelable{
 
     public ArrayList<Base_Model_Rate_Calculator> getPOP() {
         return POP;
+    }
+
+    public ArrayList<Base_Model_Rate_Calculator> getSMT() {
+        return SMT;
+    }
+
+    public void setSMT(ArrayList<Base_Model_Rate_Calculator> SMT) {
+        this.SMT = SMT;
     }
 
     public void setPOP(ArrayList<Base_Model_Rate_Calculator> POP) {

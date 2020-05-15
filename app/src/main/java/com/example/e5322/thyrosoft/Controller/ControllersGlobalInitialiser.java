@@ -8,6 +8,7 @@ import com.example.e5322.thyrosoft.Cliso_BMC.UpdateStockController;
 public class ControllersGlobalInitialiser extends MultiDexApplication {
 
     public static GetHealthTipsController GetHealthTipsController;
+    public static Covidmultipart_controller covidmultipart_controller;
     public static GetClientDetail_Controller getClientDetail_controller;
     public static LogUserActivityController logUserActivityController;
     public static ValidateMob_Controller validateMob_controller;

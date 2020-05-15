@@ -48,7 +48,7 @@ public class CovidReg_Activity extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBackPressed();
+               finish();
             }
         });
 

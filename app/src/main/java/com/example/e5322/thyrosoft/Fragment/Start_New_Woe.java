@@ -959,6 +959,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 spinnerTypeName = new ArrayList<>();
                 getTypeListfirst = new ArrayList<>();
 
+
                 try {
                     if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
                         if (myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type() != null) {
@@ -967,6 +968,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             }
                         }
                     }
+
 
                     if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
                         if (myPojo.getMASTERS().getBRAND_LIST().length > 1) {
@@ -1595,8 +1597,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         brand_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
+                if (position == 0 || position ==1) {
+                    ArrayAdapter<String> adapter2=null;
+                    if (position==0){
+                        adapter2  = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
+                    }else {
+                        adapter2  = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
+                    }
+
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     selectTypeSpinner.setAdapter(adapter2);
                     selectTypeSpinner.setSelection(0);
@@ -1604,7 +1612,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if (selectTypeSpinner.getSelectedItem().equals("ILS")) {
+                            if (selectTypeSpinner.getSelectedItem().equals("ILS") || selectTypeSpinner.getSelectedItem().equals("SMT")) {
                                 Enablefields();
 
                                 if (yourCountDownTimer != null) {
@@ -3480,10 +3488,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     });
                 }
 
-                if (position > 0) {
+                if (position > 1) {
 
                     if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("EQNX")) {
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListthird);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         selectTypeSpinner.setAdapter(adapter2);
                         selectTypeSpinner.setSelection(0);
@@ -4568,7 +4576,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         });
                     } else {
 
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListthird);
                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         selectTypeSpinner.setAdapter(adapter2);
                         selectTypeSpinner.setSelection(0);
@@ -6448,7 +6456,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 btn_snd_otp.setText("Resend OTP");
 
                 et_otp.getText().clear();
-                lin_otp.setVisibility(View.GONE);
+                lin_otp.setVisibility(View.VISIBLE);
 
                 btn_snd_otp.setEnabled(true);
                 btn_snd_otp.setClickable(true);

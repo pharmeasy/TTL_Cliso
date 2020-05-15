@@ -22,7 +22,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,11 +44,11 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ExpandableTestMasterListDisplayAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -105,6 +104,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     RequestQueue requestQueuepoptestILS;
     SharedPreferences preferences, prefe;
     String brandName, typeName;
+    String shr_brandname;
     ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
     MainModel obj;
     ArrayList<BaseModel> filteredFiles;
@@ -119,7 +119,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     ArrayList<String> showTestNmaes = new ArrayList<>();
     List<String> getOnlyProducts;
     String user, passwrd, access, api_key, convertDate;
-    SharedPreferences prefs;
+    SharedPreferences prefs, pref_brand;
+    SharedPreferences.Editor editor_brand;
     LinearLayout before_discount_layout2, ulc_nonulc_ll, ulc_ll, product_list_ll, ulc_code_edt_ll, ulc_woe_ll;
     TextView title;
     RadioButton ulc_radiobtn, nonulc_radiobtn;
@@ -254,6 +255,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         before_discount_layout2.setVisibility(View.GONE);
 
 
+
+
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         patientName = preferences.getString("name", null);
         patientYear = preferences.getString("age", null);
@@ -279,6 +282,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         campID = preferences.getString("getcampIDtoPass", null);
         homeaddress = preferences.getString("patientAddress", null);
         getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
+
+        pref_brand = getSharedPreferences("BRANDPREF", MODE_PRIVATE);
+        if (TextUtils.isEmpty(shr_brandname)) {
+            editor_brand = pref_brand.edit();
+            editor_brand.putString("BRANDNAME", brandName);
+            editor_brand.apply();
+        } else {
+            shr_brandname = pref_brand.getString("BRANDNAME", "");
+        }
+        shr_brandname = pref_brand.getString("BRANDNAME", "");
 
         final SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
         getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
@@ -760,6 +773,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+//                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")){
+//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
+//                        }else {
+//
+//                        }
                         getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
                     }
 
@@ -800,7 +818,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
             if (obj != null) {
                 if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                    callAdapter(obj);
+                    if (shr_brandname.equalsIgnoreCase(brandName)){
+                        callAdapter(obj);
+                    }else {
+                        getAllproduct();
+                    }
+
                 } else {
                     if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
                         TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
@@ -844,7 +867,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     redirectToLogin(ProductLisitngActivityNew.this);
                 } else {
                     try {
-
                         Gson gson = new Gson();
                         mainModel = new MainModel();
                         mainModel = gson.fromJson(response.toString(), MainModel.class);
@@ -855,8 +877,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         prefsEditor1.putString("MyObject", json22);
                         prefsEditor1.commit();
 
+
                         GlobalClass.storeProductsCachingTime(ProductLisitngActivityNew.this);
                         callAdapter(mainModel);
+
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();
                     }
@@ -885,34 +909,50 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private void callAdapter(MainModel mainModel) {
         b2bmasterarraylist = new ArrayList<>();
         b2bmasterarraylist.add(mainModel.B2B_MASTERS);
-        ArrayList<Product_Rate_MasterModel> finalproductlist = new ArrayList<Product_Rate_MasterModel>();
 
         String testtype = "";
         if (mainModel.B2B_MASTERS != null) {
-            for (int i = 0; i < b2bmasterarraylist.size(); i++) {
-                Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
-                product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
-                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
-                for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                    testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                }
-                product_rate_masterModel = new Product_Rate_MasterModel();
-                product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
-                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
+            if (brandName.equalsIgnoreCase("TTL")) {
+                for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                    Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
+                    for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                    }
+                    product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
 
-                for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
-                    testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
-                }
-                product_rate_masterModel = new Product_Rate_MasterModel();
-                product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
-                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
-                for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
-                    testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
-                }
+                    for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
+                    }
+                    product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+                    for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
+                    }
 
-                ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
-                recycler_all_test.setAdapter(outLabRecyclerView);
+                    ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
+                    recycler_all_test.setAdapter(outLabRecyclerView);
+
+                }
+            } else if (brandName.equalsIgnoreCase("SMT")) {
+                for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                    Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.SMT_TEST);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getSMT());
+                    for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                    }
+
+                    ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
+                    recycler_all_test.setAdapter(outLabRecyclerView);
+
+                }
             }
+
         }
     }
 

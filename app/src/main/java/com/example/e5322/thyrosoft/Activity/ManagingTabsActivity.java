@@ -25,7 +25,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -52,12 +51,15 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTCompanyContact_activity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTNoticeboard_activity;
+import com.example.e5322.thyrosoft.Models.CovidAccessReq;
+import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
@@ -65,6 +67,7 @@ import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
@@ -75,7 +78,6 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.Login;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
@@ -92,8 +94,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     public static String getdate;
     private static android.support.v4.app.FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
-/*    SharedPreferences.Editor editorUserActivity;
-    SharedPreferences shr_user_log;*/
+    /*    SharedPreferences.Editor editorUserActivity;
+        SharedPreferences shr_user_log;*/
     String restoredText;
     String passwrd, access, api_key, USER_CODE;
     SharedPreferences prefs;
@@ -102,6 +104,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
     boolean IsFromNotification;
+    boolean covidacc=false;
     int SCRID;
     private int a = 0;
     private String TAG = getClass().getSimpleName();
@@ -243,6 +246,11 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             e.printStackTrace();
         }
 
+        if (GlobalClass.isNetworkAvailable(activity)) {
+            checkcovidaccess();
+        }
+
+
         if (!TextUtils.isEmpty(CLIENT_TYPE) && CLIENT_TYPE.equalsIgnoreCase(NHF)) {
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
@@ -358,13 +366,44 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     }
 
+    private void checkcovidaccess() {
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+
+        CovidAccessReq covidAccessReq = new CovidAccessReq();
+        covidAccessReq.setSourceCode(user);
+
+        Call<CovidaccessRes> covidaccessResCall=postAPIInteface.checkcovidaccess(covidAccessReq);
+
+        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+            @Override
+            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
+                try{
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000) && (response.body().getResponse().equalsIgnoreCase("True"))){
+                        navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
+                        covidacc=true;
+                    }else {
+                        navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
+                        covidacc=false;
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void CheckVideoData() {
         //  final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(this);
         GetVideopost_model getVideopost_model = new GetVideopost_model();
         getVideopost_model.setApp(Constants.APP_ID);
         getVideopost_model.setSourcedata(USER_CODE);
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.video_data).create(APIInteface.class);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.video_data).create(APIInteface.class);
         Call<GetVideoResponse_Model> getVideoResponse_modelCall = apiInteface.getVideoData(getVideopost_model);
 
         //Log.e(TAG, "GET VIDEO URL:" + getVideoResponse_modelCall.request().url());
@@ -960,7 +999,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        } if (id == R.id.covid_reg) {
+        }
+        if (id == R.id.covid_reg) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -968,7 +1008,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        }else if (id == R.id.otp_credit) {
+        } else if (id == R.id.otp_credit) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {

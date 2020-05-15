@@ -523,6 +523,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     productWithBarcode.setBarcode(selctedTest.get(i).getBarcodes()[j].getSpecimen_type());
                     productWithBarcode.setProduct(selctedTest.get(i).getBarcodes()[j].getCode());
                     productWithBarcode.setFasting(selctedTest.get(i).getFasting());
+                    productWithBarcode.setType(selctedTest.get(i).getType());
                     getproductDetailswithBarcodes.add(productWithBarcode);
                     saveLocation.add(selctedTest.get(i).getLocation());
                 }
@@ -561,20 +562,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         setAmt.setText(String.valueOf(getAmount));
 
 
-//        if (!temparraylist.contains("FLUORIDE")) {
-//            Set<String> hs = new HashSet<>();
-//            hs.addAll(temparraylist);
-//            temparraylist.clear();
-//            temparraylist.addAll(hs);
-//        }
-
-//        List<String> fluoridetest = new ArrayList<>();
-//        for (int i = 0; i < temparraylist.size(); i++) {
-//            if (temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
-//                fluoridetest.add(temparraylist.get(i));
-//                temparraylist.remove(i);
-//            }
-//        }
 
         for (int i = 0; i < temparraylist.size(); i++) {
             if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
@@ -626,6 +613,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(j).getFasting());
                 scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(j).getProduct());
                 scannedBarcodeDetails.setSpecimen_type(getproductDetailswithBarcodes.get(j).getBarcode());
+                scannedBarcodeDetails.setType(getproductDetailswithBarcodes.get(j).getType());
                 GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
             }
 
@@ -780,11 +768,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     sampleCollectionDate = getFinalDate;
                 }
 
-            /*    String getOnlyTime = "";
-
-                if (!TextUtils.isEmpty(getFinalTime)) {
-                    getOnlyTime = getFinalTime.substring(0, getFinalTime.length() - 3);
-                }*/
 
                 DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -911,6 +894,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             Intent intent = new Intent(Scan_Barcode_ILS_New.this, SummaryActivity_New.class);
                             Bundle bundle = new Bundle();
                             bundle.putString("tetsts", getTestSelection);
+                            bundle.putString("brandname", getBrand_name);
                             bundle.putString("location", setLocation);
                             bundle.putString("passProdcucts", testsCodesPassingToProduct);
                             bundle.putString("TotalAmt", totalamt);

@@ -77,7 +77,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     LinearLayout SGCLinearid, ll_patient_age, ll_patient_gender;
     TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, serial_number_re, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
-    String getSelctedTests, passProdcucts;
+    String getSelctedTests, passProdcucts,getbrandname;
     int saveSrNumber;
     String getStateName, getCountryName, getCityName;
     AlertDialog.Builder alertDialog;
@@ -350,6 +350,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
         Bundle bundle = getIntent().getExtras();
         getSelctedTests = bundle.getString("tetsts");
+        getbrandname = bundle.getString("brandname");
         fromcome = bundle.getString("fromcome", "");
         location = bundle.getString("location");
         passProdcucts = bundle.getString("passProdcucts");
@@ -368,7 +369,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         patientYearType = preferences.getString("yearType", null);
         patientGender = preferences.getString("gender", null);
 
-        pat_type.setText("TTL/" + typename);
+        pat_type.setText(getbrandname+"/"+ typename);
         pat_sct.setText(getFinalDate + " " + getFinalTime);
         pat_name.setText(nameString);
 

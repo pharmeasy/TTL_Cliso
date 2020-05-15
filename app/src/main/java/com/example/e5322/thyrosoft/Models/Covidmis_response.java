@@ -55,6 +55,16 @@ public class Covidmis_response {
         private String PatientName;
         private String Prescription;
         private String Trf;
+        private String Aadhar1;
+        private String Trf1;
+
+        public String getAadhar1() {
+            return Aadhar1;
+        }
+
+        public String getTrf1() {
+            return Trf1;
+        }
 
         public String getAadhar() {
             return Aadhar;

@@ -1,15 +1,15 @@
 package com.example.e5322.thyrosoft.Models;
 
-public class Covid_validateotp_res {
+public class COVerifyMobileResponse {
+
 
     /**
      * resId : RES0000
-     * response : OTP VERIFIED SUCCSSEFULLY
+     * response : VERIFIED
      */
 
     private String resId;
     private String response;
-
 
     public String getResId() {
         return resId;

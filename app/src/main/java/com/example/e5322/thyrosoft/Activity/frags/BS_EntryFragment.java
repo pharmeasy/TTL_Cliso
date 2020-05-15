@@ -19,7 +19,6 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,16 +39,14 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.Blood_sugar_entry_activity;
 import com.example.e5322.thyrosoft.CommonItils.GPSTracker;
 import com.example.e5322.thyrosoft.Controller.AsyncTaskPost_Multipartfile;
-import com.example.e5322.thyrosoft.Controller.BloodSugarMISController;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.GETValidateBSOTPController;
 import com.example.e5322.thyrosoft.Controller.GetOTPController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
-import com.example.e5322.thyrosoft.Models.EmailModel;
-import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
@@ -517,8 +514,9 @@ public class BS_EntryFragment extends Fragment {
             GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
             requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
             requestModel.setMobile(mobile_number);
-            requestModel.setType("SENDOTPALL");
+            requestModel.setType("WOESMS");
             requestModel.setAccessToken(token);
+           // requestModel.setReqId(requestId);
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
@@ -981,8 +979,8 @@ public class BS_EntryFragment extends Fragment {
         otPrequest.setPurpose("OTP");
         otPrequest.setVersion("" + versionCode);
         Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
-       // Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
-       // Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
 
         responseCall.enqueue(new Callback<Tokenresponse>() {
             @Override
@@ -991,8 +989,11 @@ public class BS_EntryFragment extends Fragment {
                 try {
                     if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
                         if (!TextUtils.isEmpty(response.body().getToken())) {
-                          //  Log.e(TAG, "TOKEN--->" + response.body().getToken());
-                            callGenerateOTP(mobile_number, response.body().getToken());
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                         //   if (!TextUtils.isEmpty(response.body().getRequestId())){
+                                callGenerateOTP(mobile_number, response.body().getToken());
+                          //  }
+
                         }
                     } else {
                         Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();

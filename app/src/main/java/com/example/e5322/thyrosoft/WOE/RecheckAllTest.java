@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ExpandableListView;
@@ -30,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.ExpandableTestMasterListDisplayAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.EditTestExpandListAdapterCheckboxDelegate;
 import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
@@ -37,7 +37,6 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 
@@ -569,7 +568,7 @@ public class RecheckAllTest extends AppCompatActivity {
             expAdapter = new ExpandableTestMasterListDisplayAdapter(mActivity, finalproductlist, selectedTestsList, new EditTestExpandListAdapterCheckboxDelegate() {
                 @Override
                 public void onCheckChange(ArrayList<BaseModel> selectedTests) {
-                   Log.v(TAG,"check changed");
+                    System.out.println("check changed");
                     selectedTestsList = selectedTests;
                     expAdapter.notifyDataSetChanged();
                     if (selectedTestsList.size() != 0) {

@@ -18,6 +18,7 @@ public class B2B_MASTERSMainModel implements Parcelable{
     ArrayList<BaseModel> PROFILE;
     ArrayList<SAMPLE_TYPESList> SAMPLE_TYPES;
     ArrayList<BaseModel>  TESTS;
+    ArrayList<BaseModel> SMT;
     ArrayList<WHATER_TESTLIST> WHATER_TESTLIST;
 
 
@@ -66,6 +67,14 @@ public class B2B_MASTERSMainModel implements Parcelable{
 
     public ArrayList<BaseModel> getPOP() {
         return POP;
+    }
+
+    public ArrayList<BaseModel> getSMT() {
+        return SMT;
+    }
+
+    public void setSMT(ArrayList<BaseModel> SMT) {
+        this.SMT = SMT;
     }
 
     public void setPOP(ArrayList<BaseModel> POP) {

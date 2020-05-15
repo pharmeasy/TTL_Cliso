@@ -31,7 +31,6 @@ import com.example.e5322.thyrosoft.Adapter.CovidMISAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
-import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
@@ -58,8 +57,8 @@ public class Covidentered_frag extends Fragment {
     CovidMISAdapter covidMISAdapter;
     RecyclerView recy_mis;
     List<Covidmis_response.OutputBean> covidMISmodelList;
-    private String putDate,showDate,from_formateDate;
-    TextView tv_fromDate;
+    private String putDate, showDate, from_formateDate;
+    TextView tv_fromDate, txt_nodata;
     LinearLayout ll_fromDate;
     Date fromdate;
     private EditText edit_search;
@@ -99,10 +98,11 @@ public class Covidentered_frag extends Fragment {
     private void updateLabel() {
         putDate = sdf.format(myCalendar.getTime());
         tv_fromDate.setText(putDate);
+        from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
 
         if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
             if (cd.isConnectingToInternet()) {
-                getMIS(putDate);
+                getMIS(from_formateDate);
             } else {
                 GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
             }
@@ -115,7 +115,8 @@ public class Covidentered_frag extends Fragment {
     private void initView(View view) {
         edit_search = view.findViewById(R.id.edit_search);
         tv_fromDate = view.findViewById(R.id.tv_fromDate);
-        ll_fromDate=view.findViewById(R.id.ll_fromDate);
+        ll_fromDate = view.findViewById(R.id.ll_fromDate);
+        txt_nodata = view.findViewById(R.id.txt_nodata);
 
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATEFORMATE);
         Date today = new Date();
@@ -135,7 +136,7 @@ public class Covidentered_frag extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String enteredString = charSequence.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                if (enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("?")) {
@@ -173,12 +174,10 @@ public class Covidentered_frag extends Fragment {
         });
 
 
-
-
     }
 
     private void getMIS(String from_formateDate) {
-        final ProgressDialog progressDialog=GlobalClass.ShowprogressDialog(activity);
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         String usercode = preferences.getString("USER_CODE", null);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
@@ -191,12 +190,18 @@ public class Covidentered_frag extends Fragment {
             public void onResponse(Call<Covidmis_response> call, Response<Covidmis_response> response) {
                 GlobalClass.hideProgress(activity, progressDialog);
                 try {
-                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)){
-                        covidMISmodelList=new ArrayList<>();
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        recy_mis.setVisibility(View.VISIBLE);
+                        txt_nodata.setVisibility(View.GONE);
+                        covidMISmodelList = new ArrayList<>();
                         covidMISmodelList.addAll(response.body().getOutput());
                         recy_mis.setLayoutManager(new LinearLayoutManager(getContext()));
                         covidMISAdapter = new CovidMISAdapter(getContext(), covidMISmodelList);
                         recy_mis.setAdapter(covidMISAdapter);
+                    } else {
+                        recy_mis.setVisibility(View.GONE);
+                        txt_nodata.setVisibility(View.VISIBLE);
+                        txt_nodata.setText(MessageConstants.NODATA);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -210,6 +215,7 @@ public class Covidentered_frag extends Fragment {
             }
         });
     }
+
     private Date returndate(Date date, String putDate) {
         try {
             date = sdf.parse(putDate);

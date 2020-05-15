@@ -12,6 +12,11 @@ public class Tokenresponse {
     private String RespId;
     private String Response;
     private String Token;
+    private String RequestId;
+
+    public String getRequestId() {
+        return RequestId;
+    }
 
     public String getRespId() {
         return RespId;

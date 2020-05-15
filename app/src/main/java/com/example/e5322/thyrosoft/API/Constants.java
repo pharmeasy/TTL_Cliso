@@ -16,6 +16,7 @@ public class Constants {
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
+    public static String SMT_TEST = "SMT";
     public static int DAYS_CNT = 1;
     public static String APPID = "6";
     public static String TOPIC = "CLISO_ALLDEVICE";

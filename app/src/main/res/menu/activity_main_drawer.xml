@@ -162,6 +162,7 @@
     </group>
 
      <group
+         android:id="@+id/groupbsbp"
          android:checkableBehavior="single">
          <item
              android:id="@+id/bs_entry"
@@ -171,15 +172,14 @@
      </group>
 
     <group
+        android:id="@+id/groupcovid"
         android:checkableBehavior="single">
         <item
             android:id="@+id/covid_reg"
             android:icon="@drawable/covid"
-            android:visible="true"
+            android:visible="false"
             android:title ="@string/covid_reg" />
     </group>
-
-
 
     <group
         android:id="@+id/group555"
@@ -189,7 +189,7 @@
             android:icon="@drawable/ic_otp_credit_mis"
             android:title="OTP credit"
             />
-;
+
     </group>
 
     <group

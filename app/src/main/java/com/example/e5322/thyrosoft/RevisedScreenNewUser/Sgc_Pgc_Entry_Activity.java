@@ -87,6 +87,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     Activity activity;
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
             new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
