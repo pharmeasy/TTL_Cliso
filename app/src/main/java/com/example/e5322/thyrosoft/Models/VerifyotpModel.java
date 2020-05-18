@@ -4,11 +4,11 @@ public class VerifyotpModel {
 
 
     /**
-     * Mobile : 9137985277
-     * OTP : 4267
+     * Mobile : 7878789000
+     * OTP : 2468
      * Response : OTP Validated Successfully
      * ResponseId : RES0001
-     * UserCode : ORI01
+     * UserCode : TAM03
      */
 
     private String Mobile;

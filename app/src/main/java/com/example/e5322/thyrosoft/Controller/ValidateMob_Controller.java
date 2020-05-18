@@ -1,9 +1,9 @@
 package com.example.e5322.thyrosoft.Controller;
 
 import android.app.ProgressDialog;
-import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
@@ -35,20 +35,19 @@ public class ValidateMob_Controller {
     }
 
 
-    public void callvalidatemob(String user, String chechnumber) {
+    public void callvalidatemob(String user, String chechnumber, String token) {
 
         ProgressDialog progressDialog = null;
         if (flag == 1) {
             progressDialog = GlobalClass.ShowprogressDialog(specialOffer_activity);
         } else if (flag == 2) {
             progressDialog = GlobalClass.ShowprogressDialog((start_new_woe.getActivity()));
-
         }
-
 
         PostValidateRequest postValidateRequest = new PostValidateRequest();
         postValidateRequest.setUserCode(user);
         postValidateRequest.setDomain("Cli-So");
+        postValidateRequest.setAccessToken(token);
 
         if (flag == 1)
             postValidateRequest.setPurpose("Offer");
@@ -65,7 +64,7 @@ public class ValidateMob_Controller {
 
 
         Call<ValidateOTPmodel> responseCall = apiInterface.ValidateMob(postValidateRequest);
-       // Log.e("TAG", "Validate Mobile URL --->" + responseCall.request().url());
+        // Log.e("TAG", "Validate Mobile URL --->" + responseCall.request().url());
         // Log.e("TAG", "Validate Mobile Request --->" + new GsonBuilder().create().toJson(responseCall));
 
         final ProgressDialog finalProgressDialog = progressDialog;
@@ -74,17 +73,14 @@ public class ValidateMob_Controller {
             @Override
             public void onResponse(Call<ValidateOTPmodel> call, Response<ValidateOTPmodel> response) {
                 ValidateOTPmodel validateOTPmodel = response.body();
+                GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                 try {
-                    if (validateOTPmodel.getResponseId().equals("RES0001")) {
-
+                    if (validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0000)) {
                         if (flag == 1) {
-                            GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                             specialOffer_activity.onvalidatemob(validateOTPmodel, finalProgressDialog);
                         } else {
-                            GlobalClass.hideProgress(((start_new_woe.getActivity())), finalProgressDialog);
                             start_new_woe.onvalidatemob(validateOTPmodel, finalProgressDialog);
                         }
-
                     } else {
                         if (flag == 1) {
                             GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
@@ -98,11 +94,12 @@ public class ValidateMob_Controller {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
             public void onFailure(Call<ValidateOTPmodel> call, Throwable t) {
-             ///   Log.e("Errror", t.getMessage());
+                ///   Log.e("Errror", t.getMessage());
             }
         });
     }

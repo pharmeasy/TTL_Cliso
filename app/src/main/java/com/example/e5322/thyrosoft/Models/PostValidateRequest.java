@@ -4,24 +4,18 @@ public class PostValidateRequest {
 
 
     /**
-     * UserCode : TAM03
      * Domain : Cli-So
+     * Mobile : 7020602182
      * Purpose : Offer
-     * Mobile : 9137985277
+     * UserCode : TAM03
+     * AccessToken : 9lxgCO3iOoWoKfwAsSwu4hADgxWZq5ynsdasfasAjdU=
      */
 
-    private String UserCode;
     private String Domain;
-    private String Purpose;
     private String Mobile;
-
-    public String getUserCode() {
-        return UserCode;
-    }
-
-    public void setUserCode(String UserCode) {
-        this.UserCode = UserCode;
-    }
+    private String Purpose;
+    private String UserCode;
+    private String AccessToken;
 
     public String getDomain() {
         return Domain;
@@ -29,6 +23,14 @@ public class PostValidateRequest {
 
     public void setDomain(String Domain) {
         this.Domain = Domain;
+    }
+
+    public String getMobile() {
+        return Mobile;
+    }
+
+    public void setMobile(String Mobile) {
+        this.Mobile = Mobile;
     }
 
     public String getPurpose() {
@@ -39,11 +41,19 @@ public class PostValidateRequest {
         this.Purpose = Purpose;
     }
 
-    public String getMobile() {
-        return Mobile;
+    public String getUserCode() {
+        return UserCode;
     }
 
-    public void setMobile(String Mobile) {
-        this.Mobile = Mobile;
+    public void setUserCode(String UserCode) {
+        this.UserCode = UserCode;
+    }
+
+    public String getAccessToken() {
+        return AccessToken;
+    }
+
+    public void setAccessToken(String AccessToken) {
+        this.AccessToken = AccessToken;
     }
 }

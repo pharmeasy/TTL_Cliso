@@ -1404,6 +1404,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         Intent intent = new Intent(Scan_Barcode_ILS_New.this, SummaryActivity_New.class);
         Bundle bundle = new Bundle();
         bundle.putString("tetsts", getTestSelection);
+        bundle.putString("brandname", getBrand_name);
         bundle.putString("location", setLocation);
         bundle.putString("passProdcucts", testsCodesPassingToProduct);
         bundle.putString("TotalAmt", totalamt);

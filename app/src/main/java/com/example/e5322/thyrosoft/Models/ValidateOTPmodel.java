@@ -4,10 +4,10 @@ public class ValidateOTPmodel {
 
 
     /**
-     * Mobile : 9137985277
-     * OTP : 9954
-     * Response : OTP Generated Successfully to your registered number
-     * ResponseId : RES0001
+     * Mobile : 7020602182
+     * OTP : 8648
+     * Response : OTP Send Successfully
+     * ResponseId : RES0000
      */
 
     private String Mobile;

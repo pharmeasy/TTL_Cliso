@@ -773,12 +773,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
-//                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")){
-//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
-//                        }else {
-//
-//                        }
-                        getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")){
+                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
+                        }else {
+                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+                        }
+
                     }
 
 

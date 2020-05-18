@@ -74,7 +74,7 @@ public class VerifyotpController {
                 VerifyotpModel verifyotpModel = response.body();
 
                 try {
-                    if (verifyotpModel.getResponseId().equals("RES0001")) {
+                    if (verifyotpModel.getResponseId().equalsIgnoreCase("RES0001")) {
                         if (flag == 1) {
                             GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                             specialOffer_activity.onVerifyotp(verifyotpModel);

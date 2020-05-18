@@ -1,11 +1,14 @@
 package com.example.e5322.thyrosoft.SpecialOffer;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -39,14 +42,19 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.TestListAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetClientDetail_Controller;
+import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
+import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
@@ -54,15 +62,22 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
+import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -77,6 +92,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 
@@ -85,7 +103,8 @@ import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
  */
 
 public class SpecialOffer_Activity extends AppCompatActivity implements View.OnClickListener {
-
+    ConnectionDetector cd;
+    public static String OTPAPPID = "9";
     public static ArrayList<BCT_LIST> getBtechList;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -102,6 +121,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             return null;
         }
     };
+    Activity activity;
     public RadioButton rd_dps, rd_home;
     public Spinner spin_test, spinyr, timehr, timesecond, timeampm;
     public TextView dateShow, txt_availcnt, tv_timer, txt_ctime, txt_sctdefault;
@@ -168,7 +188,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
-
+        activity = SpecialOffer_Activity.this;
+        cd=new ConnectionDetector(activity);
         initView();
 
 
@@ -793,6 +814,51 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     }
 
+    private void generateToken() {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        OTPrequest otPrequest = new OTPrequest();
+        otPrequest.setAppId(OTPAPPID);
+        otPrequest.setPurpose("OTP");
+        otPrequest.setVersion(""+versionCode);
+        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<Tokenresponse>() {
+            @Override
+            public void onResponse(Call<Tokenresponse> call, retrofit2.Response<Tokenresponse> response) {
+                GlobalClass.hideProgress(activity, progressDialog);
+                try {
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (!TextUtils.isEmpty(response.body().getToken())) {
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                            callsendOTP(response.body().getToken(), response.body().getRequestId());
+                        }
+                    } else {
+                        Toast.makeText(activity, response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tokenresponse> call, Throwable t) {
+
+            }
+        });
+    }
+
     private void updateLabel() {
 
         putDate = sdf.format(myCalendar.getTime());
@@ -833,10 +899,19 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                     } else if (btn_sendotp.getText().equals("Resend OTP")) {
                         Log.e(TAG, "onClick: " + btn_sendotp.getText().toString());
-                        callsendOTP();
+                        if (cd.isConnectingToInternet()) {
+                            generateToken();
+                        } else {
+                            Global.showCustomToast(activity, ToastFile.intConnection);
+                        }
                     } else if (btn_sendotp.getText().equals("Send OTP")) {
                         Log.e(TAG, "onClick: " + btn_sendotp.getText().toString());
-                        callsendOTP();
+                        if (cd.isConnectingToInternet()) {
+                            generateToken();
+                        } else {
+                            Global.showCustomToast(activity, ToastFile.intConnection);
+                        }
+
                     }
                 }
 
@@ -989,7 +1064,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         }
     }
 
-    private void callsendOTP() {
+    private void callsendOTP(String token, String requestId) {
 
         if (et_mobno.getText().toString().equals("")) {
             Toast.makeText(SpecialOffer_Activity.this, "Please enter Mobile Number", Toast.LENGTH_SHORT).show();
@@ -1007,9 +1082,38 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 }
 
                 ControllersGlobalInitialiser.validateMob_controller = new ValidateMob_Controller(SpecialOffer_Activity.this);
-                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString());
+                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(),token);
             }
 
+
+//            JSONObject jsonObject = null;
+//            try {
+//                GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
+//                requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
+//                requestModel.setMobile(et_mobno.getText().toString());
+//                requestModel.setType("WOEROUTINE");
+//                requestModel.setAccessToken(token);
+//                requestModel.setReqId(requestId);
+//
+//                String json = new Gson().toJson(requestModel);
+//                jsonObject = new JSONObject(json);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (cd.isConnectingToInternet()) {
+//                try {
+//                    if (ControllersGlobalInitialiser.getOTPController != null) {
+//                        ControllersGlobalInitialiser.getOTPController = null;
+//                    }
+//                    ControllersGlobalInitialiser.getOTPController = new GetOTPController(activity, SpecialOffer_Activity.this);
+//                    ControllersGlobalInitialiser.getOTPController.GetOTP(jsonObject);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                Global.showCustomToast(activity, ToastFile.intConnection);
+//            }
         }
     }
 
@@ -1242,7 +1346,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
-        if (validateOTPmodel.getResponse().equals("OTP Generated Successfully to your registered number")) {
+        if (validateOTPmodel.getResponseId().equals(Constants.RES0000)) {
             GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
 
 
@@ -1399,7 +1503,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     public void onVerifyotp(VerifyotpModel validateOTPmodel) {
 
-        if (validateOTPmodel.getResponse().equals("OTP Validated Successfully")) {
+        if (validateOTPmodel.getResponseId().equals("RES0001")) {
             timerflag = true;
             Toast.makeText(SpecialOffer_Activity.this,
                     validateOTPmodel.getResponse(),

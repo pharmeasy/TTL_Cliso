@@ -508,15 +508,15 @@ public class BS_EntryFragment extends Fragment {
         });
     }
 
-    private void callGenerateOTP(String mobile_number, String token) {
+    private void callGenerateOTP(String mobile_number, String token, String requestId) {
         JSONObject jsonObject = null;
         try {
             GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
             requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
             requestModel.setMobile(mobile_number);
-            requestModel.setType("WOESMS");
+            requestModel.setType("WOEROUTINE");
             requestModel.setAccessToken(token);
-           // requestModel.setReqId(requestId);
+            requestModel.setReqId(requestId);
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
@@ -990,9 +990,9 @@ public class BS_EntryFragment extends Fragment {
                     if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
                         if (!TextUtils.isEmpty(response.body().getToken())) {
                             Log.e(TAG, "TOKEN--->" + response.body().getToken());
-                         //   if (!TextUtils.isEmpty(response.body().getRequestId())){
-                                callGenerateOTP(mobile_number, response.body().getToken());
-                          //  }
+                            //   if (!TextUtils.isEmpty(response.body().getRequestId())){
+                            callGenerateOTP(mobile_number, response.body().getToken(), response.body().getRequestId());
+                            //  }
 
                         }
                     } else {

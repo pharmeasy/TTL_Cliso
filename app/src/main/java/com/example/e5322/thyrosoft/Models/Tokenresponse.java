@@ -18,6 +18,10 @@ public class Tokenresponse {
         return RequestId;
     }
 
+    public void setRequestId(String requestId) {
+        RequestId = requestId;
+    }
+
     public String getRespId() {
         return RespId;
     }

@@ -14,7 +14,7 @@
     <LinearLayout
         android:id="@+id/edt_offline_woe_ll"
         android:layout_width="10dp"
-        android:layout_height="50dp"
+        android:layout_height="37dp"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"

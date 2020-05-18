@@ -1,10 +1,14 @@
 package com.example.e5322.thyrosoft.Models.RequestModels;
 
 public class CalculateRateRequestModel {
-    private String apikey,tests;
+    private String apikey,tests,brand;
 
     public String getApikey() {
         return apikey;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public void setApikey(String apikey) {

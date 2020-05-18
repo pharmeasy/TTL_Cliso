@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -31,7 +33,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,15 +62,18 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.AdapterRe;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.GetOTPController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -81,10 +85,15 @@ import com.example.e5322.thyrosoft.Models.BRAND_LIST;
 import com.example.e5322.thyrosoft.Models.Brand_type;
 import com.example.e5322.thyrosoft.Models.CAMP_LIST;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
+import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
@@ -98,9 +107,11 @@ import com.example.e5322.thyrosoft.WorkOrder_entry_Model.AddWOETestsForSerum;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.Patients;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Details;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -111,7 +122,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -119,6 +129,8 @@ import java.util.Locale;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -134,6 +146,7 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 public class Start_New_Woe extends RootFragment implements View.OnClickListener {
     static final int DATE_DIALOG_ID = 0;
     static final int TIME_DIALOG_ID = 1111;
+    public static String OTPAPPID = "9";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -166,6 +179,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     String TAG = getClass().getSimpleName();
     AlertDialog alert;
     Drawable imgotp;
+    private ConnectionDetector cd;
     Context mContext;
     boolean mobno_verify = false;
     EditText et_mobno;
@@ -285,7 +299,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private String outputDateStr;
     private OnFragmentInteractionListener mListener;
     private LocationManager mLocationManager;
-
+    Activity activity;
     private InputFilter filter1 = new InputFilter() {
 
         @Override
@@ -408,8 +422,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
+        activity = getActivity();
         mContext = getContext();
+        cd = new ConnectionDetector(activity);
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
         name = (EditText) viewMain.findViewById(R.id.name);
         age = (EditText) viewMain.findViewById(R.id.age);
@@ -1160,13 +1175,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             });
         }
 
-        List<String> hourSin= Arrays.asList("HR","01","02","03","04","05","06","07","08","09","10","11","12");
+        List<String> hourSin = Arrays.asList("HR", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
 
-        List<String> minuteSpin = Arrays.asList("MIN","00","05","10","15","20","25","30","35","40","45","50","55");
+        List<String> minuteSpin = Arrays.asList("MIN", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
 
-        List<String> ampmSpine = Arrays.asList("AM/PM","AM","PM");
+        List<String> ampmSpine = Arrays.asList("AM/PM", "AM", "PM");
 
-        List<String> patientsagespinner = Arrays.asList("Years","Months","Days");
+        List<String> patientsagespinner = Arrays.asList("Years", "Months", "Days");
 
 
         Date setDateToSpin = new Date();
@@ -1216,7 +1231,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         namestr = name.getText().toString();
         saveGenderId = "";
 
-        if (patientsagespinner!=null){
+        if (patientsagespinner != null) {
             ArrayAdapter<String> adap = new ArrayAdapter<String>(
                     mContext, R.layout.name_age_spinner, patientsagespinner);
             adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1441,7 +1456,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
-                            if (myPojo!=null && myPojo.getRESPONSE() != null && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
+                            if (myPojo != null && myPojo.getRESPONSE() != null && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
                                 GlobalClass.hideProgress(getActivity(), barProgressDialog);
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
@@ -1463,7 +1478,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 getSubSource = new ArrayList();
 
                                 try {
-                                    if (myPojo!=null  && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
+                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
                                         for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                                             getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                                             spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
@@ -1547,7 +1562,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                 // Spinner adapter
                                 try {
-                                    if (spinnerBrandName!=null){
+                                    if (spinnerBrandName != null) {
                                         ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                                                 mContext, R.layout.name_age_spinner, spinnerBrandName);
                                         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1597,12 +1612,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         brand_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0 || position ==1) {
-                    ArrayAdapter<String> adapter2=null;
-                    if (position==0){
-                        adapter2  = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
-                    }else {
-                        adapter2  = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
+                if (position == 0 || position == 1) {
+                    ArrayAdapter<String> adapter2 = null;
+                    if (position == 0) {
+                        adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
+                    } else {
+                        adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListsecond);
                     }
 
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -2172,7 +2187,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         try {
                                             if (btechnameTopass != null) {
-                                                if (myPojo!=null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                                                         if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
@@ -2207,7 +2222,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         try {
                                             if (woereferedby != null) {
-                                                if (obj != null && obj.getMASTERS()!=null && obj.getMASTERS().getREF_DR()!=null) {
+                                                if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
                                                         if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
@@ -2323,7 +2338,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                             .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                                 @Override
                                                                 public void onClick(SweetAlertDialog sDialog) {
-                                                                    if (myPojo !=null && myPojo.getMASTERS()!=null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                                         getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                                     }
 
@@ -5671,7 +5686,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         Window window = CustomLeaddialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
 
-        ImageView ic_close=CustomLeaddialog.findViewById(R.id.img_close);
+        ImageView ic_close = CustomLeaddialog.findViewById(R.id.img_close);
         ic_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -5884,7 +5899,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
 
-        Log.e(TAG , Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients");
+        Log.e(TAG, Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients");
         JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user +
                 "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
             @Override
@@ -6289,10 +6304,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                         } else if (btn_snd_otp.getText().equals("Resend OTP")) {
                             Log.e(TAG, "onClick: " + btn_snd_otp.getText().toString());
-                            callsendOTP();
+                            if (cd.isConnectingToInternet()) {
+                                generateToken();
+                            } else {
+                                Global.showCustomToast(activity, ToastFile.intConnection);
+                            }
                         } else if (btn_snd_otp.getText().equals("Send OTP")) {
                             Log.e(TAG, "onClick: " + btn_snd_otp.getText().toString());
-                            callsendOTP();
+                            if (cd.isConnectingToInternet()) {
+                                //  callGenerateOTP(mobile_number);
+                                generateToken();
+                            } else {
+                                Global.showCustomToast(activity, ToastFile.intConnection);
+                            }
                         }
                     }
                 }
@@ -6319,7 +6343,53 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
     }
 
-    private void callsendOTP() {
+    private void generateToken() {
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        OTPrequest otPrequest = new OTPrequest();
+        otPrequest.setAppId(OTPAPPID);
+        otPrequest.setPurpose("OTP");
+        otPrequest.setVersion(""+versionCode);
+        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<Tokenresponse>() {
+            @Override
+            public void onResponse(Call<Tokenresponse> call, retrofit2.Response<Tokenresponse> response) {
+                GlobalClass.hideProgress(getContext(), progressDialog);
+                try {
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (!TextUtils.isEmpty(response.body().getToken())) {
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                            callsendOTP(response.body().getToken(), response.body().getRequestId());
+
+                        }
+                    } else {
+                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tokenresponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void callsendOTP(String token, String requestId) {
 
         if (et_mobno.getText().toString().equals("")) {
             Toast.makeText(getActivity(), "Please enter Mobile Number", Toast.LENGTH_SHORT).show();
@@ -6335,16 +6405,46 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     ControllersGlobalInitialiser.validateMob_controller = null;
                 }
                 ControllersGlobalInitialiser.validateMob_controller = new ValidateMob_Controller(Start_New_Woe.this);
-                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString());
+                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(),token);
             }
+
+
+//            JSONObject jsonObject = null;
+//            try {
+//                GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
+//                requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
+//                requestModel.setMobile(et_mobno.getText().toString());
+//                requestModel.setType("WOEROUTINE");
+//                requestModel.setAccessToken(token);
+//                requestModel.setReqId(requestId);
+//
+//                String json = new Gson().toJson(requestModel);
+//                jsonObject = new JSONObject(json);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (cd.isConnectingToInternet()) {
+//                try {
+//                    if (ControllersGlobalInitialiser.getOTPController != null) {
+//                        ControllersGlobalInitialiser.getOTPController = null;
+//                    }
+//                    ControllersGlobalInitialiser.getOTPController = new GetOTPController(activity, Start_New_Woe.this);
+//                    ControllersGlobalInitialiser.getOTPController.GetOTP(jsonObject);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                Global.showCustomToast(activity, ToastFile.intConnection);
+//            }
 
         }
     }
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
-        if (validateOTPmodel.getResponse().equals("OTP Generated Successfully to your registered number")) {
-            GlobalClass.hideProgress(getActivity(), progressDialog);
+        if (validateOTPmodel.getResponseId().equals(Constants.RES0000)) {
+            // GlobalClass.hideProgress(getActivity(), progressDialog);
 
 
         /*    et_mobno.setEnabled(true);
@@ -6378,13 +6478,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
-            GlobalClass.hideProgress(getActivity(), progressDialog);
+           GlobalClass.hideProgress(getActivity(), progressDialog);
         }
     }
 
 
     public void onVerifyotp(VerifyotpModel validateOTPmodel) {
-        if (validateOTPmodel.getResponse().equals("OTP Validated Successfully")) {
+
+        if (validateOTPmodel.getResponseId().equals("RES0001")) {
             timerflag = true;
             Toast.makeText(getActivity(),
                     validateOTPmodel.getResponse(),

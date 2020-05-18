@@ -31,8 +31,14 @@ public class LogUserActivityController {
             responseModelCall.enqueue(new Callback<AppuserResponse>() {
                 @Override
                 public void onResponse(Call<AppuserResponse> call, retrofit2.Response<AppuserResponse> response) {
-                    AppuserResponse responseModel = response.body();
-                    Log.e("TAG", "RESPONSE-->" + responseModel.getRESPONSE());
+                    try{
+                        if (response.body()!=null){
+                            AppuserResponse responseModel = response.body();
+                            Log.e("TAG", "RESPONSE-->" + responseModel.getRESPONSE());
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override

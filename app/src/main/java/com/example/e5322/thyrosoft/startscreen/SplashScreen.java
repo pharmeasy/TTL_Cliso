@@ -20,7 +20,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +35,7 @@ import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
 import com.example.e5322.thyrosoft.DownloadInAppTask;
@@ -280,13 +280,14 @@ public class SplashScreen extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         GoAhead();
-                    //    Log.w(TAG, "getDynamicLink:onFailure", e);
+                        //    Log.w(TAG, "getDynamicLink:onFailure", e);
                     }
                 });
 
     }
 
     private void GoAhead() {
+
         if (cd.isConnectingToInternet()) {
             callAPICheckVersion();
         } else {

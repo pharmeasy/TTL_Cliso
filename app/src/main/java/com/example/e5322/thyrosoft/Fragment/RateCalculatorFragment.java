@@ -385,6 +385,7 @@ public class RateCalculatorFragment extends Fragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
                 sv_testsList_ttl.getText().clear();
+                before_discount_layout2.setVisibility(View.GONE);
                 getRatesofB2bandB2C(getSpinnerSelectedItem);
             }
 
@@ -888,7 +889,6 @@ public class RateCalculatorFragment extends Fragment {
                     show_selected_tests_list_test_ils1.setText("");
                     show_rates.setText("0");
                     before_discount_layout2.setVisibility(View.GONE);
-
                 }
             }
         });
@@ -1059,9 +1059,10 @@ public class RateCalculatorFragment extends Fragment {
             CalculateRateRequestModel requestModel = new CalculateRateRequestModel();
             requestModel.setApikey(api_key);
             requestModel.setTests(testToPassToAPI);
-
+            requestModel.setBrand(getSpinnerSelectedItem);
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
