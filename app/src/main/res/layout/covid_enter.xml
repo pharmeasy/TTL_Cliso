@@ -55,7 +55,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/custom_border_edittext_blue"
                 android:digits="@string/alphabets"
-                android:drawableLeft="@drawable/profile"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="First Name*"
                 android:maxLength="16"
@@ -70,7 +69,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/custom_border_edittext_blue"
                 android:digits="@string/alphabets"
-                android:drawableLeft="@drawable/profile"
                 android:drawablePadding="@dimen/_5sdp"
                 android:hint="Last Name*"
                 android:maxLength="16"
@@ -78,6 +76,39 @@
                 android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rel_verify_mobile"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_verifiedmob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|left"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginBottom="@dimen/_3sdp"
+                android:textAllCaps="false"
+                android:text="884575678596"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/iv_tick_img"
+                android:layout_toRightOf="@+id/tv_verifiedmob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="@dimen/_10sdp"
+                android:src="@drawable/otpverify" />
+
+        </RelativeLayout>
 
 
         <LinearLayout
@@ -239,13 +270,14 @@
             <Button
                 android:id="@+id/btn_choosefile_presc"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="1"
                 android:text="@string/uploadfile"
+                android:background="@color/maroon"
+                android:textColor="@color/white"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp" />
 
             <TextView
@@ -274,14 +306,6 @@
                     android:layout_width="@dimen/_30sdp"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/img_pres_close"
-                        android:layout_width="@dimen/_14sdp"
-                        android:layout_height="@dimen/_14sdp"
-                        android:layout_alignTop="@+id/img_pres_preview"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/icclose" />
 
                     <ImageView
                         android:id="@+id/img_pres_preview"
@@ -321,13 +345,14 @@
             <Button
                 android:id="@+id/btn_choosefile_adhar"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="1"
                 android:text="@string/uploadfile"
+                android:background="@color/maroon"
+                android:textColor="@color/white"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp" />
 
             <TextView
@@ -357,13 +382,7 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/img_close_adhar1"
-                        android:layout_width="@dimen/_14sdp"
-                        android:layout_height="@dimen/_14sdp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/icclose" />
+
 
                     <ImageView
                         android:id="@+id/img_adhar_preview1"
@@ -383,13 +402,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/img_close_adhar2"
-                        android:layout_width="@dimen/_14sdp"
-                        android:layout_height="@dimen/_14sdp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/icclose" />
+
 
                     <ImageView
                         android:id="@+id/img_adhar_preview2"
@@ -429,13 +442,14 @@
             <Button
                 android:id="@+id/btn_choosefile_trf"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="1"
                 android:text="@string/uploadfile"
+                android:background="@color/maroon"
+                android:textColor="@color/white"
                 android:textAllCaps="false"
-                android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp" />
 
             <TextView
@@ -466,13 +480,6 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/img_close_trf1"
-                        android:layout_width="@dimen/_14sdp"
-                        android:layout_height="@dimen/_14sdp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/icclose" />
 
                     <ImageView
                         android:id="@+id/img_trf_preview1"
@@ -493,13 +500,7 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:id="@+id/img_close_trf2"
-                        android:layout_width="@dimen/_14sdp"
-                        android:layout_height="@dimen/_14sdp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:src="@drawable/icclose" />
+
 
                     <ImageView
                         android:id="@+id/img_trf_preview2"

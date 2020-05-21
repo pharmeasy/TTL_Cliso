@@ -21,7 +21,6 @@ public class Constants {
     public static String APPID = "6";
     public static String TOPIC = "CLISO_ALLDEVICE";
     public static String APPNAME = "CLISO";
-
     public static String setVideoUrl = "VideoURL";
     public static String setFullScreen;
     public static int timeInterval = 0;

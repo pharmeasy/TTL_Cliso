@@ -32,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
@@ -40,7 +41,11 @@ import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
 import com.example.e5322.thyrosoft.DownloadInAppTask;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.CovidAccessReq;
+import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -52,6 +57,8 @@ import com.google.firebase.iid.InstanceIdResult;
 import java.io.File;
 
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int MEGABYTE = 1024 * 1024;
@@ -67,7 +74,8 @@ public class SplashScreen extends AppCompatActivity {
     String strmodtype;
     String version, islogin;
     Boolean isInternetPresent = false;  // flag for Internet connection status
-    ConnectionDetector cd;   // Connection detector class
+    ConnectionDetector cd;
+    SharedPreferences covid_pred;
     String z = "";
     Animation anim;
     String version1;
@@ -90,6 +98,7 @@ public class SplashScreen extends AppCompatActivity {
     private boolean firstRunSplash;
     private int WRITE_EXTERNAL_STORAGE = 123;
     SharedPreferences.Editor editoractivity;
+    private boolean covidacc;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -367,7 +376,6 @@ public class SplashScreen extends AppCompatActivity {
                         callIntent();
                     }
 
-
                 }
 
                 @Override
@@ -385,6 +393,9 @@ public class SplashScreen extends AppCompatActivity {
     private void callIntent() {
         new LogUserActivityTagging(activity, "");
         if (user != null && passwrd != null) {
+            if (GlobalClass.isNetworkAvailable(activity)){
+                checkcovidaccess();
+            }
             Intent prefe = new Intent(activity, ManagingTabsActivity.class);
             prefe.putExtra("Screen_category", SCRID);
             prefe.putExtra(Constants.COMEFROM, true);
@@ -397,6 +408,46 @@ public class SplashScreen extends AppCompatActivity {
             activity.startActivity(i);
             ((Activity) activity).finish();
         }
+    }
+
+    private void checkcovidaccess() {
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+
+        CovidAccessReq covidAccessReq = new CovidAccessReq();
+        covidAccessReq.setSourceCode(user);
+
+        Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+
+
+        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+            @Override
+            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
+
+                try {
+                    if (response.body().getResponse().equalsIgnoreCase("True")) {
+                        covidacc = true;
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", covidacc);
+                        editor.commit();
+                    } else {
+                        covidacc = false;
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", covidacc);
+                        editor.commit();
+                    }
+
+                    Log.e(TAG,"COVID ACCES FLAG --->"+covidacc);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+
+            }
+        });
     }
 
 

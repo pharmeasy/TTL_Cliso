@@ -49,14 +49,16 @@
             <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_10"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/edit_search"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_40"
                     android:background="@drawable/border"
                     android:drawablePadding="@dimen/dp_3"
                     android:hint="Search"
@@ -71,8 +73,8 @@
 
                 <ImageView
                     android:layout_alignParentRight="true"
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
                     android:layout_marginRight="10dp"
                     android:layout_centerInParent="true"
                     android:src="@drawable/search_red" />
@@ -97,6 +99,7 @@
             android:textColor="@color/maroon"
             android:textAlignment="center"
             android:visibility="gone"
+            android:layout_marginTop="@dimen/_100sdp"
             android:layout_gravity="center"/>
     </LinearLayout>
 

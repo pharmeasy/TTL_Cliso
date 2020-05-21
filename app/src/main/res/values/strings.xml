@@ -94,6 +94,7 @@
     <string name="enter_mobile_number">Enter Mobile Number</string>
     <string name="amt_str">Enter Minimum Amount of,\n Rs 5,000 to Proceed</string>
     <string name="multiple_amt">You have to enter amount in multiples of 5000</string>
+    <string name="covid">Covid Registration</string>
     <string name="page_1">Woe</string>
     <string name="page_2">Offline Wind - Up</string>
     <string name="page_3">Receipt</string>

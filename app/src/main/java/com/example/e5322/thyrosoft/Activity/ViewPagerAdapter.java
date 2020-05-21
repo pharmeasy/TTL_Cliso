@@ -26,6 +26,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
+
+
     public ViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);
         this.resources = resources;

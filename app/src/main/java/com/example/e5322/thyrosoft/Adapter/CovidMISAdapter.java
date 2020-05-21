@@ -170,9 +170,15 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         viewPager.setAdapter(viewPagerAdapter);
 
         final PageIndicatorView pageIndicatorView = dialog.findViewById(R.id.pageIndicatorView);
-        pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
-        pageIndicatorView.setSelection(0);
-        pageIndicatorView.setSelectedColor(context.getResources().getColor(R.color.maroon));
+        if (imagelist!=null && imagelist.size()>1){
+            pageIndicatorView.setVisibility(View.VISIBLE);
+            pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
+            pageIndicatorView.setSelection(0);
+            pageIndicatorView.setSelectedColor(context.getResources().getColor(R.color.maroon));
+        }else {
+            pageIndicatorView.setVisibility(View.GONE);
+        }
+
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

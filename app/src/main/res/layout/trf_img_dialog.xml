@@ -22,4 +22,5 @@
         android:layout_alignParentTop="true"
         android:src="@android:drawable/ic_menu_close_clear_cancel"/>
 
+
 </RelativeLayout>

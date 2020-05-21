@@ -131,6 +131,7 @@ public class ToastFile {
     //<---------------------TODO Alertbox--------------------------->//
     public static String processing_request = "Processing your request ...";
     public static String intConnection = "Oops! Your internet is not available";
+    public static String deletefile = "Are you sure you want to delete this image ?";
     public static String noDataAvailable = "No data available";
     public static String scp_not_mapped = "SCP is not mapped under this code,Please register SCP then try to do WOE";
     public static String surelogout = "Are you sure you want to Logout?";

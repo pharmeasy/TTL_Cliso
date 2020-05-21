@@ -60,6 +60,7 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
+
 public class ComposeCommunication_activity extends AppCompatActivity {
     public static final int RequestPermissionCode = 1;
     public static InputFilter EMOJI_FILTER = new InputFilter() {

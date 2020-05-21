@@ -2,9 +2,10 @@ package com.example.e5322.thyrosoft.Models;
 
 public class CovidaccessRes {
 
+
     /**
-     * resId : RES0001
-     * response : False
+     * resId : RES0000
+     * response : True
      */
 
     private String resId;

@@ -37,14 +37,14 @@ android {
             }
     signingConfigs {
         release {
-            storeFile file('/home/0313e@thyrocare.com/KalpeshProject/LATESTCLISO/CLISOPROGUARD/Cliso/credentials/Thyrosoft.jks')
+            storeFile file('/home/0394e@thyrocare.com/Desktop/Kalpeshcliso/Cliso/credentials/Thyrosoft.jks')
             storePassword 'thyrosoft@123'
             keyPassword 'thyrosoft@123'
             keyAlias = 'thyrosoft'
 
         }
         debug {
-            storeFile file('/home/0313e@thyrocare.com/KalpeshProject/LATESTCLISO/CLISOPROGUARD/Cliso/credentials/Thyrosoft.jks')
+            storeFile file('/home/0394e@thyrocare.com/Desktop/Kalpeshcliso/Cliso/credentials/Thyrosoft.jks')
             storePassword 'thyrosoft@123'
             keyAlias = 'thyrosoft'
             keyPassword 'thyrosoft@123'

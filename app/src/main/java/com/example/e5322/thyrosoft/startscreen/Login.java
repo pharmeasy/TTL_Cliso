@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,9 +36,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
+import com.example.e5322.thyrosoft.Models.CovidAccessReq;
+import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
@@ -47,6 +49,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Registration.Registration_first_screen;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -54,7 +57,6 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -78,6 +80,7 @@ public class Login extends Activity implements View.OnClickListener {
     Context context;
     String RESPONSE1, islogin, getOTPNO, numberforgotpass, regmobile, uil_from_login, res_id, nameFromLoginApi, RESPONSE, RES_ID, VALID, USER_TYPE, SENDERID, OTPNO, User, version, emailPattern, pass, ACCESS_TYPE11, API_KEY11, CLIENT_TYPE11, EMAIL11, EXISTS11, MOBILE11, NAME11, macAddress, RESPONSE11, RES_ID11, URL11, USER_CODE11, USER_TYPE11, VERSION_NO11;
     ProgressDialog barProgressDialog;
+    SharedPreferences.Editor editor;
     Handler updateBarHandler;
     String emailIdValidateOTP, isMobileEmailValidValidateOTP, mobileNoValidateOTP, otpNoValidateOTP, resIdValidateOTP, responseValidateOTP;
     //WaveDrawable mWaveDrawable;
@@ -116,7 +119,6 @@ public class Login extends Activity implements View.OnClickListener {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
-
 
 
         PackageInfo pInfo = null;
@@ -524,8 +526,8 @@ public class Login extends Activity implements View.OnClickListener {
                                                     if (edt_reg_otp.getText().toString().equals("")) {
                                                         Toast.makeText(Login.this, ToastFile.crt_otp, Toast.LENGTH_SHORT).show();
                                                     } else {
-                                                       // POstQueValidateOTP = Volley.newRequestQueue(Login.this);
-                                                        POstQueValidateOTP=GlobalClass.setVolleyReq(Login.this);
+                                                        // POstQueValidateOTP = Volley.newRequestQueue(Login.this);
+                                                        POstQueValidateOTP = GlobalClass.setVolleyReq(Login.this);
 
                                                         JSONObject jsonObjectValidateOtp = new JSONObject();
                                                         try {
@@ -657,7 +659,8 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void sendOtp() {
 
-        generateOTP = GlobalClass.setVolleyReq(Login.this);;
+        generateOTP = GlobalClass.setVolleyReq(Login.this);
+        ;
 
         JSONObject jsonObjectOtp = new JSONObject();
         try {
@@ -800,7 +803,7 @@ public class Login extends Activity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                RequestQueue queue =  GlobalClass.setVolleyReq(Login.this);
+                RequestQueue queue = GlobalClass.setVolleyReq(Login.this);
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LOGIN, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -815,7 +818,7 @@ public class Login extends Activity implements View.OnClickListener {
 
                                 if (loginResponseModel != null) {
                                     if (!GlobalClass.isNull(loginResponseModel.getRES_ID()) && loginResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                        SharedPreferences.Editor editor = getSharedPreferences("Userdetails", 0).edit();
+                                        editor = getSharedPreferences("Userdetails", 0).edit();
                                         editor.putString("Username", User);
                                         editor.putString("password", pass);
                                         editor.putString("ACCESS_TYPE", loginResponseModel.getACCESS_TYPE());
@@ -830,6 +833,11 @@ public class Login extends Activity implements View.OnClickListener {
                                         editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
                                         editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
                                         editor.apply();
+
+                                        if (GlobalClass.isNetworkAvailable(activity)) {
+                                            checkcovidaccess();
+                                        }
+
 
                                         USER_CODE11 = loginResponseModel.getUSER_CODE();
 
@@ -847,10 +855,6 @@ public class Login extends Activity implements View.OnClickListener {
 
                                         new LogUserActivityTagging(activity, Constants.SHLOGIN);
 
-                                        Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                                        a.putExtra(Constants.COMEFROM, true);
-                                        startActivity(a);
-                                        TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     } else {
                                         TastyToast.makeText(getApplicationContext(), loginResponseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     }
@@ -883,8 +887,46 @@ public class Login extends Activity implements View.OnClickListener {
         }
     }
 
+    private void checkcovidaccess() {
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+
+        CovidAccessReq covidAccessReq = new CovidAccessReq();
+        covidAccessReq.setSourceCode(User);
+
+        Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
 
 
+        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+            @Override
+            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
+
+                try {
+                    if (response.body().getResponse().equalsIgnoreCase("True")) {
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", true);
+                        editor.commit();
+                    } else {
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", false);
+                        editor.commit();
+                    }
+
+                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+                    a.putExtra(Constants.COMEFROM, true);
+                    startActivity(a);
+                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+
+            }
+        });
+    }
 
     private void storeRegIdInPref(String token) {
         SharedPreferences pref = getApplicationContext().getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
@@ -905,14 +947,14 @@ public class Login extends Activity implements View.OnClickListener {
 
 
         Call<FirebaseModel> responseCall = apiInterface.pushtoken(firebasepost);
-       // Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
+        // Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
         //Log.e("TAG", "PUSH URL" + responseCall.request().url());
         responseCall.enqueue(new Callback<FirebaseModel>() {
             @Override
             public void onResponse(Call<FirebaseModel> call, Response<FirebaseModel> response) {
                 try {
-                    if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)){
-                       // Log.e(TAG, "o n R e s p o n s e : " + response.body().getResponse());
+                    if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)) {
+                        // Log.e(TAG, "o n R e s p o n s e : " + response.body().getResponse());
                     }
 
                 } catch (Exception e) {

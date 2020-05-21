@@ -24,6 +24,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
 
+
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
     /**
@@ -38,6 +39,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.resources = resources;
     }
+
 
     @Override
     public Parcelable saveState() {
@@ -88,6 +90,7 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
             default:
                 result = null;
                 break;
+
 
         }
 
