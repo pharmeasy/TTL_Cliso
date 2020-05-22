@@ -49,12 +49,6 @@ public class BlankFragment extends Fragment {
         pager.setAdapter(adapter);
         indicator.setViewPager(pager);
     }
-//
-//*
-//     * Retrieve the currently visible Tab Fragment and propagate the onBackPressed callback
-//     *
-//     * @return true = if this fragment and/or one of it s associates Fragment can handle the backPress
-
 
     public boolean onBackPressed() {
         // currently visible tab Fragment

@@ -1346,7 +1346,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
-        if (validateOTPmodel.getResponseId().equals(Constants.RES0000)) {
+        if (validateOTPmodel.getResponseId().equals(Constants.RES0001)) {
             GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
 
 

@@ -196,8 +196,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         bottomNavigationView.setItemIconTintList(null);
 
-       /* shr_user_log = getSharedPreferences(Constants.SHR_USERLOG, MODE_PRIVATE);
-        editorUserActivity = shr_user_log.edit();*/
 
         if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
@@ -206,9 +204,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-//        if (GlobalClass.isNetworkAvailable(activity)) {
-//            checkcovidaccess(savedInstanceState);
-//        }
+        covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
+        covidacc = covid_pref.getBoolean("covidacc", false);
 
         if (savedInstanceState == null) {
             // withholding the previously created fragment from being created again
@@ -236,7 +233,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
 
-        covid_pref=getSharedPreferences("COVIDETAIL",MODE_PRIVATE);
+        covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -259,6 +256,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
 
         if (!TextUtils.isEmpty(CLIENT_TYPE) && CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+
             navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
@@ -287,18 +285,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         } else {
             if (access.equals("STAFF")) {
-                //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
-                // navigationView.getMenu().findItem(R.id.woe).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.result).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
-                // navigationView.getMenu().findItem(R.id.ledger).setVisible(false);
-                //navigationView.getMenu().findItem(R.id.billing).setVisible(false);
-                if (covidacc){
+                if (covidacc) {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
-                }else {
+                } else {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
                 }
 
@@ -312,18 +301,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
-                //navigationView.getMenu().findItem(R.id.home_navigation).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.offlinewoe).setVisible(true);
-                //  navigationView.getMenu().findItem(R.id.woe).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.result).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.trackdetails).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.ratecal).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.payment).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.ledger).setVisible(true);
-                //navigationView.getMenu().findItem(R.id.billing).setVisible(true);
-                if (covidacc){
+                if (covidacc) {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
-                }else {
+                } else {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
                 }
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
@@ -412,8 +392,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         editor.commit();
                     }
 
-                    Log.e(TAG,"COVID ACCES FLAG --->"+covidacc);
-
+                    Log.e(TAG, "COVID ACCES FLAG --->" + covidacc);
 
 
                 } catch (Exception e) {
@@ -744,6 +723,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             carouselFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+
         } else if (SCRID == Constants.SCR_5) {
             if (!CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 Bundle bundle = new Bundle();
@@ -771,6 +751,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 }
                 Intent intentstart = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
                 startActivity(intentstart);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1324,7 +1305,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void logout() {
-        SharedPreferences.Editor covidprefeditor=getSharedPreferences("COVIDETAIL",MODE_PRIVATE).edit();
+        SharedPreferences.Editor covidprefeditor = getSharedPreferences("COVIDETAIL", MODE_PRIVATE).edit();
         covidprefeditor.clear();
         covidprefeditor.apply();
 

@@ -1,5 +1,6 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.example.e5322.thyrosoft.Activity.frags.BS_EntryFragment;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.Fragment.Covidentered_frag;
+import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
@@ -28,11 +30,38 @@ public class CovidReg_Activity extends Fragment {
     ImageView back, home, enter_arrow_enter, enter_arrow_entered;
     FrameLayout fragment_main;
     private Object currentFragment;
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private String mParam1;
+    private String mParam2;
+    private CovidReg_Activity.OnFragmentInteractionListener mListener;
+
+    public CovidReg_Activity() {
+        // Required empty public constructor
+    }
+
+    public static CovidReg_Activity newInstance(String param1, String param2) {
+        CovidReg_Activity fragment = new CovidReg_Activity();
+        Bundle args = new Bundle();
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         super.onCreateView(inflater, container, savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.lay_covidreg, container, false);
         return view;
     }
@@ -41,16 +70,16 @@ public class CovidReg_Activity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        enter_ll_unselected = (LinearLayout)view. findViewById(R.id.enter_ll_unselected);
-        unchecked_entered_ll = (LinearLayout)view.  findViewById(R.id.unchecked_entered_ll);
+        enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
+        unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
 
-        back = (ImageView)view.  findViewById(R.id.back);
-        home = (ImageView)view.  findViewById(R.id.home);
-        enter_arrow_enter = (ImageView) view. findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView)view.  findViewById(R.id.enter_arrow_entered);
-        enter = (TextView) view. findViewById(R.id.enter);
-        enetered = (TextView) view. findViewById(R.id.enetered);
-        fragment_main = (FrameLayout) view. findViewById(R.id.fragment_mainLayout);
+        back = (ImageView) view.findViewById(R.id.back);
+        home = (ImageView) view.findViewById(R.id.home);
+        enter_arrow_enter = (ImageView) view.findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) view.findViewById(R.id.enter_arrow_entered);
+        enter = (TextView) view.findViewById(R.id.enter);
+        enetered = (TextView) view.findViewById(R.id.enetered);
+        fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
         enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -86,27 +115,6 @@ public class CovidReg_Activity extends Fragment {
     }
 
 
-//    @Override
-//    public void onBackPressed() {
-//        try {
-//            List fragments = getSupportFragmentManager().getFragments();
-//            currentFragment = fragments.get(fragments.size() - 1);
-//            if (currentFragment.toString().contains("Covidenter_Frag")) {
-//                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-//                enter_arrow_enter.setVisibility(View.VISIBLE);
-//                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-//                enter_arrow_entered.setVisibility(View.GONE);
-//                Covidenter_Frag c = new Covidenter_Frag();
-//                replaceFragment(c);
-//            }
-//            if (currentFragment.toString().contains("Covidentered_frag")) {
-//                finish();
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     public void replaceFragment(Fragment destFragment) {
         // First get FragmentManager object.
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -119,5 +127,17 @@ public class CovidReg_Activity extends Fragment {
 
         // Commit the Fragment replace action.
         fragmentTransaction.commit();
+    }
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void onFragmentInteraction(Uri uri);
+    }
+
+    public void onButtonPressed(Uri uri) {
+
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
     }
 }

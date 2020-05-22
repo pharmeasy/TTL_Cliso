@@ -376,6 +376,7 @@ public class SplashScreen extends AppCompatActivity {
                         callIntent();
                     }
 
+
                 }
 
                 @Override

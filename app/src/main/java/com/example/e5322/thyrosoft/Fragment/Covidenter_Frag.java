@@ -1113,6 +1113,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void clearfields() {
+        rel_verify_mobile.setVisibility(View.GONE);
         edt_fname.setFocusable(true);
         edt_fname.setCursorVisible(true);
         edt_fname.getText().clear();

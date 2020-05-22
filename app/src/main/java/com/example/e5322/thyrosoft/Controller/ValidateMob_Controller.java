@@ -75,7 +75,7 @@ public class ValidateMob_Controller {
                 ValidateOTPmodel validateOTPmodel = response.body();
                 GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                 try {
-                    if (validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0000)) {
+                    if (validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0001)) {
                         if (flag == 1) {
                             specialOffer_activity.onvalidatemob(validateOTPmodel, finalProgressDialog);
                         } else {

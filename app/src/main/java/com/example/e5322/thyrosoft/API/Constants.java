@@ -578,6 +578,7 @@ public class Constants {
     public static String GENRATE_OTP_API_KEY = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
 
     public static String RES0000 = "RES0000";
+    public static String RES0001 = "RES0001";
 
     public static String returnToken(Activity mContext) {
         String str = "";

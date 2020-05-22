@@ -1626,7 +1626,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
                             if (selectTypeSpinner.getSelectedItem().equals("ILS") || selectTypeSpinner.getSelectedItem().equals("SMT")) {
                                 Enablefields();
 
@@ -1876,38 +1876,75 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                                             @Override
                                                             public void onClick(SweetAlertDialog sDialog) {
-                                                                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                i.putExtra("name", nameString);
-                                                                i.putExtra("age", getFinalAge);
-                                                                i.putExtra("gender", saveGenderId);
-                                                                i.putExtra("sct", getFinalTime);
-                                                                i.putExtra("date", getFinalDate);
-                                                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                startActivity(i);
+                                                                if (brandNames.equalsIgnoreCase("DNA")){
+                                                                    Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                                                                    i.putExtra("name", nameString);
+                                                                    i.putExtra("age", getFinalAge);
+                                                                    i.putExtra("gender", saveGenderId);
+                                                                    i.putExtra("sct", getFinalTime);
+                                                                    i.putExtra("date", getFinalDate);
+                                                                    i.putExtra("woetype", typename);
+                                                                    startActivity(i);
 
-                                                                Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-                                                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                saveDetails.putString("name", nameString);
-                                                                saveDetails.putString("age", getFinalAge);
-                                                                saveDetails.putString("gender", saveGenderId);
-                                                                saveDetails.putString("sct", getFinalTime);
-                                                                saveDetails.putString("date", getFinalDate);
-                                                                saveDetails.putString("ageType", getAgeType);
-                                                                saveDetails.putString("labname", labLabNAmeTopass);
-                                                                saveDetails.putString("labAddress", labAddressTopass);
-                                                                saveDetails.putString("patientAddress", labAddressTopass);
-                                                                saveDetails.putString("refBy", referenceBy);
-                                                                saveDetails.putString("refId", referredID);
-                                                                saveDetails.putString("labIDaddress", labIDTopass);
-                                                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                saveDetails.putString("kycinfo", kycdata);
-                                                                saveDetails.putString("woetype", typename);
-                                                                saveDetails.putString("WOEbrand", brandNames);
-                                                                saveDetails.putString("SR_NO", getVial_numbver);
-                                                                saveDetails.putString("pincode", "");
-                                                                saveDetails.commit();
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                    saveDetails.putString("name", nameString);
+                                                                    saveDetails.putString("age", "");
+                                                                    saveDetails.putString("gender", "");
+                                                                    saveDetails.putString("sct", getFinalTime);
+                                                                    saveDetails.putString("date", getFinalDate);
+                                                                    saveDetails.putString("ageType", "");
+                                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                                    saveDetails.putString("patientAddress", labAddressTopass);
+                                                                    saveDetails.putString("refBy", referenceBy);
+                                                                    saveDetails.putString("refId", referredID);
+                                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                    saveDetails.putString("kycinfo", kycdata);
+                                                                    saveDetails.putString("woetype", typename);
+                                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
+                                                                    saveDetails.commit();
+                                                                }else {
+                                                                    Intent i  = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                    i.putExtra("name", nameString);
+                                                                    i.putExtra("age", getFinalAge);
+                                                                    i.putExtra("gender", saveGenderId);
+                                                                    i.putExtra("sct", getFinalTime);
+                                                                    i.putExtra("date", getFinalDate);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    startActivity(i);
+
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                    saveDetails.putString("name", nameString);
+                                                                    saveDetails.putString("age", getFinalAge);
+                                                                    saveDetails.putString("gender", saveGenderId);
+                                                                    saveDetails.putString("sct", getFinalTime);
+                                                                    saveDetails.putString("date", getFinalDate);
+                                                                    saveDetails.putString("ageType", getAgeType);
+                                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                                    saveDetails.putString("patientAddress", labAddressTopass);
+                                                                    saveDetails.putString("refBy", referenceBy);
+                                                                    saveDetails.putString("refId", referredID);
+                                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                    saveDetails.putString("kycinfo", kycdata);
+                                                                    saveDetails.putString("woetype", typename);
+                                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
+                                                                    saveDetails.commit();
+                                                                }
+
                                                                 sDialog.dismissWithAnimation();
                                                             }
                                                         }).show();
@@ -6358,7 +6395,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
-        otPrequest.setVersion(""+versionCode);
+        otPrequest.setVersion("" + versionCode);
         Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
         Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
         Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
@@ -6405,7 +6442,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     ControllersGlobalInitialiser.validateMob_controller = null;
                 }
                 ControllersGlobalInitialiser.validateMob_controller = new ValidateMob_Controller(Start_New_Woe.this);
-                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(),token);
+                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(), token);
             }
 
 
@@ -6443,7 +6480,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
-        if (validateOTPmodel.getResponseId().equals(Constants.RES0000)) {
+        if (validateOTPmodel.getResponseId().equals(Constants.RES0001)) {
             // GlobalClass.hideProgress(getActivity(), progressDialog);
 
 
@@ -6478,7 +6515,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
-           GlobalClass.hideProgress(getActivity(), progressDialog);
+            GlobalClass.hideProgress(getActivity(), progressDialog);
         }
     }
 

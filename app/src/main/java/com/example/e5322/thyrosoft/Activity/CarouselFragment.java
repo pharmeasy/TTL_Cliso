@@ -68,7 +68,7 @@ public class CarouselFragment extends Fragment {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
         user_code = prefs.getString("USER_CODE", null);
-        covidacc = prefs.getBoolean("covidacc", false);
+
 
         covid_pref=getActivity().getSharedPreferences("COVIDETAIL",MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
@@ -78,7 +78,7 @@ public class CarouselFragment extends Fragment {
 
         if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        } else {
+        } else{
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         }
 
@@ -87,6 +87,9 @@ public class CarouselFragment extends Fragment {
             public void onPageSelected(int position) {
                 final InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
+
+                Log.e(TAG,"positionInt-->"+position);
+                Log.e(TAG,"pager positionInt-->"+pager.getCurrentItem());
             }
 
             @Override
@@ -128,6 +131,8 @@ public class CarouselFragment extends Fragment {
 
             }
         }
+
+
 
 
         tabLayout.setupWithViewPager(pager);
