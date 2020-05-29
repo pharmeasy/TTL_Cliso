@@ -2,12 +2,16 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -16,10 +20,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
+import com.example.e5322.thyrosoft.Activity.CovidReg_Activity;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
+import com.example.e5322.thyrosoft.Fragment.Covidentered_frag;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.R;
@@ -34,10 +44,14 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     List<String> presclist = new ArrayList<>();
     List<String> aadharlist = new ArrayList<>();
     List<String> trflist = new ArrayList<>();
+    List<String> viallist = new ArrayList<>();
+    List<String> otherlist = new ArrayList<>();
+    Activity activity;
 
-    public CovidMISAdapter(Context context, List<Covidmis_response.OutputBean> covidMISmodelList) {
+    public CovidMISAdapter(Context context, List<Covidmis_response.OutputBean> covidMISmodelList, Activity activity) {
         this.context = context;
         this.covidMISmodelList = covidMISmodelList;
+        this.activity = activity;
     }
 
     @NonNull
@@ -51,16 +65,35 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     public void onBindViewHolder(@NonNull CovidMISAdapter.Viewholder viewholder, int i) {
         final Covidmis_response.OutputBean covidMISmodel = covidMISmodelList.get(i);
 
-        String name = "<b>" + "Patient name :" + "</b> " + covidMISmodel.getPatientName();
-        String mobile = "<b>" + "Mobile No :" + "</b> " + covidMISmodel.getMobile();
-        String ccc = "<b>" + "CCC :" + "</b> " + covidMISmodel.getCcc();
-        viewholder.txt_name.setText(Html.fromHtml(name));
-        viewholder.txt_mob.setText(Html.fromHtml(mobile));
-        viewholder.txt_ccc.setText(Html.fromHtml(ccc));
+
+        GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
+        GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
+        if (!TextUtils.isEmpty(covidMISmodel.getEntryDate().trim())) {
+            GlobalClass.SetText(viewholder.txt_time, covidMISmodel.getEntryDate().trim());
+        }
+
+        if (!TextUtils.isEmpty(covidMISmodel.getCcc())) {
+            viewholder.txt_ccc.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(covidMISmodel.getStatusName())) {
+                GlobalClass.SetText(viewholder.txt_ccc, covidMISmodel.getCcc() + " - " + covidMISmodel.getStatusName());
+            } else {
+                GlobalClass.SetText(viewholder.txt_ccc, covidMISmodel.getCcc());
+            }
+        } else {
+            GlobalClass.SetText(viewholder.txt_ccc, covidMISmodel.getStatusName());
+        }
 
         viewholder.txt_presc.setPaintFlags(viewholder.txt_presc.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewholder.txt_adhar.setPaintFlags(viewholder.txt_adhar.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewholder.txt_trf.setPaintFlags(viewholder.txt_trf.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        viewholder.txt_vial.setPaintFlags(viewholder.txt_vial.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        if (!TextUtils.isEmpty(covidMISmodel.getOther())) {
+            viewholder.txt_other.setVisibility(View.VISIBLE);
+            viewholder.txt_other.setPaintFlags(viewholder.txt_other.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        } else {
+            viewholder.txt_other.setVisibility(View.GONE);
+        }
 
         viewholder.txt_presc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +106,6 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                         presclist.add(url);
                         setviewpager(presclist);
                     }
-
                 }
             }
         });
@@ -113,8 +145,67 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 if (!TextUtils.isEmpty(covidMISmodel.getTrf1())) {
                     trf_url2 = covidMISmodel.getTrf1().replaceAll("\\\\", "//");
                     trflist.add(trf_url2);
+
                 }
                 setviewpager(trflist);
+            }
+        });
+
+        viewholder.txt_vial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String vial_url = "";
+                viallist.clear();
+
+                if (!TextUtils.isEmpty(covidMISmodel.getVialImage())) {
+                    vial_url = covidMISmodel.getVialImage().replaceAll("\\\\", "//");
+                    viallist.add(vial_url);
+                    setviewpager(viallist);
+                }
+
+            }
+        });
+
+        viewholder.txt_other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String other_url = "";
+                String other_url1 = "";
+                otherlist.clear();
+
+                if (!TextUtils.isEmpty(covidMISmodel.getOther())) {
+                    other_url = covidMISmodel.getOther().replaceAll("\\\\", "//");
+                    otherlist.add(other_url);
+
+                }
+                if (!TextUtils.isEmpty(covidMISmodel.getOther1())) {
+                    other_url1 = covidMISmodel.getOther1().replaceAll("\\\\", "//");
+                    otherlist.add(other_url1);
+
+                }
+                setviewpager(otherlist);
+            }
+        });
+
+
+        try {
+            if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
+                viewholder.btn_resubmit.setVisibility(View.VISIBLE);
+            } else {
+                viewholder.btn_resubmit.setVisibility(View.GONE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        viewholder.btn_resubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, CovidEditActivity.class);
+                intent.putExtra("Mobile", covidMISmodel.getMobile());
+                intent.putExtra("name", covidMISmodel.getPatientName());
+                intent.putExtra("UniqueId", covidMISmodel.getUniqueId());
+                context.startActivity(intent);
             }
         });
 
@@ -131,16 +222,22 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        TextView txt_name, txt_mob, txt_ccc, txt_trf, txt_adhar, txt_presc;
+        TextView txt_name, txt_mob, txt_ccc, txt_trf, txt_adhar, txt_presc, txt_vial, txt_other, txt_time;
+        Button btn_resubmit;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
+
+            btn_resubmit = itemView.findViewById(R.id.btn_resubmit);
             txt_name = itemView.findViewById(R.id.patientName);
             txt_mob = itemView.findViewById(R.id.txt_mobile);
             txt_ccc = itemView.findViewById(R.id.txt_ccc);
             txt_presc = itemView.findViewById(R.id.txt_presc);
             txt_adhar = itemView.findViewById(R.id.txt_adhar);
             txt_trf = itemView.findViewById(R.id.txt_trf);
+            txt_vial = itemView.findViewById(R.id.txt_vial);
+            txt_other = itemView.findViewById(R.id.txt_other);
+            txt_time = itemView.findViewById(R.id.txt_time);
         }
     }
 
@@ -150,11 +247,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.imageslider_dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-//        int width = (int) (context.getResources().getDisplayMetrics().widthPixels * 0.95);
-//        int height = (int) (context.getResources().getDisplayMetrics().heightPixels * 0.90);
         dialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-
 
         ImageView ic_close = (ImageView) dialog.findViewById(R.id.img_close);
         ic_close.setOnClickListener(new View.OnClickListener() {
@@ -166,16 +259,15 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
 
         ViewPager viewPager = (ViewPager) dialog.findViewById(R.id.viewPager);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(context, imagelist);
-
         viewPager.setAdapter(viewPagerAdapter);
 
         final PageIndicatorView pageIndicatorView = dialog.findViewById(R.id.pageIndicatorView);
-        if (imagelist!=null && imagelist.size()>1){
+        if (imagelist != null && imagelist.size() > 1) {
             pageIndicatorView.setVisibility(View.VISIBLE);
             pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
             pageIndicatorView.setSelection(0);
             pageIndicatorView.setSelectedColor(context.getResources().getColor(R.color.maroon));
-        }else {
+        } else {
             pageIndicatorView.setVisibility(View.GONE);
         }
 
@@ -196,6 +288,5 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
 
         dialog.setCancelable(true);
         dialog.show();
-
     }
 }

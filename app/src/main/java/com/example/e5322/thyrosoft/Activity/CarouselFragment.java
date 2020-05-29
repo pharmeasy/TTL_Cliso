@@ -45,7 +45,7 @@ public class CarouselFragment extends Fragment {
     NHF_pageradapter nhf_pageradapter;
     private int positionInt = 0;
     private SharedPreferences prefs;
-    private boolean covidacc=false;
+    private boolean covidacc = false;
     SharedPreferences covid_pref;
 
     public CarouselFragment() {
@@ -70,15 +70,15 @@ public class CarouselFragment extends Fragment {
         user_code = prefs.getString("USER_CODE", null);
 
 
-        covid_pref=getActivity().getSharedPreferences("COVIDETAIL",MODE_PRIVATE);
+        covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
-        Log.e("TAG","THIS IS COVID ACCESS-->"+covidacc);
-        Log.e("TAG","THIS IS  ACCESS-->"+access);
+        Log.e("TAG", "THIS IS COVID ACCESS-->" + covidacc);
+        Log.e("TAG", "THIS IS  ACCESS-->" + access);
 
         if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        } else{
+        } else {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         }
 
@@ -88,8 +88,8 @@ public class CarouselFragment extends Fragment {
                 final InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
 
-                Log.e(TAG,"positionInt-->"+position);
-                Log.e(TAG,"pager positionInt-->"+pager.getCurrentItem());
+                Log.e(TAG, "positionInt-->" + position);
+                Log.e(TAG, "pager positionInt-->" + pager.getCurrentItem());
             }
 
             @Override
@@ -112,27 +112,25 @@ public class CarouselFragment extends Fragment {
             pager.setAdapter(nhf_pageradapter);
         } else {
             if (access.equalsIgnoreCase(Constants.STAFF)) {
-                if (covidacc){
+                if (covidacc) {
                     covidadapter = new StaffCovidadapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(covidadapter);
-                }else {
+                } else {
                     adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adapterStafff);
                 }
 
             } else {
-                if (covidacc){
+                if (covidacc) {
                     adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adminCovidAdapter);
-                }else {
+                } else {
                     adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adapter);
                 }
 
             }
         }
-
-
 
 
         tabLayout.setupWithViewPager(pager);
@@ -157,10 +155,17 @@ public class CarouselFragment extends Fragment {
             Constants.tab_flag = "0";
         } else {
             Constants.tab_flag = "0";
-            if (pager != null && pager.getCurrentItem() != positionInt) {
-                pager.setCurrentItem(positionInt);
+            if (covidacc) {
+                if (Constants.covidwoe_flag.equalsIgnoreCase("1")) {
+                    pager.setCurrentItem(1);
+                    Constants.covidwoe_flag = "0";
+                }
             } else {
-                pager.setCurrentItem(0);
+                if (pager != null && pager.getCurrentItem() != positionInt) {
+                    pager.setCurrentItem(positionInt);
+                } else {
+                    pager.setCurrentItem(0);
+                }
             }
         }
     }
@@ -179,16 +184,16 @@ public class CarouselFragment extends Fragment {
                     currentFragment = (OnBackPressListener) nhf_pageradapter.getRegisteredFragment(pager.getCurrentItem());
                 } else {
                     if (access.equalsIgnoreCase(Constants.STAFF)) {
-                        if (covidacc){
+                        if (covidacc) {
                             currentFragment = (OnBackPressListener) covidadapter.getRegisteredFragment(pager.getCurrentItem());
-                        }else {
+                        } else {
                             currentFragment = (OnBackPressListener) adapterStafff.getRegisteredFragment(pager.getCurrentItem());
                         }
 
                     } else {
-                        if (covidacc){
+                        if (covidacc) {
                             currentFragment = (OnBackPressListener) adminCovidAdapter.getRegisteredFragment(pager.getCurrentItem());
-                        }else {
+                        } else {
                             currentFragment = (OnBackPressListener) adapter.getRegisteredFragment(pager.getCurrentItem());
                         }
 

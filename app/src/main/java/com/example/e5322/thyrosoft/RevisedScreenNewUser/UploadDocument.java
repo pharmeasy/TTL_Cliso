@@ -515,68 +515,84 @@ public class UploadDocument extends AbstractActivity {
                 }
 
                 if (selectedSpinItem != null && document_spin_value != null && edt_remarksUpdate != null) {
-                    if (selectedSpinItem.equalsIgnoreCase("NED")) {
-                        if (ned_spr.getSelectedItem().toString().length() > 0)
-                            ned_value = ned_spr.getSelectedItem().toString();
-                        exp_Date = edt_expiry.getText().toString();
+                    try{
+                        if (selectedSpinItem.equalsIgnoreCase("NED")) {
+                            if (ned_spr.getSelectedItem().toString().length() > 0)
+                                ned_value = ned_spr.getSelectedItem().toString();
+                            exp_Date = edt_expiry.getText().toString();
 
-                        String[] parts = ned_value.split("-");
-                        spincode = parts[0];
+                            String[] parts = ned_value.split("-");
+                            spincode = parts[0];
 
-                        if (ned_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (TextUtils.isEmpty(edt_remarksUpdate)) {
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (exp_Date.equalsIgnoreCase("")) {
-                            TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else {
-                            uploadDocument();
+
+                            if (ned_value.equalsIgnoreCase("-Select-")) {
+                                TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                                TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } else if (imageName == null) {
+                                TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } else if (TextUtils.isEmpty(edt_remarksUpdate)) {
+                                TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } else if (exp_Date.equalsIgnoreCase("")) {
+                                TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } else {
+                                uploadDocument();
+                            }
+                        } else if (!TextUtils.isEmpty(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("SGC")) {
+                            try{
+                                ned_value = sgc_spr.getSelectedItem().toString();
+                                exp_Date = "";
+
+                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                                while (m.find()) {
+                                    spincode = m.group(1);
+                                }
+
+                                if (ned_value.equalsIgnoreCase("-Select-")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (imageName == null) {
+                                    TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else {
+                                    uploadDocument();
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+
+                        } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
+                            try{
+                                ned_value = pgc_spr.getSelectedItem().toString();
+                                exp_Date = "";
+
+                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                                while (m.find()) {
+                                    spincode = m.group(1);
+                                }
+
+                                if (ned_value.equalsIgnoreCase("-Select-")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (imageName == null) {
+                                    TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
+                                    TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                } else {
+                                    uploadDocument();
+                                }
+                            }catch(Exception e){
+                                e.printStackTrace();
+                            }
+
                         }
-                    } else if (!TextUtils.isEmpty(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("SGC")) {
-                        ned_value = sgc_spr.getSelectedItem().toString();
-                        exp_Date = "";
-
-                        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
-                        while (m.find()) {
-                            spincode = m.group(1);
-                        }
-
-                        if (ned_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else {
-                            uploadDocument();
-                        }
-                    } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
-                        ned_value = pgc_spr.getSelectedItem().toString();
-                        exp_Date = "";
-
-                        Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
-                        while (m.find()) {
-                            spincode = m.group(1);
-                        }
-
-                        if (ned_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                            TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (imageName == null) {
-                            TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                            TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else {
-                            uploadDocument();
-                        }
+                    }catch(Exception e){
+                        e.printStackTrace();
                     }
+
                 }
             }
         });

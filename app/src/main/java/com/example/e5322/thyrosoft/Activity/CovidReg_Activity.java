@@ -117,7 +117,7 @@ public class CovidReg_Activity extends Fragment {
 
     public void replaceFragment(Fragment destFragment) {
         // First get FragmentManager object.
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getChildFragmentManager();
 
         // Begin Fragment transaction.
         android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

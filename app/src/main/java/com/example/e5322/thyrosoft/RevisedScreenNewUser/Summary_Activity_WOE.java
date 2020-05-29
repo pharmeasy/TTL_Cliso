@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
@@ -410,7 +412,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
 
                     if (resID.equals("RES0000")) {
                         TastyToast.makeText(Summary_Activity_WOE.this, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
+                        Constants.covidwoe_flag = "1";
                         Intent intent = new Intent(Summary_Activity_WOE.this, ManagingTabsActivity.class);
 //                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         GlobalClass.setFlagBackToWoe = true;

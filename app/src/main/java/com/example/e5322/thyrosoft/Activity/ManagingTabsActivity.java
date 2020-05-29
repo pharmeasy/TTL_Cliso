@@ -1357,7 +1357,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         mydataModel.commit();
 
         clearApplicationData();
-
+        Constants.covidwoe_flag = "0";
 //        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);

@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
@@ -561,6 +563,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                     if (status.equalsIgnoreCase("SUCCESS")) {
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                         GlobalClass.setFlag_back_toWOE = true;
+                        Constants.covidwoe_flag = "1";
                         Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
                         startActivity(i);
                         finish();

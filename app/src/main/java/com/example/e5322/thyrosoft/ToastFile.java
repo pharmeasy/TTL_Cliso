@@ -174,8 +174,8 @@ public class ToastFile {
 
     public static String ENTER_FNAME = "Please enter First name";
     public static String ENTER_LNAME = "Please enter Last name";
-    public static String SELECT_PIMAGE = "Select the prescription image";
-    public static String SELECT_ADHIMAGE = "Select the Aadhaar/passport image";
-    public static String SELECT_TRFDHIMAGE = "Select the trf image";
-
+    public static String SELECT_PIMAGE = "Upload the Prescription image";
+    public static String SELECT_ADHIMAGE = "Upload the Aadhaar/Passport image";
+    public static String SELECT_TRFDHIMAGE = "Upload the Trf image";
+    public static String SELECT_VIALDHIMAGE = "Upload the Vial image";
 }

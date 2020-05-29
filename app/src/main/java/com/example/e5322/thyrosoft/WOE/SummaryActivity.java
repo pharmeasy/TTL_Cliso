@@ -317,6 +317,7 @@ public class SummaryActivity extends AppCompatActivity {
                                     if (deletedRows == true)
                                         TastyToast.makeText(SummaryActivity.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     finish();
+                                    Constants.covidwoe_flag="1";
                                     Intent i = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
                                     startActivity(i);
                                 } else {
@@ -400,6 +401,7 @@ public class SummaryActivity extends AppCompatActivity {
                     DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
                     if (deleteWOEResponseModel != null) {
                         if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                            Constants.covidwoe_flag="1";
                             TastyToast.makeText(SummaryActivity.this, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             Intent intent = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
                             startActivity(intent);
@@ -432,6 +434,7 @@ public class SummaryActivity extends AppCompatActivity {
     }
 
     private void fetchData() {
+        Constants.covidwoe_flag="1";
         GlobalClass.setflagToRefreshData = true;
         Intent i = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
         i.putExtra("passToWoefragment", "frgamnebt");
@@ -526,6 +529,7 @@ public class SummaryActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finish();
+        Constants.covidwoe_flag="1";
         Intent i = new Intent(SummaryActivity.this, ManagingTabsActivity.class);
         startActivity(i);
         super.onBackPressed();

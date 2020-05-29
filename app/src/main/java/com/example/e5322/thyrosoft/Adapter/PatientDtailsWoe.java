@@ -11,7 +11,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -285,12 +288,11 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
                     resID = parentObjectOtp.getString("RES_ID");
 
                     if (resID.equals("RES0000")) {
+                        Constants.covidwoe_flag = "1";
                         TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                         Intent intent = new Intent(context1, ManagingTabsActivity.class);
                         GlobalClass.setFlagBackToWoe = true;
                         context1.startActivity(intent);
-//                        context1.finish();
-
                     } else {
                         if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();

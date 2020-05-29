@@ -18,9 +18,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Api;
@@ -28,7 +31,9 @@ import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.CovidMISAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.COVfiltermodel;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.R;
@@ -53,6 +58,7 @@ public class Covidentered_frag extends Fragment {
     private String myFormat = "dd-MM-yyyy";
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     Activity activity;
+    String TAG = getClass().getSimpleName();
     ConnectionDetector cd;
     CovidMISAdapter covidMISAdapter;
     RecyclerView recy_mis;
@@ -62,7 +68,9 @@ public class Covidentered_frag extends Fragment {
     LinearLayout ll_fromDate;
     Date fromdate;
     private EditText edit_search;
-
+    List<String> filterlist;
+    List<COVfiltermodel> coVfiltermodelList;
+    Spinner mode_filter;
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -99,7 +107,7 @@ public class Covidentered_frag extends Fragment {
         putDate = sdf.format(myCalendar.getTime());
         tv_fromDate.setText(putDate);
         from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
-
+        mode_filter.setSelection(0);
         if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
             if (cd.isConnectingToInternet()) {
                 getMIS(from_formateDate);
@@ -117,6 +125,8 @@ public class Covidentered_frag extends Fragment {
         tv_fromDate = view.findViewById(R.id.tv_fromDate);
         ll_fromDate = view.findViewById(R.id.ll_fromDate);
         txt_nodata = view.findViewById(R.id.txt_nodata);
+
+        mode_filter = view.findViewById(R.id.mode_filter);
 
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATEFORMATE);
         Date today = new Date();
@@ -141,23 +151,26 @@ public class Covidentered_frag extends Fragment {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("?")) {
                 }
+                if (enteredString.equals("")){
+                    mode_filter.setSelection(0);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
                 filter(editable.toString());
             }
         });
 
-        if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
-            if (cd.isConnectingToInternet()) {
-                getMIS(from_formateDate);
-            } else {
-                GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
-            }
+        if (cd.isConnectingToInternet()) {
+            getfilterapilist();
         } else {
-            GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
+            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
         }
+
+
+
         recy_mis = view.findViewById(R.id.recy_covidmis);
 
         ll_fromDate.setOnClickListener(new View.OnClickListener() {
@@ -172,8 +185,64 @@ public class Covidentered_frag extends Fragment {
             }
 
         });
+    }
+
+    private void getfilterapilist() {
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getfilter();
+        coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
+            @Override
+            public void onResponse(Call<COVfiltermodel> call, Response<COVfiltermodel> response) {
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000) && response.body().getStatus() != null) {
 
 
+                        filterlist = new ArrayList<>();
+                        filterlist.clear();
+                        for (int i = 0; i < response.body().getStatus().size(); i++) {
+                            filterlist.add(response.body().getStatus().get(i).getStatus());
+                        }
+
+                        ArrayAdapter<String> filteradapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, filterlist);
+                        filteradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        mode_filter.setAdapter(filteradapter);
+
+                        mode_filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                String type = mode_filter.getSelectedItem().toString();
+                                if (type.equalsIgnoreCase("All")){
+                                    if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
+                                        if (cd.isConnectingToInternet()) {
+                                            getMIS(from_formateDate);
+                                        } else {
+                                            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+                                        }
+                                    } else {
+                                        GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
+                                    }
+                                }else {
+                                    filterbytype(type);
+                                }
+
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<COVfiltermodel> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getMIS(String from_formateDate) {
@@ -196,7 +265,7 @@ public class Covidentered_frag extends Fragment {
                         covidMISmodelList = new ArrayList<>();
                         covidMISmodelList.addAll(response.body().getOutput());
                         recy_mis.setLayoutManager(new LinearLayoutManager(getContext()));
-                        covidMISAdapter = new CovidMISAdapter(getContext(), covidMISmodelList);
+                        covidMISAdapter = new CovidMISAdapter(getContext(), covidMISmodelList, activity);
                         recy_mis.setAdapter(covidMISAdapter);
                     } else {
                         recy_mis.setVisibility(View.GONE);
@@ -230,13 +299,44 @@ public class Covidentered_frag extends Fragment {
         try {
             ArrayList<Covidmis_response.OutputBean> filterlist = new ArrayList<>();
             for (Covidmis_response.OutputBean var : covidMISmodelList) {
-                if (var.getPatientName().toLowerCase().contains(text.toLowerCase()) || var.getMobile().toLowerCase().contains(text.toLowerCase())
+                if (var.getPatientName().toLowerCase().contains(text.toLowerCase()) ||var.getStatusName().toLowerCase().contains(text.toLowerCase()) || var.getMobile().toLowerCase().contains(text.toLowerCase())
                         || var.getCcc().toLowerCase().contains(text.toLowerCase())) {
                     filterlist.add(var);
                 }
             }
+
+            if (filterlist!=null &&filterlist.size()>0){
+                recy_mis.setVisibility(View.VISIBLE);
+                txt_nodata.setVisibility(View.GONE);
+            }else {
+                recy_mis.setVisibility(View.GONE);
+                txt_nodata.setVisibility(View.VISIBLE);
+                txt_nodata.setText(MessageConstants.NODATA);
+            }
             covidMISAdapter.filterList(filterlist);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void filterbytype(String text) {
+        try {
+            ArrayList<Covidmis_response.OutputBean> filterlist = new ArrayList<>();
+            for (Covidmis_response.OutputBean var : covidMISmodelList) {
+                if (var.getStatusName().contains(text)) {
+                    filterlist.add(var);
+                }
+            }
+            if (filterlist!=null &&filterlist.size()>0){
+                recy_mis.setVisibility(View.VISIBLE);
+                txt_nodata.setVisibility(View.GONE);
+            }else {
+                recy_mis.setVisibility(View.GONE);
+                txt_nodata.setVisibility(View.VISIBLE);
+                txt_nodata.setText(MessageConstants.NODATA);
+            }
+            covidMISAdapter.filterList(filterlist);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.Models;
 import java.io.File;
 
 public class Covidpostdata {
+    String UNIQUEID ;
     String SOURCECODE;
     String MOBILE;
     String NAME;
@@ -11,6 +12,41 @@ public class Covidpostdata {
     File ADHAR1;
     File TRF;
     File TRF1;
+    File VIAIMAGE;
+    File OTHER;
+    File OTHER1;
+
+    public File getOTHER1() {
+        return OTHER1;
+    }
+
+    public void setOTHER1(File OTHER1) {
+        this.OTHER1 = OTHER1;
+    }
+
+    public File getOTHER() {
+        return OTHER;
+    }
+
+    public File getVIAIMAGE() {
+        return VIAIMAGE;
+    }
+
+    public void setOTHER(File OTHER) {
+        this.OTHER = OTHER;
+    }
+
+    public void setVIAIMAGE(File VIAIMAGE) {
+        this.VIAIMAGE = VIAIMAGE;
+    }
+
+    public String getUNIQUEID() {
+        return UNIQUEID;
+    }
+
+    public void setUNIQUEID(String UNIQUEID) {
+        this.UNIQUEID = UNIQUEID;
+    }
 
     public File getADHAR1() {
         return ADHAR1;

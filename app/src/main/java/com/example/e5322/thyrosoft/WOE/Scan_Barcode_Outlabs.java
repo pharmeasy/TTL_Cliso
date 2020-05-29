@@ -817,33 +817,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-//        if (result != null) {
-//            Log.e(TAG, "onActivityResult: " + result);
-//            if (result.getContents() != null) {
-//                getBarcodeDetails = result.getContents();
-//                if (getBarcodeDetails.length() == 8) {
-//                    passBarcodeData(getBarcodeDetails);
-//                } else {
-//                    Toast.makeText(this, ToastFile.invalid_brcd, Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        } else {
-//            Log.e(TAG, "else: ");
-//            super.onActivityResult(requestCode, resultCode, data);
-//            if (resultCode == Activity.RESULT_OK) {
-//                if (requestCode == SELECT_FILE)
-//                    onSelectFromGalleryResult(data);
-//                else if (requestCode == REQUEST_CAMERA)
-//                    onCaptureImageResult(data);
-//            }
-//        }
-//    }
-
-
     private void passBarcodeData(final String barcodeDetails) {
 
         Log.e(TAG, "passBarcodeData: getBarcode details" + barcodeDetails);

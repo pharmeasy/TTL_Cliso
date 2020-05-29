@@ -90,6 +90,7 @@ public class Constants {
     public static final String NHF_EMAIL = "COMM_NHF";
 
     public static String tab_flag = "0";
+    public static String covidwoe_flag = "0";
 
     //login details//
     public static String Status = "Status";
@@ -579,6 +580,7 @@ public class Constants {
 
     public static String RES0000 = "RES0000";
     public static String RES0001 = "RES0001";
+    public static String RES0082 = "RES0082";
 
     public static String returnToken(Activity mContext) {
         String str = "";

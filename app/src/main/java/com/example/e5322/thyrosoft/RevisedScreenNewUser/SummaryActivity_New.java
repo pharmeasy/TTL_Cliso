@@ -369,10 +369,9 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         patientYearType = preferences.getString("yearType", null);
         patientGender = preferences.getString("gender", null);
 
-        pat_type.setText(getbrandname+"/"+ typename);
+        pat_type.setText(getbrandname+"/"+ typename+"/"+user);
         pat_sct.setText(getFinalDate + " " + getFinalTime);
         pat_name.setText(nameString);
-
 
         if (fromcome.equals("")) {
             linamt_collected.setVisibility(View.GONE);
@@ -454,6 +453,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
                                     if (deletedRows == true)
                                         TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     finish();
+                                    Constants.covidwoe_flag="1";
                                     Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
                                     startActivity(i);
                                 } else {
@@ -537,6 +537,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
                         DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
                         if (deleteWOEResponseModel != null) {
                             if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                                Constants.covidwoe_flag="1";
                                 TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                 Intent intent = new Intent(context1, ManagingTabsActivity.class);
                                 startActivity(intent);
@@ -635,6 +636,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         Intent intent = null;
 
         if (fromcome.equals("")) {
+            Constants.covidwoe_flag="1";
             intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -742,9 +744,9 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     @Override
     public void onBackPressed() {
         finish();
+        Constants.covidwoe_flag="1";
         Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
         startActivity(i);
-//        GlobalClass.exportDB(SummaryActivity_New.this);
         super.onBackPressed();
     }
 

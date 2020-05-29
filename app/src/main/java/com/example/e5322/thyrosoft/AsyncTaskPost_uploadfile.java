@@ -129,7 +129,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(strUrl);
-            httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+           // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
             httpPost.setEntity(builder.build());
 
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -150,7 +150,6 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                     builder.addBinaryBody(product, trfImageFile);
                     Log.e(TAG, "TRF :-" + product + " " + trfImageFile);
                 }
-
             }
 
             Log.e(TAG, "Post params:- " + "KEY" + ":" + apiKey + "\n" + "SOURCECODE" + ":" + sourceCode + "\n" + "PATIENTID" + ":" + patientID + "\n" + "TYPE:DATA Reciept" + "\n" + "MODE:THYROSOFTLITE APP" + "\n"
@@ -165,10 +164,12 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
                Log.v(TAG,"Response : " + result);
+
             }
         } catch (Exception e) {
-            Log.d("InputStream", e.getLocalizedMessage());
+            Log.e("InputStream", e.getLocalizedMessage());
             result = "Something went wrong";
+
         }
         return result;
     }

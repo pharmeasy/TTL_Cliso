@@ -576,35 +576,35 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
 
         for (int i = 0; i < temparraylist.size(); i++) {
-           if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")){
-               ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
-               setSpecimenTypeCodes = new ArrayList<>();
+            if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")){
+                ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+                setSpecimenTypeCodes = new ArrayList<>();
 
-               for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
-                   if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
-                       setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
-                   }
-               }
+                for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
+                    if (temparraylist.get(i).equalsIgnoreCase(getproductDetailswithBarcodes.get(j).getBarcode())) {
+                        setSpecimenTypeCodes.add(getproductDetailswithBarcodes.get(j).getProduct());
+                    }
+                }
 
-               scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
+                scannedBarcodeDetails.setSpecimen_type(temparraylist.get(i));
 
-               for (int k = 0; k < setSpecimenTypeCodes.size(); k++) {
+                for (int k = 0; k < setSpecimenTypeCodes.size(); k++) {
 
-                   HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
-                   List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
-                   String setProducts = TextUtils.join(",", listWithoutDuplicates);
-                   HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
-                   if (test.contains("RBS") && test.contains("PPBS")) {
-                       test.remove("RBS");
-                   }
-                   String setFinalProducts = TextUtils.join(",", test);
-                   scannedBarcodeDetails.setProducts(setFinalProducts);
+                    HashSet<String> listToSet = new HashSet<String>(setSpecimenTypeCodes);
+                    List<String> listWithoutDuplicates = new ArrayList<String>(listToSet);
+                    String setProducts = TextUtils.join(",", listWithoutDuplicates);
+                    HashSet<String> test = new HashSet<String>(Arrays.asList(setProducts.split(",")));
+                    if (test.contains("RBS") && test.contains("PPBS")) {
+                        test.remove("RBS");
+                    }
+                    String setFinalProducts = TextUtils.join(",", test);
+                    scannedBarcodeDetails.setProducts(setFinalProducts);
 
-               }
+                }
 
-               GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
+                GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
 
-           }
+            }
         }
 
         for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {

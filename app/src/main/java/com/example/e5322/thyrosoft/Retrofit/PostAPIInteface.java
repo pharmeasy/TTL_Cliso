@@ -5,6 +5,7 @@ import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
+import com.example.e5322.thyrosoft.Models.COVfiltermodel;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
@@ -26,6 +27,7 @@ import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface PostAPIInteface {
@@ -48,6 +50,8 @@ public interface PostAPIInteface {
     @POST("Common.svc/GeneratedOtp")
     Call<Covidotpresponse> generateotp(@Body COVIDgetotp_req coviDgetotp_req);
 
+    @GET("Common.svc/GetCovidStatus")
+    Call<COVfiltermodel>getfilter();
 
     @POST("Common.svc/Verifyotp")
     Call<Covid_validateotp_res> validateotp(@Body Covid_validateotp_req covid_validateotp_req);

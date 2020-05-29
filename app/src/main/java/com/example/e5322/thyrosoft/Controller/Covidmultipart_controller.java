@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
@@ -34,12 +35,21 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
     Covidenter_Frag covidenter_frag;
     int flag = 0;
     Covidpostdata covidpostdata;
+    CovidEditActivity covidEditActivity;
 
     public Covidmultipart_controller(Covidenter_Frag covidenter_frag, Activity activity, Covidpostdata covidpostdata) {
         this.covidenter_frag = covidenter_frag;
         this.mActivity = activity;
         status_code = 0;
         flag = 1;
+        this.covidpostdata = covidpostdata;
+    }
+
+    public Covidmultipart_controller(CovidEditActivity covidEditActivity, Activity activity, Covidpostdata covidpostdata) {
+        this.covidEditActivity = covidEditActivity;
+        this.mActivity = activity;
+        status_code = 0;
+        flag = 2;
         this.covidpostdata = covidpostdata;
     }
 
@@ -64,13 +74,16 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
-
+            if (flag == 2) {
+                builder.addPart("UNIQUEID", new StringBody("" + covidpostdata.getUNIQUEID()));
+            }
             builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
             builder.addPart("MOBILE", new StringBody("" + covidpostdata.getMOBILE()));
             builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
 
             FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
             builder.addPart("PRESCRIPTION", new InputStreamBody(fileInputStream, "image/jpeg", "file_name.jpg"));
+
 
             FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
             builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
@@ -89,9 +102,24 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
             }
 
+            FileInputStream vial_InputStream = new FileInputStream(covidpostdata.getVIAIMAGE());
+            builder.addPart("VIALIMAGE", new InputStreamBody(vial_InputStream, "image/jpeg", "file_name.jpg"));
 
-            Log.e(TAG, "\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME() +
-                    "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1());
+            if (covidpostdata.getOTHER()!=null){
+                FileInputStream otherfilestream1 = new FileInputStream(covidpostdata.getOTHER());
+                builder.addPart("OTHER", new InputStreamBody(otherfilestream1, "image/jpeg", "file_name.jpg"));
+
+            }
+
+            if (covidpostdata.getOTHER1()!=null){
+                FileInputStream otherfilestream2 = new FileInputStream(covidpostdata.getOTHER1());
+                builder.addPart("OTHER1", new InputStreamBody(otherfilestream2, "image/jpeg", "file_name.jpg"));
+
+            }
+
+            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID()  + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME() +
+                    "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1()
+                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()+ "\nOTHER:" + covidpostdata.getOTHER()+ "\nOTHER1:" + covidpostdata.getOTHER1());
 
             httpPost.setEntity(builder.build());
             HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -119,7 +147,12 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         }
         if (status_code == 200) {
             if (response != null && !response.isEmpty()) {
-                covidenter_frag.getUploadResponse(response);
+                if (flag == 1) {
+                    covidenter_frag.getUploadResponse(response);
+                } else {
+                    covidEditActivity.getUploadResponse(response);
+                }
+
             } else {
                 Global.showCustomToast(mActivity, response);
             }

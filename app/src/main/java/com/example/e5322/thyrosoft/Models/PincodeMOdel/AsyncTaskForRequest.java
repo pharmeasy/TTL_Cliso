@@ -74,6 +74,7 @@ public class AsyncTaskForRequest {
             apiCallAsyncTask = new ApiCallAsyncTask(context);
             abstractApiModel = new AbstractApiModel();
             Log.e(AsyncTaskForRequest.class.getSimpleName(), "getned: ");
+            Log.e("API-->",""+AbstractApiModel.SERVER_BASE_API_URL + abstractApiModel.GETNED + "/" + APi_key + "/" + Type + "/" + Type2 + "/" + Type3);
             // abstractApiModel.setHeader(getHeader(AbstractApiModel.APPLICATION_JSON));
             abstractApiModel.setRequestUrl(AbstractApiModel.SERVER_BASE_API_URL + abstractApiModel.GETNED + "/" + APi_key + "/" + Type + "/" + Type2 + "/" + Type3);
             apiCallAsyncTask.setHttpMethod((APICall.GET_METHOD));

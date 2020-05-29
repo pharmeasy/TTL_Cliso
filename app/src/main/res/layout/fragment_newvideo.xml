@@ -12,7 +12,8 @@
         android:layout_height="@dimen/_20sdp"
         android:layout_gravity="right"
         android:layout_margin="@dimen/_3sdp"
-        android:src="@drawable/icclose" />
+        android:src="@drawable/ic_cancel_maron_24dp"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

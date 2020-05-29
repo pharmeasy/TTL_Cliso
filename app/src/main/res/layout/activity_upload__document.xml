@@ -99,7 +99,6 @@
                 android:orientation="horizontal"
                 >
 
-
                 <Spinner
                     android:id="@+id/sgc_spr"
                     android:layout_width="0dp"
