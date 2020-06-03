@@ -151,6 +151,7 @@ public class ToastFile {
     public static String IMAGE_UPLOAD_FAILED = "WOE done successfully. But TRF and receipt upload failed. Kindly submit the images again.";
     public static String scan_barcode_all = "Please scan the barcode for all sample types.";
     public static String MOBILE_10_DIGITS = "Mobile number should be of 10 digits";
+    public static String AMTCOLL= "Kindly enter collected amount";
     public static String ENTER_MOBILE = "Please enter mobile number";
     public static String ENTER_VALID_OTP = "Enter valid OTP";
     public static String PLEASE_WAIT = "Please wait..";

@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/mainlinear"
+    android:background="@color/lightestgrey"
     android:orientation="vertical">
 
     <LinearLayout
@@ -28,13 +30,14 @@
                 <TextView
                     android:id="@+id/tv_fromDate"
                     android:layout_width="0dp"
+                    android:textColor="@color/black"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginBottom="@dimen/dp_10"
-                    android:layout_weight="3"
-                    android:hint="SELECT DATE" />
+                    android:textStyle="bold"
+                    android:layout_weight="3" />
 
                 <ImageView
                     android:layout_width="0dp"
@@ -67,9 +70,9 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="@dimen/_200sdp"
+            android:layout_width="match_parent"
             android:layout_margin="@dimen/_5sdp"
-            android:layout_gravity="center"
+            android:layout_gravity="right"
             android:layout_marginLeft="@dimen/_15sdp"
             android:layout_marginRight="@dimen/_15sdp"
             android:layout_height="wrap_content"
@@ -105,7 +108,7 @@
             android:id="@+id/recy_covidmis"
             android:layout_margin="@dimen/_5sdp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent" />
 
 
         <TextView
@@ -117,7 +120,7 @@
             android:textAlignment="center"
             android:visibility="gone"
             android:layout_marginTop="@dimen/_100sdp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center" />
     </LinearLayout>
 
 

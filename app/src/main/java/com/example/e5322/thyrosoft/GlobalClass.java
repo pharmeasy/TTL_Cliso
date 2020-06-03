@@ -37,6 +37,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -592,6 +593,13 @@ public class GlobalClass {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void Hidekeyboard(View view){
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        // Hide the soft keyboard
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
     }
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {

@@ -91,6 +91,7 @@ public class Constants {
 
     public static String tab_flag = "0";
     public static String covidwoe_flag = "0";
+    public static String covidfrag_flag = "0";
 
     //login details//
     public static String Status = "Status";

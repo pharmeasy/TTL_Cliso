@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,25 +18,26 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
@@ -46,27 +47,30 @@ import com.example.e5322.thyrosoft.Utility;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
+import com.rd.PageIndicatorView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CovidEditActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView tv_name, tv_verifiedmob;
+    TextView tv_name, tv_verifiedmob, tv_amt;
     ConnectionDetector cd;
     Activity activity;
     String usercode, apikey;
     Button btn_choosefile_presc, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
-    ImageView img_pres_preview, img_adhar_preview1, img_adhar_preview2, img_trf_preview1, img_trf_preview2,img_vialpreview1,  img_otherpreview1, img_other_preview2,back,home;
-    RelativeLayout rel_adhar1, rel_adhar2, rel_trf1, rel_trf2,rel_other1,rel_other2, rel_mobno;
+    ImageView back, home;
+    RelativeLayout rel_mobno;
     TextView txt_nofilepresc, txt_nofileadhar, txt_nofiletrf, txt_nofilevial, txt_nofileother;
     Button btn_submit, btn_reset;
-    LinearLayout lin_pres_preview, lin_adhar_images, lin_trf_images,lin_vial_images,lin_other_images;
+    LinearLayout lin_pres_preview, lin_adhar_images, lin_trf_images, lin_vial_images, lin_other_images;
     boolean verifyotp = true;
     private int PERMISSION_REQUEST_CODE = 200;
     private int PICK_PHOTO_FROM_GALLERY = 202;
@@ -86,10 +90,15 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     File vial_file = null;
     File other_file = null;
     File other_file1 = null;
-
+    List<String> presclist = new ArrayList<>();
+    List<String> aadharlist = new ArrayList<>();
+    List<String> trflist = new ArrayList<>();
+    List<String> viallist = new ArrayList<>();
+    List<String> otherlist = new ArrayList<>();
     boolean ispresciption, isadhar, istrf, isvial, isother;
     SharedPreferences preferences;
-    String mobileno, name,UniqueId;
+    String mobileno, name, UniqueId, amtcoll;
+    TextView txt_presfileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -101,8 +110,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         if (bundle != null) {
             mobileno = bundle.getString("Mobile");
             name = bundle.getString("name");
-            UniqueId=bundle.getString("UniqueId");
-            Log.e(TAG,"uniqueid-->"+UniqueId);
+            UniqueId = bundle.getString("UniqueId");
+            amtcoll = bundle.getString("amtcoll");
+            Log.e(TAG, "uniqueid-->" + UniqueId);
         }
 
         initview();
@@ -117,6 +127,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
         tv_name = findViewById(R.id.tv_name);
         tv_verifiedmob = findViewById(R.id.tv_verifiedmob);
+        tv_amt = findViewById(R.id.tv_amt);
+        tv_amt.setText("Rs " + amtcoll);
 
         tv_name.setText(name);
         tv_verifiedmob.setText(mobileno);
@@ -135,6 +147,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
+        txt_presfileupload = findViewById(R.id.txt_presfileupload);
+        txt_adharfileupload = findViewById(R.id.txt_adharfileupload);
+        txt_trffileupload = findViewById(R.id.txt_trffileupload);
+        txt_vialrfileupload = findViewById(R.id.txt_vialrfileupload);
+        txt_otherfileupload = findViewById(R.id.txt_otherfileupload);
+
         //TODO Buttons
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
         btn_choosefile_adhar = findViewById(R.id.btn_choosefile_adhar);
@@ -142,37 +160,26 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         btn_choosefile_vial = findViewById(R.id.btn_choosefile_vial);
         btn_choosefile_other = findViewById(R.id.btn_choosefile_other);
 
-        //TODO IMAGEVIEW
+        txt_presfileupload.setOnClickListener(this);
+        txt_adharfileupload.setOnClickListener(this);
+        txt_trffileupload.setOnClickListener(this);
+        txt_vialrfileupload.setOnClickListener(this);
+        txt_otherfileupload.setOnClickListener(this);
 
-        img_pres_preview = findViewById(R.id.img_pres_preview);
-        img_adhar_preview1 = findViewById(R.id.img_adhar_preview1);
-        img_adhar_preview2 = findViewById(R.id.img_adhar_preview2);
-
-        img_trf_preview1 = findViewById(R.id.img_trf_preview1);
-        img_trf_preview2 = findViewById(R.id.img_trf_preview2);
-
-        img_vialpreview1= findViewById(R.id.img_vialpreview1);
-        img_otherpreview1=findViewById(R.id.img_otherpreview1);
-        img_other_preview2 = findViewById(R.id.img_other_preview2);
+        aadharlist = new ArrayList<>();
+        trflist = new ArrayList<>();
+        viallist = new ArrayList<>();
+        otherlist = new ArrayList<>();
 
         //TODO Relativelayout
 
         rel_mobno = findViewById(R.id.rel_mobno);
 
-        rel_adhar1 = findViewById(R.id.rel_adhar1);
-        rel_adhar2 = findViewById(R.id.rel_adhar2);
-
-        rel_trf1 = findViewById(R.id.rel_trf1);
-        rel_trf2 = findViewById(R.id.rel_trf2);
-
-        rel_other1 = findViewById(R.id.rel_other1);
-        rel_other2 = findViewById(R.id.rel_other2);
-
         txt_nofilepresc = findViewById(R.id.txt_nofilepresc);
         txt_nofileadhar = findViewById(R.id.txt_nofileadhar);
         txt_nofiletrf = findViewById(R.id.txt_nofiletrf);
-        txt_nofilevial= findViewById(R.id.txt_nofilevial);
-        txt_nofileother= findViewById(R.id.txt_nofileother);
+        txt_nofilevial = findViewById(R.id.txt_nofilevial);
+        txt_nofileother = findViewById(R.id.txt_nofileother);
 
         btn_reset = findViewById(R.id.btn_reset);
         btn_submit = findViewById(R.id.btn_submit);
@@ -180,8 +187,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         lin_pres_preview = findViewById(R.id.lin_pres_preview);
         lin_adhar_images = findViewById(R.id.lin_adhar_images);
         lin_trf_images = findViewById(R.id.lin_trf_images);
-        lin_vial_images=findViewById(R.id.lin_vial_images);
-        lin_other_images=findViewById(R.id.lin_other_images);
+        lin_vial_images = findViewById(R.id.lin_vial_images);
+        lin_other_images = findViewById(R.id.lin_other_images);
 
         btn_reset.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
@@ -191,19 +198,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
-
-        img_pres_preview.setOnClickListener(this);
-
-        img_adhar_preview1.setOnClickListener(this);
-        img_adhar_preview2.setOnClickListener(this);
-
-
-        img_trf_preview1.setOnClickListener(this);
-        img_trf_preview2.setOnClickListener(this);
-
-        img_vialpreview1.setOnClickListener(this);
-        img_otherpreview1.setOnClickListener(this);
-        img_other_preview2.setOnClickListener(this);
 
         btn_choosefile_presc.setOnClickListener(this);
         btn_choosefile_adhar.setOnClickListener(this);
@@ -223,9 +217,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         trf_file = null;
         trf_file1 = null;
 
-        vial_file=null;
-        other_file=null;
-        other_file1=null;
+        vial_file = null;
+        other_file = null;
+        other_file1 = null;
 
         lin_pres_preview.setVisibility(View.GONE);
         lin_adhar_images.setVisibility(View.GONE);
@@ -233,14 +227,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         lin_vial_images.setVisibility(View.GONE);
         lin_other_images.setVisibility(View.GONE);
 
-        rel_adhar1.setVisibility(View.GONE);
-        rel_adhar2.setVisibility(View.GONE);
-
-        rel_trf1.setVisibility(View.GONE);
-        rel_trf2.setVisibility(View.GONE);
-
-        rel_other1.setVisibility(View.GONE);
-        rel_other2.setVisibility(View.GONE);
 
         txt_nofilepresc.setVisibility(View.VISIBLE);
         txt_nofileadhar.setVisibility(View.VISIBLE);
@@ -268,20 +254,27 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         txt_nofileother.setTextColor(getResources().getColor(R.color.black));
         txt_nofileother.setPaintFlags(0);
 
-        btn_choosefile_presc.setBackground(getResources().getDrawable(R.color.maroon));
-        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
+        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
 
-        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.color.maroon));
-        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
+        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
 
-        btn_choosefile_trf.setBackground(getResources().getDrawable(R.color.maroon));
-        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
+        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
 
-        btn_choosefile_vial.setBackground(getResources().getDrawable(R.color.maroon));
-        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
+        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
 
-        btn_choosefile_other.setBackground(getResources().getDrawable(R.color.maroon));
-        btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
+        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+
+        presclist.clear();
+        aadharlist.clear();
+        trflist.clear();
+        viallist.clear();
+        otherlist.clear();
+
 
     }
 
@@ -308,6 +301,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setNAME(name);
                             covidpostdata.setPRESCRIPTION(presc_file);
                             covidpostdata.setVIAIMAGE(vial_file);
+                            covidpostdata.setAMOUNTCOLLECTED(amtcoll);
 
 
                             if (aadhar_file != null && aadhar_file1 != null) {
@@ -459,29 +453,34 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 }
                 break;
 
-            case R.id.img_pres_preview:
-                showImageDialog1(activity, presc_file, "", 1, "prec");
+            case R.id.txt_presfileupload:
+                if (presclist != null && presclist.size() > 0) {
+                    setviewpager(presclist, "pres");
+                }
                 break;
-            case R.id.img_adhar_preview1:
-                showImageDialog1(activity, aadhar_file, "", 1, "adhar1");
+
+            case R.id.txt_adharfileupload:
+                if (aadharlist != null && aadharlist.size() > 0) {
+                    setviewpager(aadharlist, "adhar");
+                }
                 break;
-            case R.id.img_adhar_preview2:
-                showImageDialog1(activity, aadhar_file1, "", 1, "adhar2");
+
+            case R.id.txt_trffileupload:
+                if (trflist != null && trflist.size() > 0) {
+                    setviewpager(trflist, "trf");
+                }
                 break;
-            case R.id.img_trf_preview1:
-                showImageDialog1(activity, trf_file, "", 1, "trf1");
+
+            case R.id.txt_vialrfileupload:
+                if (viallist != null && viallist.size() > 0) {
+                    setviewpager(viallist, "vial");
+                }
                 break;
-            case R.id.img_trf_preview2:
-                showImageDialog1(activity, trf_file1, "", 1, "trf2");
-                break;
-            case R.id.img_vialpreview1:
-                showImageDialog1(activity, vial_file, "", 1, "vial");
-                break;
-            case R.id.img_otherpreview1:
-                showImageDialog1(activity, other_file, "", 1, "other");
-                break;
-            case R.id.img_other_preview2:
-                showImageDialog1(activity, other_file1, "", 1, "other1");
+
+            case R.id.txt_otherfileupload:
+                if (otherlist != null && otherlist.size() > 0) {
+                    setviewpager(otherlist, "other");
+                }
                 break;
 
         }
@@ -489,21 +488,21 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
     private boolean Validation() {
         if (presc_file == null) {
-            Global.showCustomToast(activity, ToastFile.SELECT_PIMAGE);
+            // Global.showCustomToast(activity, ToastFile.SELECT_PIMAGE);
             return false;
         }
 
         if (aadhar_file == null && aadhar_file1 == null) {
-            Global.showCustomToast(activity, ToastFile.SELECT_ADHIMAGE);
+            // Global.showCustomToast(activity, ToastFile.SELECT_ADHIMAGE);
             return false;
         }
 
         if (trf_file == null && trf_file1 == null) {
-            Global.showCustomToast(activity, ToastFile.SELECT_TRFDHIMAGE);
+            //   Global.showCustomToast(activity, ToastFile.SELECT_TRFDHIMAGE);
             return false;
         }
         if (vial_file == null) {
-            Global.showCustomToast(activity, ToastFile.SELECT_VIALDHIMAGE);
+            //    Global.showCustomToast(activity, ToastFile.SELECT_VIALDHIMAGE);
             return false;
         }
 
@@ -521,7 +520,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library",
+        final CharSequence[] items = {"Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Add Photo!");
@@ -586,170 +585,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 .build(this);
     }
 
-    public void showImageDialog1(final Activity activity, final File file, String url, int flag, final String type) {
-
-        final Dialog maindialog = new Dialog(activity);
-        maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        maindialog.setContentView(R.layout.covid_preview_dialog);
-        maindialog.setCancelable(true);
-
-        ImageView imgView = (ImageView) maindialog.findViewById(R.id.imageview);
-        ImageView img_close = (ImageView) maindialog.findViewById(R.id.img_close);
-        Button btn_delete = maindialog.findViewById(R.id.btn_delete);
-
-        btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                // Set the Alert Dialog Message
-                builder.setMessage(ToastFile.deletefile);
-                builder.setCancelable(false);
-                builder.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                if (type.equalsIgnoreCase("prec")) {
-                                    presc_file = null;
-                                    txt_nofilepresc.setVisibility(View.VISIBLE);
-                                    txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
-                                    lin_pres_preview.setVisibility(View.GONE);
-
-                                } else if (type.equalsIgnoreCase("adhar1")) {
-                                    aadhar_file = null;
-                                    rel_adhar1.setVisibility(View.GONE);
-                                    if (rel_adhar2.getVisibility() == View.VISIBLE) {
-                                        txt_nofileadhar.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofileadhar.setVisibility(View.VISIBLE);
-                                        lin_adhar_images.setVisibility(View.GONE);
-                                    }
-
-                                } else if (type.equalsIgnoreCase("adhar2")) {
-                                    aadhar_file1 = null;
-                                    rel_adhar2.setVisibility(View.GONE);
-                                    if (rel_adhar1.getVisibility() == View.VISIBLE) {
-                                        txt_nofileadhar.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofileadhar.setVisibility(View.VISIBLE);
-                                        lin_adhar_images.setVisibility(View.GONE);
-                                    }
-                                } else if (type.equalsIgnoreCase("trf1")) {
-                                    trf_file = null;
-                                    rel_trf1.setVisibility(View.GONE);
-                                    if (rel_trf2.getVisibility() == View.VISIBLE) {
-                                        txt_nofiletrf.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofiletrf.setVisibility(View.VISIBLE);
-                                        lin_trf_images.setVisibility(View.GONE);
-                                    }
-                                } else if (type.equalsIgnoreCase("trf2")) {
-                                    trf_file1 = null;
-                                    rel_trf2.setVisibility(View.GONE);
-                                    if (rel_trf1.getVisibility() == View.VISIBLE) {
-                                        txt_nofiletrf.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofiletrf.setVisibility(View.VISIBLE);
-                                        lin_trf_images.setVisibility(View.GONE);
-                                    }
-                                } else if (type.equalsIgnoreCase("vial")) {
-                                    vial_file = null;
-                                    txt_nofilevial.setVisibility(View.VISIBLE);
-                                    txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
-                                    lin_vial_images.setVisibility(View.GONE);
-                                } else if (type.equalsIgnoreCase("other")) {
-                                    other_file = null;
-                                    rel_other1.setVisibility(View.GONE);
-                                    if (rel_other2.getVisibility() == View.VISIBLE) {
-                                        txt_nofileother.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofileother.setVisibility(View.VISIBLE);
-                                        lin_other_images.setVisibility(View.GONE);
-                                    }
-                                }else if (type.equalsIgnoreCase("other1")){
-                                    other_file1 = null;
-                                    rel_other2.setVisibility(View.GONE);
-                                    if (rel_other1.getVisibility() == View.VISIBLE) {
-                                        txt_nofileother.setVisibility(View.GONE);
-                                    } else {
-                                        txt_nofileother.setVisibility(View.VISIBLE);
-                                        lin_other_images.setVisibility(View.GONE);
-                                    }
-                                }
-
-
-                                if (presc_file == null) {
-                                    btn_choosefile_presc.setBackground(getResources().getDrawable(R.color.maroon));
-                                    btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
-                                }
-
-                                if (aadhar_file == null || aadhar_file1 == null) {
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.color.maroon));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
-                                }
-
-                                if (trf_file == null || trf_file1 == null) {
-                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.color.maroon));
-                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
-                                }
-
-                                if (vial_file == null) {
-                                    btn_choosefile_vial.setBackground(getResources().getDrawable(R.color.maroon));
-                                    btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
-                                }
-
-                                if (other_file == null || other_file1 == null) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.color.maroon));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
-                                }
-
-                                dialog.dismiss();
-                                maindialog.dismiss();
-                            }
-
-                        });
-                builder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int id) {
-                                dialog.dismiss();
-
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-//                alert.dismiss();
-
-            }
-        });
-
-        if (flag == 1) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-            if (myBitmap != null)
-                imgView.setImageBitmap(myBitmap);
-            else
-                Global.showCustomToast(activity, "Image not found");
-        } else {
-            Glide.with(activity)
-                    .load(url)
-                    .placeholder(activity.getResources().getDrawable(R.drawable.img_no_img_aval))
-                    .into(imgView);
-        }
-
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                maindialog.dismiss();
-            }
-        });
-
-        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.95);
-        int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.90);
-
-        maindialog.getWindow().setLayout(width, height);
-        // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        maindialog.show();
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -766,23 +601,35 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     presc_file = new File(destFile);
                     GlobalClass.copyFile(new File(imageurl), presc_file);
                     lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilepresc.setVisibility(View.GONE);
+                    presclist = new ArrayList<>();
+                    presclist.clear();
+                    presclist.add(destFile);
+
                     if (presc_file != null) {
                         ispresciption = false;
-                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_presc.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
 
                 } else if (isadhar) {
-                    if (rel_adhar1.getVisibility() == View.VISIBLE) {
+
+                    if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
                         aadhar_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file1;
                         aadhar_file1 = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), aadhar_file1);
-                        rel_adhar2.setVisibility(View.VISIBLE);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(imageurl);
                     } else {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
@@ -790,29 +637,41 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file;
                         aadhar_file = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), aadhar_file);
-                        rel_adhar1.setVisibility(View.VISIBLE);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(imageurl);
                     }
-
 
                     if (aadhar_file != null && aadhar_file1 != null) {
                         isadhar = false;
-                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.color.flouride));
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
                     lin_adhar_images.setVisibility(View.VISIBLE);
 
                 } else if (istrf) {
 
-                    if (rel_trf1.getVisibility() == View.VISIBLE) {
+                    if (lin_trf_images.getVisibility() == View.VISIBLE && trf_file != null) {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
                         trf_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file1;
                         trf_file1 = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), trf_file1);
-                        rel_trf2.setVisibility(View.VISIBLE);
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
+                        trflist.add(imageurl);
                     } else {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
@@ -820,15 +679,23 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file;
                         trf_file = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), trf_file);
-                        rel_trf1.setVisibility(View.VISIBLE);
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
+                        trflist.add(imageurl);
                     }
-
 
                     if (trf_file != null && trf_file1 != null) {
                         istrf = false;
-                        btn_choosefile_trf.setBackground(getResources().getDrawable(R.color.flouride));
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
                     lin_trf_images.setVisibility(View.VISIBLE);
                 } else if (isvial) {
@@ -839,23 +706,32 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     vial_file = new File(destFile);
                     GlobalClass.copyFile(new File(imageurl), vial_file);
                     lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilevial.setVisibility(View.GONE);
                     if (vial_file != null) {
                         isvial = false;
-                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
                     }
+                    viallist.add(imageurl);
+                    buttonval();
 
                 } else if (isother) {
-                    if (rel_other1.getVisibility() == View.VISIBLE) {
+                    if (lin_other_images.getVisibility() == View.VISIBLE && other_file != null) {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
                         other_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + other_file1;
                         other_file1 = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), other_file1);
-                        rel_other2.setVisibility(View.VISIBLE);
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(imageurl);
                     } else {
                         bitmapimage = camera.getCameraBitmap();
                         String imageurl = camera.getCameraBitmapPath();
@@ -863,15 +739,24 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + other_file;
                         other_file = new File(destFile);
                         GlobalClass.copyFile(new File(imageurl), other_file);
-                        rel_other1.setVisibility(View.VISIBLE);
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(imageurl);
                     }
 
 
                     if (other_file != null && other_file1 != null) {
                         isother = false;
-                        btn_choosefile_other.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        buttonval();
                     }
                     lin_other_images.setVisibility(View.VISIBLE);
                 }
@@ -894,14 +779,21 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                     presc_file = GlobalClass.getCompressedFile(activity, presc_file);
                     lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilepresc.setVisibility(View.GONE);
+                    presclist = new ArrayList<>();
+                    presclist.clear();
+                    presclist.add(presc_file.toString());
                     if (presc_file != null) {
                         ispresciption = false;
-                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_presc.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
                 } else if (isadhar) {
-                    if (rel_adhar1.getVisibility() == View.VISIBLE) {
+                    if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
                         if (data.getData() != null) {
                             if (aadhar_file1 == null) {
                                 aadhar_file1 = FileUtil.from(activity, data.getData());
@@ -910,8 +802,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
-                        rel_adhar2.setVisibility(View.VISIBLE);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file1.toString());
                     } else {
                         if (data.getData() != null) {
                             if (aadhar_file == null) {
@@ -921,21 +817,31 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
-                        rel_adhar1.setVisibility(View.VISIBLE);
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file.toString());
+
                     }
 
                     if (aadhar_file != null && aadhar_file1 != null) {
                         isadhar = false;
-                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.color.flouride));
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
 
                     lin_adhar_images.setVisibility(View.VISIBLE);
 
 
                 } else if (istrf) {
-                    if (rel_trf1.getVisibility() == View.VISIBLE) {
+                    if (lin_trf_images.getVisibility() == View.VISIBLE && trf_file != null) {
                         if (data.getData() != null) {
                             if (trf_file1 == null) {
                                 trf_file1 = FileUtil.from(activity, data.getData());
@@ -944,9 +850,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
-                        rel_trf2.setVisibility(View.VISIBLE);
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
-
+                        trflist.add(trf_file1.toString());
                     } else {
                         if (data.getData() != null) {
                             trf_file = FileUtil.from(activity, data.getData());
@@ -954,15 +863,24 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         trf_file = GlobalClass.getCompressedFile(activity, trf_file);
-                        rel_trf1.setVisibility(View.VISIBLE);
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
+                        trflist.add(trf_file.toString());
                     }
 
 
                     if (trf_file != null && trf_file1 != null) {
                         istrf = false;
-                        btn_choosefile_trf.setBackground(getResources().getDrawable(R.color.flouride));
+                        lin_trf_images.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setVisibility(View.VISIBLE);
+                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
 
                     lin_trf_images.setVisibility(View.VISIBLE);
@@ -974,14 +892,19 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                     vial_file = GlobalClass.getCompressedFile(activity, vial_file);
                     lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilevial.setVisibility(View.GONE);
+                    viallist.add(vial_file.toString());
                     if (vial_file != null) {
                         isvial = false;
-                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
                     }
                 } else if (isother) {
-                    if (rel_other1.getVisibility() == View.VISIBLE) {
+                    if (lin_other_images.getVisibility() == View.VISIBLE && other_file != null) {
                         if (data.getData() != null) {
                             if (other_file1 == null) {
                                 other_file1 = FileUtil.from(activity, data.getData());
@@ -990,8 +913,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         other_file1 = GlobalClass.getCompressedFile(activity, other_file1);
-                        rel_other2.setVisibility(View.VISIBLE);
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file1.toString());
 
                     } else {
                         if (data.getData() != null) {
@@ -1000,15 +927,24 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         Uri uri = data.getData();
                         bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         other_file = GlobalClass.getCompressedFile(activity, other_file);
-                        rel_other1.setVisibility(View.VISIBLE);
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file.toString());
                     }
 
 
                     if (other_file != null && other_file1 != null) {
                         isother = false;
-                        btn_choosefile_other.setBackground(getResources().getDrawable(R.color.flouride));
+                        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        buttonval();
                     }
 
                     lin_other_images.setVisibility(View.VISIBLE);
@@ -1021,6 +957,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -1048,6 +985,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
                 Intent i = new Intent(activity, ManagingTabsActivity.class);
                 startActivity(i);
+                Constants.covidfrag_flag = "1";
                 finish();
             }
         } catch (JSONException e) {
@@ -1061,4 +999,265 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         intent.setAction(Intent.ACTION_GET_CONTENT);//
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
     }
+
+    private void buttonval() {
+        if (Validation()) {
+            btn_submit.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+            btn_submit.setTextColor(getResources().getColor(R.color.maroon));
+            btn_submit.setEnabled(true);
+            btn_submit.setClickable(true);
+        } else {
+            btn_submit.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+            btn_submit.setTextColor(getResources().getColor(R.color.black));
+            btn_submit.setEnabled(false);
+            btn_submit.setClickable(false);
+        }
+    }
+
+
+    public void setviewpager(List<String> imagelist, final String type) {
+        final Dialog maindialog = new Dialog(activity);
+        maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        maindialog.setContentView(R.layout.imageslider_dialog);
+        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
+        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(activity, imagelist);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.notifyDataSetChanged();
+
+        final PageIndicatorView pageIndicatorView = maindialog.findViewById(R.id.pageIndicatorView);
+        if (imagelist != null && imagelist.size() > 1) {
+            pageIndicatorView.setVisibility(View.VISIBLE);
+            pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
+            pageIndicatorView.setSelection(0);
+            pageIndicatorView.setSelectedColor(activity.getResources().getColor(R.color.maroon));
+        } else {
+            pageIndicatorView.setVisibility(View.GONE);
+        }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {/*empty*/}
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+                pageIndicatorView.setSelectedColor(getResources().getColor(R.color.maroon));
+                pageIndicatorView.setUnselectedColor(getResources().getColor(R.color.grey));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        Button btn_delete = maindialog.findViewById(R.id.btn_delete);
+        btn_delete.setVisibility(View.VISIBLE);
+        btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                // Set the Alert Dialog Message
+                builder.setMessage(ToastFile.deletefile);
+                builder.setCancelable(false);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+
+                        if (type.equalsIgnoreCase("pres")) {
+                            presc_file = null;
+                            presclist.clear();
+                            txt_nofilepresc.setVisibility(View.VISIBLE);
+                            txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+                            lin_pres_preview.setVisibility(View.GONE);
+                            btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                            btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+                            txt_nofilepresc.setVisibility(View.VISIBLE);
+                            buttonval();
+                        } else if (type.equalsIgnoreCase("adhar")) {
+
+                            if (aadharlist != null && aadharlist.size() > 0) {
+                                if (0 == viewPager.getCurrentItem()) {
+                                    if (aadhar_file != null) {
+                                        aadhar_file = null;
+                                    } else {
+                                        aadhar_file1 = null;
+                                    }
+
+                                    aadharlist.remove(aadharlist.get(0));
+                                    // viewPagerAdapter.notifyDataSetChanged();
+                                } else if (1 == viewPager.getCurrentItem()) {
+                                    aadhar_file1 = null;
+                                    if (aadharlist.size() == 2) {
+                                        aadharlist.remove(aadharlist.get(1));
+                                    } else {
+                                        aadharlist.remove(aadharlist.get(0));
+                                    }
+                                    // viewPagerAdapter.notifyDataSetChanged();
+                                }
+
+                                if (aadharlist.size() == 1) {
+                                    lin_adhar_images.setVisibility(View.VISIBLE);
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                                    txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else if (aadharlist.size() == 2) {
+                                    lin_adhar_images.setVisibility(View.VISIBLE);
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+                                    txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else {
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    txt_nofileadhar.setVisibility(View.VISIBLE);
+                                    txt_adharfileupload.setVisibility(View.GONE);
+
+                                }
+                                buttonval();
+
+                            } else {
+                                txt_nofileadhar.setVisibility(View.VISIBLE);
+                                lin_adhar_images.setVisibility(View.GONE);
+                            }
+                        } else if (type.equalsIgnoreCase("trf")) {
+                            if (trflist != null && trflist.size() > 0) {
+                                if (0 == viewPager.getCurrentItem()) {
+                                    if (trf_file != null) {
+                                        trf_file = null;
+                                    } else {
+                                        trf_file1 = null;
+                                    }
+                                    trflist.remove(trflist.get(0));
+                                    // viewPagerAdapter.notifyDataSetChanged();
+                                } else if (1 == viewPager.getCurrentItem()) {
+                                    trf_file1 = null;
+                                    if (trflist.size() == 2) {
+                                        trflist.remove(trflist.get(1));
+                                    } else {
+                                        trflist.remove(trflist.get(0));
+                                    }
+                                    //viewPagerAdapter.notifyDataSetChanged();
+                                }
+
+                                if (trflist.size() == 1) {
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    lin_trf_images.setVisibility(View.VISIBLE);
+                                    txt_trffileupload.setVisibility(View.VISIBLE);
+                                    txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                                    txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else if (trflist.size() == 2) {
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
+                                    lin_trf_images.setVisibility(View.VISIBLE);
+                                    txt_trffileupload.setVisibility(View.VISIBLE);
+                                    txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else {
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    txt_nofiletrf.setVisibility(View.VISIBLE);
+                                    txt_trffileupload.setVisibility(View.GONE);
+                                }
+
+                            } else {
+                                txt_nofiletrf.setVisibility(View.VISIBLE);
+                                lin_trf_images.setVisibility(View.GONE);
+                            }
+                            buttonval();
+                        } else if (type.equalsIgnoreCase("vial")) {
+                            vial_file = null;
+                            viallist.clear();
+                            txt_nofilevial.setVisibility(View.VISIBLE);
+                            txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
+                            lin_vial_images.setVisibility(View.GONE);
+                            btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                            btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+                            txt_nofilevial.setVisibility(View.VISIBLE);
+                            buttonval();
+                        } else if (type.equalsIgnoreCase("other")) {
+                            if (otherlist != null && otherlist.size() > 0) {
+                                if (0 == viewPager.getCurrentItem()) {
+                                    if (other_file != null) {
+                                        other_file = null;
+                                    } else {
+                                        other_file1 = null;
+                                    }
+
+                                    otherlist.remove(otherlist.get(0));
+                                    //   viewPagerAdapter.notifyDataSetChanged();
+                                } else if (1 == viewPager.getCurrentItem()) {
+                                    other_file1 = null;
+                                    if (otherlist.size() == 2) {
+                                        otherlist.remove(otherlist.get(1));
+                                    } else {
+                                        otherlist.remove(otherlist.get(0));
+                                    }
+                                    //  viewPagerAdapter.notifyDataSetChanged();
+                                }
+
+                                if (otherlist.size() == 1) {
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    lin_other_images.setVisibility(View.VISIBLE);
+                                    txt_otherfileupload.setVisibility(View.VISIBLE);
+                                    txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                                    txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else if (otherlist.size() == 2) {
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    lin_other_images.setVisibility(View.VISIBLE);
+                                    txt_otherfileupload.setVisibility(View.VISIBLE);
+                                    txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                                } else {
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    txt_nofileother.setVisibility(View.VISIBLE);
+                                    txt_otherfileupload.setVisibility(View.GONE);
+                                }
+
+                            } else {
+                                txt_nofileother.setVisibility(View.VISIBLE);
+                                lin_other_images.setVisibility(View.GONE);
+                            }
+                            buttonval();
+                        }
+
+                        dialog.dismiss();
+                        maindialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+
+        ImageView ic_close = (ImageView) maindialog.findViewById(R.id.img_close);
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maindialog.dismiss();
+            }
+        });
+
+
+        maindialog.setCancelable(true);
+        maindialog.show();
+    }
+
 }

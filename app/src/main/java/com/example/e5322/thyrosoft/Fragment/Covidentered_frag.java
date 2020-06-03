@@ -61,6 +61,7 @@ public class Covidentered_frag extends Fragment {
     String TAG = getClass().getSimpleName();
     ConnectionDetector cd;
     CovidMISAdapter covidMISAdapter;
+    LinearLayout mainlinear;
     RecyclerView recy_mis;
     List<Covidmis_response.OutputBean> covidMISmodelList;
     private String putDate, showDate, from_formateDate;
@@ -125,6 +126,14 @@ public class Covidentered_frag extends Fragment {
         tv_fromDate = view.findViewById(R.id.tv_fromDate);
         ll_fromDate = view.findViewById(R.id.ll_fromDate);
         txt_nodata = view.findViewById(R.id.txt_nodata);
+
+        mainlinear=view.findViewById(R.id.mainlinear);
+        mainlinear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GlobalClass.Hidekeyboard(view);
+            }
+        });
 
         mode_filter = view.findViewById(R.id.mode_filter);
 

@@ -5,6 +5,7 @@ import java.io.File;
 public class Covidpostdata {
     String UNIQUEID ;
     String SOURCECODE;
+    String AMOUNTCOLLECTED;
     String MOBILE;
     String NAME;
     File PRESCRIPTION ;
@@ -15,6 +16,14 @@ public class Covidpostdata {
     File VIAIMAGE;
     File OTHER;
     File OTHER1;
+
+    public String getAMOUNTCOLLECTED() {
+        return AMOUNTCOLLECTED;
+    }
+
+    public void setAMOUNTCOLLECTED(String AMOUNTCOLLECTED) {
+        this.AMOUNTCOLLECTED = AMOUNTCOLLECTED;
+    }
 
     public File getOTHER1() {
         return OTHER1;

@@ -142,7 +142,7 @@
     <string name="str_about_pet_ct">ABOUT PET CT SCAN</string>
     <string name="nodata">No Data Available</string>
     <string name="googlemapkey">AIzaSyBqIc3xZfNaH4sn03oC8e5luuJVQ9zbEIU</string>
-    <string name="enterccc">Verify</string>
+    <string name="enterccc">Confirm</string>
     <string name="btngenerateccc">Generate CCC</string>
     <string name="reset_mob">Reset Number?</string>
 
@@ -240,7 +240,7 @@
     <string name="reason_waste">Reason for Waste : </string>
     <string name="str_mob_credit">Mobile no. gives you credit</string>
     <string name="searchtest">Search Test Name</string>
-
+    <string name="imgupload">Image Uploaded</string>
     <string name="booking_id">Lead ID</string>
     <string name="tv_mob_no">Mobile number</string>
     <string name="tv_email">Email ID</string>
@@ -249,10 +249,10 @@
     <string name="pescription">Prescription*</string>
     <string name="adhar">Aadhaar/Passport*</string>
     <string name="trf">TRF*</string>
-    <string name="other">Other</string>
+    <string name="other">Others</string>
     <string name="vialimg">Vial*</string>
     <string name="chfile">Choose File*</string>
-    <string name="uploadfile">Upload*</string>
+    <string name="uploadfile">Upload</string>
     <string name="nofilechoosen">No file chosen</string>
     <string name="view"> <u>Preview</u></string>
 

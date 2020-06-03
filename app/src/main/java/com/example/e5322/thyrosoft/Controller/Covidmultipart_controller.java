@@ -80,6 +80,8 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
             builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
             builder.addPart("MOBILE", new StringBody("" + covidpostdata.getMOBILE()));
             builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
+            builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
+
 
             FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
             builder.addPart("PRESCRIPTION", new InputStreamBody(fileInputStream, "image/jpeg", "file_name.jpg"));
@@ -117,7 +119,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
             }
 
-            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID()  + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME() +
+            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID()  + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() +"\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED()  +  "\nNAME:" + covidpostdata.getNAME() +
                     "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1()
                     + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()+ "\nOTHER:" + covidpostdata.getOTHER()+ "\nOTHER1:" + covidpostdata.getOTHER1());
 

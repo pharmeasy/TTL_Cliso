@@ -68,6 +68,15 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
 
         GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
+
+
+        if (!TextUtils.isEmpty(covidMISmodel.getAmount_Collected())) {
+            viewholder.txt_amt.setVisibility(View.VISIBLE);
+            GlobalClass.SetText(viewholder.txt_amt, "Rs "+covidMISmodel.getAmount_Collected());
+        }else {
+            viewholder.txt_amt.setVisibility(View.GONE);
+        }
+
         if (!TextUtils.isEmpty(covidMISmodel.getEntryDate().trim())) {
             GlobalClass.SetText(viewholder.txt_time, covidMISmodel.getEntryDate().trim());
         }
@@ -87,6 +96,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         viewholder.txt_adhar.setPaintFlags(viewholder.txt_adhar.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewholder.txt_trf.setPaintFlags(viewholder.txt_trf.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         viewholder.txt_vial.setPaintFlags(viewholder.txt_vial.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
 
         if (!TextUtils.isEmpty(covidMISmodel.getOther())) {
             viewholder.txt_other.setVisibility(View.VISIBLE);
@@ -187,7 +197,6 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             }
         });
 
-
         try {
             if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
                 viewholder.btn_resubmit.setVisibility(View.VISIBLE);
@@ -198,6 +207,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             e.printStackTrace();
         }
 
+       // viewholder.btn_resubmit.setVisibility(View.VISIBLE);
         viewholder.btn_resubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -205,6 +215,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 intent.putExtra("Mobile", covidMISmodel.getMobile());
                 intent.putExtra("name", covidMISmodel.getPatientName());
                 intent.putExtra("UniqueId", covidMISmodel.getUniqueId());
+                intent.putExtra("amtcoll", covidMISmodel.getAmount_Collected());
                 context.startActivity(intent);
             }
         });
@@ -222,7 +233,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        TextView txt_name, txt_mob, txt_ccc, txt_trf, txt_adhar, txt_presc, txt_vial, txt_other, txt_time;
+        TextView txt_name, txt_amt,txt_mob, txt_ccc, txt_trf, txt_adhar, txt_presc, txt_vial, txt_other, txt_time;
         Button btn_resubmit;
 
         public Viewholder(@NonNull View itemView) {
@@ -231,6 +242,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             btn_resubmit = itemView.findViewById(R.id.btn_resubmit);
             txt_name = itemView.findViewById(R.id.patientName);
             txt_mob = itemView.findViewById(R.id.txt_mobile);
+            txt_amt=itemView.findViewById(R.id.txt_amt);
             txt_ccc = itemView.findViewById(R.id.txt_ccc);
             txt_presc = itemView.findViewById(R.id.txt_presc);
             txt_adhar = itemView.findViewById(R.id.txt_adhar);

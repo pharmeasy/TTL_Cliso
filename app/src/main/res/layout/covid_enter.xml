@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/_16sdp"
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/mainlinear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_5sdp"
@@ -77,20 +79,20 @@
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/_12sdp" />
 
-<!--            <EditText-->
-<!--                android:id="@+id/edt_lastname"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="@dimen/_5sdp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:background="@drawable/custom_border_edittext_blue"-->
-<!--                android:digits="@string/alphabets"-->
-<!--                android:drawablePadding="@dimen/_5sdp"-->
-<!--                android:hint="Last Name*"-->
-<!--                android:inputType="textCapCharacters"-->
-<!--                android:maxLength="16"-->
-<!--                android:padding="@dimen/_5sdp"-->
-<!--                android:textSize="@dimen/_12sdp" />-->
+            <!--            <EditText-->
+            <!--                android:id="@+id/edt_lastname"-->
+            <!--                android:layout_width="0dp"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_margin="@dimen/_5sdp"-->
+            <!--                android:layout_weight="1"-->
+            <!--                android:background="@drawable/custom_border_edittext_blue"-->
+            <!--                android:digits="@string/alphabets"-->
+            <!--                android:drawablePadding="@dimen/_5sdp"-->
+            <!--                android:hint="Last Name*"-->
+            <!--                android:inputType="textCapCharacters"-->
+            <!--                android:maxLength="16"-->
+            <!--                android:padding="@dimen/_5sdp"-->
+            <!--                android:textSize="@dimen/_12sdp" />-->
 
         </LinearLayout>
 
@@ -155,10 +157,10 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
                 android:layout_weight="1.2"
-                android:background="@drawable/btn_bg"
+                android:background="@drawable/covidbtn"
                 android:gravity="center"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/maroon"
                 android:textSize="@dimen/_10sdp" />
 
         </LinearLayout>
@@ -169,15 +171,12 @@
             android:layout_height="wrap_content"
             android:visibility="gone">
 
-
-            <android.support.v7.widget.AppCompatTextView
+            <TextView
                 android:id="@+id/tv_mobileno"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginStart="@dimen/dp_5"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/_3sdp"
                 android:textAllCaps="false"
                 android:textColor="@color/maroon"
                 android:textSize="14sp"
@@ -191,8 +190,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/_3sdp"
                 android:textAllCaps="false"
                 android:textColor="@color/maroon"
                 android:textSize="14sp"
@@ -212,14 +209,15 @@
                 android:id="@+id/edt_verifycc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:layout_weight="1.5"
+                android:padding="@dimen/_5sdp"
                 android:background="@drawable/custom_border_edittext_blue"
                 android:drawablePadding="@dimen/_2sdp"
                 android:hint="Verify CCC*"
                 android:inputType="number"
                 android:maxLength="6"
-                android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/_12sdp" />
 
             <Button
@@ -227,7 +225,8 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
                 android:layout_weight="0.7"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
@@ -240,33 +239,44 @@
                 android:layout_width="0dp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/_5sdp"
                 android:layout_weight="0.8"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
                 android:text="Resend"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_10sdp" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/tv_timer"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="0.8"
-                android:textAllCaps="false"
-                android:textColor="@color/maroon"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:textAllCaps="false"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:textColor="@color/maroon"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/edt_amt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:background="@drawable/custom_border_edittext_blue"
+            android:drawablePadding="@dimen/_2sdp"
+            android:hint="Amount collected"
+            android:inputType="number"
+            android:maxLength="10"
+            android:padding="@dimen/_5sdp"
+            android:textSize="@dimen/_12sdp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
+            android:weightSum="3"
             android:orientation="horizontal">
 
             <TextView
@@ -275,7 +285,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/pescription"
                 android:textColor="@color/black"
@@ -288,10 +298,10 @@
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:text="@string/uploadfile"
-                android:background="@color/maroon"
-                android:textColor="@color/white"
+                android:background="@drawable/covidbtn"
+                android:textColor="@color/maroon"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12sdp" />
 
@@ -301,7 +311,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
@@ -314,23 +324,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:visibility="gone">
 
-                <RelativeLayout
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@+id/img_pres_preview"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_marginTop="5dp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
 
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_presfileupload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 
@@ -339,6 +345,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:weightSum="3"
             android:orientation="horizontal">
 
             <TextView
@@ -347,7 +354,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/adhar"
                 android:textColor="@color/black"
@@ -360,10 +367,10 @@
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:text="@string/uploadfile"
-                android:background="@color/maroon"
-                android:textColor="@color/white"
+                android:background="@drawable/covidbtn"
+                android:textColor="@color/maroon"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12sdp" />
 
@@ -373,7 +380,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
@@ -384,48 +391,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
-                android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:drawablePadding="@dimen/_2sdp"
+                android:padding="@dimen/_5sdp"
+                android:layout_marginLeft="@dimen/_3sdp"
+                android:layout_weight="1.4"
                 android:visibility="gone">
 
-                <RelativeLayout
-                    android:id="@+id/rel_adhar1"
-                    android:layout_width="@dimen/_30sdp"
+                <TextView
+                    android:id="@+id/txt_adharfileupload"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
-
-
-
-                    <ImageView
-                        android:id="@+id/img_adhar_preview1"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rel_adhar2"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:visibility="gone">
-
-
-
-                    <ImageView
-                        android:id="@+id/img_adhar_preview2"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-                </RelativeLayout>
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 
@@ -443,7 +422,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/trf"
                 android:textColor="@color/black"
@@ -456,10 +435,10 @@
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:text="@string/uploadfile"
-                android:background="@color/maroon"
-                android:textColor="@color/white"
+                android:background="@drawable/covidbtn"
+                android:textColor="@color/maroon"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12sdp" />
 
@@ -469,7 +448,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
@@ -482,46 +461,21 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:visibility="gone">
 
-                <RelativeLayout
-                    android:id="@+id/rel_trf1"
-                    android:layout_width="@dimen/_30sdp"
+
+                <TextView
+                    android:id="@+id/txt_trffileupload"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_12sdp" />
 
 
-                    <ImageView
-                        android:id="@+id/img_trf_preview1"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rel_trf2"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:visibility="gone">
-
-
-                    <ImageView
-                        android:id="@+id/img_trf_preview2"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-                </RelativeLayout>
 
             </LinearLayout>
 
@@ -540,7 +494,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/vialimg"
                 android:textColor="@color/black"
@@ -553,10 +507,10 @@
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:text="@string/uploadfile"
-                android:background="@color/maroon"
-                android:textColor="@color/white"
+                android:background="@drawable/covidbtn"
+                android:textColor="@color/maroon"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12sdp" />
 
@@ -566,7 +520,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
@@ -579,25 +533,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:visibility="gone">
 
-                <RelativeLayout
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="wrap_content">
-
-
-                    <ImageView
-                        android:id="@+id/img_vialpreview1"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/txt_vialrfileupload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 
@@ -615,7 +562,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/other"
                 android:textColor="@color/black"
@@ -628,10 +575,10 @@
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:text="Upload"
-                android:background="@color/maroon"
-                android:textColor="@color/white"
+                android:background="@drawable/covidbtn"
+                android:textColor="@color/maroon"
                 android:textAllCaps="false"
                 android:textSize="@dimen/_12sdp" />
 
@@ -641,7 +588,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
@@ -654,46 +601,18 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|center"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="1"
+                android:layout_weight="1.4"
                 android:visibility="gone">
 
-                <RelativeLayout
-                    android:id="@+id/rel_other1"
-                    android:layout_width="@dimen/_30sdp"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/img_otherpreview1"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/rel_other2"
-                    android:layout_width="@dimen/_30sdp"
+                <TextView
+                    android:id="@+id/txt_otherfileupload"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/_5sdp"
-                    android:visibility="gone">
-
-
-
-                    <ImageView
-                        android:id="@+id/img_other_preview2"
-                        android:layout_width="@dimen/_28sdp"
-                        android:layout_height="@dimen/_28sdp"
-                        android:layout_gravity="center|right"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_marginTop="5dp"
-                        android:src="@drawable/ic_preview"
-                        android:visibility="visible" />
-                </RelativeLayout>
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
 
 
             </LinearLayout>
@@ -712,10 +631,13 @@
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_toLeftOf="@+id/btn_reset"
-                android:background="@color/maroon"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:background="@drawable/covidgreybtn"
                 android:text="@string/submit"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:enabled="false"
+                android:clickable="false"
+                android:textColor="@color/black"
                 android:textSize="@dimen/_12sdp" />
 
             <Button
@@ -725,11 +647,12 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_20sdp"
-                android:background="@color/maroon"
+                android:background="@drawable/covidbtn"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:textColor="@color/maroon"
                 android:text="@string/btnreset"
                 android:layout_marginStart="@dimen/_3sdp"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
                 android:textSize="@dimen/_12sdp" />
 
 
@@ -740,4 +663,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

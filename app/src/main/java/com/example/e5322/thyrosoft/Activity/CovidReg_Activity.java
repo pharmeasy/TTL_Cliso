@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.frags.BS_EntryFragment;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.Fragment.Covidentered_frag;
@@ -80,18 +81,29 @@ public class CovidReg_Activity extends Fragment {
         enter = (TextView) view.findViewById(R.id.enter);
         enetered = (TextView) view.findViewById(R.id.enetered);
         fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
-        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-        enter_arrow_enter.setVisibility(View.VISIBLE);
-        enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-        enter_arrow_entered.setVisibility(View.GONE);
 
 
-        final Covidenter_Frag covidenter_frag = new Covidenter_Frag();
-        replaceFragment(covidenter_frag);
+
+        if ( Constants.covidfrag_flag.equalsIgnoreCase("1")){
+            enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
+            enter_arrow_entered.setVisibility(View.VISIBLE);
+            enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
+            enter_arrow_enter.setVisibility(View.GONE);
+            Covidentered_frag covidentered_frag = new Covidentered_frag();
+            replaceFragment(covidentered_frag);
+        }else {
+            enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+            enter_arrow_enter.setVisibility(View.VISIBLE);
+            enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+            enter_arrow_entered.setVisibility(View.GONE);
+            final Covidenter_Frag covidenter_frag = new Covidenter_Frag();
+            replaceFragment(covidenter_frag);
+        }
 
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Constants.covidfrag_flag="0";
                 enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -104,6 +116,7 @@ public class CovidReg_Activity extends Fragment {
         unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Constants.covidfrag_flag="0";
                 enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_entered.setVisibility(View.VISIBLE);
                 enter.setBackgroundColor(getResources().getColor(R.color.lightgray));

@@ -47,8 +47,6 @@ public class ViewPagerAdapter extends PagerAdapter {
                 .placeholder(context.getResources().getDrawable(R.drawable.img_no_img_aval))
                 .into(imageView);
 
-        //  ShowImagePinchZoom.ZoomImage(imageView);
-
         ViewPager vp = (ViewPager) container;
         vp.addView(view, 0);
         return view;
@@ -57,10 +55,8 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-
         ViewPager vp = (ViewPager) container;
         View view = (View) object;
         vp.removeView(view);
-
     }
 }

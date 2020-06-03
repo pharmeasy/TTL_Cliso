@@ -187,6 +187,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
         setContentView(R.layout.activity_main_ll);
         activity = this;
 
@@ -1358,6 +1361,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         clearApplicationData();
         Constants.covidwoe_flag = "0";
+        Constants.covidfrag_flag="0";
 //        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);

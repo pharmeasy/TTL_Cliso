@@ -33,11 +33,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-
-import com.example.e5322.thyrosoft.API.ConnectionDetector;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,15 +62,17 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.AdapterRe;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -122,7 +119,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -387,7 +383,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private Dialog CustomLeaddialog;
     ConnectionDetector cd;
     SharedPreferences covid_pref;
-    boolean covidacc=false;
+    boolean covidacc = false;
+
     public Start_New_Woe() {
         // Required empty public constructor
     }
@@ -430,7 +427,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         mContext = getContext();
         cd = new ConnectionDetector(getActivity());
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
-        covid_pref =getActivity(). getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
+        covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
         name = (EditText) viewMain.findViewById(R.id.name);
@@ -1982,7 +1979,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 GlobalClass.setReferenceBy_Name = referenceBy;
                                                 startActivity(i);
 
-//                                            Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
+                                                GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
                                                 Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
                                                 SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
                                                 saveDetails.putString("name", nameString);
@@ -6913,7 +6910,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             });
 
         } else {
-            if (!covidacc){
+            if (!covidacc) {
                 final AlertDialog alertDialog = new AlertDialog.Builder(
                         mContext).create();
 

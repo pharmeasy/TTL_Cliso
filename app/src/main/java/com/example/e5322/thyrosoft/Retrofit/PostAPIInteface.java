@@ -14,6 +14,7 @@ import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
+import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.EmailModel;
 import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
 import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
@@ -37,6 +38,9 @@ public interface PostAPIInteface {
 
     @POST("COMMON.svc/Token")
     Call<Tokenresponse> getotptoken(@Body OTPrequest otPrequest);
+
+    @POST("Common.svc/CovidRates")
+    Call<Covidratemodel> displayrates();
 
     @POST("Common.svc/PatientDetails")
     Call<Covidmis_response> getcovidmis(@Body CovidMIS_req covidMIS_req);
