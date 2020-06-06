@@ -87,6 +87,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "534320592236-br1rts5nri9bbikhk99lr406k7oa13ll.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.e5322.thyrosoft",
+            "certificate_hash": "cfee07b6596d089c440bf84b1ef19db6ffb5276c"
+          }
+        },
+        {
           "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -191,6 +199,42 @@
         "mobilesdk_app_id": "1:534320592236:android:a64a08abc112724a",
         "android_client_info": {
           "package_name": "com.thyrocare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.LeggyPickso"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:e1db5b47ab722571816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.TCloud"
         }
       },
       "oauth_client": [
@@ -332,6 +376,50 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:0a1a9eebca6d052a816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.btechapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-vk3ehd11btl8nto1qom7k5poq49gmgje.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thyrocare.btechapp",
+            "certificate_hash": "201eee1a0b2cb5cc5e050d4bea956e78845278da"
+          }
+        },
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.LeggyPickso"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:534320592236:android:f077c35015b70079816f49",
         "android_client_info": {
           "package_name": "com.thyrocare.e3567.thyroe"
@@ -371,6 +459,42 @@
         "mobilesdk_app_id": "1:534320592236:android:54b7f1d519b379be816f49",
         "android_client_info": {
           "package_name": "com.thyrocare.nhlmeggy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.LeggyPickso"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:d9c6569d2581f24d816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.oms"
         }
       },
       "oauth_client": [

@@ -1,32 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:attrs="http://schemas.android.com/tools"
-    android:background="@drawable/custom_border_edittext_blue"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/img_close"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:scaleType="fitXY"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/ic_cancel_maron_24dp"/>
+    android:layout_height="500dp"
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:padding="@dimen/_4sdp"
+    android:gravity="center">
 
     <LinearLayout
+        android:id="@+id/ll_main"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/_18sdp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:layout_below="@+id/title"
+        android:orientation="vertical">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_weight="0.92"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp">
+
+        </android.support.v4.view.ViewPager>
 
         <com.rd.PageIndicatorView
             android:id="@+id/pageIndicatorView"
@@ -48,19 +43,37 @@
             android:layout_below="@+id/imageview"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="0dp"
-            android:layout_weight="0.06"
+            android:layout_weight="0.08"
             android:layout_gravity="center"
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/_3sdp"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:background="@color/maroon"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/covidbtn"
             android:text="Delete"
+            android:visibility="gone"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:layout_marginBottom="@dimen/_8sdp"
+            android:textColor="@color/maroon"
+            android:layout_marginBottom="@dimen/_4sdp"
             android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_cancel_maron_24dp"/>
+
+    </LinearLayout>
 
 </RelativeLayout>
+

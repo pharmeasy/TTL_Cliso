@@ -149,7 +149,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     Spinner btechname;
     SharedPreferences preferences;
     String myFormat = "dd-MM-yyyy"; //In which you need put here
-    SimpleDateFormat currsdf = new SimpleDateFormat("hh:mm a");
+    SimpleDateFormat currsdf = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat twelvehoursdf = new SimpleDateFormat("hh:mm a");
     SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -209,9 +210,15 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
         strdate = showDate;
-        strtime = currsdf.format(minDate);
+        if (checktime.equalsIgnoreCase("Default")){
+            String showtime = currsdf.format(minDate);
+            strtime = twelvehoursdf.format(minDate);
+            txt_ctime.setText(strdate + " " + showtime);
+        }else {
+            strtime = currsdf.format(minDate);
+            txt_ctime.setText(strdate + " " + strtime);
+        }
 
-        txt_ctime.setText(strdate + " " + strtime);
         Log.e(TAG, "MIN DATE --->" + strdate);
 
         listner();
@@ -1119,28 +1126,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     private void SendWoeData() {
 
-        /*String sctSEc = timeampm.getSelectedItem().toString();
-        System.out.println("Spinner value -->" + sctSEc);
-
-        if (spin_test.getSelectedItem().toString().equals("Select Test")) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please Select Test", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(et_name.getText().toString())) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(et_age.getText().toString())) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-        } else if (saveGenderId == null || saveGenderId == "") {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-        } else if (timehr.getSelectedItem().toString().equals("HR")) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-        } else if (timesecond.getSelectedItem().toString().equals("MIN")) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-        } else if (sctSEc.equals("AM/PM")) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
-        } else {
-            sendIntent();
-        }*/
         Date getCurrentDateandTime = new Date();
 
         String sctSEc = timeampm.getSelectedItem().toString();

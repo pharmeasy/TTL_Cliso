@@ -79,7 +79,7 @@ public class ScanSummaryActivity extends Fragment {
     ScansummAdapter scansummAdapter;
     List<ScansummaryModel> modelList;
     public static String CURR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    public static String OUTPUT_FORMAT = "dd-MM-yyyy hh:mm aa";
+    public static String OUTPUT_FORMAT = "dd-MM-yyyy HH:mm";
 
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 

@@ -239,7 +239,7 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
             referedby.setText("Ref By: "+myPojoWoe.getWoe().getREF_DR_NAME());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
             Date date = null;
             String output = null;
@@ -250,11 +250,12 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 output = sdfOutput.format(date);
                 //Displaying the date
                 System.out.println(output);
+                sct_txt.setText(output);
             }catch(ParseException pe){
                 pe.printStackTrace();
             }
 
-            sct_txt.setText(output);
+
 
             setAllTestWithBArcodeList = new ArrayList<>();
 

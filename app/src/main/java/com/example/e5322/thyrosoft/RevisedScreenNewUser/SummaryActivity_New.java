@@ -20,7 +20,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -32,12 +31,12 @@ import android.widget.TextView;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
@@ -77,7 +76,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     LinearLayout SGCLinearid, ll_patient_age, ll_patient_gender;
     TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, serial_number_re, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
-    String getSelctedTests, passProdcucts,getbrandname;
+    String getSelctedTests, passProdcucts, getbrandname;
     int saveSrNumber;
     String getStateName, getCountryName, getCityName;
     AlertDialog.Builder alertDialog;
@@ -369,7 +368,12 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         patientYearType = preferences.getString("yearType", null);
         patientGender = preferences.getString("gender", null);
 
-        pat_type.setText(getbrandname+"/"+ typename+"/"+user);
+        getFinalTime=GlobalClass.changetimeformate(getFinalTime);
+
+        Log.e(TAG, "getFinalDate---->" + getFinalDate);
+        Log.e(TAG, "getFinalTime---->" + getFinalTime);
+
+        pat_type.setText(getbrandname + "/" + typename + "/" + user);
         pat_sct.setText(getFinalDate + " " + getFinalTime);
         pat_name.setText(nameString);
 
@@ -453,7 +457,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
                                     if (deletedRows == true)
                                         TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                     finish();
-                                    Constants.covidwoe_flag="1";
+                                    Constants.covidwoe_flag = "1";
                                     Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
                                     startActivity(i);
                                 } else {
@@ -537,7 +541,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
                         DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
                         if (deleteWOEResponseModel != null) {
                             if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                Constants.covidwoe_flag="1";
+                                Constants.covidwoe_flag = "1";
                                 TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                                 Intent intent = new Intent(context1, ManagingTabsActivity.class);
                                 startActivity(intent);
@@ -636,7 +640,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         Intent intent = null;
 
         if (fromcome.equals("")) {
-            Constants.covidwoe_flag="1";
+            Constants.covidwoe_flag = "1";
             intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -744,7 +748,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     @Override
     public void onBackPressed() {
         finish();
-        Constants.covidwoe_flag="1";
+        Constants.covidwoe_flag = "1";
         Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
         startActivity(i);
         super.onBackPressed();

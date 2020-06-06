@@ -69,6 +69,15 @@ public class Covidmis_response {
         private String Other1;
         private String EntryDate;
         private String Amount_Collected;
+        private String Remarks;
+
+        public String getRemarks() {
+            return Remarks;
+        }
+
+        public void setRemarks(String remarks) {
+            Remarks = remarks;
+        }
 
         public String getAmount_Collected() {
             return Amount_Collected;

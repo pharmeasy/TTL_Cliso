@@ -1250,7 +1250,7 @@ Consignment_fragment extends RootFragment {
                     String getDispatchtime = dispatch_time.getText().toString();
                     Date d_convert = null;
                     Date compare = null;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                     try {
                         d_convert = sdf.parse(getDispatchtime);
                         Date d_pass = new Date();
@@ -1357,7 +1357,7 @@ Consignment_fragment extends RootFragment {
 
                     Date d_convert = null;
                     Date compare = null;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                     try {
                         d_convert = sdf.parse(getDispatchtime);
                         Date d_pass = new Date();
@@ -1532,7 +1532,7 @@ Consignment_fragment extends RootFragment {
                     consignment_barcode = consignment_barcd_btn.getText().toString();
                     Date d_convert = null;
                     Date compare = null;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                     try {
                         d_convert = sdf.parse(getDispatchtime);
                         Date d_pass = new Date();
@@ -1684,7 +1684,7 @@ Consignment_fragment extends RootFragment {
 
                     Date d_convert = null;
                     Date compare = null;
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                     try {
                         d_convert = sdf.parse(getDispatchtime);
                         Date d_pass = new Date();
@@ -2117,6 +2117,7 @@ Consignment_fragment extends RootFragment {
                                 expected_arrival_time.setText("");
                                 TastyToast.makeText(getActivity(), "Arrival time should be greater than dispatch time and departure time!", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             } else {
+                                getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
                                 expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
                                 expected_departure_time.setError(null);
                             }
@@ -2194,6 +2195,7 @@ Consignment_fragment extends RootFragment {
 
                             arr_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
                             if (arr_date_time.after(dispatch_date_time) && arr_date_time.after(dep_date_time) && !arr_date_time.equals(dispatch_date_time) && !arr_date_time.equals(dep_date_time)) {
+                                getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
                                 expected_arrival_time.setText(getDateToShow + " " + getTimetoPass);
                             } else {
                                 expected_arrival_time.setHint("Expected Time Arrival");
@@ -2272,7 +2274,7 @@ Consignment_fragment extends RootFragment {
 //                            String getDispatchTime = dispatch_time.getText().toString();
                             Date d_convert = null;
                             Date compare = null;
-                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                             try {
                                 d_convert = sdf.parse(total_time);
                                 Date d_pass = new Date();
@@ -2301,12 +2303,14 @@ Consignment_fragment extends RootFragment {
 
                                     if (arr_date_time != null) {
                                         if (arr_date_time.after(dispatch_date_time) && !arr_date_time.equals(dispatch_date_time)) {
+                                            getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
                                             dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                                         } else {
                                             expected_arrival_time.setText("");
                                             TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                         }
                                     } else {
+                                        getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
                                         dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                                         dispatch_time.setError(null);
                                     }

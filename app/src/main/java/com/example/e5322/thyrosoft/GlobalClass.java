@@ -90,6 +90,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -693,6 +694,25 @@ public class GlobalClass {
             }
 
         }
+    }
+
+    public static String changetimeformate(String time){
+        //Date/time pattern of input date
+        DateFormat df = new SimpleDateFormat("hh:mm a");
+        //Date/time pattern of desired output date
+        DateFormat outputformat = new SimpleDateFormat("HH:mm");
+        Date date = null;
+        String output = null;
+        try{
+            //Conversion of input String to date
+            date= df.parse(time);
+            //old date format to new date format
+            output = outputformat.format(date);
+            System.out.println(output);
+        }catch(ParseException pe){
+            pe.printStackTrace();
+        }
+        return output;
     }
 
     public static void showAlertDialog(final Activity activity) {

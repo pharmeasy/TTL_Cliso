@@ -190,6 +190,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         b2b = response.body().getB2B();
                         b2c = response.body().getB2C();
+                        // tv_amtrange.setText("Enter amount collected");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -342,28 +343,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-
-                if (edt_fname.getText().toString().length() == 0) {
-                    Global.showCustomToast(getActivity(), ToastFile.ENTER_FNAME);
-                    edt_fname.requestFocus();
-                }
-
-                if (edt_fname.getText().toString().length() < 2) {
-                    Global.showCustomToast(getActivity(), ToastFile.ENTER_FNAME);
-                    edt_fname.requestFocus();
-                }
-
-                if (Validation()) {
-                    btn_submit.setBackground(getResources().getDrawable(R.color.maroon));
-                    btn_submit.setTextColor(getResources().getColor(R.color.white));
-                    btn_submit.setEnabled(true);
-                    btn_submit.setClickable(true);
-                } else {
-                    btn_submit.setBackground(getResources().getDrawable(R.color.flouride));
-                    btn_submit.setTextColor(getResources().getColor(R.color.black));
-                    btn_submit.setEnabled(false);
-                    btn_submit.setClickable(false);
-                }
+                buttonval();
             }
         });
 
@@ -393,14 +373,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (edt_lname.getText().toString().length() == 0) {
-                    Global.showCustomToast(getActivity(), ToastFile.ENTER_LNAME);
-                    edt_lname.requestFocus();
-                }
-                if (edt_lname.getText().toString().length() < 1) {
-                    Global.showCustomToast(getActivity(), ToastFile.ENTER_LNAME);
-                    edt_lname.requestFocus();
-                }
                 buttonval();
             }
         });
@@ -451,23 +423,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 try {
+
                     int amt = Integer.parseInt(charSequence.toString());
 
                     if (amt > Integer.parseInt(b2c)) {
                         edt_amt.setText("");
-                       // TastyToast.makeText(getActivity(), "Please enter correct collected amount", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                         TastyToast.makeText(getActivity(), "Amount collected should be less than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    }
-
-
-                    if (amt < Integer.parseInt(b2b)) {
-                        if (charSequence.length() > 3) {
-                            edt_amt.setText("");
-                            TastyToast.makeText(getActivity(), "Amount collected should be greater than " + b2b, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else {
-                            //TastyToast.makeText(getActivity(), "Please enter correct collected amount", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                             TastyToast.makeText(getActivity(), "Amount collected should be greater than " + b2b, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        }
+                        TastyToast.makeText(getActivity(), "You cannot enter collect amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
                     buttonval();
 
@@ -871,6 +832,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         viallist.clear();
         otherlist.clear();
 
+        btn_submit.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+        btn_submit.setTextColor(getResources().getColor(R.color.black));
+        btn_submit.setEnabled(false);
+        btn_submit.setClickable(false);
     }
 
     private void mobileverify(String mobileno) {
@@ -892,7 +857,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        if (response.body().getResponse().equalsIgnoreCase("NOT VERIFIED")) {
+                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
+                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        }
                         disablefields();
                     } else if (response.body().getResId().equalsIgnoreCase(Constants.RES0082)) {
                         TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1449,7 +1418,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             return false;
         }
 
-        if (Integer.parseInt(edt_amt.getText().toString()) < Integer.parseInt(b2b) || (Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c))) {
+        if (TextUtils.isEmpty(edt_amt.getText().toString())) {
+            return false;
+        }
+
+        if (Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
             //   Global.showCustomToast(getActivity(), "Amount collected should greater than "+b2b+" and less than "+b2c);
             // Global.showCustomToast(getActivity(), "please enter correct collected amount");
 
@@ -1620,6 +1593,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         trflist.clear();
         viallist.clear();
         otherlist.clear();
+
+        btn_submit.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+        btn_submit.setTextColor(getResources().getColor(R.color.black));
+        btn_submit.setEnabled(false);
+        btn_submit.setClickable(false);
     }
 
     private void disablefields() {
@@ -1779,7 +1757,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         final Dialog maindialog = new Dialog(activity);
         maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        maindialog.setContentView(R.layout.imageslider_dialog);
+        maindialog.setContentView(R.layout.preview_dialog);
         //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 

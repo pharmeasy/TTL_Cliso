@@ -37,14 +37,14 @@ android {
             }
     signingConfigs {
         release {
-            storeFile file('E:\\KALPESHPROJECTS\\COVIDCHANGES\\Cliso\\credentials\\Thyrosoft.jks')
+            storeFile file('E:\\KALPESHPROJECTS\\CLISOPREVIEWCHANGE\\Cliso\\credentials\\Thyrosoft.jks')
             storePassword 'thyrosoft@123'
             keyPassword 'thyrosoft@123'
             keyAlias = 'thyrosoft'
 
         }
         debug {
-            storeFile file('E:\\KALPESHPROJECTS\\COVIDCHANGES\\Cliso\\credentials\\Thyrosoft.jks')
+            storeFile file('E:\\KALPESHPROJECTS\\CLISOPREVIEWCHANGE\\Cliso\\credentials\\Thyrosoft.jks')
             storePassword 'thyrosoft@123'
             keyAlias = 'thyrosoft'
             keyPassword 'thyrosoft@123'

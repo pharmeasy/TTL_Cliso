@@ -273,7 +273,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                     output = sdfOutput.format(date);
                     //Displaying the date
                     System.out.println(output);
-                    sct_txt.setText(output);
+                    sct_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
                 }
 
             } catch (ParseException pe) {

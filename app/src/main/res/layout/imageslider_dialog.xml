@@ -48,11 +48,11 @@
             android:layout_centerInParent="true"
             android:layout_marginLeft="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@color/maroon"
+            android:background="@drawable/covidbtn"
             android:text="Delete"
             android:visibility="gone"
             android:textAllCaps="false"
-            android:textColor="@color/white"
+            android:textColor="@color/maroon"
             android:layout_marginBottom="@dimen/_4sdp"
             android:textSize="@dimen/_12sdp" />
 

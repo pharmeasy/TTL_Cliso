@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.Adapter.LeadIdAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.LeadOrderIdMainModel;
@@ -203,30 +203,62 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
         if (!isfor1sttime) {
             isfor1sttime = true;
+//            for (int k = 0; k < GlobalClass.finalspecimenttypewiselist.size(); k++) {
+//
+//                if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("EDTA")) {
+//                    if (leadOrderIdMainModel.getLeads()[0].getEDTA() != null && !leadOrderIdMainModel.getLeads()[0].getEDTA().isEmpty()) {
+//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getEDTA());
+//                    }
+//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("SERUM")) {
+//                    if (leadOrderIdMainModel.getLeads()[0].getSERUM() != null && !leadOrderIdMainModel.getLeads()[0].getSERUM().isEmpty()) {
+//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getSERUM());
+//                    }
+//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("URINE")) {
+//                    if (leadOrderIdMainModel.getLeads()[0].getURINE() != null && !leadOrderIdMainModel.getLeads()[0].getURINE().isEmpty()) {
+//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getURINE());
+//                    }
+//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("HEPARIN")) {
+//                    if (leadOrderIdMainModel.getLeads()[0].getHEPARIN() != null && !leadOrderIdMainModel.getLeads()[0].getHEPARIN().isEmpty()) {
+//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getHEPARIN());
+//                    }
+//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("FLUORIDE")) {
+//                    if (leadOrderIdMainModel.getLeads()[0].getFLUORIDE() != null && !leadOrderIdMainModel.getLeads()[0].getFLUORIDE().isEmpty()) {
+//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getFLUORIDE());
+//                    }
+//                }
+//            }
+
 
             for (int k = 0; k < GlobalClass.finalspecimenttypewiselist.size(); k++) {
-
-                if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("EDTA")) {
-                    if (leadOrderIdMainModel.getLeads()[0].getEDTA() != null && !leadOrderIdMainModel.getLeads()[0].getEDTA().isEmpty()) {
-                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getEDTA());
-                    }
-                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("SERUM")) {
-                    if (leadOrderIdMainModel.getLeads()[0].getSERUM() != null && !leadOrderIdMainModel.getLeads()[0].getSERUM().isEmpty()) {
-                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getSERUM());
-                    }
-                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("URINE")) {
-                    if (leadOrderIdMainModel.getLeads()[0].getURINE() != null && !leadOrderIdMainModel.getLeads()[0].getURINE().isEmpty()) {
-                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getURINE());
-                    }
-                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("HEPARIN")) {
-                    if (leadOrderIdMainModel.getLeads()[0].getHEPARIN() != null && !leadOrderIdMainModel.getLeads()[0].getHEPARIN().isEmpty()) {
-                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getHEPARIN());
-                    }
-                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("FLUORIDE")) {
-                    if (leadOrderIdMainModel.getLeads()[0].getFLUORIDE() != null && !leadOrderIdMainModel.getLeads()[0].getFLUORIDE().isEmpty()) {
-                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getFLUORIDE());
+                for (int l = 0; l < leadOrderIdMainModel.getLeads().length; l++) {
+                    if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("EDTA")) {
+                        if (leadOrderIdMainModel.getLeads()[l].getEDTA() != null && !leadOrderIdMainModel.getLeads()[l].getEDTA().isEmpty()
+                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getEDTA());
+                        }
+                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("SERUM")) {
+                        if (leadOrderIdMainModel.getLeads()[l].getSERUM() != null && !leadOrderIdMainModel.getLeads()[l].getSERUM().isEmpty()
+                                &&leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getSERUM());
+                        }
+                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("URINE")) {
+                        if (leadOrderIdMainModel.getLeads()[l].getURINE() != null && !leadOrderIdMainModel.getLeads()[l].getURINE().isEmpty()
+                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getURINE());
+                        }
+                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("HEPARIN")) {
+                        if (leadOrderIdMainModel.getLeads()[l].getHEPARIN() != null && !leadOrderIdMainModel.getLeads()[l].getHEPARIN().isEmpty()
+                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getHEPARIN());
+                        }
+                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
+                        if (leadOrderIdMainModel.getLeads()[l].getFLUORIDE() != null && !leadOrderIdMainModel.getLeads()[l].getFLUORIDE().isEmpty()
+                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getFLUORIDE());
+                        }
                     }
                 }
+
             }
         }
 

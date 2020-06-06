@@ -34,6 +34,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Consignment_entry_form;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -462,12 +463,10 @@ public class Consignment_Entry_fragment extends Fragment {
                         dispatch_time.setText("");
                         dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
-//                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                     } else if (d_convert.after(new Date())) {
                         dispatch_time.setText("");
                         dispatch_time.setError(ToastFile.dispt_tm_condition);
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
-//                        dispatch_time.setError(ToastFile.dispt_tm_condition);
                     } else {
                         dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                     }
@@ -1702,6 +1701,8 @@ public class Consignment_Entry_fragment extends Fragment {
                             }
                             getTimetoPass = hourOfDaytoshow + ":" + minutetoshow + " " + format;
                             String total_time = getDateToShow + " " + getTimetoPass;
+
+                            getTimetoPass= GlobalClass.changetimeformate(getTimetoPass);
 
                             expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
                         }

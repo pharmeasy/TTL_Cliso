@@ -275,7 +275,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         viallist.clear();
         otherlist.clear();
 
-
+        btn_submit.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+        btn_submit.setTextColor(getResources().getColor(R.color.black));
+        btn_submit.setEnabled(false);
+        btn_submit.setClickable(false);
     }
 
     @Override
@@ -302,7 +305,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setPRESCRIPTION(presc_file);
                             covidpostdata.setVIAIMAGE(vial_file);
                             covidpostdata.setAMOUNTCOLLECTED(amtcoll);
-
 
                             if (aadhar_file != null && aadhar_file1 != null) {
                                 covidpostdata.setADHAR(aadhar_file);
@@ -1019,7 +1021,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         final Dialog maindialog = new Dialog(activity);
         maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        maindialog.setContentView(R.layout.imageslider_dialog);
+        maindialog.setContentView(R.layout.preview_dialog);
         //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 

@@ -20,7 +20,8 @@
     <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
     <string name="alphachar">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890 .,-|@</string>
     <string name="email_id">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890@_.</string>
-    <string name="alphabets">QWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="alphabets">qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="alphabets1">QWERTYUIOPASDFGHJKLZXCVBNM</string>
     <string name="text_with_bullet"> \u2022</string>
     <string name="bnkname">Bank Name : AXIS BANK</string>
     <string name="branchname">Branch Name : SANPADA</string>
@@ -135,6 +136,7 @@
     <string name="applycoupon">Apply</string>
     <string name="submit">Submit</string>
     <string name="resubmit">Re-submit</string>
+    <string name="viewupload">View Uploads</string>
     <string name="btnreset">Reset</string>
     <string name="scansumm">Scan Summary</string>
     <string name="paynow">Pay Now</string>
@@ -245,6 +247,7 @@
     <string name="tv_mob_no">Mobile number</string>
     <string name="tv_email">Email ID</string>
     <string name="tv_addr">Address</string>
+    <string name="allfields">Note : Submit button will enable once all mandatory fields entered</string>
     <string name="test_subject">Test details</string>
     <string name="pescription">Prescription*</string>
     <string name="adhar">Aadhaar/Passport*</string>

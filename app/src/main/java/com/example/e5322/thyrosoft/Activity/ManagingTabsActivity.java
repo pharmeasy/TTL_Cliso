@@ -107,6 +107,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     boolean IsFromNotification;
     boolean covidacc = false;
     int SCRID;
+    LinearLayout mainlinear;
     private int a = 0;
     private String TAG = getClass().getSimpleName();
     private CarouselFragment carouselFragment;
@@ -161,6 +162,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 case R.id.hamb_ic:
                     drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
                     drawerLayout.openDrawer(Gravity.END);
+                    GlobalClass.Hidekeyboard(drawerLayout);
                     return true;
             }
             return false;
@@ -198,6 +200,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         bottomNavigationView.setItemIconTintList(null);
+//        bottomNavigationView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
 
         if (GlobalClass.checkForApi21()) {
@@ -220,6 +228,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             // and getting the reference
             carouselFragment = (CarouselFragment) getSupportFragmentManager().getFragments().get(0);
         }
+
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
