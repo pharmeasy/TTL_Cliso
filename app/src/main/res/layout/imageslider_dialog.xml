@@ -11,15 +11,14 @@
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="-15dp"
+        android:layout_marginTop="-7dp"
         android:layout_below="@+id/title"
         android:orientation="vertical">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_weight="0.92"
-            android:layout_height="0dp">
+            android:layout_height="wrap_content">
 
         </android.support.v4.view.ViewPager>
 
@@ -38,24 +37,6 @@
             app:piv_dynamicCount="true"
             attrs:piv_radius="8dp" />
 
-        <Button
-            android:id="@+id/btn_delete"
-            android:layout_below="@+id/imageview"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="0dp"
-            android:layout_weight="0.08"
-            android:layout_gravity="center"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="@dimen/_3sdp"
-            android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/covidbtn"
-            android:text="Delete"
-            android:visibility="gone"
-            android:textAllCaps="false"
-            android:textColor="@color/maroon"
-            android:layout_marginBottom="@dimen/_4sdp"
-            android:textSize="@dimen/_12sdp" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -68,13 +49,11 @@
 
         <ImageView
             android:id="@+id/img_close"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_cancel_maron_24dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_cancel_maron_24dp" />
 
     </LinearLayout>
-
-
 
 </RelativeLayout>
 

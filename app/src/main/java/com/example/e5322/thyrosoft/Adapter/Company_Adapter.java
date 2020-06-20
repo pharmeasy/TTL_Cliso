@@ -5,8 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.OLCcontact_Array_list;
 import com.example.e5322.thyrosoft.R;
 

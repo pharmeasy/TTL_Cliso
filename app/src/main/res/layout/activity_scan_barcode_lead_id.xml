@@ -166,6 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:visibility="visible"
                 android:background="@drawable/border_background"
                 android:orientation="vertical">
 
@@ -184,14 +185,14 @@
                 <TextView
                     android:id="@+id/show_selected_tests_data"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:text=" Show Tests"
                     android:textColor="@color/colorBlack"
                     android:textSize="14sp" />
 
             </LinearLayout>
+
 
             <View
                 android:layout_width="match_parent"
@@ -264,7 +265,7 @@
                 android:background="@drawable/border_background"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.RecyclerView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_barcode_leads"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

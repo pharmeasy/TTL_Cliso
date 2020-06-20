@@ -8,8 +8,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -54,7 +53,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
     private ArrayList<Product_Rate_CalculatorModel> testRateMasterModels;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
     private InterfaceRateCAlculator mcallback;
-    private android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    private androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
     private List<String> tempselectedTests1;
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     RecyclerView testdetails;
@@ -386,7 +385,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
 
                 if (tempselectedTests != null && tempselectedTests.size() > 0) {
                     String cartproduct = TextUtils.join(",", tempselectedTests1);
-                    alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(activity);
+                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                     alertDialogBuilder
                             .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                             .setCancelable(true)
@@ -395,7 +394,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                                     alertDialog.dismiss();
                                 }
                             });
-                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 }
                 for (int i = 0; i < tempselectedTests.size(); i++) {
@@ -418,7 +417,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                     selectedTests.remove(testRateMasterModel);
                     mcallback.onCheckChangeRateCalculator(selectedTests);
                 } else {
-                    alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(activity);
+                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                     alertDialogBuilder
                             .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                             .setCancelable(true)
@@ -427,7 +426,7 @@ public class ExapandableAdpterForB2CRate_Calculator extends BaseExpandableListAd
                                     alertDialog.dismiss();
                                 }
                             });
-                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
 
                     //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();

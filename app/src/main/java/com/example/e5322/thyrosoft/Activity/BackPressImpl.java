@@ -1,7 +1,7 @@
 package com.example.e5322.thyrosoft.Activity;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 /**
  * Created by shahabuddin on 6/6/14.

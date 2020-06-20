@@ -23,13 +23,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -45,12 +39,12 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -95,8 +89,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -189,7 +189,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private ArrayList<String> temparraylist;
     private ArrayList<ProductWithBarcode> getproductDetailswithBarcodes;
     private AdapterBarcode_New adapterBarcode;
-    private String getAmount;
+    private String getAmount, b2b_rate;
     private AlertDialog.Builder alertDialog;
     private int collectedAmt;
     private int totalAmount;
@@ -443,7 +443,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
         ArrayList<String> getTestNameToPAss = new ArrayList<>();
         getAmount = bundle.getString("payment");
+        b2b_rate = bundle.getString("b2b_rate");
         testsnames = bundle.getString("writeTestName");
+
+        Log.e(TAG,"b2b_rate--->"+b2b_rate);
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
 
 
@@ -562,7 +565,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         setAmt.setText(String.valueOf(getAmount));
 
 
-
         for (int i = 0; i < temparraylist.size(); i++) {
             if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
                 Set<String> hs = new HashSet<>();
@@ -573,10 +575,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         }
 
 
-
-
         for (int i = 0; i < temparraylist.size(); i++) {
-            if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")){
+            if (!temparraylist.get(i).equalsIgnoreCase("FLUORIDE")) {
                 ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
                 setSpecimenTypeCodes = new ArrayList<>();
 
@@ -668,29 +668,58 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 } else {
                     lab_alert_pass_toApi = lab_alert_spin.getText().toString();
                 }
-                getCollectedAmt = enterAmt.getText().toString();
-                if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
-                    collectedAmt = Integer.parseInt(getCollectedAmt);
-                    totalAmount = Integer.parseInt(totalamt);
-                } else {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                }
-
-                if (getCollectedAmt.equals("")) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
-                } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
-                } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
-                    if (setLocation == null) {
-                        TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                if (!typeName.equalsIgnoreCase("ILS")){
+                    getCollectedAmt = enterAmt.getText().toString();
+                    if (getCollectedAmt.equals("")) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
+                    } else if (Integer.parseInt(getCollectedAmt)<Integer.parseInt(b2b_rate)){
+                        Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
+                    }else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
+                    } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                        if (setLocation == null) {
+                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else {
+                            checklistData();
+                        }
                     } else {
                         checklistData();
                     }
-                } else {
-                    checklistData();
+                    getCollectedAmt = enterAmt.getText().toString();
+                    if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
+                        collectedAmt = Integer.parseInt(getCollectedAmt);
+                        totalAmount = Integer.parseInt(totalamt);
+                    } else {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    getCollectedAmt = enterAmt.getText().toString();
+                    if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
+                        collectedAmt = Integer.parseInt(getCollectedAmt);
+                        totalAmount = Integer.parseInt(totalamt);
+                    } else {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+                    }
+
+                    if (getCollectedAmt.equals("")) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
+                    } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
+                    } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                        if (setLocation == null) {
+                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else {
+                            checklistData();
+                        }
+                    } else {
+                        checklistData();
+                    }
                 }
+
             }
         });
     }

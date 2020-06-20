@@ -6,10 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +25,11 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
 
 import java.util.ArrayList;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class Cliso_SelctSampleActivity extends AppCompatActivity {
 
@@ -193,7 +194,7 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                     Intent intent = new Intent(Cliso_SelctSampleActivity.this, Scan_Barcode_Outlabs_Activity.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
-                   // bundle.putString("payment", getAmount);
+                    // bundle.putString("payment", getAmount);
                     bundle.putString("writeTestName", selectedTestNames);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     bundle.putParcelableArrayList("FinalBarcodeList", BMC_FinalBarcodeDetailsList);

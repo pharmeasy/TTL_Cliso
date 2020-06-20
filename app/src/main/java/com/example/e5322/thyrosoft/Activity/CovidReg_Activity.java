@@ -2,11 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +19,12 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class CovidReg_Activity extends Fragment {
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
@@ -133,7 +134,7 @@ public class CovidReg_Activity extends Fragment {
         FragmentManager fragmentManager = getChildFragmentManager();
 
         // Begin Fragment transaction.
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Replace the layout holder with the required Fragment object.
         fragmentTransaction.replace(R.id.fragment_mainLayout, destFragment);

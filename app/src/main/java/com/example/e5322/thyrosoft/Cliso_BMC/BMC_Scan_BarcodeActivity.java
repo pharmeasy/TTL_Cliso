@@ -25,11 +25,11 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
@@ -743,8 +743,9 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 } else if (getageType.equalsIgnoreCase("Days")) {
                     ageType = "D";
                 }
-                String getFulltime = sampleCollectionDate + " " + getFinalTime;
-                GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
+
+               // String getFulltime = sampleCollectionDate + " " + getFinalTime;
+              //  GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
 
                 MyPojoWoe myPojoWoe = new MyPojoWoe();
                 Woe woe = new Woe();

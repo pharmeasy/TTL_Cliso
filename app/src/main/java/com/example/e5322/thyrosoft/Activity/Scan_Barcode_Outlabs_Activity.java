@@ -16,11 +16,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
@@ -57,6 +52,7 @@ import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
 import com.example.e5322.thyrosoft.WOE.SummaryActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -77,6 +73,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
@@ -167,7 +168,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private DatabaseHelper myDb;
     private String getRemark;
     private boolean barcodeExistsFlag = false;
-
+    int b2b_rate = 0;
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -297,6 +298,13 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             } else {
                 totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
             }
+
+            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")){
+                b2b_rate=0;
+            }else {
+                b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
+            }
+            Log.e(TAG, "b2b_rate: " + b2b_rate);
             Log.e(TAG, "onCreate: 11 " + totalcount);
         }
 
@@ -354,7 +362,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         GlobalClass.showShortToast(mActivity, "Select test");
                     } else if (getCollectedAmt.equals("") || getCollectedAmt.isEmpty()) {
                         GlobalClass.showShortToast(mActivity, "Please enter the amount");
-                    } else {
+                    } else if (Integer.parseInt(getCollectedAmt)<b2b_rate){
+                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
+                    }else {
                         checklistData();
                     }
 

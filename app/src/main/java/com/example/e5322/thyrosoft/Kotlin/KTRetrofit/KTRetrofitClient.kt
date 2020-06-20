@@ -1,7 +1,10 @@
 package com.example.e5322.thyrosoft.Kotlin.KTRetrofit
 
+import android.app.Activity
+import com.example.e5322.thyrosoft.API.Constants
 import com.example.e5322.thyrosoft.API.Global
 import com.example.e5322.thyrosoft.BuildConfig
+import com.example.e5322.thyrosoft.GlobalClass
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,7 +24,7 @@ class KTRetrofitClient {
     }
 
 
-    fun getClient(BASE_URL: String?): Retrofit? {
+    fun getClient(activity: Activity?, BASE_URL: String?): Retrofit? {
         val client = OkHttpClient.Builder()
         val interceptor = HttpLoggingInterceptor()
 
@@ -36,7 +39,7 @@ class KTRetrofitClient {
         client.writeTimeout(30, TimeUnit.SECONDS)
         client.connectTimeout(15, TimeUnit.SECONDS)
         client.addInterceptor { chain ->
-            val request = chain.request()
+            val request = chain.request().newBuilder().addHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(activity)).build()
             chain.proceed(request)
         }
         retrofit = Retrofit.Builder()

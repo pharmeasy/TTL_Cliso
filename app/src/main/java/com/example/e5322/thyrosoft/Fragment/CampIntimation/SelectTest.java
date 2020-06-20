@@ -1,15 +1,16 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
-import android.support.v4.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
+import androidx.fragment.app.Fragment;
+
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -25,7 +26,6 @@ import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.Activity.CampIntimation;
 import com.example.e5322.thyrosoft.Adapter.Camp_Test_LIst;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SendTestListfromCampList;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
@@ -334,10 +334,10 @@ public class SelectTest extends Fragment {
 
     public void replaceFragment(Fragment destFragment) {
         // First get FragmentManager object.
-        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
         // Begin Fragment transaction.
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Replace the layout holder with the required Fragment object.
         fragmentTransaction.replace(R.id.fragment_mainLayout, destFragment);

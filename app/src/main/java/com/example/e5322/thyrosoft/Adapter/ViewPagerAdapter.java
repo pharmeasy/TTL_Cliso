@@ -1,8 +1,8 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +47,8 @@ public class ViewPagerAdapter extends PagerAdapter {
                 .placeholder(context.getResources().getDrawable(R.drawable.img_no_img_aval))
                 .into(imageView);
 
+        //  ShowImagePinchZoom.ZoomImage(imageView);
+
         ViewPager vp = (ViewPager) container;
         vp.addView(view, 0);
         return view;
@@ -55,8 +57,10 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
+
         ViewPager vp = (ViewPager) container;
         View view = (View) object;
         vp.removeView(view);
+
     }
 }

@@ -1,10 +1,10 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
 import android.app.DatePickerDialog;
-import android.support.v4.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -216,10 +216,10 @@ public class EnterDataCampIntimation extends Fragment {
 
     public void replaceFragment(Fragment destFragment) {
         // First get FragmentManager object.
-        android.support.v4.app.FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
 
         // Begin Fragment transaction.
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Replace the layout holder with the required Fragment object.
         fragmentTransaction.replace(R.id.fragment_mainLayout, destFragment);

@@ -38,7 +38,7 @@ public class Api {
     public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
     public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
-    public static String traningvideo = "http://www .charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
     public static String count = LIVEAPI + "WO.svc/";

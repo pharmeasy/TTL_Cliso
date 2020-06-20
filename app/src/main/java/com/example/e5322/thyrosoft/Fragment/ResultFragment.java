@@ -5,8 +5,10 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.Spanned;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -199,8 +201,8 @@ public class ResultFragment extends Fragment {
             public void onClick(View v) {
                 try {
                     FilterReport filt = new FilterReport();
-                    android.support.v4.app.FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-                    android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_mainLayout, filt);
                     fragmentTransaction.commit();
                 } catch (Exception e) {
@@ -490,8 +492,8 @@ public class ResultFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.filterReport:
                 FilterReport filt = new FilterReport();
-                android.support.v4.app.FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
-                android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                FragmentManager fragmentManager = ((AppCompatActivity) getContext()).getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_mainLayout, filt);
                 fragmentTransaction.commit();
 

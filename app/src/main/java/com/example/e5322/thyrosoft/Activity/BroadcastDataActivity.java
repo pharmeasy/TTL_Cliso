@@ -2,8 +2,8 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -19,16 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.Models.Messages_Noticeboard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Locale;
 
 public class BroadcastDataActivity extends AppCompatActivity {
     int position;

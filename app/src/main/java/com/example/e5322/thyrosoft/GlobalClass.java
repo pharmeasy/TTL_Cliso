@@ -26,11 +26,13 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
+
+import com.crowdfire.cfalertdialog.BuildConfig;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -466,6 +468,13 @@ public class GlobalClass {
 
         return compressedFile;
     }
+    public static void Hidekeyboard(View view){
+        InputMethodManager inputMethodManager = (InputMethodManager)
+                view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        // Hide the soft keyboard
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
+    }
+
 
     public static String convertDate(String convDate) {
         Date date = null;
@@ -594,13 +603,6 @@ public class GlobalClass {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void Hidekeyboard(View view){
-        InputMethodManager inputMethodManager = (InputMethodManager)
-                view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Hide the soft keyboard
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
     }
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {

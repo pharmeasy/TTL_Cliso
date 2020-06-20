@@ -3,9 +3,9 @@ package com.example.e5322.thyrosoft.Adapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
@@ -60,7 +59,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     private List<String> tempselectedTests1;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
     private ArrayList<Base_Model_Rate_Calculator> totalgetAllTests;
-    private android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    private androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
     private ImageView imgClose;
     private InterfaceRateCAlculator mcallback;
     private LinearLayoutManager linearLayoutManager;
@@ -309,7 +308,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
                 if (tempselectedTests != null && tempselectedTests.size() > 0) {
                     String cartproduct = TextUtils.join(",", tempselectedTests1);
-                    alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(mContext);
+                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
                     alertDialogBuilder
                             .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                             .setCancelable(true)
@@ -318,7 +317,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 //                                    alertDialog.dismiss();
                                 }
                             });
-                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 }
                 for (int i = 0; i < tempselectedTests.size(); i++) {
@@ -341,7 +340,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     selectedTests.remove(getSelected_test);
                     mcallback.onCheckChangeRateCalculator(selectedTests);
                 } else {
-                    alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(mContext);
+                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
                     alertDialogBuilder
                             .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                             .setCancelable(true)
@@ -350,7 +349,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 //                                    alertDialog.dismiss();
                                 }
                             });
-                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
 
                     //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();

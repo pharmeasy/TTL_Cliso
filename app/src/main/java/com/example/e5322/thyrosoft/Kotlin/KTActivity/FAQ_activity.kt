@@ -3,10 +3,9 @@ package com.example.e5322.thyrosoft.Kotlin.KTActivity
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.example.e5322.thyrosoft.API.Api
@@ -85,7 +84,7 @@ class FAQ_activity : AppCompatActivity() {
     fun getAll_FAQ_data() {
 
         val progressDialog = KTGlobalclass().ShowprogressDialog(this@FAQ_activity)
-        val apiInteface = KTRetrofitClient().getInstance()!!.getClient(Api.FAQAPI + Constants.DAC + "/")!!.create(KTAPIInteface::class.java)
+        val apiInteface = KTRetrofitClient().getInstance()!!.getClient(this@FAQ_activity,Api.FAQAPI + Constants.DAC + "/")!!.create(KTAPIInteface::class.java)
         val responsecall: Call<KTFAQandANSArray?> = apiInteface.getFAQ()
        // Log.e(TAG, "FAQ URL ---->" + responsecall.request().url())
 

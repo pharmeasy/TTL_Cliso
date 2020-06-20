@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -28,7 +28,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -113,7 +112,7 @@ public class Payment_Activity extends AppCompatActivity {
 
     private static Activity context;
     //  private static Global globalData;
-    private static android.support.v7.app.AlertDialog.Builder alertDialogBuilder1;
+    private static androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
     public String closing_balance_pref;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
@@ -122,7 +121,7 @@ public class Payment_Activity extends AppCompatActivity {
     EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
     String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
-    android.support.v7.app.AlertDialog.Builder alertDialogBuilder;
+    androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
     String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
     String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
     String strOrderNo = "";

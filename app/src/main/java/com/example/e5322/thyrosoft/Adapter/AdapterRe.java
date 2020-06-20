@@ -4,19 +4,25 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.Activity.MultipleLeadActivity;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
-import com.example.e5322.thyrosoft.Interface.LeadClickInterface;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.LeadOrderIdMainModel;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.Leads;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.WOE.ScanBarcodeLeadId;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -29,8 +35,10 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
     String getVial_numbver;
     LeadOrderIdMainModel leadOrderIdMainModel;
     OnItemClickListener listener;
-
+    boolean sizeflag = false;
     Start_New_Woe start_new_woe;
+    private String json, leadTESTS;
+    List<String> testname;
 
     public interface OnItemClickListener {
         void onItemClicked();
@@ -60,25 +68,56 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
 
     @Override
     public void onBindViewHolder(AdapterRe.MyViewHolder holder, final int position) {
+        testname = new ArrayList<>();
 
-        holder.txt_name.setText("NAME : "+leads[position].getNAME());
-        holder.txt_leadId.setText("LEAD ID : "+leads[position].getLEAD_ID());
+        if (leads[position].getLeadData() != null) {
+            for (int i = 0; i < leads[position].getLeadData().length; i++) {
+                testname.add(leads[position].getLeadData()[i].getTest());
+                leadTESTS = TextUtils.join(",", testname);
+                holder.txt_name.setText("NAME : " + leadTESTS);
+            }
+
+        }
+        holder.txt_leadId.setText("LEAD ID : " + leads[position].getLEAD_ID());
+
         holder.lin_leadid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(listener!=null){
+                if (listener != null) {
                     listener.onItemClicked();
                 }
-                Intent i = new Intent(context, ScanBarcodeLeadId.class);
+
+                SharedPreferences.Editor editor1 = context.getSharedPreferences("LeadOrderID", 0).edit();
+                json = new Gson().toJson(leads[position].getLeadData());
+                editor1.putString("leadData", json);
+                editor1.commit();
+
+                for (int i = 0; i < leads[position].getLeadData().length; i++) {
+                    if (leads[position].getLeadData()[i].getSample_type().length > 1) {
+                        sizeflag = true;
+                        break;
+                    }
+                }
+                Intent i = null;
+                if (sizeflag) {
+                    i = new Intent(context, MultipleLeadActivity.class);
+                } else {
+                    i = new Intent(context, ScanBarcodeLeadId.class);
+                }
+
                 i.putExtra("MyClass", leadOrderIdMainModel);
                 i.putExtra("LeadID", leads[position].getLEAD_ID());
                 i.putExtra("SAMPLE_TYPE", leads[position].getSAMPLE_TYPE());
                 i.putExtra("fromcome", "adapter");
-                i.putExtra("TESTS", leads[position].getTESTS());
+                i.putExtra("TESTS", leadTESTS);
                 i.putExtra("SCT", leads[position].getSCT());
+                i.putExtra("leadData", json);
+
                 SharedPreferences.Editor editor = context.getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                 editor.putString("typeName", leads[position].getTYPE());
                 editor.putString("SR_NO", getVial_numbver);
+                editor.commit();
+
                 context.startActivity(i);
             }
         });
@@ -101,7 +140,6 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
             txt_name = (TextView) itemView.findViewById(R.id.name);
             txt_leadId = (TextView) itemView.findViewById(R.id.txt_leadid);
             lin_leadid = itemView.findViewById(R.id.lin_leadid);
-
         }
 
     }

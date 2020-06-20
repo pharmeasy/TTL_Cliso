@@ -6,10 +6,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;

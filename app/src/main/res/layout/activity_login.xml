@@ -17,7 +17,7 @@
         android:weightSum="100">
 
 
-        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="40dp"
@@ -42,7 +42,7 @@
                 android:orientation="vertical"
                 android:weightSum="3">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_layout_profile"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -62,9 +62,9 @@
                         android:maxLines="1"
                         android:textColorHint="@color/userloginColor"/>
 
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_layout_password"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -83,7 +83,7 @@
                         android:inputType="textPersonName|textPassword"
                         android:maxLines="1"
                         android:textColorHint="@color/userloginColor" />
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
 
 
@@ -146,7 +146,7 @@
 
 
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
     </LinearLayout>
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"

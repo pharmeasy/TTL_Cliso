@@ -7,7 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;

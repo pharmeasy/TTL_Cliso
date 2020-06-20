@@ -1,6 +1,6 @@
 package com.example.e5322.thyrosoft.Controller;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.example.e5322.thyrosoft.Cliso_BMC.GetAvailableStockController;
 import com.example.e5322.thyrosoft.Cliso_BMC.UpdateStockController;

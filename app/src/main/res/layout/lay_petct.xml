@@ -134,7 +134,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -154,7 +154,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -166,7 +166,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -187,9 +187,9 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -387,7 +387,7 @@
                             </RelativeLayout>
 
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="@dimen/dp_80"
                                 android:layout_height="wrap_content"
@@ -407,7 +407,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -509,7 +509,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -530,7 +530,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -541,7 +541,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -558,7 +558,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                         </LinearLayout>
 
@@ -571,7 +571,7 @@
                             android:layout_marginRight="@dimen/dp_10"
                             android:orientation="horizontal">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -589,7 +589,7 @@
                                     android:maxLines="2"
                                     android:padding="@dimen/dp_5"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
                         </LinearLayout>
 
 
@@ -603,7 +603,7 @@
                             android:orientation="horizontal"
                             android:visibility="gone">
 
-                            <android.support.design.widget.TextInputLayout
+                            <com.google.android.material.textfield.TextInputLayout
                                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -623,7 +623,7 @@
                                     android:padding="@dimen/dp_5"
                                     android:singleLine="true"
                                     android:textSize="@dimen/sp_14" />
-                            </android.support.design.widget.TextInputLayout>
+                            </com.google.android.material.textfield.TextInputLayout>
 
                             <Button
                                 android:id="@+id/btn_applycpn"

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -58,14 +57,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import androidx.fragment.app.FragmentTransaction;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
 
 
-public class
-Consignment_fragment extends RootFragment {
+public class Consignment_fragment extends RootFragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -780,7 +779,7 @@ Consignment_fragment extends RootFragment {
                             , new com.android.volley.Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                           Log.v(TAG,"barcode respponse" + response);
+                            Log.v(TAG,"barcode respponse" + response);
 
                             Log.e(TAG, "onResponse: " + response);
                             if (response.equals("\"Valid\"")) {
@@ -1848,7 +1847,7 @@ Consignment_fragment extends RootFragment {
                 if (error != null) {
                 } else {
 
-                   //Log.v(TAG,error);
+                    //Log.v(TAG,error);
                 }
             }
         });
@@ -1930,7 +1929,7 @@ Consignment_fragment extends RootFragment {
                 if (error != null) {
                 } else {
 
-                  // Log.v(TAG,error);
+                    // Log.v(TAG,error);
                 }
             }
         });
@@ -1968,7 +1967,7 @@ Consignment_fragment extends RootFragment {
             @Override
             public void onResponse(String response) {
                 Log.e(TAG, "onResponse: " + response);
-               Log.v(TAG,"barcode respponse" + response);
+                Log.v(TAG,"barcode respponse" + response);
 
                 if (response.equals("\"Valid\"")) {
                     consignment_barcd_btn.setText(getBarcodeDetails);

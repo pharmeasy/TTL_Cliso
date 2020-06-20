@@ -1,10 +1,9 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Parcelable;
-import android.support.v4.view.PagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -22,15 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.Activity.BroadcastDataActivity;
-import com.example.e5322.thyrosoft.BroadcastViewPagerActivity;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
-
-import java.util.ArrayList;
 
 public class Sliding_Adapter extends PagerAdapter {
     NoticeBoard_Model[] broadCastArrayList;

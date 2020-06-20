@@ -1,17 +1,17 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -249,18 +249,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             linearlayout2.setVisibility(View.VISIBLE);
         }
 
-        /*unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
-                enter_arrow_enterss.setVisibility(View.GONE);
-                enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
-                enter_arrow_enteredss.setVisibility(View.VISIBLE);
-                enterNextFragment();
 
-            }
-        });
-*/
         getActivity().setTitle("WOE");
         Date dateNew = new Date();
         SimpleDateFormat sdfToday = new SimpleDateFormat("dd-MM-yyyy");
@@ -407,6 +396,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+
                         DatePassToApi = outputFormat.format(date);
                         final ProgressDialog barProgressDialog = new ProgressDialog(getContext());
                         barProgressDialog.setTitle("Kindly wait ...");
@@ -417,6 +407,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         barProgressDialog.show();
                         barProgressDialog.setCanceledOnTouchOutside(false);
                         barProgressDialog.setCancelable(false);
+
                         requestQueueWindup = Volley.newRequestQueue(getContext());//2c=/TAM03/TAM03136166236000078/geteditdata
                         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.windupApi + "" + api_key + "/" + user + "/" + DatePassToApi + "/getwowindup"
                                 , new Response.Listener<JSONObject>() {
@@ -431,12 +422,20 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                                     if (responseModel != null) {
                                         if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
                                             TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                            Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                            transaction.addToBackStack(null);
-                                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
 
                                             fetchWoeListDoneByTSP();
+
+                                            Wind_up_fragment a2Fragment = new Wind_up_fragment();
+                                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                                getChildFragmentManager().beginTransaction().detach(a2Fragment).commitNow();
+                                                getChildFragmentManager().beginTransaction().attach(a2Fragment).commitNow();
+                                            } else {
+                                                getChildFragmentManager().beginTransaction().detach(a2Fragment).attach(a2Fragment).commit();
+                                            }
+                                            transaction.addToBackStack(null);
+                                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+
                                         } else {
                                             Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
                                         }
@@ -532,14 +531,14 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                             if (responseModel != null) {
                                 if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
                                     TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
+                                    fetchWoeListDoneByTSP();
                                     GlobalClass.windupBarcodeList = new ArrayList<>();
                                     Wind_up_fragment a2Fragment = new Wind_up_fragment();
                                     FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                                     transaction.addToBackStack(null);
                                     transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
 
-                                    fetchWoeListDoneByTSP();
+
                                 } else {
                                     Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
                                 }
@@ -578,7 +577,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
     private void checkConsgnmentFortheDay() {
         PostQueueForConsignment = Volley.newRequestQueue(getContext());
-
+        Log.e(TAG,"Consigment API-->"+Api.consignmentperday + user + "/ConfirmConsignmentEntry");
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, Api.consignmentperday + user + "/ConfirmConsignmentEntry", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -705,6 +704,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         passToAPI = outputFormat.format(date);
 
         requestQueue = Volley.newRequestQueue(mContext);
+        Log.e(TAG, "TAG: WORKoRDEReNTRYfIRSTpAGE-->" + Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -721,6 +721,8 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     woe_model_patient_details = gson.fromJson(response.toString(), WOE_Model_Patient_Details.class);
                     patientsArrayList = new ArrayList<>();
                     getWindupCount = new ArrayList<>();
+
+
 
                     SharedPreferences preferences = mContext.getSharedPreferences("saveWOEinDraft", MODE_PRIVATE);
                     String json2 = preferences.getString("DraftWOE", null);
@@ -758,6 +760,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
                         windup_adapter = new Windup_adapter(mContext, patientsArrayList, Wind_up_fragment.this);
                         recyclerView.setAdapter(windup_adapter);
+                        windup_adapter.notifyDataSetChanged();
 
 
                         GlobalClass.hideProgress(getActivity(), barProgressDialog);
@@ -846,4 +849,5 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
 }

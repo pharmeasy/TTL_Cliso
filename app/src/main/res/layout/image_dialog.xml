@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:src="@drawable/ic_cancel_maron_24dp" />
+        android:src="@drawable/ic_cancel_maron_24dp"/>
 
     <ImageView
         android:id="@+id/imageview"

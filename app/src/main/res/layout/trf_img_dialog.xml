@@ -20,8 +20,7 @@
         android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/ic_cancel_maron_24dp"
-       />
+        android:src="@drawable/ic_cancel_maron_24dp"/>
 
 
 </RelativeLayout>

@@ -1,12 +1,11 @@
 package com.example.e5322.thyrosoft;
 
 import android.content.Intent;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.Activity.BroadcastActivity;
 import com.example.e5322.thyrosoft.Adapter.Sliding_Adapter;

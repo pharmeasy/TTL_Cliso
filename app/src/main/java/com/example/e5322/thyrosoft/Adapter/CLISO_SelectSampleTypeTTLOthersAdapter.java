@@ -1,8 +1,8 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Cliso_BMC.BMC_SelectSampleTypeTTLOthersAdapter;
-import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 public class CLISO_SelectSampleTypeTTLOthersAdapter extends RecyclerView.Adapter<CLISO_SelectSampleTypeTTLOthersAdapter.MyViewHolder> {
 

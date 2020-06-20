@@ -896,7 +896,9 @@ public class Login extends Activity implements View.OnClickListener {
         covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
             @Override
             public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
-
+                SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
+                editor.commit();
                 try {
                     if (response.body().getResponse().equalsIgnoreCase("True")) {
                         editor = getSharedPreferences("COVIDETAIL", 0).edit();

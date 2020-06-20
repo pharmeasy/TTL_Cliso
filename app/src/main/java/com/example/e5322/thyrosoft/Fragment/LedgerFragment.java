@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +39,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -355,15 +356,15 @@ public class LedgerFragment extends RootFragment {
                                     String unbill_mat = responseModel.getUnbilledMaterial();
 
 
-                                    int openingbal = Integer.parseInt(opening_bal);
-                                    int closingbal = Integer.parseInt(closing_bal);
-                                    int creditbal = Integer.parseInt(credit_bal);
-                                    int debitbal = Integer.parseInt(debit_bal);
-                                    int billedbal = Integer.parseInt(billed_bal);
-                                    int chequebal = Integer.parseInt(cheque_bal);
-                                    int credit_bal_ltd = Integer.parseInt(credit_limit_value);
-                                    int unbillwoe = Integer.parseInt(unbill_woe);
-                                    int unbillmat = Integer.parseInt(unbill_mat);
+                                    double openingbal = Double.parseDouble(opening_bal);
+                                    double closingbal = Double.parseDouble(closing_bal);
+                                    double creditbal = Double.parseDouble(credit_bal);
+                                    double debitbal = Double.parseDouble(debit_bal);
+                                    double billedbal = Double.parseDouble(billed_bal);
+                                    double chequebal = Double.parseDouble(cheque_bal);
+                                    double credit_bal_ltd = Double.parseDouble(credit_limit_value);
+                                    double unbillwoe = Double.parseDouble(unbill_woe);
+                                    double unbillmat = Double.parseDouble(unbill_mat);
 
                                     String ope_bal_str = numberFormat.format(openingbal);
                                     String clos_bal_str = numberFormat.format(closingbal);

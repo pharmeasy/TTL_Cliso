@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
@@ -101,7 +101,7 @@ class KTNoticeboard_activity : AppCompatActivity() {
     fun getNoticeBoardData() {
         var progressDialog = KTGlobalclass().showProgressDialog(this@KTNoticeboard_activity)
         val strurl = Api.NoticeBoardData + "" + api_key + "/"
-        val ktinterface = KTRetrofitClient().getInstance()!!.getClient(strurl)!!.create(KTAPIInteface::class.java)
+        val ktinterface = KTRetrofitClient().getInstance()!!.getClient(this@KTNoticeboard_activity, strurl)!!.create(KTAPIInteface::class.java)
 
         val responsecall: Call<NoticeBoard_Model?> = ktinterface.getNoticeboard()
 
@@ -148,7 +148,7 @@ class KTNoticeboard_activity : AppCompatActivity() {
     private fun postack(msgCode: String?) {
         val requestModel = KTAcknowledmentreq(api_key, msgCode, user)
 
-        val ktapiInteface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(Api.LIVEAPI)!!.create(KTAPIInteface::class.java)
+        val ktapiInteface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(this@KTNoticeboard_activity, Api.LIVEAPI)!!.create(KTAPIInteface::class.java)
         val callack: Call<KTAcknowledeResponse> = ktapiInteface.postack(requestModel)
 
         callack.enqueue(object : Callback<KTAcknowledeResponse> {

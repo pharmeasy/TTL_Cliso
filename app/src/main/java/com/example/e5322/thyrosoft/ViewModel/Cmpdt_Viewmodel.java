@@ -1,10 +1,10 @@
 package com.example.e5322.thyrosoft.ViewModel;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.MutableLiveData;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.Activity.CompanyContact_activity;
@@ -13,8 +13,6 @@ import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Repository.Cmpdt_Repository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Cmpdt_Viewmodel extends AndroidViewModel {
 

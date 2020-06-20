@@ -1,11 +1,11 @@
 package com.example.e5322.thyrosoft.Kotlin.KTActivity
 
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
@@ -28,11 +28,12 @@ class KTCompanyContact_activity : AppCompatActivity(), View.OnClickListener {
 
     var passSpinner_value: String? = null
     var TAG: String? = javaClass.simpleName
+    var activty: Activity? =null;
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_contact_list_fragment)
-
+        activty=this@KTCompanyContact_activity;
         initView()
     }
 
@@ -43,7 +44,7 @@ class KTCompanyContact_activity : AppCompatActivity(), View.OnClickListener {
 
         var linearLayoutManager = LinearLayoutManager(this@KTCompanyContact_activity)
         contact_list.layoutManager = linearLayoutManager
-        var company_spinner = ArrayAdapter.createFromResource(this@KTCompanyContact_activity, R.array.company_contact_spinner_values, R.layout.spinnerproperty)
+        var company_spinner = ArrayAdapter.createFromResource(activty, R.array.company_contact_spinner_values, R.layout.spinnerproperty)
         contact_type_spinner.adapter = company_spinner
 
         if (Global.checkForApi21()) {
@@ -77,7 +78,7 @@ class KTCompanyContact_activity : AppCompatActivity(), View.OnClickListener {
 
         var progressDialog = KTGlobalclass().ShowprogressDialog(this@KTCompanyContact_activity)
 
-        var apiInteface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(Api.static_pages_link + passSpinner_value + "/")!!.create(KTAPIInteface::class.java)
+        var apiInteface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(activty, Api.static_pages_link + passSpinner_value + "/")!!.create(KTAPIInteface::class.java)
         var callcontactlist: Call<KTCompanydt_Response> = apiInteface.getnoticedetail();
 
         //Log.e(TAG, "Company contact URL---->" + callcontactlist.request().url())

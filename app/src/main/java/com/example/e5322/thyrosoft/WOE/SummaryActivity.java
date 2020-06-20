@@ -9,9 +9,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -274,6 +274,7 @@ public class SummaryActivity extends AppCompatActivity {
             }
         }
 
+        sampleCollectionTime=GlobalClass.changetimeformate(sampleCollectionTime);
         pat_sct.setText(sampleCollectionDate + " " + sampleCollectionTime);
         pat_ref.setText(referenceBy);
         alertMsg = "";

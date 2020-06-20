@@ -1,7 +1,7 @@
 package com.example.e5322.thyrosoft.Kotlin.KTAdapter
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.method.LinkMovementMethod
 import android.text.util.Linkify
 import android.view.LayoutInflater

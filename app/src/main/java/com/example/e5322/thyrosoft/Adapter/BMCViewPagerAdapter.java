@@ -1,16 +1,15 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_NEW_WOEFragment;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
-import com.example.e5322.thyrosoft.Fragment.Wind_up_fragment;
 import com.example.e5322.thyrosoft.R;
 
 public class BMCViewPagerAdapter extends FragmentPagerAdapter {

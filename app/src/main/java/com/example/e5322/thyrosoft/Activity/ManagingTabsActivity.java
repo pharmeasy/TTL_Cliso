@@ -14,16 +14,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -92,7 +92,7 @@ import static com.example.e5322.thyrosoft.API.Constants.NHF;
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String getdate;
-    private static android.support.v4.app.FragmentManager fragmentManager;
+    private static FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
     /*    SharedPreferences.Editor editorUserActivity;
         SharedPreferences shr_user_log;*/
@@ -107,7 +107,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     boolean IsFromNotification;
     boolean covidacc = false;
     int SCRID;
-    LinearLayout mainlinear;
     private int a = 0;
     private String TAG = getClass().getSimpleName();
     private CarouselFragment carouselFragment;
@@ -136,6 +135,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        @SuppressLint("WrongConstant")
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -150,7 +150,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     return true;
 
                 case R.id.loud:
-                    Intent k = new Intent(ManagingTabsActivity.this, KTNoticeboard_activity.class);
+                    Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
                     startActivity(k);
                     return true;
 
@@ -200,12 +200,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         bottomNavigationView.setItemIconTintList(null);
-//        bottomNavigationView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
 
 
         if (GlobalClass.checkForApi21()) {
@@ -228,7 +222,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             // and getting the reference
             carouselFragment = (CarouselFragment) getSupportFragmentManager().getFragments().get(0);
         }
-
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -972,7 +965,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
 
-                Intent i = new Intent(ManagingTabsActivity.this, KTNoticeboard_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
                 startActivity(i);
             }
 
@@ -1175,7 +1168,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                Intent i = new Intent(ManagingTabsActivity.this, KTCompanyContact_activity.class);
+                Intent i = new Intent(ManagingTabsActivity.this, CompanyContact_activity.class);
                 startActivity(i);
             }
 
@@ -1369,7 +1362,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         mydataModel.commit();
 
         clearApplicationData();
-        Constants.covidwoe_flag = "0";
+
+        Constants.covidwoe_flag="0";
         Constants.covidfrag_flag="0";
 //        prefsEditor.putString("myData", jsondata);
 

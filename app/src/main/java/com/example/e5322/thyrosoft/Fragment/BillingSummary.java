@@ -5,7 +5,7 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -84,6 +83,7 @@ public class BillingSummary extends RootFragment {
     private DatePicker dpAppointmentDate;
     private Date result, fromDate, toDate;
     private SimpleDateFormat format;
+    TextView txt_nodata;
 
     public BillingSummary() {
         // Required empty public constructor
@@ -148,6 +148,7 @@ public class BillingSummary extends RootFragment {
 
         txtFromDate = (TextView) rootView.findViewById(R.id.txt_from_date);
         txt_to_date = (TextView) rootView.findViewById(R.id.txt_to_date);
+        txt_nodata=rootView.findViewById(R.id.txt_nodata);
         list_billingSummary = (ListView) rootView.findViewById(R.id.list_billingSummary);
         offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
         parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
@@ -346,8 +347,13 @@ public class BillingSummary extends RootFragment {
                                     GlobalClass.redirectToLogin(getActivity());
                                 } else {
                                     if (responseModel.getBillingList() != null && responseModel.getBillingList().size() > 0) {
+                                        list_billingSummary.setVisibility(View.VISIBLE);
+                                        txt_nodata.setVisibility(View.GONE);
                                         adapter = new BillingSummaryAdapter(getContext(), responseModel.getBillingList());
                                         list_billingSummary.setAdapter(adapter);
+                                    }else {
+                                        list_billingSummary.setVisibility(View.GONE);
+                                        txt_nodata.setVisibility(View.VISIBLE);
                                     }
                                 }
                             } else {

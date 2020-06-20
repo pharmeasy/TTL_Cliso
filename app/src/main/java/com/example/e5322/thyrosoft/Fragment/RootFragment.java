@@ -1,6 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.example.e5322.thyrosoft.Activity.BackPressImpl;
 import com.example.e5322.thyrosoft.Activity.OnBackPressListener;

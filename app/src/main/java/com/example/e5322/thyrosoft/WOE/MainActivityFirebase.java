@@ -1,7 +1,7 @@
 package com.example.e5322.thyrosoft.WOE;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.R;

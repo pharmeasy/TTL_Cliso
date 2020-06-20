@@ -2,9 +2,9 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;

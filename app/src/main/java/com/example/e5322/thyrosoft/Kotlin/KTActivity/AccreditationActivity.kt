@@ -2,7 +2,7 @@ package com.example.e5322.thyrosoft.Kotlin.KTActivity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity

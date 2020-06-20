@@ -40,7 +40,7 @@
             android:orientation="vertical"
             android:weightSum="2">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_profile"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -58,7 +58,7 @@
                     android:inputType="number|phone"
                     android:maxLength="5"
                     android:maxLines="1" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
             <EditText

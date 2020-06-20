@@ -1,9 +1,10 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -112,7 +113,7 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
         FragmentManager fragmentManager = this.getSupportFragmentManager();
 
         // Begin Fragment transaction.
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
         // Replace the layout holder with the required Fragment object.
         fragmentTransaction.replace(R.id.fragment_mainLayout, destFragment);

@@ -1,11 +1,7 @@
 package com.example.e5322.thyrosoft;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v4.content.LocalBroadcastManager;
 import com.example.e5322.thyrosoft.Controller.Log;
 
-import com.example.e5322.thyrosoft.API.Constants;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 

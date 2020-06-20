@@ -8,22 +8,21 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Base64;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
@@ -49,20 +48,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.EmailValidationController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.ClientRegisterRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ClientRegisterResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -73,6 +70,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,8 +83,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     private static final int CAMERA_REQUEST = 1888;
     private static final int PLACE_PICKER_REQUEST = 1;
     Activity activity;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
-            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+//    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
+//            new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -210,6 +208,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             }
         });
 
+
         if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -254,24 +253,17 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
         website_edt.setFilters(new InputFilter[]{EMOJI_FILTER});
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Places.GEO_DATA_API)
-                .addApi(Places.PLACE_DETECTION_API)
-                .enableAutoManage(this, 0, this)
-                .addConnectionCallbacks(this)
-                .build();
+//        mGoogleApiClient = new GoogleApiClient.Builder(this)
+//                .addApi(Places.GEO_DATA_API)
+//                .addApi(Places.PLACE_DETECTION_API)
+//                .enableAutoManage(this, 0, this)
+//                .addConnectionCallbacks(this)
+//                .build();
 
         latlong.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-                try {
-                    startActivityForResult(builder.build(Sgc_Pgc_Entry_Activity.this), PLACE_PICKER_REQUEST);
-                } catch (GooglePlayServicesRepairableException e) {
-                    e.printStackTrace();
-                } catch (GooglePlayServicesNotAvailableException e) {
-                    e.printStackTrace();
-                }
+                PlacePickerMethod();
             }
         });
 
@@ -874,7 +866,6 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         check = m.matches();
 
 
-
                         if (!check) {
                             email_edt.requestFocus();
                             email_edt.setError("Not Valid Email");
@@ -883,7 +874,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                                 if (ControllersGlobalInitialiser.emailValidationController != null) {
                                     ControllersGlobalInitialiser.emailValidationController = null;
                                 }
-                                ControllersGlobalInitialiser.emailValidationController = new EmailValidationController(Sgc_Pgc_Entry_Activity.this, activity,"SGC");
+                                ControllersGlobalInitialiser.emailValidationController = new EmailValidationController(Sgc_Pgc_Entry_Activity.this, activity, "SGC");
                                 ControllersGlobalInitialiser.emailValidationController.emailvalidationapi(email_edt.getText().toString());
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -969,7 +960,6 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         check = m.matches();
 
 
-
                         if (!check) {
                             email_edt.requestFocus();
                             email_edt.setError("Not Valid Email");
@@ -978,7 +968,7 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                                 if (ControllersGlobalInitialiser.emailValidationController != null) {
                                     ControllersGlobalInitialiser.emailValidationController = null;
                                 }
-                                ControllersGlobalInitialiser.emailValidationController = new EmailValidationController(Sgc_Pgc_Entry_Activity.this, activity,"PGC");
+                                ControllersGlobalInitialiser.emailValidationController = new EmailValidationController(Sgc_Pgc_Entry_Activity.this, activity, "PGC");
                                 ControllersGlobalInitialiser.emailValidationController.emailvalidationapi(email_edt.getText().toString());
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -1025,12 +1015,12 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
             String json = new Gson().toJson(requestModel);
             jsonObject = new JSONObject(json);
-            Log.e("Req body--->",json);
+            Log.e("Req body--->", json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Log.e("SGC API--->",Api.SGCRegistration);
+        Log.e("SGC API--->", Api.SGCRegistration);
 
         JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.SGCRegistration, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
@@ -1086,74 +1076,18 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == PLACE_PICKER_REQUEST
-                && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
 
-            final Place place = PlacePicker.getPlace(Sgc_Pgc_Entry_Activity.this, data);
+            Place place = Autocomplete.getPlaceFromIntent(data);
 
+            Log.e(TAG, "Places---->" + place.getName() + ", " + place.getId());
 
-            Geocoder geocoder = new Geocoder(Sgc_Pgc_Entry_Activity.this);
-            try {
-                List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+            final double lat = place.getLatLng().latitude;
+            final double log = place.getLatLng().longitude;
+            CharSequence name = place.getName();
+            CharSequence address = place.getAddress();
 
-                final CharSequence name = place.getName();
-                final CharSequence address = place.getAddress();
-                String attributions = (String) place.getAttributions();
-                if (attributions == null) {
-                    attributions = "";
-                }
-
-                if (addresses != null && addresses.size() > 0) {
-                    if (addresses.get(0).getPostalCode() != null) {
-                        pincode = addresses.get(0).getPostalCode();
-                        country = addresses.get(0).getCountryName().toUpperCase();
-                        city = addresses.get(0).getLocality().toUpperCase();
-                    }
-
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-
-
-            lat = place.getLatLng().latitude;
-            log = place.getLatLng().longitude;
-
-
-            String address = place.getAddress().toString().toUpperCase();
-
-            if (pincode != null && !pincode.isEmpty()) {
-
-                if (address.contains(pincode)) {
-                    address = address.replace(pincode, "");
-                }
-
-
-                if (country != null && !country.isEmpty()) {
-                    if (address.contains(", " + country)) {
-                        address = address.replace(", " + country, "");
-                    } else if (address.toUpperCase().contains(country)) {
-                        address = address.replace(country, "");
-                    }
-
-                }
-
-
-            }
-
-
-            String attributions = (String) place.getAttributions();
-            if (attributions == null) {
-                attributions = "";
-            }
-
-            // edt_long.setText((int) Double.parseDouble(String.valueOf(log)));
-           /* edt_pincode.setText(pincode);
-            edt_addr.setText(address);
-            edt_lat.setText("" + lat);
-            edt_long.setText("" + log);*/
+            pincode = getPinCodeFromAddress(address);
             pincode_edt.setText(pincode);
             addressEdt.setText(address);
             lattitude_txt.setText("Lat :" + String.valueOf(lat));
@@ -1162,8 +1096,87 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
             longitude_txt.setText("Long :" + String.valueOf(log));
             longitude_txt.setError(null);
             //Toast.makeText(activity, ""+name, Toast.LENGTH_SHORT).show();
-
         }
+
+//
+//        if (requestCode == PLACE_PICKER_REQUEST
+//                && resultCode == Activity.RESULT_OK) {
+//
+//            final Place place = PlacePicker.getPlace(Sgc_Pgc_Entry_Activity.this, data);
+//
+//
+//            Geocoder geocoder = new Geocoder(Sgc_Pgc_Entry_Activity.this);
+//            try {
+//                List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
+//
+//                final CharSequence name = place.getName();
+//                final CharSequence address = place.getAddress();
+//                String attributions = (String) place.getAttributions();
+//                if (attributions == null) {
+//                    attributions = "";
+//                }
+//
+//                if (addresses != null && addresses.size() > 0) {
+//                    if (addresses.get(0).getPostalCode() != null) {
+//                        pincode = addresses.get(0).getPostalCode();
+//                        country = addresses.get(0).getCountryName().toUpperCase();
+//                        city = addresses.get(0).getLocality().toUpperCase();
+//                    }
+//
+//                }
+//
+//            } catch (Exception e) {
+//
+//                e.printStackTrace();
+//            }
+//
+//
+//            lat = place.getLatLng().latitude;
+//            log = place.getLatLng().longitude;
+//
+//
+//            String address = place.getAddress().toString().toUpperCase();
+//
+//            if (pincode != null && !pincode.isEmpty()) {
+//
+//                if (address.contains(pincode)) {
+//                    address = address.replace(pincode, "");
+//                }
+//
+//
+//                if (country != null && !country.isEmpty()) {
+//                    if (address.contains(", " + country)) {
+//                        address = address.replace(", " + country, "");
+//                    } else if (address.toUpperCase().contains(country)) {
+//                        address = address.replace(country, "");
+//                    }
+//
+//                }
+//
+//
+//            }
+//
+//
+//            String attributions = (String) place.getAttributions();
+//            if (attributions == null) {
+//                attributions = "";
+//            }
+//
+//            // edt_long.setText((int) Double.parseDouble(String.valueOf(log)));
+//           /* edt_pincode.setText(pincode);
+//            edt_addr.setText(address);
+//            edt_lat.setText("" + lat);
+//            edt_long.setText("" + log);*/
+//            pincode_edt.setText(pincode);
+//            addressEdt.setText(address);
+//            lattitude_txt.setText("Lat :" + String.valueOf(lat));
+//            lattitude_txt.setError(null);
+//
+//            longitude_txt.setText("Long :" + String.valueOf(log));
+//            longitude_txt.setError(null);
+//            //Toast.makeText(activity, ""+name, Toast.LENGTH_SHORT).show();
+//
+//        }
         /*else {
             super.onActivityResult(requestCode, resultCode, data);
         }*/
@@ -1233,28 +1246,66 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+        //mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
+        /// mGoogleApiClient.disconnect();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mGoogleApiClient.stopAutoManage(Sgc_Pgc_Entry_Activity.this);
-        mGoogleApiClient.disconnect();
+        // mGoogleApiClient.stopAutoManage(Sgc_Pgc_Entry_Activity.this);
+        // mGoogleApiClient.disconnect();
     }
 
 
     public void getemailresponse(String type) {
-    if (type.equalsIgnoreCase("SGC")){
-        uploadClientEntry("SGCEntry", get_brand_name, getclient_name, "", get_incharge_name);
-    }else {
-        uploadClientEntry("PGCEntry", "", "DR " + get_dr_name, get_qualification, "");
+        if (type.equalsIgnoreCase("SGC")) {
+            uploadClientEntry("SGCEntry", get_brand_name, getclient_name, "", get_incharge_name);
+        } else {
+            uploadClientEntry("PGCEntry", "", "DR " + get_dr_name, get_qualification, "");
+        }
     }
+
+    private void PlacePickerMethod() {
+        if (!Places.isInitialized()) {
+            try {
+                Places.initialize(activity, "" + getResources().getString(R.string.googlemapkey));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Set the fields to specify which types of place data to return.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+
+        // Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, fields)
+                .build(this);
+        startActivityForResult(intent, PLACE_PICKER_REQUEST);
     }
+
+
+    public static String getPinCodeFromAddress(CharSequence address) {
+
+        String pincodeStr = String.valueOf(address);
+
+        //Pincode Extracter
+        Pattern zipPattern = Pattern.compile("(\\d{6})");
+        Matcher zipMatcher = zipPattern.matcher(pincodeStr);
+
+        String zip = "";
+        if (zipMatcher.find()) {
+            zip = zipMatcher.group(1);
+        }
+
+        return zip;
+    }
+
+
 }

@@ -18,9 +18,9 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
 import android.preference.PreferenceManager
-import android.support.annotation.RequiresApi
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity

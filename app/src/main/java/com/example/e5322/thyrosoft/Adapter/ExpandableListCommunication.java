@@ -1,16 +1,11 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,30 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.Communication_Activity;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
-import com.example.e5322.thyrosoft.Interface.OnItemSelectedListenerInterface;
-import com.example.e5322.thyrosoft.Models.CommInbox_Model;
-import com.example.e5322.thyrosoft.Models.CommToCpl_Model;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreference;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.Inboxes;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.Sents;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.sdsmdg.tastytoast.TastyToast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by e5426@thyrocare.com on 22/5/18.

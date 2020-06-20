@@ -1,7 +1,7 @@
 package com.example.e5322.thyrosoft.Repository;
 
 import android.app.Activity;
-import android.arch.lifecycle.MutableLiveData;
+import androidx.lifecycle.MutableLiveData;
 import android.content.Context;
 import com.example.e5322.thyrosoft.Controller.Log;
 

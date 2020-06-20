@@ -17,11 +17,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -65,6 +60,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseMo
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -90,6 +86,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
 
@@ -115,6 +116,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     String TAG = Scan_Barcode_Outlabs.class.getSimpleName();
     Button next;
     Camera camera;
+    int b2b_rate = 0;
     ScannedBarcodeDetails scannedBarcodeDetails;
     ArrayList<Outlabdetails_OutLab> Globaly_Outlab_details = new ArrayList<>();
     LinearLayout sample_type_linear;
@@ -405,7 +407,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-       Log.v(TAG,"" + Globaly_Outlab_details.toString());
+        Log.v(TAG,"" + Globaly_Outlab_details.toString());
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefs.getString("WOEbrand", null);
@@ -422,6 +424,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         // linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs.this);
         //  recycler_barcode.setLayoutManager(linearLayoutManager);
         int totalcount = 0;
+
         temparraylist = new ArrayList<>();
         temparraylist.add("Select sample type");
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
@@ -442,9 +445,17 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
             if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")) {
                 totalcount = 0;
+
             } else {
                 totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
             }
+
+            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")){
+                b2b_rate=0;
+            }else {
+                b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
+            }
+            Log.e(TAG, "b2b_rate:  " + b2b_rate);
             Log.e(TAG, "onCreate: 11 " + totalcount);
         }
 
@@ -465,7 +476,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 // GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
             }
         }
-       Log.v(TAG,"finallist" + GlobalClass.finalspecimenttypewiselist.toString());
+        Log.v(TAG,"finallist" + GlobalClass.finalspecimenttypewiselist.toString());
 
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -516,17 +527,21 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         } else {
                             Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                         }
-                        if (getOnlyBrcode.equals(null) || getOnlyBrcode.equals("")) {
-                            Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
-                        } else if (getWrittenAmt.equals("")) {
-                            Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+
+                        try{
+                            if (getOnlyBrcode.equals(null) || getOnlyBrcode.equals("")) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
+                            } else if (getWrittenAmt.equals("")) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
+                            }else if (Integer.parseInt(getWrittenAmt)<b2b_rate){
+                                Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
+                            } else {
+                                checklistData();
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
-//                    else if(collectedAmt<totalAmount){
-//                        Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.ent_crt_amt, Toast.LENGTH_SHORT).show();
-//                    }
-                        else {
-                            checklistData();
-                        }
+
                     }
                 }
 
@@ -615,7 +630,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                     , new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                   Log.v(TAG,"barcode response" + response);
+                                    Log.v(TAG,"barcode response" + response);
                                     try {
                                         progressDialog.dismiss();
                                         Gson gson = new Gson();
@@ -830,7 +845,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     , new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                   Log.v(TAG,"barcode respponse" + response);
+                    Log.v(TAG,"barcode respponse" + response);
                     try {
                         Gson gson = new Gson();
                         VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
@@ -1316,7 +1331,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         flagcallonce = false;
                         if (error != null) {
                         } else {
-                           //Log.v(TAG,error);
+                            //Log.v(TAG,error);
                         }
                     }
                 });

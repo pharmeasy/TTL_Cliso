@@ -5,11 +5,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,8 +28,9 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
@@ -48,6 +47,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static android.content.ContentValues.TAG;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -62,11 +64,12 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
     ArrayList<ScannedBarcodeDetails> sampleTypes;
     private ProgressDialog progressDialog;
     private SharedPreferences prefs;
+    ArrayList<ScannedBarcodeDetails> sample_type_array;
 
     public LeadIdAdapter(ScanBarcodeLeadId scanBarcodeLeadId, ArrayList<ScannedBarcodeDetails> sample_type_array, RecyclerInterface listener) {
         this.context = scanBarcodeLeadId;
-
         this.sampleTypes = sample_type_array;
+        this.sample_type_array = sample_type_array;
         this.listener = listener;
     }
 
@@ -114,6 +117,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
     @Override
     public void onBindViewHolder(final LeadIdAdapter.ViewHolder holder, final int position) {
         holder.linearEditbarcode.setVisibility(View.GONE);
+
         holder.setback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,8 +127,9 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
         });
 
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
-        holder.element1_iv.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+        holder.element1_iv.setTag(sample_type_array.get(position).getSpecimen_type());
+
+        holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type());
         holder.scanBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,12 +183,12 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-        if (GlobalClass.finalspecimenttypewiselist.get(position).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(position).getBarcode().isEmpty()) {
-            searchBarcode = GlobalClass.finalspecimenttypewiselist.get(position).getBarcode();
+        if (sample_type_array.get(position).getBarcode() != null && !sample_type_array.get(position).getBarcode().isEmpty()) {
+            searchBarcode = sample_type_array.get(position).getBarcode();
             // checkBarcode(position, searchBarcode);
-            holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
+            holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type() + " : " + sample_type_array.get(position).getBarcode());
             SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
-            setBarcodeDetails.setSpecimenType(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+            setBarcodeDetails.setSpecimenType(sample_type_array.get(position).getSpecimen_type());
             setBarcodeDetails.setBarcode_number(searchBarcode);
             GlobalClass.setScannedBarcodes.add(setBarcodeDetails);
             Set<SetBarcodeDetails> hs = new HashSet<>();
@@ -204,7 +209,13 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
             }
 
         } else {
-            holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+            if (!TextUtils.isEmpty(sample_type_array.get(position).getSpecimen_type())){
+                if (sample_type_array.get(position).getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
+                    holder.scanBarcode.setText("(" + sample_type_array.get(position).getProducts() + ")" + sample_type_array.get(position).getSpecimen_type());
+                } else {
+                    holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type());
+                }
+            }
         }
 
 
@@ -257,8 +268,8 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                     if (previouseBarcode.equalsIgnoreCase(afterBarcode)) {
                         holder.linearEditbarcode.setVisibility(View.GONE);
                         holder.barcode_linear.setVisibility(View.VISIBLE);
-                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + ":" + searchBarcode);
-                        GlobalClass.finalspecimenttypewiselist.get(position).setBarcode(searchBarcode);
+                        holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type() + ":" + searchBarcode);
+                        sample_type_array.get(position).setBarcode(searchBarcode);
                     } else {
                         holder.reenter.setText("");
                         Toast.makeText(context, ToastFile.ent_crt_brcd, Toast.LENGTH_SHORT).show();
@@ -289,7 +300,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return GlobalClass.finalspecimenttypewiselist.size();
+        return sample_type_array.size();
     }
 
 
@@ -345,10 +356,10 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 searchBarcode = s.toString();
                 //checkBarcode(position,s.toString());
                 final ArrayList<String> storeBarcode = new ArrayList<>();
-                if (GlobalClass.finalspecimenttypewiselist.size() != 0) {
-                    for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                        if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null) {
-                            if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
+                if (sample_type_array.size() != 0) {
+                    for (int i = 0; i < sample_type_array.size(); i++) {
+                        if (sample_type_array.get(i).getBarcode() != null) {
+                            if (sample_type_array.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
                                 Toast.makeText(context, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
                                 enter_barcode.setText("");
                                 flag = true;
@@ -371,7 +382,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                                     @Override
                                     public void onResponse(JSONObject response) {
                                         Log.e(TAG, "onResponse: Response" + response);
-                                        Log.v("barcode respponse" ,""+ response);
+                                        Log.v("barcode respponse", "" + response);
                                         String finalJson = response.toString();
                                         JSONObject parentObjectOtp = null;
                                         try {
@@ -421,11 +432,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                         }
                     }
 
-                } else {
-
                 }
-
-            } else {
             }
 
         }

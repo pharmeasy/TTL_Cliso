@@ -15,10 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +31,7 @@ import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
@@ -56,6 +53,10 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import java.io.File;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -99,6 +100,7 @@ public class SplashScreen extends AppCompatActivity {
     private int WRITE_EXTERNAL_STORAGE = 123;
     SharedPreferences.Editor editoractivity;
     private boolean covidacc;
+    private SharedPreferences prefs_CovidSync;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -123,6 +125,7 @@ public class SplashScreen extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.splash_screen);
         activity = SplashScreen.this;
+        prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
         anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
         iv = (ImageView) findViewById(R.id.logo);
 
@@ -394,9 +397,22 @@ public class SplashScreen extends AppCompatActivity {
     private void callIntent() {
         new LogUserActivityTagging(activity, "");
         if (user != null && passwrd != null) {
-            if (GlobalClass.isNetworkAvailable(activity)){
-                checkcovidaccess();
+
+
+            long PreviousTime = prefs_CovidSync.getLong("PreivousTimeOfSync", 0);
+            long currenttime = System.currentTimeMillis();
+            long differ_millis = currenttime - PreviousTime;
+            int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
+
+            if (days >= 1) {
+                if (GlobalClass.isNetworkAvailable(activity)) {
+                    checkcovidaccess();
+                } else
+                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN);
+            } else {
+                Log.e(TAG, " Caching :Less than 1 Day");
             }
+
             Intent prefe = new Intent(activity, ManagingTabsActivity.class);
             prefe.putExtra("Screen_category", SCRID);
             prefe.putExtra(Constants.COMEFROM, true);
@@ -412,6 +428,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void checkcovidaccess() {
+
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
 
         CovidAccessReq covidAccessReq = new CovidAccessReq();
@@ -423,6 +440,10 @@ public class SplashScreen extends AppCompatActivity {
         covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
             @Override
             public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
+
+                SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
+                editor.commit();
 
                 try {
                     if (response.body().getResponse().equalsIgnoreCase("True")) {
@@ -437,7 +458,7 @@ public class SplashScreen extends AppCompatActivity {
                         editor.commit();
                     }
 
-                    Log.e(TAG,"COVID ACCES FLAG --->"+covidacc);
+                    Log.e(TAG, "COVID ACCESS FLAG --->" + covidacc);
 
                 } catch (Exception e) {
                     e.printStackTrace();

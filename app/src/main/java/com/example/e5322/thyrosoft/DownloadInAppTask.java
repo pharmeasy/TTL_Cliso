@@ -10,7 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 

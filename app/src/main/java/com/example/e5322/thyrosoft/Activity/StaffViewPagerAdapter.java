@@ -2,9 +2,9 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -12,7 +12,6 @@ import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
-import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;

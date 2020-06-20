@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Repository;
 
-import android.arch.lifecycle.MutableLiveData;
-import com.example.e5322.thyrosoft.Controller.Log;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.CompanyContact_activity;

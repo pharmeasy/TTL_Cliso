@@ -7,10 +7,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +25,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -54,6 +51,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Summary_leadId extends AppCompatActivity {
@@ -76,7 +77,7 @@ public class Summary_leadId extends AppCompatActivity {
     Barcodelist barcodelistData;
     LeadOrderIdMainModel leadOrderIdMainModel;
     int passvalue = 0;
-    String leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
+    String leadAddress, brandtype, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
     String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
     String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData;
     SourceILSMainModel sourceILSMainModel;
@@ -171,11 +172,7 @@ public class Summary_leadId extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-//        if (typeName.equals("")) {
         title.setText("Summary");
-//        } else {
-//            title.setText("Summary(" + typeName + ")");
-//        }
 
         home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,83 +194,88 @@ public class Summary_leadId extends AppCompatActivity {
         leadOrderIdMainModel = (LeadOrderIdMainModel) getIntent().getParcelableExtra("MyClass");
         finalspecimenttypewiselist = new ArrayList<>();
         if (fromcome.equalsIgnoreCase("adapter")) {
-            for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
-                if (leadOrderIdMainModel.getLeads()[i].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+            if ( leadOrderIdMainModel!=null && leadOrderIdMainModel.getLeads()!=null){
+                for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
+                    if (leadOrderIdMainModel.getLeads()[i].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
 
-                    SharedPreferences.Editor editor = getSharedPreferences("LeadOrderID", 0).edit();
-                    editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
-                    editor.putString("AGE", leadOrderIdMainModel.getLeads()[i].getAGE());
-                    editor.putString("AGE_TYPE", leadOrderIdMainModel.getLeads()[i].getAGE_TYPE());
-                    editor.putString("BCT", leadOrderIdMainModel.getLeads()[i].getBCT());
-                    editor.putString("EDTA", leadOrderIdMainModel.getLeads()[i].getEDTA());
-                    editor.putString("EMAIL", leadOrderIdMainModel.getLeads()[i].getEMAIL());
-                    editor.putString("ERROR", leadOrderIdMainModel.getLeads()[i].getERROR());
-                    editor.putString("FLUORIDE", leadOrderIdMainModel.getLeads()[i].getFLUORIDE());
-                    editor.putString("GENDER", leadOrderIdMainModel.getLeads()[i].getGENDER());
-                    editor.putString("HEPARIN", leadOrderIdMainModel.getLeads()[i].getHEPARIN());
+                        SharedPreferences.Editor editor = getSharedPreferences("LeadOrderID", 0).edit();
+                        editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
+                        editor.putString("AGE", leadOrderIdMainModel.getLeads()[i].getAGE());
+                        editor.putString("AGE_TYPE", leadOrderIdMainModel.getLeads()[i].getAGE_TYPE());
+                        editor.putString("BCT", leadOrderIdMainModel.getLeads()[i].getBCT());
+                        editor.putString("EDTA", leadOrderIdMainModel.getLeads()[i].getEDTA());
+                        editor.putString("EMAIL", leadOrderIdMainModel.getLeads()[i].getEMAIL());
+                        editor.putString("ERROR", leadOrderIdMainModel.getLeads()[i].getERROR());
+                        editor.putString("FLUORIDE", leadOrderIdMainModel.getLeads()[i].getFLUORIDE());
+                        editor.putString("GENDER", leadOrderIdMainModel.getLeads()[i].getGENDER());
+                        editor.putString("HEPARIN", leadOrderIdMainModel.getLeads()[i].getHEPARIN());
 
-                    editor.putString("LAB_ID", leadOrderIdMainModel.getLeads()[i].getLAB_ID());
-                    editor.putString("LAB_NAME", leadOrderIdMainModel.getLeads()[i].getLAB_NAME());
-                    editor.putString("LEAD_ID", leadOrderIdMainModel.getLeads()[i].getLEAD_ID());
-                    editor.putString("MOBILE", leadOrderIdMainModel.getLeads()[i].getMOBILE());
-                    editor.putString("NAME", leadOrderIdMainModel.getLeads()[i].getNAME());
-                    editor.putString("ORDER_NO", leadOrderIdMainModel.getLeads()[i].getORDER_NO());
-                    editor.putString("PACKAGE", leadOrderIdMainModel.getLeads()[i].getPACKAGE());
-                    editor.putString("PINCODE", leadOrderIdMainModel.getLeads()[i].getPINCODE());
-                    editor.putString("PRODUCT", leadOrderIdMainModel.getLeads()[i].getPRODUCT());
-                    editor.putString("RATE", leadOrderIdMainModel.getLeads()[i].getRATE());
+                        editor.putString("LAB_ID", leadOrderIdMainModel.getLeads()[i].getLAB_ID());
+                        editor.putString("LAB_NAME", leadOrderIdMainModel.getLeads()[i].getLAB_NAME());
+                        editor.putString("LEAD_ID", leadOrderIdMainModel.getLeads()[i].getLEAD_ID());
+                        editor.putString("MOBILE", leadOrderIdMainModel.getLeads()[i].getMOBILE());
+                        editor.putString("NAME", leadOrderIdMainModel.getLeads()[i].getNAME());
+                        editor.putString("ORDER_NO", leadOrderIdMainModel.getLeads()[i].getORDER_NO());
+                        editor.putString("PACKAGE", leadOrderIdMainModel.getLeads()[i].getPACKAGE());
+                        editor.putString("PINCODE", leadOrderIdMainModel.getLeads()[i].getPINCODE());
+                        editor.putString("PRODUCT", leadOrderIdMainModel.getLeads()[i].getPRODUCT());
+                        editor.putString("RATE", leadOrderIdMainModel.getLeads()[i].getRATE());
 
-                    editor.putString("REF_BY", leadOrderIdMainModel.getLeads()[i].getREF_BY());
-                    editor.putString("RESPONSE", leadOrderIdMainModel.getLeads()[i].getRESPONSE());
-                    editor.putString("SAMPLE_TYPE", leadOrderIdMainModel.getLeads()[i].getSAMPLE_TYPE());
-                    editor.putString("SCT", leadOrderIdMainModel.getLeads()[i].getSCT());
-                    editor.putString("SERUM", leadOrderIdMainModel.getLeads()[i].getSERUM());
-                    editor.putString("TESTS", leadOrderIdMainModel.getLeads()[i].getTESTS());
-                    editor.putString("TYPE", leadOrderIdMainModel.getLeads()[i].getTYPE());
-                    editor.putString("URINE", leadOrderIdMainModel.getLeads()[i].getURINE());
-                    editor.putString("WATER", leadOrderIdMainModel.getLeads()[i].getWATER());
-                    editor.putString("leadData", leadOrderIdMainModel.getLeads()[i].getLeadData());
+                        editor.putString("REF_BY", leadOrderIdMainModel.getLeads()[i].getREF_BY());
+                        editor.putString("RESPONSE", leadOrderIdMainModel.getLeads()[i].getRESPONSE());
+                        editor.putString("SAMPLE_TYPE", leadOrderIdMainModel.getLeads()[i].getSAMPLE_TYPE());
+                        editor.putString("SCT", leadOrderIdMainModel.getLeads()[i].getSCT());
+                        editor.putString("SERUM", leadOrderIdMainModel.getLeads()[i].getSERUM());
+                        editor.putString("TESTS", leadOrderIdMainModel.getLeads()[i].getTESTS());
+                        editor.putString("TYPE", leadOrderIdMainModel.getLeads()[i].getTYPE());
+                        editor.putString("URINE", leadOrderIdMainModel.getLeads()[i].getURINE());
+                        editor.putString("WATER", leadOrderIdMainModel.getLeads()[i].getWATER());
+                        String json = new Gson().toJson(leadOrderIdMainModel.getLeads()[i].getLeadData());
+                        editor.putString("leadData", json);
+                        editor.commit();
 
-                    editor.commit();
+                        SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
+                        leadAddress = sharedPreferences.getString("ADDRESS", null);
+                        brandtype = sharedPreferences.getString("brandtype", null);
+                        leadAGE = sharedPreferences.getString("AGE", null);
+                        leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
+                        leadBCT = sharedPreferences.getString("BCT", null);
+                        leadEDTA = sharedPreferences.getString("EDTA", null);
+                        leadEMAIL = sharedPreferences.getString("EMAIL", null);
+                        leadERROR = sharedPreferences.getString("ERROR", null);
+                        leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
+                        leadGENDER = sharedPreferences.getString("GENDER", null);
+                        leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
 
-                    SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
-                    leadAddress = sharedPreferences.getString("ADDRESS", null);
-                    leadAGE = sharedPreferences.getString("AGE", null);
-                    leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
-                    leadBCT = sharedPreferences.getString("BCT", null);
-                    leadEDTA = sharedPreferences.getString("EDTA", null);
-                    leadEMAIL = sharedPreferences.getString("EMAIL", null);
-                    leadERROR = sharedPreferences.getString("ERROR", null);
-                    leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
-                    leadGENDER = sharedPreferences.getString("GENDER", null);
-                    leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
+                        leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
+                        leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
+                        leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
+                        leadMOBILE = sharedPreferences.getString("MOBILE", null);
+                        leadNAME = sharedPreferences.getString("NAME", null);
+                        leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
+                        leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
+                        leadPINCODE = sharedPreferences.getString("PINCODE", null);
+                        leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
+                        leadRATE = sharedPreferences.getString("RATE", null);
 
-                    leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
-                    leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
-                    leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
-                    leadMOBILE = sharedPreferences.getString("MOBILE", null);
-                    leadNAME = sharedPreferences.getString("NAME", null);
-                    leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
-                    leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
-                    leadPINCODE = sharedPreferences.getString("PINCODE", null);
-                    leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
-                    leadRATE = sharedPreferences.getString("RATE", null);
-
-                    leadREF_BY = sharedPreferences.getString("REF_BY", null);
-                    leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
-                    leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
-                    leadSCT = sharedPreferences.getString("SCT", null);
-                    leadSERUM = sharedPreferences.getString("SERUM", null);
-                    leadTESTS = sharedPreferences.getString("TESTS", null);
-                    leadTYPE = sharedPreferences.getString("TYPE", null);
-                    leadURINE = sharedPreferences.getString("URINE", null);
-                    leadWATER = sharedPreferences.getString("WATER", null);
-                    leadleadData = sharedPreferences.getString("leadData", null);
+                        leadREF_BY = sharedPreferences.getString("REF_BY", null);
+                        leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
+                        leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
+                        leadSCT = sharedPreferences.getString("SCT", null);
+                        leadSERUM = sharedPreferences.getString("SERUM", null);
+                        leadTESTS = sharedPreferences.getString("TESTS", null);
+                        leadTYPE = sharedPreferences.getString("TYPE", null);
+                        leadURINE = sharedPreferences.getString("URINE", null);
+                        leadWATER = sharedPreferences.getString("WATER", null);
+                        leadleadData = sharedPreferences.getString("leadData", null);
+                    }
                 }
             }
+
         } else {
             SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
             leadAddress = sharedPreferences.getString("ADDRESS", null);
+            brandtype=sharedPreferences.getString("brandtype",null);
             leadAGE = sharedPreferences.getString("AGE", null);
             leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
             leadBCT = sharedPreferences.getString("BCT", null);
@@ -383,13 +385,13 @@ public class Summary_leadId extends AppCompatActivity {
             }
         }
 
-        pat_type.setText("TTL/" + leadTYPE);
+        pat_type.setText(brandtype+"/"+ leadTYPE);
         pat_name.setText(leadNAME);
         pat_sct.setText(leadSCT);
         pat_ref.setText(leadREF_BY);
         btech.setText(leadBCT);
         pat_scp.setText(leadAddress);
-        tests.setText(leadTESTS);
+
         id_number.setText(leadORDER_NO);
 
         if (leadAGE != null && !leadAGE.equalsIgnoreCase("") && patientYearType != null && !patientYearType.equalsIgnoreCase("")) {
@@ -411,6 +413,22 @@ public class Summary_leadId extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         finalspecimenttypewiselist = bundle.getParcelableArrayList("leadArraylist");
+        leadTESTS="";
+
+        if (finalspecimenttypewiselist!=null && finalspecimenttypewiselist.size()>0) {
+            for (int i = 0; i <finalspecimenttypewiselist.size() ; i++) {
+                leadTESTS+=finalspecimenttypewiselist.get(i).getProducts()+",";
+                Log.e(TAG,"leadTESTS---"+leadTESTS);
+            }
+            try {
+                if (leadTESTS.endsWith(",")) {
+                    leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            tests.setText(leadTESTS);
+        }
         getDateTopass = bundle.getString("Date");
         get_time = bundle.getString("Time");
         getDate_and_time = bundle.getString("DateTime");
@@ -513,7 +531,7 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setAPP_ID(version);
         woe.setADDITIONAL1("CPL");
         woe.setBCT_ID(leadBCT);
-        woe.setBRAND("TTL");
+        woe.setBRAND(brandtype);
         woe.setCAMP_ID("");
         woe.setCONT_PERSON("");
         woe.setCONTACT_NO(leadMOBILE);
@@ -536,7 +554,7 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setREF_DR_ID(leadREF_ID);
         woe.setREF_DR_NAME(leadREF_BY);
         woe.setREMARKS("MOBILE");
-        woe.setSPECIMEN_COLLECTION_TIME(getDateTopass + " " + finalgettime.trim()+":00.000");
+        woe.setSPECIMEN_COLLECTION_TIME(getDateTopass + " " + finalgettime.trim() + ":00.000");
         woe.setSPECIMEN_SOURCE("");
         woe.setSR_NO(sr_number_pass_to_api);
         woe.setSTATUS("N");
@@ -602,7 +620,7 @@ public class Summary_leadId extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
                 } else {
-                   //Log.v(TAG,error);
+                    //Log.v(TAG,error);
                 }
             }
         });

@@ -2,7 +2,7 @@ package com.example.e5322.thyrosoft.Kotlin.KTFragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
@@ -16,14 +16,13 @@ import com.example.e5322.thyrosoft.API.Api
 import com.example.e5322.thyrosoft.API.Constants
 import com.example.e5322.thyrosoft.Activity.MessageConstants
 import com.example.e5322.thyrosoft.GlobalClass
+import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity
 import com.example.e5322.thyrosoft.Kotlin.KTGlobalclass
 import com.example.e5322.thyrosoft.Kotlin.KTModels.KTInsertReasonsReq
 import com.example.e5322.thyrosoft.Kotlin.KTModels.KTInsertreasonResponse
 import com.example.e5322.thyrosoft.Kotlin.KTRetrofit.KTAPIInteface
 import com.example.e5322.thyrosoft.Kotlin.KTRetrofit.KTRetrofitClient
-import com.example.e5322.thyrosoft.Models.InsertreasonResponse
 import com.example.e5322.thyrosoft.R
-import com.google.gson.GsonBuilder
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.lay_scanbarcode.*
 import retrofit2.Call
@@ -180,7 +179,7 @@ class KTReportScanFrag : Fragment() {
         val p_dialog = KTGlobalclass().ShowprogressDialog(activity)
         val insertreasonreq = KTInsertReasonsReq(edt_reason.text.toString(), edt_wastecnt.text.toString(), usercode!!)
 
-        val apiInterface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(Api.insertscandetail)!!.create(KTAPIInteface::class.java)
+        val apiInterface: KTAPIInteface = KTRetrofitClient().getInstance()!!.getClient(activity, Api.insertscandetail)!!.create(KTAPIInteface::class.java)
         val insertScandetailResCall: Call<KTInsertreasonResponse> = apiInterface.insertreason(insertreasonreq)
 
        // Log.e(TAG, "URL ---->" + insertScandetailResCall.request().url())

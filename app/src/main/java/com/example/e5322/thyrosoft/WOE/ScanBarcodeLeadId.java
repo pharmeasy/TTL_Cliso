@@ -2,13 +2,10 @@ package com.example.e5322.thyrosoft.WOE;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +17,7 @@ import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.Adapter.LeadIdAdapter;
+import com.example.e5322.thyrosoft.Adapter.LeadSampleTypeAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
@@ -28,6 +26,7 @@ import com.example.e5322.thyrosoft.LeadOrderIDModel.Leads;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -38,35 +37,42 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.ContentValues.TAG;
 
 public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInterface {
     TextView ordersct, date, show_selected_tests_data, title;
+    Calendar myCalendar;
+    long minDate;
+    private String putDate;
+    private String getFormatDate;
     Spinner timehr, timesecond, timeampm;
     RecyclerView recycler_barcode_leads;
     String user, typeName, passwrd, access, api_key, srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
     String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
-    String leadREF_BY, leadRESPONSE, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, fromcome;
+    String leadREF_BY, leadRESPONSE, brandtype, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, fromcome;
     Calendar dateSelected = Calendar.getInstance();
     private DatePickerDialog datePickerDialog;
-
+    Leads.LeadData[] nameList;
+    List<Leads.LeadData> list;
     LinearLayoutManager linearLayoutManager;
-    private int year;
-    private int month;
-    private int day;
+    public int year;
+    public int month;
+    public int day;
     Button next;
-    public int position1 = 0;
-    List<String> fixedLenghtList;
-    ArrayList<String> sample_type_array;
-    public String specimenttype1;
     static final int DATE_PICKER_ID = 1111;
     public IntentIntegrator scanIntegrator;
     LeadIdAdapter leadIdAdapter;
     LeadOrderIdMainModel leadOrderIdMainModel;
     RequestQueue requestQueueNoticeBoard;
     ScannedBarcodeDetails scannedBarcodeDetails;
-
+   // LeadScannedBarcodeDetails leadScannedBarcodeDetails;
     ImageView back, home;
     private boolean isfor1sttime = false;
     private String pass_full_date;
@@ -74,18 +80,37 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
     private String convertDate;
     private Date dateTocompare, getCurrentDate;
     Leads[] leads;
+    boolean isfirsttime = false;
     boolean flagintent = false;
+    LeadSampleTypeAdapter leadSampleTypeAdapter;
+    ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList;
 
+    final DatePickerDialog.OnDateSetListener datepicker = new DatePickerDialog.OnDateSetListener() {
+
+        @Override
+        public void onDateSet(DatePicker view, int year, int monthOfYear,
+                              int dayOfMonth) {
+            // TODO Auto-generated method stub
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, monthOfYear);
+            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel();
+        }
+    };
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode_lead_id);
+
 
         ordersct = (TextView) findViewById(R.id.ordersct);
         date = (TextView) findViewById(R.id.date);
         title = (TextView) findViewById(R.id.title);
         show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
         next = (Button) findViewById(R.id.next);
+
 
         timehr = (Spinner) findViewById(R.id.timehr);
         timesecond = (Spinner) findViewById(R.id.timesecond);
@@ -95,10 +120,10 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
         recycler_barcode_leads = (RecyclerView) findViewById(R.id.recycler_barcode_leads);
 
+
         linearLayoutManager = new LinearLayoutManager(ScanBarcodeLeadId.this);
         recycler_barcode_leads.setLayoutManager(linearLayoutManager);
 
-        GlobalClass.finalspecimenttypewiselist = new ArrayList<>();
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,10 +162,12 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         GlobalClass.isAutoTimeSelected(ScanBarcodeLeadId.this);
 
         fromcome = getIntent().getExtras().getString("fromcome", "");
+        leadOrderIdMainModel = (LeadOrderIdMainModel) getIntent().getParcelableExtra("MyClass");
 
         SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
 
         if (fromcome.equalsIgnoreCase("woepage")) {
+            brandtype = sharedPreferences.getString(" brandtype", null);
             leadAddress = sharedPreferences.getString("ADDRESS", null);
             leadAGE = sharedPreferences.getString("AGE", null);
             leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
@@ -176,109 +203,97 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
             if (sharedPreferences != null) {
                 ordersct.setText("SCT :" + leadSCT);
-                show_selected_tests_data.setText(leadTESTS);
             }
-        } else {
+        } else if (fromcome.equalsIgnoreCase("adapter")) {
+            brandtype = getIntent().getStringExtra("brandtype");
             leadSAMPLE_TYPE = getIntent().getStringExtra("SAMPLE_TYPE");
             leadLEAD_ID = getIntent().getStringExtra("LeadID");
             leadTESTS = getIntent().getStringExtra("TESTS");
             leadSCT = getIntent().getStringExtra("SCT");
+            leadleadData = sharedPreferences.getString("leadData", null);
             ordersct.setText("SCT :" + leadSCT);
-            show_selected_tests_data.setText(leadTESTS);
+        } else {
+            brandtype = getIntent().getStringExtra("brandtype");
+            leadSAMPLE_TYPE = getIntent().getStringExtra("SAMPLE_TYPE");
+            leadLEAD_ID = getIntent().getStringExtra("LeadID");
+            leadTESTS = getIntent().getStringExtra("TESTS");
+            leadSCT = getIntent().getStringExtra("SCT");
+            leadleadData = sharedPreferences.getString("leadData", null);
+            ordersct.setText("SCT :" + leadSCT);
         }
 
+        //TODO This is LeadData Array
+        Gson gson = new Gson();
+        nameList = gson.fromJson(leadleadData, Leads.LeadData[].class);
+        list = Arrays.asList(nameList);
+        leadSAMPLE_TYPE = "";
 
-        String[] elements = leadSAMPLE_TYPE.split(",");
-        fixedLenghtList = Arrays.asList(elements);
 
-        sample_type_array = new ArrayList<String>(fixedLenghtList);
-
-        leadOrderIdMainModel = (LeadOrderIdMainModel) getIntent().getParcelableExtra("MyClass");
-
-        for (int i = 0; i < sample_type_array.size(); i++) {
-            scannedBarcodeDetails = new ScannedBarcodeDetails();
-            scannedBarcodeDetails.setSpecimen_type(sample_type_array.get(i));
-            GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
+        leadTESTS = "";
+        for (int i = 0; i < list.size(); i++) {
+            leadTESTS += list.get(i).getTest() + ",";
         }
 
-        if (!isfor1sttime) {
-            isfor1sttime = true;
-//            for (int k = 0; k < GlobalClass.finalspecimenttypewiselist.size(); k++) {
-//
-//                if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("EDTA")) {
-//                    if (leadOrderIdMainModel.getLeads()[0].getEDTA() != null && !leadOrderIdMainModel.getLeads()[0].getEDTA().isEmpty()) {
-//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getEDTA());
-//                    }
-//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("SERUM")) {
-//                    if (leadOrderIdMainModel.getLeads()[0].getSERUM() != null && !leadOrderIdMainModel.getLeads()[0].getSERUM().isEmpty()) {
-//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getSERUM());
-//                    }
-//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("URINE")) {
-//                    if (leadOrderIdMainModel.getLeads()[0].getURINE() != null && !leadOrderIdMainModel.getLeads()[0].getURINE().isEmpty()) {
-//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getURINE());
-//                    }
-//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("HEPARIN")) {
-//                    if (leadOrderIdMainModel.getLeads()[0].getHEPARIN() != null && !leadOrderIdMainModel.getLeads()[0].getHEPARIN().isEmpty()) {
-//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getHEPARIN());
-//                    }
-//                } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equals("FLUORIDE")) {
-//                    if (leadOrderIdMainModel.getLeads()[0].getFLUORIDE() != null && !leadOrderIdMainModel.getLeads()[0].getFLUORIDE().isEmpty()) {
-//                        GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[0].getFLUORIDE());
-//                    }
-//                }
-//            }
+        try {
+            if (leadTESTS.endsWith(",")) {
+                leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        show_selected_tests_data.setText(leadTESTS);
 
-            for (int k = 0; k < GlobalClass.finalspecimenttypewiselist.size(); k++) {
-                for (int l = 0; l < leadOrderIdMainModel.getLeads().length; l++) {
-                    if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("EDTA")) {
-                        if (leadOrderIdMainModel.getLeads()[l].getEDTA() != null && !leadOrderIdMainModel.getLeads()[l].getEDTA().isEmpty()
-                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
-                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getEDTA());
+        if (fromcome.equalsIgnoreCase("woepage") || fromcome.equalsIgnoreCase("adapter")) {
+            FinalBarcodeDetailsList = new ArrayList<>();
+            if (list != null) {
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getTest().contains("PPBS") || list.get(i).getTest().contains("RBS") || list.get(i).getTest().contains("FBS")) {
+                        List<String> fluriodetest = Arrays.asList(list.get(i).getTest().split(","));
+
+                        if (fluriodetest.contains("PPBS") && fluriodetest.contains("RBS")) {
+                            fluriodetest.remove("RBS");
                         }
-                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("SERUM")) {
-                        if (leadOrderIdMainModel.getLeads()[l].getSERUM() != null && !leadOrderIdMainModel.getLeads()[l].getSERUM().isEmpty()
-                                &&leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
-                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getSERUM());
+                        for (int k = 0; k < fluriodetest.size(); k++) {
+                            scannedBarcodeDetails = new ScannedBarcodeDetails();
+                            scannedBarcodeDetails.setProducts(fluriodetest.get(k));
+                            scannedBarcodeDetails.setSpecimen_type(list.get(i).getSample_type()[0].getOutlab_sampletype().trim());
+                            FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                         }
-                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("URINE")) {
-                        if (leadOrderIdMainModel.getLeads()[l].getURINE() != null && !leadOrderIdMainModel.getLeads()[l].getURINE().isEmpty()
-                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
-                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getURINE());
-                        }
-                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("HEPARIN")) {
-                        if (leadOrderIdMainModel.getLeads()[l].getHEPARIN() != null && !leadOrderIdMainModel.getLeads()[l].getHEPARIN().isEmpty()
-                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
-                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getHEPARIN());
-                        }
-                    } else if (GlobalClass.finalspecimenttypewiselist.get(k).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
-                        if (leadOrderIdMainModel.getLeads()[l].getFLUORIDE() != null && !leadOrderIdMainModel.getLeads()[l].getFLUORIDE().isEmpty()
-                                && leadOrderIdMainModel.getLeads()[l].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
-                            GlobalClass.finalspecimenttypewiselist.get(k).setProducts(leadOrderIdMainModel.getLeads()[l].getFLUORIDE());
-                        }
+                    } else {
+                        scannedBarcodeDetails = new ScannedBarcodeDetails();
+                        scannedBarcodeDetails.setProducts(list.get(i).getTest());
+                        scannedBarcodeDetails.setSpecimen_type(list.get(i).getSample_type()[0].getOutlab_sampletype().trim());
+                        FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                     }
                 }
-
             }
+        } else {
+            FinalBarcodeDetailsList = getIntent().getParcelableArrayListExtra("FinalBarcodeDetailsList");
         }
 
-
-        leadIdAdapter = new LeadIdAdapter(ScanBarcodeLeadId.this, GlobalClass.finalspecimenttypewiselist, this);
-        leadIdAdapter.setOnItemClickListener(new LeadIdAdapter.OnItemClickListener() {
-            @Override
-            public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
-
-                if (GlobalClass.specimenttype != null) {
-                    GlobalClass.specimenttype = "";
-                }
-                GlobalClass.specimenttype = Specimenttype;
-
-                scanIntegrator = new IntentIntegrator(activity);
-                scanIntegrator.initiateScan();
-            }
-        });
-
+        leadIdAdapter = new LeadIdAdapter(ScanBarcodeLeadId.this, FinalBarcodeDetailsList, ScanBarcodeLeadId.this);
         recycler_barcode_leads.setAdapter(leadIdAdapter);
+        leadIdAdapter.notifyDataSetChanged();
+
+        if (leadIdAdapter != null) {
+            leadIdAdapter.setOnItemClickListener(new LeadIdAdapter.OnItemClickListener() {
+                @Override
+                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
+
+                    if (GlobalClass.specimenttype != null) {
+                        GlobalClass.specimenttype = "";
+                    }
+
+                    GlobalClass.specimenttype = Specimenttype;
+                    scanIntegrator = new IntentIntegrator(activity);
+                    scanIntegrator.initiateScan();
+
+                }
+            });
+
+        }
+
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,10 +318,6 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                     Log.v("Exception", ex.getLocalizedMessage());
                 }
 
-                /* else if (dCompare.after(getCurrentDateandTime)) {
-                    Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-                }*/
-
                 SimpleDateFormat sdfs = new SimpleDateFormat("dd-MM-yyyy");
                 SimpleDateFormat outsdf = new SimpleDateFormat("yyyy-MM-dd");
                 SimpleDateFormat outsdf22 = new SimpleDateFormat("yyyy-MM-dd");
@@ -318,10 +329,10 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                     e.printStackTrace();
                 }
 
-                if (GlobalClass.finalspecimenttypewiselist != null) {
-                    for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                        if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() == null || GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equals("")) {
-                            Toast.makeText(ScanBarcodeLeadId.this, ToastFile.pls_scn_br + GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type(), Toast.LENGTH_SHORT).show();
+                if (FinalBarcodeDetailsList != null) {
+                    for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+                        if (FinalBarcodeDetailsList.get(i).getBarcode() == null || FinalBarcodeDetailsList.get(i).getBarcode().equals("")) {
+                            Toast.makeText(ScanBarcodeLeadId.this, ToastFile.pls_scn_br + FinalBarcodeDetailsList.get(i).getSpecimen_type(), Toast.LENGTH_SHORT).show();
                             flagintent = false;
                             break;
                         } else if (dateTocompare.after(getCurrentDate)) {
@@ -334,9 +345,10 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
                     if (flagintent) {
                         Intent j = new Intent(ScanBarcodeLeadId.this, Summary_leadId.class);
                         j.putExtra("LeadID", leadLEAD_ID);
+                        j.putExtra("brandtype", brandtype);
                         j.putExtra("MyClass", leadOrderIdMainModel);
                         j.putExtra("fromcome", fromcome);
-                        j.putParcelableArrayListExtra("leadArraylist", GlobalClass.finalspecimenttypewiselist);
+                        j.putParcelableArrayListExtra("leadArraylist", FinalBarcodeDetailsList);
                         j.putExtra("Date", convertDate);
                         j.putExtra("Time", formFullTime);
                         j.putExtra("DateTime", pass_full_date);
@@ -351,62 +363,43 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
 
         });
 
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String showDate = sdf.format(d);
+        myCalendar = Calendar.getInstance();
 
-        final Calendar c = Calendar.getInstance();
-        year = c.get(Calendar.YEAR);
-        month = c.get(Calendar.MONTH);
-        day = c.get(Calendar.DAY_OF_MONTH);
-        String setDateFormat = day + "-" + (month + 1) + "-" + year;
-        SimpleDateFormat sdft = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            Date getDate = sdft.parse(setDateFormat);
-            setDateFormat = sdft.format(getDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        year = myCalendar.get(Calendar.YEAR);
+        month = myCalendar.get(Calendar.MONTH);
+        day = myCalendar.get(Calendar.DAY_OF_MONTH);
+        myCalendar.add(Calendar.DAY_OF_MONTH, -2);
+        minDate = myCalendar.getTime().getTime();
 
-        date.setText(setDateFormat);
+        myCalendar.setTime(d);
+        date.setText(showDate);
+
+
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(DATE_PICKER_ID);
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ScanBarcodeLeadId.this, R.style.DialogTheme, datepicker, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(minDate);
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
             }
         });
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        switch (id) {
-            case DATE_PICKER_ID:
+    private void updateLabel() {
+        String myFormat = "dd-MM-yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        putDate = sdf.format(myCalendar.getTime());
+        getFormatDate = sdf.format(myCalendar.getTime());
+        date.setText(putDate);
 
-                return new DatePickerDialog(this, pickerListener, year, month, day);
-        }
-        return null;
     }
 
-    private DatePickerDialog.OnDateSetListener pickerListener = new DatePickerDialog.OnDateSetListener() {
-
-        // when dialog box is closed, below method will be called.
-        @Override
-        public void onDateSet(DatePicker view, int selectedYear,
-                              int selectedMonth, int selectedDay) {
-            year = selectedYear;
-            month = selectedMonth;
-            day = selectedDay;
-
-            String setDateFormat = day + "-" + (month + 1) + "-" + year;
-            SimpleDateFormat sdft = new SimpleDateFormat("dd-MM-yyyy");
-            try {
-                Date getDate = sdft.parse(setDateFormat);
-                setDateFormat = sdft.format(getDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            date.setText(setDateFormat);
-            // Show selected date
-
-        }
-    };
 
     @Override
     public void putDataToscan(Activity activity, int position, String specimenttype) {
@@ -452,9 +445,9 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         boolean isbacodeduplicate = false;
         Log.e(TAG, "passBarcodeData: get the barcode number " + getBracode);
 
-        for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-            if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
-                if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(getBracode)) {
+        for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+            if (FinalBarcodeDetailsList.get(i).getBarcode() != null && !FinalBarcodeDetailsList.get(i).getBarcode().isEmpty()) {
+                if (FinalBarcodeDetailsList.get(i).getBarcode().equalsIgnoreCase(getBracode)) {
                     isbacodeduplicate = true;
                 }
             }
@@ -463,15 +456,15 @@ public class ScanBarcodeLeadId extends AppCompatActivity implements RecyclerInte
         if (isbacodeduplicate) {
             Toast.makeText(ScanBarcodeLeadId.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
-            for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-                    GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(getBracode);
+            for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+                if (FinalBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
+                    FinalBarcodeDetailsList.get(i).setBarcode(getBracode);
                     Log.e(TAG, "passBarcodeData: show barcode" + getBracode);
                 }
             }
         }
         recycler_barcode_leads.removeAllViews();
-        leadIdAdapter = new LeadIdAdapter(ScanBarcodeLeadId.this, GlobalClass.finalspecimenttypewiselist, this);
+        leadIdAdapter = new LeadIdAdapter(ScanBarcodeLeadId.this, FinalBarcodeDetailsList, this);
         leadIdAdapter.setOnItemClickListener(new LeadIdAdapter.OnItemClickListener() {
             @Override
             public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {

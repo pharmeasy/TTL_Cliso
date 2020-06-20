@@ -12,12 +12,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
@@ -82,6 +76,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
@@ -253,8 +254,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         SearchManager searchManager = (SearchManager) mActivity.getSystemService(Context.SEARCH_SERVICE);
 
         before_discount_layout2.setVisibility(View.GONE);
-
-
 
 
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
@@ -769,13 +768,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     int sum = 0;
+                    int b2b = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
 
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
                         sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
-                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")){
+                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")) {
                             getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
-                        }else {
+                        } else {
                             getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
                         }
 
@@ -791,11 +792,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     String testsCodesPassing = TextUtils.join(",", getTestNameLits);
                     String payment = String.valueOf(sum);
+                    String b2b_rate = String.valueOf(b2b);
+                    Log.e(TAG, "b2b_rate--->" + b2b_rate);
+
                     Intent intent = new Intent(ProductLisitngActivityNew.this, Scan_Barcode_ILS_New.class);
                     Bundle bundle = new Bundle();
                     bundle.putParcelableArrayList("key", Selcted_Outlab_Test);
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
+                    bundle.putString("b2b_rate", b2b_rate);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -818,9 +823,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
             if (obj != null) {
                 if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
-                    if (shr_brandname.equalsIgnoreCase(brandName)){
+                    if (shr_brandname.equalsIgnoreCase(brandName)) {
                         callAdapter(obj);
-                    }else {
+                    } else {
                         getAllproduct();
                     }
 
@@ -1175,7 +1180,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
                                 String cartproduct = TextUtils.join(",", tempselectedTests1);
-                                alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                                alertDialogBuilder =  new AlertDialog.Builder(ProductLisitngActivityNew.this);
                                 alertDialogBuilder
                                         .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                                         .setCancelable(true)
@@ -1185,12 +1190,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                             }
                                         });
 
-                                android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
 
                             }
                         } else {
-                            alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                            alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
                             alertDialogBuilder
                                     .setMessage(Html.fromHtml("You cannot select other test if " + Constants.THYRONAME + " is selected"))
                                     .setCancelable(false)
@@ -1199,7 +1204,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                             dialog.dismiss();
                                         }
                                     });
-                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
 
                         }
@@ -1207,7 +1212,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                         if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
                             if (Selcted_Outlab_Test.size() > 0) {
-                                alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                                alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
                                 alertDialogBuilder
                                         .setMessage(Html.fromHtml(Constants.THYRONAME + " can not be selected along with other test,Do you want to replace " + Constants.THYRONAME))
                                         .setCancelable(false)
@@ -1250,7 +1255,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                                 dialog.dismiss();
                                             }
                                         });
-                                android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             } else {
                                 Selcted_Outlab_Test.clear();
@@ -1324,7 +1329,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 before_discount_layout2.setVisibility(View.GONE);
                             }
                         } else {
-                            alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(ProductLisitngActivityNew.this);
+                            alertDialogBuilder =  new AlertDialog.Builder(ProductLisitngActivityNew.this);
                             alertDialogBuilder
                                     .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                                     .setCancelable(true)
@@ -1333,7 +1338,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                             dialog.dismiss();
                                         }
                                     });
-                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            AlertDialog alertDialog = alertDialogBuilder.create();
                             alertDialog.show();
 
                         }

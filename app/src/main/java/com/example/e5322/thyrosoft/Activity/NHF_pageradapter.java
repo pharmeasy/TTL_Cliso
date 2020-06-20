@@ -1,15 +1,14 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
-import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.R;
 
 public class NHF_pageradapter extends FragmentPagerAdapter {
