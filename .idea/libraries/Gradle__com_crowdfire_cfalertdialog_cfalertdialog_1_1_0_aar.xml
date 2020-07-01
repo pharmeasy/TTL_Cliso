@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="Gradle: com.crowdfire.cfalertdialog:cfalertdialog:1.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/cfalertdialog-1.1.0.aar/e0de147f830c8b497d9c74b40292088c/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/cfalertdialog-1.1.0.aar/e0de147f830c8b497d9c74b40292088c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/f43aa04a1d5b44f2fd60421a4e472954/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-cfalertdialog-1.1.0.aar/f43aa04a1d5b44f2fd60421a4e472954/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

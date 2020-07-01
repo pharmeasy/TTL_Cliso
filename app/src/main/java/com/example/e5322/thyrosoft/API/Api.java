@@ -7,41 +7,41 @@ package com.example.e5322.thyrosoft.API;
 public class Api {
 
     //TODO live
-//    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
-//    public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
-//    public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
-//    public static String Static_API = "https://www.thyrocare.com/API/B2B/";
-//    public static String THYROCARE = "https://www.thyrocare.com/APIs/";
-//    public static String COVID = "https://www.thyrocare.com/API/";
-//    public static String SUGARSO = "https://www.thyrocare.com/API/SugarSo/api/";
-//    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API/BDN/api";
-//    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/";
-//    public static String GenerateTid = "https://www.thyrocare.com/APIs/";
-//    public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
-//    public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API/";
-//    public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
-//    public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
-//    public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
-//    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+    public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+    public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
+    public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
+    public static String Static_API = "https://www.thyrocare.com/API/B2B/";
+    public static String THYROCARE = "https://www.thyrocare.com/APIs/";
+    public static String COVID = "https://www.thyrocare.com/API/";
+    public static String SUGARSO = "https://www.thyrocare.com/API/SugarSo/api/";
+    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API/BDN/api";
+    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/APIs/";
+    public static String GenerateTid = "https://www.thyrocare.com/APIs/";
+    public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
+    public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API/";
+    public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
+    public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
+    public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
+    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
 
     //TODO staging
-    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
-    public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
-    public static String SGC = "http://www.thyrocare.com/API_BETA/BDN/api/";
-    public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
-    public static String THYROCARE = "https://www.thyrocare.com/API_BETA/";
-    public static String COVID = "https://www.thyrocare.com/API_BETA/";
-    public static String SUGARSO = "http://www.thyrocare.com/API_BETA/SugarSo/api/";
-    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API_BETA/BDN/api";
-    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
-    public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
-    public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
-    public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
-    public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
-    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
-    public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
-    public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
-    public static String count = LIVEAPI + "WO.svc/";
+//    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+//    public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
+//    public static String SGC = "http://www.thyrocare.com/API_BETA/BDN/api/";
+//    public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
+//    public static String THYROCARE = "https://www.thyrocare.com/API_BETA/";
+//    public static String COVID = "https://www.thyrocare.com/API_BETA/";
+//    public static String SUGARSO = "http://www.thyrocare.com/API_BETA/SugarSo/api/";
+//    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API_BETA/BDN/api";
+//    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
+//    public static String GenerateTid = "https://www.thyrocare.com/API_BETA/";
+//    public static final String APIKEYFORPAYMENTGATEWAY_PAYU = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
+//    public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
+//    public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
+//    public static String traningvideo = "http://www.charbi.com//CDN//Applications//Android//XiaoYing_Video_1547111134141.mp4";
+//    public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
+//    public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
+//    public static String count = LIVEAPI + "WO.svc/";
 
 
     //TODO SCANSO

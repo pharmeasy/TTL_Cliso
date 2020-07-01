@@ -3,12 +3,9 @@ package com.payu.payuui.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -33,6 +30,9 @@ import com.payu.payuui.SdkuiUtil.SdkUIConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -5,20 +5,16 @@ import android.app.DatePickerDialog;
 import android.os.Build;
 import android.os.Bundle;
 
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.app.Fragment;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +40,9 @@ import com.payu.payuui.Widget.MonthYearPickerDialog;
 
 import java.util.Calendar;
 import java.util.HashMap;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 
 /**

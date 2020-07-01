@@ -17,7 +17,9 @@
 
 package com.payu.payuui.Widget;
 
-import android.support.v4.view.ViewPager;
+
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * A PageIndicator is responsible to show an visual indicator on the total views
@@ -38,6 +40,8 @@ public interface PageIndicator extends ViewPager.OnPageChangeListener {
      * @param initialPosition
      */
     void setViewPager(ViewPager view, int initialPosition);
+
+
 
     /**
      * <p>Set the current page of both the ViewPager and indicator.</p>

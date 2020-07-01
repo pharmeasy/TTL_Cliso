@@ -4,21 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.webkit.WebView;
 import com.payu.custombrowser.Bank;
 import com.payu.custombrowser.CustomBrowser;
 import com.payu.custombrowser.PayUCustomBrowserCallback;
-import com.payu.custombrowser.PayUSurePayWebViewClient;
 import com.payu.custombrowser.PayUWebChromeClient;
-import com.payu.custombrowser.PayUWebViewClient;
 import com.payu.custombrowser.bean.CustomBrowserConfig;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Payu.PayuConstants;
-import com.payu.magicretry.MagicRetryFragment;
 import com.payu.payuui.R;
-import java.util.HashMap;
-import java.util.Map;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class PaymentsActivity extends FragmentActivity {
     private Bundle bundle;

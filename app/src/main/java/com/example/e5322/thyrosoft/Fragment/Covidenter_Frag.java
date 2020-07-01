@@ -188,9 +188,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        b2b = response.body().getB2B();
-                        b2c = response.body().getB2C();
-                        // tv_amtrange.setText("Enter amount collected");
+                        if (!TextUtils.isEmpty(response.body().getB2B())) {
+                            b2b = response.body().getB2B();
+                        }
+
+                        if (!TextUtils.isEmpty(response.body().getB2C())) {
+                            b2c = response.body().getB2C();
+                        }
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -206,7 +211,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void initView(View view) {
-
         preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         usercode = preferences.getString("USER_CODE", null);
         apikey = preferences.getString("API_KEY", null);
@@ -423,18 +427,18 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 try {
-
                     int amt = Integer.parseInt(charSequence.toString());
-
-                    if (amt > Integer.parseInt(b2c)) {
-                        edt_amt.setText("");
-                        TastyToast.makeText(getActivity(), "You cannot enter collect amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    if (!TextUtils.isEmpty(b2c)) {
+                        if (amt > Integer.parseInt(b2c)) {
+                            edt_amt.setText("");
+                            TastyToast.makeText(getActivity(), "You cannot enter collect amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                        buttonval();
                     }
-                    buttonval();
-
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -1422,12 +1426,16 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             return false;
         }
 
-        if (Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
-            //   Global.showCustomToast(getActivity(), "Amount collected should greater than "+b2b+" and less than "+b2c);
-            // Global.showCustomToast(getActivity(), "please enter correct collected amount");
+        try {
+            if (Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
+                //   Global.showCustomToast(getActivity(), "Amount collected should greater than "+b2b+" and less than "+b2c);
+                // Global.showCustomToast(getActivity(), "please enter correct collected amount");
 
-            //  edt_amt.requestFocus();
-            return false;
+                //  edt_amt.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
         if (presc_file == null) {

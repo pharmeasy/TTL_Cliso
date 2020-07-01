@@ -12,12 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -74,6 +68,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.e5322.thyrosoft.API.Constants.small_invalidApikey;
 import static com.example.e5322.thyrosoft.ToastFile.ent_pin;
@@ -802,55 +801,71 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     }
 //                     get_visiting_card = encodedImage.toString();
                     if (getLatitude.equalsIgnoreCase("")) {
-                        lattitude_txt.setError("Enter latitude");
+                        lattitude_txt.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter latitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getLongitude.equalsIgnoreCase("")) {
-                        longitude_txt.setError("Enter correct longitude");
+                        longitude_txt.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct longitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getpincode.equals("")) {
-                        pincode_edt.setError("Enter correct Pincode");
+                        pincode_edt.requestFocus();
+                      //  pincode_edt.setError("Enter correct Pincode");
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Pincode", Toast.LENGTH_SHORT).show();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Pincode", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getpincode.length() < 6) {
-                        pincode_edt.setError("Enter 6 digits Pincode");
+                        pincode_edt.requestFocus();
+                        //pincode_edt.setError("Enter 6 digits Pincode");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter 6 digits Pincode", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_pin, Toast.LENGTH_SHORT).show();
                     } else if (getmobile_number.equals("")) {
                         mobile_edt.requestFocus();
-                        mobile_edt.setError("Enter correct Mobile number");
+                       // mobile_edt.setError("Enter correct Mobile number");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Mobile number", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Mobile number", Toast.LENGTH_SHORT).show();
                     } else if (getmobile_number.length() < 10) {
                         mobile_edt.requestFocus();
-                        mobile_edt.setError("Enter 10 digits Mobile number");
+                       // mobile_edt.setError("Enter 10 digits Mobile number");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter 10 digits Mobile number", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Mobile number", Toast.LENGTH_SHORT).show();
                     } else if (email_address.equals("")) {
                         email_edt.requestFocus();
-                        email_edt.setError("Please enter Email address");
+                       // email_edt.setError("Please enter Email address");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter Email address", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter Email address", Toast.LENGTH_SHORT).show();
                     } else if (getclient_name.equals("")) {
-                        client_name_edt.requestFocus();
-                        client_name_edt.setError("Please enter correct Client name");
+                       client_name_edt.requestFocus();
+                       // client_name_edt.setError("Please enter correct Client name");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
                     } else if (getclient_name.length() < 2) {
                         client_name_edt.requestFocus();
-                        client_name_edt.setError("Please enter correct Client name");
+                       // client_name_edt.setError("Please enter correct Client name");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
                     } else if (get_incharge_name.equals("")) {
                         incharge_name.requestFocus();
-                        incharge_name.setError("Please enter correct Incharge name");
+                      //  incharge_name.setError("Please enter correct Incharge name");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Incharge name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Incharge name", Toast.LENGTH_SHORT).show();
                     } else if (get_incharge_name.length() < 2) {
                         incharge_name.requestFocus();
-                        incharge_name.setError("Please enter correct Incharge name");
+                      //  incharge_name.setError("Please enter correct Incharge name");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Incharge name", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Incharge name", Toast.LENGTH_SHORT).show();
                     } else if (get_Address.equals("")) {
                         addressEdt.requestFocus();
-                        addressEdt.setError(ToastFile.ent_addr);
+                      //  addressEdt.setError(ToastFile.ent_addr);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (get_Address.length() < 25) {
                         addressEdt.requestFocus();
-                        addressEdt.setError(ToastFile.addre25long);
+                      //  addressEdt.setError(ToastFile.addre25long);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.addre25long, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (image == null) {
                         cross_img.setVisibility(View.VISIBLE);
                         correct_img.setVisibility(View.GONE);
-                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please upload visiting card", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Please upload visiting card" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                       // TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please upload visiting card", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (!email_address.equals("")) {
 //                        isValidMail(email_address);
                         boolean check;
@@ -868,7 +883,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
                         if (!check) {
                             email_edt.requestFocus();
-                            email_edt.setError("Not Valid Email");
+                            //email_edt.setError("Not Valid Email");
+                            TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Not Valid Email" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
                             try {
                                 if (ControllersGlobalInitialiser.emailValidationController != null) {
@@ -903,48 +919,58 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 //                     get_visiting_card = encodedImage.toString();
 
                     if (getLatitude.equalsIgnoreCase("")) {
-                        lattitude_txt.setError("Enter latitude");
+                        lattitude_txt.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter latitude" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getLongitude.equalsIgnoreCase("")) {
-                        longitude_txt.setError("Enter correct longitude");
+                        longitude_txt.requestFocus();
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter correct longitude" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getpincode.equals("")) {
                         pincode_edt.requestFocus();
-                        pincode_edt.setError("Enter correct Pincode");
+                     //   pincode_edt.setError("Enter correct Pincode");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter correct Pincode" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getpincode.length() < 6) {
                         pincode_edt.requestFocus();
-                        pincode_edt.setError("Enter 6 digits Pincode");
-//                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Pincode", Toast.LENGTH_SHORT).show();
+                     //  pincode_edt.setError("Enter 6 digits Pincode");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter 6 digits Pincode" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getmobile_number.equals("")) {
                         mobile_edt.requestFocus();
-                        mobile_edt.setError("Enter correct Mobile number");
+                      //  mobile_edt.setError("Enter correct Mobile number");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter correct Mobile number" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Mobile number", Toast.LENGTH_SHORT).show();
                     } else if (getmobile_number.length() < 10) {
                         mobile_edt.requestFocus();
-                        mobile_edt.setError("Enter 10 digits Mobile number");
+                        //mobile_edt.setError("Enter 10 digits Mobile number");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Enter 10 digits Mobile number" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter correct Mobile number", Toast.LENGTH_SHORT).show();
                     } else if (email_address.equals("")) {
                         email_edt.requestFocus();
-                        email_edt.setError("Please enter Email address");
+                       // email_edt.setError("Please enter Email address");
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Please enter Email address" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter Email address", Toast.LENGTH_SHORT).show();
                     } else if (get_dr_name.equals("")) {
                         dr_name_edt.requestFocus();
-                        dr_name_edt.setError(ToastFile.crt_name_woe);
+                      //  dr_name_edt.setError(ToastFile.crt_name_woe);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,ToastFile.crt_name_woe , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
                     } else if (get_dr_name.length() < 2) {
                         dr_name_edt.requestFocus();
-                        dr_name_edt.setError(ToastFile.crt_name_woe);
+                      //  dr_name_edt.setError(ToastFile.crt_name_woe);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,ToastFile.crt_name_woe , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "Please enter correct Client name", Toast.LENGTH_SHORT).show();
                     } else if (get_Address.equals("")) {
                         addressEdt.requestFocus();
-                        addressEdt.setError(ToastFile.ent_addr);
+                       // addressEdt.setError(ToastFile.ent_addr);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,ToastFile.ent_addr , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (get_Address.length() < 25) {
                         addressEdt.requestFocus();
-                        addressEdt.setError(ToastFile.addre25long);
+                      //  addressEdt.setError(ToastFile.addre25long);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,ToastFile.addre25long , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 //                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, ToastFile.ent_addr, Toast.LENGTH_SHORT).show();
                     } else if (image == null) {
                         cross_img.setVisibility(View.VISIBLE);
                         correct_img.setVisibility(View.GONE);
-                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Please upload visiting card", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Please upload visiting card" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (!email_address.equals("")) {
 
                         boolean check;
@@ -962,7 +988,8 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
 
                         if (!check) {
                             email_edt.requestFocus();
-                            email_edt.setError("Not Valid Email");
+                          //  email_edt.setError("Not Valid Email");
+                            TastyToast.makeText(Sgc_Pgc_Entry_Activity.this,"Not Valid Email" , TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         } else {
                             try {
                                 if (ControllersGlobalInitialiser.emailValidationController != null) {
@@ -1077,109 +1104,32 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == PLACE_PICKER_REQUEST) {
+            try {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                if (place.getLatLng() != null) {
+                    Log.e(TAG, "Places---->" + place.getName() + ", " + place.getId());
 
-            Place place = Autocomplete.getPlaceFromIntent(data);
+                    final double lat = place.getLatLng().latitude;
+                    final double log = place.getLatLng().longitude;
+                    CharSequence name = place.getName();
+                    CharSequence address = place.getAddress();
 
-            Log.e(TAG, "Places---->" + place.getName() + ", " + place.getId());
+                    pincode = getPinCodeFromAddress(address);
+                    pincode_edt.setText(pincode);
+                    addressEdt.setText(address);
+                    lattitude_txt.setText("Lat :" + String.valueOf(lat));
+                    lattitude_txt.setError(null);
 
-            final double lat = place.getLatLng().latitude;
-            final double log = place.getLatLng().longitude;
-            CharSequence name = place.getName();
-            CharSequence address = place.getAddress();
+                    longitude_txt.setText("Long :" + String.valueOf(log));
+                    longitude_txt.setError(null);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            pincode = getPinCodeFromAddress(address);
-            pincode_edt.setText(pincode);
-            addressEdt.setText(address);
-            lattitude_txt.setText("Lat :" + String.valueOf(lat));
-            lattitude_txt.setError(null);
-
-            longitude_txt.setText("Long :" + String.valueOf(log));
-            longitude_txt.setError(null);
-            //Toast.makeText(activity, ""+name, Toast.LENGTH_SHORT).show();
-        }
-
-//
-//        if (requestCode == PLACE_PICKER_REQUEST
-//                && resultCode == Activity.RESULT_OK) {
-//
-//            final Place place = PlacePicker.getPlace(Sgc_Pgc_Entry_Activity.this, data);
-//
-//
-//            Geocoder geocoder = new Geocoder(Sgc_Pgc_Entry_Activity.this);
-//            try {
-//                List<Address> addresses = geocoder.getFromLocation(place.getLatLng().latitude, place.getLatLng().longitude, 1);
-//
-//                final CharSequence name = place.getName();
-//                final CharSequence address = place.getAddress();
-//                String attributions = (String) place.getAttributions();
-//                if (attributions == null) {
-//                    attributions = "";
-//                }
-//
-//                if (addresses != null && addresses.size() > 0) {
-//                    if (addresses.get(0).getPostalCode() != null) {
-//                        pincode = addresses.get(0).getPostalCode();
-//                        country = addresses.get(0).getCountryName().toUpperCase();
-//                        city = addresses.get(0).getLocality().toUpperCase();
-//                    }
-//
-//                }
-//
-//            } catch (Exception e) {
-//
-//                e.printStackTrace();
-//            }
-//
-//
-//            lat = place.getLatLng().latitude;
-//            log = place.getLatLng().longitude;
-//
-//
-//            String address = place.getAddress().toString().toUpperCase();
-//
-//            if (pincode != null && !pincode.isEmpty()) {
-//
-//                if (address.contains(pincode)) {
-//                    address = address.replace(pincode, "");
-//                }
-//
-//
-//                if (country != null && !country.isEmpty()) {
-//                    if (address.contains(", " + country)) {
-//                        address = address.replace(", " + country, "");
-//                    } else if (address.toUpperCase().contains(country)) {
-//                        address = address.replace(country, "");
-//                    }
-//
-//                }
-//
-//
-//            }
-//
-//
-//            String attributions = (String) place.getAttributions();
-//            if (attributions == null) {
-//                attributions = "";
-//            }
-//
-//            // edt_long.setText((int) Double.parseDouble(String.valueOf(log)));
-//           /* edt_pincode.setText(pincode);
-//            edt_addr.setText(address);
-//            edt_lat.setText("" + lat);
-//            edt_long.setText("" + log);*/
-//            pincode_edt.setText(pincode);
-//            addressEdt.setText(address);
-//            lattitude_txt.setText("Lat :" + String.valueOf(lat));
-//            lattitude_txt.setError(null);
-//
-//            longitude_txt.setText("Long :" + String.valueOf(log));
-//            longitude_txt.setError(null);
-//            //Toast.makeText(activity, ""+name, Toast.LENGTH_SHORT).show();
-//
-//        }
-        /*else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
-        }*/
+        }
 
 
         if (data != null && requestCode == 0) {

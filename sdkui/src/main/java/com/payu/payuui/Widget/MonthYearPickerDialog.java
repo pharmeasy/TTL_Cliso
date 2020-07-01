@@ -5,7 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
@@ -13,6 +13,8 @@ import android.widget.NumberPicker;
 import com.payu.payuui.R;
 
 import java.util.Calendar;
+
+import androidx.fragment.app.DialogFragment;
 
 /**
  * Created by harmeet on 9/14/15.

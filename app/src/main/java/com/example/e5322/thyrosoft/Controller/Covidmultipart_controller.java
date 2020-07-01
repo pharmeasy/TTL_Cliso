@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
@@ -45,7 +46,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.covidpostdata = covidpostdata;
     }
 
-    public Covidmultipart_controller(CovidEditActivity covidEditActivity, Activity activity, Covidpostdata covidpostdata) {
+    public Covidmultipart_controller(CovidEditActivity covidEditActivity, Activity activity, Covidpostdata covidpostdata){
         this.covidEditActivity = covidEditActivity;
         this.mActivity = activity;
         status_code = 0;
@@ -71,8 +72,9 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         try {
             HttpClient httpclient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(strUrl);
-
+          //  httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(mActivity) + "(" + GlobalClass.getversioncode(mActivity) + ")" + GlobalClass.getSerialnum(mActivity));
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
 
             if (flag == 2) {
                 builder.addPart("UNIQUEID", new StringBody("" + covidpostdata.getUNIQUEID()));

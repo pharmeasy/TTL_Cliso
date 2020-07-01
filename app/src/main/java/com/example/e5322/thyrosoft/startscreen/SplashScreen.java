@@ -317,7 +317,7 @@ public class SplashScreen extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
                         builder.setMessage(ToastFile.intConnection)
                                 .setCancelable(false)
                                 .setPositiveButton("Retry",

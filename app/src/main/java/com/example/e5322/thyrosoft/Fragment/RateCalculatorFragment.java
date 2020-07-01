@@ -386,7 +386,7 @@ public class RateCalculatorFragment extends Fragment {
                 getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
                 sv_testsList_ttl.getText().clear();
                 before_discount_layout2.setVisibility(View.GONE);
-                getRatesofB2bandB2C(getSpinnerSelectedItem);
+                getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
             }
 
 
@@ -674,7 +674,7 @@ public class RateCalculatorFragment extends Fragment {
                     prefsEditor1.commit();
 
                     getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
-                    getRatesofB2bandB2C(getSpinnerSelectedItem);
+                    getRatesofB2bandB2C(getSpinnerSelectedItem,mContext);
 
                     try {
                         if (obj != null && obj.getB2B_MASTERS() != null && obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
@@ -897,12 +897,17 @@ public class RateCalculatorFragment extends Fragment {
 
     }
 
-    private void getRatesofB2bandB2C(String getSpinnerSelectedItem) {
+    private void getRatesofB2bandB2C(String getSpinnerSelectedItem, ManagingTabsActivity mContext) {
 
-        SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(mContext.getApplicationContext());
-        Gson gsondtaa = new Gson();
-        String jsondata = appSharedPrefsdata.getString("MyObject", "");
-        GetMainModel obj = gsondtaa.fromJson(jsondata, GetMainModel.class);
+        GetMainModel obj = null;
+        try {
+            SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(mContext);
+            Gson gsondtaa = new Gson();
+            String jsondata = appSharedPrefsdata.getString("MyObject", "");
+            obj = gsondtaa.fromJson(jsondata, GetMainModel.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
 
 
         if (getSpinnerSelectedItem != null && !getSpinnerSelectedItem.equals("")) {
