@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -72,6 +73,7 @@ import com.sdsmdg.tastytoast.TastyToast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -85,6 +87,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -107,13 +110,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     List<String> trflist = new ArrayList<>();
     List<String> viallist = new ArrayList<>();
     List<String> otherlist = new ArrayList<>();
+    List<String> selfielist = new ArrayList<>();
     CountDownTimer countDownTimer;
     public RadioButton by_missed, by_generate;
-    LinearLayout lin_by_missed, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_trf_images, lin_vial_images, lin_other_images;
+    LinearLayout lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_trf_images, lin_vial_images, lin_other_images;
     RelativeLayout rel_mobno;
-    Button btn_choosefile_presc, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
+    Button btn_choosefile_presc, btn_selfie, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
     Button btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
-    TextView txt_nofilepresc, txt_nofileadhar, txt_nofiletrf, txt_nofilevial, txt_nofileother, tv_timer, tv_resetno, tv_mobileno, tv_verifiedmob;
+    TextView txt_nofilepresc, txt_nofileadhar, txt_selfie, txt_nofiletrf, txt_nofilevial, txt_nofileother, tv_timer, tv_resetno, tv_mobileno, tv_verifiedmob;
     private int PERMISSION_REQUEST_CODE = 200;
     private int PICK_PHOTO_FROM_GALLERY = 202;
     private static final int REQUEST_CAMERA = 1;
@@ -132,8 +136,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     File vial_file = null;
     File other_file = null;
     File other_file1 = null;
+    File selfie_file = null;
 
-    TextView txt_presfileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
+
+    TextView txt_presfileupload, txt_selfiefileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
 
     boolean ispresciption, isadhar, istrf, isvial, isother;
     EditText edt_fname, edt_amt, edt_lname, edt_missed_mobile, edt_verifycc;
@@ -141,7 +147,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     String usercode, apikey;
     boolean verifyotp = false;
     RelativeLayout rel_verify_mobile;
-
+    private int CAMERA_PHOTO_REQUEST_CODE = 1001;
+    private int selfie_flag = 0;
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
@@ -190,10 +197,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         if (!TextUtils.isEmpty(response.body().getB2B())) {
                             b2b = response.body().getB2B();
+                            Global.B2B = b2b;
                         }
 
                         if (!TextUtils.isEmpty(response.body().getB2C())) {
                             b2c = response.body().getB2C();
+                            Global.B2C = b2c;
                         }
 
                     }
@@ -233,7 +242,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         edt_lname.setFilters(FilterArray);
 
 
-        edt_amt.setFilters(new InputFilter[]{EMOJI_FILTER});
+       // edt_amt.setFilters(new InputFilter[]{EMOJI_FILTER});
 
         //TODO Buttons
         btn_choosefile_presc = view.findViewById(R.id.btn_choosefile_presc);
@@ -241,13 +250,15 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_choosefile_trf = view.findViewById(R.id.btn_choosefile_trf);
         btn_choosefile_vial = view.findViewById(R.id.btn_choosefile_vial);
         btn_choosefile_other = view.findViewById(R.id.btn_choosefile_other);
+        txt_selfiefileupload = view.findViewById(R.id.txt_selfiefileupload);
 
         btn_generate = view.findViewById(R.id.btn_generate);
         btn_verify = view.findViewById(R.id.btn_verify);
         btn_resend = view.findViewById(R.id.btn_resend);
         btn_reset = view.findViewById(R.id.btn_reset);
         btn_submit = view.findViewById(R.id.btn_submit);
-
+        txt_selfie = view.findViewById(R.id.txt_selfie);
+        lin_selfie = view.findViewById(R.id.lin_selfie);
         btn_generate.setText(getResources().getString(R.string.enterccc));
 
 
@@ -280,7 +291,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofiletrf = view.findViewById(R.id.txt_nofiletrf);
         txt_nofilevial = view.findViewById(R.id.txt_nofilevial);
         txt_nofileother = view.findViewById(R.id.txt_nofileother);
-
+        btn_selfie = view.findViewById(R.id.btn_selfie);
         tv_timer = view.findViewById(R.id.tv_timer);
         tv_resetno = view.findViewById(R.id.tv_resetno);
         tv_mobileno = view.findViewById(R.id.tv_mobileno);
@@ -307,6 +318,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
+        txt_selfie.setText(getResources().getString(R.string.nofilechoosen));
 
         txt_nofilepresc.setOnClickListener(this);
         txt_nofileadhar.setOnClickListener(this);
@@ -319,7 +331,34 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_trffileupload.setOnClickListener(this);
         txt_vialrfileupload.setOnClickListener(this);
         txt_otherfileupload.setOnClickListener(this);
+        btn_selfie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (verifyotp) {
+                    if (selfie_flag == 0) {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        //   Uri photoUri = Uri.fromFile(getOutputPhotoFile());
+                        //   intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                        intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+                        startActivityForResult(intent, CAMERA_PHOTO_REQUEST_CODE);
+                    } else {
 
+                        Toast.makeText(activity, "Only 1 selfie can be Uploaded", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                }
+
+
+            }
+        });
+
+        txt_selfiefileupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(selfielist, "selfie");
+            }
+        });
         btn_generate.setOnClickListener(this);
         mainlinear.setOnClickListener(this);
 
@@ -425,20 +464,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                try {
-                    int amt = Integer.parseInt(charSequence.toString());
-                    if (!TextUtils.isEmpty(b2c)) {
-                        if (amt > Integer.parseInt(b2c)) {
-                            edt_amt.setText("");
-                            TastyToast.makeText(getActivity(), "You cannot enter collect amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        }
-                        buttonval();
-                    }
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-
+                buttonval();
             }
 
             @Override
@@ -478,59 +504,66 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
             case R.id.btn_submit:
                 if (Validation()) {
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                        GlobalClass.showAlertDialog(getActivity());
-                    } else {
+                    if (amtvalidation()) {
+                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                            GlobalClass.showAlertDialog(getActivity());
+                        } else {
 
-                        try {
-                            if (ControllersGlobalInitialiser.covidmultipart_controller != null) {
-                                ControllersGlobalInitialiser.covidmultipart_controller = null;
+                            try {
+                                if (ControllersGlobalInitialiser.covidmultipart_controller != null) {
+                                    ControllersGlobalInitialiser.covidmultipart_controller = null;
+                                }
+                                String fname = edt_fname.getText().toString().trim();
+                                String lname = edt_lname.getText().toString().trim();
+
+                                String fullname = fname + " " + lname;
+                                Log.e("NAME LENGHTH---->", "" + fullname.length());
+
+                                Covidpostdata covidpostdata = new Covidpostdata();
+                                covidpostdata.setSOURCECODE(usercode);
+                                covidpostdata.setMOBILE(edt_missed_mobile.getText().toString());
+                                covidpostdata.setNAME(fullname);
+                                covidpostdata.setAMOUNTCOLLECTED(edt_amt.getText().toString().trim());
+                                covidpostdata.setTESTCODE("COVID-19");
+                                covidpostdata.setVIAIMAGE(vial_file);
+                                covidpostdata.setSELFIE(selfie_file);
+
+                                if (presc_file != null) {
+                                    covidpostdata.setPRESCRIPTION(presc_file);
+                                }
+
+                                if (aadhar_file != null && aadhar_file1 != null) {
+                                    covidpostdata.setADHAR(aadhar_file);
+                                    covidpostdata.setADHAR1(aadhar_file1);
+                                } else if (aadhar_file != null && aadhar_file1 == null) {
+                                    covidpostdata.setADHAR(aadhar_file);
+                                } else {
+                                    covidpostdata.setADHAR(aadhar_file1);
+                                }
+
+                                if (trf_file != null && trf_file1 != null) {
+                                    covidpostdata.setTRF(trf_file);
+                                    covidpostdata.setTRF1(trf_file1);
+                                } else if (trf_file != null && trf_file1 == null) {
+                                    covidpostdata.setTRF(trf_file);
+                                } else {
+                                    covidpostdata.setTRF(trf_file1);
+                                }
+
+                                if (other_file != null && other_file1 != null) {
+                                    covidpostdata.setOTHER(other_file);
+                                    covidpostdata.setOTHER1(other_file1);
+                                } else if (other_file != null && other_file1 == null) {
+                                    covidpostdata.setOTHER(other_file);
+                                } else {
+                                    covidpostdata.setOTHER(other_file1);
+                                }
+                                new Covidmultipart_controller(Covidenter_Frag.this, activity, covidpostdata).execute();
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            String fname = edt_fname.getText().toString().trim();
-                            String lname = edt_lname.getText().toString().trim();
 
-                            String fullname = fname + " " + lname;
-                            Log.e("NAME LENGHTH---->", "" + fullname.length());
-
-                            Covidpostdata covidpostdata = new Covidpostdata();
-                            covidpostdata.setSOURCECODE(usercode);
-                            covidpostdata.setMOBILE(edt_missed_mobile.getText().toString());
-                            covidpostdata.setNAME(fullname);
-                            covidpostdata.setAMOUNTCOLLECTED(edt_amt.getText().toString().trim());
-                            covidpostdata.setPRESCRIPTION(presc_file);
-                            covidpostdata.setVIAIMAGE(vial_file);
-
-                            if (aadhar_file != null && aadhar_file1 != null) {
-                                covidpostdata.setADHAR(aadhar_file);
-                                covidpostdata.setADHAR1(aadhar_file1);
-                            } else if (aadhar_file != null && aadhar_file1 == null) {
-                                covidpostdata.setADHAR(aadhar_file);
-                            } else {
-                                covidpostdata.setADHAR(aadhar_file1);
-                            }
-
-                            if (trf_file != null && trf_file1 != null) {
-                                covidpostdata.setTRF(trf_file);
-                                covidpostdata.setTRF1(trf_file1);
-                            } else if (trf_file != null && trf_file1 == null) {
-                                covidpostdata.setTRF(trf_file);
-                            } else {
-                                covidpostdata.setTRF(trf_file1);
-                            }
-
-                            if (other_file != null && other_file1 != null) {
-                                covidpostdata.setOTHER(other_file);
-                                covidpostdata.setOTHER1(other_file1);
-                            } else if (other_file != null && other_file1 == null) {
-                                covidpostdata.setOTHER(other_file);
-                            } else {
-                                covidpostdata.setOTHER(other_file1);
-                            }
-                            new Covidmultipart_controller(Covidenter_Frag.this, activity, covidpostdata).execute();
-                        } catch (Exception e) {
-                            e.printStackTrace();
                         }
-
                     }
                 }
                 break;
@@ -752,6 +785,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_verify.setEnabled(true);
         btn_resend.setEnabled(true);
         btn_resend.setClickable(true);
+        btn_selfie.setEnabled(true);
         tv_mobileno.setVisibility(View.GONE);
         rel_mobno.setVisibility(View.GONE);
         lin_by_missed.setVisibility(View.VISIBLE);
@@ -774,6 +808,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         vial_file = null;
         other_file = null;
         other_file1 = null;
+        selfie_file = null;
+        selfie_flag = 0;
 
         lin_generate_verify.setVisibility(View.GONE);
         tv_resetno.setVisibility(View.GONE);
@@ -783,6 +819,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         lin_trf_images.setVisibility(View.GONE);
         lin_vial_images.setVisibility(View.GONE);
         lin_other_images.setVisibility(View.GONE);
+        lin_selfie.setVisibility(View.GONE);
 
 
         txt_nofilepresc.setVisibility(View.VISIBLE);
@@ -790,6 +827,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofiletrf.setVisibility(View.VISIBLE);
         txt_nofilevial.setVisibility(View.VISIBLE);
         txt_nofileother.setVisibility(View.VISIBLE);
+        txt_selfie.setVisibility(View.VISIBLE);
 
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilepresc.setTextColor(getResources().getColor(R.color.black));
@@ -798,6 +836,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileadhar.setTextColor(getResources().getColor(R.color.black));
         txt_nofileadhar.setPaintFlags(0);
+
+        txt_selfie.setText(getResources().getString(R.string.nofilechoosen));
+        txt_selfie.setTextColor(getResources().getColor(R.color.black));
+        txt_selfie.setPaintFlags(0);
 
         txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofiletrf.setTextColor(getResources().getColor(R.color.black));
@@ -810,6 +852,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileother.setTextColor(getResources().getColor(R.color.black));
         txt_nofileother.setPaintFlags(0);
+
 
         btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
         btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
@@ -826,6 +869,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
         btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
 
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -835,11 +881,38 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         trflist.clear();
         viallist.clear();
         otherlist.clear();
+        selfielist.clear();
 
         btn_submit.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
         btn_submit.setTextColor(getResources().getColor(R.color.black));
         btn_submit.setEnabled(false);
         btn_submit.setClickable(false);
+    }
+
+    private boolean amtvalidation() {
+        if (TextUtils.isEmpty(edt_amt.getText().toString())) {
+            //    Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
+            //  edt_amt.requestFocus();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(edt_amt.getText().toString())) {
+            return false;
+        }
+
+        try {
+            if (!TextUtils.isEmpty(b2c) && Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
+                TastyToast.makeText(getActivity(), "You cannot enter collected amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                return false;
+            } else if (!TextUtils.isEmpty(b2b) && Integer.parseInt(edt_amt.getText().toString()) < Integer.parseInt(b2b)) {
+                TastyToast.makeText(getActivity(), "You cannot enter collected amount less than " + b2b, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     private void mobileverify(String mobileno) {
@@ -1348,6 +1421,25 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 Toast.makeText(activity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+        } else if (requestCode == CAMERA_PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            Uri tempUri = getImageUri(getActivity(), photo);
+            selfie_file = new File(getRealPathFromURI(tempUri));
+            txt_selfie.setVisibility(View.GONE);
+            lin_selfie.setVisibility(View.VISIBLE);
+            selfie_flag = 1;
+            txt_selfiefileupload.setText("1 " + getResources().getString(R.string.imgupload));
+            txt_selfiefileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+            btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+            btn_selfie.setTextColor(getResources().getColor(R.color.black));
+            btn_selfie.setEnabled(false);
+
+            // selfie_file = GlobalClass.getCompressedFile(activity, selfie_file);
+            selfielist.add(selfie_file.toString());
+
+
         }
 
     }
@@ -1367,6 +1459,19 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         }
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
 
     private void galleryIntent() {
         Intent intent = new Intent();
@@ -1416,32 +1521,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             return false;
         }
 
-        if (TextUtils.isEmpty(edt_amt.getText().toString())) {
-            //    Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
-            //  edt_amt.requestFocus();
-            return false;
-        }
+
 
         if (TextUtils.isEmpty(edt_amt.getText().toString())) {
             return false;
         }
 
-        try {
-            if (Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
-                //   Global.showCustomToast(getActivity(), "Amount collected should greater than "+b2b+" and less than "+b2c);
-                // Global.showCustomToast(getActivity(), "please enter correct collected amount");
-
-                //  edt_amt.requestFocus();
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        if (presc_file == null) {
-            //   Global.showCustomToast(getActivity(), ToastFile.SELECT_PIMAGE);
-            return false;
-        }
 
         if (aadhar_file == null && aadhar_file1 == null) {
             //     Global.showCustomToast(getActivity(), ToastFile.SELECT_ADHIMAGE);
@@ -1518,6 +1603,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_verify.setEnabled(true);
         btn_resend.setEnabled(true);
         btn_resend.setClickable(true);
+        btn_selfie.setEnabled(true);
         btn_resend.setVisibility(View.VISIBLE);
         lin_by_missed.setVisibility(View.VISIBLE);
         tv_mobileno.setVisibility(View.GONE);
@@ -1538,7 +1624,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         other_file = null;
         other_file1 = null;
         trf_file = null;
+        selfie_file = null;
         trf_file1 = null;
+        selfie_flag = 0;
 
         lin_generate_verify.setVisibility(View.GONE);
         tv_resetno.setVisibility(View.GONE);
@@ -1548,6 +1636,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         lin_trf_images.setVisibility(View.GONE);
         lin_vial_images.setVisibility(View.GONE);
         lin_other_images.setVisibility(View.GONE);
+        lin_selfie.setVisibility(View.GONE);
 
 
         txt_nofilepresc.setVisibility(View.VISIBLE);
@@ -1555,6 +1644,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofiletrf.setVisibility(View.VISIBLE);
         txt_nofilevial.setVisibility(View.VISIBLE);
         txt_nofileother.setVisibility(View.VISIBLE);
+        txt_selfie.setVisibility(View.VISIBLE);
 
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilepresc.setTextColor(getResources().getColor(R.color.black));
@@ -1576,6 +1666,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofileother.setTextColor(getResources().getColor(R.color.black));
         txt_nofileother.setPaintFlags(0);
 
+        txt_selfie.setText(getResources().getString(R.string.nofilechoosen));
+        txt_selfie.setTextColor(getResources().getColor(R.color.black));
+        txt_selfie.setPaintFlags(0);
+
         btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
         btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
 
@@ -1590,6 +1684,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
         btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
         btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
 
 
         if (countDownTimer != null) {
@@ -1755,6 +1852,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 clearfields("3");
 
 
+            }else {
+                Global.showCustomToast(activity, RESPONSE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1801,7 +1900,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             }
         });
 
-        Button btn_delete = maindialog.findViewById(R.id.btn_delete);
+        final Button btn_delete = maindialog.findViewById(R.id.btn_delete);
         btn_delete.setVisibility(View.VISIBLE);
         btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1974,6 +2073,17 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 lin_other_images.setVisibility(View.GONE);
                             }
                             buttonval();
+                        } else if (type.equalsIgnoreCase("selfie")) {
+
+                            selfie_file = null;
+                            selfie_flag = 0;
+                            selfielist.clear();
+                            lin_selfie.setVisibility(View.GONE);
+                            txt_selfie.setVisibility(View.VISIBLE);
+                            btn_selfie.setEnabled(true);
+                            btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
+                            btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+
                         }
 
                         dialog.dismiss();

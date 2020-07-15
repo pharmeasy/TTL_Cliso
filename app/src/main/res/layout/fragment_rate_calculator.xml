@@ -6,7 +6,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-    <RelativeLayout android:layout_height="match_parent"
+    <RelativeLayout
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:background="@color/white">
 
@@ -109,6 +110,37 @@
                 android:layout_gravity="left|center"
                 android:scrollHorizontally="true"
                 android:marqueeRepeatLimit="marquee_forever" />
+
+
+            <RadioGroup
+                android:id="@+id/location_radio_grp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal"
+                android:padding="5dp"
+                android:visibility="visible">
+
+                <RadioButton
+                    android:id="@+id/cpl_rdo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:buttonTint="@color/maroon"
+                    android:text="CPL" />
+
+                <RadioButton
+                    android:id="@+id/rpl_rdo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/maroon"
+                    android:text="RPL" />
+            </RadioGroup>
+
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -178,9 +210,29 @@
                             android:background="@color/white"
                             android:textSize="12dp"
                             android:textColor="@color/DARKGray"
-                            android:text="B2B Rate"
+                            android:text="CPL"
                             android:padding="3dp"
                             android:gravity="center"
+                            android:layout_gravity="center"
+                            android:layout_weight="1" />
+
+                        <View
+                            android:layout_height="25dp"
+                            android:layout_width="1dp"
+                            android:background="@color/grey"
+                            android:layout_gravity="center" />
+
+                        <TextView
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:id="@+id/rpl_rate_adm"
+                            android:background="@color/white"
+                            android:textSize="12dp"
+                            android:textColor="@color/DARKGray"
+                            android:text="RPL"
+                            android:padding="3dp"
+                            android:gravity="center"
+                            android:visibility="gone"
                             android:layout_gravity="center"
                             android:layout_weight="1" />
 
@@ -233,13 +285,24 @@
                             android:layout_weight="1"
                             tools:ignore="RtlCompat" />
 
+                        <TextView
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            android:id="@+id/show_rpl_rates"
+                            android:textSize="10dp"
+                            android:textColor="@color/white"
+                            android:textAlignment="viewEnd"
+                            android:padding="3dp"
+                            android:visibility="gone"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            tools:ignore="RtlCompat" />
+
                     </LinearLayout>
 
                 </LinearLayout>
 
             </ScrollView>
-
-
 
 
             <LinearLayout
@@ -361,7 +424,7 @@
                         android:background="@color/white"
                         android:textSize="12dp"
                         android:textColor="@color/DARKGray"
-                        android:text="B2B Rate"
+                        android:text="CPL"
                         android:padding="3dp"
                         android:gravity="center"
                         android:visibility="visible"
@@ -437,53 +500,56 @@
                 android:layout_marginTop="5dp"
                 android:weightSum="3">
 
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:id="@+id/poptab"
-                    android:background="@drawable/light_grey_rect_box"
-                    android:textSize="12dp"
-                    android:textColor="@color/white"
-                    android:text="POP"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:layout_weight="1" />
+<!--                <TextView-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:id="@+id/poptab"-->
+<!--                    android:background="@drawable/light_grey_rect_box"-->
+<!--                    android:textSize="12dp"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:text="POP"-->
+<!--                    android:padding="5dp"-->
+<!--                    android:visibility="gone"-->
+<!--                    android:gravity="center"-->
+<!--                    android:layout_weight="1" />-->
 
-                <View
-                    android:layout_height="match_parent"
-                    android:layout_width="1dp"
-                    android:background="@color/grey"
-                    android:layout_gravity="center" />
-
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:id="@+id/profile_txt"
-                    android:background="@drawable/light_grey_rect_box"
-                    android:textSize="12dp"
-                    android:textColor="@color/DARKGray"
-                    android:text="Profile"
-                    android:padding="5dp"
-                    android:gravity="center"
-                    android:layout_weight="1" />
-
-                <View
-                    android:layout_height="match_parent"
-                    android:layout_width="1dp"
-                    android:background="@color/grey"
-                    android:layout_gravity="center" />
+<!--                <View-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_width="1dp"-->
+<!--                    android:background="@color/grey"-->
+<!--                    android:layout_gravity="center" />-->
 
                 <TextView
                     android:layout_height="match_parent"
                     android:layout_width="0dp"
                     android:id="@+id/test_txt"
-                    android:background="@drawable/light_grey_rect_right_round"
+                    android:background="@drawable/light_grey_rect_box"
                     android:textSize="12dp"
                     android:textColor="@color/DARKGray"
                     android:text="Tests"
                     android:padding="5dp"
                     android:gravity="center"
-                    android:layout_weight="1" />
+                    android:layout_weight="1.5" />
+
+                <View
+                    android:layout_height="match_parent"
+                    android:layout_width="1dp"
+                    android:background="@color/grey"
+                    android:layout_gravity="center" />
+
+
+                <TextView
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:id="@+id/profile_txt"
+                    android:background="@drawable/light_grey_rect_right_round"
+                    android:textSize="12dp"
+                    android:textColor="@color/DARKGray"
+                    android:text="Profile"
+                    android:padding="5dp"
+                    android:gravity="center"
+                    android:layout_weight="1.5" />
+
 
             </LinearLayout>
 

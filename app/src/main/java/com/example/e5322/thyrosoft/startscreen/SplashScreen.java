@@ -50,6 +50,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.scottyab.rootbeer.RootBeer;
 
 import java.io.File;
 
@@ -101,6 +102,7 @@ public class SplashScreen extends AppCompatActivity {
     SharedPreferences.Editor editoractivity;
     private boolean covidacc;
     private SharedPreferences prefs_CovidSync;
+    boolean isemulator = false;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -155,7 +157,42 @@ public class SplashScreen extends AppCompatActivity {
             }
         }
 
+        isemulator = GlobalClass.buildModelContainsEmulatorHints(Build.MODEL);
+        Log.e(TAG, "isemulator -->" + isemulator);
 
+        RootBeer rootBeer = new RootBeer(activity);
+        if (rootBeer.isRooted()) {
+            Log.e(TAG, "DEVICE ROOTED-->" + rootBeer.isRooted());
+            if (isemulator) {
+                getAllpermission();
+            }
+        } else {
+            getAllpermission();
+        }
+
+        version = GlobalClass.getversion(activity);
+        versionCode = GlobalClass.getversioncode(activity);
+
+        TextView versionText = (TextView) findViewById(R.id.version);
+        versionText.setText(version);
+
+        cd = new ConnectionDetector(getApplicationContext());
+
+        androidOS = Build.VERSION.RELEASE;
+
+        SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        String access = prefs.getString("ACCESS_TYPE", null);
+        String api_key = prefs.getString("API_KEY", null);
+        USER_CODE = prefs.getString("USER_CODE", "");
+
+        SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
+        storetoken = fire_pref.getString(Constants.F_TOKEN, "");
+
+    }
+
+    private void getAllpermission() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -192,28 +229,6 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         }, 1000);
-
-
-        version = GlobalClass.getversion(activity);
-        versionCode = GlobalClass.getversioncode(activity);
-
-        TextView versionText = (TextView) findViewById(R.id.version);
-        versionText.setText(version);
-
-        cd = new ConnectionDetector(getApplicationContext());
-
-        androidOS = Build.VERSION.RELEASE;
-
-        SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
-        String api_key = prefs.getString("API_KEY", null);
-        USER_CODE = prefs.getString("USER_CODE", "");
-
-        SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
-        storetoken = fire_pref.getString(Constants.F_TOKEN, "");
-
     }
 
     @Override
@@ -317,7 +332,7 @@ public class SplashScreen extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
                         builder.setMessage(ToastFile.intConnection)
                                 .setCancelable(false)
                                 .setPositiveButton("Retry",

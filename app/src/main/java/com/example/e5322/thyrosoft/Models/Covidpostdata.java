@@ -8,6 +8,10 @@ public class Covidpostdata {
     String AMOUNTCOLLECTED;
     String MOBILE;
     String NAME;
+    String AGE;
+    String GENDER;
+    String BARCODE;
+    String TESTCODE;
     File PRESCRIPTION ;
     File ADHAR ;
     File ADHAR1;
@@ -16,6 +20,47 @@ public class Covidpostdata {
     File VIAIMAGE;
     File OTHER;
     File OTHER1;
+    File SELFIE;
+
+    public String getGENDER() {
+        return GENDER;
+    }
+
+    public void setGENDER(String GENDER) {
+        this.GENDER = GENDER;
+    }
+
+    public String getBARCODE() {
+        return BARCODE;
+    }
+
+    public void setBARCODE(String BARCODE) {
+        this.BARCODE = BARCODE;
+    }
+
+    public String getAGE() {
+        return AGE;
+    }
+
+    public void setAGE(String AGE) {
+        this.AGE = AGE;
+    }
+
+    public String getTESTCODE() {
+        return TESTCODE;
+    }
+
+    public void setTESTCODE(String TESTCODE) {
+        this.TESTCODE = TESTCODE;
+    }
+
+    public File getSELFIE() {
+        return SELFIE;
+    }
+
+    public void setSELFIE(File SELFIE) {
+        this.SELFIE = SELFIE;
+    }
 
     public String getAMOUNTCOLLECTED() {
         return AMOUNTCOLLECTED;

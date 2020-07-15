@@ -21,7 +21,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -48,6 +47,7 @@ import com.example.e5322.thyrosoft.Adapter.AdapterBarcodeOutlabs;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -60,7 +60,6 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseMo
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -407,7 +406,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
-        Log.v(TAG,"" + Globaly_Outlab_details.toString());
+        Log.v(TAG, "" + Globaly_Outlab_details.toString());
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefs.getString("WOEbrand", null);
@@ -440,24 +439,57 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
         sample_type_spinner.setAdapter(new ArrayAdapter<String>(Scan_Barcode_Outlabs.this, R.layout.spinnerproperty, temparraylist));
 
+        ArrayList<String> saveLocation = new ArrayList<>();
 
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
 
-            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")) {
-                totalcount = 0;
+//            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")) {
+//                totalcount = 0;
+//
+//            } else {
+//                totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+//            }
 
-            } else {
-                totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+            if (!TextUtils.isEmpty(Globaly_Outlab_details.get(i).getIsCPL())) {
+                if (Globaly_Outlab_details.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                    saveLocation.add("CPL");
+                } else {
+                    saveLocation.add("RPL");
+                }
             }
 
-            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")){
-                b2b_rate=0;
-            }else {
-                b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
+            if (!saveLocation.isEmpty()) {
+                if (saveLocation.contains("CPL")) {
+                    totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+                    if (!TextUtils.isEmpty(Globaly_Outlab_details.get(i).getRate().getCplr())) {
+                        b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getCplr());
+                    } else {
+                        b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
+                    }
+
+                } else {
+                    totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
+
+                    if (!TextUtils.isEmpty(Globaly_Outlab_details.get(i).getRate().getRplr())) {
+                        b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getRplr());
+                    } else {
+                        b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
+                    }
+
+                }
             }
+
+
+//            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")){
+//                b2b_rate=0;
+//            }else {
+//                b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
+//            }
+
             Log.e(TAG, "b2b_rate:  " + b2b_rate);
             Log.e(TAG, "onCreate: 11 " + totalcount);
         }
+
 
         setAmt.setText(String.valueOf(totalcount));
 
@@ -476,7 +508,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 // GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
             }
         }
-        Log.v(TAG,"finallist" + GlobalClass.finalspecimenttypewiselist.toString());
+        Log.v(TAG, "finallist" + GlobalClass.finalspecimenttypewiselist.toString());
 
 
         next.setOnClickListener(new View.OnClickListener() {
@@ -528,17 +560,17 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                             Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                         }
 
-                        try{
+                        try {
                             if (getOnlyBrcode.equals(null) || getOnlyBrcode.equals("")) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
                             } else if (getWrittenAmt.equals("")) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                            }else if (Integer.parseInt(getWrittenAmt)<b2b_rate){
-                                Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
+                            } else if (Integer.parseInt(getWrittenAmt) < b2b_rate) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
                             } else {
                                 checklistData();
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -630,7 +662,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                     , new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    Log.v(TAG,"barcode response" + response);
+                                    Log.v(TAG, "barcode response" + response);
                                     try {
                                         progressDialog.dismiss();
                                         Gson gson = new Gson();
@@ -845,7 +877,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     , new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                    Log.v(TAG,"barcode respponse" + response);
+                    Log.v(TAG, "barcode respponse" + response);
                     try {
                         Gson gson = new Gson();
                         VerifyBarcodeResponseModel responseModel = gson.fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);

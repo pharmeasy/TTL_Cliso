@@ -59,6 +59,8 @@ public class Global {
     public static int mainActivity = 0;
     public static String BASE_URL = MAINURL;
     public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
+    public static String B2B="";
+    public static String B2C="";
     private Context context;
 
 

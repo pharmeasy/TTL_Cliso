@@ -741,6 +741,20 @@ public class DateUtils {
         return convertedDate;
     }
 
+
+    public static Date convertToDateWithFormat(String dateString, String format) {
+        //String dateString = "03/26/2012 ";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        Date convertedDate = new Date();
+        try {
+            convertedDate = dateFormat.parse(dateString);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return convertedDate;
+    }
+
     public static long getMillisecondsFromDateString(String dob) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
         Date date = null;

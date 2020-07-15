@@ -246,6 +246,13 @@ public class GlobalClass {
 
         return date;
     }
+    public static boolean buildModelContainsEmulatorHints(String buildModel) {
+        return buildModel.startsWith("sdk")
+                || "google_sdk".equals(buildModel)
+                || buildModel.contains("Emulator")
+                || buildModel.contains("Android SDK");
+    }
+
     public static String getHeaderValue(Context pContext) {
         String header;
         header = Constants.APPNAME+"/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + getSerialnum(pContext);
@@ -500,18 +507,20 @@ public class GlobalClass {
 
     public static ProgressDialog ShowprogressDialog(Context mContext) {
 
-        ProgressDialog barProgressDialog = new ProgressDialog(mContext);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        // barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+
+            ProgressDialog barProgressDialog = new ProgressDialog(mContext);
+            barProgressDialog.setTitle("Kindly wait ...");
+            barProgressDialog.setMessage(ToastFile.processing_request);
+            // barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+            barProgressDialog.setProgress(0);
+            barProgressDialog.setMax(20);
+            barProgressDialog.show();
+            barProgressDialog.setCanceledOnTouchOutside(false);
+            barProgressDialog.setCancelable(false);
+
+
 
         return barProgressDialog;
-
     }
 
     public static void requestStoragePermission(final Context context) {
@@ -1003,6 +1012,8 @@ public class GlobalClass {
         // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
+
+
 
 
     public static void storeProductsCachingTime(Activity activity) {

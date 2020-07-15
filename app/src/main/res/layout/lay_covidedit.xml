@@ -382,7 +382,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="@string/uploadfile"
+                android:text="Upload"
                 android:background="@drawable/covidbtn"
                 android:textColor="@color/maroon"
                 android:textAllCaps="false"

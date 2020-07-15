@@ -9,6 +9,7 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Activity.CovidReg_Activity;
+import com.example.e5322.thyrosoft.Activity.frags.RATWOEActivity;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
@@ -54,38 +55,44 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
                 result = new CovidReg_Activity();
                 break;
 
+
             case 1:
+                // First Fragment of First Tab
+                result = new RATWOEActivity();
+                break;
+
+            case 2:
                 // First Fragment of First Tab
                 result = new Start_New_Woe();
                 break;
-            case 2:
+            case 3:
                 // First Fragment of Second Tab
                 result = new Offline_woe();
                 break;
-            case 3:
+            case 4:
                 // First Fragment of Third Tab
                 result = new TrackDetails();
                 break;
-            case 4:
+            case 5:
                 // First Fragment of Third Tab
                 result = new FilterReport();
                 break;
 
-            case 5:
+            case 6:
                 // First Fragment of Third Tab
                 result = new NHFFragment();
                 break;
 
-            case 6:
+            case 7:
                 // First Fragment of Third Tab
                 result = new Wind_up_fragment();
                 break;
-            case 7:
+            case 8:
                 // First Fragment of Third Tab
                 result = new CHNfragment();
                 break;
 
-            case 8:
+            case 9:
                 // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
@@ -100,7 +107,7 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 9;
+        return 10;
     }
 
     @Override
@@ -109,20 +116,22 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
             case 0:
                 return resources.getString(R.string.covid);
             case 1:
-                return resources.getString(R.string.page_1);
+                return "RAT WOE";
             case 2:
-                return resources.getString(R.string.page_2);
+                return resources.getString(R.string.page_1);
             case 3:
-                return resources.getString(R.string.page_3);
+                return resources.getString(R.string.page_2);
             case 4:
-                return resources.getString(R.string.page_4);
+                return resources.getString(R.string.page_3);
             case 5:
-                return resources.getString(R.string.petct);
+                return resources.getString(R.string.page_4);
             case 6:
-                return resources.getString(R.string.page_6);
+                return resources.getString(R.string.petct);
             case 7:
-                return resources.getString(R.string.page_7);
+                return resources.getString(R.string.page_6);
             case 8:
+                return resources.getString(R.string.page_7);
+            case 9:
                 return resources.getString(R.string.page_9);
 
             default:

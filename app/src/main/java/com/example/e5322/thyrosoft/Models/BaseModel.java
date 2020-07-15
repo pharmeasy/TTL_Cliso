@@ -17,6 +17,7 @@ public class BaseModel implements Parcelable {
     private String code;
     private String type;
     private String trf;
+    private String isCPL;
     private String subtypes;
     Childs[] childs;
     Barcodes[] barcodes;
@@ -32,6 +33,7 @@ public class BaseModel implements Parcelable {
         code = in.readString();
         type = in.readString();
         trf = in.readString();
+        isCPL = in.readString();
         subtypes = in.readString();
         childs = in.createTypedArray(Childs.CREATOR);
         barcodes = in.createTypedArray(Barcodes.CREATOR);
@@ -48,6 +50,7 @@ public class BaseModel implements Parcelable {
         dest.writeString(code);
         dest.writeString(type);
         dest.writeString(trf);
+        dest.writeString(isCPL);
         dest.writeString(subtypes);
         dest.writeTypedArray(childs, flags);
         dest.writeTypedArray(barcodes, flags);
@@ -70,6 +73,14 @@ public class BaseModel implements Parcelable {
             return new BaseModel[size];
         }
     };
+
+    public String getIsCPL() {
+        return isCPL;
+    }
+
+    public void setIsCPL(String isCPL) {
+        this.isCPL = isCPL;
+    }
 
     public String getLocation() {
         return location;
@@ -284,15 +295,32 @@ public class BaseModel implements Parcelable {
 
     public static class Rate implements Parcelable {
         String b2c;
+        String b2b;
+        String cplr;
+        String rplr;
 
         public Rate() {
         }
 
-        String b2b;
 
-        public Rate(Parcel in) {
+        protected Rate(Parcel in) {
             b2c = in.readString();
             b2b = in.readString();
+            cplr = in.readString();
+            rplr = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(b2c);
+            dest.writeString(b2b);
+            dest.writeString(cplr);
+            dest.writeString(rplr);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
         public static final Creator<Rate> CREATOR = new Creator<Rate>() {
@@ -306,6 +334,22 @@ public class BaseModel implements Parcelable {
                 return new Rate[size];
             }
         };
+
+        public String getRplr() {
+            return rplr;
+        }
+
+        public void setRplr(String rplr) {
+            this.rplr = rplr;
+        }
+
+        public String getCplr() {
+            return cplr;
+        }
+
+        public void setCplr(String cplr) {
+            this.cplr = cplr;
+        }
 
         public String getB2c() {
             return b2c;
@@ -328,16 +372,7 @@ public class BaseModel implements Parcelable {
             return "ClassPojo [b2c = " + b2c + ", b2b = " + b2b + "]";
         }
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(b2c);
-            dest.writeString(b2b);
-        }
     }
 
     public boolean checkIfChildsContained(BaseModel tt) {

@@ -757,6 +757,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         });
 
+        prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        brandName = prefe.getString("WOEbrand", null);
+        typeName = prefe.getString("woetype", null);
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -770,22 +773,81 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     int sum = 0;
                     int b2b = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
+                    ArrayList<String> saveLocation = new ArrayList<>();
+
+//
+//                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+//                        sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+//                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+//                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")) {
+//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
+//                        } else {
+//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+//                        }
+//
+//                    }
 
                     for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                        sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
-                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+
+                        if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getIsCPL())) {
+                            if (Selcted_Outlab_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                                saveLocation.add("CPL");
+                            } else {
+                                saveLocation.add("RPL");
+                            }
+                        }
                         if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")) {
                             getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
                         } else {
                             getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
                         }
 
-                    }
+                        if (!saveLocation.isEmpty()) {
+                            if (typeName.equalsIgnoreCase("ILS")) {
+                                if (saveLocation.contains("CPL")) {
+                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getCplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                    }
 
+                                } else {
+                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getRplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                    }
+
+                                }
+                            } else {
+                                if (saveLocation.contains("CPL")) {
+                                    sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+
+                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getCplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                    }
+
+                                } else {
+                                    sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+
+                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getRplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getRplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
 
                     if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
                         showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
+
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
                     show_selected_tests_list_test_ils1.setText(displayslectedtest);
                     getTExtdata = displayslectedtest;
@@ -807,7 +869,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             }
         });
-
 
         if (GlobalClass.Dayscnt(ProductLisitngActivityNew.this) >= Constants.DAYS_CNT) {
             if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
@@ -1180,7 +1241,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
                                 String cartproduct = TextUtils.join(",", tempselectedTests1);
-                                alertDialogBuilder =  new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                                alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
                                 alertDialogBuilder
                                         .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                                         .setCancelable(true)
@@ -1329,7 +1390,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 before_discount_layout2.setVisibility(View.GONE);
                             }
                         } else {
-                            alertDialogBuilder =  new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                            alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
                             alertDialogBuilder
                                     .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                                     .setCancelable(true)

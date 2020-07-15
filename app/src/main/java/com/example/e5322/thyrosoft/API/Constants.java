@@ -92,6 +92,7 @@ public class Constants {
     public static String tab_flag = "0";
     public static String covidwoe_flag = "0";
     public static String covidfrag_flag = "0";
+    public static String ratfrag_flag = "0";
     //login details//
     public static String Status = "Status";
     public static String Ledger_Balance = "Ledger_Balance";
@@ -581,6 +582,7 @@ public class Constants {
     public static String RES0000 = "RES0000";
     public static String RES0001 = "RES0001";
     public static String RES0082 = "RES0082";
+    public static int universal=0;
 
     public static String returnToken(Activity mContext) {
         String str = "";

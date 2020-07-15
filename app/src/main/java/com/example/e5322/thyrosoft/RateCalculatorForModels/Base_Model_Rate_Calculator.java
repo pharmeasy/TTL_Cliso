@@ -26,6 +26,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
     Childs[] childs;
 
     String code;
+    String isCPL;
 
     String type;
 
@@ -37,6 +38,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
     public void setIsCart(String isCart) {
         this.isCart = isCart;
     }
+
     String isCart;
     String is_lock;
 
@@ -56,6 +58,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         name = in.readString();
         fasting = in.readString();
         code = in.readString();
+        isCPL=in.readString();
         type = in.readString();
     }
 
@@ -70,6 +73,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         dest.writeString(fasting);
         dest.writeTypedArray(childs, flags);
         dest.writeString(code);
+        dest.writeString(isCPL);
         dest.writeString(type);
     }
 
@@ -99,6 +103,14 @@ public class Base_Model_Rate_Calculator implements Parcelable {
     }
 
     public Base_Model_Rate_Calculator() {
+    }
+
+    public String getIsCPL() {
+        return isCPL;
+    }
+
+    public void setIsCPL(String isCPL) {
+        this.isCPL = isCPL;
     }
 
     public String getBillrate() {
@@ -287,10 +299,14 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         String b2c;
 
         String b2b;
+        String cplr;
+        String rplr;
 
         protected Rate(Parcel in) {
             b2c = in.readString();
             b2b = in.readString();
+            cplr = in.readString();
+            rplr = in.readString();
         }
 
         public final Creator<Rate> CREATOR = new Creator<Rate>() {
@@ -304,6 +320,22 @@ public class Base_Model_Rate_Calculator implements Parcelable {
                 return new Rate[size];
             }
         };
+
+        public String getCplr() {
+            return cplr;
+        }
+
+        public String getRplr() {
+            return rplr;
+        }
+
+        public void setCplr(String cplr) {
+            this.cplr = cplr;
+        }
+
+        public void setRplr(String rplr) {
+            this.rplr = rplr;
+        }
 
         public String getB2c() {
             return b2c;
@@ -323,7 +355,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
         @Override
         public String toString() {
-            return "ClassPojo [b2c = " + b2c + ", b2b = " + b2b + "]";
+            return "ClassPojo [b2c = " + b2c + ", b2b = " + b2b + "+]";
         }
 
         @Override
@@ -335,6 +367,9 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(b2c);
             dest.writeString(b2b);
+            dest.writeString(cplr);
+            dest.writeString(rplr);
+
         }
     }
 

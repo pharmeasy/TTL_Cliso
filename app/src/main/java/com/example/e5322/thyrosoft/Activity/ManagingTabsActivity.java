@@ -1365,6 +1365,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         Constants.covidwoe_flag="0";
         Constants.covidfrag_flag="0";
+        Constants.ratfrag_flag="0";
 //        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);

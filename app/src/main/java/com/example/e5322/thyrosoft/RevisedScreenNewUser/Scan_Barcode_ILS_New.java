@@ -446,7 +446,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         b2b_rate = bundle.getString("b2b_rate");
         testsnames = bundle.getString("writeTestName");
 
-        Log.e(TAG,"b2b_rate--->"+b2b_rate);
+        Log.e(TAG, "b2b_rate--->" + b2b_rate);
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
 
 
@@ -624,12 +624,43 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             if (selctedTest.size() != 0) {
                 totalcount = 0;
                 for (int i = 0; i < selctedTest.size(); i++) {
-                    int getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getBillrate());
-                    totalcount = totalcount + getAmtBilledRate;
-                    Log.e(TAG, "onCreate: 11 " + totalcount);
-                    amt_collected_and_total_amt_ll.setVisibility(View.GONE);
-                    setAmt.setText(String.valueOf(totalcount));
-                    enterAmt.setText(String.valueOf(totalcount));
+                    int getAmtBilledRate = 0;
+
+                    if (!TextUtils.isEmpty(selctedTest.get(i).getIsCPL())) {
+                        if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                            saveLocation.add("CPL");
+                        } else {
+                            saveLocation.add("RPL");
+                        }
+
+                        if (!saveLocation.isEmpty()) {
+
+                            if (saveLocation.contains("CPL")) {
+                                if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getCplr())) {
+                                    getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getCplr());
+                                    totalcount = totalcount + getAmtBilledRate;
+                                } else {
+                                    getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                                    totalcount = totalcount + getAmtBilledRate;
+                                }
+
+                            } else {
+                                if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getRplr())) {
+                                    getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getRplr());
+                                    totalcount = totalcount + getAmtBilledRate;
+                                } else {
+                                    getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                                    totalcount = totalcount + getAmtBilledRate;
+                                }
+
+                            }
+                        }
+
+                        Log.e(TAG, "onCreate: 11 " + totalcount);
+                        amt_collected_and_total_amt_ll.setVisibility(View.GONE);
+                        setAmt.setText(String.valueOf(totalcount));
+                        enterAmt.setText(String.valueOf(totalcount));
+                    }
                 }
             }
 
@@ -668,13 +699,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 } else {
                     lab_alert_pass_toApi = lab_alert_spin.getText().toString();
                 }
-                if (!typeName.equalsIgnoreCase("ILS")){
+                if (!typeName.equalsIgnoreCase("ILS")) {
                     getCollectedAmt = enterAmt.getText().toString();
                     if (getCollectedAmt.equals("")) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
-                    } else if (Integer.parseInt(getCollectedAmt)<Integer.parseInt(b2b_rate)){
-                        Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
-                    }else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
+                    } else if (Integer.parseInt(getCollectedAmt) < Integer.parseInt(b2b_rate)) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                    } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
                     } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
@@ -687,6 +718,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else {
                         checklistData();
                     }
+
                     getCollectedAmt = enterAmt.getText().toString();
                     if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
                         collectedAmt = Integer.parseInt(getCollectedAmt);
@@ -694,7 +726,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else {
                         Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     getCollectedAmt = enterAmt.getText().toString();
                     if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
                         collectedAmt = Integer.parseInt(getCollectedAmt);

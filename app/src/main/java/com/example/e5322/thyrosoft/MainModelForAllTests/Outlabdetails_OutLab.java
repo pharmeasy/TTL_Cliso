@@ -10,20 +10,42 @@ import java.util.Arrays;
  */
 
 public class Outlabdetails_OutLab implements Parcelable {
-    String code, name, product, type, trf;
+    String code, name,isCPL, product, type, trf;
 
     Rate_OutLab rate;
     Sampletype_OutLab[] sampletype;
 
 
-    Outlabdetails_OutLab(Parcel in) {
+
+    public Outlabdetails_OutLab() {
+    }
+
+    protected Outlabdetails_OutLab(Parcel in) {
         code = in.readString();
         name = in.readString();
+        isCPL = in.readString();
         product = in.readString();
         type = in.readString();
         trf = in.readString();
         rate = in.readParcelable(Rate_OutLab.class.getClassLoader());
         sampletype = in.createTypedArray(Sampletype_OutLab.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(code);
+        dest.writeString(name);
+        dest.writeString(isCPL);
+        dest.writeString(product);
+        dest.writeString(type);
+        dest.writeString(trf);
+        dest.writeParcelable(rate, flags);
+        dest.writeTypedArray(sampletype, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<Outlabdetails_OutLab> CREATOR = new Creator<Outlabdetails_OutLab>() {
@@ -38,7 +60,12 @@ public class Outlabdetails_OutLab implements Parcelable {
         }
     };
 
-    public Outlabdetails_OutLab() {
+    public String getIsCPL() {
+        return isCPL;
+    }
+
+    public void setIsCPL(String isCPL) {
+        this.isCPL = isCPL;
     }
 
     public String getType() {
@@ -98,31 +125,33 @@ public class Outlabdetails_OutLab implements Parcelable {
     }
 
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(code);
-        dest.writeString(name);
-        dest.writeString(product);
-        dest.writeString(type);
-        dest.writeString(trf);
-        dest.writeParcelable(rate, flags);
-        dest.writeTypedArray(sampletype, flags);
-    }
 
     public static class Rate_OutLab implements Parcelable {
-        String b2b, b2c;
+        String b2b, b2c,cplr,rplr;
 
         public Rate_OutLab() {
         }
 
+
         protected Rate_OutLab(Parcel in) {
             b2b = in.readString();
             b2c = in.readString();
+            cplr = in.readString();
+            rplr = in.readString();
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeString(b2b);
+            dest.writeString(b2c);
+            dest.writeString(cplr);
+            dest.writeString(rplr);
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
         }
 
         public static final Creator<Rate_OutLab> CREATOR = new Creator<Rate_OutLab>() {
@@ -136,6 +165,22 @@ public class Outlabdetails_OutLab implements Parcelable {
                 return new Rate_OutLab[size];
             }
         };
+
+        public String getCplr() {
+            return cplr;
+        }
+
+        public void setCplr(String cplr) {
+            this.cplr = cplr;
+        }
+
+        public String getRplr() {
+            return rplr;
+        }
+
+        public void setRplr(String rplr) {
+            this.rplr = rplr;
+        }
 
         public String getB2c() {
             return b2c;
@@ -154,16 +199,7 @@ public class Outlabdetails_OutLab implements Parcelable {
             this.b2b = b2b;
         }
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(b2b);
-            dest.writeString(b2c);
-        }
     }
 
     public static class Sampletype_OutLab implements Parcelable {

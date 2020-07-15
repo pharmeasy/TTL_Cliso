@@ -6,16 +6,18 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Settings;
-import androidx.core.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Activity.Installation;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.google.firebase.iid.FirebaseInstanceId;
+
+import androidx.core.app.ActivityCompat;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.TELEPHONY_SERVICE;
@@ -37,7 +39,7 @@ public class LogUserActivityTagging {
             SharedPreferences.Editor editorUserActivity = sharedPreferencesUserActivity.edit();
             Boolean isFirstInstall = sharedPreferencesUserActivity.getBoolean(Constants.SHR_FIRSTINSTALL, true);
 
-            Log.e("ISFIRSTINSTALL---",""+isFirstInstall);
+            Log.e("ISFIRSTINSTALL---", "" + isFirstInstall);
 
             if (isFirstInstall) {
                 editorUserActivity.putBoolean(Constants.SHR_FIRSTINSTALL, false);
@@ -59,7 +61,7 @@ public class LogUserActivityTagging {
 
 
             if (!TextUtils.isEmpty(User)) {
-                editorUserActivity.putString(Constants.SHR_USERNAME,User);
+                editorUserActivity.putString(Constants.SHR_USERNAME, User);
             } else {
                 editorUserActivity.putString(Constants.SHR_USERNAME, "");
             }
@@ -96,9 +98,14 @@ public class LogUserActivityTagging {
                         imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
                     }
                 }
+
+                if (TextUtils.isEmpty(imeiNo)) {
+                    imeiNo = new Installation().id(activity);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             AppuserReq requestModel = new AppuserReq();
             requestModel.setAppId(Constants.USER_APPID);
             requestModel.setIMIENo(imeiNo);

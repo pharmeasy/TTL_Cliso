@@ -3,12 +3,8 @@ package com.example.e5322.thyrosoft.Adapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +18,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
@@ -39,6 +36,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHolder> {
@@ -240,7 +241,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                                 viewHolder.parentTestCode = selectedTestModel.getCode();
                                 viewHolder.parentTestname = selectedTestModel.getName();
                                 isChecked = true;
-
                                 break;
                             } else {
                                 viewHolder.iv_checked.setVisibility(View.GONE);
@@ -337,7 +337,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 if (!isSelectedDueToParent) {
-                    selectedTests.remove(getSelected_test);
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getName().equalsIgnoreCase(getSelected_test.getName())) {
+                            selectedTests.remove(i);
+                        }
+                    }
+
                     mcallback.onCheckChangeRateCalculator(selectedTests);
                 } else {
                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);

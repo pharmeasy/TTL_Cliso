@@ -303,9 +303,13 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setSOURCECODE(usercode);
                             covidpostdata.setMOBILE(mobileno);
                             covidpostdata.setNAME(name);
-                            covidpostdata.setPRESCRIPTION(presc_file);
                             covidpostdata.setVIAIMAGE(vial_file);
+                            covidpostdata.setTESTCODE("COVID-19");
                             covidpostdata.setAMOUNTCOLLECTED(amtcoll);
+
+                            if (presc_file != null) {
+                                covidpostdata.setPRESCRIPTION(presc_file);
+                            }
 
                             if (aadhar_file != null && aadhar_file1 != null) {
                                 covidpostdata.setADHAR(aadhar_file);
@@ -490,10 +494,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     }
 
     private boolean Validation() {
-        if (presc_file == null) {
-            // Global.showCustomToast(activity, ToastFile.SELECT_PIMAGE);
-            return false;
-        }
+
 
         if (aadhar_file == null && aadhar_file1 == null) {
             // Global.showCustomToast(activity, ToastFile.SELECT_ADHIMAGE);
@@ -990,6 +991,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 startActivity(i);
                 Constants.covidfrag_flag = "1";
                 finish();
+            }else {
+                Global.showCustomToast(activity, RESPONSE);
             }
         } catch (JSONException e) {
             e.printStackTrace();

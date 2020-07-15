@@ -12,6 +12,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
+import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
@@ -60,6 +61,9 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
         flag = 0;
     }
 
+
+
+
     public AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New scan_barcode_ils_new, Activity mActivity, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
         this.scan_barcode_ils_new = scan_barcode_ils_new;
         this.mActivity = mActivity;
@@ -95,16 +99,6 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
     }
 
 
-   /* public AsyncTaskPost_Multipartfile(Context context, String apiKey, String sourceCode, String patientID, ArrayList<TRFModel> trfModelArrayList) {
-        this.context=context;
-        this.apiKey = apiKey;
-        this.sourceCode = sourceCode;
-        this.patientID = patientID;
-        this.trfModelArrayList = trfModelArrayList;
-        status_code = 0;
-        flag = 3;
-    }*/
-
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -139,6 +133,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
             builder.addPart("PATIENTID", new StringBody("" + patientID));
             builder.addPart("TYPE", new StringBody("DATA Reciept"));
             builder.addPart("MODE", new StringBody("THYROSOFTLITE APP"));
+
 
 
             for (int i = 0; i < trfModelArrayList.size(); i++) {

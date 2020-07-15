@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -156,10 +159,19 @@ public class CarouselFragment extends Fragment {
         } else {
             Constants.tab_flag = "0";
             if (covidacc) {
+
                 if (Constants.covidwoe_flag.equalsIgnoreCase("1")) {
-                    pager.setCurrentItem(1);
+                    pager.setCurrentItem(2);
                     Constants.covidwoe_flag = "0";
                 }
+                if (Constants.universal == 1) {
+                    if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
+                        pager.setCurrentItem(1);
+                        Constants.ratfrag_flag = "1";
+                        Constants.universal=0;
+                    }
+                }
+
             } else {
                 if (pager != null && pager.getCurrentItem() != positionInt) {
                     pager.setCurrentItem(positionInt);

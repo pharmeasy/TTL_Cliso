@@ -49,6 +49,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -127,7 +128,7 @@ public class Covidentered_frag extends Fragment {
         ll_fromDate = view.findViewById(R.id.ll_fromDate);
         txt_nodata = view.findViewById(R.id.txt_nodata);
 
-        mainlinear=view.findViewById(R.id.mainlinear);
+        mainlinear = view.findViewById(R.id.mainlinear);
         mainlinear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,14 +161,13 @@ public class Covidentered_frag extends Fragment {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("?")) {
                 }
-                if (enteredString.equals("")){
+                if (enteredString.equals("")) {
                     mode_filter.setSelection(0);
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
                 filter(editable.toString());
             }
         });
@@ -177,7 +177,6 @@ public class Covidentered_frag extends Fragment {
         } else {
             GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
         }
-
 
 
         recy_mis = view.findViewById(R.id.recy_covidmis);
@@ -197,11 +196,13 @@ public class Covidentered_frag extends Fragment {
     }
 
     private void getfilterapilist() {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
         Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getfilter();
         coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
             @Override
             public void onResponse(Call<COVfiltermodel> call, Response<COVfiltermodel> response) {
+                GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000) && response.body().getStatus() != null) {
 
@@ -211,16 +212,17 @@ public class Covidentered_frag extends Fragment {
                         for (int i = 0; i < response.body().getStatus().size(); i++) {
                             filterlist.add(response.body().getStatus().get(i).getStatus());
                         }
-
-                        ArrayAdapter<String> filteradapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, filterlist);
-                        filteradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        mode_filter.setAdapter(filteradapter);
+                        if (filterlist != null) {
+                            ArrayAdapter<String> filteradapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, filterlist);
+                            filteradapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            mode_filter.setAdapter(filteradapter);
+                        }
 
                         mode_filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 String type = mode_filter.getSelectedItem().toString();
-                                if (type.equalsIgnoreCase("All")){
+                                if (type.equalsIgnoreCase("All")) {
                                     if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
                                         if (cd.isConnectingToInternet()) {
                                             getMIS(from_formateDate);
@@ -230,7 +232,7 @@ public class Covidentered_frag extends Fragment {
                                     } else {
                                         GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
                                     }
-                                }else {
+                                } else {
                                     filterbytype(type);
                                 }
 
@@ -249,7 +251,7 @@ public class Covidentered_frag extends Fragment {
 
             @Override
             public void onFailure(Call<COVfiltermodel> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
     }
@@ -277,6 +279,7 @@ public class Covidentered_frag extends Fragment {
                         covidMISAdapter = new CovidMISAdapter(getContext(), covidMISmodelList, activity);
                         recy_mis.setAdapter(covidMISAdapter);
                     } else {
+                        covidMISmodelList=null;
                         recy_mis.setVisibility(View.GONE);
                         txt_nodata.setVisibility(View.VISIBLE);
                         txt_nodata.setText(MessageConstants.NODATA);
@@ -308,16 +311,16 @@ public class Covidentered_frag extends Fragment {
         try {
             ArrayList<Covidmis_response.OutputBean> filterlist = new ArrayList<>();
             for (Covidmis_response.OutputBean var : covidMISmodelList) {
-                if (var.getPatientName().toLowerCase().contains(text.toLowerCase()) ||var.getStatusName().toLowerCase().contains(text.toLowerCase()) || var.getMobile().toLowerCase().contains(text.toLowerCase())
+                if (var.getPatientName().toLowerCase().contains(text.toLowerCase()) || var.getStatusName().toLowerCase().contains(text.toLowerCase()) || var.getMobile().toLowerCase().contains(text.toLowerCase())
                         || var.getCcc().toLowerCase().contains(text.toLowerCase())) {
                     filterlist.add(var);
                 }
             }
 
-            if (filterlist!=null &&filterlist.size()>0){
+            if (filterlist != null && filterlist.size() > 0) {
                 recy_mis.setVisibility(View.VISIBLE);
                 txt_nodata.setVisibility(View.GONE);
-            }else {
+            } else {
                 recy_mis.setVisibility(View.GONE);
                 txt_nodata.setVisibility(View.VISIBLE);
                 txt_nodata.setText(MessageConstants.NODATA);
@@ -337,10 +340,10 @@ public class Covidentered_frag extends Fragment {
                     filterlist.add(var);
                 }
             }
-            if (filterlist!=null &&filterlist.size()>0){
+            if (filterlist != null && filterlist.size() > 0) {
                 recy_mis.setVisibility(View.VISIBLE);
                 txt_nodata.setVisibility(View.GONE);
-            }else {
+            } else {
                 recy_mis.setVisibility(View.GONE);
                 txt_nodata.setVisibility(View.VISIBLE);
                 txt_nodata.setText(MessageConstants.NODATA);

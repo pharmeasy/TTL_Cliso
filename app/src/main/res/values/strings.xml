@@ -20,7 +20,7 @@
     <string name="daysoutstand">Current outstanding \n &#160;&#160;&#160;&#160;&#160;will suffice</string>
     <string name="alphachar">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890 .,-|@</string>
     <string name="email_id">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm1234567890@_.</string>
-    <string name="alphabets">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm</string>
+    <string name="alphabets">QWERTYUIOPASDFGHJKLZXCVBNMqwertyuioplkjhgfdsazxcvbnm </string>
     <string name="text_with_bullet"> \u2022</string>
     <string name="bnkname">Bank Name : AXIS BANK</string>
     <string name="branchname">Branch Name : SANPADA</string>
@@ -157,6 +157,12 @@
         <item>Select Service Type*</item>
     </string-array>
 
+    <string-array name="arr_gender">
+        <item>Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
     <string name="str_legderbal">Ledger Balance</string>
     <string name="str_enter_name">Please Enter Name</string>
     <string name="str_enter_email">Please Enter Email id</string>
@@ -249,7 +255,7 @@
     <string name="tv_email">Email ID</string>
     <string name="tv_addr">Address</string>
     <string name="test_subject">Test details</string>
-    <string name="pescription">Prescription*</string>
+    <string name="pescription">Prescription</string>
     <string name="adhar">Aadhaar/Passport*</string>
     <string name="trf">TRF*</string>
     <string name="other">Other</string>

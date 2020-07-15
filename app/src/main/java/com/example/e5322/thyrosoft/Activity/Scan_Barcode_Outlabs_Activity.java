@@ -17,7 +17,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,6 +36,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -52,7 +52,6 @@ import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
-import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
 import com.example.e5322.thyrosoft.WOE.SummaryActivity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -169,6 +168,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private String getRemark;
     private boolean barcodeExistsFlag = false;
     int b2b_rate = 0;
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,19 +291,51 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         scanIntegrator = new IntentIntegrator(Scan_Barcode_Outlabs_Activity.this);
         linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs_Activity.this);
         recycler_barcode.setLayoutManager(linearLayoutManager);
+        ArrayList<String> saveLocation = new ArrayList<>();
         int totalcount = 0;
         for (int i = 0; i < selectedOutlabTests.size(); i++) {
-            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")) {
-                totalcount = 0;
-            } else {
-                totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+
+//            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")) {
+//                totalcount = 0;
+//            } else {
+//                totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+//            }
+//
+//            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")) {
+//                b2b_rate = 0;
+//            } else {
+//                b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
+//            }
+
+            if (!TextUtils.isEmpty(selectedOutlabTests.get(i).getIsCPL())) {
+                if (selectedOutlabTests.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                    saveLocation.add("CPL");
+                } else {
+                    saveLocation.add("RPL");
+                }
             }
 
-            if (selectedOutlabTests.get(i).getRate().getB2c().equals("")){
-                b2b_rate=0;
-            }else {
-                b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
+            if (!saveLocation.isEmpty()) {
+                if (saveLocation.contains("CPL")) {
+                    totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+
+                    if (!TextUtils.isEmpty(selectedOutlabTests.get(i).getRate().getCplr())) {
+                        b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getCplr());
+                    } else {
+                        b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
+                    }
+
+                } else {
+                    totalcount = totalcount + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2c());
+                    if (!TextUtils.isEmpty(selectedOutlabTests.get(i).getRate().getRplr())) {
+                        b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getRplr());
+                    } else {
+                        b2b_rate = b2b_rate + Integer.parseInt(selectedOutlabTests.get(i).getRate().getB2b());
+                    }
+
+                }
             }
+
             Log.e(TAG, "b2b_rate: " + b2b_rate);
             Log.e(TAG, "onCreate: 11 " + totalcount);
         }
@@ -362,9 +394,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         GlobalClass.showShortToast(mActivity, "Select test");
                     } else if (getCollectedAmt.equals("") || getCollectedAmt.isEmpty()) {
                         GlobalClass.showShortToast(mActivity, "Please enter the amount");
-                    } else if (Integer.parseInt(getCollectedAmt)<b2b_rate){
-                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval)+" "+b2b_rate, Toast.LENGTH_SHORT).show();
-                    }else {
+                    } else if (Integer.parseInt(getCollectedAmt) < b2b_rate) {
+                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                    } else {
                         checklistData();
                     }
 
