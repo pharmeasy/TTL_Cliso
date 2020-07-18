@@ -1,5 +1,7 @@
 package com.example.e5322.thyrosoft.Models;
 
+import java.util.List;
+
 /**
  * Created by e5426@thyrocare.com on 22/5/18.
  */
@@ -7,35 +9,65 @@ package com.example.e5322.thyrosoft.Models;
 public class Track_BarcodeModel {
 
 
-    String billStatus;
-    String billed;
-    String bvt;
-    String collected;
-    String email;
-    String etr;
-    String isOrder;
-    String kycType;
-    String leadId;
-    String orderId;
-    String orderNo;
-    String patient;
-    String pendingCancelledTests;
-    String portalType;
-    String refBy;
-    String reportAddress;
-    String resId;
-    String response;
-    String rrt;
-    String sampleDetails;
-    String scp;
-    String sct;
-    String status;
-    String statusFlag;
-    String woeEdit;
-    String woeStage;
-    String woeTime;
-    String woiLocation;
+    /**
+     * billStatus : PENDING
+     * billed : 0
+     * bvt : 16-07-2020 11:30
+     * collected : 24
+     * email :
+     * etr : null
+     * isOrder : 0
+     * kycType : 9865580359
+     * leadId : null
+     * orderId : null
+     * orderNo : null
+     * patient : MRS SIVASATHYA (24Y/F)
+     * pendingCancelledTests : []
+     * portalType : null
+     * refBy : DR A PARIMALAM MS DGO
+     * reportAddress : (93803),SKV LABORATORY,VINAYAGA CLINICAL LAB, POST OFFICE STREET, USILAMPATTI,,625532
+     * resId : RES0000
+     * response : SUCCESS
+     * rrt : 16-07-2020 12:59
+     * sampleDetails : [{"barcode":"J4579049","labcode":"160720994","sampleType":"SERUM","tests":"TSH"}]
+     * scp : SKV LABORATORY
+     * sct : 15-07-2020 17:00
+     * status : null
+     * statusFlag : null
+     * woeEdit : null
+     * woeStage : 3
+     * woeTime : 15-07-2020 18:06
+     * woiLocation : RPL
+     */
 
+    private String billStatus;
+    private String billed;
+    private String bvt;
+    private String collected;
+    private String email;
+    private Object etr;
+    private String isOrder;
+    private String kycType;
+    private Object leadId;
+    private Object orderId;
+    private Object orderNo;
+    private String patient;
+    private Object portalType;
+    private String refBy;
+    private String reportAddress;
+    private String resId;
+    private String response;
+    private String rrt;
+    private String scp;
+    private String sct;
+    private Object status;
+    private Object statusFlag;
+    private Object woeEdit;
+    private String woeStage;
+    private String woeTime;
+    private String woiLocation;
+    private List<?> pendingCancelledTests;
+    private List<SampleDetailsBean> sampleDetails;
 
     public String getBillStatus() {
         return billStatus;
@@ -77,11 +109,11 @@ public class Track_BarcodeModel {
         this.email = email;
     }
 
-    public String getEtr() {
+    public Object getEtr() {
         return etr;
     }
 
-    public void setEtr(String etr) {
+    public void setEtr(Object etr) {
         this.etr = etr;
     }
 
@@ -101,27 +133,27 @@ public class Track_BarcodeModel {
         this.kycType = kycType;
     }
 
-    public String getLeadId() {
+    public Object getLeadId() {
         return leadId;
     }
 
-    public void setLeadId(String leadId) {
+    public void setLeadId(Object leadId) {
         this.leadId = leadId;
     }
 
-    public String getOrderId() {
+    public Object getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(Object orderId) {
         this.orderId = orderId;
     }
 
-    public String getOrderNo() {
+    public Object getOrderNo() {
         return orderNo;
     }
 
-    public void setOrderNo(String orderNo) {
+    public void setOrderNo(Object orderNo) {
         this.orderNo = orderNo;
     }
 
@@ -133,19 +165,11 @@ public class Track_BarcodeModel {
         this.patient = patient;
     }
 
-    public String getPendingCancelledTests() {
-        return pendingCancelledTests;
-    }
-
-    public void setPendingCancelledTests(String pendingCancelledTests) {
-        this.pendingCancelledTests = pendingCancelledTests;
-    }
-
-    public String getPortalType() {
+    public Object getPortalType() {
         return portalType;
     }
 
-    public void setPortalType(String portalType) {
+    public void setPortalType(Object portalType) {
         this.portalType = portalType;
     }
 
@@ -189,14 +213,6 @@ public class Track_BarcodeModel {
         this.rrt = rrt;
     }
 
-    public String getSampleDetails() {
-        return sampleDetails;
-    }
-
-    public void setSampleDetails(String sampleDetails) {
-        this.sampleDetails = sampleDetails;
-    }
-
     public String getScp() {
         return scp;
     }
@@ -213,27 +229,27 @@ public class Track_BarcodeModel {
         this.sct = sct;
     }
 
-    public String getStatus() {
+    public Object getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Object status) {
         this.status = status;
     }
 
-    public String getStatusFlag() {
+    public Object getStatusFlag() {
         return statusFlag;
     }
 
-    public void setStatusFlag(String statusFlag) {
+    public void setStatusFlag(Object statusFlag) {
         this.statusFlag = statusFlag;
     }
 
-    public String getWoeEdit() {
+    public Object getWoeEdit() {
         return woeEdit;
     }
 
-    public void setWoeEdit(String woeEdit) {
+    public void setWoeEdit(Object woeEdit) {
         this.woeEdit = woeEdit;
     }
 
@@ -261,8 +277,65 @@ public class Track_BarcodeModel {
         this.woiLocation = woiLocation;
     }
 
+    public List<?> getPendingCancelledTests() {
+        return pendingCancelledTests;
+    }
 
+    public void setPendingCancelledTests(List<?> pendingCancelledTests) {
+        this.pendingCancelledTests = pendingCancelledTests;
+    }
 
+    public List<SampleDetailsBean> getSampleDetails() {
+        return sampleDetails;
+    }
 
+    public void setSampleDetails(List<SampleDetailsBean> sampleDetails) {
+        this.sampleDetails = sampleDetails;
+    }
 
+    public static class SampleDetailsBean {
+        /**
+         * barcode : J4579049
+         * labcode : 160720994
+         * sampleType : SERUM
+         * tests : TSH
+         */
+
+        private String barcode;
+        private String labcode;
+        private String sampleType;
+        private String tests;
+
+        public String getBarcode() {
+            return barcode;
+        }
+
+        public void setBarcode(String barcode) {
+            this.barcode = barcode;
+        }
+
+        public String getLabcode() {
+            return labcode;
+        }
+
+        public void setLabcode(String labcode) {
+            this.labcode = labcode;
+        }
+
+        public String getSampleType() {
+            return sampleType;
+        }
+
+        public void setSampleType(String sampleType) {
+            this.sampleType = sampleType;
+        }
+
+        public String getTests() {
+            return tests;
+        }
+
+        public void setTests(String tests) {
+            this.tests = tests;
+        }
+    }
 }

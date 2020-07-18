@@ -96,7 +96,6 @@ public class RateCalculatorFragment extends Fragment {
     public static ArrayList<String> profileListnames;
     public static ArrayList<String> popListnames;
     public static RequestQueue POstQue;
-    String isCPL = "1";
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -113,6 +112,7 @@ public class RateCalculatorFragment extends Fragment {
         }
     };
     private static ManagingTabsActivity mContext;
+    String isCPL = "1";
     View viewfab, view;
     int gertdata;
     String getValue;
@@ -145,14 +145,15 @@ public class RateCalculatorFragment extends Fragment {
     ArrayList<Base_Model_Rate_Calculator> param;
     ArrayList<RateCalB2B_MASTERS_Main_Model> b2bmasterarraylistRate;
     ExapandableAdpterForB2CRate_Calculator expAdapter;
-    ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
+    ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal;
     Button resetbutton;
     List<String> showTestNmaesRateCal = new ArrayList<>();
     List<String> getOnlyTestCode;
     List<String> getOnlyTestCode1;
     List<String> passToApi;
     Test_Rate_Fragment test_rate_fragment;
-    SharedPreferences prefs;
+    SharedPreferences prefs, preferences;
+    private int rate_percent, max_amt;
     String user, passwrd, access, api_key;
     ArrayList<Integer> getvalue;
     int getFinaldata = 0;
@@ -175,6 +176,8 @@ public class RateCalculatorFragment extends Fragment {
     GetMainModel obj;
     Product_Rate_CalculatorModel product_rate_masterModel;
     boolean viewmoreflag = false;
+    RadioGroup location_radio_grp;
+    RadioButton cpl_rdo, rpl_rdo;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -183,7 +186,7 @@ public class RateCalculatorFragment extends Fragment {
     private TestModel testModel;
     private int finalPriceofTest;
     private int getFinalAmountTopassToTheAPI;
-    private int totalcount;
+    private int CPL_RATE;
     private String displayslectedtestRateCalToShow;
     private ArrayList<String> getBrandName;
     private boolean isLoaded = false;
@@ -200,8 +203,7 @@ public class RateCalculatorFragment extends Fragment {
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
     private String TAG = getClass().getSimpleName();
     private TextView txt_more;
-    RadioGroup location_radio_grp;
-    RadioButton cpl_rdo, rpl_rdo;
+    private ArrayList<String> locationsList;
     // ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
     // ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
 
@@ -236,7 +238,7 @@ public class RateCalculatorFragment extends Fragment {
         mContext = (ManagingTabsActivity) getActivity();
         viewrate_calfrag = inflater.inflate(R.layout.fragment_rate_calculator, container, false);
         getvalue = new ArrayList<>();
-
+        selectedTestsListRateCal = new ArrayList<>();
 
         go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
         companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
@@ -264,11 +266,12 @@ public class RateCalculatorFragment extends Fragment {
         containerlist = (RecyclerView) viewrate_calfrag.findViewById(R.id.containerlist);
         pop_profile_test_bar = (LinearLayout) viewrate_calfrag.findViewById(R.id.pop_profile_test_bar);
         search_option_ttl = (LinearLayout) viewrate_calfrag.findViewById(R.id.search_option_ttl);
+        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
+
         linearLayoutManager = new LinearLayoutManager(getContext());
         containerlist.setLayoutManager(linearLayoutManager);
         containerlist.setItemAnimator(new DefaultItemAnimator());
         containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
 
         lin_color = viewrate_calfrag.findViewById(R.id.lin_color);
         lin_color2 = viewrate_calfrag.findViewById(R.id.lin_color2);
@@ -320,6 +323,12 @@ public class RateCalculatorFragment extends Fragment {
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
 
+        //todo get rate percent from profile details
+        preferences = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
+        rate_percent = preferences.getInt(Constants.rate_percent, 0);
+        max_amt = preferences.getInt(Constants.max_amt, 0);
+        System.out.println("<< rate percent >>" + rate_percent);
+        System.out.println("<< max amount >>" + max_amt);
 
         cpl_rdo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,6 +347,10 @@ public class RateCalculatorFragment extends Fragment {
                 show_rpl_rates.setVisibility(View.GONE);
 
                 getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
+
+               /* if (selectedTestsListRateCal != null && selectedTestsListRateCal.size() > 0) {
+
+                }*/
             }
         });
 
@@ -921,16 +934,19 @@ public class RateCalculatorFragment extends Fragment {
         ArrayList<Base_Model_Rate_Calculator> tempfinalproductlist = new ArrayList<>();
         if (finalproductlist != null && finalproductlist.size() > 0) {
             for (int i = 0; i < finalproductlist.size(); i++) {
-                if (cpl_rdo.isChecked()) {
-                    if (finalproductlist.get(i).getIsCPL().equalsIgnoreCase("1")) {
-                        tempfinalproductlist.add(finalproductlist.get(i));
-                    }
-                } else {
-                    if (finalproductlist.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                        tempfinalproductlist.add(finalproductlist.get(i));
+                if (finalproductlist.get(i).getIsCPL() != null) {
+                    if (!TextUtils.isEmpty(finalproductlist.get(i).getIsCPL())) {
+                        if (cpl_rdo.isChecked()) {
+                            if (finalproductlist.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                                tempfinalproductlist.add(finalproductlist.get(i));
+                            }
+                        } else {
+                            if (finalproductlist.get(i).getIsCPL().equalsIgnoreCase("0")) {
+                                tempfinalproductlist.add(finalproductlist.get(i));
+                            }
+                        }
                     }
                 }
-
             }
         }
 
@@ -966,31 +982,33 @@ public class RateCalculatorFragment extends Fragment {
                     }
 
 
-                    totalcount = 0;
+                    CPL_RATE = 0;
                     int B2Crate = 0;
                     int RPL_RATE = 0;
 
                     if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
                         for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
                             if (!TextUtils.isEmpty(selectedTestsListRateCal.get(j).getRate().getCplr())) {
-                                totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
                             } else {
-                                totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                             }
 
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
                         }
                     } else {
+                        locationsList = new ArrayList<>();
                         for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
+                            locationsList.add(selectedTestsListRateCal.get(j).getIsCPL());
                             if (!TextUtils.isEmpty(selectedTestsListRateCal.get(j).getRate().getCplr())) {
-                                totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
                             } else {
-                                totalcount = totalcount + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                             }
 
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
 
-                            if (rpl_rdo.isChecked()) {
+                            if (locationsList != null && locationsList.contains("0")) {
                                 if (selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
                                     if (!TextUtils.isEmpty(selectedTestsListRateCal.get(j).getRate().getRplr())) {
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getRplr());
@@ -998,22 +1016,48 @@ public class RateCalculatorFragment extends Fragment {
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                                     }
 
-                                    rpl_rate_adm.setVisibility(View.VISIBLE);
-                                    show_rpl_rates.setVisibility(View.VISIBLE);
-                                    show_rpl_rates.setText("" + RPL_RATE);
+//                                    rpl_rate_adm.setVisibility(View.VISIBLE);
+//                                    show_rpl_rates.setVisibility(View.VISIBLE);
+//                                    show_rpl_rates.setText("" + RPL_RATE);
                                 }
-                            } else {
+                            }/* else {
                                 RPL_RATE = 0;
                                 rpl_rate_adm.setVisibility(View.GONE);
                                 show_rpl_rates.setVisibility(View.GONE);
-                            }
+                            }*/
                         }
 
-                        System.out.println("Total value  :" + totalcount);
-                        System.out.println("B2Crate value  :" + B2Crate);
-                        System.out.println("RPL_RATE value  :" + RPL_RATE);
-                    }
+                        try {
+                            System.out.println("CPL_RATE value :" + CPL_RATE);
+                            //todo calculate the amount as per rate percent
+                            CPL_RATE = calcAmount(CPL_RATE);
 
+//                            if (rpl_rdo.isChecked()) {
+                            System.out.println("RPL_RATE value :" + RPL_RATE);
+
+                            if (locationsList != null && locationsList.contains("1") && locationsList.contains("0")) {
+                                RPL_RATE = CPL_RATE;
+                            } else {
+                                RPL_RATE = calcAmount(RPL_RATE);
+                            }
+
+                                /*rpl_rate_adm.setVisibility(View.VISIBLE);
+                                show_rpl_rates.setVisibility(View.VISIBLE);*/
+                            show_rpl_rates.setText("" + RPL_RATE);
+//                            }
+                            /*else {
+                                RPL_RATE = 0;
+                                rpl_rate_adm.setVisibility(View.GONE);
+                                show_rpl_rates.setVisibility(View.GONE);
+                            }*/
+
+                            System.out.println("Calculated CPL rate with per :" + CPL_RATE);
+                            System.out.println("Calculated RPL rate with per :" + RPL_RATE);
+                            System.out.println("B2Crate value  :" + B2Crate);
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     displayslectedtestRateCal = null;
                     displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
@@ -1034,7 +1078,7 @@ public class RateCalculatorFragment extends Fragment {
 
 
                         if (access.equals("ADMIN")) {
-                            show_b2b_rates.setText(String.valueOf(totalcount));
+                            show_b2b_rates.setText(String.valueOf(CPL_RATE));
                             b2b_rate_adm.setVisibility(View.VISIBLE);
                             show_b2b_rates.setVisibility(View.VISIBLE);
                         } else {
@@ -1062,11 +1106,40 @@ public class RateCalculatorFragment extends Fragment {
                     show_rates.setText("0");
                     before_discount_layout2.setVisibility(View.GONE);
                 }
+                manageCPLRPLView();
             }
         });
 
         containerlist.setAdapter(rateCAlAdapter);
 
+        manageCPLRPLView();
+    }
+
+    private int calcAmount(int RATE) {
+        try {
+            float aFloat = Float.parseFloat(String.valueOf(RATE));
+            float per_amt = ((aFloat / 100) * rate_percent);
+            System.out.println("Calculated percent rate :" + per_amt);
+            int per_amt1 = Math.round(per_amt);
+            if (per_amt1 < max_amt) {
+                RATE = RATE + per_amt1;
+            } else {
+                RATE = RATE + max_amt;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return RATE;
+    }
+
+    private void manageCPLRPLView() {
+        if (locationsList != null && locationsList.contains("0")) {
+            rpl_rate_adm.setVisibility(View.VISIBLE);
+            show_rpl_rates.setVisibility(View.VISIBLE);
+        } else {
+            rpl_rate_adm.setVisibility(View.GONE);
+            show_rpl_rates.setVisibility(View.GONE);
+        }
     }
 
     private void getRatesofB2bandB2C(String getSpinnerSelectedItem, ManagingTabsActivity mContext) {
@@ -1293,7 +1366,7 @@ public class RateCalculatorFragment extends Fragment {
 
 
                             if (access.equals("ADMIN")) {
-                                show_b2b_rates.setText(String.valueOf(totalcount));
+                                show_b2b_rates.setText(String.valueOf(CPL_RATE));
                                 b2b_rate_adm.setVisibility(View.VISIBLE);
                                 show_b2b_rates.setVisibility(View.VISIBLE);
                             } else {

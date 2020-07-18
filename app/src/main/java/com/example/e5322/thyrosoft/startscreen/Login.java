@@ -36,6 +36,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -98,6 +99,7 @@ public class Login extends Activity implements View.OnClickListener {
     SharedPreferences shr_user_log;*/
     private String androidOS;
     Activity activity;
+    SharedPreferences pref_versioncheck;
 
     @SuppressLint("NewApi")
     @Override
@@ -909,6 +911,11 @@ public class Login extends Activity implements View.OnClickListener {
                         editor.putBoolean("covidacc", false);
                         editor.commit();
                     }
+                    int versionCode = BuildConfig.VERSION_CODE;
+                    SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
+                    SharedPreferences.Editor editorversioncode = pref_versioncheck.edit();
+                    editorversioncode.putInt("versioncode", versionCode);
+                    editorversioncode.apply();
 
                     Intent a = new Intent(Login.this, ManagingTabsActivity.class);
                     a.putExtra(Constants.COMEFROM, true);

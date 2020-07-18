@@ -1336,7 +1336,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
                         patientAddress.setText(enteredString.substring(1));
                     } else {

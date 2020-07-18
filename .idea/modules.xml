@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Cliso.iml" filepath="$PROJECT_DIR$/Cliso.iml" group="Cliso" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Cliso/app" />
-      <module fileurl="file://$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" group="Cliso/libraryViewPagerIndicator" />
-      <module fileurl="file://$PROJECT_DIR$/sdkui/sdkui.iml" filepath="$PROJECT_DIR$/sdkui/sdkui.iml" group="Cliso/sdkui" />
+      <module fileurl="file://$PROJECT_DIR$/Cliso.iml" filepath="$PROJECT_DIR$/Cliso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/libraryViewPagerIndicator/libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sdkui/sdkui.iml" filepath="$PROJECT_DIR$/sdkui/sdkui.iml" />
     </modules>
   </component>
 </project>

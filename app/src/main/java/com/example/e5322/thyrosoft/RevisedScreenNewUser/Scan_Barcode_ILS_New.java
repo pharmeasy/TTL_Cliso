@@ -40,6 +40,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
@@ -114,7 +115,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     public String specimenttype1;
     public int position1 = 0;
     public String getFinalPhoneNumberToPost;
-    SharedPreferences prefs;
+    SharedPreferences prefs, profile_pref;
     String testName, productnames, setLocation = null;
     EditText enterAmt;
     TextView title;
@@ -178,6 +179,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     RecyclerView rec_trf;
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
+    private int rate_percent, max_amt;
+    private int CPL_RATE, RPL_RATE;
     private MyPojo myPojo;
     private boolean barcodeExistsFlag = false;
     private boolean trfCheckFlag = false;
@@ -191,8 +194,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private AdapterBarcode_New adapterBarcode;
     private String getAmount, b2b_rate;
     private AlertDialog.Builder alertDialog;
-    private int collectedAmt;
-    private int totalAmount;
     private String getCollectedAmt;
     private String testsnames;
     private DatabaseHelper myDb;
@@ -347,6 +348,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+
+        //todo get rate percent from profile details
+        profile_pref = getSharedPreferences("profile", MODE_PRIVATE);
+        rate_percent = profile_pref.getInt(Constants.rate_percent, 0);
+        max_amt = profile_pref.getInt(Constants.max_amt, 0);
+        System.out.println("<< rate percent >>" + rate_percent);
+        System.out.println("<< max amount >>" + max_amt);
 
         savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         nameString = savepatientDetails.getString("name", null);
@@ -528,24 +536,24 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     productWithBarcode.setFasting(selctedTest.get(i).getFasting());
                     productWithBarcode.setType(selctedTest.get(i).getType());
                     getproductDetailswithBarcodes.add(productWithBarcode);
-                    saveLocation.add(selctedTest.get(i).getLocation());
                 }
+                saveLocation.add(selctedTest.get(i).getLocation());
             }
 
         }
 
         if (saveLocation != null && !saveLocation.isEmpty()) {
-            for (int i = 0; i < saveLocation.size(); i++) {
-                if (saveLocation.contains("CPL")) {
-                    location_radio_grp.setVisibility(View.GONE);
-                    setLocation = "CPL";
-                } else {
-                    location_radio_grp.setVisibility(View.VISIBLE);
-                    rpl_rdo.setChecked(true);
-                    cpl_rdo.setChecked(false);
-                    setLocation = "RPL";
-                }
+//            for (int i = 0; i < saveLocation.size(); i++) {
+            if (saveLocation.contains("CPL")) {
+                location_radio_grp.setVisibility(View.GONE);
+                setLocation = "CPL";
+            } else {
+                location_radio_grp.setVisibility(View.VISIBLE);
+                rpl_rdo.setChecked(true);
+                cpl_rdo.setChecked(false);
+                setLocation = "RPL";
             }
+//            }
         }
 
         rpl_rdo.setOnClickListener(new View.OnClickListener() {
@@ -700,16 +708,34 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     lab_alert_pass_toApi = lab_alert_spin.getText().toString();
                 }
                 if (!typeName.equalsIgnoreCase("ILS")) {
+                    CPL_RATE = 0;
+                    RPL_RATE = 0;
+                    for (int i = 0; i < selctedTest.size(); i++) {
+                        if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getCplr())) {
+                            CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
+                        } else {
+                            CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        }
+                        if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getRplr())) {
+                            RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
+                        } else {
+                            RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        }
+                    }
                     getCollectedAmt = enterAmt.getText().toString();
                     if (getCollectedAmt.equals("")) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
-                    } else if (Integer.parseInt(getCollectedAmt) < Integer.parseInt(b2b_rate)) {
+                    } /*else if (Integer.parseInt(getCollectedAmt) < Integer.parseInt(b2b_rate)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
-                    } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
+                    }*/else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than B2C amount", Toast.LENGTH_SHORT).show();
+                    } else if (!checkRateVal()) {
+
+                    } else if (TextUtils.isEmpty(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
+                    } /*else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
-                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                    }*/ else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else {
@@ -718,30 +744,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else {
                         checklistData();
                     }
-
-                    getCollectedAmt = enterAmt.getText().toString();
-                    if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
-                        collectedAmt = Integer.parseInt(getCollectedAmt);
-                        totalAmount = Integer.parseInt(totalamt);
-                    } else {
-                        Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                    }
                 } else {
                     getCollectedAmt = enterAmt.getText().toString();
-                    if (!getCollectedAmt.equals("") && !totalamt.equals("")) {
-                        collectedAmt = Integer.parseInt(getCollectedAmt);
-                        totalAmount = Integer.parseInt(totalamt);
-                    } else {
-                        Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
-                    }
-
                     if (getCollectedAmt.equals("")) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
-                    } else if (getTestSelection.equals("") || getTestSelection.equals(null)) {
+                    } else if (TextUtils.isEmpty(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    } else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
+                    }/* else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
-                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                    }*/ else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else {
@@ -754,6 +765,58 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
             }
         });
+    }
+
+    private boolean checkRateVal(){
+        if (saveLocation != null && saveLocation.size() > 0) {
+            if (saveLocation.contains("CPL") && saveLocation.contains("RPL")) {
+                RPL_RATE = calcAmount(CPL_RATE);
+                System.out.println("Calculated RPL rate :" + RPL_RATE);
+                if (Integer.parseInt(getCollectedAmt) < RPL_RATE) {
+//                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }else if (saveLocation.contains("RPL")) {
+                RPL_RATE = calcAmount(RPL_RATE);
+                System.out.println("Calculated RPL rate :" + RPL_RATE);
+                if (Integer.parseInt(getCollectedAmt) < RPL_RATE) {
+//                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            } else if (saveLocation.contains("CPL")){
+                CPL_RATE = calcAmount(CPL_RATE);
+                System.out.println("Calculated CPL rate :" + CPL_RATE);
+                if (Integer.parseInt(getCollectedAmt) < CPL_RATE) {
+//                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + CPL_RATE, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        }else {
+            Toast.makeText(Scan_Barcode_ILS_New.this, "Location is blank for selected products", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private int calcAmount(int RATE) {
+        try {
+            float aFloat = Float.parseFloat(String.valueOf(RATE));
+            float per_amt = ((aFloat / 100) * rate_percent);
+            System.out.println("Calculated percent rate :" + per_amt);
+            int per_amt1 = Math.round(per_amt);
+            if (per_amt1 < max_amt) {
+                RATE = RATE + per_amt1;
+            } else {
+                RATE = RATE + max_amt;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return RATE;
     }
 
     public void checklistData() {

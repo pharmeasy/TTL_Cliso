@@ -208,7 +208,6 @@ public class INAPP_UPDATE implements ActivityCompat.OnRequestPermissionsResultCa
                                 }
                             }
                         });
-
                     } else {
                         //oh yeah we do need an upgrade, let the user know send an alert message
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);

@@ -289,7 +289,7 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            c.add(Calendar.MINUTE, 90);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+            c.add(Calendar.MINUTE, 210);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
             SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
             st = sdf1.format(c.getTime());
 
@@ -331,7 +331,7 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (difference >= 15 * 60 * 1000 && difference <= 30 * 60 * 1000) {
                 timeflag = 1;
                 return true;
-            } else if (difference >= 30 * 60 * 1000 && difference <= 120 * 60 * 1000) {
+            } else if (difference >= 30 * 60 * 1000 && difference <= 240 * 60 * 1000) {
                 timeflag = 2;
                 return true;
 

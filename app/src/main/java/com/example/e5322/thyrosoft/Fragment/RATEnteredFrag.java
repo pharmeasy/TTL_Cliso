@@ -211,7 +211,7 @@ public class RATEnteredFrag extends Fragment {
         ratEnteredRequestModel.setApikey(apikey);
         ratEnteredRequestModel.setSourceCODE(usercode);
         ratEnteredRequestModel.setStatus(status);
-        ratEnteredRequestModel.setTest("COVAG");
+        ratEnteredRequestModel.setTest("CRAT");
         if (rd_pending.isChecked() || rd_pending.isSelected()) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             String currentDateandTime = sdf.format(new Date());

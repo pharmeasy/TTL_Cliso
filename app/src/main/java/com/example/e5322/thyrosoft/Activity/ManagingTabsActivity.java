@@ -14,16 +14,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -50,14 +40,13 @@ import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
+import com.example.e5322.thyrosoft.BuildConfig;
 import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
-import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTCompanyContact_activity;
-import com.example.e5322.thyrosoft.Kotlin.KTActivity.KTNoticeboard_activity;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
@@ -77,6 +66,8 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.Login;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -84,6 +75,14 @@ import org.json.JSONObject;
 
 import java.io.File;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -107,23 +106,14 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     boolean IsFromNotification;
     boolean covidacc = false;
     int SCRID;
-    private int a = 0;
-    private String TAG = getClass().getSimpleName();
-    private CarouselFragment carouselFragment;
-    private String user, CLIENT_TYPE;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private DatabaseHelper db;
     boolean iscomfrom;
     String VideoID;
     ImageView ic_close;
     AlertDialog dialog;
-    private VideoView video_view;
     SeekBar videoseekbar;
     TextView txt_toltime, txt_ctime;
     RelativeLayout rel_time;
     long milliseconds, minutes, seconds;
-    private int offline_draft_counts;
     Handler handler;
     ImageView ic_play, ic_pause;
     Runnable runnable;
@@ -131,7 +121,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     boolean isVideosee = false;
     Activity activity;
     SharedPreferences covid_pref;
-
+    SharedPreferences pref_versioncheck;
+    private int a = 0;
+    private String TAG = getClass().getSimpleName();
+    private CarouselFragment carouselFragment;
+    private String user, CLIENT_TYPE;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private DatabaseHelper db;
+    private VideoView video_view;
+    private int offline_draft_counts;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -168,7 +167,19 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             return false;
         }
     };
-
+    private Handler mSeekbarUpdateHandler = new Handler();
+    private Runnable mUpdateSeekbar = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                videoseekbar.setProgress(video_view.getCurrentPosition());
+                mSeekbarUpdateHandler.postDelayed(this, 50);
+                txt_toltime.setText(video_view.getDuration());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -207,6 +218,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
+
+        pref_versioncheck = getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
+        if (pref_versioncheck != null) {
+            int versionCode = BuildConfig.VERSION_CODE;
+            int prefversioncode = pref_versioncheck.getInt("versioncode", 0);
+
+            Log.e(TAG, "prefversioncode --->" + prefversioncode + "  versionCode-->" + versionCode);
+
+            if (prefversioncode != versionCode) {
+                startActivity(new Intent(ManagingTabsActivity.this, Login.class));
+                finish();
+            }
+
         }
 
         covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
@@ -632,21 +657,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     }
 
-    private Handler mSeekbarUpdateHandler = new Handler();
-    private Runnable mUpdateSeekbar = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                videoseekbar.setProgress(video_view.getCurrentPosition());
-                mSeekbarUpdateHandler.postDelayed(this, 50);
-                txt_toltime.setText(video_view.getDuration());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-
     private void closeVideo(String id, final AlertDialog dialog) {
 
         Videopoppost videopoppost = new Videopoppost();
@@ -891,7 +901,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                httpIntent.setData(Uri.parse("http://www.charbi.com/CDN/Applications/Android/Thyroshop.apk"));
+                httpIntent.setData(Uri.parse("http:\\/\\/www.charbi.com\\/cdn\\/applications\\/android\\/thyromart.apk"));
                 startActivity(httpIntent);
             }
 
@@ -1220,7 +1230,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         //final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
 
         Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
 
@@ -1261,6 +1270,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     saveProfileDetails.putString("tsp_image", responseModel.getTsp_image());
                                     saveProfileDetails.putString(Constants.unbilledWOE, responseModel.getUnbilledWOE());
                                     saveProfileDetails.putString(Constants.unbilledMaterial, responseModel.getUnbilledmaterial());
+                                    saveProfileDetails.putInt(Constants.rate_percent, responseModel.getRatePercent());
+                                    saveProfileDetails.putInt(Constants.max_amt, responseModel.getMaxAmount());
                                     saveProfileDetails.apply();
 
 
@@ -1363,9 +1374,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         clearApplicationData();
 
-        Constants.covidwoe_flag="0";
-        Constants.covidfrag_flag="0";
-        Constants.ratfrag_flag="0";
+        Constants.covidwoe_flag = "0";
+        Constants.covidfrag_flag = "0";
+        Constants.ratfrag_flag = "0";
 //        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);

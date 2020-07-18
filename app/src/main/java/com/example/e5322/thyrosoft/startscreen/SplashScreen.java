@@ -393,8 +393,6 @@ public class SplashScreen extends AppCompatActivity {
                     } else {
                         callIntent();
                     }
-
-
                 }
 
                 @Override
@@ -412,8 +410,6 @@ public class SplashScreen extends AppCompatActivity {
     private void callIntent() {
         new LogUserActivityTagging(activity, "");
         if (user != null && passwrd != null) {
-
-
             long PreviousTime = prefs_CovidSync.getLong("PreivousTimeOfSync", 0);
             long currenttime = System.currentTimeMillis();
             long differ_millis = currenttime - PreviousTime;
@@ -579,48 +575,10 @@ public class SplashScreen extends AppCompatActivity {
 
     }
 
-
     @Override
     public void onBackPressed() {
         finish();
         super.onBackPressed();
-    }
-
-
-    private void CheckPermissionAndStartIntent() {
-        if (ContextCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(SplashScreen.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            Log.e(TAG, "Permision not granted");
-        } else {
-            Log.e(TAG, "Permision  granted");
-
-        }
-    }
-
-
-    public String getDeviceIMEI() {
-        String deviceUniqueIdentifier = null;
-        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-        if (null != tm) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                //return false;
-            }
-            deviceUniqueIdentifier = tm.getDeviceId();
-        }
-
-        if (null == deviceUniqueIdentifier || 0 == deviceUniqueIdentifier.length()) {
-            deviceUniqueIdentifier = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }
-
-        return deviceUniqueIdentifier;
     }
 
 }
