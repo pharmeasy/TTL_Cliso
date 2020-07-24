@@ -88,11 +88,11 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
         viewHolder.test_rate_cal_txt.setVisibility(View.GONE);
 
 
-     /*   if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+     /*   if (mgetSingleList.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
             viewHolder.txt_type.setText("T");
-        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
+        } else if (mgetSingleList.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
             viewHolder.txt_type.setText("P");
-        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
+        } else if (mgetSingleList.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
             viewHolder.txt_type.setText("PO");
         }*/
         boolean isChecked = false;

@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -47,7 +48,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
     View view;
     ManagingTabsActivity mContext;
-    ArrayList<Base_Model_Rate_Calculator> base_model_rate_calculators;
+    ArrayList<Base_Model_Rate_Calculator> mgetSingleList;
     ArrayList<Base_Model_Rate_Calculator> filteredList;
     Base_Model_Rate_Calculator getSelected_test;
     Base_Model_Rate_Calculator.Childs selectedchildlist[];
@@ -59,7 +60,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     private List<String> tempselectedTests1;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
-    private ArrayList<Base_Model_Rate_Calculator> totalgetAllTests;
+    private ArrayList<Base_Model_Rate_Calculator> AllProductArrayList;
     private androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
     private ImageView imgClose;
     private InterfaceRateCAlculator mcallback;
@@ -67,8 +68,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
     public RateCAlAdapter(ManagingTabsActivity mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, InterfaceRateCAlculator mcallback) {
         this.mContext = mContext;
-        this.base_model_rate_calculators = finalgetAllTests;
-        this.totalgetAllTests = getTotalArray;
+        this.mgetSingleList = finalgetAllTests;
+        this.AllProductArrayList = getTotalArray;
         this.filteredList = finalgetAllTests;
         this.mcallback = mcallback;
         this.selectedTests = selectedTests;
@@ -101,9 +102,9 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
         viewHolder.lin_color.removeAllViews();
 
-        viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
+        viewHolder.test_name_rate_txt.setText(mgetSingleList.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
-        int passThvalue = Integer.parseInt(base_model_rate_calculators.get(position).getRate().getB2c());
+        int passThvalue = Integer.parseInt(mgetSingleList.get(position).getRate().getB2c());
         String setRtaesToTests = numberFormat.format(passThvalue);
         viewHolder.test_rate_cal_txt.setText("₹ " + setRtaesToTests + "/-");
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
@@ -111,8 +112,8 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
 
         /*TODO Below logic for TTL Sample type color code*/
-        if (base_model_rate_calculators != null || base_model_rate_calculators.size() != 0) {
-            SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, base_model_rate_calculators, position);
+        if (mgetSingleList != null || mgetSingleList.size() != 0) {
+            SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, mgetSingleList, position);
             sampleTypeColor.ttlcolor(viewHolder.lin_color);
         }
 
@@ -264,72 +265,58 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         viewHolder.iv_unchecked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String str = "";
-
-                str = str + getSelected_test.getCode() + ",";
-                String slectedpackage = "";
-
-                slectedpackage = getSelected_test.getName();
-                tempselectedTests = new ArrayList<>();
-                tempselectedTests1 = new ArrayList<>();
-
-                try {
-                    if (getSelected_test.getChilds() != null) {
-                        for (int i = 0; i < getSelected_test.getChilds().length; i++) {
-                            //tejas t -----------------------------
-                            for (int j = 0; j < selectedTests.size(); j++) {
-                                if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                    System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-                                    tempselectedTests1.add(selectedTests.get(j).getName());
-                                    tempselectedTests.add(selectedTests.get(j));
-                                } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
-                                    tempselectedTests1.add(selectedTests.get(j).getName());
-                                    tempselectedTests.add(selectedTests.get(j));
-                                }
+                if (mgetSingleList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
+                    boolean isCAGCA = false;
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                            isCAGCA = true;
+                            break;
+                        }
+                    }
+                    if (isCAGCA) {
+                        Base_Model_Rate_Calculator ProfileToSelect = null;
+                        for (int i = 0; i < AllProductArrayList.size(); i++) {
+                            if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                ProfileToSelect = AllProductArrayList.get(i);
+                                break;
                             }
                         }
+                        if (ProfileToSelect != null) {
+                            CallCheckFunction(ProfileToSelect);
+                        } else {
+                            CallCheckFunction(mgetSingleList.get(position));
+                        }
+                    } else {
+                        CallCheckFunction(mgetSingleList.get(position));
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-
-                try {
-                    for (int j = 0; j < selectedTests.size(); j++) {
-                        Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
-                        if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
-                            tempselectedTests1.add(selectedTests.get(j).getName());
-                            tempselectedTests.add(selectedTestModel123);
+                } else if (mgetSingleList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                    boolean isCATC = false;
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
+                            isCATC = true;
+                            break;
                         }
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                if (tempselectedTests != null && tempselectedTests.size() > 0) {
-                    String cartproduct = TextUtils.join(",", tempselectedTests1);
-                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
-                    alertDialogBuilder
-                            .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
-                            .setCancelable(true)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-//                                    alertDialog.dismiss();
-                                }
-                            });
-                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                    alertDialog.show();
-                }
-                for (int i = 0; i < tempselectedTests.size(); i++) {
-                    for (int j = 0; j < selectedTests.size(); j++) {
-                        if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                            selectedTests.remove(j);
+                    if (isCATC) {
+                        Base_Model_Rate_Calculator ProfileToSelect = null;
+                        for (int i = 0; i < AllProductArrayList.size(); i++) {
+                            if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                ProfileToSelect = AllProductArrayList.get(i);
+                                break;
+                            }
                         }
+                        if (ProfileToSelect != null) {
+                            CallCheckFunction(ProfileToSelect);
+                        } else {
+                            CallCheckFunction(mgetSingleList.get(position));
+                        }
+                    } else {
+                        CallCheckFunction(mgetSingleList.get(position));
                     }
+                } else {
+                    CallCheckFunction(mgetSingleList.get(position));
                 }
-                selectedTests.add(getSelected_test);
-                mcallback.onCheckChangeRateCalculator(selectedTests);
-                notifyDataSetChanged();
             }
         });
 
@@ -342,7 +329,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                             selectedTests.remove(i);
                         }
                     }
-
                     mcallback.onCheckChangeRateCalculator(selectedTests);
                 } else {
                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
@@ -366,9 +352,77 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
     }
 
+    private void CallCheckFunction(Base_Model_Rate_Calculator getSelected_test) {
+        String str = "";
+        str = str + getSelected_test.getCode() + ",";
+        String slectedpackage = "";
+
+        slectedpackage = getSelected_test.getName();
+        tempselectedTests = new ArrayList<>();
+        tempselectedTests1 = new ArrayList<>();
+
+        try {
+            if (getSelected_test.getChilds() != null) {
+                for (int i = 0; i < getSelected_test.getChilds().length; i++) {
+                    //tejas t -----------------------------
+                    for (int j = 0; j < selectedTests.size(); j++) {
+                        if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+                            tempselectedTests1.add(selectedTests.get(j).getName());
+                            tempselectedTests.add(selectedTests.get(j));
+                        } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
+                            tempselectedTests1.add(selectedTests.get(j).getName());
+                            tempselectedTests.add(selectedTests.get(j));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        try {
+            for (int j = 0; j < selectedTests.size(); j++) {
+                Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
+                if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
+                    tempselectedTests1.add(selectedTests.get(j).getName());
+                    tempselectedTests.add(selectedTestModel123);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (tempselectedTests != null && tempselectedTests.size() > 0) {
+            String cartproduct = TextUtils.join(",", tempselectedTests1);
+            alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
+            alertDialogBuilder
+                    .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
+                    .setCancelable(true)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+//                                    alertDialog.dismiss();
+                        }
+                    });
+            androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+        for (int i = 0; i < tempselectedTests.size(); i++) {
+            for (int j = 0; j < selectedTests.size(); j++) {
+                if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                    selectedTests.remove(j);
+                }
+            }
+        }
+        selectedTests.add(getSelected_test);
+        mcallback.onCheckChangeRateCalculator(selectedTests);
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
-        return base_model_rate_calculators.size();
+        return mgetSingleList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -59,18 +60,54 @@ public class Global {
     public static int mainActivity = 0;
     public static String BASE_URL = MAINURL;
     public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
-    public static String B2B="";
-    public static String B2C="";
-    private Context context;
-
-
+    public static String B2B = "";
+    public static String B2C = "";
     public static ArrayList<String> tabname_home = new ArrayList<>();
-
-
     ProgressDialog progressDialog;
+    private Context context;
 
     public Global(Context context) {
         this.context = context;
+    }
+
+    public static void showCustomToast(Activity activity, String message) {
+
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            LayoutInflater inflater = activity.getLayoutInflater();
+
+            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
+            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
+            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
+
+            relItem.getBackground().setAlpha(204);
+            txtToast.setText(message);
+
+            Toast toast = new Toast(context);
+            toast.setView(toastRoot);
+            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.show();
+        }
+
+    }
+
+    public static Boolean checkForApi21() {
+        Boolean boolStatus = false;
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
+            boolStatus = true;
+        } else {
+            boolStatus = false;
+        }
+        return boolStatus;
+    }
+
+    public static boolean checkHardcodeTest(String testCode) {
+        if (!TextUtils.isEmpty(testCode) && testCode.equalsIgnoreCase(Constants.P690) || testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE)|| testCode.equalsIgnoreCase(Constants.CAGCA)) {
+            return true;
+        }
+        return false;
     }
 
     public void hideProgressDialog() {
@@ -95,28 +132,6 @@ public class Global {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void showCustomToast(Activity activity, String message) {
-
-        if (activity != null) {
-            Context context = activity.getApplicationContext();
-            LayoutInflater inflater = activity.getLayoutInflater();
-
-            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
-            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
-            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
-
-            relItem.getBackground().setAlpha(204);
-            txtToast.setText(message);
-
-            Toast toast = new Toast(context);
-            toast.setView(toastRoot);
-            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.show();
-        }
-
     }
 
     public void StartCheckout_EVENTLOGGING1(JSONObject jobj, int count, String Paytype, String Gateway) {
@@ -215,17 +230,6 @@ public class Global {
         return boolStatus;
     }
 
-    public static Boolean checkForApi21() {
-        Boolean boolStatus = false;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-            boolStatus = true;
-        } else {
-            boolStatus = false;
-        }
-        return boolStatus;
-    }
-
     public void showProgressDialog() {
         if (progressDialog != null && !progressDialog.isShowing())
 
@@ -233,7 +237,6 @@ public class Global {
                 progressDialog.show();
             }
     }
-
 
     private class ScaleListener extends ScaleGestureDetector.
             SimpleOnScaleGestureListener {

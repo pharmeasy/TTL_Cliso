@@ -180,7 +180,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
     private int rate_percent, max_amt;
-    private int CPL_RATE, RPL_RATE;
+    private int CPL_RATE, RPL_RATE, HARDCODE_CPL_RATE;
     private MyPojo myPojo;
     private boolean barcodeExistsFlag = false;
     private boolean trfCheckFlag = false;
@@ -710,12 +710,22 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 if (!typeName.equalsIgnoreCase("ILS")) {
                     CPL_RATE = 0;
                     RPL_RATE = 0;
+                    HARDCODE_CPL_RATE = 0;
                     for (int i = 0; i < selctedTest.size(); i++) {
-                        if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getCplr())) {
-                            CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
+                        if (Global.checkHardcodeTest("")) {
+                            if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getCplr())) {
+                                HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
+                            } else {
+                                HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                            }
                         } else {
-                            CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                            if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getCplr())) {
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
+                            } else {
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                            }
                         }
+
                         if (!TextUtils.isEmpty(selctedTest.get(i).getRate().getRplr())) {
                             RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
                         } else {
@@ -727,7 +737,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } /*else if (Integer.parseInt(getCollectedAmt) < Integer.parseInt(b2b_rate)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
-                    }*/else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
+                    }*/ else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than B2C amount", Toast.LENGTH_SHORT).show();
                     } else if (!checkRateVal()) {
 
@@ -767,26 +777,26 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         });
     }
 
-    private boolean checkRateVal(){
+    private boolean checkRateVal() {
         if (saveLocation != null && saveLocation.size() > 0) {
             if (saveLocation.contains("CPL") && saveLocation.contains("RPL")) {
-                RPL_RATE = calcAmount(CPL_RATE);
+                RPL_RATE = calcAmount(CPL_RATE, HARDCODE_CPL_RATE);
                 System.out.println("Calculated RPL rate :" + RPL_RATE);
                 if (Integer.parseInt(getCollectedAmt) < RPL_RATE) {
 //                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
                     Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-            }else if (saveLocation.contains("RPL")) {
-                RPL_RATE = calcAmount(RPL_RATE);
+            } else if (saveLocation.contains("RPL")) {
+                RPL_RATE = calcAmount(RPL_RATE, HARDCODE_CPL_RATE);
                 System.out.println("Calculated RPL rate :" + RPL_RATE);
                 if (Integer.parseInt(getCollectedAmt) < RPL_RATE) {
 //                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
                     Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-            } else if (saveLocation.contains("CPL")){
-                CPL_RATE = calcAmount(CPL_RATE);
+            } else if (saveLocation.contains("CPL")) {
+                CPL_RATE = calcAmount(CPL_RATE, HARDCODE_CPL_RATE);
                 System.out.println("Calculated CPL rate :" + CPL_RATE);
                 if (Integer.parseInt(getCollectedAmt) < CPL_RATE) {
 //                Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should be between B2C and B2B amount", Toast.LENGTH_SHORT).show();
@@ -794,7 +804,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     return false;
                 }
             }
-        }else {
+        } else {
             Toast.makeText(Scan_Barcode_ILS_New.this, "Location is blank for selected products", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -802,7 +812,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         return true;
     }
 
-    private int calcAmount(int RATE) {
+    private int calcAmount(int RATE, int HARDCODE_CPL_RATE) {
         try {
             float aFloat = Float.parseFloat(String.valueOf(RATE));
             float per_amt = ((aFloat / 100) * rate_percent);
@@ -813,6 +823,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             } else {
                 RATE = RATE + max_amt;
             }
+            RATE = RATE + HARDCODE_CPL_RATE;
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

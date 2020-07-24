@@ -96,7 +96,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     RecyclerView recycler_all_test;
     boolean isSelectedDueToParent;
     Button btn_save, btn_clear;
-    ArrayList<BaseModel> Selcted_Outlab_Test = new ArrayList<>();
+    ArrayList<BaseModel> Selcted_Test = new ArrayList<>();
     ImageView back, home;
     // ArrayList<BaseModel> selectedTestsList;
     MainModel mainModel;
@@ -297,7 +297,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
         title.setText("Select Test(s)");
-        Selcted_Outlab_Test = new ArrayList<>();
+        Selcted_Test = new ArrayList<>();
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -396,8 +396,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             filteredFiles.add(testRateMasterModels.get(i));
                         }
 
-                        ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, filteredFiles);
-                        recycler_all_test.setAdapter(outLabRecyclerView);
+                        callAdapter(filteredFiles);
                     }
                 } else {
                     before_discount_layout2.setVisibility(View.GONE);
@@ -765,7 +764,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             @Override
             public void onClick(View v) {
                 String getTExtdata = show_selected_tests_list_test_ils1.getText().toString();
-                if (Selcted_Outlab_Test.size() == 0) {
+                if (Selcted_Test.size() == 0) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else if (getTExtdata.equalsIgnoreCase("Select Test")) {
                     Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
@@ -776,66 +775,66 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     ArrayList<String> saveLocation = new ArrayList<>();
 
 //
-//                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-//                        sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
-//                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
-//                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")) {
-//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
+//                    for (int i = 0; i < Selcted_Test.size(); i++) {
+//                        sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
+//                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+//                        if (Selcted_Test.get(i).getType().equalsIgnoreCase("TEST")) {
+//                            getTestNameLits.add(Selcted_Test.get(i).getCode());
 //                        } else {
-//                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+//                            getTestNameLits.add(Selcted_Test.get(i).getProduct());
 //                        }
 //
 //                    }
 
-                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                    for (int i = 0; i < Selcted_Test.size(); i++) {
 
-                        if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getIsCPL())) {
-                            if (Selcted_Outlab_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                        if (!TextUtils.isEmpty(Selcted_Test.get(i).getIsCPL())) {
+                            if (Selcted_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
                                 saveLocation.add("CPL");
                             } else {
                                 saveLocation.add("RPL");
                             }
                         }
-                        if (Selcted_Outlab_Test.get(i).getType().equalsIgnoreCase("TEST")) {
-                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getCode());
+                        if (Selcted_Test.get(i).getType().equalsIgnoreCase("TEST")) {
+                            getTestNameLits.add(Selcted_Test.get(i).getCode());
                         } else {
-                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
+                            getTestNameLits.add(Selcted_Test.get(i).getProduct());
                         }
 
                         if (!saveLocation.isEmpty()) {
                             if (typeName.equalsIgnoreCase("ILS")) {
                                 if (saveLocation.contains("CPL")) {
-                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getCplr());
+                                    if (!TextUtils.isEmpty(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
                                     } else {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
 
                                 } else {
-                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getRplr());
+                                    if (!TextUtils.isEmpty(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
 
                                 }
                             } else {
                                 if (saveLocation.contains("CPL")) {
-                                    sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+                                    sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
 
-                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getCplr())) {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getCplr());
+                                    if (!TextUtils.isEmpty(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
                                     } else {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
 
                                 } else {
-                                    sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2c());
+                                    sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
 
-                                    if (!TextUtils.isEmpty(Selcted_Outlab_Test.get(i).getRate().getRplr())) {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getRplr());
+                                    if (!TextUtils.isEmpty(Selcted_Test.get(i).getRate().getRplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {
-                                        b2b = b2b + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getB2b());
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
 
                                 }
@@ -859,7 +858,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     Intent intent = new Intent(ProductLisitngActivityNew.this, Scan_Barcode_ILS_New.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("key", Selcted_Outlab_Test);
+                    bundle.putParcelableArrayList("key", Selcted_Test);
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
                     bundle.putString("b2b_rate", b2b_rate);
@@ -905,6 +904,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             }
         }
+    }
+
+    private void callAdapter(ArrayList<BaseModel> filteredFiles) {
+        ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, filteredFiles, testRateMasterModels);
+        recycler_all_test.setAdapter(outLabRecyclerView);
     }
 
     private void getAllproduct() {
@@ -1000,8 +1004,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
                     }
 
-                    ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
-                    recycler_all_test.setAdapter(outLabRecyclerView);
+                    callAdapter(testRateMasterModels);
 
                 }
             } else if (brandName.equalsIgnoreCase("SMT")) {
@@ -1013,8 +1016,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
                     }
 
-                    ViewAllTestAdapter outLabRecyclerView = new ViewAllTestAdapter(ProductLisitngActivityNew.this, testRateMasterModels);
-                    recycler_all_test.setAdapter(outLabRecyclerView);
+                    callAdapter(testRateMasterModels);
 
                 }
             }
@@ -1102,14 +1104,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     }
 
     class ViewAllTestAdapter extends RecyclerView.Adapter<ViewAllTestAdapter.ViewHolder> {
+        private final ArrayList<BaseModel> AllProductArrayList;
         Context context;
         ArrayList<BaseModel> productList;
 //        ArrayList<String> showTestNmaes = new ArrayList<>();
 
 
-        public ViewAllTestAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<BaseModel> testRateMasterModels) {
+        public ViewAllTestAdapter(ProductLisitngActivityNew productLisitngActivityNew, ArrayList<BaseModel> testRateMasterModels, ArrayList<BaseModel> totalProducts) {
             this.context = productLisitngActivityNew;
             this.productList = testRateMasterModels;
+            this.AllProductArrayList = totalProducts;
         }
 
         @NonNull
@@ -1135,10 +1139,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
             try {
-                if (Selcted_Outlab_Test != null && Selcted_Outlab_Test.size() > 0) {
+                if (Selcted_Test != null && Selcted_Test.size() > 0) {
 
-                    for (int i = 0; !isChecked && i < Selcted_Outlab_Test.size(); i++) {
-                        BaseModel selectedTestModel = Selcted_Outlab_Test.get(i);
+                    for (int i = 0; !isChecked && i < Selcted_Test.size(); i++) {
+                        BaseModel selectedTestModel = Selcted_Test.get(i);
 
                         if (selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
                             holder.checked.setVisibility(View.VISIBLE);
@@ -1196,185 +1200,61 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     //on click of blank box
                     if (holder.check.getVisibility() == View.VISIBLE) {
-                        String str = "";
-
-                        str = str + testRateMasterModel.getCode() + ",";
-
-                        String slectedpackage = "";
-
-
-                        slectedpackage = testRateMasterModel.getName();
-
-                        if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
-                            Constants.THYRONAME = testRateMasterModel.getName();
-                        }
-
-                        tempselectedTests = new ArrayList<>();
-                        tempselectedTests1 = new ArrayList<>();
-                        if (testflag == false) {
-                            if (testRateMasterModel.getChilds() != null) {
-                                for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                                    //tejas t -----------------------------
-                                    for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-                                        if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
-                                            System.out.println("Cart selectedtestlist Description :" + Selcted_Outlab_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Outlab_Test.get(j).getCode());
-                                            tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
-                                            tempselectedTests.add(Selcted_Outlab_Test.get(j));
-                                        }
+                        if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)){
+                            boolean isCAGCA = false;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)){
+                                    isCAGCA = true;
+                                    break;
+                                }
+                            }
+                            if (isCAGCA){
+                                BaseModel ProfileToSelect = null;
+                                for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)){
+                                        ProfileToSelect = AllProductArrayList.get(i);
+                                        break;
                                     }
                                 }
+                                if (ProfileToSelect != null){
+                                    CallCheckFunction(ProfileToSelect);
+                                }else{
+                                    CallCheckFunction(productList.get(position));
+                                }
+                            }else{
+                                CallCheckFunction(productList.get(position));
                             }
 
-                            for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-                                BaseModel selectedTestModel123 = Selcted_Outlab_Test.get(j);
-                                if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                    tempselectedTests1.add(Selcted_Outlab_Test.get(j).getName());
-                                    tempselectedTests.add(selectedTestModel123);
+                        }else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)){
+                            boolean isCATC = false;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)){
+                                    isCATC = true;
+                                    break;
                                 }
                             }
-
-                            if (tempselectedTests != null && tempselectedTests.size() > 0) {
-                                HashSet<String> hashSet = new HashSet<String>();
-                                hashSet.addAll(tempselectedTests1);
-                                tempselectedTests1.clear();
-                                tempselectedTests1.addAll(hashSet);
-
-
-                                String cartproduct = TextUtils.join(",", tempselectedTests1);
-                                alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
-                                alertDialogBuilder
-                                        .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
-                                        .setCancelable(true)
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-
-                                AlertDialog alertDialog = alertDialogBuilder.create();
-                                alertDialog.show();
-
-                            }
-                        } else {
-                            alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
-                            alertDialogBuilder
-                                    .setMessage(Html.fromHtml("You cannot select other test if " + Constants.THYRONAME + " is selected"))
-                                    .setCancelable(false)
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int id) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-                            AlertDialog alertDialog = alertDialogBuilder.create();
-                            alertDialog.show();
-
-                        }
-
-
-                        if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
-                            if (Selcted_Outlab_Test.size() > 0) {
-                                alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
-                                alertDialogBuilder
-                                        .setMessage(Html.fromHtml(Constants.THYRONAME + " can not be selected along with other test,Do you want to replace " + Constants.THYRONAME))
-                                        .setCancelable(false)
-                                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                Selcted_Outlab_Test.remove(testRateMasterModel);
-                                                showTestNmaes.remove(testRateMasterModel.getName());
-                                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                                                show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                                                notifyDataSetChanged();
-                                                dialog.dismiss();
-                                            }
-                                        })
-
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                Selcted_Outlab_Test.clear();
-                                                Constants.THYRONAME = testRateMasterModel.getName();
-                                                testRateMasterModel.setName(testRateMasterModel.getName());
-                                                testRateMasterModel.setCode(testRateMasterModel.getCode());
-                                                testflag = true;
-                                                Selcted_Outlab_Test.add(testRateMasterModel);
-                                                showTestNmaes.clear();
-                                                showTestNmaes.add(testRateMasterModel.getName());
-
-                                                if (Selcted_Outlab_Test != null) {
-                                                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                                                        if (Selcted_Outlab_Test.get(i).getCode().contains("PPBS") &&
-                                                                Selcted_Outlab_Test.get(i).getCode().contains("RBS")) {
-                                                            Selcted_Outlab_Test.remove(Selcted_Outlab_Test.get(i));
-                                                            showTestNmaes.remove(testRateMasterModel.getName());
-                                                        }
-                                                    }
-
-                                                }
-                                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                                                show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                                                notifyDataSetChanged();
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                AlertDialog alertDialog = alertDialogBuilder.create();
-                                alertDialog.show();
-                            } else {
-                                Selcted_Outlab_Test.clear();
-                                Constants.THYRONAME = testRateMasterModel.getName();
-                                testRateMasterModel.setName(testRateMasterModel.getName());
-                                testRateMasterModel.setCode(testRateMasterModel.getCode());
-                                testflag = true;
-                                Selcted_Outlab_Test.add(testRateMasterModel);
-                                showTestNmaes.clear();
-                                showTestNmaes.add(testRateMasterModel.getName());
-                                String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                                show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                                notifyDataSetChanged();
-
-                            }
-
-
-                        }
-
-
-                        for (int i = 0; i < tempselectedTests.size(); i++) {
-                            for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-                                if (tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Outlab_Test.get(j).getCode())) {
-                                    Selcted_Outlab_Test.remove(j);
+                            if (isCATC){
+                                BaseModel ProfileToSelect = null;
+                                for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)){
+                                        ProfileToSelect = AllProductArrayList.get(i);
+                                        break;
+                                    }
                                 }
+                                if (ProfileToSelect != null){
+                                    CallCheckFunction(ProfileToSelect);
+                                }else{
+                                    CallCheckFunction(productList.get(position));
+                                }
+                            }else{
+                                CallCheckFunction(productList.get(position));
                             }
+                        }else{
+                            CallCheckFunction(productList.get(position));
                         }
-
-                        //tejas t -----------------------------
-
-                        if (testflag == false) {
-                            Selcted_Outlab_Test.add(testRateMasterModel);
-                            notifyDataSetChanged();
-                        }
-
-
-                        before_discount_layout2.setVisibility(View.VISIBLE);
-                        showTestNmaes = new ArrayList<>();
-
-                        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                            showTestNmaes.add(Selcted_Outlab_Test.get(i).getName());
-                        }
-
-                        Set<String> setString = new HashSet<String>(showTestNmaes);
-                        showTestNmaes.clear();
-                        showTestNmaes.addAll(setString);
-                        String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                        show_selected_tests_list_test_ils1.setText(displayslectedtest);
-                        if (displayslectedtest.equals("")) {
-                            before_discount_layout2.setVisibility(View.GONE);
-                        }
-
-                    }
-
-                    //on click of checked box
-                    else if (holder.checked.getVisibility() == View.VISIBLE) {
+                    } else if (holder.checked.getVisibility() == View.VISIBLE) {//on click of checked box
                         if (!isSelectedDueToParent) {
-                            Selcted_Outlab_Test.remove(testRateMasterModel);
+                            Selcted_Test.remove(testRateMasterModel);
                             notifyDataSetChanged();
 
                             before_discount_layout2.setVisibility(View.VISIBLE);
@@ -1407,6 +1287,181 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             });
 
+        }
+
+        private void CallCheckFunction(final BaseModel testRateMasterModel) {
+            String str = "";
+
+            str = str + testRateMasterModel.getCode() + ",";
+
+            String slectedpackage = "";
+
+
+            slectedpackage = testRateMasterModel.getName();
+
+            if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
+                Constants.THYRONAME = testRateMasterModel.getName();
+            }
+
+            tempselectedTests = new ArrayList<>();
+            tempselectedTests1 = new ArrayList<>();
+            if (testflag == false) {
+                if (testRateMasterModel.getChilds() != null) {
+                    for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                        //tejas t -----------------------------
+                        for (int j = 0; j < Selcted_Test.size(); j++) {
+                            if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
+                                System.out.println("Cart selectedtestlist Description :" + Selcted_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Test.get(j).getCode());
+                                tempselectedTests1.add(Selcted_Test.get(j).getName());
+                                tempselectedTests.add(Selcted_Test.get(j));
+                            }
+                        }
+                    }
+                }
+
+                for (int j = 0; j < Selcted_Test.size(); j++) {
+                    BaseModel selectedTestModel123 = Selcted_Test.get(j);
+                    if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+                        tempselectedTests1.add(Selcted_Test.get(j).getName());
+                        tempselectedTests.add(selectedTestModel123);
+                    }
+                }
+
+                if (tempselectedTests != null && tempselectedTests.size() > 0) {
+                    HashSet<String> hashSet = new HashSet<String>();
+                    hashSet.addAll(tempselectedTests1);
+                    tempselectedTests1.clear();
+                    tempselectedTests1.addAll(hashSet);
+
+
+                    String cartproduct = TextUtils.join(",", tempselectedTests1);
+                    alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                    alertDialogBuilder
+                            .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
+                            .setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
+                }
+            } else {
+                alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                alertDialogBuilder
+                        .setMessage(Html.fromHtml("You cannot select other test if " + Constants.THYRONAME + " is selected"))
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+
+            }
+
+
+            if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
+                if (Selcted_Test.size() > 0) {
+                    alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
+                    alertDialogBuilder
+                            .setMessage(Html.fromHtml(Constants.THYRONAME + " can not be selected along with other test,Do you want to replace " + Constants.THYRONAME))
+                            .setCancelable(false)
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Selcted_Test.remove(testRateMasterModel);
+                                    showTestNmaes.remove(testRateMasterModel.getName());
+                                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                                    notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            })
+
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    Selcted_Test.clear();
+                                    Constants.THYRONAME = testRateMasterModel.getName();
+                                    testRateMasterModel.setName(testRateMasterModel.getName());
+                                    testRateMasterModel.setCode(testRateMasterModel.getCode());
+                                    testflag = true;
+                                    Selcted_Test.add(testRateMasterModel);
+                                    showTestNmaes.clear();
+                                    showTestNmaes.add(testRateMasterModel.getName());
+
+                                    if (Selcted_Test != null) {
+                                        for (int i = 0; i < Selcted_Test.size(); i++) {
+                                            if (Selcted_Test.get(i).getCode().contains("PPBS") &&
+                                                    Selcted_Test.get(i).getCode().contains("RBS")) {
+                                                Selcted_Test.remove(Selcted_Test.get(i));
+                                                showTestNmaes.remove(testRateMasterModel.getName());
+                                            }
+                                        }
+
+                                    }
+                                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                                    notifyDataSetChanged();
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                } else {
+                    Selcted_Test.clear();
+                    Constants.THYRONAME = testRateMasterModel.getName();
+                    testRateMasterModel.setName(testRateMasterModel.getName());
+                    testRateMasterModel.setCode(testRateMasterModel.getCode());
+                    testflag = true;
+                    Selcted_Test.add(testRateMasterModel);
+                    showTestNmaes.clear();
+                    showTestNmaes.add(testRateMasterModel.getName());
+                    String displayslectedtest = TextUtils.join(",", showTestNmaes);
+                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
+                    notifyDataSetChanged();
+
+                }
+
+
+            }
+
+
+            for (int i = 0; i < tempselectedTests.size(); i++) {
+                for (int j = 0; j < Selcted_Test.size(); j++) {
+                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
+                        Selcted_Test.remove(j);
+                    }
+                }
+            }
+
+            //tejas t -----------------------------
+
+            if (testflag == false) {
+                Selcted_Test.add(testRateMasterModel);
+                notifyDataSetChanged();
+            }
+
+
+            before_discount_layout2.setVisibility(View.VISIBLE);
+            showTestNmaes = new ArrayList<>();
+
+            for (int i = 0; i < Selcted_Test.size(); i++) {
+                showTestNmaes.add(Selcted_Test.get(i).getName());
+            }
+
+            Set<String> setString = new HashSet<String>(showTestNmaes);
+            showTestNmaes.clear();
+            showTestNmaes.addAll(setString);
+            String displayslectedtest = TextUtils.join(",", showTestNmaes);
+            show_selected_tests_list_test_ils1.setText(displayslectedtest);
+            if (displayslectedtest.equals("")) {
+                before_discount_layout2.setVisibility(View.GONE);
+            }
         }
 
         @Override

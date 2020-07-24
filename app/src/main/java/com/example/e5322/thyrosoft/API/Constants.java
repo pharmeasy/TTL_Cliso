@@ -26,6 +26,12 @@ public class Constants {
     public static int timeInterval = 0;
     public static String videoName;
 
+    //Todo TEST codes
+    public static String P690 = "P690";
+    public static String CATC = "CATC";
+    public static String CAGE = "CAGE";
+    public static String CAGCA = "CAGCA";
+
     //shared preference Name
 
     public static String PROFILEPREF = "profile";
