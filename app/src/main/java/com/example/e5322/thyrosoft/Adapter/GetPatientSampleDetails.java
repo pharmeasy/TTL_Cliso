@@ -1,24 +1,24 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 
 import java.util.ArrayList;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 
 public class GetPatientSampleDetails extends RecyclerView.Adapter<GetPatientSampleDetails.ViewHolder> {
     Context context1;
     ArrayList<Barcodelist> barcodelists;
-    SharedPreferences savepatientDetails;
-    private String sr_number;
     private int pass_to_api;
 
     public GetPatientSampleDetails(Context mContext, ArrayList<Barcodelist> barcodelists, int pass_to_api) {
@@ -39,13 +39,13 @@ public class GetPatientSampleDetails extends RecyclerView.Adapter<GetPatientSamp
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.barcodes_patients.setText(barcodelists.get(position).getSAMPLE_TYPE().toString() + "");
-        if (barcodelists.get(position).getBARCODE() != null) {
-            holder.namesOftest.setText(barcodelists.get(position).getBARCODE().toString());
+        GlobalClass.SetText(holder.barcodes_patients, barcodelists.get(position).getSAMPLE_TYPE().toString() + "");
+        if (!GlobalClass.isNull(barcodelists.get(position).getBARCODE())) {
+            GlobalClass.SetText(holder.namesOftest, barcodelists.get(position).getBARCODE().toString());
         }
         if (pass_to_api > 0) {
             String getSr_no = String.valueOf(pass_to_api + position);
-            holder.serial_number.setText("Sr No: " + getSr_no);
+            GlobalClass.SetText(holder.serial_number, "Sr No: " + getSr_no);
         } else {
             holder.serial_number.setVisibility(View.GONE);
         }

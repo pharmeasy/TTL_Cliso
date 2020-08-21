@@ -1,9 +1,9 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -13,10 +13,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Base64;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -29,22 +27,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.UploadDoc_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.ApiCallAsyncTaskDelegate;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.ApiCallAsyncTask;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AsyncTaskForRequest;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommonUtils;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.DefaultUploaddatamodel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.DefaultuploadResponseModel;
@@ -62,7 +57,6 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.UploadDocumentResponseM
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -88,25 +82,14 @@ import java.util.regex.Pattern;
 public class UploadDocument extends AbstractActivity {
 
     public static final String TAG_FRAGMENT = UploadDocument.class.getSimpleName();
-
-
     String APi_key;
-    String type = "tsp";
     String Data = "data";
     String Data1 = "doc_list";
-    String type1 = "tcc";
     String type2 = "ned";
-    String type3 = "";
     String type6 = "sgc";
-    ProgressDialog barProgressDialog;
-
-
     String type7 = "pgc";
-    String type8 = "staff";
     Spinner document_spr, category_spr1, ned_spr, sgc_spr, pgc_spr;
-    TableLayout upload_table;
     String type4 = "Tam03";
-    TextView mis, mis2;
     Button btn_submit;
     String image = "";
     String imageName;
@@ -133,11 +116,10 @@ public class UploadDocument extends AbstractActivity {
     ArrayList<sgcdatamodel> sgcdatamodelsarr;
     PgcsResponseModel pgcsResponseModel;
     ArrayList<pgcdatamodel> pgcdatamodelsarr;
-    private TableRow trm, th;
     private int mYear, mMonth, mDay;
     private Calendar fromDt;
     private SharedPreferences prefs;
-    private String passwrd, api_key, user, mobile_pref, access, email_pref;
+    String passwrd, api_key, user, mobile_pref, access, email_pref;
     private String passSpinnervalue;
     private String TAG = UploadDocument.class.getSimpleName();
     private String picturePath;
@@ -146,8 +128,8 @@ public class UploadDocument extends AbstractActivity {
     private String document_spin_value;
     private String edt_remarksUpdate;
     private String exp_Date;
-    private RequestQueue PostQueOtp;
-
+    Activity mActivity;
+    ConnectionDetector cd;
 
     public static String ConvertBitmapToString(Bitmap bitmap) {
         String encodedImage = "";
@@ -182,48 +164,15 @@ public class UploadDocument extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_upload__document);
+        mActivity = UploadDocument.this;
+        cd = new ConnectionDetector(mActivity);
 
-        nedll = (LinearLayout) findViewById(R.id.nedll);
-        sgcll = (LinearLayout) findViewById(R.id.sgcll);
-        pgcll = (LinearLayout) findViewById(R.id.pgcll);
-
-        expiryll = (LinearLayout) findViewById(R.id.expiryll);
-        ned_spr = (Spinner) findViewById(R.id.ned_spr);
-
-        sgc_spr = (Spinner) findViewById(R.id.sgc_spr);
-        pgc_spr = (Spinner) findViewById(R.id.pgc_spr);
-        document_spr = (Spinner) findViewById(R.id.document_spr);
-        category_spr1 = (Spinner) findViewById(R.id.category_spr1);
-
-        ll_upload = (LinearLayout) findViewById(R.id.ll_upload);
-        btn_submit = (Button) findViewById(R.id.btn_submit);
-        edt_purpose = (EditText) findViewById(R.id.edt_purpose);
-        edt_remarks = (EditText) findViewById(R.id.edt_remarks);
-        edt_expiry = (TextView) findViewById(R.id.edt_expiry);
-        edt_expiry1 = (ImageView) findViewById(R.id.edt_expiry1);
-        title = (TextView) findViewById(R.id.title);
-        preview_img_txt = (TextView) findViewById(R.id.preview_img_txt);
-        gtick = (ImageView) findViewById(R.id.gtick);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(UploadDocument.this);
-            }
-        });
+        initViews();
+        initListner();
 
         gtick.setVisibility(View.GONE);
         preview_img_txt.setVisibility(View.GONE);
 
-//        back = (ImageView) findViewById(R.id.back);
-//        home = (ImageView) findViewById(R.id.home);
 
         if (Global.checkForApi21()) {
             Window window = getWindow();
@@ -235,103 +184,15 @@ public class UploadDocument extends AbstractActivity {
         fromDt = Calendar.getInstance();
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        email_pref = prefs.getString("email", null);
-        mobile_pref = prefs.getString("mobile_user", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        email_pref = prefs.getString("email", "");
+        mobile_pref = prefs.getString("mobile_user", "");
         APi_key = api_key;
 
-        title.setText("Upload Document");
-      /*  back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(UploadDocument.this);
-            }
-        });*/
-
-
-        //btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
-
-        edt_purpose.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
-                        || enteredString.startsWith("9")) {
-                    Toast.makeText(UploadDocument.this,
-                            ToastFile.ent_purpose,
-                            Toast.LENGTH_SHORT).show();
-                    if (enteredString.length() > 0) {
-                        edt_purpose.setText(enteredString.substring(1));
-                       /*btn_submit.setBackground(getResources().getDrawable(R.drawable.next_button));
-                        btn_submit.setEnabled(true);
-                        btn_submit.setClickable(true);*/
-                    } else {
-                        edt_purpose.setText("");
-                       /* btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_disable_border));
-                        btn_submit.setEnabled(false);
-                        btn_submit.setClickable(false);*/
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        edt_remarks.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
-                        || enteredString.startsWith("9")) {
-                    Toast.makeText(UploadDocument.this, ToastFile.remark, Toast.LENGTH_SHORT).show();
-
-                    if (enteredString.length() > 0) {
-                        edt_remarks.setText(enteredString.substring(1));
-                    } else {
-                        edt_remarks.setText("");
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        GlobalClass.SetText(title, "Upload Document");
 
 
         finalsetfromdate = appPreferenceManager.getLeaveFromDate();
@@ -346,67 +207,10 @@ public class UploadDocument extends AbstractActivity {
             edt_expiry.setEnabled(false);
             edt_expiry.setClickable(false);
             fromdate1 = sdf.format(date1);
-            edt_expiry.setText("" + fromdate1);
-            //calNumDays(toDt.getTimeInMillis(), fromDt.getTimeInMillis());
+            GlobalClass.SetText(edt_expiry, "" + fromdate1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        edt_expiry.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Get Current Date
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(UploadDocument.this, R.style.DialogTheme,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-                                //  edt_expiry.setText(DateUtils.Req_Date_Req(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year, "dd-MM-yyyy", "dd-MM-yyyy"));
-                                edt_expiry.setText(DateUtils.Req_Date_Req(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, "yyyy-MM-dd", "yyyy-MM-dd"));
-
-                                fromDt.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);//back date Disabled
-                datePickerDialog.show();
-
-            }
-        });
-
-        edt_expiry1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(UploadDocument.this, R.style.DialogTheme,
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                edt_expiry.setText(DateUtils.Req_Date_Req(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, "yyyy-MM-dd", "yyyy-MM-dd"));
-
-                                fromDt.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);//back date Disabled
-                datePickerDialog.show();
-
-            }
-        });
 
 
         fetchnedspinner();
@@ -425,10 +229,114 @@ public class UploadDocument extends AbstractActivity {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category_spr1.setAdapter(adapter2);
 
+    }
+
+    private void initListner() {
+
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                if (!GlobalClass.isNull(category_spr1.getSelectedItem().toString())) {
+                    selectedSpinItem = category_spr1.getSelectedItem().toString();
+                }
+
+                if (!GlobalClass.isNull(document_spr.getSelectedItem().toString())) {
+                    document_spin_value = document_spr.getSelectedItem().toString();
+                }
+
+                if (!GlobalClass.isNull(edt_remarks.getText().toString())) {
+                    edt_remarksUpdate = edt_remarks.getText().toString();
+                }
+
+                if (!GlobalClass.isNull(selectedSpinItem) && !GlobalClass.isNull(document_spin_value) && !GlobalClass.isNull(edt_remarksUpdate)) {
+                    try {
+                        if (selectedSpinItem.equalsIgnoreCase("NED")) {
+                            if (ned_spr.getSelectedItem().toString().length() > 0)
+                                ned_value = ned_spr.getSelectedItem().toString();
+                            exp_Date = edt_expiry.getText().toString();
+
+                            String[] parts = ned_value.split("-");
+                            spincode = parts[0];
+
+
+                            if (!GlobalClass.isNull(ned_value) && ned_value.equalsIgnoreCase("-Select-")) {
+                                GlobalClass.showTastyToast(mActivity, MessageConstants.Plz_sl_NED, 2);
+                            } else if (!GlobalClass.isNull(document_spin_value) && document_spin_value.equalsIgnoreCase("-Select-")) {
+                                GlobalClass.showTastyToast(mActivity, MessageConstants.SL_doc, 2);
+                            } else if (GlobalClass.isNull(imageName)) {
+                                GlobalClass.showTastyToast(mActivity, MessageConstants.Upload_doc, 2);
+                            } else if (GlobalClass.isNull(edt_remarksUpdate)) {
+                                GlobalClass.showTastyToast(mActivity, MessageConstants.Enter_purpose, 2);
+                            } else if (GlobalClass.isNull(exp_Date)) {
+                                GlobalClass.showTastyToast(mActivity, MessageConstants.SL_expiry_Dt, 2);
+                            } else {
+                                uploadDocument();
+
+                            }
+                        } else if (!GlobalClass.isNull(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("SGC")) {
+                            try {
+                                ned_value = sgc_spr.getSelectedItem().toString();
+                                exp_Date = "";
+
+                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                                while (m.find()) {
+                                    spincode = m.group(1);
+                                }
+
+                                if (!GlobalClass.isNull(ned_value) && ned_value.equalsIgnoreCase("-Select-")) {
+                                    GlobalClass.showTastyToast(UploadDocument.this, MessageConstants.SL_SGC, 2);
+                                } else if (!GlobalClass.isNull(document_spin_value) && document_spin_value.equalsIgnoreCase("-Select-")) {
+                                    GlobalClass.showTastyToast(UploadDocument.this, MessageConstants.SL_DOC, 2);
+                                } else if (GlobalClass.isNull(imageName)) {
+                                    GlobalClass.showTastyToast(UploadDocument.this, MessageConstants.Upload_doc, 2);
+                                } else if (GlobalClass.isNull(edt_remarksUpdate)) {
+                                    GlobalClass.showTastyToast(UploadDocument.this, MessageConstants.Enter_purpose, 2);
+                                } else {
+                                    uploadDocument();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        } else if (!GlobalClass.isNull(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("PGC")) {
+                            try {
+                                ned_value = pgc_spr.getSelectedItem().toString();
+                                exp_Date = "";
+
+                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
+                                while (m.find()) {
+                                    spincode = m.group(1);
+                                }
+
+                                if (!GlobalClass.isNull(ned_value) && ned_value.equalsIgnoreCase("-Select-")) {
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.SL_PGC, 2);
+                                } else if (!GlobalClass.isNull(document_spin_value) && document_spin_value.equalsIgnoreCase("-Select-")) {
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.SL_DOC, 2);
+                                } else if (GlobalClass.isNull(imageName)) {
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.Upload_doc, 2);
+                                } else if (GlobalClass.isNull(edt_remarksUpdate)) {
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.Enter_purpose, 2);
+                                } else {
+                                    uploadDocument();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+
         category_spr1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (category_spr1.getSelectedItem().equals("NED")) {
+                if (!GlobalClass.isNull(category_spr1.getSelectedItem().toString()) && category_spr1.getSelectedItem().toString().equalsIgnoreCase("NED")) {
                     nedll.setVisibility(View.VISIBLE);
                     sgcll.setVisibility(View.GONE);
                     pgcll.setVisibility(View.GONE);
@@ -437,14 +345,16 @@ public class UploadDocument extends AbstractActivity {
                     passSpinnervalue = category_spr1.getSelectedItem().toString();
                     fetchtDocumentpinner();
 
-                } else if (category_spr1.getSelectedItem().equals("SGC")) {
+                } else if (!GlobalClass.isNull(category_spr1.getSelectedItem().toString())
+                        && category_spr1.getSelectedItem().toString().equalsIgnoreCase("SGC")) {
                     nedll.setVisibility(View.GONE);
                     sgcll.setVisibility(View.VISIBLE);
                     pgcll.setVisibility(View.GONE);
                     passSpinnervalue = category_spr1.getSelectedItem().toString();
                     fetchtDocumentpinner();
                     expiryll.setVisibility(View.GONE);
-                } else if (category_spr1.getSelectedItem().equals("PGC")) {
+                } else if (!GlobalClass.isNull(category_spr1.getSelectedItem().toString())
+                        && category_spr1.getSelectedItem().toString().equalsIgnoreCase("PGC")) {
                     nedll.setVisibility(View.GONE);
                     sgcll.setVisibility(View.GONE);
                     pgcll.setVisibility(View.VISIBLE);
@@ -498,119 +408,171 @@ public class UploadDocument extends AbstractActivity {
             }
         });
 
-        btn_submit.setOnClickListener(new View.OnClickListener() {
+
+        edt_expiry.setOnClickListener(new View.OnClickListener() {
             @Override
-
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(category_spr1.getSelectedItem().toString())) {
-                    selectedSpinItem = category_spr1.getSelectedItem().toString();
-                }
 
-                if (!TextUtils.isEmpty(document_spr.getSelectedItem().toString())) {
-                    document_spin_value = document_spr.getSelectedItem().toString();
-                }
-
-                if (!TextUtils.isEmpty(edt_remarks.getText().toString())) {
-                    edt_remarksUpdate = edt_remarks.getText().toString();
-                }
-
-                if (selectedSpinItem != null && document_spin_value != null && edt_remarksUpdate != null) {
-                    try{
-                        if (selectedSpinItem.equalsIgnoreCase("NED")) {
-                            if (ned_spr.getSelectedItem().toString().length() > 0)
-                                ned_value = ned_spr.getSelectedItem().toString();
-                            exp_Date = edt_expiry.getText().toString();
-
-                            String[] parts = ned_value.split("-");
-                            spincode = parts[0];
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
 
 
-                            if (ned_value.equalsIgnoreCase("-Select-")) {
-                                TastyToast.makeText(UploadDocument.this, "Please select NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                                TastyToast.makeText(UploadDocument.this, "Please select document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            } else if (imageName == null) {
-                                TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            } else if (TextUtils.isEmpty(edt_remarksUpdate)) {
-                                TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            } else if (exp_Date.equalsIgnoreCase("")) {
-                                TastyToast.makeText(UploadDocument.this, "Please select expiry date", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            } else {
-                                uploadDocument();
+                DatePickerDialog datePickerDialog = new DatePickerDialog(UploadDocument.this, R.style.DialogTheme,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                GlobalClass.SetText(edt_expiry, DateUtils.Req_Date_Req(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, "yyyy-MM-dd", "yyyy-MM-dd"));
+                                fromDt.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
                             }
-                        } else if (!TextUtils.isEmpty(selectedSpinItem) && selectedSpinItem.equalsIgnoreCase("SGC")) {
-                            try{
-                                ned_value = sgc_spr.getSelectedItem().toString();
-                                exp_Date = "";
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);//back date Disabled
+                datePickerDialog.show();
 
-                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
-                                while (m.find()) {
-                                    spincode = m.group(1);
-                                }
-
-                                if (ned_value.equalsIgnoreCase("-Select-")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please select SGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (imageName == null) {
-                                    TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else {
-                                    uploadDocument();
-                                }
-                            }catch(Exception e){
-                                e.printStackTrace();
-                            }
-
-                        } else if (selectedSpinItem.equalsIgnoreCase("PGC")) {
-                            try{
-                                ned_value = pgc_spr.getSelectedItem().toString();
-                                exp_Date = "";
-
-                                Matcher m = Pattern.compile("\\(([^)]+)\\)").matcher(ned_value);
-                                while (m.find()) {
-                                    spincode = m.group(1);
-                                }
-
-                                if (ned_value.equalsIgnoreCase("-Select-")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please select PGC", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (document_spin_value.equalsIgnoreCase("-Select-")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please document type", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (imageName == null) {
-                                    TastyToast.makeText(UploadDocument.this, "Please upload document", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else if (edt_remarksUpdate.equalsIgnoreCase("")) {
-                                    TastyToast.makeText(UploadDocument.this, "Please enter purpose", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                } else {
-                                    uploadDocument();
-                                }
-                            }catch(Exception e){
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
             }
         });
 
+        edt_expiry1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(UploadDocument.this, R.style.DialogTheme,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                GlobalClass.SetText(edt_expiry, DateUtils.Req_Date_Req(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth, "yyyy-MM-dd", "yyyy-MM-dd"));
+                                fromDt.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);//back date Disabled
+                datePickerDialog.show();
+
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(UploadDocument.this);
+            }
+        });
+
+        edt_purpose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
+                        || enteredString.startsWith("9")) {
+
+                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_purpose, 2);
+                    if (enteredString.length() > 0) {
+                        GlobalClass.SetEditText(edt_purpose, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_purpose, "");
+
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        edt_remarks.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8")
+                        || enteredString.startsWith("9")) {
+                    GlobalClass.showTastyToast(mActivity, ToastFile.remark, 2);
+
+                    if (enteredString.length() > 0) {
+                        GlobalClass.SetEditText(edt_remarks, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_remarks, "");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
+    }
+
+    private void initViews() {
+        nedll = (LinearLayout) findViewById(R.id.nedll);
+        sgcll = (LinearLayout) findViewById(R.id.sgcll);
+        pgcll = (LinearLayout) findViewById(R.id.pgcll);
+
+        expiryll = (LinearLayout) findViewById(R.id.expiryll);
+        ned_spr = (Spinner) findViewById(R.id.ned_spr);
+
+        sgc_spr = (Spinner) findViewById(R.id.sgc_spr);
+        pgc_spr = (Spinner) findViewById(R.id.pgc_spr);
+        document_spr = (Spinner) findViewById(R.id.document_spr);
+        category_spr1 = (Spinner) findViewById(R.id.category_spr1);
+
+        ll_upload = (LinearLayout) findViewById(R.id.ll_upload);
+        btn_submit = (Button) findViewById(R.id.btn_submit);
+        edt_purpose = (EditText) findViewById(R.id.edt_purpose);
+        edt_remarks = (EditText) findViewById(R.id.edt_remarks);
+        edt_expiry = (TextView) findViewById(R.id.edt_expiry);
+        edt_expiry1 = (ImageView) findViewById(R.id.edt_expiry1);
+        title = (TextView) findViewById(R.id.title);
+        preview_img_txt = (TextView) findViewById(R.id.preview_img_txt);
+        gtick = (ImageView) findViewById(R.id.gtick);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
     }
 
     private void uploadDocument() {
-        barProgressDialog = new ProgressDialog(UploadDocument.this, R.style.ProgressBarColor);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-        barProgressDialog.show();
-
-        PostQueOtp = GlobalClass.setVolleyReq(UploadDocument.this);
+        RequestQueue PostQueOtp = GlobalClass.setVolleyReq(UploadDocument.this);
         JSONObject jsonObject = null;
 
         try {
@@ -632,55 +594,17 @@ public class UploadDocument extends AbstractActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        System.out.println(TAG + jsonObject);
-        System.out.println(TAG + Api.uploadDocument);
+        Log.v("TAG", TAG + jsonObject);
 
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.uploadDocument, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
-
-
-            @Override
-            public void onResponse(JSONObject response) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
-
-                try {
-                    Log.e(TAG, "onResponse: " + response);
-
-                    UploadDocumentResponseModel responseModel = new Gson().fromJson(String.valueOf(response), UploadDocumentResponseModel.class);
-                    if (responseModel != null) {
-                        if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
-                            TastyToast.makeText(UploadDocument.this, "Document uploaded successfully", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                            Intent i = new Intent(UploadDocument.this, UploadDocument.class);
-                            startActivity(i);
-                            finish();
-                        } else {
-                            Toast.makeText(UploadDocument.this, ToastFile.IMAGEERROR, Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(UploadDocument.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.uploadDoc_controller != null) {
+                ControllersGlobalInitialiser.uploadDoc_controller = null;
             }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
-                if (error != null) {
-                } else {
-                    System.out.println(error);
-                }
-            }
-        });
-
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
-        PostQueOtp.add(jsonObjectRequest1);
-        Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
+            ControllersGlobalInitialiser.uploadDoc_controller = new UploadDoc_Controller(mActivity, UploadDocument.this);
+            ControllersGlobalInitialiser.uploadDoc_controller.UploadDocController(jsonObject,PostQueOtp);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fetchpgcspinner() {
@@ -692,7 +616,7 @@ public class UploadDocument extends AbstractActivity {
         if (isNetworkAvailable(UploadDocument.this)) {
             fetchSgcDetailApiAsyncTask.execute(fetchSgcDetailApiAsyncTask);
         } else {
-            CommonUtils.toastytastyError(UploadDocument.this, getString(R.string.internet_connetion_error), false);
+            GlobalClass.showTastyToast(mActivity, getString(R.string.internet_connetion_error), 2);
         }
     }
 
@@ -704,7 +628,8 @@ public class UploadDocument extends AbstractActivity {
         if (isNetworkAvailable(UploadDocument.this)) {
             fetchSgcDetailApiAsyncTask.execute(fetchSgcDetailApiAsyncTask);
         } else {
-            CommonUtils.toastytastyError(UploadDocument.this, getString(R.string.internet_connetion_error), false);
+
+            GlobalClass.showTastyToast(UploadDocument.this, getString(R.string.internet_connetion_error), 2);
         }
     }
 
@@ -716,9 +641,8 @@ public class UploadDocument extends AbstractActivity {
 
         if (isNetworkAvailable(UploadDocument.this)) {
             fetchSgcDetailApiAsyncTask.execute(fetchSgcDetailApiAsyncTask);
-
         } else {
-            CommonUtils.toastytastyError(UploadDocument.this, getString(R.string.internet_connetion_error), false);
+            GlobalClass.showTastyToast(UploadDocument.this, getString(R.string.internet_connetion_error), 2);
         }
     }
 
@@ -730,7 +654,7 @@ public class UploadDocument extends AbstractActivity {
         if (isNetworkAvailable(UploadDocument.this)) {
             fetchSgcDetailApiAsyncTask.execute(fetchSgcDetailApiAsyncTask);
         } else {
-            CommonUtils.toastytastyError(UploadDocument.this, getString(R.string.internet_connetion_error), false);
+            GlobalClass.showTastyToast(UploadDocument.this, getString(R.string.internet_connetion_error), 2);
         }
     }
 
@@ -802,7 +726,30 @@ public class UploadDocument extends AbstractActivity {
         if (isNetworkAvailable(UploadDocument.this)) {
             fetchSgcDetailApiAsyncTask.execute(fetchSgcDetailApiAsyncTask);
         } else {
-            CommonUtils.toastytastyError(UploadDocument.this, getString(R.string.internet_connetion_error), false);
+            GlobalClass.showTastyToast(UploadDocument.this, getString(R.string.internet_connetion_error), 2);
+        }
+    }
+
+    public void getUploadDocResponse(JSONObject response) {
+        try {
+            Log.e(TAG, "onResponse: " + response);
+
+            UploadDocumentResponseModel responseModel = new Gson().fromJson(String.valueOf(response), UploadDocumentResponseModel.class);
+            if (responseModel != null) {
+                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
+
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.DOC_SUCC, 1);
+                    Intent i = new Intent(UploadDocument.this, UploadDocument.class);
+                    startActivity(i);
+                    finish();
+                } else {
+                    GlobalClass.showTastyToast(mActivity, ToastFile.IMAGEERROR, 2);
+                }
+            } else {
+                GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong, 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -818,14 +765,16 @@ public class UploadDocument extends AbstractActivity {
                 neddatamodelsarr = new ArrayList<>();
                 nedspinnerdata = new ArrayList<>();
                 nedResponseModel = responseParser.getNedResponseModel(json, statusCode);
-                /*if (nedResponseModel.getResponse().equalsIgnoreCase("")) {
-                }*/
-                if (nedResponseModel.getNedlist() != null) {
+
+                if (GlobalClass.CheckArrayList(nedResponseModel.getNedlist())) {
                     neddatamodelsarr = nedResponseModel.getNedlist();
                     nedspinnerdata.add("-Select-");
-                    for (int i = 0; i < neddatamodelsarr.size(); i++) {
-                        nedspinnerdata.add(neddatamodelsarr.get(i).getNAME());
+                    if (GlobalClass.CheckArrayList(neddatamodelsarr)){
+                        for (int i = 0; i < neddatamodelsarr.size(); i++) {
+                            nedspinnerdata.add(neddatamodelsarr.get(i).getNAME());
+                        }
                     }
+
                 } else
                     nedspinnerdata.add("-Select-");
 
@@ -840,7 +789,7 @@ public class UploadDocument extends AbstractActivity {
         public void onApiCancelled() {
 
 
-            CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
+            GlobalClass.showTastyToast(UploadDocument.this, "" + R.string.network_error, 2);
         }
     }
 
@@ -861,9 +810,13 @@ public class UploadDocument extends AbstractActivity {
                 if (pgcsResponseModel != null) {
                     pgcdatamodelsarr = pgcsResponseModel.getPgclist();
                     Pgcspinnerdata.add("-Select-");
-                    for (int i = 0; i < pgcdatamodelsarr.size(); i++) {
-                        Pgcspinnerdata.add(pgcdatamodelsarr.get(i).getNAME());
+
+                    if (GlobalClass.CheckArrayList(pgcdatamodelsarr)) {
+                        for (int i = 0; i < pgcdatamodelsarr.size(); i++) {
+                            Pgcspinnerdata.add(pgcdatamodelsarr.get(i).getNAME());
+                        }
                     }
+
                     ArrayAdapter<String> adapter6 = new ArrayAdapter<String>(
                             UploadDocument.this, R.layout.upload_document_spin, Pgcspinnerdata);
                     adapter6.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -874,9 +827,7 @@ public class UploadDocument extends AbstractActivity {
 
         @Override
         public void onApiCancelled() {
-
-
-            CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
+            GlobalClass.showTastyToast(UploadDocument.this, "" + R.string.network_error, 2);
         }
     }
 
@@ -897,10 +848,14 @@ public class UploadDocument extends AbstractActivity {
                 if (sgcsResponseModels != null) {
                     sgcdatamodelsarr = sgcsResponseModels.getSgclist();
                     sgcspinnerdata.add("-Select-");
-                    for (int i = 0; i < sgcdatamodelsarr.size(); i++) {
-                        sgcspinnerdata.add(sgcdatamodelsarr.get(i).getNAME());
-                        sgcspinnerdatagetName.add(sgcdatamodelsarr.get(i).getSGC());
+
+                    if (GlobalClass.CheckArrayList(sgcdatamodelsarr)) {
+                        for (int i = 0; i < sgcdatamodelsarr.size(); i++) {
+                            sgcspinnerdata.add(sgcdatamodelsarr.get(i).getNAME());
+                            sgcspinnerdatagetName.add(sgcdatamodelsarr.get(i).getSGC());
+                        }
                     }
+
                     ArrayAdapter<String> adapter4 = new ArrayAdapter<String>(
                             UploadDocument.this, R.layout.upload_document_spin, sgcspinnerdata);
                     adapter4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -913,7 +868,7 @@ public class UploadDocument extends AbstractActivity {
         @Override
         public void onApiCancelled() {
 
-            CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
+            GlobalClass.showTastyToast(UploadDocument.this, "" + R.string.network_error, 2);
         }
     }
 
@@ -927,15 +882,18 @@ public class UploadDocument extends AbstractActivity {
 
                 uploadDocumentdatamodelsarr = new ArrayList<>();
                 spinnerdata1 = new ArrayList<>();
-//                String getRepsonse=json.
                 uploadspinnerResponseModels = responseParser.getuploadspinnerResponseModel(json, statusCode);
                 uploadDocumentdatamodelsarr = uploadspinnerResponseModels.getDoclist();
 
                 if (uploadDocumentdatamodelsarr != null) {
                     spinnerdata1.add("-Select-");
-                    for (int i = 0; i < uploadDocumentdatamodelsarr.size(); i++) {
-                        spinnerdata1.add(uploadDocumentdatamodelsarr.get(i).getDocument());
+
+                    if (GlobalClass.CheckArrayList(uploadDocumentdatamodelsarr)) {
+                        for (int i = 0; i < uploadDocumentdatamodelsarr.size(); i++) {
+                            spinnerdata1.add(uploadDocumentdatamodelsarr.get(i).getDocument());
+                        }
                     }
+
 
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                             UploadDocument.this, R.layout.upload_document_spin, spinnerdata1);
@@ -949,7 +907,7 @@ public class UploadDocument extends AbstractActivity {
         public void onApiCancelled() {
 
 
-            CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
+            GlobalClass.showTastyToast(UploadDocument.this, "" + R.string.network_error, 2);
         }
     }
 
@@ -968,15 +926,13 @@ public class UploadDocument extends AbstractActivity {
 
                 if (defaultuploadResponseModel != null) {
                     defaultUploaddatamodelsarr = defaultuploadResponseModel.getUploadDocumentList();
-
-
                 }
             }
         }
 
         @Override
         public void onApiCancelled() {
-            CommonUtils.toastytastyError(UploadDocument.this, "" + R.string.network_error, false);
+            GlobalClass.showTastyToast(UploadDocument.this, "" + R.string.network_error, 2);
         }
     }
 }

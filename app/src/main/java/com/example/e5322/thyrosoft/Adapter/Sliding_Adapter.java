@@ -1,11 +1,11 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Parcelable;
 import androidx.viewpager.widget.PagerAdapter;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
@@ -19,12 +19,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.sdsmdg.tastytoast.TastyToast;
 
 public class Sliding_Adapter extends PagerAdapter {
     NoticeBoard_Model[] broadCastArrayList;
@@ -104,13 +104,12 @@ public class Sliding_Adapter extends PagerAdapter {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(context,
-                            ToastFile.ent_feedback,
-                            Toast.LENGTH_SHORT).show();
+
+                    GlobalClass.showTastyToast((Activity)context,ToastFile.ent_feedback,2);
                     if (enteredString.length() > 0) {
-                        etRemarks.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(etRemarks,enteredString.substring(1));
                     } else {
-                        etRemarks.setText("");
+                        GlobalClass.SetEditText(etRemarks,"");
                     }
                 }
             }
@@ -125,9 +124,10 @@ public class Sliding_Adapter extends PagerAdapter {
             }
         });
 
-        tvHeader.setText(Html.fromHtml(broadCastArrayList[0].getMessages()[position].getNoticeMessage()));
-        tvPostedBy.setText("Posted by " + broadCastArrayList[0].getMessages()[position].getEnterBy());
-        tvPostedOn.setText("Posted on " + broadCastArrayList[0].getMessages()[position].getNoticeDate());
+        GlobalClass.SetHTML(tvHeader,broadCastArrayList[0].getMessages()[position].getNoticeMessage());
+        GlobalClass.SetText(tvPostedBy,"Posted by " + broadCastArrayList[0].getMessages()[position].getEnterBy());
+        GlobalClass.SetText(tvPostedOn,"Posted on " + broadCastArrayList[0].getMessages()[position].getNoticeDate());
+
 
         webSettings=vwData.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -166,11 +166,12 @@ public class Sliding_Adapter extends PagerAdapter {
                         remark_ll.setVisibility(View.GONE);
                         btn_submit.setVisibility(View.GONE);
                     }
-                    else if(ivCheckboxBlank.getVisibility()==View.VISIBLE)
-                        TastyToast.makeText(context, "Kindly acknowledge the broadcast!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                    else if(ivCheckboxBlank.getVisibility()==View.VISIBLE){
+                        GlobalClass.showTastyToast((Activity)context, MessageConstants.kinldly_ack_brodcast,2);
+                    }else if (etRemarks.getText().toString().length()==0){
+                        GlobalClass.showTastyToast((Activity)context, MessageConstants.Enter_remarks, 2);
+                    }
 
-                    else if(etRemarks.getText().toString().length()==0)
-                        TastyToast.makeText(context, "Enter the remarks!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                 }
             }
         });

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 public class MainActivityFirebase extends AppCompatActivity {
@@ -35,7 +36,8 @@ public class MainActivityFirebase extends AppCompatActivity {
             text.append("Message: ");
             text.append(extras.get("message"));
         }
-        tvNotificationDetails.setText(text);
+
+        GlobalClass.SetText(tvNotificationDetails,text.toString());
     }
 
 }

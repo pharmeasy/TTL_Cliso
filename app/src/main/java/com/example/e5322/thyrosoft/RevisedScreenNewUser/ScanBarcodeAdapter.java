@@ -1,37 +1,29 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
+import com.example.e5322.thyrosoft.Controller.Checkbarcode_Controller;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -45,12 +37,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
-class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHolder> {
+public class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHolder> {
     Activity mContext;
-    String user, passwrd, access, api_key, ERROR, RES_ID, barcode, response, storeResponse;
+    String user, passwrd, access, api_key, ERROR, RES_ID, barcode, storeResponse;
     ArrayList<ScannedBarcodeDetails> scannedBarcodeDetails;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -74,10 +69,13 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
     private String searchBarcode;
     private String TAG = ScanBarcodeAdapter.class.getSimpleName();
     private RequestQueue barcodeDetails;
-    private ProgressDialog progressDialog;
     private SharedPreferences prefs;
     private String response1;
-    private boolean setFlagToBack=false;
+    private boolean setFlagToBack = false;
+    public ArrayList<SetBarcodeDetails> setScannedBarcodesULC = new ArrayList<>();
+    private int position;
+    TextView barcodescanbtn;
+    private EditText edit_enter_barcode;
 
     public ScanBarcodeAdapter(ProductLisitngActivityNew mContext, ArrayList<ScannedBarcodeDetails> setAllTestWithBArcodeList) {
         this.mContext = mContext;
@@ -122,140 +120,60 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
         holder.element1_iv.setTag(scannedBarcodeDetails.get(position).getSpecimen_type());
 
-        if (scannedBarcodeDetails.get(position).getBarcode() != null && !scannedBarcodeDetails.get(position).getBarcode().isEmpty()) {
+        if (!GlobalClass.isNull(scannedBarcodeDetails.get(position).getBarcode())) {
 
             if (!GlobalClass.isNetworkAvailable(mContext)) {
-                holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type() + " : " + scannedBarcodeDetails.get(position).getBarcode());
-
+                GlobalClass.SetText(holder.barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type() + " : " + scannedBarcodeDetails.get(position).getBarcode());
                 SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
                 setBarcodeDetails.setSpecimenType(scannedBarcodeDetails.get(position).getSpecimen_type());
                 setBarcodeDetails.setBarcode_number(searchBarcode);
-                GlobalClass.setScannedBarcodesULC.add(setBarcodeDetails);
+                setScannedBarcodesULC.add(setBarcodeDetails);
 
                 Set<SetBarcodeDetails> hs = new HashSet<>();
-                hs.addAll(GlobalClass.setScannedBarcodesULC);
-                GlobalClass.setScannedBarcodesULC.clear();
-                GlobalClass.setScannedBarcodesULC.addAll(hs);
-
-                Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodesULC.size());
-                for (int i = 0; i < GlobalClass.setScannedBarcodesULC.size(); i++) {
-                    Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodesULC.get(i).getBarcode_number() + GlobalClass.setScannedBarcodesULC.get(i).getSpecimenType());
-                }
-
-                System.out.println("length of barcodes" + GlobalClass.setScannedBarcodesULC.size());
-                Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodesULC.size());
-
-                for (int i = 0; i < GlobalClass.setScannedBarcodesULC.size(); i++) {
-                    String getbarcodeType = GlobalClass.setScannedBarcodesULC.get(i).getSpecimenType();
-                    String barcode_number = GlobalClass.setScannedBarcodesULC.get(i).getBarcode_number();
-                    String products = GlobalClass.setScannedBarcodesULC.get(i).getProductType();
-                }
+                hs.addAll(setScannedBarcodesULC);
+                setScannedBarcodesULC.clear();
+                setScannedBarcodesULC.addAll(hs);
             } else {
                 searchBarcode = scannedBarcodeDetails.get(position).getBarcode();
 
                 if (!GlobalClass.isNetworkAvailable(mContext)) {
-                    holder.barcodescanbtn.setText(searchBarcode);
+                    GlobalClass.SetText(holder.barcodescanbtn, searchBarcode);
                 } else {
-                    barcodeDetails = GlobalClass.setVolleyReq(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
-                    progressDialog = new ProgressDialog(mContext);
-                    progressDialog.setTitle("Kindly wait ...");
-                    progressDialog.setMessage(ToastFile.processing_request);
-                    progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                    progressDialog.setProgress(0);
-                    progressDialog.setMax(20);
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
-                    JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode"
-                            , new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            System.out.println("barcode respponse" + response);
+                    barcodeDetails = GlobalClass.setVolleyReq(mContext);
 
-                            Log.e(TAG, "onResponse: " + response);
-                            String finalJson = response.toString();
-                            JSONObject parentObjectOtp = null;
-                            try {
-                                parentObjectOtp = new JSONObject(finalJson);
-                                ERROR = parentObjectOtp.getString("ERROR");
-                                RES_ID = parentObjectOtp.getString("RES_ID");
-                                barcode = parentObjectOtp.getString("barcode");
-                                response1 = parentObjectOtp.getString("response");
-                                if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                    holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type() + " : " + scannedBarcodeDetails.get(position).getBarcode());
-                                    progressDialog.dismiss();
+                    String url = Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode";
 
-                                    SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
-                                    setBarcodeDetails.setSpecimenType(scannedBarcodeDetails.get(position).getSpecimen_type());
-                                    setBarcodeDetails.setBarcode_number(searchBarcode);
-                                    GlobalClass.setScannedBarcodesULC.add(setBarcodeDetails);
-
-                                    Set<SetBarcodeDetails> hs = new HashSet<>();
-                                    hs.addAll(GlobalClass.setScannedBarcodesULC);
-                                    GlobalClass.setScannedBarcodesULC.clear();
-                                    GlobalClass.setScannedBarcodesULC.addAll(hs);
-
-                                    Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodesULC.size());
-                                    for (int i = 0; i < GlobalClass.setScannedBarcodesULC.size(); i++) {
-                                        Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodesULC.get(i).getBarcode_number() + GlobalClass.setScannedBarcodesULC.get(i).getSpecimenType());
-                                    }
-
-                                    System.out.println("length of barcodes" + GlobalClass.setScannedBarcodesULC.size());
-                                    Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodesULC.size());
-
-                                    for (int i = 0; i < GlobalClass.setScannedBarcodesULC.size(); i++) {
-                                        String getbarcodeType = GlobalClass.setScannedBarcodesULC.get(i).getSpecimenType();
-                                        String barcode_number = GlobalClass.setScannedBarcodesULC.get(i).getBarcode_number();
-                                        String products = GlobalClass.setScannedBarcodesULC.get(i).getProductType();
-                                    }
-                                } else {
-                                    holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type());
-                                    storeResponse = response1;
-                                    progressDialog.dismiss();
-                                    Toast.makeText(mContext, "" + response1, Toast.LENGTH_SHORT).show();
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
+                    this.position = position;
+                    barcodescanbtn = holder.barcodescanbtn;
+                    try {
+                        if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                            ControllersGlobalInitialiser.checkbarcode_controller = null;
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            if (error.networkResponse == null) {
-                                if (error.getClass().equals(TimeoutError.class)) {
-                                    // Show timeout error message
-                                }
-                            }
-                        }
-                    });
-                    progressDialog.dismiss();
+                        ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller((Activity) mContext, ScanBarcodeAdapter.this, searchBarcode, "1");
+                        ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(url, barcodeDetails);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                            300000,
-                            3,
-                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    barcodeDetails.add(jsonObjectRequestPop);
-                    Log.e(TAG, "onBindViewHolder: url" + jsonObjectRequestPop);
                 }
             }
 
         } else {
-            holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type());
+            GlobalClass.SetText(holder.barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type());
         }
         holder.barcodescanbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 holder.linearEditbarcode.setVisibility(View.VISIBLE);
                 holder.barcode_linear.setVisibility(View.GONE);
-                setFlagToBack=true;
+                setFlagToBack = true;
             }
         });
 
-        holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type());
-        holder.enter_barcode.setText(scannedBarcodeDetails.get(position).getBarcode());
-        holder.reenter.setText(scannedBarcodeDetails.get(position).getBarcode());
+
+        GlobalClass.SetText(holder.barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type());
+        GlobalClass.SetEditText(holder.enter_barcode, scannedBarcodeDetails.get(position).getBarcode());
+        GlobalClass.SetEditText(holder.reenter, scannedBarcodeDetails.get(position).getBarcode());
 
         holder.enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
         holder.enter_barcode.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
@@ -301,9 +219,9 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     if (enteredString.length() > 0) {
-                        holder.reenter.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(holder.reenter, enteredString.substring(1));
                     } else {
-                        holder.reenter.setText("");
+                        GlobalClass.SetEditText(holder.reenter, "");
                     }
                 }
 
@@ -321,36 +239,33 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
                 previouseBarcode = holder.enter_barcode.getText().toString();
                 if (storeflag == true) {
                     if (previouseBarcode.equals("")) {
-                        holder.reenter.setText("");
+                        GlobalClass.SetEditText(holder.reenter, "");
                     }
                 } else {
-
-                    holder.reenter.setText(enteredString);
+                    GlobalClass.SetEditText(holder.reenter, enteredString);
                 }
 
                 if (enteredString.length() > 8) {
-                    holder.reenter.setText(enteredString.substring(1));
-
-                } else {
+                    GlobalClass.SetEditText(holder.reenter, enteredString.substring(1));
 
                 }
-                //getData = reg_pincode.getText().toString();
+
                 if (s.length() == 8) {
                     afterBarcode = s.toString();
                     searchBarcode = s.toString();
-                    if (previouseBarcode.equalsIgnoreCase(afterBarcode)) {
-                        Toast.makeText(mContext, ToastFile.mtch_brcd, Toast.LENGTH_SHORT).show();
+                    if (!GlobalClass.isNull(previouseBarcode) && !GlobalClass.isNull(afterBarcode) &&
+                            previouseBarcode.equalsIgnoreCase(afterBarcode)) {
+                        GlobalClass.showTastyToast((Activity) mContext, ToastFile.mtch_brcd, 2);
                         holder.linearEditbarcode.setVisibility(View.GONE);
                         holder.barcode_linear.setVisibility(View.VISIBLE);
 
-                        holder.barcodescanbtn.setText(scannedBarcodeDetails.get(position).getSpecimen_type() + ":" + searchBarcode);
+                        GlobalClass.SetText(holder.barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type() + ":" + searchBarcode);
                         scannedBarcodeDetails.get(position).setBarcode(searchBarcode);
 
                     } else {
-                        holder.reenter.setText("");
-                        Toast.makeText(mContext, ToastFile.ent_crt_brcd, Toast.LENGTH_SHORT).show();
+                        GlobalClass.SetEditText(holder.reenter, "");
+                        GlobalClass.showTastyToast(mContext, ToastFile.ent_crt_brcd, 2);
                     }
-                } else {
                 }
             }
         });
@@ -369,6 +284,72 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
         }
     };
 
+    public void getpassbarcode(JSONObject response, String barcodeDetails, String fromcscanbarcodeadapter) {
+
+        if (!GlobalClass.isNull(fromcscanbarcodeadapter) && fromcscanbarcodeadapter.equalsIgnoreCase("1")) {
+            Log.v("TAG", "barcode respponse" + response);
+
+            Log.e(TAG, "onResponse: " + response);
+            String finalJson = response.toString();
+            JSONObject parentObjectOtp = null;
+            try {
+
+                parentObjectOtp = new JSONObject(finalJson);
+                ERROR = parentObjectOtp.getString("ERROR");
+                RES_ID = parentObjectOtp.getString("RES_ID");
+                barcode = parentObjectOtp.getString("barcode");
+                response1 = parentObjectOtp.getString("response");
+
+                if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase(MessageConstants.BRCD_NT_EXIT)) {
+                    GlobalClass.SetText(barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type() + " : " + scannedBarcodeDetails.get(position).getBarcode());
+
+                    SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
+                    setBarcodeDetails.setSpecimenType(scannedBarcodeDetails.get(position).getSpecimen_type());
+                    setBarcodeDetails.setBarcode_number(searchBarcode);
+                    setScannedBarcodesULC.add(setBarcodeDetails);
+
+                    Set<SetBarcodeDetails> hs = new HashSet<>();
+                    hs.addAll(setScannedBarcodesULC);
+                    setScannedBarcodesULC.clear();
+                    setScannedBarcodesULC.addAll(hs);
+
+                } else {
+                    GlobalClass.SetText(barcodescanbtn, scannedBarcodeDetails.get(position).getSpecimen_type());
+                    storeResponse = response1;
+
+                    GlobalClass.showTastyToast(mContext, "" + response1, 2);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        } else if (!GlobalClass.isNull(fromcscanbarcodeadapter) && fromcscanbarcodeadapter.equalsIgnoreCase("2")) {
+            Log.v("TAG", "barcode respponse" + response);
+            Log.e(TAG, "onResponse: " + response);
+            String finalJson = response.toString();
+            JSONObject parentObjectOtp = null;
+            try {
+                parentObjectOtp = new JSONObject(finalJson);
+                ERROR = parentObjectOtp.getString("ERROR");
+                RES_ID = parentObjectOtp.getString("RES_ID");
+                barcode = parentObjectOtp.getString("barcode");
+                response1 = parentObjectOtp.getString("response");
+
+                if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase(MessageConstants.BRCD_NT_EXIT)) {
+                    GlobalClass.EditSetText(edit_enter_barcode, searchBarcode);
+                } else {
+                    GlobalClass.SetEditText(edit_enter_barcode, "");
+                    storeResponse = response1;
+                    GlobalClass.showTastyToast(mContext, "" + response1, 2);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public interface OnItemClickListener {
 
         void onScanbarcodeClickListener(String Specimenttype, Activity activity);
@@ -383,7 +364,7 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView barcodescanbtn;
         EditText enter_barcode, reenter;
-        ImageView  setback,element1_iv;
+        ImageView setback, element1_iv;
         LinearLayout linearEditbarcode, barcode_linear;
 
         public ViewHolder(View itemView) {
@@ -403,9 +384,7 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
     }
 
     class MyTextWatcher implements TextWatcher {
-        private EditText enter_barcode, reenter;
-        LinearLayout linearEditbarcode, barcode_linear;
-        Button scanBarcode;
+        private EditText enter_barcode;
         boolean flag = false;
 
         public MyTextWatcher(EditText editText) {
@@ -419,124 +398,73 @@ class ScanBarcodeAdapter extends RecyclerView.Adapter<ScanBarcodeAdapter.ViewHol
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            int position = (int) enter_barcode.getTag();
 
             String enteredString = s.toString();
             if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
 
                 if (enteredString.length() > 0) {
-                    enter_barcode.setText(enteredString.substring(1));
+                    GlobalClass.SetEditText(enter_barcode, enteredString.substring(1));
                 } else {
-                    enter_barcode.setText("");
+                    GlobalClass.SetEditText(enter_barcode, "");
                 }
             }
 
-            // Do whatever you want with position
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             String eneterString = s.toString();
-            int position = (int) enter_barcode.getTag();
             if (s.length() < 8) {
                 flag = false;
             }
             if (s.length() > 8) {
-                enter_barcode.setText(eneterString.substring(1));
+                GlobalClass.SetEditText(enter_barcode, eneterString.substring(1));
 
             }
             if (s.length() == 8) {
 
                 previouseBarcode = s.toString();
                 searchBarcode = s.toString();
-                //checkBarcode(position,s.toString());
-                if (scannedBarcodeDetails.size() != 0) {
+                if (GlobalClass.CheckArrayList(scannedBarcodeDetails)) {
                     for (int i = 0; i < scannedBarcodeDetails.size(); i++) {
-                        if (scannedBarcodeDetails.get(i).getBarcode() != null) {
-                            if (scannedBarcodeDetails.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
-                                if(setFlagToBack==true){
-                                    Toast.makeText(mContext, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
-                                    enter_barcode.setText("");
-                                }else{
-
+                        if (!GlobalClass.isNull(scannedBarcodeDetails.get(i).getBarcode())) {
+                            if (!GlobalClass.isNull(searchBarcode) && scannedBarcodeDetails.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
+                                if (setFlagToBack) {
+                                    GlobalClass.showTastyToast(mContext, ToastFile.duplicate_barcd, 2);
+                                    GlobalClass.SetEditText(enter_barcode, "");
                                 }
 
                                 flag = true;
                             }
                         } else {
-                            if (flag == false) {
+                            if (!flag) {
                                 flag = true;
 
                                 if (!GlobalClass.isNetworkAvailable(mContext)) {
-                                    enter_barcode.setText(searchBarcode);
+                                    GlobalClass.SetEditText(enter_barcode, searchBarcode);
                                 } else {
 
                                     barcodeDetails = GlobalClass.setVolleyReq(mContext);//2c=/TAM03/TAM03136166236000078/geteditdata
-                                    progressDialog = new ProgressDialog(mContext);
-                                    progressDialog.setTitle("Kindly wait ...");
-                                    progressDialog.setMessage(ToastFile.processing_request);
-                                    progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                                    progressDialog.setProgress(0);
-                                    progressDialog.setMax(20);
-                                    progressDialog.setCanceledOnTouchOutside(false);
-                                    progressDialog.setCancelable(false);
-                                    progressDialog.show();
-                                    JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
-                                            , new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            System.out.println("barcode respponse" + response);
-                                            Log.e(TAG, "onResponse: " + response);
-                                            String finalJson = response.toString();
-                                            JSONObject parentObjectOtp = null;
-                                            try {
-                                                parentObjectOtp = new JSONObject(finalJson);
-                                                ERROR = parentObjectOtp.getString("ERROR");
-                                                RES_ID = parentObjectOtp.getString("RES_ID");
-                                                barcode = parentObjectOtp.getString("barcode");
-                                                response1 = parentObjectOtp.getString("response");
-                                                if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                                    enter_barcode.setText(searchBarcode);
-                                                    progressDialog.dismiss();
 
-                                                } else {
-                                                    enter_barcode.setText("");
-                                                    storeResponse = response1;
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(mContext, "" + response1, Toast.LENGTH_SHORT).show();
-                                                }
+                                    String url = Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode";
 
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                                    edit_enter_barcode = enter_barcode;
 
+                                    try {
+                                        if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                                            ControllersGlobalInitialiser.checkbarcode_controller = null;
                                         }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            if (error.networkResponse == null) {
-                                                if (error.getClass().equals(TimeoutError.class)) {
-                                                    // Show timeout error message
-                                                }
-                                            }
-                                        }
-                                    });
-                                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                            300000,
-                                            3,
-                                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                                    barcodeDetails.add(jsonObjectRequestPop);
-                                    Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                                        ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller((Activity) mContext, ScanBarcodeAdapter.this, s.toString(), "2");
+                                        ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(url, barcodeDetails);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                         }
                     }
 
-                } else {
-
                 }
-
-            } else {
             }
 
         }

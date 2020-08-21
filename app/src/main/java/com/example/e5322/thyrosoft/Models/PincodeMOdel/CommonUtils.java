@@ -193,17 +193,9 @@ public class CommonUtils {
         return 0;
     }
 
-    public static void toastytastyError(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.ERROR);
-    }
 
-    public static void toastytastySuccess(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.SUCCESS);
-    }
 
-    public static void toastytastyInfo(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
-    }
+
 
     private static int ToastLength(boolean b) {
         if (b) {

@@ -4,20 +4,21 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Product;
 import com.example.e5322.thyrosoft.API.SqliteDatabase;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 
 import java.util.List;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     private Context context;
@@ -36,8 +37,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         final Product singleProduct = listProducts.get(position);
-        holder.name.setText(singleProduct.getName());
-        holder.product_id.setText(singleProduct.getQuantity());
+
+        GlobalClass.SetText(holder.name,singleProduct.getName());
+        GlobalClass.SetText(holder.product_id,singleProduct.getQuantity());
 
         holder.deleteProduct.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,9 +61,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
         View subView = inflater.inflate(R.layout.add_prodct_layout, null);
         final EditText nameField = (EditText)subView.findViewById(R.id.enter_name);
         final EditText quantityField = (EditText)subView.findViewById(R.id.enter_quantity);
+
         if(product != null){
-            nameField.setText(product.getName());
-            quantityField.setText(product.getQuantity());
+            GlobalClass.SetEditText(nameField,product.getName());
+            GlobalClass.SetEditText(quantityField,product.getQuantity());
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Edit product");
@@ -72,8 +75,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
             public void onClick(DialogInterface dialog, int which) {
                 final String name = nameField.getText().toString();
                 final String quantity = quantityField.getText().toString();
-                if(TextUtils.isEmpty(name) || TextUtils.isEmpty(quantity)){
-                    Toast.makeText(context, ToastFile.something_went_wrong, Toast.LENGTH_LONG).show();
+                if(GlobalClass.isNull(name) || GlobalClass.isNull(quantity)){
+                    GlobalClass.showTastyToast((Activity)context, ToastFile.something_went_wrong,2);
                 }
                 else{
                     mDatabase.updateProduct(new Product(product.getId(), name, quantity));
@@ -86,7 +89,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductViewHolder>{
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(context, "Task cancelled", Toast.LENGTH_LONG).show();
+                GlobalClass.showTastyToast((Activity)context, MessageConstants.TASK_CANCEL, 2);
             }
         });
         builder.show();

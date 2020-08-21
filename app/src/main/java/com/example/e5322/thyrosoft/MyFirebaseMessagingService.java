@@ -24,6 +24,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String refreshedToken) {
         super.onNewToken(refreshedToken);
         Log.e(TAG, "Token  0----->" + refreshedToken);
+        Constants.PUSHNOT_FLAG=true;
 
         storeRegIdInPref(refreshedToken);
 
@@ -31,6 +32,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         Intent registrationComplete = new Intent("demokey");
         registrationComplete.putExtra("token", refreshedToken);
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
+
     }
 
     private void storeRegIdInPref(String token) {
@@ -90,7 +92,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             Log.e(TAG, "Screen_category ----->" + Screen_category);
 
-            if (!TextUtils.isEmpty(App_ID) && App_ID.equalsIgnoreCase(Constants.APPID)) {
+            if (!GlobalClass.isNull(App_ID) && App_ID.equalsIgnoreCase(Constants.APPID)) {
                 Intent resultIntent = new Intent(getApplicationContext(), SplashScreen.class);
                 resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 resultIntent.putExtra("IsFromNotification", true);
@@ -100,7 +102,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
              /*   if (Screen_category == 0) {
                     resultIntent.putExtra("Screen_category", Screen_category);
                 } else if (Screen_category > 0 && Screen_category <= 100) {
-                    if (!TextUtils.isEmpty(Order_ID)) {
+                    if (!GlobalClass.isNull(Order_ID)) {
                         resultIntent.putExtra("TechsoID", Screen_category);
                         resultIntent.putExtra("Screen_category", Constants.SCR_1);
                         resultIntent.putExtra("Order_ID", Order_ID);
@@ -121,7 +123,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 SharedPreferences prefs_user = getApplicationContext().getSharedPreferences("login_detail", 0);
                 String loginMobileNumber = prefs_user.getString("mobile", "");
 
-                if (!TextUtils.isEmpty(mobile)) {
+                if (!GlobalClass.isNull(mobile)) {
                     if (mobile.equalsIgnoreCase(loginMobileNumber)) {
                         if (TextUtils.isEmpty(imageUrl)) {
                             showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);

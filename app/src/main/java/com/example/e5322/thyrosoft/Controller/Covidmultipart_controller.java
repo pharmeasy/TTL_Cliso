@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
+import com.example.e5322.thyrosoft.Activity.frags.AntiBodyEnterFrag;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.Fragment.RATEnterFrag;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -38,6 +39,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
     int flag = 0;
     Covidpostdata covidpostdata;
     CovidEditActivity covidEditActivity;
+    AntiBodyEnterFrag antiBodyEnterFrag;
 
     public Covidmultipart_controller(Covidenter_Frag covidenter_frag, Activity activity, Covidpostdata covidpostdata) {
         this.covidenter_frag = covidenter_frag;
@@ -61,6 +63,14 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.mActivity = activity;
         status_code = 0;
         flag = 3;
+        this.covidpostdata = covidpostdata;
+    }
+
+    public Covidmultipart_controller(AntiBodyEnterFrag antiBodyEnterFrag, Activity activity, Covidpostdata covidpostdata) {
+        this.antiBodyEnterFrag = antiBodyEnterFrag;
+        this.mActivity = activity;
+        status_code = 0;
+        flag = 4;
         this.covidpostdata = covidpostdata;
     }
 
@@ -93,11 +103,17 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("AGE", new StringBody("" + covidpostdata.getAGE()));
                 builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
                 builder.addPart("GENDER", new StringBody("" + covidpostdata.getGENDER()));
+                builder.addPart("ENTERBY", new StringBody("" + covidpostdata.getENTERBY()));
 
+                if (covidpostdata.getHOSPITAL() != null) {
+                    builder.addPart("HOSPITAL", new StringBody("" + covidpostdata.getHOSPITAL()));
+                }
 
-                FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
-                builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
+                if (covidpostdata.getADHAR() != null) {
+                    FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
+                    builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
 
+                }
                 if (covidpostdata.getADHAR1() != null) {
                     FileInputStream adharfilestream1 = new FileInputStream(covidpostdata.getADHAR1());
                     builder.addPart("ADHAR1", new InputStreamBody(adharfilestream1, "image/jpeg", "file_name.jpg"));
@@ -119,13 +135,15 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
                 }
 
-                System.out.println("\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
+                Log.v("POST DATA","\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
                         "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
                         + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED()
                         + "\nTESTCODE:" + covidpostdata.getTESTCODE()
                         + "\nAGE:" + covidpostdata.getAGE()
                         + "\nBARCODE:" + covidpostdata.getBARCODE()
                         + "\nGENDER:" + covidpostdata.getGENDER()
+                        + "\nENTERBY:" + covidpostdata.getENTERBY()
+                        + "\nHOSPITAL:" + covidpostdata.getHOSPITAL()
                         + "\nADHAR:" + covidpostdata.getADHAR()
                         + "\nADHAR1:" + covidpostdata.getADHAR1()
                         + "\nTRF:" + covidpostdata.getTRF()
@@ -133,6 +151,28 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                         + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()
                         + "\nOTHER1:" + covidpostdata.getOTHER1());
 
+            } else if (flag == 4) {
+                builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
+                builder.addPart("MOBILE", new StringBody("" + covidpostdata.getMOBILE()));
+                builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
+                builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
+                builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
+                builder.addPart("AGE", new StringBody("" + covidpostdata.getAGE()));
+                builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
+                builder.addPart("GENDER", new StringBody("" + covidpostdata.getGENDER()));
+                builder.addPart("ENTERBY", new StringBody("" + covidpostdata.getENTERBY()));
+                builder.addPart("HOSPITAL", new StringBody("" + covidpostdata.getHOSPITAL()));
+                builder.addPart("WOEID", new StringBody("" + covidpostdata.getWOEID()));
+
+
+                if (covidpostdata.getADHAR1() != null) {
+                    FileInputStream adharfilestream1 = new FileInputStream(covidpostdata.getADHAR1());
+                    builder.addPart("ADHAR1", new InputStreamBody(adharfilestream1, "image/jpeg", "file_name.jpg"));
+                }
+                if (covidpostdata.getADHAR() != null) {
+                    FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
+                    builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
+                }
             } else {
                 if (flag == 2) {
                     builder.addPart("UNIQUEID", new StringBody("" + covidpostdata.getUNIQUEID()));
@@ -191,11 +231,6 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 }
             }
 
-
-          /*  Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID() + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
-                    + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1()
-                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1());
-*/
             httpPost.setEntity(builder.build());
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
@@ -203,11 +238,10 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                System.out.println("Response : " + result);
+                Log.v("TAG","Response : " + result);
             }
 
         } catch (Exception e) {
-            //    Log.e("InputStream", e.getLocalizedMessage());
             result = "Something went wrong";
         }
         return result;
@@ -229,13 +263,15 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     covidEditActivity.getUploadResponse(response);
                 } else if (flag == 3) {
                     ratEnterFrag.getUploadResponse(response);
+                }else if (flag==4){
+                    antiBodyEnterFrag.getUploadResponse(response);
                 }
 
             } else {
-                Global.showCustomToast(mActivity, response);
+                GlobalClass.showTastyToast(mActivity, response,2);
             }
         } else {
-            Global.showCustomToast(mActivity, response);
+            GlobalClass.showTastyToast(mActivity, response,2);
         }
     }
 

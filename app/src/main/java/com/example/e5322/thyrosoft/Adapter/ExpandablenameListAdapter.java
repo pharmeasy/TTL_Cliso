@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.billingDetailsModel;
 import com.example.e5322.thyrosoft.R;
@@ -24,14 +25,14 @@ public class ExpandablenameListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
     private HashMap<ArrayList, ArrayList<billingDetailsModel>> _listDataChild;
-
+    public  ArrayList<billingDetailsModel> billingDETArray;
     public ExpandablenameListAdapter(Context context, ArrayList<String> listDataHeader,
-                                     HashMap<ArrayList, ArrayList<billingDetailsModel>> listChildData) {
+                                     HashMap<ArrayList, ArrayList<billingDetailsModel>> listChildData, ArrayList<billingDetailsModel> billingDETArray) {
         this._context = context;
         this._listDataHeader = listDataHeader;
         this._listDataChild = listChildData;
+        this.billingDETArray=billingDETArray;
     }
 
 
@@ -85,7 +86,8 @@ public class ExpandablenameListAdapter extends BaseExpandableListAdapter {
 
         TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
         ImageView expand_img = (ImageView) convertView.findViewById(R.id.expand_img);
-        lblListHeader.setText(headerTitle);
+
+        GlobalClass.SetText(lblListHeader,headerTitle);
 
 
         if (isExpanded) {
@@ -102,12 +104,9 @@ public class ExpandablenameListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 
 
-        //final String childText = (String) getChild(groupPosition, childPosition);
-        GlobalClass.billingDETArray.get(childPosition);
+        billingDETArray.get(childPosition);
 
         try {
-
-
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -122,16 +121,17 @@ public class ExpandablenameListAdapter extends BaseExpandableListAdapter {
             TextView ref = (TextView) convertView.findViewById(R.id.refID);
 
 
-            barcode.setText( GlobalClass.billingDETArray.get(groupPosition).getBarcode());
-            test.setText(GlobalClass.billingDETArray.get(groupPosition).getTests());
-            billedamt.setText(GlobalClass.billingDETArray.get(groupPosition).getBilledAmount());
-            collamount.setText( GlobalClass.billingDETArray.get(groupPosition).getCollectedAmount());
-            type.setText(GlobalClass.billingDETArray.get(groupPosition).getWoetype());
+
+            GlobalClass.SetText(barcode,billingDETArray.get(groupPosition).getBarcode());
+            GlobalClass.SetText(test,billingDETArray.get(groupPosition).getTests());
+            GlobalClass.SetText(billedamt,billingDETArray.get(groupPosition).getBilledAmount());
+            GlobalClass.SetText(collamount,billingDETArray.get(groupPosition).getCollectedAmount());
+            GlobalClass.SetText(type,billingDETArray.get(groupPosition).getWoetype());
+
             ref.setVisibility(View.GONE);
-            ref.setText(GlobalClass.billingDETArray.get(groupPosition).getRefId());
+            GlobalClass.SetText(ref,billingDETArray.get(groupPosition).getRefId());
 
-
-            System.out.println("get data ***" + _listDataChild.get(Constants.barcode));
+            Log.v("TAG","get data ***" + _listDataChild.get(Constants.barcode));
         } catch (Exception e) {
             e.printStackTrace();
         }

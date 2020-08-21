@@ -2,11 +2,9 @@ package com.example.e5322.thyrosoft.Adapter;
 
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -14,22 +12,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.Checkbarcode_Controller;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
@@ -62,15 +55,44 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
     private OnItemClickListener onItemClickListener;
     boolean storeflag = true;
     ArrayList<ScannedBarcodeDetails> sampleTypes;
-    private ProgressDialog progressDialog;
     private SharedPreferences prefs;
     ArrayList<ScannedBarcodeDetails> sample_type_array;
+    ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
+    private EditText edit_enter_barcode;
 
     public LeadIdAdapter(ScanBarcodeLeadId scanBarcodeLeadId, ArrayList<ScannedBarcodeDetails> sample_type_array, RecyclerInterface listener) {
         this.context = scanBarcodeLeadId;
         this.sampleTypes = sample_type_array;
         this.sample_type_array = sample_type_array;
         this.listener = listener;
+    }
+
+    public void getpassbarcode(JSONObject response, String barcodeDetails) {
+        Log.e(TAG, "onResponse: Response" + response);
+        Log.v("barcode respponse", "" + response);
+        String finalJson = response.toString();
+        JSONObject parentObjectOtp = null;
+
+        try {
+            parentObjectOtp = new JSONObject(finalJson);
+            ERROR = parentObjectOtp.getString("ERROR");
+            RES_ID = parentObjectOtp.getString("RES_ID");
+            barcode = parentObjectOtp.getString("barcode");
+            response1 = parentObjectOtp.getString("response");
+            if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase(MessageConstants.BRCD_NT_EXIT)) {
+                GlobalClass.SetEditText(edit_enter_barcode, searchBarcode);
+            } else if (!GlobalClass.isNull(ERROR) && ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                GlobalClass.redirectToLogin(context);
+            } else {
+                GlobalClass.SetEditText(edit_enter_barcode, "");
+                storeResponse = response1;
+                GlobalClass.showTastyToast(context, "" + response1, 2);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -111,7 +133,6 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
     @Override
     public void barcodeDetails(Context v, String s) {
-//        GlobalClass.getscannedData = s;
     }
 
     @Override
@@ -129,7 +150,9 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
         holder.element1_iv.setTag(sample_type_array.get(position).getSpecimen_type());
 
-        holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type());
+
+        GlobalClass.SetText(holder.scanBarcode, sample_type_array.get(position).getSpecimen_type());
+
         holder.scanBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,42 +201,29 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
 
         prefs = context.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
-        if (sample_type_array.get(position).getBarcode() != null && !sample_type_array.get(position).getBarcode().isEmpty()) {
+        if (!GlobalClass.isNull(sample_type_array.get(position).getBarcode())) {
             searchBarcode = sample_type_array.get(position).getBarcode();
-            // checkBarcode(position, searchBarcode);
-            holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type() + " : " + sample_type_array.get(position).getBarcode());
+            GlobalClass.SetText(holder.scanBarcode, sample_type_array.get(position).getSpecimen_type() + " : " + sample_type_array.get(position).getBarcode());
             SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
             setBarcodeDetails.setSpecimenType(sample_type_array.get(position).getSpecimen_type());
             setBarcodeDetails.setBarcode_number(searchBarcode);
-            GlobalClass.setScannedBarcodes.add(setBarcodeDetails);
+            setScannedBarcodes.add(setBarcodeDetails);
             Set<SetBarcodeDetails> hs = new HashSet<>();
-            hs.addAll(GlobalClass.setScannedBarcodes);
-            GlobalClass.setScannedBarcodes.clear();
-            GlobalClass.setScannedBarcodes.addAll(hs);
-            Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodes.size());
-            for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
-            }
-            System.out.println("length of barcodes" + GlobalClass.setScannedBarcodes.size());
-            Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodes.size());
-
-            for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                String getbarcodeType = GlobalClass.setScannedBarcodes.get(i).getSpecimenType();
-                String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
-                String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
-            }
+            hs.addAll(setScannedBarcodes);
+            setScannedBarcodes.clear();
+            setScannedBarcodes.addAll(hs);
 
         } else {
-            if (!TextUtils.isEmpty(sample_type_array.get(position).getSpecimen_type())){
+            if (!GlobalClass.isNull(sample_type_array.get(position).getSpecimen_type())) {
                 if (sample_type_array.get(position).getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
-                    holder.scanBarcode.setText("(" + sample_type_array.get(position).getProducts() + ")" + sample_type_array.get(position).getSpecimen_type());
+                    GlobalClass.SetText(holder.scanBarcode, "(" + sample_type_array.get(position).getProducts() + ")" + sample_type_array.get(position).getSpecimen_type());
                 } else {
-                    holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type());
+                    GlobalClass.SetText(holder.scanBarcode, sample_type_array.get(position).getSpecimen_type());
                 }
             }
         }
@@ -226,9 +236,9 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     if (enteredString.length() > 0) {
-                        holder.reenter.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(holder.reenter, enteredString.substring(1));
                     } else {
-                        holder.reenter.setText("");
+                        GlobalClass.SetEditText(holder.reenter, "");
                     }
                 }
 
@@ -244,37 +254,36 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 String enteredString = s.toString();
 
                 previouseBarcode = holder.enter_barcode.getText().toString();
-                if (storeflag == true) {
-                    if (previouseBarcode.equals("")) {
-                        Toast.makeText(context, ToastFile.first_ent_brcd, Toast.LENGTH_SHORT).show();
-                        holder.reenter.setText("");
+                if (storeflag) {
+                    if (GlobalClass.isNull(previouseBarcode)) {
+                        GlobalClass.showTastyToast(context, ToastFile.first_ent_brcd, 2);
+                        GlobalClass.SetEditText(holder.reenter, "");
                     }
                 } else {
+                    GlobalClass.SetEditText(holder.reenter, enteredString);
 
-                    holder.reenter.setText(enteredString);
                 }
 
                 if (enteredString.length() > 8) {
-                    holder.reenter.setText(enteredString.substring(1));
-                    Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
-                } else {
-
+                    GlobalClass.SetEditText(holder.reenter, enteredString.substring(1));
+                    GlobalClass.showTastyToast(context, ToastFile.crt_brcd, 2);
                 }
 
                 if (s.length() == 8) {
                     afterBarcode = s.toString();
 
                     searchBarcode = s.toString();
-                    if (previouseBarcode.equalsIgnoreCase(afterBarcode)) {
+                    if (!GlobalClass.isNull(previouseBarcode) &&
+                            !GlobalClass.isNull(afterBarcode) &&
+                            previouseBarcode.equalsIgnoreCase(afterBarcode)) {
                         holder.linearEditbarcode.setVisibility(View.GONE);
                         holder.barcode_linear.setVisibility(View.VISIBLE);
-                        holder.scanBarcode.setText(sample_type_array.get(position).getSpecimen_type() + ":" + searchBarcode);
+                        GlobalClass.SetText(holder.scanBarcode, sample_type_array.get(position).getSpecimen_type() + ":" + searchBarcode);
                         sample_type_array.get(position).setBarcode(searchBarcode);
                     } else {
-                        holder.reenter.setText("");
-                        Toast.makeText(context, ToastFile.ent_crt_brcd, Toast.LENGTH_SHORT).show();
+                        GlobalClass.SetEditText(holder.reenter, "");
+                        GlobalClass.showTastyToast((Activity) context, ToastFile.crt_brcd, 2);
                     }
-                } else {
                 }
             }
         });
@@ -305,9 +314,7 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
 
     class MyTextWatcher implements TextWatcher {
-        private EditText enter_barcode, reenter;
-        LinearLayout linearEditbarcode, barcode_linear;
-        Button scanBarcode;
+        private EditText enter_barcode;
         boolean flag = false;
 
         public MyTextWatcher(EditText editText) {
@@ -324,13 +331,13 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
             String enteredString = s.toString();
             if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                Toast.makeText(context,
+                GlobalClass.showTastyToast(context,
                         ToastFile.crt_brcd,
-                        Toast.LENGTH_SHORT).show();
+                        2);
                 if (enteredString.length() > 0) {
-                    enter_barcode.setText(enteredString.substring(1));
+                    GlobalClass.SetEditText(enter_barcode, enteredString.substring(1));
                 } else {
-                    enter_barcode.setText("");
+                    GlobalClass.SetEditText(enter_barcode, "");
                 }
             }
 
@@ -345,8 +352,8 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
                 flag = false;
             }
             if (s.length() > 8) {
-                enter_barcode.setText(eneterString.substring(1));
-                Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+                GlobalClass.SetEditText(enter_barcode, eneterString.substring(1));
+                GlobalClass.showTastyToast(context, ToastFile.crt_brcd, 2);
             }
 
 
@@ -354,79 +361,33 @@ public class LeadIdAdapter extends RecyclerView.Adapter<LeadIdAdapter.ViewHolder
 
                 previouseBarcode = s.toString();
                 searchBarcode = s.toString();
-                //checkBarcode(position,s.toString());
                 final ArrayList<String> storeBarcode = new ArrayList<>();
-                if (sample_type_array.size() != 0) {
+                if (GlobalClass.CheckArrayList(sample_type_array)) {
                     for (int i = 0; i < sample_type_array.size(); i++) {
-                        if (sample_type_array.get(i).getBarcode() != null) {
-                            if (sample_type_array.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
-                                Toast.makeText(context, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
-                                enter_barcode.setText("");
+                        if (!GlobalClass.isNull(sample_type_array.get(i).getBarcode())) {
+                            if (!GlobalClass.isNull(searchBarcode) && sample_type_array.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
+                                GlobalClass.showTastyToast(context, ToastFile.duplicate_barcd, 2);
+                                GlobalClass.SetEditText(enter_barcode, "");
                                 flag = true;
                             }
                         } else {
-                            if (flag == false) {
+                            if (!flag) {
                                 flag = true;
                                 barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-                                progressDialog = new ProgressDialog(context);
-                                progressDialog.setTitle("Kindly wait ...");
-                                progressDialog.setMessage(ToastFile.processing_request);
-                                progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                                progressDialog.setProgress(0);
-                                progressDialog.setMax(20);
-                                progressDialog.setCanceledOnTouchOutside(false);
-                                progressDialog.setCancelable(false);
-                                progressDialog.show();
-                                JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
-                                        , new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        Log.e(TAG, "onResponse: Response" + response);
-                                        Log.v("barcode respponse", "" + response);
-                                        String finalJson = response.toString();
-                                        JSONObject parentObjectOtp = null;
-                                        try {
-                                            parentObjectOtp = new JSONObject(finalJson);
-                                            ERROR = parentObjectOtp.getString("ERROR");
-                                            RES_ID = parentObjectOtp.getString("RES_ID");
-                                            barcode = parentObjectOtp.getString("barcode");
-                                            response1 = parentObjectOtp.getString("response");
-                                            if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                                enter_barcode.setText(searchBarcode);
-                                                progressDialog.dismiss();
-                                            } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
-                                                if (progressDialog != null && progressDialog.isShowing()) {
-                                                    progressDialog.dismiss();
-                                                }
-                                                GlobalClass.redirectToLogin(context);
-                                            } else {
-                                                enter_barcode.setText("");
-                                                storeResponse = response1;
-                                                progressDialog.dismiss();
-                                                Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
-                                            }
 
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
+                                String strurl = null;
 
+                                edit_enter_barcode = enter_barcode;
+                                try {
+                                    if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                                        ControllersGlobalInitialiser.checkbarcode_controller = null;
                                     }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if (error.networkResponse == null) {
-                                            if (error.getClass().equals(TimeoutError.class)) {
-                                                // Show timeout error message
-                                            }
-                                        }
-                                    }
-                                });
-                                jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                        300000,
-                                        3,
-                                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                                barcodeDetails.add(jsonObjectRequestPop);
-                                Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                                    ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller((Activity) context, LeadIdAdapter.this, searchBarcode);
+                                    strurl = Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode";
+                                    ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(strurl, barcodeDetails);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
 
                         }

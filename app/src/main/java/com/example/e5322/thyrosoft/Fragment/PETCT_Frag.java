@@ -11,14 +11,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,35 +30,32 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ConfirmbookDetail;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GenerateTokenController;
+import com.example.e5322.thyrosoft.Controller.GetCenterlist_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.Myprofile_Controller;
+import com.example.e5322.thyrosoft.Controller.PETCTSLOT_Controller;
+import com.example.e5322.thyrosoft.Controller.PETCTServiceTypes_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.BookTypesModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
 import com.example.e5322.thyrosoft.Models.TokenModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -78,9 +70,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -94,11 +87,10 @@ public class PETCT_Frag extends Fragment {
     RadioButton rb_gender, rb_dib, rb_age;
     Date fromdate;
     RadioGroup radio_gender, radio_diab, radio_age;
-    ProgressDialog progressDialog;
     Date To_date;
     RelativeLayout rel_dob;
     String user;
-    ImageView enter_arrow_enter, enter_arrow_entered;
+    ImageView enter_arrow_enter;
     private String myFormat = "dd-MM-yyyy";
     private Spinner spn_city, spn_service, spn_slot;
     private Activity activity;
@@ -108,23 +100,18 @@ public class PETCT_Frag extends Fragment {
     private String CLIENT_TYPE;
     private ConnectionDetector cd;
     private TextView tv_discount, enter;
-    private boolean resultcheck = false;
-    private View v;
-    private boolean isViewShown = false;
     private LinearLayout ll_discount, ll_coupon, sub_lin, enter_ll_unselected;
     private Context context;
     private List<CenterList_Model> centerListModels;
-    private ArrayList<BookTypesModel> bookTypesModels;
     private List<ServiceModel> serviceListModels;
     private List<SlotModel> slotModelList;
-    private int newAmount;
     private String serviceId = "";
-    private String couponCode, cal_age;
-    private String fullname, gendername = "", diabeticsname = "", str_slot, str_age = "";
+    private String cal_age;
+    private String gendername = "", diabeticsname = "", str_slot, str_age = "";
     private String serviceName = "", To_formateDate;
     private DecimalFormat decimalFormat;
     private TextView tv_date, txt_dialog, txt_appoint_dialog, txt_appdate, txt_ledgerbal;
-    private String putDate, showDate;
+    private String putDate;
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     private String getFormatDate, from_formateDate;
 
@@ -159,9 +146,18 @@ public class PETCT_Frag extends Fragment {
             getFormatDate = sdf.format(myCalendar.getTime());
             To_date = returndate(To_date, putDate);
             To_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
-            txt_appdate.setText(putDate);
 
-            getSlot(centerId);
+            GlobalClass.SetText(txt_appdate, putDate);
+
+            try {
+                if (ControllersGlobalInitialiser.petctslot_controller != null) {
+                    ControllersGlobalInitialiser.petctslot_controller = null;
+                }
+                ControllersGlobalInitialiser.petctslot_controller = new PETCTSLOT_Controller(activity, PETCT_Frag.this, header);
+                ControllersGlobalInitialiser.petctslot_controller.getSlotsController(txt_appdate, header, centerId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     };
@@ -216,7 +212,8 @@ public class PETCT_Frag extends Fragment {
 
         fromdate = returndate(fromdate, putDate);
         from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
-        tv_date.setText(putDate);
+
+        GlobalClass.SetText(tv_date, putDate);
     }
 
     private Date returndate(Date date, String putDate) {
@@ -231,55 +228,20 @@ public class PETCT_Frag extends Fragment {
     public void getProfileDetails(final Context context) {
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
 
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    public String tsp_img;
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (response != null) {
-                                GlobalClass.hideProgress(context, progressDialog);
-
-                                SharedPreferences.Editor saveProfileDetails = getActivity().getSharedPreferences("profile", 0).edit();
-                                saveProfileDetails.putString("balance", response.getString(Constants.balance));
-                                saveProfileDetails.commit();
-
-                                if (!TextUtils.isEmpty(response.getString(Constants.balance))) {
-                                    closingbal = response.getString(Constants.balance);
-                                    GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(response.getString(Constants.balance)));
-                                } else {
-                                    txt_ledgerbal.setText("");
-                                    closingbal = "0";
-                                }
+        String sturl = Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile";
 
 
-                            } else {
-                                Toast.makeText(context, "Something Went Wrong", Toast.LENGTH_SHORT).show();
-                            }
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.myprofile_controller != null) {
+                ControllersGlobalInitialiser.myprofile_controller = null;
             }
-        });
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+            ControllersGlobalInitialiser.myprofile_controller = new Myprofile_Controller(activity, PETCT_Frag.this);
+            ControllersGlobalInitialiser.myprofile_controller.getmyprofilecontroller(sturl, queue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -288,7 +250,6 @@ public class PETCT_Frag extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences("profile", 0);
         closingbal = preferences.getString("balance", "");
         Log.e(TAG, "BALANCE ---->" + closingbal);
-        // closingbal = "1000000";
 
         SharedPreferences preferences1 = getActivity().getSharedPreferences("Userdetails", 0);
         user = preferences1.getString("USER_CODE", null);
@@ -335,11 +296,11 @@ public class PETCT_Frag extends Fragment {
                                       int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ")) {
-                    GlobalClass.toastyError(getActivity(), getString(R.string.email_no_space), false);
+                    GlobalClass.showTastyToast(getActivity(), getString(R.string.email_no_space), 2);
                     if (enteredString.length() > 0) {
-                        edt_email.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(edt_email, enteredString.substring(1));
                     } else {
-                        edt_email.setText("");
+                        GlobalClass.SetEditText(edt_email, "");
                     }
 
                 }
@@ -364,12 +325,11 @@ public class PETCT_Frag extends Fragment {
                                       int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ")) {
-                    GlobalClass.toastyError(getActivity(), getString(R.string.space_val_remarks), false);
-
+                    GlobalClass.showTastyToast(activity, getString(R.string.space_val_remarks), 2);
                     if (enteredString.length() > 0) {
-                        edt_remarks.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(edt_remarks, enteredString.substring(1));
                     } else {
-                        edt_remarks.setText("");
+                        GlobalClass.SetEditText(edt_remarks, "");
                     }
 
                 }
@@ -388,10 +348,10 @@ public class PETCT_Frag extends Fragment {
         });
 
 
-        if (!TextUtils.isEmpty(closingbal)) {
+        if (!GlobalClass.isNull(closingbal)) {
             GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(closingbal));
         } else {
-            txt_ledgerbal.setText("");
+            GlobalClass.SetText(txt_ledgerbal, "");
             closingbal = "0";
         }
 
@@ -440,12 +400,63 @@ public class PETCT_Frag extends Fragment {
             ControllersGlobalInitialiser.generateTokenController = new GenerateTokenController(activity, PETCT_Frag.this);
             ControllersGlobalInitialiser.generateTokenController.generateToken(true, jsonObject);
         } else {
-            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+            GlobalClass.showTastyToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 2);
+
         }
 
     }
 
     private void initListners() {
+
+        spn_service.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                servicetype = spn_service.getSelectedItem().toString().trim();
+
+                if (GlobalClass.CheckArrayList(serviceListModels)) {
+                    for (int i = 0; i < serviceListModels.size(); i++) {
+                        if (serviceListModels.get(i).getServiceName().toUpperCase().equalsIgnoreCase(servicetype)) {
+                            price = "" + serviceListModels.get(i).getNHF_Rate();
+                            serviceId = serviceListModels.get(i).getServiceId();
+                            serviceName = serviceListModels.get(i).getServiceName();
+                        }
+                    }
+
+
+                    Log.e(TAG, "service type ---> " + servicetype);
+
+                    if (!GlobalClass.isNull(servicetype) && !servicetype.equalsIgnoreCase("Select Scan Type*")) {
+                        if (spn_city.getSelectedItem().toString().equalsIgnoreCase("Select City*")) {
+                            spn_service.setSelection(0);
+                            tv_discount.setVisibility(View.GONE);
+                            GlobalClass.SetText(tv_discount, "");
+                        } else {
+                            try {
+                                if (Integer.parseInt(closingbal) < Integer.parseInt(price)) {
+                                    showDialog(true);
+                                    sub_lin.setVisibility(View.GONE);
+                                } else {
+                                    sub_lin.setVisibility(View.VISIBLE);
+                                }
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+
+                            patientName = edt_name.getText().toString().trim() + " " + edt_mname.getText().toString().trim() + " " + edt_lname.getText().toString().trim();
+                        }
+                    } else {
+                        edt_name.getText().clear();
+                        sub_lin.setVisibility(View.GONE);
+                        tv_discount.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         radio_gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @SuppressLint("ResourceType")
@@ -482,7 +493,7 @@ public class PETCT_Frag extends Fragment {
                 } else {
                     edt_age.setVisibility(View.VISIBLE);
                     rel_dob.setVisibility(View.GONE);
-                    tv_date.setText("");
+                    GlobalClass.SetText(tv_date, "");
                 }
 
             }
@@ -494,8 +505,8 @@ public class PETCT_Frag extends Fragment {
                 String city = spn_city.getSelectedItem().toString().trim();
 
 
-                if (!city.equalsIgnoreCase("Select City*")) {
-                    if (centerListModels != null && centerListModels.size() > 0) {
+                if (!GlobalClass.isNull(city) && !city.equalsIgnoreCase("Select City*")) {
+                    if (GlobalClass.CheckArrayList(centerListModels)) {
                         for (int i = 0; i < centerListModels.size(); i++) {
                             if (city.equalsIgnoreCase(centerListModels.get(i).getLocation())) {
                                 centerId = centerListModels.get(i).getCenterId();
@@ -505,19 +516,23 @@ public class PETCT_Frag extends Fragment {
                             }
                         }
 
-                        if (cd.isConnectingToInternet()) {
-                            callServiceTypesAPI(centerId);
-                            getSlot(centerId);
-                        } else {
-                            GlobalClass.toastyError(context, MessageConstants.CHECK_INTERNET_CONN, false);
+
+                        callServiceTypesAPI(centerId);
+                        try {
+                            if (ControllersGlobalInitialiser.petctslot_controller != null) {
+                                ControllersGlobalInitialiser.petctslot_controller = null;
+                            }
+                            ControllersGlobalInitialiser.petctslot_controller = new PETCTSLOT_Controller(activity, PETCT_Frag.this, header);
+                            ControllersGlobalInitialiser.petctslot_controller.getSlotsController(txt_appdate, header, centerId);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
 
                     }
 
-                } else if (city.equalsIgnoreCase("Select City*")) {
+                } else if (!GlobalClass.isNull(city) && city.equalsIgnoreCase("Select City*")) {
                     spn_service.setSelection(0);
                     spn_slot.setSelection(0);
-
                     ll_discount.setVisibility(View.GONE);
                     sub_lin.setVisibility(View.GONE);
                 }
@@ -542,7 +557,7 @@ public class PETCT_Frag extends Fragment {
                     displayDiscount(patientName, centerName, centerAddress, price);
                 } else {
                     tv_discount.setVisibility(View.GONE);
-                    tv_discount.setText("");
+                    GlobalClass.SetText(tv_discount, "");
                 }
             }
 
@@ -570,10 +585,10 @@ public class PETCT_Frag extends Fragment {
                                 }
 
                             } else {
-                                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
+                                GlobalClass.showTastyToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 2);
                             }
                         } else {
-                            TastyToast.makeText(getContext(), "Enter valid email id !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            GlobalClass.showTastyToast(getActivity(), "Enter valid email id !", 2);
                         }
                     } else {
                         if (checkRemarksValidation()) {
@@ -589,7 +604,7 @@ public class PETCT_Frag extends Fragment {
                                 }
 
                             } else {
-                                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
+                                GlobalClass.showTastyToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 2);
                             }
                         }
                     }
@@ -633,80 +648,15 @@ public class PETCT_Frag extends Fragment {
         startActivity(intent);
     }
 
-    private void getSlot(String centerId) {
-        if (cd.isConnectingToInternet()) {
-            final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-            APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
-            Call<List<SlotModel>> responseCall = apiInterface.getslot(header, GlobalClass.formatDate("dd-mm-yyyy", "yyyy-mm-dd", txt_appdate.getText().toString()), centerId);
-            Log.e("TAG", "SLOT URL --->" + responseCall.request().url());
-
-            responseCall.enqueue(new Callback<List<SlotModel>>() {
-                @Override
-                public void onResponse(Call<List<SlotModel>> call, Response<List<SlotModel>> response) {
-                    try {
-                        if (response.body() != null) {
-                            GlobalClass.hideProgress(context, progressDialog);
-                            ArrayList<String> slotlist = new ArrayList<>();
-                            slotlist.add("Select Slot*");
-                            try {
-                                slotModelList = new ArrayList<>();
-                                slotModelList.clear();
-                                slotModelList.addAll(response.body());
-                                if (slotModelList != null) {
-                                    for (int i = 0; i < slotModelList.size(); i++) {
-                                        slotlist.add(slotModelList.get(i).getSlot().trim());
-                                    }
-
-                                    ArrayAdapter<String> slotadapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, slotlist);
-                                    slotadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    spn_slot.setAdapter(slotadapter);
-
-                                    spn_slot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                            str_slot = spn_slot.getSelectedItem().toString();
-                                        }
-
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> parent) {
-
-                                        }
-                                    });
-
-                                }
-                            } catch (Exception e) {
-                                Log.e("TAG", "on failure: " + e.getLocalizedMessage());
-                            }
-                        } else {
-                            GlobalClass.hideProgress(context, progressDialog);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<SlotModel>> call, Throwable t) {
-
-                }
-            });
-        } else {
-            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
-        }
-
-
-    }
-
 
     public void clearAllFields() {
-
-        edt_name.setText("");
         edt_name.requestFocus();
-        edt_mname.setText("");
-        edt_lname.setText("");
-        edt_mobile.setText("");
-        edt_email.setText("");
-        edt_remarks.setText("");
+        GlobalClass.SetEditText(edt_name, "");
+        GlobalClass.SetEditText(edt_mname, "");
+        GlobalClass.SetEditText(edt_lname, "");
+        GlobalClass.SetEditText(edt_mobile, "");
+        GlobalClass.SetEditText(edt_email, "");
+        GlobalClass.SetEditText(edt_remarks, "");
 
         try {
             rb_gender.setChecked(false);
@@ -718,11 +668,12 @@ public class PETCT_Frag extends Fragment {
         gendername = "";
         diabeticsname = "";
 
-        tv_date.setText("");
-        txt_appdate.setText("");
+
+        GlobalClass.SetText(tv_date, "");
+        GlobalClass.SetText(txt_appdate, "");
 
         tv_discount.setVisibility(View.GONE);
-        tv_discount.setText("");
+        GlobalClass.SetText(tv_discount, "");
 
 
         if (spn_city.isShown())
@@ -743,7 +694,7 @@ public class PETCT_Frag extends Fragment {
             ll_discount.setVisibility(View.VISIBLE);
             msg = "You will be charged Rs. " + decimalFormat.format(Integer.parseInt(price)) + " for " + servicetype + " of " + patientName.trim() + " at " + centerName + ".";
 
-            tv_discount.setText(msg);
+            GlobalClass.SetText(tv_discount, msg);
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -752,22 +703,22 @@ public class PETCT_Frag extends Fragment {
 
     private boolean checkRemarksValidation() {
         if (edt_remarks.getText().toString().startsWith(",")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.remarks_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.remarks_val), 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(".")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.remarks_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.remarks_val), 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith("-")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.remarks_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.remarks_val), 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(" ")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.space_val_remarks), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.space_val_remarks), 2);
             edt_remarks.requestFocus();
             return false;
         }
@@ -776,7 +727,7 @@ public class PETCT_Frag extends Fragment {
 
     private boolean emailValidation(String stremail) {
         if (stremail.startsWith(" ")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.email_no_space), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.email_no_space), 2);
             edt_email.requestFocus();
             return false;
         }
@@ -796,87 +747,87 @@ public class PETCT_Frag extends Fragment {
     private boolean checkValidation() {
 
         if (TextUtils.isEmpty(edt_name.getText().toString())) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_enter_name), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_enter_name), 2);
             //edt_name.requestFocus();
             return false;
         }
         if (edt_name.getText().toString().startsWith(" ")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.space_val_name), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.space_val_name), 2);
             edt_name.requestFocus();
             return false;
         }
 
 
         if (edt_name.getText().toString().length() < 2) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.valid_name), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.valid_name), 2);
             edt_name.requestFocus();
             return false;
         }
         if (edt_mname.getText().toString().length() > 0) {
             if (edt_mname.getText().toString().startsWith(" ")) {
-                GlobalClass.toastyError(getActivity(), getString(R.string.space_val_name), false);
+                GlobalClass.showTastyToast(getActivity(), getString(R.string.space_val_name), 2);
                 edt_mname.requestFocus();
                 return false;
             }
         }
         if (edt_lname.getText().toString().length() > 0) {
             if (edt_lname.getText().toString().startsWith(" ")) {
-                GlobalClass.toastyError(getActivity(), getString(R.string.space_val_name), false);
+                GlobalClass.showTastyToast(getActivity(), getString(R.string.space_val_name), 2);
                 edt_lname.requestFocus();
                 return false;
             }
         }
 
         if (gendername.equalsIgnoreCase("")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_gender_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_gender_val), 2);
             return false;
         }
 
         if (diabeticsname.equalsIgnoreCase("")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_diab_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_diab_val), 2);
             return false;
         }
 
         if (TextUtils.isEmpty(str_age)) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_slc), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_slc), 2);
             return false;
         } else {
             if (str_age.equalsIgnoreCase("DOB")) {
                 if (tv_date.getText().toString().equalsIgnoreCase("")) {
-                    GlobalClass.toastyError(getActivity(), getString(R.string.str_dob_val), false);
+                    GlobalClass.showTastyToast(getActivity(), getString(R.string.str_dob_val), 2);
                     return false;
                 }
             } else {
                 if (edt_age.getText().toString().equalsIgnoreCase("")) {
-                    GlobalClass.toastyError(getActivity(), getString(R.string.str_age), false);
+                    GlobalClass.showTastyToast(getActivity(), getString(R.string.str_age), 2);
                     return false;
                 }
             }
         }
 
         if (txt_appdate.getText().toString().equalsIgnoreCase("")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_appdt_val), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_appdt_val), 2);
             return false;
         }
 
-        if (str_slot.equalsIgnoreCase("Select Slot*")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_slot), false);
+        if (!GlobalClass.isNull(str_slot) && str_slot.equalsIgnoreCase("Select Slot*")) {
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_slot), 2);
             return false;
         }
         if (edt_mobile.getText().toString().isEmpty()) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_enter_mobile_number), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_enter_mobile_number), 2);
             edt_mobile.requestFocus();
             return false;
         }
         if (edt_mobile.getText().toString().length() < 10) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_should_be_ten_digits), false);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_should_be_ten_digits), 2);
             edt_mobile.requestFocus();
             return false;
         }
 
         if (!edt_mobile.getText().toString().startsWith("9") && !edt_mobile.getText().toString().startsWith("8")
                 && !edt_mobile.getText().toString().startsWith("7") && !edt_mobile.getText().toString().startsWith("6")) {
-            GlobalClass.toastyError(getActivity(), getString(R.string.str_valid_mobile_no), true);
+            GlobalClass.showTastyToast(getActivity(), getString(R.string.str_valid_mobile_no), 2);
             edt_mobile.requestFocus();
             return false;
         }
@@ -885,56 +836,15 @@ public class PETCT_Frag extends Fragment {
     }
 
     private void callServiceTypesAPI(String centerId) {
-        progressDialog = GlobalClass.ShowprogressDialog(context);
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
-        Log.e(TAG, "HEADER ----->" + header);
-        Call<List<ServiceModel>> responseCall = apiInterface.getservicelist(header, centerId, user);
-        Log.e("TAG", "SERVICE URL --->" + responseCall.request().url());
-
-        responseCall.enqueue(new Callback<List<ServiceModel>>() {
-            @Override
-            public void onResponse(Call<List<ServiceModel>> call, Response<List<ServiceModel>> response) {
-                try {
-                    if (response.body() != null) {
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                        ArrayList<String> servicelist = new ArrayList<>();
-                        servicelist.add("Select Scan Type*");
-                        serviceListModels = new ArrayList<>();
-                        serviceListModels.addAll(response.body());
-
-                        if (serviceListModels != null && serviceListModels.size() > 0) {
-                            for (int i = 0; i < serviceListModels.size(); i++) {
-                                /* if (serviceListModels.get(i).getServiceId().toUpperCase().equalsIgnoreCase("F")) {*/
-                                serviceName = serviceListModels.get(i).getServiceName();
-                                servicelist.add(serviceName);
-
-                                /*    }*/
-                            }
-                        }
-
-                        if (cd.isConnectingToInternet()) {
-                            if (servicelist.size() == 2) {
-                                // servicelist.remove(0);
-                                setServiceData(servicelist);
-                            } else {
-                                setServiceData(servicelist);
-                            }
-
-                        } else {
-                            GlobalClass.toastyError(context, MessageConstants.CHECK_INTERNET_CONN, false);
-                        }
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.petctServiceTypesController != null) {
+                ControllersGlobalInitialiser.petctServiceTypesController = null;
             }
-
-            @Override
-            public void onFailure(Call<List<ServiceModel>> call, Throwable t) {
-
-            }
-        });
+            ControllersGlobalInitialiser.petctServiceTypesController = new PETCTServiceTypes_Controller(getActivity(), PETCT_Frag.this, header);
+            ControllersGlobalInitialiser.petctServiceTypesController.getPetctService(header, centerId, user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -943,61 +853,11 @@ public class PETCT_Frag extends Fragment {
         bookAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spn_service.setAdapter(bookAdapter);
 
-        if (bookType != null) {
+        if (GlobalClass.CheckArrayList(bookType)) {
             if (bookType.size() == 2) {
                 spn_service.setSelection(1);
             }
         }
-
-        spn_service.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                servicetype = spn_service.getSelectedItem().toString().trim();
-
-                if (serviceListModels != null) {
-                    for (int i = 0; i < serviceListModels.size(); i++) {
-                        if (serviceListModels.get(i).getServiceName().toUpperCase().equalsIgnoreCase(servicetype)) {
-                            price = "" + serviceListModels.get(i).getNHF_Rate();
-                            serviceId = serviceListModels.get(i).getServiceId();
-                            serviceName = serviceListModels.get(i).getServiceName();
-                        }
-                    }
-
-
-                    Log.e(TAG, "service type ---> " + servicetype);
-
-                    if (!servicetype.equalsIgnoreCase("Select Scan Type*")) {
-                        if (spn_city.getSelectedItem().toString().equalsIgnoreCase("Select City*")) {
-                            spn_service.setSelection(0);
-                            tv_discount.setVisibility(View.GONE);
-                            tv_discount.setText("");
-                        } else {
-                            try {
-                                if (Integer.parseInt(closingbal) < Integer.parseInt(price)) {
-                                    showDialog(true);
-                                    sub_lin.setVisibility(View.GONE);
-                                } else {
-                                    sub_lin.setVisibility(View.VISIBLE);
-                                }
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                            }
-
-                            patientName = edt_name.getText().toString().trim() + " " + edt_mname.getText().toString().trim() + " " + edt_lname.getText().toString().trim();
-                        }
-                    } else {
-                        edt_name.getText().clear();
-                        sub_lin.setVisibility(View.GONE);
-                        tv_discount.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
     }
 
@@ -1055,81 +915,63 @@ public class PETCT_Frag extends Fragment {
         try {
             TokenModel tokenResponseModel = gson.fromJson(response.toString(), TokenModel.class);
             if (tokenResponseModel != null) {
-                if (tokenResponseModel.getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(tokenResponseModel.getRespId()) && tokenResponseModel.getRespId().equalsIgnoreCase(Constants.RES0000)) {
                     if (!GlobalClass.isNull(tokenResponseModel.getAccess_token()) && !GlobalClass.isNull(tokenResponseModel.getToken_type())) {
+
                         if (cd.isConnectingToInternet()) {
-                            if (tokenResponseModel != null) {
-                                getCenterList(tokenResponseModel);
+                            try {
+                                if (ControllersGlobalInitialiser.getCenterlist_controller != null) {
+                                    ControllersGlobalInitialiser.getCenterlist_controller = null;
+                                }
+                                ControllersGlobalInitialiser.getCenterlist_controller = new GetCenterlist_Controller(PETCT_Frag.this, getActivity());
+                                ControllersGlobalInitialiser.getCenterlist_controller.getcenterlist(tokenResponseModel, user);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
+                        } else {
+                            GlobalClass.showTastyToast(activity, ToastFile.intConnection, 2);
                         }
-                    } else
-                        GlobalClass.hideProgress(context, progressDialog);
+
+
+                    }
                 } else {
-                    GlobalClass.hideProgress(context, progressDialog);
-                    GlobalClass.toastyError(activity, tokenResponseModel.getResponseMessage(), false);
+
+                    GlobalClass.showTastyToast(getActivity(), tokenResponseModel.getResponseMessage(), 2);
                 }
             } else {
-                GlobalClass.hideProgress(context, progressDialog);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void getCenterList(TokenModel tokenResponseModel) {
-        progressDialog = GlobalClass.ShowprogressDialog(context);
-        header = tokenResponseModel.getToken_type() + " " + tokenResponseModel.getAccess_token();
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.SCANSOAPI).create(APIInteface.class);
-        Call<List<CenterList_Model>> responseCall = apiInterface.getcenterList(header, user);
-        Log.e("TAG", "header --->" + header);
-        Log.e("TAG", "S C A N S O URL --->" + responseCall.request().url());
+    public void getCenterListResponse(List<CenterList_Model> body, String header) {
+        this.header = header;
+        ArrayList<String> centerLocation = new ArrayList<>();
+        centerLocation.add("Select City*");
+        try {
+            centerListModels = new ArrayList<>();
+            centerListModels.clear();
+            centerListModels.addAll(body);
 
-
-        responseCall.enqueue(new Callback<List<CenterList_Model>>() {
-            @Override
-            public void onResponse(Call<List<CenterList_Model>> call, Response<List<CenterList_Model>> response) {
-                try {
-                    if (response.body() != null) {
-                        GlobalClass.hideProgress(context, progressDialog);
-                        ArrayList<String> centerLocation = new ArrayList<>();
-                        centerLocation.add("Select City*");
-                        try {
-                            centerListModels = new ArrayList<>();
-                            centerListModels.clear();
-                            centerListModels.addAll(response.body());
-
-                            if (centerListModels != null) {
-                                for (int i = 0; i < centerListModels.size(); i++) {
-                                    centerLocation.add(centerListModels.get(i).getLocation().trim());
-                                }
-                            }
-
-                            Log.e(TAG, "centerLocation size ---->" + centerLocation.size());
-
-                            if (centerLocation.size() == 2) {
-                                centerLocation.remove(0);
-                                setDataToCitySpinner(centerLocation);
-                            } else {
-                                setDataToCitySpinner(centerLocation);
-                            }
-
-                        } catch (Exception e) {
-                            Log.e("TAG", "on failure: " + e.getLocalizedMessage());
-                        }
-
-                    } else {
-                        GlobalClass.hideProgress(context, progressDialog);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+            if (GlobalClass.CheckArrayList(centerListModels)) {
+                for (int i = 0; i < centerListModels.size(); i++) {
+                    centerLocation.add(centerListModels.get(i).getLocation().trim());
                 }
             }
 
-            @Override
-            public void onFailure(Call<List<CenterList_Model>> call, Throwable t) {
-                Log.e("TAG", "on failure: " + t.getLocalizedMessage());
+            Log.e(TAG, "centerLocation size ---->" + centerLocation.size());
+
+            if (centerLocation.size() == 2) {
+                centerLocation.remove(0);
+                setDataToCitySpinner(centerLocation);
+            } else {
+                setDataToCitySpinner(centerLocation);
             }
-        });
+
+        } catch (Exception e) {
+            Log.e("TAG", "on failure: " + e.getLocalizedMessage());
+        }
     }
 
     private void setDataToCitySpinner(ArrayList<String> centerName) {
@@ -1160,6 +1002,96 @@ public class PETCT_Frag extends Fragment {
             if (GlobalClass.isNetworkAvailable(getActivity())) {
                 ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getSlotResponse(List<SlotModel> body) {
+
+        ArrayList<String> slotlist = new ArrayList<>();
+        slotlist.add("Select Slot*");
+        try {
+            slotModelList = new ArrayList<>();
+            slotModelList.clear();
+            slotModelList.addAll(body);
+
+            if (GlobalClass.CheckArrayList(slotModelList)) {
+                for (int i = 0; i < slotModelList.size(); i++) {
+                    slotlist.add(slotModelList.get(i).getSlot().trim());
+                }
+
+                ArrayAdapter<String> slotadapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, slotlist);
+                slotadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spn_slot.setAdapter(slotadapter);
+
+                spn_slot.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        str_slot = spn_slot.getSelectedItem().toString();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "on failure: " + e.getLocalizedMessage());
+        }
+    }
+
+    public void getserviceResponse(List<ServiceModel> body, ProgressDialog progressDialog) {
+        if (body != null) {
+            GlobalClass.hideProgress(getContext(), progressDialog);
+            ArrayList<String> servicelist = new ArrayList<>();
+            servicelist.add("Select Scan Type*");
+            serviceListModels = new ArrayList<>();
+            serviceListModels.addAll(body);
+
+            if (GlobalClass.CheckArrayList(serviceListModels)) {
+                for (int i = 0; i < serviceListModels.size(); i++) {
+                    serviceName = serviceListModels.get(i).getServiceName();
+                    servicelist.add(serviceName);
+                }
+            }
+
+            if (cd.isConnectingToInternet()) {
+                if (servicelist.size() == 2) {
+                    setServiceData(servicelist);
+                } else {
+                    setServiceData(servicelist);
+                }
+            } else {
+                GlobalClass.showTastyToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 2);
+            }
+        }
+    }
+
+    public void getMyprofileRespponse(JSONObject response) {
+        try {
+            if (response != null) {
+
+                SharedPreferences.Editor saveProfileDetails = getActivity().getSharedPreferences("profile", 0).edit();
+                saveProfileDetails.putString("balance", response.getString(Constants.balance));
+                saveProfileDetails.commit();
+
+                if (!GlobalClass.isNull(response.getString(Constants.balance))) {
+                    closingbal = response.getString(Constants.balance);
+                    GlobalClass.SetText(txt_ledgerbal, getResources().getString(R.string.str_legderbal) + " : " + "Rs " + GlobalClass.currencyFormat(response.getString(Constants.balance)));
+                } else {
+                    GlobalClass.SetText(txt_ledgerbal, "");
+                    closingbal = "0";
+                }
+
+
+            } else {
+                GlobalClass.showTastyToast(getActivity(), MessageConstants.SOMETHING_WENT_WRONG, 2);
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.BS_MISAdapter;
 import com.example.e5322.thyrosoft.Controller.BloodSugarMISController;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSMISModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.BSMISRequestModel;
 import com.example.e5322.thyrosoft.R;
@@ -32,6 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -87,7 +88,8 @@ public class BS_MISEntryFragment extends Fragment {
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         currentDate = sdf.format(d);
-        txt_bs_cal.setText(currentDate);
+        GlobalClass.SetText(txt_bs_cal, currentDate);
+
 
         callMISDataAPI(currentDate);
 
@@ -114,7 +116,7 @@ public class BS_MISEntryFragment extends Fragment {
         String myFormat1 = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         SimpleDateFormat sdf1 = new SimpleDateFormat(myFormat1, Locale.US);
-        txt_bs_cal.setText(sdf.format(myCalendar.getTime()));
+        GlobalClass.SetText(txt_bs_cal, sdf.format(myCalendar.getTime()));
     }
 
     private void callMISDataAPI(String date) {
@@ -149,7 +151,7 @@ public class BS_MISEntryFragment extends Fragment {
         Gson gson = new Gson();
         BSMISModel misModel = gson.fromJson(String.valueOf(response), BSMISModel.class);
         if (misModel != null) {
-            if (misModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
+            if (!GlobalClass.isNull(misModel.getResId()) && misModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
                 if (misModel.getBloodSugarEntries().size() > 0) {
                     recycler_view.setVisibility(View.VISIBLE);
                     tv_noResult.setVisibility(View.GONE);
@@ -160,8 +162,8 @@ public class BS_MISEntryFragment extends Fragment {
                     tv_noResult.setVisibility(View.VISIBLE);
                 }
             } else
-                Global.showCustomToast(activity, misModel.getResponse());
+                GlobalClass.showTastyToast(activity, misModel.getResponse(), 2);
         } else
-            Global.showCustomToast(activity, ToastFile.something_went_wrong);
+            GlobalClass.showTastyToast(activity, ToastFile.something_went_wrong, 2);
     }
 }

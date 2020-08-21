@@ -29,7 +29,66 @@ public class Base_Model_Rate_Calculator implements Parcelable {
     String isCPL;
 
     String type;
+    private int isAB;
 
+
+    protected Base_Model_Rate_Calculator(Parcel in) {
+        product = in.readString();
+        billrate = in.readString();
+        gettotalcount = in.readString();
+        rate = in.readParcelable(Rate.class.getClassLoader());
+        name = in.readString();
+        fasting = in.readString();
+        code = in.readString();
+        isCPL = in.readString();
+        type = in.readString();
+        isAB = in.readInt();
+        isCart = in.readString();
+        is_lock = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(product);
+        dest.writeString(billrate);
+        dest.writeString(gettotalcount);
+        dest.writeTypedArray(barcodes, flags);
+        dest.writeParcelable(rate, flags);
+        dest.writeString(name);
+        dest.writeString(fasting);
+        dest.writeTypedArray(childs, flags);
+        dest.writeString(code);
+        dest.writeString(isCPL);
+        dest.writeString(type);
+        dest.writeInt(isAB);
+        dest.writeString(isCart);
+        dest.writeString(is_lock);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Base_Model_Rate_Calculator> CREATOR = new Creator<Base_Model_Rate_Calculator>() {
+        @Override
+        public Base_Model_Rate_Calculator createFromParcel(Parcel in) {
+            return new Base_Model_Rate_Calculator(in);
+        }
+
+        @Override
+        public Base_Model_Rate_Calculator[] newArray(int size) {
+            return new Base_Model_Rate_Calculator[size];
+        }
+    };
+
+    public int getIsAB() {
+        return isAB;
+    }
+
+    public void setIsAB(int isAB) {
+        this.isAB = isAB;
+    }
 
     public String getIsCart() {
         return isCart;
@@ -50,49 +109,7 @@ public class Base_Model_Rate_Calculator implements Parcelable {
         this.is_lock = is_lock;
     }
 
-    protected Base_Model_Rate_Calculator(Parcel in) {
-        product = in.readString();
-        billrate = in.readString();
-        gettotalcount = in.readString();
-        rate = in.readParcelable(Rate.class.getClassLoader());
-        name = in.readString();
-        fasting = in.readString();
-        code = in.readString();
-        isCPL=in.readString();
-        type = in.readString();
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(product);
-        dest.writeString(billrate);
-        dest.writeString(gettotalcount);
-        dest.writeTypedArray(barcodes, flags);
-        dest.writeParcelable(rate, flags);
-        dest.writeString(name);
-        dest.writeString(fasting);
-        dest.writeTypedArray(childs, flags);
-        dest.writeString(code);
-        dest.writeString(isCPL);
-        dest.writeString(type);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Base_Model_Rate_Calculator> CREATOR = new Creator<Base_Model_Rate_Calculator>() {
-        @Override
-        public Base_Model_Rate_Calculator createFromParcel(Parcel in) {
-            return new Base_Model_Rate_Calculator(in);
-        }
-
-        @Override
-        public Base_Model_Rate_Calculator[] newArray(int size) {
-            return new Base_Model_Rate_Calculator[size];
-        }
-    };
 
     public String getGettotalcount() {
         return gettotalcount;

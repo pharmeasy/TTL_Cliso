@@ -2,14 +2,13 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CAlendar_Inteface;
 import com.example.e5322.thyrosoft.Models.getAllDays;
 import com.example.e5322.thyrosoft.R;
@@ -17,6 +16,9 @@ import com.example.e5322.thyrosoft.R;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAdapter.ViewHolder> {
     Activity context;
@@ -46,16 +48,21 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
     @Override
     public void onBindViewHolder(@NonNull final CustomCalendarAdapter.ViewHolder holder, final int position) {
 
-        holder.dates_txt.setText(mgetAllDays.get(position).getStrDates());
-        holder.days_txt.setText(mgetAllDays.get(position).getStrDays());
+
+        GlobalClass.SetText(holder.dates_txt, mgetAllDays.get(position).getStrDates());
+        GlobalClass.SetText(holder.days_txt, mgetAllDays.get(position).getStrDays());
+
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String setDtae = sdf.format(d);
-        if (setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
+
+        if (!GlobalClass.isNull(setDtae) &&
+                !GlobalClass.isNull(mgetAllDays.get(position).getStrWholeDate()) &&
+                setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
             holder.dates_txt.setBackgroundResource(R.drawable.circle);
             holder.dates_txt.setTextColor(Color.WHITE);
 
-            if (FilterReport.callOnce == false) {
+            if (!FilterReport.callOnce) {
                 listener.onPassDateandPos(position, mgetAllDays.get(position).getStrWholeDate());
                 FilterReport.callOnce = true;
             }
@@ -63,7 +70,9 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
         }
 
         if (getPosition == position) {
-            if (getDataofThatPosition.equalsIgnoreCase(mgetAllDays.get(position).getStrDates())) {
+            if (!GlobalClass.isNull(getDataofThatPosition) &&
+                    !GlobalClass.isNull(mgetAllDays.get(position).getStrDates()) &&
+                    getDataofThatPosition.equalsIgnoreCase(mgetAllDays.get(position).getStrDates())) {
                 holder.dates_txt.setBackgroundResource(R.drawable.circle);
                 holder.dates_txt.setTextColor(Color.WHITE);
                 holder.days_txt.setTextColor(Color.GRAY);
@@ -72,7 +81,9 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
                 holder.dates_txt.setTextColor(Color.WHITE);
                 holder.days_txt.setTextColor(Color.GRAY);
 
-                if (setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
+                if (!GlobalClass.isNull(setDtae) &&
+                        !GlobalClass.isNull(mgetAllDays.get(position).getStrWholeDate()) &&
+                        setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
 
                     if (getPosition != -1) {
                         holder.dates_txt.setBackgroundResource(R.drawable.faint_circle_drawable);
@@ -87,13 +98,17 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
             holder.dates_txt.setBackgroundColor(Color.parseColor("#ffffff"));
             holder.dates_txt.setTextColor(Color.BLACK);
             holder.days_txt.setTextColor(Color.GRAY);
-            if (setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
+            if (!GlobalClass.isNull(setDtae) &&
+                    !GlobalClass.isNull(mgetAllDays.get(position).getStrWholeDate()) &&
+                    setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
                 if (getPosition != -1) {
                     holder.dates_txt.setBackgroundResource(R.drawable.faint_circle_drawable);
                     holder.dates_txt.setTextColor(Color.WHITE);
                 } else {
 
-                    if (setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
+                    if (!GlobalClass.isNull(setDtae) &&
+                            !GlobalClass.isNull(mgetAllDays.get(position).getStrWholeDate()) &&
+                            setDtae.equalsIgnoreCase(mgetAllDays.get(position).getStrWholeDate())) {
                         holder.dates_txt.setBackgroundResource(R.drawable.circle);
                         holder.dates_txt.setTextColor(Color.WHITE);
                     } else {
@@ -110,7 +125,9 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
             public void onClick(View v) {
                 getPosition = position;
                 getDataofThatPosition = holder.dates_txt.getText().toString();
-                if (getDataofThatPosition.equalsIgnoreCase(mgetAllDays.get(position).getStrDates())) {
+                if (!GlobalClass.isNull(getDataofThatPosition) &&
+                        !GlobalClass.isNull(mgetAllDays.get(position).getStrDates()) &&
+                        getDataofThatPosition.equalsIgnoreCase(mgetAllDays.get(position).getStrDates())) {
                     holder.dates_txt.setBackgroundResource(R.drawable.circle);
                     holder.dates_txt.setTextColor(Color.WHITE);
                     holder.days_txt.setTextColor(Color.GRAY);

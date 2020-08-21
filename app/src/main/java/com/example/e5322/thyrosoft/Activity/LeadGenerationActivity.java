@@ -7,29 +7,20 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -39,37 +30,31 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.LeadController;
-import com.example.e5322.thyrosoft.Controller.PostLeadResponseController;
+import com.example.e5322.thyrosoft.CommonItils.AccessRuntimePermissions;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
-import com.example.e5322.thyrosoft.Models.LeadRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
-import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.TestBookingResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mindorks.paracamera.Camera;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -78,7 +63,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import static android.Manifest.permission.CAMERA;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class LeadGenerationActivity extends AppCompatActivity {
 
@@ -86,18 +71,13 @@ public class LeadGenerationActivity extends AppCompatActivity {
     Spinner spr_package;
     Button btn_submit;
     private ArrayList<LeadResponseModel.ProductlistBean> leadResponseModel;
-    LeadController leadController;
-    LeadRequestModel leadRequestModel;
     TextView tv_reset;
-    PostLeadResponseController postLeadResponseController;
-    PostLeadDataModel postLeadDataModel;
     LeadDataResponseModel leadDataResponseModel;
     private MediaRecorder mediaRecorder;
     String TAG = getClass().getSimpleName();
     private int status_code = 0;
     String Product_id, tests;
     int Rate, is_booking, pass_rate = 0;
-    String pass_product = "", pass_reportcode = "";
     private ConnectionDetector cd;
     private TestBookingResponseModel testBookingResponseModel;
     private Activity mActivity;
@@ -106,7 +86,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
     private String type = "TEST";
     private String user, api_key;
     private RelativeLayout rel_upload_img, rel_upload_voice;
-    private static final int PERMISSION_REQUEST_CODE = 200;
     public static final int RequestPermissionCode = 1;
     private File f_AudioSavePathInDevice;
     CustomDialogClass customDialogClass;
@@ -147,24 +126,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
         mActivity = LeadGenerationActivity.this;
         cd = new ConnectionDetector(mActivity);
-        // lead_id = GlobalClass.generateBookingID();
-
         prefs_user = mActivity.getSharedPreferences("Userdetails", 0);
 
         init();
         initlistner();
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
 
-        if (displayMetrics != null) {
-            try {
-                height = displayMetrics.heightPixels;
-                width = displayMetrics.widthPixels;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 
@@ -179,10 +146,10 @@ public class LeadGenerationActivity extends AppCompatActivity {
         rel_upload_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkCameraPermission()) {
+                if (AccessRuntimePermissions.checkcameraPermission(mActivity)) {
                     selectImage();
                 } else {
-                    requestCameraPermission();
+                    AccessRuntimePermissions.requestCamerapermission(mActivity);
                 }
             }
         });
@@ -229,13 +196,11 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
                 try {
                     if (i != 0) {
-                        if (leadResponseModel != null) {
-                            if (leadResponseModel.size() != 0) {
-                                Product_id = leadResponseModel.get(i).getProduct_id();
-                                tests = leadResponseModel.get(i).getTests();
-                                is_booking = leadResponseModel.get(i).getIs_booking();
-                                Rate = leadResponseModel.get(i).getRate();
-                            }
+                        if (GlobalClass.CheckArrayList(leadResponseModel)) {
+                            Product_id = leadResponseModel.get(i).getProduct_id();
+                            tests = leadResponseModel.get(i).getTests();
+                            is_booking = leadResponseModel.get(i).getIs_booking();
+                            Rate = leadResponseModel.get(i).getRate();
                         }
                     }
                 } catch (Exception e) {
@@ -270,7 +235,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     if (cd.isConnectingToInternet()) {
                                         new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                     } else {
-                                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                                        GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
                                     }
                                 }
                             }
@@ -286,13 +251,13 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     remarks = edt_remarks.getText().toString().trim();
                                     new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } else {
-                                    GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
                                 }
                             }
                         }
                     }
                 } else {
-                    GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
                 }
 
 
@@ -302,22 +267,22 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private boolean checkRemarksValidation() {
         if (edt_remarks.getText().toString().startsWith(",")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(".")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith("-")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 2);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(" ")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPACE);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPACE, 2);
             edt_remarks.requestFocus();
             return false;
         }
@@ -326,7 +291,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private boolean emailValidation() {
         if (edt_mail.getText().toString().startsWith(" ")) {
-            GlobalClass.showCustomToast(mActivity, "Email ID should not start with space");
+            GlobalClass.showTastyToast(mActivity, MessageConstants.EMAIL_SHOULD_NOT_START_SPACE, 2);
             edt_mail.requestFocus();
             return false;
         }
@@ -335,13 +300,14 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private void clearfileds() {
         edt_name.requestFocus();
-        edt_name.setText("");
-        edt_mobile.setText("");
-        edt_mail.setText("");
-        edt_address.setText("");
-        edt_pincode.setText("");
-        edt_remarks.setText("");
-        //  spr_package.setSelection(0);
+
+        GlobalClass.SetEditText(edt_name, "");
+        GlobalClass.SetEditText(edt_mobile, "");
+        GlobalClass.SetEditText(edt_mail, "");
+        GlobalClass.SetEditText(edt_address, "");
+        GlobalClass.SetEditText(edt_pincode, "");
+        GlobalClass.SetEditText(edt_remarks, "");
+
 
         img_tick.setVisibility(View.INVISIBLE);
         img_tick2.setVisibility(View.INVISIBLE);
@@ -400,8 +366,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
 
     private void cameraIntent() {
-        /*Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, PICK_PHOTO_FROM_CAMERA);*/
 
         buildCamera();
         try {
@@ -425,31 +389,31 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private boolean Validate() {
         if (edt_name.getText().toString().equals("")) {
-            edt_name.setError("Enter Valid Name");
+            edt_name.setError(MessageConstants.enter_valid_name);
             edt_name.requestFocus();
             return false;
         }
 
         if (edt_name.getText().toString().length() < 2) {
-            edt_name.setError("Minimum length should be 2");
+            edt_name.setError(MessageConstants.min_length_souuld_be_2);
             edt_name.requestFocus();
             return false;
         }
 
         if (edt_name.getText().toString().startsWith(" ")) {
-            edt_name.setError("Cannot start with Space");
+            edt_name.setError(MessageConstants.NAME_SHOULD_NOT_START_SPACE);
             edt_name.requestFocus();
             return false;
         }
 
         if (edt_name.getText().toString().contains("  ")) {
-            edt_name.setError("Cannot have Double Space");
+            edt_name.setError(MessageConstants.CANNOT_DOUBLE_SPACE);
             edt_name.requestFocus();
             return false;
         }
 
         if (edt_mobile.getText().length() != 10) {
-            edt_mobile.setError("Enter Valid Number");
+            edt_mobile.setError(MessageConstants.ENTER_VALID_MOBILE);
             edt_mobile.requestFocus();
             return false;
         }
@@ -460,7 +424,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
             return false;
         }
 
-        if (!TextUtils.isEmpty(edt_mail.getText().toString())) {
+        if (!GlobalClass.isNull(edt_mail.getText().toString())) {
             if (!GlobalClass.isValidEmail(edt_mail.getText().toString())) {
                 edt_mail.setError("Enter valid Email-id");
                 edt_mail.requestFocus();
@@ -473,86 +437,71 @@ public class LeadGenerationActivity extends AppCompatActivity {
             }
         }
 
-        if (!TextUtils.isEmpty(edt_address.getText().toString())) {
+        if (!GlobalClass.isNull(edt_address.getText().toString())) {
             if (edt_address.getText().toString().equals("")) {
-                edt_address.setError("Enter Valid Address");
+                edt_address.setError(MessageConstants.ENTER_ADDRESS);
                 edt_address.requestFocus();
                 return false;
             }
 
             if (edt_address.getText().toString().length() < 20) {
-                edt_address.setError("Minimum length should be 20");
+                edt_address.setError(MessageConstants.min_length_souuld_be_20);
                 edt_address.requestFocus();
                 return false;
             }
 
             if (edt_address.getText().toString().startsWith(" ")) {
-                edt_address.setError("Cannot start with Space");
+                edt_address.setError(MessageConstants.ADDRESS_SHOULD_NOT_START_SPACE);
                 edt_address.requestFocus();
                 return false;
             }
 
             if (edt_address.getText().toString().contains("  ")) {
-                edt_address.setError("Cannot have Double Space");
+                edt_address.setError(MessageConstants.CANNOT_DOUBLE_SPACE);
                 edt_address.requestFocus();
                 return false;
             }
         }
 
 
-        if (!TextUtils.isEmpty(edt_address.getText().toString())) {
+        if (!GlobalClass.isNull(edt_address.getText().toString())) {
             if (edt_pincode.getText().toString().equals("")) {
-                edt_pincode.setError("Enter Valid Pincode");
+                edt_pincode.setError(MessageConstants.ENTER_PINCODE);
                 edt_pincode.requestFocus();
                 return false;
             }
 
             if (edt_pincode.getText().toString().startsWith("0")) {
-                edt_pincode.setError("Cannot start with 0");
+                edt_pincode.setError(MessageConstants.PINCODE_SHOULD_NOT_START);
                 edt_pincode.requestFocus();
                 return false;
             }
 
             if (edt_pincode.getText().toString().startsWith("9")) {
-                edt_pincode.setError("Cannot start with 9");
+                edt_pincode.setError(MessageConstants.PINCODE_SHOULD_NOT_START_9);
                 edt_pincode.requestFocus();
                 return false;
             }
 
             if (edt_pincode.getText().length() != 6) {
-                edt_pincode.setError("Enter Valid Pincode");
+                edt_pincode.setError(MessageConstants.ENTER_PINCODE);
                 edt_pincode.requestFocus();
                 return false;
             }
         }
 
-        if (!TextUtils.isEmpty(edt_remarks.getText().toString())) {
+        if (!GlobalClass.isNull(edt_remarks.getText().toString())) {
             if (edt_remarks.getText().toString().startsWith(" ")) {
-                edt_remarks.setError("Cannot start with Space");
+                edt_remarks.setError(MessageConstants.Cannot_start_with_space);
                 edt_remarks.requestFocus();
                 return false;
             }
         }
 
 
-       /* if (spr_package.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, "Select Package Name", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-*/
-
         return true;
     }
 
-
-    private boolean checkCameraPermission() {
-        int result1 = ContextCompat.checkSelfPermission(mActivity, CAMERA);
-        return result1 == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestCameraPermission() {
-        ActivityCompat.requestPermissions(mActivity, new String[]{CAMERA}, PERMISSION_REQUEST_CODE);
-    }
 
     public void init() {
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
@@ -569,7 +518,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         edt_remarks = findViewById(R.id.edt_remarks);
         edt_mail = findViewById(R.id.edt_mail);
         tv_reset = findViewById(R.id.tv_reset);
-        tv_reset.setText(Html.fromHtml("<u>" + "Reset" + "</u>"));
+        GlobalClass.SetHTML(tv_reset, "Reset");
         spr_package = findViewById(R.id.spr_package);
         btn_submit = findViewById(R.id.btn_submit);
 
@@ -581,7 +530,17 @@ public class LeadGenerationActivity extends AppCompatActivity {
         rel_upload_voice = (RelativeLayout) findViewById(R.id.rel_upload_voice);
 
 
-        // edt_address.setFilters(new InputFilter[]{EMOJI_FILTER});
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        mActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        if (displayMetrics != null) {
+            try {
+                height = displayMetrics.heightPixels;
+                width = displayMetrics.widthPixels;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         edt_address.addTextChangedListener(new TextWatcher() {
             @Override
@@ -593,12 +552,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
 
-                    Toast.makeText(LeadGenerationActivity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_name, 2);
 
                     if (enteredString.length() > 0) {
-                        edt_address.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(edt_address, enteredString.substring(1));
                     } else {
-                        edt_address.setText("");
+                        GlobalClass.SetEditText(edt_address, "");
                     }
 
                 }
@@ -625,12 +584,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
 
-                    TastyToast.makeText(LeadGenerationActivity.this, ToastFile.crt_txt, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_txt, 2);
 
                     if (enteredString.length() > 0) {
-                        edt_remarks.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(edt_remarks, enteredString.substring(1));
                     } else {
-                        edt_remarks.setText("");
+                        GlobalClass.SetEditText(edt_remarks, "");
                     }
 
                 }
@@ -646,35 +605,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
             }
 
         });
-
-
-    }
-
-    public void getleadresponse(LeadResponseModel body) {
-        try {
-            CallLeadResponse(body.getProductlist());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void CallLeadResponse(ArrayList<LeadResponseModel.ProductlistBean> productlist) {
-
-        leadResponseModel = new ArrayList<>();
-        LeadResponseModel.ProductlistBean ent = new LeadResponseModel.ProductlistBean();
-        ent.setProduct_name("Select Package*");
-        leadResponseModel.add(ent);
-
-        if (productlist != null) {
-            for (int i = 0; i < productlist.size(); i++) {
-                leadResponseModel.add(productlist.get(i));
-            }
-
-        }
-
-        ArrayAdapter<LeadResponseModel.ProductlistBean> adapter = new ArrayAdapter<LeadResponseModel.ProductlistBean>(this, R.layout.spinner_layout, leadResponseModel);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spr_package.setAdapter(adapter);
     }
 
     public void getleaddataresponse(LeadDataResponseModel body) {
@@ -691,7 +621,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.dismiss();
                                 if (true) {
-
                                     Intent intent = new Intent(LeadGenerationActivity.this.getApplicationContext(), LeadGenerationActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     LeadGenerationActivity.this.startActivity(intent);
@@ -744,9 +673,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 if (f_AudioSavePathInDevice.exists()) {
                     btn_discard.setEnabled(true);
                     btn_discard.setBackgroundResource(R.drawable.bg_bg1);
-//                    f_AudioSavePathInDevice.delete();
                 }
-//                f_AudioSavePathInDevice = null;
             } else {
                 btn_discard.setEnabled(false);
                 btn_discard.setBackgroundResource(R.drawable.btn_disabled_bg);
@@ -760,15 +687,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
             closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // Dismiss the popup window
+
                     customDialogClass.cancel();
-                    /*if (f_AudioSavePathInDevice != null) {
-                        if (f_AudioSavePathInDevice.exists()) {
-                            f_AudioSavePathInDevice.delete();
-                        }
-                        f_AudioSavePathInDevice = null;
-                    }
-                    img_tick2.setVisibility(View.INVISIBLE);*/
                     GlobalClass.printLog(Constants.ERROR, TAG, "On cancel Audio file: ", "" + f_AudioSavePathInDevice);
                 }
             });
@@ -808,7 +728,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             if (!directory.isDirectory()) {
                                 directory.mkdirs();
                             }
-                            if (type.equals("TEST")) {
+                            if (!GlobalClass.isNull(type) && type.equals("TEST")) {
                                 AudioSavePathInDevice = directory + "/" + lead_id + "_TestBooking.Mp3";
                             }
                             f_AudioSavePathInDevice = new File(AudioSavePathInDevice);
@@ -826,14 +746,15 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
                             }
-                            tv_record_title.setText(getString(R.string.stop_record));
+
+                            GlobalClass.SetText(tv_record_title, getString(R.string.stop_record));
                             closeButton.setClickable(false);
                             img_record.setImageResource(R.drawable.ic_stop_record);
                             btn_save.setEnabled(false);
                             btn_save.setBackgroundResource(R.drawable.btn_disabled_bg);
                             btn_discard.setEnabled(false);
                             btn_discard.setBackgroundResource(R.drawable.btn_disabled_bg);
-                            GlobalClass.showCustomToast(mActivity, "Recording started");
+                            GlobalClass.showTastyToast(mActivity, MessageConstants.Recording_Started, 1);
                         } else {
                             GlobalClass.requestAudioPermission(mActivity, RequestPermissionCode);
                         }
@@ -851,14 +772,14 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        tv_record_title.setText(getString(R.string.start_record));
+                        GlobalClass.SetText(tv_record_title, getString(R.string.start_record));
                         closeButton.setClickable(true);
                         img_record.setImageResource(R.drawable.ic_start_record);
                         btn_save.setEnabled(true);
                         btn_save.setBackgroundResource(R.drawable.bg_bg1);
                         btn_discard.setEnabled(true);
                         btn_discard.setBackgroundResource(R.drawable.bg_bg1);
-                        GlobalClass.showCustomToast(mActivity, "Recording completed");
+                        GlobalClass.showTastyToast(mActivity, MessageConstants.Recording_completed, 1);
                     }
                 }
             });
@@ -914,7 +835,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         protected String doInBackground(Void... voids) {
             String strUrl = Api.NUECLEAR + "/Aayushman/Booking";
             Log.e(TAG, "POST API ---->" + strUrl);
-            //System.out.println(strUrl);
+            //Log.v(strUrl);
 
             InputStream inputStream = null;
             String result = "";
@@ -972,7 +893,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 status_code = httpResponse.getStatusLine().getStatusCode();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    System.out.println("Response : " + result);
+                    Log.v("Response : ", result);
                 }
             } catch (Exception e) {
                 GlobalClass.printLog(Constants.DEBUG, TAG, "InputStream", e.getLocalizedMessage());
@@ -993,7 +914,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     testBookingResponseModel = gson.fromJson(response, TestBookingResponseModel.class);
                     AlertDialog.Builder alertDialogBuilder;
                     if (testBookingResponseModel.getRES_ID().equals("RES0000")) {
-//                        Global.showCustomToast(mActivity, "Test booking done successfully !");
+
                         clearfileds();
 
                         CustomDialogforSuccess = new Dialog(mActivity);
@@ -1039,29 +960,13 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             }
                         });
 
-                        booking_ID.setText(testBookingResponseModel.getREF_ORDERID());
-                        tv_name.setText(name);
-                        tv_mobile.setText(mobile);
 
-                     /*   if (email.isEmpty()) {
-                            ll_email_id.setVisibility(View.GONE);
-                        } else {
-                            tv_email_id.setText(email);
-                        }
+                        GlobalClass.SetText(booking_ID, testBookingResponseModel.getREF_ORDERID());
+                        GlobalClass.SetText(tv_name, name);
+                        GlobalClass.SetText(tv_mobile, mobile);
+                        GlobalClass.SetText(note, mobile);
+                        GlobalClass.SetText(note, name + " will be contacted for availing service.");
 
-                        if (address.isEmpty()) {
-                            ll_address.setVisibility(View.GONE);
-                        } else {
-                            tv_city.setText(address);
-                        }
-
-                        if (remarks.isEmpty()) {
-                            ll_remarks.setVisibility(View.GONE);
-                        } else {
-                            tv_remarks.setText(remarks);
-                        }*/
-
-                        note.setText(name + " will be contacted for availing service.");
 
                         img_whatsapp.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -1071,7 +976,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl(name, mobile, testBookingResponseModel.getREF_ORDERID(), type)));
                                     startActivity(intent);
                                 } else {
-                                    GlobalClass.showCustomToast(mActivity, "WhatsApp not Installed");
+                                    GlobalClass.showTastyToast(mActivity, MessageConstants.WHTSAPP_NOT_INSTALL, 2);
                                 }
                             }
                         });
@@ -1082,7 +987,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                 ShareModeType = "Email";
                                 Intent emailintent = new Intent(Intent.ACTION_SEND);
                                 emailintent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
-                                if (type.contains("TEST")) {
+                                if (!GlobalClass.isNull(type) && type.contains("TEST")) {
                                     emailintent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.test_subject));
 
                                     emailintent.putExtra(Intent.EXTRA_TEXT, "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile);
@@ -1092,7 +997,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     startActivity(Intent.createChooser(emailintent, "Choose an Email client to which you want to share details:"));
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    GlobalClass.showCustomToast(mActivity, "There is no email client installed");
+                                    GlobalClass.showTastyToast(mActivity, "There is no email client installed", 0);
                                 }
                             }
                         });
@@ -1103,13 +1008,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                 ShareModeType = "SMS";
                                 Uri uri = Uri.parse("smsto:" + mobile);
                                 Intent sendIntent = new Intent(Intent.ACTION_SENDTO, uri);
-                                if (type.contains("TEST")) {
-                                    /*if (email.isEmpty() && address.isEmpty() && remarks.isEmpty()) {
-                                        sendIntent.putExtra("sms_body", getString(R.string.test_subject) + "\n" + "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile);
-                                    } else {
-
-                                    }*/
-
+                                if (!GlobalClass.isNull(type) && type.contains("TEST")) {
                                     sendIntent.putExtra("sms_body", getString(R.string.test_subject) + "\n" + "Lead ID :- " + testBookingResponseModel.getREF_ORDERID() + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile);
                                 }
                                 startActivity(sendIntent);
@@ -1117,12 +1016,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         });
 
                         CustomDialogforSuccess.show();
-                    } else if (testBookingResponseModel.getRESPONSE().contains("MOBILE NUMBER. IS ALREADY HAS BEEN USED")) {
+                    } else if (!GlobalClass.isNull(testBookingResponseModel.getRESPONSE()) && testBookingResponseModel.getRESPONSE().contains(MessageConstants.mobileno_has_already_used)) {
                         alertDialogBuilder = new AlertDialog.Builder(mActivity);
                         alertDialogBuilder
                                 .setMessage(MessageConstants.MOBILE_NO_USED_10_TIMES)
                                 .setCancelable(false)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         // TODO Auto-generated method stub
@@ -1139,7 +1038,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         alertDialogBuilder
                                 .setMessage(testBookingResponseModel.getRESPONSE())
                                 .setCancelable(false)
-                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         // TODO Auto-generated method stub
@@ -1154,7 +1053,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
             }
         }
     }
@@ -1179,7 +1078,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         final String PARAM_PHONE_NUMBER = "phone";
         final String PARAM_TEXT = "text";
         String TEXT_VALUE = null;
-        if (type.contains("TEST")) {
+        if (!GlobalClass.isNull(type) && type.contains("TEST")) {
             TEXT_VALUE = "Test details" + "\n" + "Lead ID :- " + booking_id + "\n" + "Name :- " + name + "\n" + "Mobile :- " + mobile;
         }
         String newUrl = BASE_URL + "send";
@@ -1190,105 +1089,5 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
         return GlobalClass.buildWhatsappUrl(builtUri).toString();
     }
-
-    public class ValidateEmailAsyncTask extends AsyncTask<Void, Void, JSONObject> {
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = GlobalClass.ShowprogressDialog(LeadGenerationActivity.this);
-        }
-
-        @Override
-        protected JSONObject doInBackground(Void... params) {
-
-            String strUrl = Api.LIVEAPI + "MASTER.svc/EmailValidate";
-            Log.e(TAG, "EMAIL URL--->" + strUrl);
-
-            JSONObject jobj = new JSONObject();
-            try {
-                jobj.put("AppID", "2");
-                jobj.put("EmailID", edt_mail.getText().toString());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            //Log.v(strUrl);
-
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httpPost = new HttpPost(strUrl);
-                String strJson = "";
-                strJson = jobj.toString();
-                Log.v("Sending data: " , strJson);
-                StringEntity se = new StringEntity(strJson);
-                httpPost.setEntity(se);
-                httpPost.setHeader("Accept", "application/json");
-                httpPost.setHeader("Content-type", "application/json");
-                HttpResponse httpResponse = httpclient.execute(httpPost);
-                inputStream = httpResponse.getEntity().getContent();
-                if (inputStream != null) {
-                    result = convertInputStreamToString(inputStream);
-                    Log.v("Response : " , result);
-                }
-
-            } catch (Exception e) {
-                GlobalClass.printLog(Constants.DEBUG, TAG, "InputStream", e.getLocalizedMessage());
-            }
-
-            JSONObject json = null;
-            try {
-
-                json = new JSONObject(result);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return json;
-        }
-
-
-        @Override
-        protected void onPostExecute(JSONObject result) {
-            super.onPostExecute(result);
-            boolean isemailvalid = false;
-            if (result != null) {
-                String isSuccess = result.optString("Sucess", "");
-                String isValid = result.optString("Message", "");
-                if (isSuccess.equalsIgnoreCase("TRUE")) {
-                    isemailvalid = true;
-                } else {
-                    isemailvalid = false;
-                }
-            } else {
-                isemailvalid = false;
-            }
-            GlobalClass.hideProgress(LeadGenerationActivity.this, progressDialog);
-
-            if (checkRemarksValidation()) {
-                if (!isemailvalid) {
-                    GlobalClass.showCustomToast(mActivity, MessageConstants.INVALID_EMAIL);
-                    edt_mail.requestFocus();
-                } else {
-                    name = edt_name.getText().toString().toUpperCase().trim();
-                    mobile = edt_mobile.getText().toString();
-                    email = edt_mail.getText().toString();
-                    address = edt_address.getText().toString();
-                    remarks = edt_remarks.getText().toString().trim();
-
-                    if (cd.isConnectingToInternet()) {
-                        new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                    } else {
-                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
-                    }
-                }
-            }
-        }
-    }
-
 
 }

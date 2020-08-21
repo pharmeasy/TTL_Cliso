@@ -2,11 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,7 +10,14 @@ import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.Fragment.ReportScanFrag;
 import com.example.e5322.thyrosoft.Fragment.ReportScansummaryFrag;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class ReportBarcode_activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -29,35 +31,13 @@ public class ReportBarcode_activity extends AppCompatActivity implements View.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_reportbarcode);
 
+        initViews();
+        initListner();
+    }
 
-        TextView txttitle = findViewById(R.id.txt_name);
-        txttitle.setText(getResources().getString(R.string.tltreport));
-        txttitle.setTextColor(getResources().getColor(R.color.maroon));
-
-
-        scan_ll_unselected = (LinearLayout) findViewById(R.id.scan_ll_unselected);
-        unchecked_scansumm_ll = (LinearLayout) findViewById(R.id.unchecked_scansumm_ll);
-
-        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
-
-        txt_scan = (TextView) findViewById(R.id.txt_scan);
-        txt_scansumm = (TextView) findViewById(R.id.txt_scansumm);
-        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
-        txt_scan.setBackground(getResources().getDrawable(R.drawable.enter_button));
-        enter_arrow_enter.setVisibility(View.VISIBLE);
-        txt_scansumm.setBackgroundColor(getResources().getColor(R.color.lightgray));
-        enter_arrow_entered.setVisibility(View.GONE);
-
-        back = findViewById(R.id.back);
-        home = findViewById(R.id.home);
-
+    private void initListner() {
         back.setOnClickListener(this);
         home.setOnClickListener(this);
-
-
-        ReportScanFrag petct_frag = new ReportScanFrag();
-        replaceFragment(petct_frag);
 
         scan_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +64,37 @@ public class ReportBarcode_activity extends AppCompatActivity implements View.On
                 replaceFragment(scanSummaryActivity);
             }
         });
+
+
+    }
+
+    private void initViews() {
+        TextView txttitle = findViewById(R.id.txt_name);
+        GlobalClass.SetText(txttitle, getResources().getString(R.string.tltreport));
+        txttitle.setTextColor(getResources().getColor(R.color.maroon));
+
+
+
+        scan_ll_unselected = (LinearLayout) findViewById(R.id.scan_ll_unselected);
+        unchecked_scansumm_ll = (LinearLayout) findViewById(R.id.unchecked_scansumm_ll);
+
+        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
+
+        txt_scan = (TextView) findViewById(R.id.txt_scan);
+        txt_scansumm = (TextView) findViewById(R.id.txt_scansumm);
+        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
+        txt_scan.setBackground(getResources().getDrawable(R.drawable.enter_button));
+        enter_arrow_enter.setVisibility(View.VISIBLE);
+        txt_scansumm.setBackgroundColor(getResources().getColor(R.color.lightgray));
+        enter_arrow_entered.setVisibility(View.GONE);
+
+        back = findViewById(R.id.back);
+        home = findViewById(R.id.home);
+
+        ReportScanFrag petct_frag = new ReportScanFrag();
+        replaceFragment(petct_frag);
+
     }
 
 

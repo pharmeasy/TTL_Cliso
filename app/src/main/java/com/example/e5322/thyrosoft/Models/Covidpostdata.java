@@ -12,6 +12,9 @@ public class Covidpostdata {
     String GENDER;
     String BARCODE;
     String TESTCODE;
+    String ENTERBY;
+    String HOSPITAL;
+    String WOEID;
     File PRESCRIPTION ;
     File ADHAR ;
     File ADHAR1;
@@ -21,6 +24,31 @@ public class Covidpostdata {
     File OTHER;
     File OTHER1;
     File SELFIE;
+
+
+    public String getENTERBY() {
+        return ENTERBY;
+    }
+
+    public String getWOEID() {
+        return WOEID;
+    }
+
+    public void setWOEID(String WOEID) {
+        this.WOEID = WOEID;
+    }
+
+    public void setENTERBY(String ENTERBY) {
+        this.ENTERBY = ENTERBY;
+    }
+
+    public String getHOSPITAL() {
+        return HOSPITAL;
+    }
+
+    public void setHOSPITAL(String HOSPITAL) {
+        this.HOSPITAL = HOSPITAL;
+    }
 
     public String getGENDER() {
         return GENDER;

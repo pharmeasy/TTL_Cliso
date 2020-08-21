@@ -8,11 +8,10 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.Installation;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -23,8 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.TELEPHONY_SERVICE;
 
 public class LogUserActivityTagging {
-    String
-            User, token;
+    String User, token;
     SharedPreferences sharedPreferences;
 
     public LogUserActivityTagging(Activity activity, String screen) {
@@ -60,16 +58,16 @@ public class LogUserActivityTagging {
             }
 
 
-            if (!TextUtils.isEmpty(User)) {
+            if (!GlobalClass.isNull(User)) {
                 editorUserActivity.putString(Constants.SHR_USERNAME, User);
             } else {
                 editorUserActivity.putString(Constants.SHR_USERNAME, "");
             }
 
-            if (!TextUtils.isEmpty(screen) && screen.equalsIgnoreCase(Constants.SHLOGIN)) {
+            if (!GlobalClass.isNull(screen) && screen.equalsIgnoreCase(Constants.SHLOGIN)) {
                 editorUserActivity.putString(Constants.SHR_MODTYPE, Constants.SHLOGIN);
                 editorUserActivity.putString(Constants.SHR_ISLOGIN, "Y");
-            } else if (!TextUtils.isEmpty(screen) && screen.equalsIgnoreCase(Constants.LOGOUT)) {
+            } else if (!GlobalClass.isNull(screen) && screen.equalsIgnoreCase(Constants.LOGOUT)) {
                 editorUserActivity.putString(Constants.SHR_MODTYPE, Constants.LOGOUT);
                 editorUserActivity.putString(Constants.SHR_ISLOGIN, "N");
             }
@@ -125,7 +123,7 @@ public class LogUserActivityTagging {
                     ControllersGlobalInitialiser.logUserActivityController = new LogUserActivityController(activity);
                     ControllersGlobalInitialiser.logUserActivityController.updateUserActivity(requestModel);
                 } else {
-                    Toast.makeText(activity, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(activity, MessageConstants.CHECK_INTERNET_CONN, 2);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

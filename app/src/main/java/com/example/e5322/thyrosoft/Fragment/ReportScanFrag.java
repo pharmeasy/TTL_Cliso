@@ -1,20 +1,14 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,24 +18,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.InsertScandetail_Controller;
+import com.example.e5322.thyrosoft.Controller.Insertreason_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.InsertReasonsReq;
-import com.example.e5322.thyrosoft.Models.InsertScandetailReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailRes;
 import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
+import com.example.e5322.thyrosoft.ToastFile;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -87,11 +81,14 @@ public class ReportScanFrag extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        activity=getActivity();
+        activity = getActivity();
         scanIntegrator = IntentIntegrator.forSupportFragment(this);
         initView(view);
 
+        initListner();
+
     }
+
 
     private void initView(View view) {
 
@@ -105,6 +102,111 @@ public class ReportScanFrag extends Fragment {
         btn_scansubmit = view.findViewById(R.id.btn_scansubmit);
         btn_reason_submit = view.findViewById(R.id.btn_reason_submit);
         lin_reason = view.findViewById(R.id.lin_reason);
+
+
+        txt_barcode = view.findViewById(R.id.txt_barcode);
+
+
+        edt_reason.setFilters(new InputFilter[]{EMOJI_FILTER});
+        int maxreason = 500;
+        edt_reason.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxreason)});
+    }
+
+    private void initListner() {
+
+        edt_reason.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ")) {
+                    GlobalClass.showTastyToast(activity, MessageConstants.ENTER_REASON, 2);
+
+                    if (enteredString.length() > 0) {
+                        GlobalClass.SetEditText(edt_reason, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_reason, "");
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        btn_scansubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (GlobalClass.isNull(txt_barcode.getText().toString())) {
+                    GlobalClass.showTastyToast(activity, ToastFile.scan_brcd, 2);
+                } else {
+                    insertscandetailData();
+                }
+            }
+        });
+
+        btn_reason_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (GlobalClass.isNull(edt_wastecnt.getText().toString())) {
+                    GlobalClass.showTastyToast(activity, MessageConstants.ENTER_WSTCNT, 2);
+                } else if (GlobalClass.isNull(edt_reason.getText().toString())) {
+                    GlobalClass.showTastyToast(activity, MessageConstants.ENTER_REASON, 2);
+                } else {
+                    insertreason();
+                }
+            }
+        });
+
+
+        edt_wastecnt.setFilters(new InputFilter[]{EMOJI_FILTER});
+        int maxLength = 4;
+
+        edt_wastecnt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
+
+        edt_wastecnt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+
+                    GlobalClass.showTastyToast(activity, MessageConstants.ENTER_WSTCNT, 2);
+
+                    if (enteredString.length() > 0) {
+                        GlobalClass.SetEditText(edt_wastecnt, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_wastecnt, "");
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         lin_reason.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,116 +230,7 @@ public class ReportScanFrag extends Fragment {
                 scanIntegrator.initiateScan();
             }
         });
-
-        txt_barcode = view.findViewById(R.id.txt_barcode);
-
-        edt_wastecnt.setFilters(new InputFilter[]{EMOJI_FILTER});
-        int maxLength = 4;
-
-        edt_wastecnt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLength)});
-
-        edt_wastecnt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), "Please enter valid Waste count", Toast.LENGTH_SHORT).show();
-
-                    if (enteredString.length() > 0) {
-                        edt_wastecnt.setText(enteredString.substring(1));
-                    } else {
-                        edt_wastecnt.setText("");
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        edt_reason.setFilters(new InputFilter[]{EMOJI_FILTER});
-        int maxreason = 500;
-        edt_reason.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxreason)});
-
-        edt_reason.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ")) {
-                    Toast.makeText(getActivity(), "Please enter valid reason", Toast.LENGTH_SHORT).show();
-
-                    if (enteredString.length() > 0) {
-                        edt_reason.setText(enteredString.substring(1));
-                    } else {
-                        edt_reason.setText("");
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-        btn_scansubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (GlobalClass.isNetworkAvailable(getActivity())) {
-                    if (TextUtils.isEmpty(txt_barcode.getText().toString())) {
-                        GlobalClass.toastyError(getActivity(), "Please Scan barcode", false);
-                    } else {
-                        insertscandetailData();
-                    }
-
-                } else {
-                    GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-                }
-            }
-        });
-
-        btn_reason_submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (GlobalClass.isNetworkAvailable(getActivity())) {
-                    if (TextUtils.isEmpty(edt_wastecnt.getText().toString())) {
-                        GlobalClass.toastyError(getActivity(), "Please enter Waste count", false);
-                    } else if (TextUtils.isEmpty(edt_reason.getText().toString())) {
-                        GlobalClass.toastyError(getActivity(), "Please enter reason", false);
-                    } else {
-                        insertreason();
-                    }
-                } else {
-                    GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-                }
-            }
-        });
-
-
     }
-
 
     private void insertreason() {
 
@@ -245,96 +238,37 @@ public class ReportScanFrag extends Fragment {
         Log.e(TAG, "  ------>" + edt_reason.getText().toString().length());
         btn_reason_submit.setClickable(false);
         btn_reason_submit.setEnabled(false);
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        InsertReasonsReq insertScandetailReq = new InsertReasonsReq();
-        insertScandetailReq.setSource(usercode);
-        insertScandetailReq.setRemarks(edt_reason.getText().toString());
-        insertScandetailReq.setRowaste(edt_wastecnt.getText().toString());
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
-        Call<InsertreasonResponse> insertScandetailResCall = apiInteface.insertreason(insertScandetailReq);
-
-       // Log.e(TAG, "URL ---->" + insertScandetailResCall.request().url());
-       // Log.e(TAG, "REQUEST BODY ---->" + new GsonBuilder().create().toJson(insertScandetailReq));
-
-        insertScandetailResCall.enqueue(new Callback<InsertreasonResponse>() {
-            @Override
-            public void onResponse(Call<InsertreasonResponse> call, Response<InsertreasonResponse> response) {
-
-                try {
-                    if (response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
-                        btn_reason_submit.setClickable(true);
-                        btn_reason_submit.setEnabled(true);
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                       // Log.e(TAG, "DATA SUBMITEED SUCCESSS ");
-                        GlobalClass.toastySuccess(getContext(), "Data submitted Successfully", false);
-                        txt_barcode.setText(null);
-                        clearField();
-                    } else {
-                        btn_reason_submit.setClickable(true);
-                        btn_reason_submit.setEnabled(true);
-                        GlobalClass.toastyError(getContext(), response.body().getResponse(), false);
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.insertreason_controller != null) {
+                ControllersGlobalInitialiser.insertreason_controller = null;
             }
+            ControllersGlobalInitialiser.insertreason_controller = new Insertreason_Controller(getActivity(), ReportScanFrag.this);
+            ControllersGlobalInitialiser.insertreason_controller.getinsertreasoncontroller(usercode, edt_reason, edt_wastecnt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<InsertreasonResponse> call, Throwable t) {
-                GlobalClass.hideProgress(getContext(), progressDialog);
-            }
-        });
     }
 
     private void insertscandetailData() {
         btn_scansubmit.setClickable(false);
         btn_scansubmit.setEnabled(false);
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        InsertScandetailReq insertScandetailReq = new InsertScandetailReq();
-        insertScandetailReq.setSource(usercode);
-        insertScandetailReq.setBarcode(txt_barcode.getText().toString());
 
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
-        Call<InsertScandetailRes> insertScandetailResCall = apiInteface.insertScandetail(insertScandetailReq);
-
-       // Log.e(TAG, "URL ---->" + insertScandetailResCall.request().url());
-        //Log.e(TAG, "REQUEST BODY ---->" + new GsonBuilder().create().toJson(insertScandetailReq));
-
-        insertScandetailResCall.enqueue(new Callback<InsertScandetailRes>() {
-            @Override
-            public void onResponse(Call<InsertScandetailRes> call, Response<InsertScandetailRes> response) {
-
-                try {
-                    if (response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                        btn_scansubmit.setClickable(true);
-                        btn_scansubmit.setEnabled(true);
-                        txt_barcode.setText("");
-                        GlobalClass.toastySuccess(getContext(), "Barcode submitted successfully", false);
-                        clearField();
-                    } else {
-                        btn_scansubmit.setClickable(true);
-                        btn_scansubmit.setEnabled(true);
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                        GlobalClass.toastyError(getContext(), response.body().getResponse(), false);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.insertScandetail_controller != null) {
+                ControllersGlobalInitialiser.insertScandetail_controller = null;
             }
-
-            @Override
-            public void onFailure(Call<InsertScandetailRes> call, Throwable t) {
-                GlobalClass.hideProgress(getContext(), progressDialog);
-            }
-        });
+            ControllersGlobalInitialiser.insertScandetail_controller = new InsertScandetail_Controller(getActivity(), ReportScanFrag.this);
+            ControllersGlobalInitialiser.insertScandetail_controller.insertScandetail(usercode, txt_barcode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
     private void clearField() {
-        txt_barcode.setText("");
+        GlobalClass.SetText(txt_barcode, "");
         edt_reason.getText().clear();
         edt_wastecnt.getText().clear();
     }
@@ -342,7 +276,6 @@ public class ReportScanFrag extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /* super.onActivityResult(requestCode, resultCode, data);*/
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 
         if (result != null) {
@@ -350,13 +283,51 @@ public class ReportScanFrag extends Fragment {
             if (result.getContents() != null) {
                 String getBarcodeDetails = result.getContents();
                 Log.e(TAG, "getBarcodeDetails---->" + getBarcodeDetails.length());
-                if (getBarcodeDetails.length() != 0 || !TextUtils.isEmpty(getBarcodeDetails)) {
-                    txt_barcode.setText(getBarcodeDetails);
+                if (!GlobalClass.isNull(getBarcodeDetails) || getBarcodeDetails.length() != 0 ) {
+                    GlobalClass.SetText(txt_barcode, getBarcodeDetails);
                 } else {
-                    Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(activity, invalid_brcd, 2);
+
                 }
             }
         }
+    }
 
+    public void getscanResponse(Response<InsertScandetailRes> response) {
+
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getRed_id()) && response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
+                btn_scansubmit.setClickable(true);
+                btn_scansubmit.setEnabled(true);
+                GlobalClass.SetText(txt_barcode, "");
+                GlobalClass.showTastyToast(activity, MessageConstants.BARCODESUCC, 1);
+                clearField();
+            } else {
+                btn_scansubmit.setClickable(true);
+                btn_scansubmit.setEnabled(true);
+
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getinsertreasonResponse(Response<InsertreasonResponse> response) {
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getRed_id()) && response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
+                btn_reason_submit.setClickable(true);
+                btn_reason_submit.setEnabled(true);
+                GlobalClass.showTastyToast(activity, MessageConstants.DATASUCCUSS, 1);
+                GlobalClass.SetText(txt_barcode, null);
+                clearField();
+            } else {
+                btn_reason_submit.setClickable(true);
+                btn_reason_submit.setEnabled(true);
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

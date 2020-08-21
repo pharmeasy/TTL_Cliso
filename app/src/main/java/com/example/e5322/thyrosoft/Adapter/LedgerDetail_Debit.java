@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
 import com.example.e5322.thyrosoft.R;
 
@@ -49,8 +50,6 @@ public class LedgerDetail_Debit extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         try {
-
-
             if (convertView == null) {
                 // inflate the layout
                 LayoutInflater inflater = ((Activity) context).getLayoutInflater();
@@ -64,13 +63,10 @@ public class LedgerDetail_Debit extends BaseAdapter {
             TextView narration = (TextView) convertView.findViewById(R.id.narration);
             TextView icon = (TextView) convertView.findViewById(R.id.icon);
 
-
-            icon.setText("D");
-            date.setText(ledgerDetAll.get(position).getDate());
-
-            narration.setText(ledgerDetAll.get(position).getNarration().toString());
-
-            amount.setText("-" + ledgerDetAll.get(position).getAmount().toString() + "");
+            GlobalClass.SetText(icon,"D");
+            GlobalClass.SetText(date,ledgerDetAll.get(position).getDate());
+            GlobalClass.SetText(narration,ledgerDetAll.get(position).getNarration().toString());
+            GlobalClass.SetText(amount,"-" + ledgerDetAll.get(position).getAmount().toString() + "");
             amount.setTextColor(context.getResources().getColor(R.color.red));
 
 

@@ -1,45 +1,40 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.Windup_adapter;
+import com.example.e5322.thyrosoft.Controller.ConfirmConsignmentEntry_Controller;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.FetchwoeListDoneByTSP_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.Multiplewindup_Controller;
+import com.example.e5322.thyrosoft.Controller.WindupControllerr;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CountInterface;
@@ -52,7 +47,6 @@ import com.example.e5322.thyrosoft.WorkOrder_entry_Model.Patients;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Details;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +59,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -102,43 +100,36 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         }
     };
     private static ManagingTabsActivity mContext;
-    ImageView add, enter_arrow_enterss, enter_arrow_enteredss;
-    View viewfab;
+    ImageView enter_arrow_enterss, enter_arrow_enteredss;
     View viewMain;
-    View view;
-    SharedPreferences mPrefs;
     Windup_adapter windup_adapter;
     EditText edtSearch;
     LinearLayout linearlayout2, pick_up_ll;
-    String getDatefromWOE, halfTime, DateToPass;
+    String DateToPass;
     TextView wind_up, woe_cal, wind_up_multiple, pick_up_txt;
-    //  ProgressDialog barProgressDialog;
     RequestQueue requestQueue, requestQueueWindup;
-    Button defaultFragment;
+
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    View view_line, view_line1;
-    TextView enetered, enter;
     TextView enetered_consign, enter_consign, title_txt;
-    //layouts defined in fragment
-    LinearLayout layoutCartItems, layoutCartPayments, layoutCartNoItems, enter_entered_layout_consign, enter_ll_unselected_consign, unchecked_entered_ll_consign, packaging_details_ll;
-    Fragment fragment_woe_ad_test;
+    LinearLayout enter_entered_layout_consign, enter_ll_unselected_consign, unchecked_entered_ll_consign, packaging_details_ll;
     WOE_Model_Patient_Details woe_model_patient_details;
     ArrayList<Patients> patientsArrayList;
     ArrayList<Patients> filterPatientsArrayList;
     ArrayList<String> getWindupCount;
     LinearLayout enter_entered_layout;
-    LinearLayout consignment_ll, windup_ll;
     View view_1, view_2;
     LinearLayout offline_img;
     Calendar myCalendar;
     LinearLayout windup_ll_below;
-    String putDate, getFormatDate, convertedDate;
+    String putDate, getFormatDate;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     SharedPreferences prefs;
     String user, passwrd, access, api_key;
     String blockCharacterSet = "~#^|$%&*!+:`";
     LinearLayout logistic_ll;
+    Activity mActivity;
+    ConnectionDetector cd;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -196,49 +187,17 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mContext = (ManagingTabsActivity) getActivity();
-
+        mActivity = getActivity();
+        cd = new ConnectionDetector(mActivity);
 
         viewMain = (View) inflater.inflate(R.layout.fragment_woe_add_test, container, false);
 
-        wind_up = (TextView) viewMain.findViewById(R.id.wind_up);
-        wind_up_multiple = (TextView) viewMain.findViewById(R.id.wind_up_multiple);
-        woe_cal = (TextView) viewMain.findViewById(R.id.woe_cal);
-        edtSearch = (EditText) viewMain.findViewById(R.id.edtSearch);
-//        ImageView  add = (ImageView)viewMain.findViewById(R.id.add);
-        windup_ll_below = (LinearLayout) viewMain.findViewById(R.id.windup_ll_below);
-        offline_img = (LinearLayout) viewMain.findViewById(R.id.offline_img);
-        recyclerView = (RecyclerView) viewMain.findViewById(R.id.recycler_view);
-        linearLayoutManager = new LinearLayoutManager(mContext);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        enetered_consign = (TextView) viewMain.findViewById(R.id.enetered_consign);
-        pick_up_txt = (TextView) viewMain.findViewById(R.id.pick_up_txt);
-        enter_consign = (TextView) viewMain.findViewById(R.id.enter_consign);
-        linearlayout2 = (LinearLayout) viewMain.findViewById(R.id.linearlayout2);
-        pick_up_ll = (LinearLayout) viewMain.findViewById(R.id.pick_up_ll);
-        logistic_ll = (LinearLayout) viewMain.findViewById(R.id.logistic_ll);
-        enter_entered_layout = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout);
-        enter_entered_layout_consign = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout_consign);
-        unchecked_entered_ll_consign = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll_consign);
-        enter_ll_unselected_consign = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected_consign);
-        enter_arrow_enteredss = (ImageView) viewMain.findViewById(R.id.enter_arrow_enteredss);
-        enter_arrow_enterss = (ImageView) viewMain.findViewById(R.id.enter_arrow_enterss);
-        view_1 = (View) viewMain.findViewById(R.id.view_1);
-        view_2 = (View) viewMain.findViewById(R.id.view_2);
-        enter_entered_layout.setVisibility(View.GONE);
-
-        view_1.setVisibility(View.VISIBLE);
-        view_2.setVisibility(View.VISIBLE);
-        windup_ll_below.setVisibility(View.VISIBLE);
-
-        enter_entered_layout_consign.setVisibility(View.VISIBLE);
-        enter_consign.setBackground(getResources().getDrawable(R.drawable.enter_button));
-        enter_arrow_enterss.setVisibility(View.VISIBLE);
-        enetered_consign.setBackgroundColor(getResources().getColor(R.color.lightgray));
-        enter_arrow_enteredss.setVisibility(View.GONE);
+        initViews();
 
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        woe_cal.setText(sdf.format(d));
+
+        GlobalClass.SetText(woe_cal, sdf.format(d));
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -261,15 +220,19 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         api_key = prefs.getString("API_KEY", null);
         client_type = prefs.getString("CLIENT_TYPE", null);
 
-        if (client_type != null && client_type.equalsIgnoreCase("OLC")) {
-            logistic_ll.setVisibility(View.GONE);//--TODO if client type is OLC then make logistic_ll visible(Logistic charges)
-        } else {
-            logistic_ll.setVisibility(View.GONE);
+        if (!GlobalClass.isNull(client_type)) {
+            if (!GlobalClass.isNull(client_type) && client_type.equalsIgnoreCase("OLC")) {
+                logistic_ll.setVisibility(View.GONE);//--TODO if client type is OLC then make logistic_ll visible(Logistic charges)
+            } else {
+                logistic_ll.setVisibility(View.GONE);
+            }
         }
+
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             linearlayout2.setVisibility(View.GONE);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
         } else {
             offline_img.setVisibility(View.GONE);
             linearlayout2.setVisibility(View.VISIBLE);
@@ -282,13 +245,18 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         enetered_consign.setBackgroundColor(getResources().getColor(R.color.lightgray));
         enter_arrow_enteredss.setVisibility(View.GONE);
 
+        initListner();
+
+        return viewMain;
+    }
+
+    private void initListner() {
+
         unchecked_entered_ll_consign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO blocked consignment entry if it is done for the day
                 checkConsgnmentFortheDay();
-                //TODO check consignment entry multiple times
-                //enterNextFragment();
             }
         });
 
@@ -299,7 +267,11 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 enter_arrow_enterss.setVisibility(View.VISIBLE);
                 enetered_consign.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_enteredss.setVisibility(View.GONE);
-                fetchWoeListDoneByTSP();
+                if (cd.isConnectingToInternet()) {
+                    fetchWoeListDoneByTSP();
+                } else {
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
+                }
             }
         });
 
@@ -326,28 +298,26 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                 filterPatientsArrayList = new ArrayList<>();
                 String barcode = "";
                 String name = "";
-                if (patientsArrayList != null) {
+                if (GlobalClass.CheckArrayList(patientsArrayList)) {
                     for (int i = 0; i < patientsArrayList.size(); i++) {
                         final String text = patientsArrayList.get(i).getBarcode().toLowerCase();
-                        if (patientsArrayList.get(i).getBarcode() != null || !patientsArrayList.get(i).getBarcode().equals("")) {
+                        if (!GlobalClass.isNull(patientsArrayList.get(i).getBarcode())) {
                             barcode = patientsArrayList.get(i).getBarcode().toLowerCase();
                         }
-                        if (patientsArrayList.get(i).getName() != null || !patientsArrayList.get(i).getName().equals("")) {
+                        if (!GlobalClass.isNull(patientsArrayList.get(i).getName())) {
                             name = patientsArrayList.get(i).getName().toLowerCase();
                         }
                         if (text.contains(s1) || (barcode != null && barcode.contains(s1)) ||
                                 (name != null && name.contains(s1))) {
                             String testname = patientsArrayList.get(i).getName();
                             filterPatientsArrayList.add(patientsArrayList.get(i));
-                        } else {
-
                         }
+
                         windup_adapter = new Windup_adapter(mContext, filterPatientsArrayList, Wind_up_fragment.this);
                         recyclerView.setAdapter(windup_adapter);
                     }
                 }
-                // filter your list from your input
-                //you can use runnable postDelayed like 500 ms to delay search text
+
             }
         });
 
@@ -398,72 +368,18 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         }
 
                         DatePassToApi = outputFormat.format(date);
-                        final ProgressDialog barProgressDialog = new ProgressDialog(getContext());
-                        barProgressDialog.setTitle("Kindly wait ...");
-                        barProgressDialog.setMessage(ToastFile.processing_request);
-                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                        barProgressDialog.setProgress(0);
-                        barProgressDialog.setMax(20);
-                        barProgressDialog.show();
-                        barProgressDialog.setCanceledOnTouchOutside(false);
-                        barProgressDialog.setCancelable(false);
-
                         requestQueueWindup = Volley.newRequestQueue(getContext());//2c=/TAM03/TAM03136166236000078/geteditdata
-                        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.windupApi + "" + api_key + "/" + user + "/" + DatePassToApi + "/getwowindup"
-                                , new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                Log.e(TAG, "response " + response);
-                                try {
-                                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
-                                    CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
-
-                                    if (responseModel != null) {
-                                        if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                            TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
-                                            fetchWoeListDoneByTSP();
-
-                                            Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                            FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                                getChildFragmentManager().beginTransaction().detach(a2Fragment).commitNow();
-                                                getChildFragmentManager().beginTransaction().attach(a2Fragment).commitNow();
-                                            } else {
-                                                getChildFragmentManager().beginTransaction().detach(a2Fragment).attach(a2Fragment).commit();
-                                            }
-                                            transaction.addToBackStack(null);
-                                            transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
-
-                                        } else {
-                                            Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
-                                    }
-                                } catch (JsonSyntaxException e) {
-                                    e.printStackTrace();
-                                }
+                        try {
+                            if (ControllersGlobalInitialiser.windupControllerr != null) {
+                                ControllersGlobalInitialiser.windupControllerr = null;
                             }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                try {
-                                    if (error.networkResponse == null) {
-                                        if (error.getClass().equals(TimeoutError.class)) {
-                                            // Show timeout error message
-                                        }
-                                    }
-                                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
-                        requestQueueWindup.add(jsonObjectRequestPop);
-                        Log.e(TAG, "onClick: URL" + jsonObjectRequestPop);
+                            ControllersGlobalInitialiser.windupControllerr = new WindupControllerr(mActivity, Wind_up_fragment.this);
+                            ControllersGlobalInitialiser.windupControllerr.getwindupcontroller(api_key,user,DatePassToApi,requestQueueWindup);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
                     }
                 });
 
@@ -481,17 +397,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             @Override
             public void onClick(View v) {
 
-                final ProgressDialog barProgressDialog = new ProgressDialog(getActivity());
-                barProgressDialog.setTitle("Kindly wait ...");
-                barProgressDialog.setMessage(ToastFile.processing_request);
-                barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                barProgressDialog.setProgress(0);
-                barProgressDialog.setMax(20);
-                barProgressDialog.show();
-                barProgressDialog.setCanceledOnTouchOutside(false);
-                barProgressDialog.setCancelable(false);
-
-                if (GlobalClass.windupBarcodeList.size() != 0 && GlobalClass.windupBarcodeList != null) {
+                if (GlobalClass.CheckArrayList(GlobalClass.windupBarcodeList)) {
                     String SEPARATOR = ",";
 
                     StringBuilder csvBuilder = new StringBuilder();
@@ -502,7 +408,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                     }
                     String csv = csvBuilder.toString();
                     csv = csv.substring(0, csv.length() - SEPARATOR.length());
-                    System.out.println(csv);
+                    Log.v("TAG", csv);
 
                     PostQueOtp = Volley.newRequestQueue(getContext());
                     JSONObject jsonObject = null;
@@ -519,103 +425,74 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
                         e.printStackTrace();
                     }
 
-                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.multiple_windup, jsonObject, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.e(TAG, "onResponse: " + response);
 
-                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
-
-                            CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
-
-                            if (responseModel != null) {
-                                if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                                    TastyToast.makeText(mContext, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                                    fetchWoeListDoneByTSP();
-                                    GlobalClass.windupBarcodeList = new ArrayList<>();
-                                    Wind_up_fragment a2Fragment = new Wind_up_fragment();
-                                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                                    transaction.addToBackStack(null);
-                                    transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
-
-
-                                } else {
-                                    Toast.makeText(mContext, responseModel.getResponse(), Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
-                            }
-
+                    try {
+                        if (ControllersGlobalInitialiser.multiplewindup_controller != null) {
+                            ControllersGlobalInitialiser.multiplewindup_controller = null;
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                            if (error != null) {
-                            } else {
-                                System.out.println(error);
-                            }
-                        }
-                    });
-                    PostQueOtp.add(jsonObjectRequest1);
-                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
-                    Log.e(TAG, "onClick: json" + jsonObject);
-                    Log.e(TAG, "onClick: url" + jsonObjectRequest1);
+                        ControllersGlobalInitialiser.multiplewindup_controller = new Multiplewindup_Controller(mActivity, Wind_up_fragment.this);
+                        ControllersGlobalInitialiser.multiplewindup_controller.multiplewindupcontroller(jsonObject, PostQueOtp);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
-                   /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }*/
-                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
-
-                    Toast.makeText(getContext(), ToastFile.slt_name_for_windup, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(mActivity, ToastFile.slt_name_for_windup, 2);
                 }
             }
         });
+    }
 
-        return viewMain;
+    private void initViews() {
+        wind_up = (TextView) viewMain.findViewById(R.id.wind_up);
+        wind_up_multiple = (TextView) viewMain.findViewById(R.id.wind_up_multiple);
+        woe_cal = (TextView) viewMain.findViewById(R.id.woe_cal);
+        edtSearch = (EditText) viewMain.findViewById(R.id.edtSearch);
+        windup_ll_below = (LinearLayout) viewMain.findViewById(R.id.windup_ll_below);
+        offline_img = (LinearLayout) viewMain.findViewById(R.id.offline_img);
+        recyclerView = (RecyclerView) viewMain.findViewById(R.id.recycler_view);
+        linearLayoutManager = new LinearLayoutManager(mContext);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        enetered_consign = (TextView) viewMain.findViewById(R.id.enetered_consign);
+        pick_up_txt = (TextView) viewMain.findViewById(R.id.pick_up_txt);
+        enter_consign = (TextView) viewMain.findViewById(R.id.enter_consign);
+        linearlayout2 = (LinearLayout) viewMain.findViewById(R.id.linearlayout2);
+        pick_up_ll = (LinearLayout) viewMain.findViewById(R.id.pick_up_ll);
+        logistic_ll = (LinearLayout) viewMain.findViewById(R.id.logistic_ll);
+        enter_entered_layout = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout);
+        enter_entered_layout_consign = (LinearLayout) viewMain.findViewById(R.id.enter_entered_layout_consign);
+        unchecked_entered_ll_consign = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll_consign);
+        enter_ll_unselected_consign = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected_consign);
+        enter_arrow_enteredss = (ImageView) viewMain.findViewById(R.id.enter_arrow_enteredss);
+        enter_arrow_enterss = (ImageView) viewMain.findViewById(R.id.enter_arrow_enterss);
+        view_1 = (View) viewMain.findViewById(R.id.view_1);
+        view_2 = (View) viewMain.findViewById(R.id.view_2);
+        enter_entered_layout.setVisibility(View.GONE);
+
+        view_1.setVisibility(View.VISIBLE);
+        view_2.setVisibility(View.VISIBLE);
+        windup_ll_below.setVisibility(View.VISIBLE);
+
+        enter_entered_layout_consign.setVisibility(View.VISIBLE);
+        enter_consign.setBackground(getResources().getDrawable(R.drawable.enter_button));
+        enter_arrow_enterss.setVisibility(View.VISIBLE);
+        enetered_consign.setBackgroundColor(getResources().getColor(R.color.lightgray));
+        enter_arrow_enteredss.setVisibility(View.GONE);
     }
 
     private void checkConsgnmentFortheDay() {
         PostQueueForConsignment = Volley.newRequestQueue(getContext());
-        Log.e(TAG,"Consigment API-->"+Api.consignmentperday + user + "/ConfirmConsignmentEntry");
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.GET, Api.consignmentperday + user + "/ConfirmConsignmentEntry", new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.e(TAG, "onResponse: RESPONSE" + response);
-                ConsignmentCountResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ConsignmentCountResponseModel.class);
 
-                if (responseModel != null) {
-                    if (!GlobalClass.isNull(responseModel.getGetCount()) && responseModel.getGetCount().equalsIgnoreCase("0")) {
-                        enterNextFragment();
-                    } else {
-                        new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                                .setTitleText("Consignment Status")
-                                .setContentText("Consignment entry already done for the day")
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    }
-                } else {
-                    Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                } else {
 
-                    System.out.println(error);
-                }
+        try {
+            if (ControllersGlobalInitialiser.confirmConsignmentEntry_controller != null) {
+                ControllersGlobalInitialiser.confirmConsignmentEntry_controller = null;
             }
-        });
-        PostQueueForConsignment.add(jsonObjectRequest1);
-        Log.e(TAG, "onResponse: URL" + jsonObjectRequest1);
+            ControllersGlobalInitialiser.confirmConsignmentEntry_controller = new ConfirmConsignmentEntry_Controller(mActivity, Wind_up_fragment.this);
+            ControllersGlobalInitialiser.confirmConsignmentEntry_controller.getconfirmcongsgment(user,PostQueueForConsignment);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void enterNextFragment() {
@@ -623,7 +500,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
-//        transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
 
     }
 
@@ -633,8 +509,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         putDate = sdf.format(myCalendar.getTime());
         String formatToset = "yyyy-MM-dd";
         getFormatDate = sdf.format(myCalendar.getTime());
-
-        //change date format from yyyy-MM-dd to dd-MM-yyyy
 
         DateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");//dd-MM-yyyy
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");//yyyy-MM-dd
@@ -649,7 +523,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
 
         getActivity().setTitle("WOE " + outputDateStr);
-        woe_cal.setText(putDate);
+        GlobalClass.SetText(woe_cal, putDate);
 
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
@@ -668,10 +542,12 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
         DateToPass = getActivity().getTitle().toString().substring(4, getActivity().getTitle().toString().length() - 0);
 
-        woe_cal.setText(DateToPass);
+        GlobalClass.SetText(woe_cal, DateToPass);
+
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             linearlayout2.setVisibility(View.GONE);
+            GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
         } else {
             offline_img.setVisibility(View.GONE);
             linearlayout2.setVisibility(View.VISIBLE);
@@ -681,17 +557,6 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     }
 
     private void fetchWoeListDoneByTSP() {
-
-        final ProgressDialog barProgressDialog = new ProgressDialog(getActivity());
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");//dd-MM-yyyy
         DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");//yyyy-MM-dd
 
@@ -704,121 +569,17 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         passToAPI = outputFormat.format(date);
 
         requestQueue = Volley.newRequestQueue(mContext);
-        Log.e(TAG, "TAG: WORKoRDEReNTRYfIRSTpAGE-->" + Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-                Log.e(TAG, "onResponse: response" + response);
-
-                String responsetoshow = response.optString("response", "");
-
-                if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(getActivity());
-                } else {
-                    Gson gson = new Gson();
-                    woe_model_patient_details = new WOE_Model_Patient_Details();
-                    woe_model_patient_details = gson.fromJson(response.toString(), WOE_Model_Patient_Details.class);
-                    patientsArrayList = new ArrayList<>();
-                    getWindupCount = new ArrayList<>();
-
-
-
-                    SharedPreferences preferences = mContext.getSharedPreferences("saveWOEinDraft", MODE_PRIVATE);
-                    String json2 = preferences.getString("DraftWOE", null);
-                    if (json2 != null) {
-                        Gson gson1 = new Gson();
-                        String json = preferences.getString("DraftWOE", null);
-                        if (json2 != null) {
-                            MyPojoWoe obj = gson1.fromJson(json, MyPojoWoe.class);
-                        }
-                    }
-
-                    int getLogCharge = Integer.parseInt(woe_model_patient_details.getLogcharge());
-                    int getPersentfiveB2b = Integer.parseInt(woe_model_patient_details.getLogcharge());
-
-                    if (woe_model_patient_details.getPersentfiveB2b() != "" && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("") && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("0") && getPersentfiveB2b != 0) {
-                        pick_up_ll.setVisibility(View.VISIBLE);
-                        pick_up_txt.setText(woe_model_patient_details.getLogcharge());
-
-                    } else {
-                        pick_up_ll.setVisibility(View.VISIBLE);
-                        pick_up_txt.setText("0");
-                    }
-
-                    //set Adpter
-                    if (woe_model_patient_details.getPatients() != null) {
-                        for (int i = 0; i < woe_model_patient_details.getPatients().size(); i++) {
-                            patientsArrayList.add(woe_model_patient_details.getPatients().get(i));
-                            for (int j = 0; j < patientsArrayList.size(); j++) {
-                                getWindupCount.add(String.valueOf(patientsArrayList.get(j).getConfirm_status().equals("NO")));
-                            }
-
-                        }
-
-                        recyclerView.setVisibility(View.VISIBLE);
-
-                        windup_adapter = new Windup_adapter(mContext, patientsArrayList, Wind_up_fragment.this);
-                        recyclerView.setAdapter(windup_adapter);
-                        windup_adapter.notifyDataSetChanged();
-
-
-                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
-
-                        ArrayList<String> getNoStatus = new ArrayList<>();
-                        for (int i = 0; i < patientsArrayList.size(); i++) {
-                            if (patientsArrayList.get(i).getConfirm_status().equals("NO")) {
-                                getNoStatus.add(patientsArrayList.get(i).getName());
-                            }
-                            int getCount = getNoStatus.size();
-                            countData = String.valueOf(getCount);
-                            GlobalClass.windupCountDataToShow = countData;
-                        }
-                        if (GlobalClass.windupCountDataToShow != null && !GlobalClass.windupCountDataToShow.equals("0")) {
-                            wind_up.setText("Wind up all (" + GlobalClass.windupCountDataToShow + ")");
-                            wind_up_multiple.setVisibility(View.VISIBLE);
-                            wind_up.setVisibility(View.VISIBLE);
-                        } else {
-                            wind_up.setVisibility(View.GONE);
-                            wind_up_multiple.setVisibility(View.GONE);
-                            view_1.setVisibility(View.GONE);
-                            view_2.setVisibility(View.GONE);
-                            wind_up.setText("Wind up (" + "0)");
-                            wind_up_multiple.setText("Wind up (" + "0)");
-                        }
-
-                    } else {
-                        recyclerView.setVisibility(View.INVISIBLE);
-                        wind_up.setVisibility(View.GONE);
-                        wind_up_multiple.setVisibility(View.GONE);
-                        view_1.setVisibility(View.GONE);
-                        view_2.setVisibility(View.GONE);
-
-                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                    }
-
-                    GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                }
-
-
+        String url = Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value";
+        Log.e(TAG, "TAG: WORKoRDEReNTRYfIRSTpAGE-->" + url);
+        try {
+            if (ControllersGlobalInitialiser.fetchWoeListDoneByTSP_controller != null) {
+                ControllersGlobalInitialiser.fetchWoeListDoneByTSP_controller = null;
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        // Show timeout error message
-                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
-                    }
-                }
-            }
-        });
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(jsonObjectRequestPop);
-        Log.e(TAG, "fetchWoeListDoneByTSP: URL" + jsonObjectRequestPop);
+            ControllersGlobalInitialiser.fetchWoeListDoneByTSP_controller = new FetchwoeListDoneByTSP_Controller(mActivity, Wind_up_fragment.this);
+            ControllersGlobalInitialiser.fetchWoeListDoneByTSP_controller.woelistdone_controller(requestQueue, url);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -832,7 +593,183 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
 
     @Override
     public void getclickcount(int count) {
-        wind_up_multiple.setText("Wind up( " + count + " )");
+        GlobalClass.SetText(wind_up_multiple, "Wind up( " + count + " )");
+    }
+
+    public void getwindupResponse(CommonResponseModel responseModel) {
+
+        if (responseModel != null) {
+            if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+
+                GlobalClass.showTastyToast(mActivity, responseModel.getResponse(), 1);
+                fetchWoeListDoneByTSP();
+                GlobalClass.windupBarcodeList = new ArrayList<>();
+                Wind_up_fragment a2Fragment = new Wind_up_fragment();
+                FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                transaction.addToBackStack(null);
+                transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
+
+
+            } else {
+                GlobalClass.showTastyToast(mActivity, responseModel.getResponse(), 2);
+            }
+        } else {
+            GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong, 2);
+        }
+    }
+
+    public void getwoedonelistResponse(JSONObject response) {
+        Log.e(TAG, "onResponse: response" + response);
+
+        String responsetoshow = response.optString("response", "");
+
+        if (!GlobalClass.isNull(responsetoshow) && responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
+            GlobalClass.redirectToLogin(getActivity());
+        } else {
+            Gson gson = new Gson();
+            woe_model_patient_details = new WOE_Model_Patient_Details();
+            woe_model_patient_details = gson.fromJson(response.toString(), WOE_Model_Patient_Details.class);
+            patientsArrayList = new ArrayList<>();
+            getWindupCount = new ArrayList<>();
+
+
+            SharedPreferences preferences = mContext.getSharedPreferences("saveWOEinDraft", MODE_PRIVATE);
+            String json2 = preferences.getString("DraftWOE", null);
+            if (json2 != null) {
+                Gson gson1 = new Gson();
+                String json = preferences.getString("DraftWOE", null);
+                if (json2 != null) {
+                    MyPojoWoe obj = gson1.fromJson(json, MyPojoWoe.class);
+                }
+            }
+
+            int getPersentfiveB2b = Integer.parseInt(woe_model_patient_details.getLogcharge());
+
+            if (!GlobalClass.isNull(woe_model_patient_details.getPersentfiveB2b())
+                    && !woe_model_patient_details.getPersentfiveB2b().equalsIgnoreCase("0") && getPersentfiveB2b != 0) {
+                pick_up_ll.setVisibility(View.VISIBLE);
+                GlobalClass.SetText(pick_up_txt, woe_model_patient_details.getLogcharge());
+
+            } else {
+                pick_up_ll.setVisibility(View.VISIBLE);
+                GlobalClass.SetText(pick_up_txt, "0");
+            }
+
+            //set Adpter
+            if (GlobalClass.CheckArrayList(woe_model_patient_details.getPatients())) {
+                for (int i = 0; i < woe_model_patient_details.getPatients().size(); i++) {
+                    patientsArrayList.add(woe_model_patient_details.getPatients().get(i));
+
+                    if (GlobalClass.CheckArrayList(patientsArrayList)){
+                        for (int j = 0; j < patientsArrayList.size(); j++) {
+                            getWindupCount.add(String.valueOf(patientsArrayList.get(j).getConfirm_status().equals("NO")));
+                        }
+                    }
+
+
+                }
+
+                recyclerView.setVisibility(View.VISIBLE);
+
+                windup_adapter = new Windup_adapter(mContext, patientsArrayList, Wind_up_fragment.this);
+                recyclerView.setAdapter(windup_adapter);
+                windup_adapter.notifyDataSetChanged();
+
+
+                ArrayList<String> getNoStatus = new ArrayList<>();
+                if (GlobalClass.CheckArrayList(patientsArrayList)) {
+                    for (int i = 0; i < patientsArrayList.size(); i++) {
+                        if (patientsArrayList.get(i).getConfirm_status().equals("NO")) {
+                            getNoStatus.add(patientsArrayList.get(i).getName());
+                        }
+                        int getCount = getNoStatus.size();
+                        countData = String.valueOf(getCount);
+                        GlobalClass.windupCountDataToShow = countData;
+                    }
+                }
+
+                if (GlobalClass.isNull(GlobalClass.windupCountDataToShow) && !GlobalClass.windupCountDataToShow.equals("0")) {
+                    GlobalClass.SetText(wind_up, "Wind up all (" + GlobalClass.windupCountDataToShow + ")");
+                    wind_up_multiple.setVisibility(View.VISIBLE);
+                    wind_up.setVisibility(View.VISIBLE);
+                } else {
+                    wind_up.setVisibility(View.GONE);
+                    wind_up_multiple.setVisibility(View.GONE);
+                    view_1.setVisibility(View.GONE);
+                    view_2.setVisibility(View.GONE);
+                    GlobalClass.SetText(wind_up, "Wind up (" + "0)");
+                    GlobalClass.SetText(wind_up_multiple, "Wind up (" + "0)");
+                }
+
+            } else {
+                recyclerView.setVisibility(View.INVISIBLE);
+                wind_up.setVisibility(View.GONE);
+                wind_up_multiple.setVisibility(View.GONE);
+                view_1.setVisibility(View.GONE);
+                view_2.setVisibility(View.GONE);
+
+            }
+
+        }
+    }
+
+    public void getwindResponse(JSONObject response) {
+        Log.e(TAG, "response " + response);
+        try {
+            CommonResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CommonResponseModel.class);
+
+            if (responseModel != null) {
+                if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                    GlobalClass.showTastyToast(mContext, responseModel.getResponse(), 1);
+
+                    fetchWoeListDoneByTSP();
+
+                    Wind_up_fragment a2Fragment = new Wind_up_fragment();
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        getChildFragmentManager().beginTransaction().detach(a2Fragment).commitNow();
+                        getChildFragmentManager().beginTransaction().attach(a2Fragment).commitNow();
+                    } else {
+                        getChildFragmentManager().beginTransaction().detach(a2Fragment).attach(a2Fragment).commit();
+                    }
+                    transaction.addToBackStack(null);
+                    transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+
+                } else {
+                    GlobalClass.showTastyToast(mActivity, responseModel.getResponse(), 2);
+                }
+            } else {
+                GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong, 2);
+            }
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getcongsigmentResp(JSONObject response) {
+        Log.e(TAG, "onResponse: RESPONSE" + response);
+        ConsignmentCountResponseModel responseModel = new Gson().fromJson(String.valueOf(response), ConsignmentCountResponseModel.class);
+
+        if (responseModel != null) {
+            if (!GlobalClass.isNull(responseModel.getGetCount()) && responseModel.getGetCount().equalsIgnoreCase("0")) {
+                enterNextFragment();
+            } else {
+                new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Consignment Status")
+                        .setContentText("Consignment entry already done for the day")
+                        .setConfirmText("Ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+        } else {
+            GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong, 2);
+
+        }
     }
 
     /**
@@ -849,5 +786,4 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
-
 }

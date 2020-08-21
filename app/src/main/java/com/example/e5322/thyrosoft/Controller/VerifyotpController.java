@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Controller;
 
 import android.app.ProgressDialog;
-import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
@@ -11,7 +10,6 @@ import com.example.e5322.thyrosoft.Models.VerifyotpRequest;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
-import com.google.gson.GsonBuilder;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,33 +62,28 @@ public class VerifyotpController {
        }
 
         Call<VerifyotpModel> responseCall = apiInterface.Verifyotp(verifyotpRequest);
-//        Log.e("TAG", "Verify otp reuest --->" + new GsonBuilder().create().toJson(verifyotpRequest));
-  //      Log.e("TAG", "Verify otp URL --->" + responseCall.request().url());
+
 
         final ProgressDialog finalProgressDialog = progressDialog;
         responseCall.enqueue(new Callback<VerifyotpModel>() {
             @Override
             public void onResponse(Call<VerifyotpModel> call, Response<VerifyotpModel> response) {
                 VerifyotpModel verifyotpModel = response.body();
-
+                GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                 try {
-                    if (verifyotpModel.getResponseId().equalsIgnoreCase("RES0001")) {
+                    if (verifyotpModel!=null && !GlobalClass.isNull(verifyotpModel.getResponseId()) && verifyotpModel.getResponseId().equalsIgnoreCase("RES0001")) {
                         if (flag == 1) {
-                            GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                             specialOffer_activity.onVerifyotp(verifyotpModel);
                         } else {
-                            GlobalClass.hideProgress((start_new_woe.getActivity()), finalProgressDialog);
                             start_new_woe.onVerifyotp(verifyotpModel);
                         }
                     } else {
                         if (flag == 1) {
-                            GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                             specialOffer_activity.onVerifyotp(verifyotpModel);
-                            globalClass.showcenterCustomToast(specialOffer_activity, verifyotpModel.getResponse());
+                            GlobalClass.showTastyToast(specialOffer_activity, verifyotpModel.getResponse(),1);
                         } else {
-                            GlobalClass.hideProgress(((start_new_woe.getActivity())), finalProgressDialog);
                             start_new_woe.onVerifyotp(verifyotpModel);
-                            globalClass.showcenterCustomToast(((start_new_woe.getActivity())), verifyotpModel.getResponse());
+                            GlobalClass.showTastyToast(((start_new_woe.getActivity())), verifyotpModel.getResponse(),2);
                         }
 
                     }
@@ -103,7 +96,7 @@ public class VerifyotpController {
             @Override
             public void onFailure(Call<VerifyotpModel> call, Throwable t) {
 
-               // Log.e("Errror", t.getMessage());
+                GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
 
             }
         });

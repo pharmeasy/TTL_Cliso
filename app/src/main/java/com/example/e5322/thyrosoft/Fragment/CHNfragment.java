@@ -1,12 +1,10 @@
 package com.example.e5322.thyrosoft.Fragment;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,20 +13,18 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.CHN_Adapter;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.ResultLIVE_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.Models.chn_test;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +38,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -58,7 +56,6 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 public class CHNfragment extends RootFragment {
     static final int DATE_DIALOG_ID = 0;
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static RequestQueue PostQue;
@@ -66,11 +63,10 @@ public class CHNfragment extends RootFragment {
     View view;
     int mYear, mMonth, mDay;
     String yesterdayDate;
-    JSONArray jsonArrayTest;
-    ;
+
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     List<String> items;
-    ProgressDialog barProgressDialog;
+
     CHN_Adapter adapter;
     TextView selectDate, no_view;
     ExpandableListView ListReportStatus;
@@ -87,6 +83,7 @@ public class CHNfragment extends RootFragment {
     private String outputDateStr;
     private String putDate;
     private String getFormatDate;
+    Activity mActivity;
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -139,12 +136,8 @@ public class CHNfragment extends RootFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_chnfragment, container, false);
-        ListReportStatus = (ExpandableListView) view.findViewById(R.id.ListReportStatus);
-        selectDate = (TextView) view.findViewById(R.id.selectDate);
-        no_view = (TextView) view.findViewById(R.id.no_view);
-        parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
-        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
-
+        mActivity = getActivity();
+        initViews();
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -167,7 +160,25 @@ public class CHNfragment extends RootFragment {
         myCalendar.add(Calendar.DAY_OF_MONTH, -2);
         myCalendar.setTime(d);
 
-        selectDate.setText(showDate);
+
+        GlobalClass.SetText(selectDate, showDate);
+
+        initListner();
+
+        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+            offline_img.setVisibility(View.VISIBLE);
+            parent_ll.setVisibility(View.GONE);
+        } else {
+            offline_img.setVisibility(View.GONE);
+            parent_ll.setVisibility(View.VISIBLE);
+
+        }
+
+        GetData();
+        return view;
+    }
+
+    private void initListner() {
         selectDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,19 +189,15 @@ public class CHNfragment extends RootFragment {
                 datePickerDialog.show();
             }
         });
+    }
 
+    private void initViews() {
+        ListReportStatus = (ExpandableListView) view.findViewById(R.id.ListReportStatus);
+        selectDate = (TextView) view.findViewById(R.id.selectDate);
+        no_view = (TextView) view.findViewById(R.id.no_view);
+        parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
+        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
 
-        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-            offline_img.setVisibility(View.VISIBLE);
-            parent_ll.setVisibility(View.GONE);
-        } else {
-            offline_img.setVisibility(View.GONE);
-            parent_ll.setVisibility(View.VISIBLE);
-            GetData();
-        }
-
-
-        return view;
     }
 
     private void updateLabel() {
@@ -199,20 +206,22 @@ public class CHNfragment extends RootFragment {
         putDate = sdf.format(myCalendar.getTime());
         getFormatDate = sdf.format(myCalendar.getTime());
 
-        selectDate.setText(putDate);
+        GlobalClass.SetText(selectDate, putDate);
+
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
             parent_ll.setVisibility(View.GONE);
         } else {
             offline_img.setVisibility(View.GONE);
             parent_ll.setVisibility(View.VISIBLE);
-            GetData();
+
         }
+
+        GetData();
     }
 
     private void GetData() {
 
-        System.out.println(GlobalClass.CHN_Date);
         if (GlobalClass.passDate != null) {
             convertedDate = GlobalClass.passDate;//
 
@@ -227,8 +236,7 @@ public class CHNfragment extends RootFragment {
             }
             outputDateStr = outputFormat.format(date);
 
-            selectDate.setText(outputDateStr);
-//            getActivity().setTitle("WOE "+convertedDate);
+            GlobalClass.SetText(selectDate, outputDateStr);
 
         } else {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -251,137 +259,28 @@ public class CHNfragment extends RootFragment {
                 outputDateStr = outputFormat.format(date);
 
                 GlobalClass.CHN_Date = convertedDate;
-//            getActivity().setTitle("WOE "+convertedDate);
 
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-//        }
         }
 
-        barProgressDialog = new ProgressDialog(getContext());
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.show();
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
-
-        PostQue = Volley.newRequestQueue(getContext());
         SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         String user = prefs.getString("Username", null);
-        String passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
         String api_key = prefs.getString("API_KEY", null);
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = Volley.newRequestQueue(mActivity);
 
-        String url = Api.Result + "/" + api_key + "/CHN/" + user + "/" + convertedDate + "/key/value";
-        Log.e(TAG, "CHN API -->" + url);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
-
-                            String responsetoshow = response.optString("response", "");
-
-                            if (responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.redirectToLogin(getActivity());
-                            } else {
-                                JSONArray jsonArray = response.optJSONArray(Constants.patients);
-                                Log.e(TAG, "onResponse: " + response);
-
-                                // if(GlobalClass.dashboarddata.equals("Cancelled")) {
-                                //  }
-                                if (jsonArray != null) {
-                                    //   nodata.setVisibility(View.GONE);
-                                    FilterReport = new ArrayList<TrackDetModel>();
-                                    for (int j = 0; j < jsonArray.length(); j++) {
-
-                                        JSONObject jsonObject = jsonArray.getJSONObject(j);
-                                        TrackDetModel trackdetails = new TrackDetModel();
-
-                                        items = Arrays.asList(jsonObject.optString(Constants.chn_test).toString().split("\\s*,\\s*"));
-
-                                        ArrayList<chn_test> canArray = new ArrayList();
-
-
-                                        for (int i = 0; i < items.size(); i++) {
-                                            chn_test can = new chn_test();
-                                            can.setTest(items.get(i));
-                                            canArray.add(can);
-                                        }
-
-                                        trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
-                                        trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
-                                        trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
-                                        trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
-                                        //  trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
-                                        trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
-                                        trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
-                                        trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
-                                        trackdetails.setDate(jsonObject.optString(Constants.date).toString());
-                                        trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
-                                        trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
-                                        trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
-                                        trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
-                                        trackdetails.setName(jsonObject.optString(Constants.name).toString());
-                                        trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
-                                        trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
-                                        trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
-                                        trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
-                                        trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
-                                        trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
-                                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
-                                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
-                                        trackdetails.setChn_test_list(canArray);
-                                        FilterReport.add(trackdetails);
-                                        no_view.setVisibility(View.GONE);
-                                        ListReportStatus.setVisibility(View.VISIBLE);
-                                    }
-                                /*{
-"RES_ID":"RES0000","pageNo":null,"
-patients":[
-{"Downloaded":null,"Ref_By":"SELF","Tests":"SCRE","barcode":"I4421436","cancel_tests_with_remark":null,"chn_pending":"TSP","chn_test":"SCRE","confirm_status":null,"date":"13-06-2018","email":null,"isOrder":null,"labcode":"15593","leadId":null,"name":"SANJAY  KUMAR (40Y\/M)","patient_id":"BIH03126248462744425","pdflink":null,"sample_type":null,"scp":null,"sct":null,"su_code2":null,"wo_sl_no":null}]
-,"reportStatus":"ALLOW","response":"1","totalPages":null
-}*/
-                                    adapter = new CHN_Adapter(getContext(), FilterReport, items, fragment, convertedDate);
-                                    ListReportStatus.setAdapter(adapter);
-                                    // ListReportStatus.setOnGroupClickListener(myListGroupClicked);
-                                } else {
-                                    no_view.setVisibility(View.VISIBLE);
-                                    ListReportStatus.setVisibility(View.GONE);
-                                }
-                            }
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                        barProgressDialog.dismiss();
-                    }
-                    System.out.println("error ala parat " + error);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.resultLIVE_controller != null) {
+                ControllersGlobalInitialiser.resultLIVE_controller = null;
             }
-        });
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+            ControllersGlobalInitialiser.resultLIVE_controller = new ResultLIVE_Controller(mActivity, CHNfragment.this);
+            ControllersGlobalInitialiser.resultLIVE_controller.getresultcontroller(api_key, "/CHN/", user, convertedDate, queue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -393,7 +292,78 @@ patients":[
 
     public void setNewFragment() {
         getActivity().getSupportFragmentManager().beginTransaction().detach(fragment).attach(CHNfragment.this).commit();
-//        adapter.notifyDataSetChanged();
+    }
+
+    public void getResponse(JSONObject response) {
+        try {
+            String responsetoshow = response.optString("response", "");
+
+            if (!GlobalClass.isNull(responsetoshow) && responsetoshow.equalsIgnoreCase(caps_invalidApikey)) {
+                GlobalClass.redirectToLogin(getActivity());
+            } else {
+                JSONArray jsonArray = response.optJSONArray(Constants.patients);
+                Log.e(TAG, "onResponse: " + response);
+
+                if (jsonArray != null) {
+                    FilterReport = new ArrayList<TrackDetModel>();
+                    for (int j = 0; j < jsonArray.length(); j++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(j);
+                        TrackDetModel trackdetails = new TrackDetModel();
+
+                        items = Arrays.asList(jsonObject.optString(Constants.chn_test).toString().split("\\s*,\\s*"));
+
+                        ArrayList<chn_test> canArray = new ArrayList();
+
+                        if (GlobalClass.CheckArrayList(items)) {
+                            for (int i = 0; i < items.size(); i++) {
+                                chn_test can = new chn_test();
+                                can.setTest(items.get(i));
+                                canArray.add(can);
+                            }
+                        }
+
+
+                        trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
+                        trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
+                        trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
+                        trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
+                        trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
+                        trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
+                        trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
+                        trackdetails.setDate(jsonObject.optString(Constants.date).toString());
+                        trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
+                        trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
+                        trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
+                        trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
+                        trackdetails.setName(jsonObject.optString(Constants.name).toString());
+                        trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
+                        trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
+                        trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
+                        trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
+                        trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
+                        trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
+                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
+                        trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
+                        trackdetails.setChn_test_list(canArray);
+                        FilterReport.add(trackdetails);
+                        no_view.setVisibility(View.GONE);
+                        ListReportStatus.setVisibility(View.VISIBLE);
+                    }
+
+                    adapter = new CHN_Adapter(getContext(), FilterReport, items, fragment, convertedDate);
+                    ListReportStatus.setAdapter(adapter);
+                } else {
+                    no_view.setVisibility(View.VISIBLE);
+                    ListReportStatus.setVisibility(View.GONE);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 

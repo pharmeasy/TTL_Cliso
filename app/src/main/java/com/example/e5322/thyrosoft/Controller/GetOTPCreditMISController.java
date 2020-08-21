@@ -51,7 +51,7 @@ public class GetOTPCreditMISController {
                             otpCreditMISActivity.getOTPCreditMISResponse(responseModel);
                         }
                     } else {
-                        GlobalClass.showShortToast(mActivity, ToastFile.something_went_wrong);
+                        GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong,2);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

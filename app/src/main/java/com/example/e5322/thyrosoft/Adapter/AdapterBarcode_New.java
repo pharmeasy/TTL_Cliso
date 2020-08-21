@@ -1,36 +1,29 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.Checkbarcode_Controller;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
@@ -49,24 +42,24 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.ViewHolder> implements SendScanBarcodeDetails {
+
     SharedPreferences prefs;
     String user, passwrd, access, api_key, ERROR, RES_ID, barcode, response1, previouseBarcode, afterBarcode, searchBarcode, storeResponse;
     RequestQueue barcodeDetails;
     public Context context;
-    OfferScan_Activity offerScan_activity;
+    TextView scanBarcode;
     ArrayList<BaseModel> selctedProductArraylist;
     RecyclerInterface listener;
-    boolean flag = false;
-    boolean storeflag = true;
-    ArrayList<Integer> getPosition;
-    // ProgressDialog progressDialog;
     int fromcome;
     String TAG = AdapterBarcode_New.class.getSimpleName();
     ArrayList<ScannedBarcodeDetails> distinctspecimentlist;
+    ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -83,6 +76,8 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         }
     };
     private OnItemClickListener onItemClickListener;
+    private int position;
+    private EditText edit_enter_barcode;
 
     public AdapterBarcode_New(Scan_Barcode_ILS_New scan_barcode_ils, ArrayList<BaseModel> selectedlist, ArrayList<ScannedBarcodeDetails> distinctspecimentlist, RecyclerInterface listener) {
         this.context = scan_barcode_ils;
@@ -97,8 +92,80 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         this.selctedProductArraylist = selectedlist;
         this.listener = listener;
         this.distinctspecimentlist = distinctspecimentlist;
-        GlobalClass.finalspecimenttypewiselist = distinctspecimentlist;
         fromcome = 2;
+    }
+
+    public void getpassbarcode(JSONObject response, String barcodeDetails, String fromadapterbarcodenew) {
+
+        if (!GlobalClass.isNull(fromadapterbarcodenew) && fromadapterbarcodenew.equalsIgnoreCase("1")){
+            Log.v("TAG", "barcode respponse" + response);
+
+            Log.e(TAG, "onResponse: " + response);
+            String finalJson = response.toString();
+            JSONObject parentObjectOtp = null;
+            try {
+                parentObjectOtp = new JSONObject(finalJson);
+                ERROR = parentObjectOtp.getString("ERROR");
+                RES_ID = parentObjectOtp.getString("RES_ID");
+                barcode = parentObjectOtp.getString("barcode");
+                response1 = parentObjectOtp.getString("response");
+
+                if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase(MessageConstants.BRCD_NT_EXIT)) {
+                    GlobalClass.SetText(scanBarcode, distinctspecimentlist.get(position).getSpecimen_type() + " : " + distinctspecimentlist.get(position).getBarcode());
+
+                    SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
+                    setBarcodeDetails.setSpecimenType(distinctspecimentlist.get(position).getSpecimen_type());
+                    setBarcodeDetails.setBarcode_number(searchBarcode);
+                    setScannedBarcodes.add(setBarcodeDetails);
+
+                    Set<SetBarcodeDetails> hs = new HashSet<>();
+                    hs.addAll(setScannedBarcodes);
+                    setScannedBarcodes.clear();
+                    setScannedBarcodes.addAll(hs);
+
+                } else if (!GlobalClass.isNull(ERROR) && ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                    GlobalClass.redirectToLogin(((Activity) context));
+                } else {
+
+                    if (position < distinctspecimentlist.size()) {
+                        GlobalClass.SetText(scanBarcode, distinctspecimentlist.get(position).getSpecimen_type());
+                        storeResponse = response1;
+                        GlobalClass.showTastyToast((Activity) context, "" + response1,0);
+                    }
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }else if (!GlobalClass.isNull(fromadapterbarcodenew) &&  fromadapterbarcodenew.equalsIgnoreCase("2")){
+            Log.v("TAG", "barcode respponse" + response);
+            Log.e(TAG, "onResponse: " + response);
+            String finalJson = response.toString();
+            JSONObject parentObjectOtp = null;
+
+            try {
+                parentObjectOtp = new JSONObject(finalJson);
+                ERROR = parentObjectOtp.getString("ERROR");
+                RES_ID = parentObjectOtp.getString("RES_ID");
+                barcode = parentObjectOtp.getString("barcode");
+                response1 = parentObjectOtp.getString("response");
+
+                if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase(MessageConstants.BRCD_NT_EXIT)) {
+                    GlobalClass.SetEditText(edit_enter_barcode,searchBarcode);
+                } else if (!GlobalClass.isNull(ERROR) && ERROR.equalsIgnoreCase(caps_invalidApikey)) {
+                    GlobalClass.redirectToLogin(((Activity) context));
+                } else {
+                    GlobalClass.SetEditText(edit_enter_barcode,"");
+                    storeResponse = response1;
+                    GlobalClass.showTastyToast((Activity)context,response1,5);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -201,168 +268,69 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         holder.enter_barcode.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
         holder.reenter.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        if (GlobalClass.finalspecimenttypewiselist.get(position).getBarcode() != null) {
+        if (!GlobalClass.isNull(distinctspecimentlist.get(position).getBarcode())) {
 
             if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
-                holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
 
+                GlobalClass.SetText(holder.scanBarcode, distinctspecimentlist.get(position).getSpecimen_type() + " : " + distinctspecimentlist.get(position).getBarcode());
 
                 SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
-                setBarcodeDetails.setSpecimenType(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                setBarcodeDetails.setSpecimenType(distinctspecimentlist.get(position).getSpecimen_type());
                 setBarcodeDetails.setBarcode_number(searchBarcode);
-                GlobalClass.setScannedBarcodes.add(setBarcodeDetails);
+                setScannedBarcodes.add(setBarcodeDetails);
 
                 Set<SetBarcodeDetails> hs = new HashSet<>();
-                hs.addAll(GlobalClass.setScannedBarcodes);
-                GlobalClass.setScannedBarcodes.clear();
-                GlobalClass.setScannedBarcodes.addAll(hs);
-
-                Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodes.size());
-                for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                    Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
-                }
-
-                System.out.println("length of barcodes" + GlobalClass.setScannedBarcodes.size());
-                Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodes.size());
-
-                for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                    String getbarcodeType = GlobalClass.setScannedBarcodes.get(i).getSpecimenType();
-                    String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
-                    String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
-                }
+                hs.addAll(setScannedBarcodes);
+                setScannedBarcodes.clear();
+                setScannedBarcodes.addAll(hs);
             } else {
-                searchBarcode = GlobalClass.finalspecimenttypewiselist.get(position).getBarcode();
+                searchBarcode = distinctspecimentlist.get(position).getBarcode();
 
                 if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
-                    holder.scanBarcode.setText(searchBarcode);
+                    GlobalClass.SetText(holder.scanBarcode, searchBarcode);
                 } else {
                     barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
-                    final ProgressDialog progressDialog = new ProgressDialog(context);
-                    progressDialog.setTitle("Kindly wait...");
-                    progressDialog.setMessage(ToastFile.processing_request);
-                    progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-                    progressDialog.setProgress(0);
-                    progressDialog.setMax(20);
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.setCancelable(false);
-                    progressDialog.show();
 
-                    // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+                    scanBarcode=holder.scanBarcode;
+                    this.position=position;
+                    String str_url = Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode";
+                    Log.v("TAG", "barcode url  --> " + str_url);
 
-                    System.out.println("barcode url  --> " + Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode");
-                    JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + searchBarcode + "/getcheckbarcode"
-                            , new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            System.out.println("barcode respponse" + response);
-
-                            Log.e(TAG, "onResponse: " + response);
-                            String finalJson = response.toString();
-                            JSONObject parentObjectOtp = null;
-                            try {
-                                parentObjectOtp = new JSONObject(finalJson);
-                                ERROR = parentObjectOtp.getString("ERROR");
-                                RES_ID = parentObjectOtp.getString("RES_ID");
-                                barcode = parentObjectOtp.getString("barcode");
-                                response1 = parentObjectOtp.getString("response");
-
-                                if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-
-                                    holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + " : " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
-                                    GlobalClass.hideProgress(context, progressDialog);
-
-
-                                    SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
-                                    setBarcodeDetails.setSpecimenType(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-                                    setBarcodeDetails.setBarcode_number(searchBarcode);
-                                    GlobalClass.setScannedBarcodes.add(setBarcodeDetails);
-
-                                    Set<SetBarcodeDetails> hs = new HashSet<>();
-                                    hs.addAll(GlobalClass.setScannedBarcodes);
-                                    GlobalClass.setScannedBarcodes.clear();
-                                    GlobalClass.setScannedBarcodes.addAll(hs);
-
-                                    Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodes.size());
-                                    for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                                        Log.e(TAG, "onBindViewHolder: specimen type & barcode  --->" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
-                                    }
-
-                                    System.out.println("length of barcodes --->" + GlobalClass.setScannedBarcodes.size());
-                                    Log.e(TAG, "onBind View Holder: size of array --->" + GlobalClass.setScannedBarcodes.size());
-
-                                    for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
-                                        String getbarcodeType = GlobalClass.setScannedBarcodes.get(i).getSpecimenType();
-                                        String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
-                                        String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
-                                    }
-
-                                } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
-                                    GlobalClass.hideProgress(context, progressDialog);
-                                    GlobalClass.redirectToLogin(((Activity) context));
-                                } else {
-                                    if (position < GlobalClass.finalspecimenttypewiselist.size()) {
-                                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-                                        storeResponse = response1;
-                                        GlobalClass.hideProgress(context, progressDialog);
-
-                                        Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
+                    try {
+                        if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                            ControllersGlobalInitialiser.checkbarcode_controller = null;
                         }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            if (error.networkResponse == null) {
-                                if (error.getClass().equals(TimeoutError.class)) {
-                                    // Show timeout error message
-                                }
-                            }
-                        }
-                    });
-                    GlobalClass.hideProgress(context, progressDialog);
-
-
-                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                            300000,
-                            3,
-                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                    barcodeDetails.add(jsonObjectRequestPop);
-                    Log.e(TAG, "onBindViewHolder: url" + jsonObjectRequestPop);
+                        ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller((Activity)context, AdapterBarcode_New.this,searchBarcode,"1");
+                        ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(str_url, barcodeDetails);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-
-
             }
-
-
         } else {
-            if (GlobalClass.finalspecimenttypewiselist != null) {
-                if (GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
-                    if (GlobalClass.finalspecimenttypewiselist.get(position).getFasting().equalsIgnoreCase("FASTING")) {
+            if (GlobalClass.CheckArrayList(distinctspecimentlist)) {
+                if (!GlobalClass.isNull(distinctspecimentlist.get(position).getSpecimen_type()) && distinctspecimentlist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
+                    if (!GlobalClass.isNull(distinctspecimentlist.get(position).getFasting()) && distinctspecimentlist.get(position).getFasting().equalsIgnoreCase("FASTING")) {
                         if (fromcome == 0) {
-                            holder.scanBarcode.setText(" (F) " + GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                            GlobalClass.SetText(holder.scanBarcode, " (F) " + distinctspecimentlist.get(position).getSpecimen_type());
                         } else {
-                            holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                            GlobalClass.SetText(holder.scanBarcode, distinctspecimentlist.get(position).getSpecimen_type());
                         }
 
                     } else {
-                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                        GlobalClass.SetText(holder.scanBarcode, distinctspecimentlist.get(position).getSpecimen_type());
                     }
                 } else {
-                    holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+                    GlobalClass.SetText(holder.scanBarcode, distinctspecimentlist.get(position).getSpecimen_type());
                 }
             }
 
         }
 
-        System.out.println("Barcode :::: " + GlobalClass.finalspecimenttypewiselist.get(position).getBarcode());
+        Log.v("TAG", "Barcode :::: " + distinctspecimentlist.get(position).getBarcode());
         holder.linearEditbarcode.setVisibility(View.GONE);
         holder.element1_iv.setOnClickListener(onScanbarcodeClickListener);
-        holder.element1_iv.setTag(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
+        holder.element1_iv.setTag(distinctspecimentlist.get(position).getSpecimen_type());
 
         holder.scanBarcode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -380,9 +348,9 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
                     if (enteredString.length() > 0) {
-                        holder.reenter.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(holder.reenter,enteredString.substring(1));
                     } else {
-                        holder.reenter.setText("");
+                        GlobalClass.SetEditText(holder.reenter,"");
                     }
                 }
 
@@ -398,43 +366,22 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                 String enteredString = s.toString();
 
                 previouseBarcode = holder.enter_barcode.getText().toString();
-               /* try {
-                    if (storeflag == true) {
-                        if (TextUtils.isEmpty(previouseBarcode)) {
-                            Toast.makeText(context, ToastFile.first_ent_brcd, Toast.LENGTH_SHORT).show();
-                            holder.reenter.setText("");
-                        }
-                    } else {
-                        holder.reenter.setText(enteredString);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                if (enteredString.length() > 8) {
-                    holder.reenter.setText(enteredString.substring(1));
-                    Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
-                } else {
-
-                }*/
-                //getData = reg_pincode.getText().toString();
 
                 if (s.length() == 8) {
                     afterBarcode = s.toString();
                     searchBarcode = s.toString();
-                    if (previouseBarcode.equalsIgnoreCase(afterBarcode)) {
-                        Toast.makeText(context, ToastFile.mtch_brcd, Toast.LENGTH_SHORT).show();
+                    if (!GlobalClass.isNull(previouseBarcode) && !GlobalClass.isNull(afterBarcode) && previouseBarcode.equalsIgnoreCase(afterBarcode)) {
+                        GlobalClass.showTastyToast((Activity) context, ToastFile.mtch_brcd,2);
                         holder.linearEditbarcode.setVisibility(View.GONE);
                         holder.barcode_linear.setVisibility(View.VISIBLE);
-                        holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type() + ":" + searchBarcode);
-                        GlobalClass.finalspecimenttypewiselist.get(position).setBarcode(searchBarcode);
+                        GlobalClass.SetText(holder.scanBarcode, distinctspecimentlist.get(position).getSpecimen_type() + ":" + searchBarcode);
+                        distinctspecimentlist.get(position).setBarcode(searchBarcode);
                     } else {
-                        holder.reenter.setText("");
-                        Toast.makeText(context, ToastFile.ent_crt_brcd, Toast.LENGTH_SHORT).show();
+                        GlobalClass.SetEditText(holder.reenter,"");
+                        GlobalClass.showTastyToast((Activity) context, ToastFile.ent_crt_brcd,2);
                     }
                 } else {
-                    Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast((Activity) context, ToastFile.crt_brcd,2);
                 }
             }
         });
@@ -447,7 +394,6 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
         @Override
         public void onClick(View v) {
             String Specimenttype = (String) v.getTag();
-            String code = (String) v.getTag();
             if (onItemClickListener != null) {
                 onItemClickListener.onScanbarcodeClickListener(Specimenttype, ((Activity) context));
             }
@@ -456,7 +402,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
     @Override
     public int getItemCount() {
-        return GlobalClass.finalspecimenttypewiselist.size();//GlobalClass.finalspecimenttypewiselist.size()
+        return distinctspecimentlist.size();//distinctspecimentlist.size()
     }
 
     public interface OnItemClickListener {
@@ -465,10 +411,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
     }
 
     class MyTextWatcher implements TextWatcher {
-        private EditText enter_barcode, reenter;
-        LinearLayout linearEditbarcode, barcode_linear;
-        Button scanBarcode;
-        ImageView element1_iv;
+        private EditText enter_barcode;
         boolean flag = false;
 
         public MyTextWatcher(EditText editText) {
@@ -486,107 +429,63 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
             try {
                 String enteredString = s.toString();
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(context,
-                            ToastFile.crt_brcd,
-                            Toast.LENGTH_SHORT).show();
+                if (!GlobalClass.isNull(enteredString) && enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    GlobalClass.showTastyToast((Activity) context, ToastFile.crt_brcd,1);
                     if (enteredString.length() > 0) {
-                        enter_barcode.setText(enteredString.substring(1));
+                        GlobalClass.SetEditText(enter_barcode,enteredString.substring(1));
                     } else {
-                        enter_barcode.setText("");
+                        GlobalClass.SetEditText(enter_barcode,"");
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            // Do whatever you want with position
         }
 
         @Override
         public void afterTextChanged(Editable s) {
             String eneterString = s.toString();
-            int position = (int) enter_barcode.getTag();
             if (s.length() < 8) {
                 flag = false;
             }
             if (s.length() > 8) {
-                enter_barcode.setText(eneterString.substring(1));
-                Toast.makeText(context, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+                GlobalClass.SetEditText(enter_barcode,eneterString.substring(1));
+                GlobalClass.showTastyToast((Activity)context,ToastFile.crt_brcd,2);
             }
             if (s.length() == 8) {
                 previouseBarcode = s.toString();
                 searchBarcode = s.toString();
-                //checkBarcode(position,s.toString());
                 final ArrayList<String> storeBarcode = new ArrayList<>();
-                if (GlobalClass.finalspecimenttypewiselist.size() != 0) {
-                    for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                        if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null) {
-                            if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
-                                Toast.makeText(context, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
-                                enter_barcode.setText("");
+
+                if (GlobalClass.CheckArrayList(distinctspecimentlist)) {
+                    for (int i = 0; i < distinctspecimentlist.size(); i++) {
+                        if (!GlobalClass.isNull(distinctspecimentlist.get(i).getBarcode())) {
+                            if (!GlobalClass.isNull(searchBarcode) && distinctspecimentlist.get(i).getBarcode().equalsIgnoreCase(searchBarcode)) {
+                                GlobalClass.showTastyToast((Activity)context,ToastFile.duplicate_barcd,5);
+                                GlobalClass.SetEditText(enter_barcode,"");
                                 flag = true;
                             }
                         } else {
-                            if (flag == false) {
+                            if (!flag) {
                                 flag = true;
                                 if (!GlobalClass.isNetworkAvailable(((Activity) context))) {
-                                    enter_barcode.setText(searchBarcode);
+                                    GlobalClass.SetEditText(enter_barcode,searchBarcode);
                                 } else {
-                                    barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
+                                    barcodeDetails = GlobalClass.setVolleyReq(context);
+                                    String strurl = Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode";
 
-                                    final ProgressDialog showprogressDialog = GlobalClass.ShowprogressDialog(context);
+                                    edit_enter_barcode=enter_barcode;
 
-                                    JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + api_key + "/" + s + "/getcheckbarcode"
-                                            , new Response.Listener<JSONObject>() {
-                                        @Override
-                                        public void onResponse(JSONObject response) {
-                                            System.out.println("barcode respponse" + response);
-                                            Log.e(TAG, "onResponse: " + response);
-                                            String finalJson = response.toString();
-                                            JSONObject parentObjectOtp = null;
-                                            try {
-                                                parentObjectOtp = new JSONObject(finalJson);
-                                                ERROR = parentObjectOtp.getString("ERROR");
-                                                RES_ID = parentObjectOtp.getString("RES_ID");
-                                                barcode = parentObjectOtp.getString("barcode");
-                                                response1 = parentObjectOtp.getString("response");
-
-                                                if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                                                    enter_barcode.setText(searchBarcode);
-                                                    GlobalClass.hideProgress(context, showprogressDialog);
-
-                                                } else if (ERROR.equalsIgnoreCase(caps_invalidApikey)) {
-                                                    GlobalClass.hideProgress(context, showprogressDialog);
-                                                    GlobalClass.redirectToLogin(((Activity) context));
-                                                } else {
-                                                    enter_barcode.setText("");
-                                                    storeResponse = response1;
-                                                    GlobalClass.hideProgress(context, showprogressDialog);
-                                                    Toast.makeText(context, "" + response1, Toast.LENGTH_SHORT).show();
-                                                }
-
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
+                                    try {
+                                        if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                                            ControllersGlobalInitialiser.checkbarcode_controller = null;
                                         }
-                                    }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            if (error.networkResponse == null) {
-                                                if (error.getClass().equals(TimeoutError.class)) {
-                                                    // Show timeout error message
-                                                }
-                                            }
-                                        }
-                                    });
-                                    jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                                            300000,
-                                            3,
-                                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                                    barcodeDetails.add(jsonObjectRequestPop);
-                                    Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                                        ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller((Activity)context, AdapterBarcode_New.this,searchBarcode,"2");
+                                        ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(strurl, barcodeDetails);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                             }
                         }

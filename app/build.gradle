@@ -24,8 +24,9 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 60
-        versionName "1.0.1.50"
+        versionCode 63
+        versionName "1.0.1.53"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -103,6 +104,7 @@ dependencies {
     //implementation 'com.google.android.gms:play-services-location:16.0.0'
    // implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.libraries.places:places:2.2.0'
+
    // implementation 'com.google.android.gms:play-services-places:16.0.0'
     implementation 'androidx.multidex:multidex:2.0.0'
     testImplementation 'junit:junit:4.12'
@@ -183,5 +185,7 @@ dependencies {
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.mindorks:paracamera:0.2.2'
     implementation files('libs/pinchzoom.jar')
+    implementation 'com.toptoche.searchablespinner:searchablespinnerlibrary:1.3.1'
+
 }
 apply plugin: 'com.google.gms.google-services'

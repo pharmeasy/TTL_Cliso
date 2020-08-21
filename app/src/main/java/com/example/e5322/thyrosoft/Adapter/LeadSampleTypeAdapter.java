@@ -11,9 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.Leads;
 import com.example.e5322.thyrosoft.R;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class LeadSampleTypeAdapter extends RecyclerView.Adapter<LeadSampleTypeAd
     private ArrayList<String> sampletypeslist;
     private LeadSampleTypeAdapter.OnItemClickListener onItemClickListener;
     List<Leads.LeadData> list;
-    boolean isspinnerflag = false;
+
 
     public LeadSampleTypeAdapter(Activity activity, List<Leads.LeadData> list) {
         this.activity = activity;
@@ -48,17 +48,15 @@ public class LeadSampleTypeAdapter extends RecyclerView.Adapter<LeadSampleTypeAd
     @Override
     public void onBindViewHolder(@NonNull final LeadSampleTypeAdapter.MyViewHolder myViewHolder, final int position) {
 
-
-        myViewHolder.txt_testname.setText(list.get(position).getTest());
+        GlobalClass.SetText(myViewHolder.txt_testname, list.get(position).getTest());
 
         sampletypeslist = new ArrayList<>();
         sampletypeslist.add("Select sample type");
 
-        if (list.get(position).getSample_type() != null) {
+        if (GlobalClass.CheckArrayList(list) && GlobalClass.checkArray(list.get(position).getSample_type())) {
             for (int m = 0; m < list.get(position).getSample_type().length; m++) {
                 sampletypeslist.add(list.get(position).getSample_type()[m].getOutlab_sampletype().trim());
             }
-
             myViewHolder.sample_type_spinner.setVisibility(View.VISIBLE);
 
         }

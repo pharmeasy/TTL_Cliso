@@ -7,9 +7,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 
@@ -60,7 +59,7 @@ public class VersionCheckAPIController {
                         if (response != null) {
                             splashScreenActivity.getVersionResponse(apiVersion, ApkUrl, RESPONSE);
                         } else {
-                            GlobalClass.showShortToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG);
+                            GlobalClass.showTastyToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG,2);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -1,11 +1,8 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,16 +19,18 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.List;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class Notification_activity extends AppCompatActivity {
-    TextView notifyHeader, notifycontent, noNotification;
+    TextView noNotification;
     private SqliteDatabase mDatabase;
     private Global globalClass;
     ImageView back, home;
-
-    RecyclerView item_list;
+    private RecyclerView item_list;
     private static final String TAG = NotificationFragment.class.getSimpleName();
-    private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private TextView txtRegId, txtMessage;
     LinearLayoutManager linearLayoutManager;
 
     @SuppressLint("NewApi")
@@ -40,10 +39,13 @@ public class Notification_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_notification);
 
-        noNotification = (TextView) findViewById(R.id.noNotification);
-        item_list = (RecyclerView) findViewById(R.id.item_list);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
+        initviews();
+        initlistner();
+
+
+    }
+
+    private void initlistner() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +58,14 @@ public class Notification_activity extends AppCompatActivity {
                 GlobalClass.goToHome(Notification_activity.this);
             }
         });
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initviews() {
+        noNotification = (TextView) findViewById(R.id.noNotification);
+        item_list = (RecyclerView) findViewById(R.id.item_list);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
         linearLayoutManager = new LinearLayoutManager(Notification_activity.this);
 
         if (globalClass.checkForApi21()) {
@@ -70,14 +79,14 @@ public class Notification_activity extends AppCompatActivity {
         item_list.setHasFixedSize(true);
         mDatabase = new SqliteDatabase(Notification_activity.this);
         List<Product> allProducts = mDatabase.listProducts();
-        if (allProducts.size() > 0) {
+
+        if (GlobalClass.CheckArrayList(allProducts)) {
             item_list.setVisibility(View.VISIBLE);
             ProductAdapter mAdapter = new ProductAdapter(Notification_activity.this, allProducts);
             item_list.setAdapter(mAdapter);
         } else {
             item_list.setVisibility(View.GONE);
             noNotification.setVisibility(View.VISIBLE);
-//            Toast.makeText(Notification_activity.this, "There is no product in the database. Start adding now", Toast.LENGTH_LONG).show();
         }
     }
 }

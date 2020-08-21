@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -15,7 +14,6 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.billingDetailsModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.format.Colour;
@@ -45,7 +44,8 @@ public class BillingDetailsActivity extends AppCompatActivity {
     TextView download;
     public String Date = "";
     ImageView back, home;
-
+    ArrayList<String> billingDETheaderArray = new ArrayList<>();
+    public static ArrayList<billingDetailsModel> billingDETArray=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,10 +61,23 @@ public class BillingDetailsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        lvExp = (ExpandableListView) findViewById(R.id.expandlist);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
+        if (getIntent().getExtras() != null){
+            billingDETheaderArray = getIntent().getExtras().getStringArrayList("billheaderlist");
+            billingDETArray= getIntent().getExtras().getParcelableArrayList("billingDETArray");
+        }
 
+
+        initview();
+
+        initListner();
+
+        PrepareDataList();
+
+        adapter = new ExpandablenameListAdapter(BillingDetailsActivity.this, billingDETheaderArray, listDataChild,billingDETArray);
+        lvExp.setAdapter(adapter);
+    }
+
+    private void initListner() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,15 +98,17 @@ public class BillingDetailsActivity extends AppCompatActivity {
                 saveExcelFile();
             }
         });
+    }
 
-        PrepareDataList();
-        adapter = new ExpandablenameListAdapter(BillingDetailsActivity.this, GlobalClass.billingDETheaderArray, listDataChild);
-        lvExp.setAdapter(adapter);
+    private void initview() {
+        lvExp = (ExpandableListView) findViewById(R.id.expandlist);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
     }
 
     private void PrepareDataList() {
         listDataChild = new HashMap<ArrayList, ArrayList<billingDetailsModel>>();
-        listDataChild.put(GlobalClass.billingDETheaderArray, GlobalClass.billingDETArray);
+        listDataChild.put(billingDETheaderArray, billingDETArray);
     }
 
     private void saveExcelFile() {
@@ -119,7 +134,7 @@ public class BillingDetailsActivity extends AppCompatActivity {
             }
 
             WritableCellFormat cellFormat = new WritableCellFormat(cellFont);
-            try{
+            try {
                 cellFormat.setBackground(Colour.YELLOW);
             } catch (WriteException e) {
                 e.printStackTrace();
@@ -146,33 +161,31 @@ public class BillingDetailsActivity extends AppCompatActivity {
             sheet.addCell(labe6);
             sheet.addCell(labe7);
 
+            if (GlobalClass.CheckArrayList(billingDETArray)){
+                for (int i = 0; i < billingDETArray.size(); i++) {
+                    sheet.setColumnView(0, 10);
+                    sheet.setColumnView(1, 20);
+                    sheet.setColumnView(2, 15);
+                    sheet.setColumnView(3, 15);
+                    sheet.setColumnView(4, 15);
+                    sheet.setColumnView(5, 15);
+                    sheet.setColumnView(6, 15);
 
-            for (int i = 0; i < GlobalClass.billingDETArray.size(); i++) {
-                sheet.setColumnView(0, 10);
-                sheet.setColumnView(1, 20);
-                sheet.setColumnView(2, 15);
-                sheet.setColumnView(3, 15);
-                sheet.setColumnView(4, 15);
-                sheet.setColumnView(5, 15);
-                sheet.setColumnView(6, 15);
-
-                sheet.addCell(new Label(0, i + 1, GlobalClass.billingDETArray.get(i).getBarcode()));
-                sheet.addCell(new Label(1, i + 1, GlobalClass.billingDETArray.get(i).getBilledAmount()));
-                sheet.addCell(new Label(2, i + 1, GlobalClass.billingDETArray.get(i).getCollectedAmount()));
-                sheet.addCell(new Label(3, i + 1, GlobalClass.billingDETArray.get(i).getPatient()));
-                sheet.addCell(new Label(4, i + 1, GlobalClass.billingDETArray.get(i).getTests()));
-                sheet.addCell(new Label(5, i + 1, GlobalClass.billingDETArray.get(i).getWoetype()));
-                sheet.addCell(new Label(6, i + 1, GlobalClass.billingDETArray.get(i).getRefId()));
+                    sheet.addCell(new Label(0, i + 1, billingDETArray.get(i).getBarcode()));
+                    sheet.addCell(new Label(1, i + 1, billingDETArray.get(i).getBilledAmount()));
+                    sheet.addCell(new Label(2, i + 1, billingDETArray.get(i).getCollectedAmount()));
+                    sheet.addCell(new Label(3, i + 1, billingDETArray.get(i).getPatient()));
+                    sheet.addCell(new Label(4, i + 1, billingDETArray.get(i).getTests()));
+                    sheet.addCell(new Label(5, i + 1, billingDETArray.get(i).getWoetype()));
+                    sheet.addCell(new Label(6, i + 1, billingDETArray.get(i).getRefId()));
+                }
             }
 
 
+
+
             workbook.write();
-            TastyToast.makeText(BillingDetailsActivity.this, ToastFile.xl_dtl, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-
-     /*       Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "application/vnd.ms-excel");
-            startActivity(intent);*/
-
+            GlobalClass.showTastyToast(BillingDetailsActivity.this, ToastFile.xl_dtl, 1);
             FileOpen.openFile(BillingDetailsActivity.this, file);
 
             try {

@@ -1,23 +1,13 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,27 +15,33 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.VideoListAdapter;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.GetVideoLanguage_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.VideoLanguageController;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Response;
 import tcking.github.com.giraffeplayer2.GiraffePlayer;
 import tcking.github.com.giraffeplayer2.Option;
@@ -70,7 +66,6 @@ public class VideoActivity extends AppCompatActivity {
     private TextView tv_languageSelected;
     private SharedPreferences prefs_Language;
     private TextView tv_noDatafound;
-    ProgressDialog progressDialog;
     ImageView imgBack;
     ConnectionDetector connectionDetector;
     private Snackbar internetErrorSnackbar;
@@ -78,14 +73,10 @@ public class VideoActivity extends AppCompatActivity {
     String TAG = getClass().getSimpleName();
     VideoDataposter videoDataposter;
     String VideoID;
-    boolean rel_falg = false;
     boolean stop_flag = false;
     boolean onpause = false;
-    boolean destroy_flag = false;
     boolean back_flag = false;
     boolean backpress_flag = false;
-
-    private int b = 0;
     long milliseconds, minutes, seconds;
 
     @Override
@@ -106,35 +97,24 @@ public class VideoActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_video);
 
-        parentLayout = findViewById(android.R.id.content);
-        videoView = (VideoView) findViewById(R.id.video_view1);
-        recView = (RecyclerView) findViewById(R.id.recView);
-        tv_noDatafound = (TextView) findViewById(R.id.tv_noDatafound);
-        progressDialog = new ProgressDialog(mActivity);
-
+        initViews();
         initToolbar();
 
         if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
-            if (connectionDetector.isConnectingToInternet()) {
-                CallVideoLanguagesAPI();
-            } else {
-                global.showCustomToast(mActivity, "Please check internet connection.");
-            }
-
+            CallVideoLanguagesAPI();
         } else {
-            tv_languageSelected.setText(prefs_Language.getString("LanguageSelected", ""));
+            GlobalClass.SetText(tv_languageSelected, prefs_Language.getString("LanguageSelected", ""));
 
             if (connectionDetector.isConnectingToInternet()) {
                 GetVideosBasedonLanguage(prefs_Language.getString("LanguageID", ""));
             } else {
-                global.showCustomToast(mActivity, "Please check internet connection.");
+                GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 5);
             }
 
             tv_noDatafound.setVisibility(View.VISIBLE);
             if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
                 videoView.getPlayer().stop();
                 videoView.setVisibility(View.GONE);
-                // videoView.getPlayer().release();
             }
         }
 
@@ -148,6 +128,14 @@ public class VideoActivity extends AppCompatActivity {
                     }
                 })
                 .setActionTextColor(getResources().getColor(R.color.maroon));
+    }
+
+    private void initViews() {
+        parentLayout = findViewById(android.R.id.content);
+        videoView = (VideoView) findViewById(R.id.video_view1);
+        recView = (RecyclerView) findViewById(R.id.recView);
+        tv_noDatafound = (TextView) findViewById(R.id.tv_noDatafound);
+
     }
 
     private void initToolbar() {
@@ -181,11 +169,7 @@ public class VideoActivity extends AppCompatActivity {
         tv_languageSelected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (connectionDetector.isConnectingToInternet()) {
-                    CallVideoLanguagesAPI();
-                } else {
-                    global.showCustomToast(mActivity, "Please check internet connection.");
-                }
+                CallVideoLanguagesAPI();
             }
         });
 
@@ -206,76 +190,22 @@ public class VideoActivity extends AppCompatActivity {
     }
 
     private void CallVideoLanguagesAPI() {
-        global.showProgressDialog();
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(APIInteface.class);
-        Call<VideoLangaugesResponseModel> responseCall = apiInterface.getVideoLanguages();
-        //Log.e(TAG, "V I D E O U R L ---->" + responseCall.request().url());
 
-        responseCall.enqueue(new Callback<VideoLangaugesResponseModel>() {
-            @Override
-            public void onResponse(Call<VideoLangaugesResponseModel> call, Response<VideoLangaugesResponseModel> response) {
-
-                global.hideProgressDialog();
-
-                VideoLangArylist = new ArrayList<>();
-
-                if (response.isSuccessful()) {
-                    VideoLangaugesResponseModel model = response.body();
-                    if (model.getOutput() != null || model.getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        VideoLangArylist = model.getOutput();
-                    }
-                }
-
-                if (VideoLangArylist.size() > 0) {
-
-                    SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
-                    SharedPreferences.Editor editor = pref.edit();
-                    Gson gson = new Gson();
-                    String json = gson.toJson(VideoLangArylist);
-                    editor.putString("LanguageArryList", json);
-                    editor.apply();
-
-                    if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
-                        showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
-                        tv_noDatafound.setVisibility(View.GONE);
-                    } else {
-                        showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
-                    }
-                } else {
-                    Gson gson = new Gson();
-                    String json = prefs_Language.getString("LanguageArryList", "");
-                    VideoLangArylist = gson.fromJson(json, new TypeToken<List<VideoLangaugesResponseModel.Outputlang>>() {
-                    }.getType());
-
-                    if (VideoLangArylist != null) {
-                        if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
-                            showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
-                            tv_noDatafound.setVisibility(View.VISIBLE);
-                            videoView.setVisibility(View.GONE);
-                        } else {
-                            showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
-                        }
-                    } else {
-                        global.showCustomToast(mActivity, "Unable to fetch languages from server. Please try after sometime.");
-                    }
-
-
-                }
+        try {
+            if (ControllersGlobalInitialiser.videoLanguageController != null) {
+                ControllersGlobalInitialiser.videoLanguageController = null;
             }
+            ControllersGlobalInitialiser.videoLanguageController = new VideoLanguageController(mActivity, VideoActivity.this);
+            ControllersGlobalInitialiser.videoLanguageController.GetVideoLang_Controller(tv_noDatafound, videoView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<VideoLangaugesResponseModel> call, Throwable t) {
-                global.hideProgressDialog();
-                tv_noDatafound.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.GONE);
-                global.showCustomToast(mActivity, "Unable to fetch data from server.");
-            }
-        });
     }
 
 
     private void showLanguageDialogList(String title, final ArrayList<VideoLangaugesResponseModel.Outputlang> list, final TextView textView, boolean ShowCancelOption) {
-        if (list != null && !list.isEmpty()) {
+        if (GlobalClass.CheckArrayList(list)) {
             final AlertDialog.Builder builderSingle = new AlertDialog.Builder(mActivity);
             builderSingle.setTitle(title);
             builderSingle.setCancelable(false);
@@ -299,20 +229,10 @@ public class VideoActivity extends AppCompatActivity {
                     if (which < arrayAdapter.getCount()) {
 
                         String strName = arrayAdapter.getItem(which).getLANGUAGE();
-                        textView.setText(strName);
+                        GlobalClass.SetText(textView, strName);
 
                         if (connectionDetector.isConnectingToInternet()) {
                             GetVideosBasedonLanguage(arrayAdapter.getItem(which).getIID_NEW());
-
-                         /*   if (videoView.getVideoInfo().getUri() != null) {
-                                if (videoView.getPlayer().isPlaying()) {
-                                    videoView.getPlayer().stop();
-                                    videoView.setVisibility(View.GONE);
-                                    videoView.getPlayer().getDuration();
-                                    Log.e(TAG, "GET VIDEO DUR ---->" + videoView.getPlayer().getDuration());
-                                }
-                            }*/
-
                             SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putString("LanguageSelected", arrayAdapter.getItem(which).getLANGUAGE());
@@ -320,7 +240,7 @@ public class VideoActivity extends AppCompatActivity {
                             editor.apply();
 
                         } else {
-                            GlobalClass.toastyError(VideoActivity.this, MessageConstants.CHECK_INTERNET_CONN, false);
+                            GlobalClass.showTastyToast(VideoActivity.this, MessageConstants.CHECK_INTERNET_CONN, 1);
                         }
                     }
                     dialog.dismiss();
@@ -329,7 +249,7 @@ public class VideoActivity extends AppCompatActivity {
 
             builderSingle.show();
         } else {
-            global.showCustomToast(mActivity, "List is not available");
+            GlobalClass.showTastyToast(mActivity, MessageConstants.Listnotavilable, 2);
         }
 
     }
@@ -340,57 +260,15 @@ public class VideoActivity extends AppCompatActivity {
             videoView.getPlayer().stop();
             videoView.setVisibility(View.GONE);
         }
-
-        GetVideoLanguageWiseRequestModel model = new GetVideoLanguageWiseRequestModel();
-        model.setApp(Constants.APP_ID);
-        model.setLanguage(LanguageID);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.LIVEAPI).create(PostAPIInteface.class);
-        Call<VideosResponseModel> responseCall = apiInterface.getVideobasedOnLanguage(model);
-       // Log.e(TAG, "VIDEO LIST BODY ---->" + new GsonBuilder().create().toJson(model));
-        //Log.e(TAG, "VIDEO LIST URL ---->" + responseCall.request().url());
-        global.showProgressDialog();
-
-        responseCall.enqueue(new Callback<VideosResponseModel>() {
-            @Override
-            public void onResponse(Call<VideosResponseModel> call, Response<VideosResponseModel> response) {
-                global.hideProgressDialog();
-                if (response.isSuccessful() && response.body() != null) {
-                    VideosResponseModel responseModel = response.body();
-
-                    if (!TextUtils.isEmpty(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase("RSS0000") && responseModel.getOutput() != null && responseModel.getOutput().size() > 0) {
-                        tv_noDatafound.setVisibility(View.GONE);
-                        VideosArylist = new ArrayList<>();
-                        VideosArylist = responseModel.getOutput();
-
-                        if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
-                            videoView.getPlayer().stop();
-                            videoView.setVisibility(View.GONE);
-                        }
-
-                        DisplayVideosInList();
-
-                    } else {
-                        recView.setVisibility(View.GONE);
-                        tv_noDatafound.setVisibility(View.VISIBLE);
-                        videoView.setVisibility(View.GONE);
-
-                    }
-                } else {
-                    tv_noDatafound.setVisibility(View.VISIBLE);
-                    videoView.setVisibility(View.GONE);
-                    //System.out.println("No Videos found");
-                }
+        try {
+            if (ControllersGlobalInitialiser.getVideoLanguage_controller != null) {
+                ControllersGlobalInitialiser.getVideoLanguage_controller = null;
             }
-
-            @Override
-            public void onFailure(Call<VideosResponseModel> call, Throwable t) {
-                global.hideProgressDialog();
-                tv_noDatafound.setVisibility(View.VISIBLE);
-                videoView.setVisibility(View.GONE);
-
-            }
-        });
-
+            ControllersGlobalInitialiser.getVideoLanguage_controller = new GetVideoLanguage_Controller(mActivity, VideoActivity.this);
+            ControllersGlobalInitialiser.getVideoLanguage_controller.getvideolangvideo(LanguageID, tv_noDatafound, videoView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void DisplayVideosInList() {
@@ -412,7 +290,8 @@ public class VideoActivity extends AppCompatActivity {
 
 
                 try {
-                    if (videoView.getVideoInfo().getUri() != null && videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
+                    if (videoView.getVideoInfo().getUri() != null &&  !GlobalClass.isNull(videoView.getVideoInfo().getUri().toString()) &&
+                            videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
                         if (!videoView.getVideoInfo().getUri().toString().equalsIgnoreCase(SelectedVideo.getPath())) {
                             videoView.getPlayer().stop();
                             videoView.setVisibility(View.GONE);
@@ -446,8 +325,6 @@ public class VideoActivity extends AppCompatActivity {
             videoView.setVisibility(View.GONE);
         }
 
-        //   videoView.setVisibility(View.VISIBLE);
-
         videoView.setVideoPath(Video.getPath()).getPlayer().setDisplayModel(GiraffePlayer.DISPLAY_NORMAL);
         videoView.getPlayer().getVideoInfo().setTitle(Video.getTitle()).setAspectRatio(VideoInfo.AR_ASPECT_FIT_PARENT).setBgColor(Color.BLACK).setShowTopBar(true).addOption(Option.create(IjkMediaPlayer.OPT_CATEGORY_PLAYER, "multiple_requests", 1L));
         videoView.getPlayer().start();
@@ -461,7 +338,6 @@ public class VideoActivity extends AppCompatActivity {
 
             @Override
             public void onBufferingUpdate(GiraffePlayer giraffePlayer, int percent) {
-//                Log.e(TAG, "onBufferingUpdate: ");
             }
 
             @Override
@@ -484,7 +360,7 @@ public class VideoActivity extends AppCompatActivity {
 
             @Override
             public boolean onError(GiraffePlayer giraffePlayer, int what, int extra) {
-                System.out.println("tejas >>> onError");
+
 
                 if (a == 0) {
                     a = giraffePlayer.getCurrentPosition();
@@ -510,7 +386,7 @@ public class VideoActivity extends AppCompatActivity {
             @Override
             public void onPause(GiraffePlayer giraffePlayer) {
 
-                if (VideosArylist != null && VideosArylist.size() > 0) {
+                if (GlobalClass.CheckArrayList(VideosArylist)) {
                     for (int i = 0; i < VideosArylist.size(); i++) {
                         if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
                             VideosArylist.get(i).setVideoPaused(true);
@@ -549,7 +425,7 @@ public class VideoActivity extends AppCompatActivity {
                 }
 
 
-                if (VideosArylist != null && VideosArylist.size() > 0) {
+                if (GlobalClass.CheckArrayList(VideosArylist)) {
                     for (int i = 0; i < VideosArylist.size(); i++) {
                         if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
                             VideosArylist.get(i).setVideoPlaying(true);
@@ -561,7 +437,7 @@ public class VideoActivity extends AppCompatActivity {
                         videoListAdapter.notifyDataSetChanged();
                     }
 
-                    System.out.println("Tejas >>> seek Time : " + a);
+                    Log.v("TAG", "Tejas >>> seek Time : " + a);
                     Log.e(TAG, " on Video Start ---->" + videoView.getPlayer().getCurrentPosition());
 
                 }
@@ -583,7 +459,7 @@ public class VideoActivity extends AppCompatActivity {
                     long seconds1 = (milliseconds1 / 1000) % 60;
 
                     if (minutes == minutes1 && seconds == seconds1) {
-                        if (VideosArylist != null && VideosArylist.size() > 0) {
+                        if (GlobalClass.CheckArrayList(VideosArylist)) {
                             for (int i = 0; i < VideosArylist.size(); i++) {
                                 VideosArylist.get(i).setVideoPlaying(false);
                                 VideosArylist.get(i).setVideoPaused(false);
@@ -593,7 +469,7 @@ public class VideoActivity extends AppCompatActivity {
                         a = 0;
                         videoView.setVisibility(View.GONE);
                     } else {
-                        if (VideosArylist != null && VideosArylist.size() > 0) {
+                        if (GlobalClass.CheckArrayList(VideosArylist)) {
                             for (int i = 0; i < VideosArylist.size(); i++) {
 
                                 if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
@@ -606,21 +482,21 @@ public class VideoActivity extends AppCompatActivity {
                             videoListAdapter.notifyDataSetChanged();
                             videoView.setVisibility(View.VISIBLE);
                         }
-                        // videoView.setVisibility(View.VISIBLE);
+
                     }
 
                     Log.e(TAG, "STATE_PLAYBACK_COMPLETED : " + VideoID);
 
                 } else if ((oldState == GiraffePlayer.STATE_PLAYING && newState == GiraffePlayer.STATE_PLAYBACK_COMPLETED) || (oldState == GiraffePlayer.DISPLAY_NORMAL && newState == GiraffePlayer.STATE_RELEASE)) {
                     videoView.setVisibility(View.GONE);
-                    if (VideosArylist != null && VideosArylist.size() > 0) {
+                    if (GlobalClass.CheckArrayList(VideosArylist)) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
                             VideosArylist.get(i).setVideoPlaying(false);
                         }
                         videoListAdapter.notifyDataSetChanged();
                     }
                 } else if (oldState == GiraffePlayer.STATE_PREPARED && newState == GiraffePlayer.STATE_PLAYING) {
-                    if (VideosArylist != null && VideosArylist.size() > 0) {
+                    if (GlobalClass.CheckArrayList(VideosArylist)) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
                             if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
                                 VideosArylist.get(i).setVideoPlaying(true);
@@ -632,7 +508,7 @@ public class VideoActivity extends AppCompatActivity {
                         videoListAdapter.notifyDataSetChanged();
                     }
                 } else if (oldState == GiraffePlayer.STATE_IDLE && (newState == GiraffePlayer.STATE_LAZYLOADING || newState == GiraffePlayer.STATE_PREPARING)) {
-                    if (VideosArylist != null && VideosArylist.size() > 0) {
+                    if (GlobalClass.CheckArrayList(VideosArylist)) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
 
                             if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
@@ -648,7 +524,7 @@ public class VideoActivity extends AppCompatActivity {
                     // videoView.setVisibility(View.VISIBLE);
                     Log.e(TAG, "STATE_IDLE : " + VideoID);
                 } else if (oldState == GiraffePlayer.STATE_PLAYBACK_COMPLETED && newState == GiraffePlayer.STATE_PLAYING) {
-                    if (VideosArylist != null && VideosArylist.size() > 0) {
+                    if (GlobalClass.CheckArrayList(VideosArylist)) {
                         for (int i = 0; i < VideosArylist.size(); i++) {
 
                             if (VideosArylist.get(i).getId().equalsIgnoreCase(Video.getId())) {
@@ -763,5 +639,80 @@ public class VideoActivity extends AppCompatActivity {
         seconds = (milliseconds / 1000) % 60;
         videoDataposter = new VideoDataposter(VideoActivity.this, minutes, seconds);
         videoDataposter.videoDatapost(VideoID, minutes, seconds);
+    }
+
+    public void getVideoLangResponse(VideoLangaugesResponseModel body) {
+        VideoLangArylist = new ArrayList<>();
+
+        if (body != null) {
+            VideoLangaugesResponseModel model = body;
+            if (model.getOutput() != null || !GlobalClass.isNull(model.getResId()) && model.getResId().equalsIgnoreCase(Constants.RES0000)) {
+                VideoLangArylist = model.getOutput();
+            }
+        }
+
+        if (GlobalClass.CheckArrayList(VideoLangArylist)) {
+
+            SharedPreferences pref = mActivity.getSharedPreferences("Video_lang_pref", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            Gson gson = new Gson();
+            String json = gson.toJson(VideoLangArylist);
+            editor.putString("LanguageArryList", json);
+            editor.apply();
+
+            if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
+                showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
+                tv_noDatafound.setVisibility(View.GONE);
+            } else {
+                showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
+            }
+        } else {
+            Gson gson = new Gson();
+            String json = prefs_Language.getString("LanguageArryList", "");
+            VideoLangArylist = gson.fromJson(json, new TypeToken<List<VideoLangaugesResponseModel.Outputlang>>() {
+            }.getType());
+
+            if (GlobalClass.CheckArrayList(VideoLangArylist)) {
+                if (TextUtils.isEmpty(prefs_Language.getString("LanguageSelected", ""))) {
+                    showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, false);
+                    tv_noDatafound.setVisibility(View.VISIBLE);
+                    videoView.setVisibility(View.GONE);
+                } else {
+                    showLanguageDialogList("Select Language", VideoLangArylist, tv_languageSelected, true);
+                }
+            } else {
+                GlobalClass.showTastyToast(mActivity, MessageConstants.unablefetchlang, 2);
+            }
+
+        }
+    }
+
+    public void getvideoResponse(Response<VideosResponseModel> response) {
+
+        if (response.isSuccessful() && response.body() != null) {
+            VideosResponseModel responseModel = response.body();
+
+            if (!GlobalClass.isNull(responseModel.getResId()) && !GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase("RSS0000") && responseModel.getOutput() != null && responseModel.getOutput().size() > 0) {
+                tv_noDatafound.setVisibility(View.GONE);
+                VideosArylist = new ArrayList<>();
+                VideosArylist = responseModel.getOutput();
+
+                if (videoView.getVideoInfo().getUri() != null && videoView.getPlayer().isPlaying()) {
+                    videoView.getPlayer().stop();
+                    videoView.setVisibility(View.GONE);
+                }
+
+                DisplayVideosInList();
+
+            } else {
+                recView.setVisibility(View.GONE);
+                tv_noDatafound.setVisibility(View.VISIBLE);
+                videoView.setVisibility(View.GONE);
+
+            }
+        } else {
+            tv_noDatafound.setVisibility(View.VISIBLE);
+            videoView.setVisibility(View.GONE);
+        }
     }
 }

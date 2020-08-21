@@ -1,8 +1,6 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +8,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BloodSugarEntries;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class BS_MISAdapter extends RecyclerView.Adapter<BS_MISAdapter.ViewHolder> {
 
@@ -36,13 +37,15 @@ public class BS_MISAdapter extends RecyclerView.Adapter<BS_MISAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull BS_MISAdapter.ViewHolder viewHolder, final int position) {
-        viewHolder.patientName.setText("" + bloodSugarEntries.get(position).getName().toUpperCase() + "(" + bloodSugarEntries.get(position).getAge() + "/" + bloodSugarEntries.get(position).getGender().toUpperCase() + ")");
+        GlobalClass.SetText(viewHolder.patientName, "" + bloodSugarEntries.get(position).getName().toUpperCase() + "(" + bloodSugarEntries.get(position).getAge() + "/" + bloodSugarEntries.get(position).getGender().toUpperCase() + ")");
+
         String mob_no = bloodSugarEntries.get(position).getMobile();
-        if (mob_no != null && !mob_no.isEmpty()) {
+        if (!GlobalClass.isNull(mob_no)) {
             viewHolder.tv_mob.setVisibility(View.VISIBLE);
-            viewHolder.tv_mob.setText(mob_no);
+            GlobalClass.SetText(viewHolder.tv_mob, mob_no);
         } else viewHolder.tv_mob.setVisibility(View.GONE);
-        viewHolder.tv_testNameValue.setText(bloodSugarEntries.get(position).getTest() + " - " + bloodSugarEntries.get(position).getTestValue());
+
+        GlobalClass.SetText(viewHolder.tv_testNameValue, bloodSugarEntries.get(position).getTest() + " - " + bloodSugarEntries.get(position).getTestValue());
 
         String systolicValue = bloodSugarEntries.get(position).getSBP();
         String diastolicValue = bloodSugarEntries.get(position).getDBP();
@@ -51,25 +54,25 @@ public class BS_MISAdapter extends RecyclerView.Adapter<BS_MISAdapter.ViewHolder
             viewHolder.ll_bpValues.setVisibility(View.GONE);
         } else {
             viewHolder.ll_bpValues.setVisibility(View.VISIBLE);
-            viewHolder.tv_systolicBP.setText(systolicValue);
-            viewHolder.tv_diastolicBP.setText(diastolicValue);
+            GlobalClass.SetText(viewHolder.tv_systolicBP, systolicValue);
+            GlobalClass.SetText(viewHolder.tv_diastolicBP, diastolicValue);
+
         }
 
         String collAmount = bloodSugarEntries.get(position).getAmountCollected();
         if (!GlobalClass.isNull(collAmount))
-            viewHolder.tv_collAmount.setText(activity.getString(R.string.rupeeSymbol) + " " + collAmount);
+            GlobalClass.SetText(viewHolder.tv_collAmount, activity.getString(R.string.rupeeSymbol) + " " + collAmount);
         else
-            viewHolder.tv_collAmount.setText("");
+            GlobalClass.SetText(viewHolder.tv_collAmount, "");
 
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String url = bloodSugarEntries.get(position).getFileUrl().replaceAll("\\\\", "//");
-//                url = url.replaceAll("http:", "https:");
-                if (url != null && !url.isEmpty())
+                if (!GlobalClass.isNull(url))
                     GlobalClass.showImageDialog(activity, null, url, 2);
                 else
-                    Global.showCustomToast(activity, "Image not found");
+                    GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found,2);
             }
         });
     }

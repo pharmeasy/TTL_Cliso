@@ -22,7 +22,7 @@ public class BaseModel implements Parcelable {
     Childs[] childs;
     Barcodes[] barcodes;
     Rate rate;
-
+    private int isAB;
 
     protected BaseModel(Parcel in) {
         product = in.readString();
@@ -38,6 +38,7 @@ public class BaseModel implements Parcelable {
         childs = in.createTypedArray(Childs.CREATOR);
         barcodes = in.createTypedArray(Barcodes.CREATOR);
         rate = in.readParcelable(Rate.class.getClassLoader());
+        isAB = in.readInt();
     }
 
     @Override
@@ -55,6 +56,7 @@ public class BaseModel implements Parcelable {
         dest.writeTypedArray(childs, flags);
         dest.writeTypedArray(barcodes, flags);
         dest.writeParcelable(rate, flags);
+        dest.writeInt(isAB);
     }
 
     @Override
@@ -73,6 +75,14 @@ public class BaseModel implements Parcelable {
             return new BaseModel[size];
         }
     };
+
+    public int getIsAB() {
+        return isAB;
+    }
+
+    public void setIsAB(int isAB) {
+        this.isAB = isAB;
+    }
 
     public String getIsCPL() {
         return isCPL;

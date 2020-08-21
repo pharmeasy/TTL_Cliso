@@ -2,17 +2,19 @@ package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollectionAdapter.ViewHolder> {
     Context mContext;
@@ -21,7 +23,7 @@ public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollecti
 
     public SampleCollectionAdapter(Activity mContext, ArrayList<LABS> LabDetailsArraList) {
         this.mContext = mContext;
-        this.LabDetailsArraList=new ArrayList<>();
+        this.LabDetailsArraList = new ArrayList<>();
         this.LabDetailsArraList = LabDetailsArraList;
     }
 
@@ -47,20 +49,19 @@ public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollecti
 
     @Override
     public void onBindViewHolder(@NonNull final SampleCollectionAdapter.ViewHolder holder, final int position) {
-        holder.text1.setText(LabDetailsArraList.get(position).getLabName() + " - " + LabDetailsArraList.get(position).getClientid());
-        if (LabDetailsArraList.get(position).getStatus()!=null) {
+        GlobalClass.SetText(holder.text1, LabDetailsArraList.get(position).getLabName() + " - " + LabDetailsArraList.get(position).getClientid());
+        if (LabDetailsArraList.get(position).getStatus() != null) {
             if (LabDetailsArraList.get(position).getStatus().equals("Y")) {
                 holder.text1.setTextColor(mContext.getResources().getColor(R.color.green));
             } else {
                 holder.text1.setTextColor(mContext.getResources().getColor(R.color.black));
             }
         }
+
         holder.text1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String ItemName = holder.text1.getText().toString();
                 if (onItemClickListener != null) {
-//                    onItemClickListener.onPassSgcName(ItemName);
                     onItemClickListener.onPassSgcID(LabDetailsArraList.get(position));
                 }
             }
@@ -83,7 +84,7 @@ public class SampleCollectionAdapter extends RecyclerView.Adapter<SampleCollecti
 
 
     public interface OnItemClickListener {
-//        void onPassSgcName(String name);
+        //        void onPassSgcName(String name);
         void onPassSgcID(LABS pos);
     }
 

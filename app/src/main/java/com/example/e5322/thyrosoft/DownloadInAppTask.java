@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
-import androidx.core.content.FileProvider;
 
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 
@@ -21,6 +20,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.ByteBuffer;
+
+import androidx.core.content.FileProvider;
 
 public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
 
@@ -29,8 +31,11 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
     private SplashScreen mActivity;
     private String appnameAPK;
     private Context context;
+    int fileLength;
     private PowerManager.WakeLock mWakeLock;
     private GlobalClass globalClass;
+
+    long downloadedsize, filesize;
 
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
@@ -79,25 +84,27 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
 
             // this will be useful to display download percentage
             // might be -1: server did not report the length
-            int fileLength = connection.getContentLength();
+            fileLength = connection.getContentLength();
 
             // download the file
             input = connection.getInputStream();
             output = new FileOutputStream("/sdcard/" + appnameAPK);
 
             byte data[] = new byte[4096];
-            long total = 0;
             int count;
+            downloadedsize = ByteBuffer.wrap(data).getLong();
+
             while ((count = input.read(data)) != -1) {
                 // allow canceling with back button
                 if (isCancelled()) {
                     input.close();
                     return null;
                 }
-                total += count;
+
+                downloadedsize += count;
                 // publishing the progress....
                 if (fileLength > 0) // only if total length is known
-                    publishProgress((int) (total * 100 / fileLength));
+                    publishProgress((int) (100 * downloadedsize / fileLength));
                 output.write(data, 0, count);
             }
         } catch (Exception e) {
@@ -132,11 +139,12 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
     @Override
     protected void onProgressUpdate(Integer... progress) {
         super.onProgressUpdate(progress);
-        // if we get here, length is known, now set indeterminate to false
         mProgressDialog.setIndeterminate(false);
-        mProgressDialog.setMax(100);
         mProgressDialog.setProgress(progress[0]);
+        mProgressDialog.setMax(100);
         setProgressMessage(mProgressDialog, progress[0]);
+        mProgressDialog.setProgressNumberFormat((GlobalClass.bytes2long(downloadedsize)) + "/" + (GlobalClass.bytes2long(fileLength)));
+
     }
 
     private void setProgressMessage(ProgressDialog ProgressDialog, Integer progress) {
@@ -162,7 +170,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null) {
-                GlobalClass.showShortToast(mActivity, "Download error: " + result);
+                GlobalClass.showTastyToast(mActivity, "Download error: " + result,2);
                 globalClass.printLog("Error", TAG, "onPostExecute: ", "" + result);
             } else {
                 CallAlertDialog();

@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MyWebViewClient;
 import com.example.e5322.thyrosoft.R;
 
@@ -44,7 +45,7 @@ public class HealthTipsDetail_Activity extends AppCompatActivity implements View
     private void initView() {
 
         tvname = findViewById(R.id.txt_name);
-        tvname.setText("Health Articles");
+        GlobalClass.SetText(tvname,"Health Articles");
         tvname.setAllCaps(true);
         tvname.setTextColor(getResources().getColor(R.color.maroon));
         tvname.setTextSize(20f);

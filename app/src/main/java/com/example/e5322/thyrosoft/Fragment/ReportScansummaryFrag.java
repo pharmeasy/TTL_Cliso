@@ -2,16 +2,8 @@ package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,16 +11,13 @@ import android.widget.DatePicker;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.MISAdapter;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Displayrodeails_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.GetScanReq;
 import com.example.e5322.thyrosoft.Models.GetScanResponse;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.APIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,8 +25,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -84,15 +76,10 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
 
     private void updateLabel() {
         String putDate = sdf.format(myCalendar.getTime());
-        String getFormatDate = sdf.format(myCalendar.getTime());
-        to_date.setText(putDate);
+        GlobalClass.SetText(to_date, putDate);
 
-        if (!TextUtils.isEmpty(to_date.getText().toString())) {
-            if (GlobalClass.isNetworkAvailable(getActivity())) {
-                GetMIS();
-            } else {
-                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-            }
+        if (!GlobalClass.isNull(to_date.getText().toString())) {
+            GetMIS();
         }
     }
 
@@ -114,67 +101,27 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
         myCalendar = Calendar.getInstance();
         myCalendar.setTime(today);
         showDate = sdf.format(today);
-        to_date.setText(showDate);
+        GlobalClass.SetText(to_date, showDate);
         fromdate = returndate(fromdate, showDate);
         To_formateDate = GlobalClass.formatDate("dd-MM-yyyy", "yyyy-MM-dd", showDate);
 
 
-        if (!TextUtils.isEmpty(to_date.getText().toString())) {
-            if (GlobalClass.isNetworkAvailable(getActivity())) {
-                GetMIS();
-            } else {
-                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
-            }
+        if (!GlobalClass.isNull(to_date.getText().toString())) {
+            GetMIS();
         }
     }
 
     private void GetMIS() {
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        String formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, to_date.getText().toString());
-        GetScanReq getScanReq = new GetScanReq();
-        getScanReq.setSdate(formateDate);
-        getScanReq.setSource(usercode);
-
-
-        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.insertscandetail).create(APIInteface.class);
-        Call<GetScanResponse> getScanResponseCall = apiInteface.getMIS(getScanReq);
-
-        //Log.e(TAG, "MIS URL --->" + getScanResponseCall.request().url());
-        //Log.e(TAG, "MIS BODY --->" + new GsonBuilder().create().toJson(getScanReq));
-
-        getScanResponseCall.enqueue(new Callback<GetScanResponse>() {
-            @Override
-            public void onResponse(Call<GetScanResponse> call, Response<GetScanResponse> response) {
-                try {
-                    if (response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
-                        if (!response.body().getRODETAILS().isEmpty()) {
-                            GlobalClass.hideProgress(getContext(), progressDialog);
-                            recy_report.setVisibility(View.VISIBLE);
-                            recy_report.setLayoutManager(new LinearLayoutManager(getActivity()));
-                            recy_report.setAdapter(new MISAdapter(getContext(), response.body().getRODETAILS()));
-                            txt_nodata.setVisibility(View.GONE);
-                        } else {
-                            txt_nodata.setVisibility(View.VISIBLE);
-                            recy_report.setVisibility(View.GONE);
-                            recy_report.setVisibility(View.GONE);
-                            GlobalClass.hideProgress(getContext(), progressDialog);
-                        }
-                    } else {
-                        recy_report.setVisibility(View.GONE);
-                        txt_nodata.setVisibility(View.VISIBLE);
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.displayrodeails_controller != null) {
+                ControllersGlobalInitialiser.displayrodeails_controller = null;
             }
+            ControllersGlobalInitialiser.displayrodeails_controller = new Displayrodeails_Controller(getActivity(), ReportScansummaryFrag.this);
+            ControllersGlobalInitialiser.displayrodeails_controller.getdisplayrodetails(usercode, to_date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            @Override
-            public void onFailure(Call<GetScanResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getLocalizedMessage());
-                GlobalClass.hideProgress(getContext(), progressDialog);
-            }
-        });
     }
 
     private Date returndate(Date date, String putDate) {
@@ -198,6 +145,28 @@ public class ReportScansummaryFrag extends Fragment implements View.OnClickListe
                 datePickerDialog.show();
                 break;
 
+        }
+    }
+
+    public void getscansummResponse(Response<GetScanResponse> response) {
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getRed_id()) && response.body().getRed_id().equalsIgnoreCase(Constants.RES0000)) {
+                if (!response.body().getRODETAILS().isEmpty()) {
+                    recy_report.setVisibility(View.VISIBLE);
+                    recy_report.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recy_report.setAdapter(new MISAdapter(getContext(), response.body().getRODETAILS()));
+                    txt_nodata.setVisibility(View.GONE);
+                } else {
+                    txt_nodata.setVisibility(View.VISIBLE);
+                    recy_report.setVisibility(View.GONE);
+                    recy_report.setVisibility(View.GONE);
+                }
+            } else {
+                recy_report.setVisibility(View.GONE);
+                txt_nodata.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

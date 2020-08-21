@@ -3,25 +3,15 @@ package com.example.e5322.thyrosoft.Fragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -32,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,75 +33,55 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
+import com.example.e5322.thyrosoft.CommonItils.AccessRuntimePermissions;
+import com.example.e5322.thyrosoft.Controller.Checkbarcode_Controller;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.CovidMobverification_Controller;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
+import com.example.e5322.thyrosoft.Controller.GenerateOTP_Controller;
+import com.example.e5322.thyrosoft.Controller.GetHospitalController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.ValidateOTP_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.AppuserReq;
-import com.example.e5322.thyrosoft.Models.AppuserResponse;
-import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
-import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
-import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
-import com.example.e5322.thyrosoft.Models.WOERequestModel;
+import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
-import com.example.e5322.thyrosoft.SetBarcodeDetails;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
-import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
 import com.rd.PageIndicatorView;
-import com.sdsmdg.tastytoast.TastyToast;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.sql.Time;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.prefs.Preferences;
 
-import retrofit2.Call;
-import retrofit2.Callback;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import retrofit2.Response;
 
-import static android.Manifest.permission.CAMERA;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
-import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 
@@ -118,6 +89,7 @@ public class RATEnterFrag extends Fragment {
 
     Button btn_generate, btn_resend, btn_verify;
     View root;
+    String hospt_ID;
     EditText edt_missed_mobile, edt_verifycc;
     ConnectionDetector cd;
     Activity activity;
@@ -131,13 +103,13 @@ public class RATEnterFrag extends Fragment {
     LinearLayout lin_generate_verify, lin_by_missed, ll_enterView;
     RadioButton by_missed, by_generate;
     ImageView img_scanbarcode;
-    IntentIntegrator scanIntegrator;
     RequestQueue requestQueue;
     private Camera camera;
     String ERROR, RES_ID, barcode, response1;
     RelativeLayout rel_verify_mobile;
     Button btn_submit, btn_reset, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_other;
     Spinner spr_gender;
+    SearchableSpinner spr_hospital;
     private String userChoosenTask;
     private int PICK_PHOTO_FROM_GALLERY = 202;
     EditText edt_firstname, edt_lastname, edt_age, edt_amtcollected;
@@ -157,6 +129,10 @@ public class RATEnterFrag extends Fragment {
     List<String> trflist = new ArrayList<>();
     List<String> otherlist = new ArrayList<>();
     List<String> patientsagespinner = Arrays.asList("Gender", "Male", "Female");
+    List<Hospital_model.HospitalDETAILSBean> hospitalDETAILSBeanList = new ArrayList<>();
+    List<String> hospitalname = new ArrayList<>();
+    private int agesinteger;
+    Activity mActivity;
 
     public RATEnterFrag() {
         // Required empty public constructor
@@ -174,16 +150,65 @@ public class RATEnterFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_r_a_t_enter, container, false);
-
-
+        cd = new ConnectionDetector(getContext());
         initui(root);
         initlistner();
+        GetHospitalList();
 
         return root;
     }
 
+    private void GetHospitalList() {
+        try {
+            if (ControllersGlobalInitialiser.getHospitalController != null) {
+                ControllersGlobalInitialiser.getHospitalController = null;
+            }
+            ControllersGlobalInitialiser.getHospitalController = new GetHospitalController(mActivity, RATEnterFrag.this);
+            ControllersGlobalInitialiser.getHospitalController.GetHosptitalController(apikey, usercode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void checkpermProceed() {
+        if (AccessRuntimePermissions.checkcameraPermission(mActivity) && AccessRuntimePermissions.checkExternalPerm(mActivity)) {
+            selectImage();
+        } else {
+            AccessRuntimePermissions.requestCamerapermission(mActivity);
+            AccessRuntimePermissions.requestExternalpermission(mActivity);
+        }
+    }
+
+
     private void initlistner() {
 
+        spr_hospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String hospital = spr_hospital.getSelectedItem().toString().trim();
+                if (!hospital.equalsIgnoreCase("Select Hospital Name")) {
+                    if (hospitalDETAILSBeanList != null) {
+                        for (int i = 0; i < hospitalDETAILSBeanList.size(); i++) {
+                            if (hospitalDETAILSBeanList.get(i).getName().toUpperCase().equalsIgnoreCase(hospital)) {
+                                hospt_ID = hospitalDETAILSBeanList.get(i).getId();
+                                hospital = hospitalDETAILSBeanList.get(i).getName();
+                            }
+                        }
+
+                        Log.e(TAG, "Hospial type ---> " + hospital);
+                        Log.e(TAG, "hospt_ID  ---> " + hospt_ID);
+
+                    }
+                } else {
+                    hospt_ID = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         btn_generate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,36 +253,33 @@ public class RATEnterFrag extends Fragment {
         btn_choosefile_trf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkPermission()) {
-                    if (trf_file != null && trf_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
-                    } else {
-                        isadhar = false;
-                        isother = false;
-                        istrf = true;
-                        selectImage();
-                    }
+
+                if (trf_file != null && trf_file1 != null) {
+                    GlobalClass.showTastyToast(activity, "You can upload only two images", 0);
                 } else {
-                    requestPermission();
+                    isadhar = false;
+                    isother = false;
+                    istrf = true;
+                    checkpermProceed();
                 }
+
             }
         });
+
 
         btn_choosefile_other.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkPermission()) {
-                    if (other_file != null && other_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
-                    } else {
-                        isadhar = false;
-                        istrf = false;
-                        isother = true;
-                        selectImage();
-                    }
+
+                if (other_file != null && other_file1 != null) {
+                    GlobalClass.showTastyToast(activity, "You can upload only two images", 0);
                 } else {
-                    requestPermission();
+                    isadhar = false;
+                    istrf = false;
+                    isother = true;
+                    checkpermProceed();
                 }
+
             }
         });
 
@@ -286,6 +308,12 @@ public class RATEnterFrag extends Fragment {
                             covidpostdata.setTESTCODE("CRAT");
                             covidpostdata.setAGE(edt_age.getText().toString());
                             covidpostdata.setBARCODE(txt_barcode.getText().toString());
+
+
+                            if (!GlobalClass.isNull(hospt_ID)) {
+                                covidpostdata.setHOSPITAL(hospt_ID);
+                            }
+                            covidpostdata.setENTERBY(usercode);
                             if (spr_gender.getSelectedItem().toString().equalsIgnoreCase("Male")) {
                                 covidpostdata.setGENDER("M");
                             } else {
@@ -326,7 +354,6 @@ public class RATEnterFrag extends Fragment {
 
                     }
 
-
                 }
             }
         });
@@ -362,10 +389,6 @@ public class RATEnterFrag extends Fragment {
         img_scanbarcode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-               /* scanIntegrator = new IntentIntegrator(activity);
-                scanIntegrator.initiateScan();*/
-
                 IntentIntegrator.forSupportFragment(RATEnterFrag.this).initiateScan();
 
 
@@ -395,13 +418,14 @@ public class RATEnterFrag extends Fragment {
         by_missed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_generate.setText(getResources().getString(R.string.enterccc));
+                GlobalClass.SetButtonText(btn_generate, getResources().getString(R.string.enterccc));
             }
         });
         by_generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+
+                GlobalClass.SetButtonText(btn_generate, getResources().getString(R.string.btngenerateccc));
                 btn_generate.setVisibility(View.VISIBLE);
                 btn_resend.setVisibility(View.VISIBLE);
             }
@@ -410,18 +434,14 @@ public class RATEnterFrag extends Fragment {
         btn_verify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!TextUtils.isEmpty(edt_missed_mobile.getText().toString())) {
-                    if (!TextUtils.isEmpty(edt_verifycc.getText().toString())) {
-                        if (cd.isConnectingToInternet()) {
-                            validateotp();
-                        } else {
-                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
-                        }
+                if (!GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                    if (!GlobalClass.isNull(edt_verifycc.getText().toString())) {
+                        validateotp();
                     } else {
-                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                        GlobalClass.showTastyToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
+                    GlobalClass.showTastyToast(activity, "Kindly enter mobile number", 0);
                 }
             }
         });
@@ -429,32 +449,31 @@ public class RATEnterFrag extends Fragment {
         btn_choosefile_adhar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (checkPermission()) {
-                    if (aadhar_file != null && aadhar_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
-                    } else {
-                        selectImage();
-                        isadhar = true;
-                        istrf = false;
-                        isother = false;
-                    }
 
+                if (aadhar_file != null && aadhar_file1 != null) {
+                    GlobalClass.showTastyToast(activity, MessageConstants.UPLOADTWOFILES, 0);
                 } else {
-                    requestPermission();
+                    checkpermProceed();
+                    isadhar = true;
+                    istrf = false;
+                    isother = false;
                 }
+
+
             }
         });
     }
 
     private void ClearFields() {
-        edt_firstname.setText("");
-        edt_lastname.setText("");
 
-        edt_age.setText("");
-        edt_amtcollected.setText("");
+        GlobalClass.SetEditText(edt_firstname, "");
+        GlobalClass.SetEditText(edt_lastname, "");
+        GlobalClass.SetEditText(edt_age, "");
+        GlobalClass.SetEditText(edt_amtcollected, "");
+
 
         spr_gender.setSelection(0);
-        txt_barcode.setText("Barcode*");
+        GlobalClass.SetText(txt_barcode, "Barcode*");
         ll_enterView.setVisibility(View.GONE);
         lin_by_missed.setVisibility(View.VISIBLE);
         lin_generate_verify.setVisibility(View.GONE);
@@ -466,7 +485,8 @@ public class RATEnterFrag extends Fragment {
         edt_verifycc.getText().clear();
         tv_mobileno.setVisibility(View.GONE);
         rel_mobno.setVisibility(View.GONE);
-        edt_missed_mobile.setText("");
+
+        GlobalClass.SetEditText(edt_missed_mobile, "");
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -480,45 +500,46 @@ public class RATEnterFrag extends Fragment {
     private boolean Validate() {
 
         if (edt_firstname.getText().toString().length() == 0) {
-            Toast.makeText(activity, "" + ToastFile.ENTER_FNAME, Toast.LENGTH_SHORT).show();
-            Global.showCustomToast(activity, ToastFile.ENTER_FNAME);
+            GlobalClass.showTastyToast(activity, ToastFile.ENTER_FNAME, 2);
             edt_firstname.requestFocus();
             return false;
         }
 
         if (edt_firstname.getText().toString().length() < 2) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_FNAME);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_FNAME, 2);
             edt_firstname.requestFocus();
             return false;
         }
 
 
         if (edt_lastname.getText().toString().length() == 0) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_LNAME);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_LNAME, 2);
             edt_lastname.requestFocus();
             return false;
         }
         if (edt_lastname.getText().toString().length() < 1) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_LNAME);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_LNAME, 2);
             edt_lastname.requestFocus();
             return false;
         }
 
         if (TextUtils.isEmpty(edt_age.getText().toString())) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_AGE);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_AGE, 2);
             edt_lastname.requestFocus();
             return false;
         }
         if (spr_gender.getSelectedItem().toString().equalsIgnoreCase("Gender")) {
-            Global.showCustomToast(getActivity(), ToastFile.SELECT_GENDER);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_GENDER, 2);
             return false;
         }
+
         if (txt_barcode.getText().toString().equalsIgnoreCase("Barcode*")) {
-            Global.showCustomToast(getActivity(), "Kindly Scan the Barcode");
+            GlobalClass.showTastyToast(getActivity(), MessageConstants.KDY_SCAN_BARCODE, 2);
             return false;
         }
+
         if (TextUtils.isEmpty(edt_amtcollected.getText().toString())) {
-            Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.AMTCOLL, 2);
             edt_lastname.requestFocus();
             return false;
         }
@@ -526,12 +547,12 @@ public class RATEnterFrag extends Fragment {
 
         try {
             int amt = Integer.parseInt(edt_amtcollected.getText().toString());
-            if (!TextUtils.isEmpty(Global.B2C)) {
+            if (!GlobalClass.isNull(Global.B2C)) {
                 if (amt > Integer.parseInt(Global.B2C)) {
-                    TastyToast.makeText(getActivity(), "You cannot enter amount collected more than " + Global.B2C, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    GlobalClass.showTastyToast(mActivity, "You cannot enter amount collected more than " + Global.B2C, 2);
                     return false;
                 } else if (amt < Integer.parseInt(Global.B2B)) {
-                    TastyToast.makeText(getActivity(), "You cannot enter amount collected less than " + Global.B2B, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    GlobalClass.showTastyToast(mActivity, "You cannot enter amount collected less than " + Global.B2B, 2);
                     return false;
                 }
 
@@ -542,27 +563,17 @@ public class RATEnterFrag extends Fragment {
         }
 
         if (aadhar_file == null && aadhar_file1 == null) {
-            Global.showCustomToast(getActivity(), ToastFile.SELECT_ADHIMAGE);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_ADHIMAGE, 5);
             return false;
         }
 
         if (trf_file == null && trf_file1 == null) {
-            Global.showCustomToast(getActivity(), ToastFile.SELECT_TRFDHIMAGE);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_TRFDHIMAGE, 5);
             return false;
         }
 
 
         return true;
-    }
-
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
-        int result1 = ContextCompat.checkSelfPermission(activity, CAMERA);
-        return result1 == PackageManager.PERMISSION_GRANTED && result == PackageManager.PERMISSION_GRANTED;
-    }
-
-    private void requestPermission() {
-        ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
     }
 
     private void selectImage() {
@@ -620,14 +631,14 @@ public class RATEnterFrag extends Fragment {
 
 
     private void initui(View root) {
-        cd = new ConnectionDetector(getContext());
+
         activity = getActivity();
         preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         usercode = preferences.getString("USER_CODE", "");
         apikey = preferences.getString("API_KEY", "");
 
         btn_generate = root.findViewById(R.id.btn_generate);
-        btn_generate.setText(getResources().getString(R.string.enterccc));
+        GlobalClass.SetButtonText(btn_generate, getResources().getString(R.string.enterccc));
         edt_missed_mobile = root.findViewById(R.id.edt_missed_mobile);
         txt_otherfileupload = root.findViewById(R.id.txt_otherfileupload);
         btn_resend = root.findViewById(R.id.btn_resend);
@@ -645,6 +656,10 @@ public class RATEnterFrag extends Fragment {
         by_generate = root.findViewById(R.id.by_generate);
         btn_verify = root.findViewById(R.id.btn_verify);
         spr_gender = root.findViewById(R.id.spr_gender);
+
+        spr_hospital = root.findViewById(R.id.spr_hospital);
+        spr_hospital.setTitle("");
+
         txt_nofileadhar = root.findViewById(R.id.txt_nofileadhar);
         txt_adharfileupload = root.findViewById(R.id.txt_adharfileupload);
         lin_adhar_images = root.findViewById(R.id.lin_adhar_images);
@@ -676,17 +691,50 @@ public class RATEnterFrag extends Fragment {
         txt_barcode = root.findViewById(R.id.txt_barcode);
         rd_home = root.findViewById(R.id.rd_home);
         rd_dps = root.findViewById(R.id.rd_dps);
+
+
+        edt_age.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    agesinteger = Integer.parseInt(s.toString());
+                }
+
+                String enteredString = s.toString();
+
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    GlobalClass.showTastyToast(activity,
+                            ToastFile.crt_age,
+                            2);
+                    if (enteredString.length() > 0) {
+
+                        GlobalClass.SetEditText(edt_age, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_age, "");
+                    }
+                }
+
+            }
+
+        });
     }
 
 
     private void genrateflow() {
         if (mobilenovalidation()) {
-            if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
-                if (cd.isConnectingToInternet()) {
-                    mobileverify(edt_missed_mobile.getText().toString());
-                } else {
-                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN);
-                }
+            if (btn_generate.getText().toString().equalsIgnoreCase(MessageConstants.Generate_CCC)) {
+                mobileverify(edt_missed_mobile.getText().toString());
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
             }
@@ -695,17 +743,17 @@ public class RATEnterFrag extends Fragment {
 
     private boolean mobilenovalidation() {
         if (edt_missed_mobile.getText().toString().length() == 0) {
-            Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_MOBILE, 2);
             edt_missed_mobile.requestFocus();
             return false;
         }
         if (edt_missed_mobile.getText().toString().length() < 10) {
-            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
             edt_missed_mobile.requestFocus();
             return false;
         }
         if (edt_missed_mobile.getText().toString().length() > 10) {
-            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
             edt_missed_mobile.requestFocus();
             return false;
         }
@@ -713,92 +761,27 @@ public class RATEnterFrag extends Fragment {
     }
 
     private void mobileverify(String mobileno) {
-
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
-        CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
-        coVerifyMobReq.setApi_key(apikey);
-        coVerifyMobReq.setMobile(mobileno);
-        coVerifyMobReq.setScode(usercode);
-
-        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
-        Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
-        Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
-        covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
-            @Override
-            public void onResponse(Call<COVerifyMobileResponse> call, Response<COVerifyMobileResponse> response) {
-                Log.e(TAG, "on Response-->" + response.body().getResponse());
-                GlobalClass.hideProgress(activity, progressDialog);
-                try {
-                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        if (response.body().getResponse().equalsIgnoreCase("NOT VERIFIED")) {
-                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        } else {
-                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        }
-                        disablefields();
-                    } else if (response.body().getResId().equalsIgnoreCase(Constants.RES0082)) {
-                        TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
-                        if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
-                            generateOtP(edt_missed_mobile.getText().toString());
-                        } else {
-                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                        }
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.covidMobverification_controller != null) {
+                ControllersGlobalInitialiser.covidMobverification_controller = null;
             }
-
-            @Override
-            public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-
-            }
-        });
-
+            ControllersGlobalInitialiser.covidMobverification_controller = new CovidMobverification_Controller(activity, RATEnterFrag.this);
+            ControllersGlobalInitialiser.covidMobverification_controller.getcovidmobverifycontroller(apikey, mobileno, usercode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void generateOtP(String mobileno) {
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
-
-        COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
-        coviDgetotp_req.setApi_key(apikey);
-        coviDgetotp_req.setMobile(mobileno);
-        coviDgetotp_req.setScode(usercode);
-
-        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
-        covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
-            @Override
-            public void onResponse(Call<Covidotpresponse> call, Response<Covidotpresponse> response) {
-                GlobalClass.hideProgress(activity, progressDialog);
-                try {
-                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        setCountDownTimer();
-                        lin_by_missed.setVisibility(View.GONE);
-                        tv_mobileno.setVisibility(View.VISIBLE);
-                        tv_mobileno.setText(edt_missed_mobile.getText().toString());
-                        rel_mobno.setVisibility(View.VISIBLE);
-                        lin_generate_verify.setVisibility(View.VISIBLE);
-                        tv_resetno.setVisibility(View.VISIBLE);
-                        tv_resetno.setText(getResources().getString(R.string.reset_mob));
-                        tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.generateOTP_controller != null) {
+                ControllersGlobalInitialiser.generateOTP_controller = null;
             }
-
-            @Override
-            public void onFailure(Call<Covidotpresponse> call, Throwable t) {
-
-            }
-        });
+            ControllersGlobalInitialiser.generateOTP_controller = new GenerateOTP_Controller(activity, RATEnterFrag.this);
+            ControllersGlobalInitialiser.generateOTP_controller.generteotpController(apikey, mobileno, usercode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setCountDownTimer() {
@@ -819,7 +802,8 @@ public class RATEnterFrag extends Fragment {
                 }
 
                 long time = millisUntilFinished / 1000;
-                tv_timer.setText("Please wait 00:" + numberFormat.format(time));
+
+                GlobalClass.SetText(tv_timer, "Please wait 00:" + numberFormat.format(time));
             }
 
             public void onFinish() {
@@ -839,38 +823,15 @@ public class RATEnterFrag extends Fragment {
     }
 
     private void validateotp() {
-
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
-        Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
-        covid_validateotp_req.setApi_key(apikey);
-        covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
-        covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
-        covid_validateotp_req.setScode(usercode);
-
-        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
-        covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
-            @Override
-            public void onResponse(Call<Covid_validateotp_res> call, Response<Covid_validateotp_res> response) {
-                GlobalClass.hideProgress(activity, progressDialog);
-                try {
-                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        disablefields();
-
-                        Toast.makeText(activity, "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.validateOTP_controller != null) {
+                ControllersGlobalInitialiser.validateOTP_controller = null;
             }
-
-            @Override
-            public void onFailure(Call<Covid_validateotp_res> call, Throwable t) {
-
-            }
-        });
+            ControllersGlobalInitialiser.validateOTP_controller = new ValidateOTP_Controller(activity, RATEnterFrag.this);
+            ControllersGlobalInitialiser.validateOTP_controller.getvalidateotp_Controller(apikey, edt_missed_mobile, edt_verifycc, usercode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -882,7 +843,7 @@ public class RATEnterFrag extends Fragment {
         try {
             if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
                 if (data == null) {
-                    Toast.makeText(activity, "Failed to load image!", Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(activity, MessageConstants.Failedto_load_image, 2);
                     return;
                 }
                 if (isadhar) {
@@ -897,7 +858,7 @@ public class RATEnterFrag extends Fragment {
                         aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file1.toString());
@@ -912,7 +873,7 @@ public class RATEnterFrag extends Fragment {
                         aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_adharfileupload, "1 " + getResources().getString(R.string.imgupload));
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file.toString());
@@ -923,7 +884,9 @@ public class RATEnterFrag extends Fragment {
                         isadhar = false;
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
@@ -946,7 +909,7 @@ public class RATEnterFrag extends Fragment {
                         trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(trf_file1.toString());
@@ -959,7 +922,9 @@ public class RATEnterFrag extends Fragment {
                         trf_file = GlobalClass.getCompressedFile(activity, trf_file);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "1 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(trf_file.toString());
@@ -970,7 +935,8 @@ public class RATEnterFrag extends Fragment {
                         istrf = false;
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
@@ -990,7 +956,7 @@ public class RATEnterFrag extends Fragment {
                         other_file1 = GlobalClass.getCompressedFile(activity, other_file1);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(other_file1.toString());
@@ -1004,7 +970,7 @@ public class RATEnterFrag extends Fragment {
                         other_file = GlobalClass.getCompressedFile(activity, other_file);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_otherfileupload, "1 " + getResources().getString(R.string.imgupload));
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(other_file.toString());
@@ -1017,7 +983,7 @@ public class RATEnterFrag extends Fragment {
                         btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
                     }
@@ -1031,11 +997,11 @@ public class RATEnterFrag extends Fragment {
                     if (getBarcodeDetails.length() == 8) {
                         passBarcodeData(getBarcodeDetails);
                     } else {
-                        Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
+                        GlobalClass.showTastyToast(activity, invalid_brcd, 2);
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1044,80 +1010,32 @@ public class RATEnterFrag extends Fragment {
 
     private void passBarcodeData(final String getBarcodeDetails) {
         requestQueue = GlobalClass.setVolleyReq(getContext());
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Kindly wait...");
-        progressDialog.setMessage(ToastFile.processing_request);
-        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-        progressDialog.setProgress(0);
-        progressDialog.setMax(20);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
 
-        // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
+        String strurl = Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode";
 
-        System.out.println("barcode url  --> " + Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode"
-                , new com.android.volley.Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println("barcode respponse" + response);
-                GlobalClass.hideProgress(getContext(), progressDialog);
-                Log.e(TAG, "onResponse: " + response);
-                String finalJson = response.toString();
-                JSONObject parentObjectOtp = null;
-                try {
-                    parentObjectOtp = new JSONObject(finalJson);
-                    ERROR = parentObjectOtp.getString("ERROR");
-                    RES_ID = parentObjectOtp.getString("RES_ID");
-                    barcode = parentObjectOtp.getString("barcode");
-                    response1 = parentObjectOtp.getString("response");
+        Log.v(TAG, "barcode url  --> " + strurl);
 
-                    if (response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                        txt_barcode.setText(getBarcodeDetails.toUpperCase());
-
-                    } else {
-                        Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
-                        txt_barcode.setText("Barcode*");
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
+        try {
+            if (ControllersGlobalInitialiser.checkbarcode_controller != null) {
+                ControllersGlobalInitialiser.checkbarcode_controller = null;
             }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                GlobalClass.hideProgress(getContext(), progressDialog);
-                if (error.networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        // Show timeout error message
-                    }
-                }
-            }
-        });
-
-
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(jsonObjectRequestPop);
-        Log.e(TAG, "onBindViewHolder: url" + jsonObjectRequestPop);
+            ControllersGlobalInitialiser.checkbarcode_controller = new Checkbarcode_Controller(activity, RATEnterFrag.this, getBarcodeDetails);
+            ControllersGlobalInitialiser.checkbarcode_controller.getCheckbarcodeController(strurl, requestQueue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void disablefields() {
 
         rel_verify_mobile.setVisibility(View.VISIBLE);
-        tv_verifiedmob.setText(edt_missed_mobile.getText().toString());
+        GlobalClass.SetText(tv_verifiedmob, edt_missed_mobile.getText().toString());
         ll_enterView.setVisibility(View.VISIBLE);
         lin_by_missed.setVisibility(View.GONE);
 
         tv_mobileno.setVisibility(View.GONE);
 
         edt_missed_mobile.setEnabled(false);
-        // btn_generate.setEnabled(false);
         btn_resend.setEnabled(false);
         btn_resend.setVisibility(View.GONE);
         btn_generate.setVisibility(View.GONE);
@@ -1125,8 +1043,6 @@ public class RATEnterFrag extends Fragment {
         tv_resetno.setVisibility(View.GONE);
 
         timerflag = true;
-
-
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -1135,48 +1051,12 @@ public class RATEnterFrag extends Fragment {
 
     }
 
-    public void POSTWOE(WOERequestModel requestModel) {
-        try {
-
-
-            final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
-            progressDialog.show();
-
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
-            Call<WOEResponseModel> responseModelCall = apiInterface.PostUserLog(requestModel);
-            responseModelCall.enqueue(new Callback<WOEResponseModel>() {
-                @Override
-                public void onResponse(Call<WOEResponseModel> call, retrofit2.Response<WOEResponseModel> response) {
-                    try {
-                        GlobalClass.hideProgress(getContext(), progressDialog);
-                        if (response.body() != null) {
-                            WOEResponseModel responseModel = response.body();
-                            Toast.makeText(activity, "" + responseModel.getMessage(), Toast.LENGTH_SHORT).show();
-                            ClearFields();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<WOEResponseModel> call, Throwable t) {
-                    GlobalClass.hideProgress(getContext(), progressDialog);
-                    Log.e(TAG, "onFailure: " + "Something went wrong");
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public void setviewpager(List<String> imagelist, final String type) {
         final Dialog maindialog = new Dialog(activity);
         maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         maindialog.setContentView(R.layout.preview_dialog);
-        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
@@ -1235,7 +1115,6 @@ public class RATEnterFrag extends Fragment {
                                     }
 
                                     aadharlist.remove(aadharlist.get(0));
-                                    // viewPagerAdapter.notifyDataSetChanged();
                                 } else if (1 == viewPager.getCurrentItem()) {
                                     aadhar_file1 = null;
                                     if (aadharlist.size() == 2) {
@@ -1243,20 +1122,19 @@ public class RATEnterFrag extends Fragment {
                                     } else {
                                         aadharlist.remove(aadharlist.get(0));
                                     }
-                                    // viewPagerAdapter.notifyDataSetChanged();
                                 }
 
                                 if (aadharlist.size() == 1) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
                                     btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
-                                    txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_adharfileupload, "1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                                     btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
-                                    txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1280,7 +1158,6 @@ public class RATEnterFrag extends Fragment {
                                         trf_file1 = null;
                                     }
                                     trflist.remove(trflist.get(0));
-                                    // viewPagerAdapter.notifyDataSetChanged();
                                 } else if (1 == viewPager.getCurrentItem()) {
                                     trf_file1 = null;
                                     if (trflist.size() == 2) {
@@ -1288,7 +1165,6 @@ public class RATEnterFrag extends Fragment {
                                     } else {
                                         trflist.remove(trflist.get(0));
                                     }
-                                    //viewPagerAdapter.notifyDataSetChanged();
                                 }
 
                                 if (trflist.size() == 1) {
@@ -1296,14 +1172,15 @@ public class RATEnterFrag extends Fragment {
                                     btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
-                                    txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_trffileupload, "1 " + getResources().getString(R.string.imgupload));
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (trflist.size() == 2) {
                                     btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                                     btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
-                                    txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1327,7 +1204,6 @@ public class RATEnterFrag extends Fragment {
                                     }
 
                                     otherlist.remove(otherlist.get(0));
-                                    //   viewPagerAdapter.notifyDataSetChanged();
                                 } else if (1 == viewPager.getCurrentItem()) {
                                     other_file1 = null;
                                     if (otherlist.size() == 2) {
@@ -1335,7 +1211,6 @@ public class RATEnterFrag extends Fragment {
                                     } else {
                                         otherlist.remove(otherlist.get(0));
                                     }
-                                    //  viewPagerAdapter.notifyDataSetChanged();
                                 }
 
                                 if (otherlist.size() == 1) {
@@ -1343,7 +1218,8 @@ public class RATEnterFrag extends Fragment {
                                     btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
-                                    txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_otherfileupload, "1 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (otherlist.size() == 2) {
                                     btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1351,6 +1227,8 @@ public class RATEnterFrag extends Fragment {
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1403,19 +1281,138 @@ public class RATEnterFrag extends Fragment {
             String RESPONSE = jsonObject.optString("Response");
             String RESPONSEID = jsonObject.optString("ResId");
 
-            if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
-                Global.showCustomToast(activity, RESPONSE);
+            if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
+                GlobalClass.showTastyToast(activity, RESPONSE, 1);
                 ClearFields();
                 Constants.universal = 1;
                 Intent i = new Intent(activity, ManagingTabsActivity.class);
                 startActivity(i);
                 Constants.ratfrag_flag = "1";
-
                 getActivity().finish();
 
             } else {
-                Global.showCustomToast(activity, RESPONSE);
+                GlobalClass.showTastyToast(activity, RESPONSE, 2);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void gethospitalResponse(Response<Hospital_model> response) {
+
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getResID())
+                    && response.body().getResID().equalsIgnoreCase(Constants.RES0000)) {
+                if (response.body().getHospitalDETAILS() != null && response.body().getHospitalDETAILS().size() > 0) {
+                    hospitalname.add("Select Hospital Name");
+                    hospitalDETAILSBeanList.addAll(response.body().getHospitalDETAILS());
+
+                    if (GlobalClass.CheckArrayList(hospitalDETAILSBeanList)) {
+                        for (int i = 0; i < hospitalDETAILSBeanList.size(); i++) {
+                            if (!GlobalClass.isNull(hospitalDETAILSBeanList.get(i).getName())) {
+                                hospitalname.add(hospitalDETAILSBeanList.get(i).getName());
+                            }
+                        }
+
+                        ArrayAdapter<String> adap = new ArrayAdapter<String>(
+                                activity, R.layout.name_age_spinner, hospitalname);
+                        adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spr_hospital.setAdapter(adap);
+                        spr_hospital.setSelection(0);
+                    }
+
+                } else {
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.NODATA, 2);
+                }
+            } else {
+                GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getcovidmobverifyResponse(Response<COVerifyMobileResponse> response) {
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(response.body().getResponse()) && response.body().getResponse().equalsIgnoreCase("NOT VERIFIED")) {
+                    GlobalClass.showTastyToast(mActivity, response.body().getResponse(), 2);
+                } else {
+                    GlobalClass.showTastyToast(mActivity, response.body().getResponse(), 1);
+                }
+                disablefields();
+            } else if (!GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0082)) {
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            } else {
+                if (btn_generate.getText().toString().equalsIgnoreCase(MessageConstants.Generate_CCC)) {
+                    generateOtP(edt_missed_mobile.getText().toString());
+                } else {
+                    GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void generateOTPResponse(Response<Covidotpresponse> response) {
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                setCountDownTimer();
+                lin_by_missed.setVisibility(View.GONE);
+                tv_mobileno.setVisibility(View.VISIBLE);
+                GlobalClass.SetText(tv_mobileno, edt_missed_mobile.getText().toString());
+                rel_mobno.setVisibility(View.VISIBLE);
+                lin_generate_verify.setVisibility(View.VISIBLE);
+                tv_resetno.setVisibility(View.VISIBLE);
+                GlobalClass.SetText(tv_resetno, getResources().getString(R.string.reset_mob));
+                tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 1);
+
+            } else {
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getvalidateOTPResponse(Response<Covid_validateotp_res> response) {
+
+        try {
+            if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                disablefields();
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 1);
+            } else {
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getpassbarcode(JSONObject response, String barcodeDetails) {
+        Log.v("barcode respponse", response.toString());
+        Log.e(TAG, "onResponse: " + response);
+        String finalJson = response.toString();
+        JSONObject parentObjectOtp = null;
+        try {
+            parentObjectOtp = new JSONObject(finalJson);
+            ERROR = parentObjectOtp.getString("ERROR");
+            RES_ID = parentObjectOtp.getString("RES_ID");
+            barcode = parentObjectOtp.getString("barcode");
+            response1 = parentObjectOtp.getString("response");
+
+            if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
+                GlobalClass.SetText(txt_barcode, barcodeDetails.toUpperCase());
+            } else {
+                GlobalClass.showTastyToast(mActivity, response1, 2);
+                GlobalClass.SetText(txt_barcode, "Barcode*");
+
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

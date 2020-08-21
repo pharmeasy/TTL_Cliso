@@ -1,9 +1,5 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,11 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
 import com.example.e5322.thyrosoft.R;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +39,8 @@ public class CampSummary extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     Button btn_save;
-    TextView txt_camp_date,txt_camp_profile,txt_camp_rate,txt_camp_days,txt_camp_address;
+    TextView txt_camp_date, txt_camp_profile, txt_camp_rate, txt_camp_days, txt_camp_address;
+
     public CampSummary() {
         // Required empty public constructor
     }
@@ -77,32 +78,45 @@ public class CampSummary extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_camp_summary, container, false);
 
-        txt_camp_date=(TextView)view.findViewById(R.id.txt_camp_date) ;
-        txt_camp_profile=(TextView)view.findViewById(R.id.txt_camp_profile) ;
-        txt_camp_rate=(TextView)view.findViewById(R.id.txt_camp_rate) ;
-        txt_camp_days=(TextView)view.findViewById(R.id.txt_camp_days) ;
-        txt_camp_address=(TextView)view.findViewById(R.id.txt_camp_address) ;
-        btn_save=(Button) view.findViewById(R.id.btn_save) ;
-        ArrayList<Camp_Intimatgion_List_Model> arraylist  = getArguments().getParcelableArrayList("list");
+        initViews(view);
+        initListner();
 
-        for (int i = 0; i < arraylist.size(); i++) {
-            txt_camp_date.setText(arraylist.get(i).getCamp_date());
-            txt_camp_profile.setText(arraylist.get(i).getCamp_profile());
-            txt_camp_rate.setText(arraylist.get(i).getCamp_rate());
-            txt_camp_days.setText(arraylist.get(i).getSample_per_day());
-            txt_camp_address.setText(arraylist.get(i).getCamp_address());
-        }
+        return view;
+    }
+
+    private void initListner() {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TastyToast.makeText(getActivity(),"Camp intimation completed !",TastyToast.LENGTH_SHORT,TastyToast.SUCCESS);
-                SelectTest fragmentB=new SelectTest();
+                GlobalClass.showTastyToast(getActivity(), "Camp intimation completed !", 1);
+                SelectTest fragmentB = new SelectTest();
                 replaceFragment(fragmentB);
 
             }
         });
+    }
 
-        return view;
+    private void initViews(View view) {
+        txt_camp_date = (TextView) view.findViewById(R.id.txt_camp_date);
+        txt_camp_profile = (TextView) view.findViewById(R.id.txt_camp_profile);
+        txt_camp_rate = (TextView) view.findViewById(R.id.txt_camp_rate);
+        txt_camp_days = (TextView) view.findViewById(R.id.txt_camp_days);
+        txt_camp_address = (TextView) view.findViewById(R.id.txt_camp_address);
+        btn_save = (Button) view.findViewById(R.id.btn_save);
+        ArrayList<Camp_Intimatgion_List_Model> arraylist = getArguments().getParcelableArrayList("list");
+
+        if (GlobalClass.CheckArrayList(arraylist)){
+            for (int i = 0; i < arraylist.size(); i++) {
+
+                GlobalClass.SetText(txt_camp_date, arraylist.get(i).getCamp_date());
+                GlobalClass.SetText(txt_camp_profile, arraylist.get(i).getCamp_profile());
+                GlobalClass.SetText(txt_camp_rate, arraylist.get(i).getCamp_rate());
+                GlobalClass.SetText(txt_camp_days, arraylist.get(i).getSample_per_day());
+                GlobalClass.SetText(txt_camp_address, arraylist.get(i).getCamp_address());
+
+            }
+        }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -127,6 +141,7 @@ public class CampSummary extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
     public void replaceFragment(Fragment destFragment) {
         // First get FragmentManager object.
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.tcking:viewquery:1.6@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/0ba5cf33cb2eca23441964291991c95b/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/0ba5cf33cb2eca23441964291991c95b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/0ba5cf33cb2eca23441964291991c95b/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/viewquery/1.6/bfbed4accc999ef4d80efa16bc210565050df760/viewquery-1.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

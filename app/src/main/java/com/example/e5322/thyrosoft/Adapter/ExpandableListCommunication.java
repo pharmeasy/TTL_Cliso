@@ -2,8 +2,6 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
-
-import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -14,13 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.Activity.Communication_Activity;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.Interface_Pass_CommunicationValue;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.Inboxes;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+
+import androidx.core.content.ContextCompat;
 
 /**
  * Created by e5426@thyrocare.com on 22/5/18.
@@ -96,20 +97,18 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
 
         String headerTitle = inboxes[groupPosition].getQuestion();
 
-        date.setText(this.inboxes[groupPosition].getCommDate());
-        name.setText(this.inboxes[groupPosition].getCommBy());
+        GlobalClass.SetText(date,this.inboxes[groupPosition].getCommDate());
+        GlobalClass.SetText(name,this.inboxes[groupPosition].getCommBy());
 
         commHeader.setVisibility(View.VISIBLE);
-        commHeader.setText(headerTitle);
+        GlobalClass.SetText(commHeader,headerTitle);
 
-        /*Linkify.addLinks(commHeader, Linkify.EMAIL_ADDRESSES);
-        commHeader.setMovementMethod(LinkMovementMethod.getInstance());*/
 
         if (isExpanded) {
-            tvViewResponse.setText("Hide Response");
+            GlobalClass.SetText(tvViewResponse,"Hide Response");
             parent_question_ll.setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.parent_question_bottom_border));
         } else {
-            tvViewResponse.setText("View Response");
+            GlobalClass.SetText(tvViewResponse,"View Response");
             parent_question_ll.setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.filled_round_rect));
         }
 
@@ -149,14 +148,14 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
             name.setVisibility(View.VISIBLE);
             respondedby.setVisibility(View.GONE);
 
-            name.setText(inboxes[groupPosition].getCommBy());
+            GlobalClass.SetText(name,inboxes[groupPosition].getCommBy());
+            GlobalClass.SetText(response,inboxes[groupPosition].getResponse());
+            GlobalClass.SetText(resdate,inboxes[groupPosition].getResDate());
+            GlobalClass.SetText(tat,"TAT: " + inboxes[groupPosition].getTAT());
 
-            response.setText(inboxes[groupPosition].getResponse());
-            resdate.setText(inboxes[groupPosition].getResDate());
-            tat.setText("TAT: " + inboxes[groupPosition].getTAT());
 
-            if (inboxes.length > 0) {
-                if (inboxes[groupPosition].getResponse().equals("")) {
+            if (GlobalClass.checkArray(inboxes)) {
+                if (!GlobalClass.isNull(inboxes[groupPosition].getResponse()) && inboxes[groupPosition].getResponse().equalsIgnoreCase("")) {
                     write_response_ll.setVisibility(View.VISIBLE);
                     show_resp.setVisibility(View.GONE);
                 } else {
@@ -164,7 +163,7 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
                     show_resp.setVisibility(View.VISIBLE);
                 }
             } else {
-                Toast.makeText(activity, "No data found", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(activity, MessageConstants.NODATA, 2);
             }
 
             commuTXT.addTextChangedListener(new TextWatcher() {
@@ -176,13 +175,13 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
                             enteredString.startsWith("#") || enteredString.startsWith("$") ||
                             enteredString.startsWith("%") || enteredString.startsWith("^") ||
                             enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                        Toast.makeText(activity,
+                        GlobalClass.showTastyToast(activity,
                                 ToastFile.composeMsg,
-                                Toast.LENGTH_SHORT).show();
+                                2);
                         if (enteredString.length() > 0) {
-                            commuTXT.setText(enteredString.substring(1));
+                            GlobalClass.SetText(commuTXT,enteredString.substring(1));
                         } else {
-                            commuTXT.setText("");
+                            GlobalClass.SetText(commuTXT,"");
                         }
                     }
                 }
@@ -203,8 +202,8 @@ public class ExpandableListCommunication extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     getCommunication = commuTXT.getText().toString();
 
-                    if (getCommunication.equals("")) {
-                        Toast.makeText(activity, "Please write your response", Toast.LENGTH_SHORT).show();
+                    if (GlobalClass.isNull(getCommunication)) {
+                        GlobalClass.showTastyToast(activity, MessageConstants.WRT_Response, 2);
                     } else {
                         interface_pass_communicationValue.passCommIdAndMSg(activity, inboxes[groupPosition].getCommId(), getCommunication);
                     }

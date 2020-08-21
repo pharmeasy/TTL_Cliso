@@ -181,6 +181,20 @@
             android:title ="@string/covid_reg" />
     </group>
 
+
+
+    <group
+        android:id="@+id/groupcovid1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/crab_camp"
+            android:icon="@drawable/covid"
+            android:visible="false"
+            android:title ="Covid Rapid Antibody" />
+    </group>
+
+
+
     <group
         android:id="@+id/group555"
         android:checkableBehavior="single">

@@ -1,10 +1,13 @@
 package com.example.e5322.thyrosoft.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by e5426@thyrocare.com on 17/5/18.
  */
 
-public class billingDetailsModel {
+public class billingDetailsModel  implements Parcelable {
 
 
     String barcode;
@@ -16,6 +19,48 @@ public class billingDetailsModel {
 
 
     String refId;
+
+    public billingDetailsModel(Parcel in) {
+        barcode = in.readString();
+        billedAmount = in.readString();
+        collectedAmount = in.readString();
+        patient = in.readString();
+        tests = in.readString();
+        woetype = in.readString();
+        refId = in.readString();
+    }
+
+    public billingDetailsModel(){
+
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(barcode);
+        dest.writeString(billedAmount);
+        dest.writeString(collectedAmount);
+        dest.writeString(patient);
+        dest.writeString(tests);
+        dest.writeString(woetype);
+        dest.writeString(refId);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<billingDetailsModel> CREATOR = new Creator<billingDetailsModel>() {
+        @Override
+        public billingDetailsModel createFromParcel(Parcel in) {
+            return new billingDetailsModel(in);
+        }
+
+        @Override
+        public billingDetailsModel[] newArray(int size) {
+            return new billingDetailsModel[size];
+        }
+    };
 
     public String getBarcode() {
         return barcode;

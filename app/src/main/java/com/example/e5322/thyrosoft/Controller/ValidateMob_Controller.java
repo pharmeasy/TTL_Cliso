@@ -64,8 +64,6 @@ public class ValidateMob_Controller {
 
 
         Call<ValidateOTPmodel> responseCall = apiInterface.ValidateMob(postValidateRequest);
-        // Log.e("TAG", "Validate Mobile URL --->" + responseCall.request().url());
-        // Log.e("TAG", "Validate Mobile Request --->" + new GsonBuilder().create().toJson(responseCall));
 
         final ProgressDialog finalProgressDialog = progressDialog;
 
@@ -75,19 +73,17 @@ public class ValidateMob_Controller {
                 ValidateOTPmodel validateOTPmodel = response.body();
                 GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
                 try {
-                    if (validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0001)) {
+                    if (validateOTPmodel != null && !GlobalClass.isNull(validateOTPmodel.getResponseId()) && validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0001)) {
                         if (flag == 1) {
-                            specialOffer_activity.onvalidatemob(validateOTPmodel, finalProgressDialog);
+                            specialOffer_activity.onvalidatemob(validateOTPmodel);
                         } else {
-                            start_new_woe.onvalidatemob(validateOTPmodel, finalProgressDialog);
+                            start_new_woe.onvalidatemob(validateOTPmodel);
                         }
                     } else {
                         if (flag == 1) {
-                            GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
-                            globalClass.showcenterCustomToast(specialOffer_activity, validateOTPmodel.getResponse());
+                            GlobalClass.showTastyToast(specialOffer_activity, validateOTPmodel.getResponse(), 1);
                         } else {
-                            GlobalClass.hideProgress((start_new_woe.getActivity()), finalProgressDialog);
-                            globalClass.showcenterCustomToast((start_new_woe.getActivity()), validateOTPmodel.getResponse());
+                            GlobalClass.showTastyToast((start_new_woe.getActivity()), validateOTPmodel.getResponse(), 2);
                         }
 
                     }
@@ -99,7 +95,7 @@ public class ValidateMob_Controller {
 
             @Override
             public void onFailure(Call<ValidateOTPmodel> call, Throwable t) {
-                ///   Log.e("Errror", t.getMessage());
+                GlobalClass.hideProgress(specialOffer_activity, finalProgressDialog);
             }
         });
     }

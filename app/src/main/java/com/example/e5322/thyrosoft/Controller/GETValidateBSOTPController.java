@@ -56,7 +56,7 @@ public class GETValidateBSOTPController {
                         if (flag == 0)
                             bs_entryFragment.getValidateOTPResponse(response);
                     } else {
-                        Global.showCustomToast(mactivity, ToastFile.something_went_wrong);
+                        GlobalClass.showTastyToast(mactivity, ToastFile.something_went_wrong,2);
                     }
                 }
             }, new Response.ErrorListener() {

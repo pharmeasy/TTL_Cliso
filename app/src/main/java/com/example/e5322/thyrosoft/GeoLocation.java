@@ -10,17 +10,18 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import androidx.core.app.ActivityCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 public class GeoLocation extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
@@ -31,12 +32,13 @@ public class GeoLocation extends AppCompatActivity implements GoogleApiClient.Co
     private Location mLocation;
     private LocationManager mLocationManager;
 
-    private   LocationRequest mLocationRequest;
+    private LocationRequest mLocationRequest;
     private com.google.android.gms.location.LocationListener listener;
     private long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
 
     private LocationManager locationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +53,7 @@ public class GeoLocation extends AppCompatActivity implements GoogleApiClient.Co
                 .addApi(LocationServices.API)
                 .build();
 
-        mLocationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         checkLocation(); //check whether location service is enable or not in your  phone
     }
@@ -69,11 +71,13 @@ public class GeoLocation extends AppCompatActivity implements GoogleApiClient.Co
             return;
         }
 
+
+
         startLocationUpdates();
 
         mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if(mLocation == null){
+        if (mLocation == null) {
             startLocationUpdates();
         }
         if (mLocation != null) {
@@ -81,7 +85,7 @@ public class GeoLocation extends AppCompatActivity implements GoogleApiClient.Co
             // mLatitudeTextView.setText(String.valueOf(mLocation.getLatitude()));
             //mLongitudeTextView.setText(String.valueOf(mLocation.getLongitude()));
         } else {
-            Toast.makeText(this, "Location not Detected", Toast.LENGTH_SHORT).show();
+            GlobalClass.showTastyToast(this, MessageConstants.Loc_not_detected, 2);
         }
     }
 
@@ -140,15 +144,16 @@ public class GeoLocation extends AppCompatActivity implements GoogleApiClient.Co
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
                 Double.toString(location.getLongitude());
-        mLatitudeTextView.setText(String.valueOf(location.getLatitude()));
-        mLongitudeTextView.setText(String.valueOf(location.getLongitude() ));
+
+        GlobalClass.SetText(mLatitudeTextView, String.valueOf(location.getLatitude()));
+        GlobalClass.SetText(mLongitudeTextView, String.valueOf(location.getLongitude()));
 
         // You can now create a LatLng Object for use with maps
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     private boolean checkLocation() {
-        if(!isLocationEnabled())
+        if (!isLocationEnabled())
             showAlert();
         return isLocationEnabled();
     }

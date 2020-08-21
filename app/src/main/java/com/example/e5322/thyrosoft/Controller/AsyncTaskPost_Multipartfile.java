@@ -99,7 +99,7 @@ public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                System.out.println("Response : " + result);
+                Log.v("Response : " , result);
             }
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
@@ -120,10 +120,10 @@ public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
             if (response != null && !response.isEmpty()) {
                 bs_entryFragment.getUploadResponse(response);
             } else {
-                Global.showCustomToast(mActivity, response);
+                GlobalClass.showTastyToast(mActivity, response,1);
             }
         } else {
-            Global.showCustomToast(mActivity, response);
+            GlobalClass.showTastyToast(mActivity, response,2);
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
 import com.example.e5322.thyrosoft.R;
 
@@ -25,8 +26,8 @@ public class Ledger_Details_listAdapter extends BaseAdapter {
 
     public Ledger_Details_listAdapter(Context context, ArrayList<Ledger_DetailsModel> ledgerDetList) {
 
-        this.context= context;
-        this.ledgerDetAll= ledgerDetList;
+        this.context = context;
+        this.ledgerDetAll = ledgerDetList;
     }
 
     @Override
@@ -47,46 +48,44 @@ public class Ledger_Details_listAdapter extends BaseAdapter {
     @SuppressLint("ResourceAsColor")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-try {
+        try {
 
 
-    if (convertView == null) {
-        // inflate the layout
-        LayoutInflater inflater = ((Activity) context).getLayoutInflater();
+            if (convertView == null) {
+                // inflate the layout
+                LayoutInflater inflater = ((Activity) context).getLayoutInflater();
 
-        convertView = inflater.inflate(R.layout.ledger_list, parent, false);
-    }
-
-
-    TextView date = (TextView) convertView.findViewById(R.id.date);
-    TextView amount = (TextView) convertView.findViewById(R.id.amount);
-    TextView narration = (TextView) convertView.findViewById(R.id.narration);
-    TextView icon = (TextView) convertView.findViewById(R.id.icon);
+                convertView = inflater.inflate(R.layout.ledger_list, parent, false);
+            }
 
 
-        if(ledgerDetAll.get(position).getAmountType().toString().equals("CREDIT")) {
+            TextView date = (TextView) convertView.findViewById(R.id.date);
+            TextView amount = (TextView) convertView.findViewById(R.id.amount);
+            TextView narration = (TextView) convertView.findViewById(R.id.narration);
+            TextView icon = (TextView) convertView.findViewById(R.id.icon);
 
-            date.setText(ledgerDetAll.get(position).getDate());
-            icon.setText("C");
-            narration.setText(ledgerDetAll.get(position).getNarration().toString());
 
-            amount.setText("+" + ledgerDetAll.get(position).getAmount().toString() + "");
-            amount.setTextColor(context.getResources().getColor(R.color.darkgreen));
+            if (!GlobalClass.isNull(ledgerDetAll.get(position).getAmountType()) && ledgerDetAll.get(position).getAmountType().equalsIgnoreCase("CREDIT")) {
 
-        }else {
-            date.setText(ledgerDetAll.get(position).getDate());
+                GlobalClass.SetText(date, ledgerDetAll.get(position).getDate());
+                GlobalClass.SetText(icon, "C");
+                GlobalClass.SetText(narration, ledgerDetAll.get(position).getNarration().toString());
+                GlobalClass.SetText(amount, "+" + ledgerDetAll.get(position).getAmount().toString() + "");
 
-            narration.setText(ledgerDetAll.get(position).getNarration().toString());
-            icon.setText("D");
+                amount.setTextColor(context.getResources().getColor(R.color.darkgreen));
 
-            amount.setText("-" + ledgerDetAll.get(position).getAmount().toString() + "");
-            amount.setTextColor(context.getResources().getColor(R.color.red));
+            } else {
+                GlobalClass.SetText(date, ledgerDetAll.get(position).getDate());
+                GlobalClass.SetText(narration, ledgerDetAll.get(position).getNarration().toString());
+                GlobalClass.SetText(icon, "D");
+                GlobalClass.SetText(amount, "-" + ledgerDetAll.get(position).getAmount().toString() + "");
+                amount.setTextColor(context.getResources().getColor(R.color.red));
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-}catch (Exception e){
-    e.printStackTrace();
-}
         return convertView;
     }
 }

@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.StartCheckoutEvent;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import org.json.JSONException;
@@ -60,14 +62,58 @@ public class Global {
     public static int mainActivity = 0;
     public static String BASE_URL = MAINURL;
     public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
-    public static String B2B = "";
-    public static String B2C = "";
-    public static ArrayList<String> tabname_home = new ArrayList<>();
-    ProgressDialog progressDialog;
+    public static String B2B="";
+    public static String B2C="";
+    public static String sampletype;
+    public static String test;
     private Context context;
+
+
+    public static ArrayList<String> tabname_home = new ArrayList<>();
+
+
+    ProgressDialog progressDialog;
 
     public Global(Context context) {
         this.context = context;
+    }
+
+    public void hideProgressDialog() {
+
+        try {
+            if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean checkHardcodeTest(String testCode) {
+        if (!GlobalClass.isNull(testCode) && testCode.equalsIgnoreCase(Constants.P690) || testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE) || testCode.equalsIgnoreCase(Constants.CAGCA)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean checkCovidTest(int flag) {
+        if (flag == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {
+        Log.v("TAG","Logging Checkout event in Fabrics!!");
+        try {
+            Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
+                    .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString("rate"))))
+                    .putCurrency(Currency.getInstance("INR"))
+                    .putItemCount(count)
+                    .putCustomAttribute("PayType", Paytype)
+                    .putCustomAttribute("Products", jobj.getString("product")));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void showCustomToast(Activity activity, String message) {
@@ -81,8 +127,7 @@ public class Global {
             TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
 
             relItem.getBackground().setAlpha(204);
-            txtToast.setText(message);
-
+            GlobalClass.SetText(txtToast,message);
             Toast toast = new Toast(context);
             toast.setView(toastRoot);
             //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
@@ -92,50 +137,8 @@ public class Global {
 
     }
 
-    public static Boolean checkForApi21() {
-        Boolean boolStatus = false;
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
-            boolStatus = true;
-        } else {
-            boolStatus = false;
-        }
-        return boolStatus;
-    }
-
-    public static boolean checkHardcodeTest(String testCode) {
-        if (!TextUtils.isEmpty(testCode) && testCode.equalsIgnoreCase(Constants.P690) || testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE)|| testCode.equalsIgnoreCase(Constants.CAGCA)) {
-            return true;
-        }
-        return false;
-    }
-
-    public void hideProgressDialog() {
-
-        try {
-            if (progressDialog != null && progressDialog.isShowing())
-                progressDialog.dismiss();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {
-        System.out.println("Logging Checkout event in Fabrics!!");
-        try {
-            Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
-                    .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString("rate"))))
-                    .putCurrency(Currency.getInstance("INR"))
-                    .putItemCount(count)
-                    .putCustomAttribute("PayType", Paytype)
-                    .putCustomAttribute("Products", jobj.getString("product")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
     public void StartCheckout_EVENTLOGGING1(JSONObject jobj, int count, String Paytype, String Gateway) {
-        System.out.println("Logging Checkout event in Fabrics!!");
+        Log.v("TAG","Logging Checkout event in Fabrics!!");
         try {
             Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
                     .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString(PAYUMONEYKEY_AMOUNT))))
@@ -203,7 +206,7 @@ public class Global {
             symbols.setCurrencySymbol("\u20A8"); // Don't use null.
         formatter.setDecimalFormatSymbols(symbols);
         formatter.setMaximumFractionDigits(0);
-        //System.out.println(formatter.format(price));
+        //Log.v("TAG",formatter.format(price));
         s = formatter.format(price);
         return s;
     }
@@ -230,6 +233,17 @@ public class Global {
         return boolStatus;
     }
 
+    public static Boolean checkForApi21() {
+        Boolean boolStatus = false;
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if (currentapiVersion >= Build.VERSION_CODES.LOLLIPOP) {
+            boolStatus = true;
+        } else {
+            boolStatus = false;
+        }
+        return boolStatus;
+    }
+
     public void showProgressDialog() {
         if (progressDialog != null && !progressDialog.isShowing())
 
@@ -237,6 +251,7 @@ public class Global {
                 progressDialog.show();
             }
     }
+
 
     private class ScaleListener extends ScaleGestureDetector.
             SimpleOnScaleGestureListener {

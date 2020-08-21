@@ -1,13 +1,9 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.app.ProgressDialog;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +14,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.Fragment1_ledgerDet_adapter;
 import com.example.e5322.thyrosoft.Adapter.VIewPagerAdapter_ledgerDet;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.LedgerDetail_Controller;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -39,6 +35,10 @@ import org.json.JSONObject;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -67,7 +67,6 @@ public class Ledger_details extends RootFragment {
     int thismonth = 0;
     int yearSpinner = 0;
     ArrayAdapter monthadap;
-    ProgressDialog barProgressDialog;
     Fragment1_ledgerDet_adapter adapter;
     DateFormatSymbols symbols = new DateFormatSymbols();
     String[] monthNames = symbols.getMonths();
@@ -80,6 +79,8 @@ public class Ledger_details extends RootFragment {
     private String TAG = Ledger_details.class.getSimpleName();
     private boolean flagfor1sttime = false;
     private LinearLayout offline_img;
+    Activity mActivity;
+    ConnectionDetector cd;
 
     public Ledger_details() {
         // Required empty public constructor
@@ -117,19 +118,14 @@ public class Ledger_details extends RootFragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        mActivity = getActivity();
+        cd = new ConnectionDetector(mActivity);
+
         View view = inflater.inflate(R.layout.fragment_ledger_details, container, false);
-        viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+        initViews(view);
+        initListner();
 
-
-        month = (Spinner) view.findViewById(R.id.month);
-        year = (Spinner) view.findViewById(R.id.year);
-
-        all = (TextView) view.findViewById(R.id.alltab);
-        credit = (TextView) view.findViewById(R.id.credittab);
-        debit = (TextView) view.findViewById(R.id.debit);
-
-        containerlist = (LinearLayout) view.findViewById(R.id.containerlist);
-        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
 
         all.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
         all.setTextColor(getResources().getColor(R.color.colorWhite));
@@ -144,10 +140,22 @@ public class Ledger_details extends RootFragment {
             years.add(Integer.toString(i));
 
         }
+
         ArrayAdapter yearadap = new ArrayAdapter(getContext(), R.layout.spinner_property_main, years);
         yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         year.setAdapter(yearadap);
 
+        monthlist = new ArrayList<String>();
+        symbols = new DateFormatSymbols();
+
+        monthNames = symbols.getMonths();
+
+
+
+        return view;
+    }
+
+    private void initListner() {
         year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -186,22 +194,23 @@ public class Ledger_details extends RootFragment {
                     month.setSelection(selectedMonthPosition);
                 }
 
-                for (int i = 0; i < monthNames.length; i++) {
-                    if (month.getSelectedItem().equals(monthNames[i])) {
-                        monthSEND = i + 1;
-                        break;
-                    }
-                }
+               if (GlobalClass.checkArray(monthNames)){
+                   for (int i = 0; i < monthNames.length; i++) {
+                       if (month.getSelectedItem().equals(monthNames[i])) {
+                           monthSEND = i + 1;
+                           break;
+                       }
+                   }
+               }
 
                 if (!GlobalClass.isNetworkAvailable(getActivity())) {
                     offline_img.setVisibility(View.VISIBLE);
                     containerlist.setVisibility(View.GONE);
                 } else {
-                    GetData();
                     offline_img.setVisibility(View.GONE);
                     containerlist.setVisibility(View.VISIBLE);
                 }
-
+                GetData();
 
             }
 
@@ -216,13 +225,15 @@ public class Ledger_details extends RootFragment {
                 DateFormatSymbols symbols = new DateFormatSymbols();
                 String[] monthNames = symbols.getMonths();
                 selectedMonthPosition = position;
-                for (int i = 0; i < monthNames.length; i++) {
-                    if (month.getSelectedItem().equals(monthNames[i])) {
-                        monthSEND = i + 1;
-                        break;
+
+                if (GlobalClass.checkArray(monthNames)){
+                    for (int i = 0; i < monthNames.length; i++) {
+                        if (month.getSelectedItem().equals(monthNames[i])) {
+                            monthSEND = i + 1;
+                            break;
+                        }
                     }
                 }
-
 
                 if (!GlobalClass.isNetworkAvailable(getActivity())) {
                     offline_img.setVisibility(View.VISIBLE);
@@ -239,22 +250,6 @@ public class Ledger_details extends RootFragment {
 
             }
         });
-
-
-        monthlist = new ArrayList<String>();
-        symbols = new DateFormatSymbols();
-
-        monthNames = symbols.getMonths();
-
-        initDialog();
-        if (barProgressDialog.isShowing()) {
-            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                barProgressDialog.dismiss();
-            }
-        }
-        //  TextView dateview = getActivity().findViewById(R.id.show_date);
-
-        //dateview.setVisibility(View.GONE);
 
         viewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -349,18 +344,25 @@ public class Ledger_details extends RootFragment {
         });
 
 
-        return view;
+    }
+
+    private void initViews(View view) {
+        viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+
+
+        month = (Spinner) view.findViewById(R.id.month);
+        year = (Spinner) view.findViewById(R.id.year);
+
+        all = (TextView) view.findViewById(R.id.alltab);
+        credit = (TextView) view.findViewById(R.id.credittab);
+        debit = (TextView) view.findViewById(R.id.debit);
+
+        containerlist = (LinearLayout) view.findViewById(R.id.containerlist);
+        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
     }
 
     private void initDialog() {
-        barProgressDialog = new ProgressDialog(getContext());
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setProgress(0);
-        barProgressDialog.setMax(20);
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -372,21 +374,12 @@ public class Ledger_details extends RootFragment {
 
     private void GetData() {
         Log.e(TAG, "GetData: ");
-
-        barProgressDialog.show();
-
-        PostQue = Volley.newRequestQueue(getContext());
-
-
         JSONObject jsonObject = null;
         try {
-            // monthSEND= Integer.parseInt(month.getSelectedItem().toString());
 
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
 
             String user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
             GlobalClass.MONTH = String.valueOf(monthSEND);
@@ -410,114 +403,91 @@ public class Ledger_details extends RootFragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                com.android.volley.Request.Method.POST, Api.LedgerDetLive, jsonObject,
-                new com.android.volley.Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            Log.e(TAG, "onResponse: " + response);
-                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                barProgressDialog.dismiss();
-                            }
 
-                            JSONArray jsonArray = response.optJSONArray(Constants.ledgerListDetails);
-                            JSONArray jsonArraycredit = response.optJSONArray(Constants.credits);
-                            JSONArray jsonArraydebit = response.optJSONArray(Constants.debits);
-
-                            GlobalClass.CREDITLIST = new ArrayList<Ledger_DetailsModel>();
-                            GlobalClass.DEBIT = new ArrayList<Ledger_DetailsModel>();
-
-
-                            for (int j = 0; j < jsonArray.length(); j++) {
-                                try {
-
-                                    JSONObject jsonObject = jsonArray.getJSONObject(j);
-                                    Ledger_DetailsModel ledgerModel = new Ledger_DetailsModel();
-                                    ledgerModel.setAmount(jsonObject.optString(Constants.amount).toString());
-                                    ledgerModel.setAmountType(jsonObject.optString(Constants.amountType).toString());
-                                    ledgerModel.setDate(jsonObject.optString(Constants.date).toString());
-                                    ledgerModel.setNarration(jsonObject.optString(Constants.narration).toString());
-                                    ledgerModel.setTransactionType(jsonObject.optString(Constants.transactionType).toString());
-
-                                    if (ledgerModel.getAmountType().equals("CREDIT")) {
-                                        GlobalClass.CREDITLIST.add(ledgerModel);
-                                    } else {
-                                        GlobalClass.DEBIT.add(ledgerModel);
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-
-                            GlobalClass.listdata = new ArrayList<String>();
-                            JSONArray jArray = (JSONArray) jsonArraycredit;
-                            if (jArray != null) {
-                                for (int i = 0; i < jArray.length(); i++) {
-                                    GlobalClass.listdata.add(jArray.getString(i));
-                                }
-
-                            }
-
-                            GlobalClass.debitlist = new ArrayList<String>();
-                            JSONArray jArray1 = (JSONArray) jsonArraydebit;
-                            if (jArray1 != null) {
-                                for (int i = 0; i < jArray1.length(); i++) {
-                                    GlobalClass.debitlist.add(jArray1.getString(i));
-                                }
-
-                            }
-                          /*  GlobalClass.debitlist = new ArrayList<String>();
-                            JSONArray jArray1 = (JSONArray)jsonArraydebit;
-                            if (jArray != null) {
-                                for (int i=0;i<jArray1.length();i++){
-                                    GlobalClass.listdata .add(jArray.getString(i));
-                                }
-
-                            }
-*/
-                            viewpager.setAdapter(buildAdapter());
-                            if (flagforsetFragment == 0 && viewpager != null) {
-                                viewpager.setCurrentItem(0);
-                            } else if (flagforsetFragment == 1) {
-                                viewpager.setCurrentItem(1);
-                            } else if (flagforsetFragment == 2) {
-                                viewpager.setCurrentItem(2);
-                            } else {
-                                viewpager.setCurrentItem(0);
-                            }
-
-//                            viewpager.setSaveFromParentEnabled(false);
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }
-                try {
-                   Log.v(TAG,"error ala parat " + error);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.ledgerDetail_controller != null) {
+                ControllersGlobalInitialiser.ledgerDetail_controller = null;
             }
-        });
-        queue.add(jsonObjectRequest);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
-        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
-        Log.e(TAG, "GetData: json" + jsonObject);
+            ControllersGlobalInitialiser.ledgerDetail_controller = new LedgerDetail_Controller(mActivity, Ledger_details.this);
+            ControllersGlobalInitialiser.ledgerDetail_controller.getledgerdetail(jsonObject,queue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private PagerAdapter buildAdapter() {
 
         return (new VIewPagerAdapter_ledgerDet(getChildFragmentManager()));
+    }
+
+    public void getResponse(JSONObject response) {
+        try {
+            Log.e(TAG, "onResponse: " + response);
+            JSONArray jsonArray = response.optJSONArray(Constants.ledgerListDetails);
+            JSONArray jsonArraycredit = response.optJSONArray(Constants.credits);
+            JSONArray jsonArraydebit = response.optJSONArray(Constants.debits);
+
+            GlobalClass.CREDITLIST = new ArrayList<Ledger_DetailsModel>();
+            GlobalClass.DEBIT = new ArrayList<Ledger_DetailsModel>();
+
+
+            for (int j = 0; j < jsonArray.length(); j++) {
+                try {
+
+                    JSONObject jsonObject = jsonArray.getJSONObject(j);
+                    Ledger_DetailsModel ledgerModel = new Ledger_DetailsModel();
+                    ledgerModel.setAmount(jsonObject.optString(Constants.amount).toString());
+                    ledgerModel.setAmountType(jsonObject.optString(Constants.amountType).toString());
+                    ledgerModel.setDate(jsonObject.optString(Constants.date).toString());
+                    ledgerModel.setNarration(jsonObject.optString(Constants.narration).toString());
+                    ledgerModel.setTransactionType(jsonObject.optString(Constants.transactionType).toString());
+
+                    if (ledgerModel.getAmountType().equals("CREDIT")) {
+                        GlobalClass.CREDITLIST.add(ledgerModel);
+                    } else {
+                        GlobalClass.DEBIT.add(ledgerModel);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            GlobalClass.listdata = new ArrayList<String>();
+            JSONArray jArray = (JSONArray) jsonArraycredit;
+            if (jArray != null) {
+                for (int i = 0; i < jArray.length(); i++) {
+                    GlobalClass.listdata.add(jArray.getString(i));
+                }
+            }
+
+            GlobalClass.debitlist = new ArrayList<String>();
+            JSONArray jArray1 = (JSONArray) jsonArraydebit;
+            if (jArray1 != null) {
+                for (int i = 0; i < jArray1.length(); i++) {
+                    GlobalClass.debitlist.add(jArray1.getString(i));
+                }
+
+            }
+
+            viewpager.setAdapter(buildAdapter());
+            if (flagforsetFragment == 0 && viewpager != null) {
+                viewpager.setCurrentItem(0);
+            } else if (flagforsetFragment == 1) {
+                viewpager.setCurrentItem(1);
+            } else if (flagforsetFragment == 2) {
+                viewpager.setCurrentItem(2);
+            } else {
+                viewpager.setCurrentItem(0);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public interface OnFragmentInteractionListener {

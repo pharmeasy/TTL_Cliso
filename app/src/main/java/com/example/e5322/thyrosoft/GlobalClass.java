@@ -26,23 +26,22 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
+import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
-
-import com.crowdfire.cfalertdialog.BuildConfig;
-import com.example.e5322.thyrosoft.Controller.Log;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,27 +60,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.crowdfire.cfalertdialog.BuildConfig;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MyHurlStack;
-import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
-import com.example.e5322.thyrosoft.Models.BCT_LIST;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
-import com.example.e5322.thyrosoft.Models.BaseModel;
-import com.example.e5322.thyrosoft.Models.CAMP_LIST;
 import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
-import com.example.e5322.thyrosoft.Models.CommInbox_Model;
-import com.example.e5322.thyrosoft.Models.CommToCpl_Model;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster;
-import com.example.e5322.thyrosoft.Models.billingDetailsModel;
-import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
-import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
-import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
-import com.example.e5322.thyrosoft.TestListModel.Tests;
 import com.example.e5322.thyrosoft.startscreen.Login;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -94,16 +83,20 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import id.zelory.compressor.Compressor;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -119,15 +112,12 @@ public class GlobalClass {
 
     public static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     public static int flag = 0;
-    public static String setHomeAddress, getPhoneNumberTofinalPost, getFinalEmailAddressToPOst, getFinalPincode, selectedTestnamesOutlab;
+    public static String setHomeAddress, getPhoneNumberTofinalPost, getFinalEmailAddressToPOst, selectedTestnamesOutlab;
     public static String windupCountDataToShow;
-    public static ArrayList<BaseModel> saveSlectedList = new ArrayList<>();
     public static String saveDtaeTopass;
     public static boolean setflagToRefreshData;
-    public static boolean toCPLflag;
     public static String setScp_Constant;
     public static String setReferenceBy_Name;
-    public static String getSelectedItemFor_Rate_calculator;
     public static String CHN_Date;
     public static String mode, routine_code, flight_name, flight_number, departure_time, arrival_time, dispatch_time, CourierName, bsv_barcode, total_sample, rpl_sample, cpl_sample, Consignment_barcode;
     public static String passDate;
@@ -140,7 +130,6 @@ public class GlobalClass {
     public static long differ_millis = 0;
     public static String getCourier_name;
     public static String get_edt_bus_name;
-    public static String bus_name;
     public static String bus_number;
     public static int flagtsp;
     public static String bus_name_to_pass;
@@ -150,89 +139,35 @@ public class GlobalClass {
     public static String packaging_dtl;
     public static String expt_transit_tm;
     public static String temp_consignment;
-    public static String getSelectedScp;
     public static boolean setFlagToClose = false;
     public static AlertDialog alert;
-    public static boolean flagforRefresh = false;
     public static String cutString;
-    public static String[] putData;
-    public static String getPatientIdforDeleteDetails, brandName, typeName;
-    public static boolean setFlag = true;
-    public static ArrayList<String> items = new ArrayList<>();
-    public static ArrayList<Summary_model> summary_models;
-    public static ArrayList<Barcodelist> barcodelists;
-    public static ArrayList<Barcodelist> BMC_barcodelists;
+    public static String getPatientIdforDeleteDetails, typeName;
     public static boolean flagToSend = false;
     public static boolean flagToSendfromnavigation = false;
     public static boolean flagtoMove = false;
-    public static String getAllPhoneNumber, getEmailAddre, getYesterdaysDate;
-    public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, srNo_item, mobile_number, email_id, id_value, globalNameAadhar, globalAgeAadhar, globalGenderAadhar, responseVariable, setSR_NO;
-    public static String getDate, setWindUpCount, getscannedData;
-    public static String getPhoneofTTlDPS, getEmailofTTlDPS;
-    //Selected test for WOE adapter lisy
-    public static ArrayList<String> selctedTestNames = new ArrayList<>();
-    public static ArrayList<String> selctedTestNamesILS = new ArrayList<>();
+    public static String getYesterdaysDate;
+    public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, email_id, id_value, responseVariable, setSR_NO;
+    public static String setWindUpCount, getscannedData;
     public static ArrayList<String> windupBarcodeList = new ArrayList<>();
-    public static ArrayList<Tests> testCartArrayList = new ArrayList<>();
-    public static ArrayList<TESTS_GETALLTESTS> putPopDtaa = new ArrayList<>();
-    public static ArrayList<BCT_LIST> getBtechList = new ArrayList<>();
-    public static ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
-    public static ArrayList<SetBarcodeDetails> setScannedBarcodesULC = new ArrayList<>();
     public static ArrayList<Camp_Intimatgion_List_Model> global_camp_intimatgion_list_models_arrlst = new ArrayList<>();
-    public static ArrayList<CAMP_LIST> getcamp_list = new ArrayList<>();
-    public static ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist = new ArrayList<>();
     public static String specimenttype;
-    public static ArrayList<SetBarcodeDetails> BMC_setScannedBarcodes = new ArrayList<>();
-    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsList = new ArrayList<>();
-    ;
-    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsTTLOTHERSList = new ArrayList<>();
-    public static String BMC_specimenttype;
-    public static Bitmap TRF_BITMAP;
-    public static Bitmap RECEIPT_BITMAP;
-    public static List<Fragment> mFragmentList = new ArrayList<>();
-    public static List<String> mFragmentTitleList = new ArrayList<>();
-    public static ArrayList<ScannedBarcodeDetails> scannedBarcodeDetails = new ArrayList<>();
-    //Selected profile for WOE adapter lisy
-    public static ArrayList<String> selctedProfileNames = new ArrayList<>();
-    public static ArrayList<String> selctedProfileNamesILS = new ArrayList<>();
-    //Selected pop for WOE adapter lisy
-    public static ArrayList<String> selctedPopNames = new ArrayList<>();
-    public static ArrayList<String> selctedPopNamesILS = new ArrayList<>();
-    public static ArrayList<String> selctedoutLabTestNames = new ArrayList<>();
-    public static ArrayList<Integer> getPosition = new ArrayList<>();///for checkbox for employees in Employee adapetr
-    public static ArrayList<Integer> getPositionOutlab = new ArrayList<>();///for checkbox for employees in Employee adapetr
-    public static ArrayList<billingDetailsModel> billingDETArray = new ArrayList<billingDetailsModel>();
-    public static ArrayList<String> billingDETheaderArray = new ArrayList<>();
-    public static ArrayList<String> empList = new ArrayList<>();//new arralist for employee
     public static String date = "";
-    public static String reg_name_glo, reg_landline_glo, reg_profession_glo, reg_qualification_glo, reg_int_location_glo, reg_pincode_glo, reg_Addr_glo, reg_city_glo, reg_state_glo, reg_country_glo, reg_email_glo, reg_number_glo;
     public static String type = "";
-    public static ArrayList<CommunicationMaster> commSpinner = new ArrayList<CommunicationMaster>();
-    public static ArrayList<CommInbox_Model> commFromCPL;
-    public static ArrayList<CommToCpl_Model> commToCPL;
-    public static int FromCPLInt = 0;
-    //0 means from ,1 means to
-    public static String MONTH = ""; //0 means from ,1 means to
-    public static String YEAR = ""; //0 means from ,1 means to
-    public static int CHANGEMONTH = 0; //0 means from ,1 means to
+    public static String MONTH = "";
+    public static String YEAR = "";
     public static ArrayList<String> listdata = new ArrayList<String>();
-    public static ArrayList<BaseModel> selectedTestsList = new ArrayList<>();
-    public static ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
     public static ArrayList<String> debitlist = new ArrayList<String>();
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
     private static Dialog dialog;
     private static String stringofconvertedTime;
     private final Context context;
-    int[] colors = {R.color.WOE, R.color.entered, R.color.confirmed, R.color.imported};
-    int[] textcolors = {R.color.WOEtext, R.color.enteredtext, R.color.confirmedtext, R.color.importedtext};
-    ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
     ProgressDialog progressDialog;
 
     public GlobalClass(Context context) {
         this.context = context;
     }
-
 
 
     public static Date dateFromString(String dateStr, SimpleDateFormat dateFormat) {
@@ -246,6 +181,20 @@ public class GlobalClass {
 
         return date;
     }
+
+    public static boolean checkArray(Object[] array) {
+        return array != null && array.length > 0;
+    }
+
+    public static boolean CheckArrayList(Collection<?> arrylist) {
+        if (arrylist != null && arrylist.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+
     public static boolean buildModelContainsEmulatorHints(String buildModel) {
         return buildModel.startsWith("sdk")
                 || "google_sdk".equals(buildModel)
@@ -255,8 +204,35 @@ public class GlobalClass {
 
     public static String getHeaderValue(Context pContext) {
         String header;
-        header = Constants.APPNAME+"/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + getSerialnum(pContext);
+        header = Constants.APPNAME + "/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + getSerialnum(pContext);
         return header;
+    }
+
+    public static String bytes2long(long sizeInBytes) {
+        double SPACE_KB = 1024;
+        double SPACE_MB = 1024 * SPACE_KB;
+        double SPACE_GB = 1024 * SPACE_MB;
+        double SPACE_TB = 1024 * SPACE_GB;
+
+        NumberFormat nf = new DecimalFormat();
+        nf.setMaximumFractionDigits(2);
+
+        try {
+            if (sizeInBytes < SPACE_KB) {
+                return nf.format(sizeInBytes) + " MB";
+            } else if (sizeInBytes < SPACE_MB) {
+                return nf.format(sizeInBytes / SPACE_KB) + " KB";
+            } else if (sizeInBytes < SPACE_GB) {
+                return nf.format(sizeInBytes / SPACE_MB) + " MB";
+            } else if (sizeInBytes < SPACE_TB) {
+                return nf.format(sizeInBytes / SPACE_GB) + " GB";
+            } else {
+                return nf.format(sizeInBytes / SPACE_TB) + " TB";
+            }
+        } catch (Exception e) {
+            return sizeInBytes + " MB";
+        }
+
     }
 
     public static String getSerialnum(Context pContext) {
@@ -271,10 +247,11 @@ public class GlobalClass {
 
     public static RequestQueue setVolleyReq(Context mContext) {
         HttpStack stack = new MyHurlStack(mContext);
-        return Volley.newRequestQueue(mContext,stack);
+        return Volley.newRequestQueue(mContext, stack);
     }
-    public static String getversion(Context context){
-        String version="";
+
+    public static String getversion(Context context) {
+        String version = "";
         PackageInfo pInfo = null;
         try {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
@@ -285,7 +262,7 @@ public class GlobalClass {
         return version;
     }
 
-    public static int getversioncode(Context context){
+    public static int getversioncode(Context context) {
         int versionCode;
         PackageInfo pInfo = null;
         try {
@@ -475,11 +452,12 @@ public class GlobalClass {
 
         return compressedFile;
     }
-    public static void Hidekeyboard(View view){
+
+    public static void Hidekeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager)
                 view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         // Hide the soft keyboard
-        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(),0);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 
@@ -508,16 +486,15 @@ public class GlobalClass {
     public static ProgressDialog ShowprogressDialog(Context mContext) {
 
 
-            ProgressDialog barProgressDialog = new ProgressDialog(mContext);
-            barProgressDialog.setTitle("Kindly wait ...");
-            barProgressDialog.setMessage(ToastFile.processing_request);
-            // barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-            barProgressDialog.setProgress(0);
-            barProgressDialog.setMax(20);
-            barProgressDialog.show();
-            barProgressDialog.setCanceledOnTouchOutside(false);
-            barProgressDialog.setCancelable(false);
-
+        ProgressDialog barProgressDialog = new ProgressDialog(mContext);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        // barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
 
 
         return barProgressDialog;
@@ -604,7 +581,7 @@ public class GlobalClass {
 
     public static void redirectToLogin(Activity activity) {
         try {
-            TastyToast.makeText(activity, relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO);
+            GlobalClass.showTastyToast(activity, relogin, 4);
             Intent i = new Intent(activity, Login.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(i);
@@ -697,30 +674,30 @@ public class GlobalClass {
                 || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                 || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
         ) {
-            TastyToast.makeText(context, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+            GlobalClass.showTastyToast((Activity) context, ToastFile.crt_mob_num, 2);
             if (enteredString.length() > 0) {
-                kyc_format.setText(enteredString.substring(1));
+                GlobalClass.SetText(kyc_format, enteredString.substring(1));
             } else {
-                kyc_format.setText("");
+                GlobalClass.SetText(kyc_format, "");
             }
 
         }
     }
 
-    public static String changetimeformate(String time){
+    public static String changetimeformate(String time) {
         //Date/time pattern of input date
         DateFormat df = new SimpleDateFormat("hh:mm a");
         //Date/time pattern of desired output date
         DateFormat outputformat = new SimpleDateFormat("HH:mm");
         Date date = null;
         String output = null;
-        try{
+        try {
             //Conversion of input String to date
-            date= df.parse(time);
+            date = df.parse(time);
             //old date format to new date format
             output = outputformat.format(date);
-            System.out.println(output);
-        }catch(ParseException pe){
+            Log.v("TAG", output);
+        } catch (ParseException pe) {
             pe.printStackTrace();
         }
         return output;
@@ -839,33 +816,113 @@ public class GlobalClass {
         return isAutoTimeSelected[0];
     }
 
+
     public static String formatDate(String currentFormat, String outputFormat, String date) {
 
-        SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
-        SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
-        Date dateObj = null;
         try {
-            dateObj = curFormater.parse(date);
-            date = postFormater.format(dateObj);
-        } catch (ParseException e) {
+            SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
+            SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
+            Date dateObj = null;
+            try {
+                dateObj = curFormater.parse(date);
+                date = postFormater.format(dateObj);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return date;
     }
 
+
     public static void SetText(TextView txtview, String msg) {
         try {
-            if (msg == null) {
+            if (TextUtils.isEmpty(msg)) {
                 msg = "";
             }
 
             if (txtview != null) {
-//                txtview.setText("" + msg);
-                if (msg.equalsIgnoreCase("null")) {
-                    txtview.setText("");
-                } else {
-                    txtview.setText("" + msg);
-                }
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetAutocomplete(AutoCompleteTextView txtview, String msg) {
+        try {
+            if (TextUtils.isEmpty(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetRadiobutton(RadioButton radioButton, String msg) {
+        try {
+            if (TextUtils.isEmpty(msg)) {
+                msg = "";
+            }
+
+            if (radioButton != null) {
+                radioButton.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetSpannable(TextView txtview, String msg) {
+        try {
+            if (TextUtils.isEmpty(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                SpannableString content = new SpannableString((msg));
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void EditSetText(EditText editText, String msg) {
+        try {
+
+            if (TextUtils.isEmpty(msg)) {
+                msg = "";
+            }
+
+            if (editText != null) {
+                editText.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetHTML(TextView txtview, String msg) {
+        try {
+            if (TextUtils.isEmpty(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                txtview.setText(Html.fromHtml(msg));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -908,6 +965,24 @@ public class GlobalClass {
         }
     }
 
+    public static void SetButtonText(Button button, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (button != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    button.setText("");
+                } else {
+                    button.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String IsNull(String msg) {
         try {
             if (msg == null) {
@@ -932,17 +1007,6 @@ public class GlobalClass {
         return str;
     }
 
-    public static void toastyError(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
-    }
-
-    public static void toastySuccess(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.SUCCESS);
-    }
-
-    public static void toastyInfo(Context context, String string, boolean b) {
-        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
-    }
 
     private static int ToastLength(boolean b) {
         if (b) {
@@ -965,10 +1029,10 @@ public class GlobalClass {
                 } else if (Type.equalsIgnoreCase("Warning")) {
                     Log.w(Tag, " " + Label + ": " + msg);
                 } else if (Type.equalsIgnoreCase("sout")) {
-                    System.out.println(Tag + " " + Label + ": " + msg);
+                    Log.v("TAG", Tag + " " + Label + ": " + msg);
                 }
             } else {
-                System.out.println("Live....");
+                Log.v("TAG", "Live....");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -990,11 +1054,10 @@ public class GlobalClass {
             if (myBitmap != null)
                 imgView.setImageBitmap(myBitmap);
             else
-                Global.showCustomToast(activity, "Image not found");
+                GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 5);
         } else {
             Glide.with(activity)
                     .load(url)
-                    .placeholder(activity.getResources().getDrawable(R.drawable.img_no_img_aval))
                     .into(imgView);
         }
 
@@ -1012,8 +1075,6 @@ public class GlobalClass {
         // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
-
-
 
 
     public static void storeProductsCachingTime(Activity activity) {
@@ -1051,7 +1112,7 @@ public class GlobalClass {
         curr_time = System.currentTimeMillis();
         differ_millis = curr_time - syntime;
         int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
-        System.out.println("<< Days >> " + days);
+        Log.v("TAG", "<< Days >> " + days);
         return days;
     }
 
@@ -1067,17 +1128,19 @@ public class GlobalClass {
 
     public static void showVolleyError(VolleyError error, Activity activity) {
         if (error instanceof TimeoutError) {
-            Global.showCustomToast(activity, "Timeout Error");
+            GlobalClass.showTastyToast(activity, MessageConstants.Time_error, 5);
         } else if (error instanceof ServerError) {
-            Global.showCustomToast(activity, "Server Error");
+            GlobalClass.showTastyToast(activity, MessageConstants.Server_error, 5);
         } else if (error instanceof NetworkError) {
-            Global.showCustomToast(activity, "Network Error");
+            GlobalClass.showTastyToast(activity, MessageConstants.Network_error, 5);
         } else if (error instanceof ParseError) {
-            Global.showCustomToast(activity, "Parse Error");
+            GlobalClass.showTastyToast(activity, MessageConstants.Parse_error, 5);
         } else if (error instanceof NoConnectionError) {
-            Global.showCustomToast(activity, "NoConnection Error");
+            GlobalClass.showTastyToast(activity, MessageConstants.Parse_error, 5);
+        } else if (error instanceof NoConnectionError) {
+            GlobalClass.showTastyToast(activity, MessageConstants.NoConnection_error, 5);
         } else {
-            Global.showCustomToast(activity, ToastFile.something_went_wrong);
+            GlobalClass.showTastyToast(activity, ToastFile.something_went_wrong, 5);
         }
     }
 
@@ -1092,7 +1155,7 @@ public class GlobalClass {
     }
 
     public static boolean isNull(String val) {
-        if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
+        if (val == null || val.isEmpty() || val.equalsIgnoreCase(null) || val.trim().equals("") || val.trim().equalsIgnoreCase("null") || val.trim() == "" || val.trim() == "null")
             return true;
         return false;
     }
@@ -1178,7 +1241,7 @@ public class GlobalClass {
 
     public static String currencyFormat(String amount) {
         DecimalFormat formatter = null;
-        if (!TextUtils.isEmpty(amount)) {
+        if (!GlobalClass.isNull(amount)) {
             formatter = new DecimalFormat("##,##,##,###.##");
             return formatter.format(Double.parseDouble(amount));
         } else {
@@ -1236,12 +1299,6 @@ public class GlobalClass {
         }
     }
 
-    public static void showShortToast(Activity activity, String message) {
-        if (activity != null) {
-            Context context = activity.getApplicationContext();
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public static void setBordertoView(Context context, LinearLayout lin_main, int color, int backcolor) {
 
@@ -1255,24 +1312,20 @@ public class GlobalClass {
         }
     }
 
-    public static void showCustomToast(Activity activity, String message) {
 
-        if (activity != null) {
-            Context context = activity.getApplicationContext();
-            LayoutInflater inflater = activity.getLayoutInflater();
-
-            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
-            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
-            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
-
-            relItem.getBackground().setAlpha(204);
-            txtToast.setText(message);
-
-            Toast toast = new Toast(context);
-            toast.setView(toastRoot);
-            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.show();
+    public static void showTastyToast(Activity activity, String message, int flag) {
+        if (flag == 0) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
+        } else if (flag == 1) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+        } else if (flag == 2) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+        } else if (flag == 3) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.INFO);
+        } else if (flag == 4) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+        } else if (flag == 5) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.WARNING);
         }
 
     }

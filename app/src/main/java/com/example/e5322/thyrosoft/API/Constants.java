@@ -12,7 +12,7 @@ import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
 
 public class Constants {
     public static String HEADER_USER_AGENT = "User-Agent";
-
+    public static String WOEMODE = "THYROSOFTLITE APP";
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
@@ -26,12 +26,6 @@ public class Constants {
     public static int timeInterval = 0;
     public static String videoName;
 
-    //Todo TEST codes
-    public static String P690 = "P690";
-    public static String CATC = "CATC";
-    public static String CAGE = "CAGE";
-    public static String CAGCA = "CAGCA";
-
     //shared preference Name
 
     public static String PROFILEPREF = "profile";
@@ -39,12 +33,14 @@ public class Constants {
     public static String APP_ID = "1";
 
     /*TODO * Screen IDs*/
+    public static int PUSHAPPID = 6;// Pushnotication APP ID
     public static String IsFromNotification = "IsFromNotification";
-    public static int SCR_1 = 1;
-    public static int SCR_2 = 2;
-    public static int SCR_3 = 3;
-    public static int SCR_4 = 4;
-    public static int SCR_5 = 5;
+    public static int SCR_1 = 1;//Payment module
+    public static int SCR_2 = 2; //FAQ module
+    public static int SCR_3 = 3; // Video Module
+    public static int SCR_4 = 4; // CHN module
+    public static int SCR_5 = 5; //Result module
+    public static int SCR_6 = 6;//CRAT Module
 
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
@@ -91,6 +87,12 @@ public class Constants {
     public static final String servertoken = "IsTokensendToServer";
 
 
+
+    //Todo TEST codes
+    public static String P690 = "P690";
+    public static String CATC = "CATC";
+    public static String CAGE = "CAGE";
+    public static String CAGCA = "CAGCA";
     //NHF Login
 
     public static final String NHF_EMAIL = "COMM_NHF";
@@ -99,6 +101,9 @@ public class Constants {
     public static String covidwoe_flag = "0";
     public static String covidfrag_flag = "0";
     public static String ratfrag_flag = "0";
+
+    public static boolean PUSHNOT_FLAG = false;
+
     //login details//
     public static String Status = "Status";
     public static String Ledger_Balance = "Ledger_Balance";
@@ -591,6 +596,7 @@ public class Constants {
     public static String RES0001 = "RES0001";
     public static String RES0082 = "RES0082";
     public static int universal=0;
+    public static int pushrat_flag=0;
 
     public static String returnToken(Activity mContext) {
         String str = "";

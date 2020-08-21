@@ -7,12 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.Html;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,23 +16,22 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.Myprofile_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
 import com.google.gson.Gson;
-import com.payu.india.Extras.PayUChecksum;
 import com.payu.india.Model.PaymentParams;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Model.PayuHashes;
@@ -65,6 +60,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import androidx.appcompat.app.AppCompatActivity;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static com.example.e5322.thyrosoft.API.Api.APIKEYFORPAYMENTGATEWAY_PAYU;
@@ -111,7 +107,7 @@ import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 public class Payment_Activity extends AppCompatActivity {
 
     private static Activity context;
-    //  private static Global globalData;
+    Activity mActivity;
     private static androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder1;
     public String merchantKey = "", userCredentials;
     public String closing_balance_pref;
@@ -121,35 +117,19 @@ public class Payment_Activity extends AppCompatActivity {
     EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
     String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
-    androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
-    String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
-    String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
-    String strOrderNo = "";
-    int ben_count = 0;
     Double CBamount = 0.0;
     private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
-    private int buttonclickFlag = 0;
-    private boolean isemailvalid = false;
-    // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
-    // This sets the configuration
     private PayuConfig payuConfig;
-    // Used when generating hash from SDK
-    private PayUChecksum checksum;
-    private String _appointmentDate, _displaydate, _displaytime, _pinCode, _strTID, _straddress, _strlandmark, _access_token, _merchantid, _orderid, _curreny, _amount, _redirect_url, _cancel_url, _rsa_key_url, _responsedata;
     private String amountTopass;
-    private Global globalClass;
-    private String appointmentDate;
-    private String dataToSave;
+    Global globalClass;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
-    private String randomTid;
     private RequestQueue PostQueOtp;
     private Double Today_bill;
     private String RESPONSE;
     private String ordno;
-    private boolean flagForOnce = false;
     private String COME_FROM_SCREEN = "";
     private String unbillwoe, unbillmt, crd_amt;
 
@@ -158,19 +138,9 @@ public class Payment_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_);
+        mActivity = Payment_Activity.this;
 
-        title = (TextView) findViewById(R.id.title);
-        txt_minamt = (TextView) findViewById(R.id.txt_minamt);
-        txt_mulamt = (TextView) findViewById(R.id.txt_mulamt);
-        txt_tsp_name = (TextView) findViewById(R.id.txt_tsp_name);
-        btn_payu = (Button) findViewById(R.id.btn_payu);
-        edt_enter_amt = (EditText) findViewById(R.id.edt_enter_amt);
-        edt_closing_bal = (EditText) findViewById(R.id.edt_closing_bal);
-        et_avg_bill = findViewById(R.id.edt_per_billing);
-        et_per_day = findViewById(R.id.edt_day_per);
-
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
+        initViews();
 
         Payu.setInstance(this);
         int environment = PayuConstants.STAGING_ENV;
@@ -182,22 +152,20 @@ public class Payment_Activity extends AppCompatActivity {
 
 
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
-        name_tsp = getProfileName.getString("name", null);
-        usercode = getProfileName.getString("user_code", null);
-        email_id = getProfileName.getString("email", null);
-        address_pref = getProfileName.getString("address", null);
-        pincode_pref = getProfileName.getString("pincode", null);
-        billavg = getProfileName.getString(Constants.Billamount, null);
-
-        // closing_balance_pref = getProfileName.getString("closing_balance", null);
+        name_tsp = getProfileName.getString("name", "");
+        usercode = getProfileName.getString("user_code", "");
+        email_id = getProfileName.getString("email", "");
+        address_pref = getProfileName.getString("address", "");
+        pincode_pref = getProfileName.getString("pincode", "");
+        billavg = getProfileName.getString(Constants.Billamount, "");
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        email_pref = prefs.getString("email", null);
-        mobile_pref = prefs.getString("mobile_user", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        email_pref = prefs.getString("email", "");
+        mobile_pref = prefs.getString("mobile_user", "");
 
         COME_FROM_SCREEN = getIntent().getStringExtra("COMEFROM");
 
@@ -207,156 +175,19 @@ public class Payment_Activity extends AppCompatActivity {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
-
         getProfileDetails();
 
-        //globalData = new Global(Payment_Activity.this);
-        title.setText("Online Payment");
-        txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
-        txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
-        txt_tsp_name.setText(name_tsp + " - " + usercode);
-        /* edt_closing_bal.setText(closing_balance_pref);*/
+        GlobalClass.SetText(title, "Online Payment");
+        GlobalClass.SetHTML(txt_minamt, "\u2022 " + "Minimum amount to be paid 5000");
+        GlobalClass.SetHTML(txt_mulamt, "\u2022 " + "Amount needs to be paid in multiples of 5000");
+        GlobalClass.SetText(txt_tsp_name, name_tsp + " - " + usercode);
+
+        initListner();
 
 
-        edt_enter_amt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(Payment_Activity.this,
-                            ToastFile.ent_crt_amt,
-                            Toast.LENGTH_SHORT).show();
+    }
 
-                    if (enteredString.length() > 0) {
-                        edt_enter_amt.setText(enteredString.substring(1));
-                    } else {
-                        edt_enter_amt.setText("");
-                    }
-
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(Payment_Activity.this);
-
-            }
-        });
-
-
-      /*  btn_payu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                amountTopass = edt_enter_amt.getText().toString();
-                if (amountTopass.equals("")) {
-                    Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
-                } else {
-                    int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
-                    int modulus = getAmt % 5000;
-                    System.out.println("getAmount ::" + modulus);
-
-                    if (getAmt < 5000) {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText(getString(R.string.amt_str))
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    } else if (modulus != 0) {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText(getString(R.string.multiple_amt))
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    } else {
-                        if (cd.isConnectingToInternet()) {
-                            globalData.showProgressDialog();
-                            try {
-                                PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
-                                JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
-                                    public String RES_ID;
-
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        globalData.hideProgressDialog();
-                                        try {
-                                            Log.e(TAG, "onResponse: " + response);
-                                            String finalJson = response.toString();
-                                            JSONObject parentObjectOtp = new JSONObject(finalJson);
-                                            RESPONSE = parentObjectOtp.getString("RESPONSE");
-                                            RES_ID = parentObjectOtp.getString("RES_ID");
-                                            ordno = parentObjectOtp.getString("ordno");
-
-                                            if (RESPONSE.equals("SUCCESS")) {
-                                                startPayUTransaction(name_tsp, "", amountTopass, ordno);
-                                            } else {
-
-                                            }
-
-                                        } catch (JSONException e) {
-
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, new com.android.volley.Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        globalData.hideProgressDialog();
-                                        if (error != null) {
-                                        } else {
-                                            globalData.hideProgressDialog();
-                                            System.out.println(error);
-                                        }
-                                    }
-                                });
-                                PostQueOtp.add(jsonObjectRequest1);
-                                Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-
-
-                }
-
-            }
-        });*/
-
+    private void initListner() {
 
         btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -368,8 +199,8 @@ public class Payment_Activity extends AppCompatActivity {
 
                 Log.e(TAG, "CB Amount ----->" + CBamount);
 
-                if (amountTopass.equals("")) {
-                    Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
+                if (GlobalClass.isNull(amountTopass)) {
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.ENT_AMT, 2);
                 } else if (CBamount < Constants.PAYAMOUNT) {
 
                     if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
@@ -409,11 +240,73 @@ public class Payment_Activity extends AppCompatActivity {
 
         });
 
+
+        edt_enter_amt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
+
+                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_crt_amt, 2);
+
+                    if (enteredString.length() > 0) {
+                        GlobalClass.SetEditText(edt_enter_amt, enteredString.substring(1));
+                    } else {
+                        GlobalClass.SetEditText(edt_enter_amt, "");
+                    }
+
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(Payment_Activity.this);
+
+            }
+        });
+
+    }
+
+    private void initViews() {
+        title = (TextView) findViewById(R.id.title);
+        txt_minamt = (TextView) findViewById(R.id.txt_minamt);
+        txt_mulamt = (TextView) findViewById(R.id.txt_mulamt);
+        txt_tsp_name = (TextView) findViewById(R.id.txt_tsp_name);
+        btn_payu = (Button) findViewById(R.id.btn_payu);
+        edt_enter_amt = (EditText) findViewById(R.id.edt_enter_amt);
+        edt_closing_bal = (EditText) findViewById(R.id.edt_closing_bal);
+        et_avg_bill = findViewById(R.id.edt_per_billing);
+        et_per_day = findViewById(R.id.edt_day_per);
+
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+
     }
 
     private void gotopayGatway() {
         if (cd.isConnectingToInternet()) {
-            //globalData.showProgressDialog();
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
             try {
                 PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
@@ -423,7 +316,6 @@ public class Payment_Activity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // globalData.hideProgressDialog();
                         GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                         try {
                             Log.e(TAG, "onResponse: " + response);
@@ -444,13 +336,11 @@ public class Payment_Activity extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //globalData.hideProgressDialog();
                         GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                         if (error != null) {
                         } else {
-                            //   globalData.hideProgressDialog();
                             GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
-                            System.out.println(error);
+                            Log.v("TAG", error.toString());
                         }
                     }
                 });
@@ -479,19 +369,18 @@ public class Payment_Activity extends AppCompatActivity {
                     Log.e("onActivityResult: ", "Payu's Data : " + data.getStringExtra("payu_response") + "\n\n\n Merchant's Data: " + data.getStringExtra("result"));
                     JSONObject Payu_response;
                     try {
-                        edt_enter_amt.setText("");
+                        GlobalClass.SetEditText(edt_enter_amt, "");
                         Payu_response = new JSONObject(data.getStringExtra("payu_response"));
                         if (cd.isConnectingToInternet())
-
                             new AsyncTaskVerifypayUmoneyTransaction(Payu_response).execute();
                         else
-                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 } else {
-                    Toast.makeText(this, getString(R.string.could_not_receive_data), Toast.LENGTH_LONG).show();
+                    GlobalClass.showTastyToast(mActivity, getString(R.string.could_not_receive_data), 2);
                 }
             }
 
@@ -524,12 +413,7 @@ public class Payment_Activity extends AppCompatActivity {
         mPaymentParams.setUdf3("");
         mPaymentParams.setUdf4("");
         mPaymentParams.setUdf5("");
-        /**
-         * These are used for store card feature. If you are not using it then user_credentials = "default"
-         * user_credentials takes of the form like user_credentials = "merchant_key : user_id"
-         * here merchant_key = your merchant key,
-         * user_id = unique id related to user like, email, phone number, etc.
-         * */
+
         mPaymentParams.setUserCredentials(userCredentials);
         //TODO Pass this param only if using offer key
         //mPaymentParams.setOfferKey("cardnumber@8370");
@@ -545,17 +429,8 @@ public class Payment_Activity extends AppCompatActivity {
         if (cd.isConnectingToInternet())
             new AsyncTaskstartpayUmoneyTransaction(mPaymentParams).execute();
         else
-            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+            GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
 
-        //TODO It is recommended to generate hash from server only. Keep your key and salt in server side hash generation code.
-        // generateHashFromServer(mPaymentParams);
-        /**
-         * Below approach for generating hash is not recommended. However, this approach can be used to test in PRODUCTION_ENV
-         * if your server side hash generation code is not completely setup. While going live this approach for hash generation
-         * should not be used.
-         * */
-//         String salt = "V76vIBJq";
-//          generateHashFromSDK(mPaymentParams, salt);
     }
 
 
@@ -577,7 +452,6 @@ public class Payment_Activity extends AppCompatActivity {
         intent.putExtra(PayuConstants.PAYU_CONFIG, payuConfig);
         intent.putExtra(PayuConstants.PAYMENT_PARAMS, mPaymentParams);
         intent.putExtra(PayuConstants.PAYU_HASHES, payuHashes);
-//        startActivityForResult(intent, PayuConstants.PAYU_REQUEST_CODE);
         fetchMerchantHashes(intent);
     }
 
@@ -650,87 +524,19 @@ public class Payment_Activity extends AppCompatActivity {
     }
 
     public void getProfileDetails() {
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
+
         RequestQueue queue = GlobalClass.setVolleyReq(Payment_Activity.this);
+        String url = Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile";
 
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
-                new Response.Listener<JSONObject>() {
-                    public String tsp_img;
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
-                            Log.e(TAG, "onResponse: " + response);
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.closing_balance))) {
-                                closing_balance_pref = response.getString(Constants.closing_balance);
-                            } else {
-                                closing_balance_pref = "0";
-                            }
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.credit_limit))) {
-                                crd_amt = response.getString(Constants.credit_limit);
-                            } else {
-                                crd_amt = "0";
-                            }
-
-                            if (!TextUtils.isEmpty(response.getString(Constants.unbilledMaterial))) {
-                                unbillmt = response.getString(Constants.unbilledMaterial);
-                            } else {
-                                unbillmt = "0";
-                            }
-
-                            unbillwoe = response.getString(Constants.unbilledWOE);
-                            billavg = response.getString(Constants.Billamount);
-                            dayavg = response.getString(Constants.DAYAVG);
-                            Today_bill = Double.parseDouble(unbillmt) + Double.parseDouble(unbillwoe);
-
-                            CBamount = (Double.parseDouble(closing_balance_pref) + Today_bill) - Double.parseDouble(crd_amt);
-
-
-                            if (!TextUtils.isEmpty(billavg)) {
-                                et_avg_bill.setText(billavg);
-                            } else {
-                                et_avg_bill.setText(0);
-                            }
-
-                            if (!TextUtils.isEmpty(dayavg)) {
-                                et_per_day.setText(dayavg);
-                            } else {
-                                et_per_day.setText(0);
-                            }
-
-
-                            edt_closing_bal.setText("" + String.format("%.2f", CBamount));
-
-                            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                            saveProfileDetails.putString("closing_balance", closing_balance_pref);
-                            saveProfileDetails.commit();
-
-                        } catch (Exception e) {
-                            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                try {
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (ControllersGlobalInitialiser.myprofile_controller != null) {
+                ControllersGlobalInitialiser.myprofile_controller = null;
             }
-        });
-        queue.add(jsonObjectRequest);
-        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
-                150000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            ControllersGlobalInitialiser.myprofile_controller = new Myprofile_Controller(mActivity, Payment_Activity.this);
+            ControllersGlobalInitialiser.myprofile_controller.getmyprofilecontroller(url, queue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -739,6 +545,62 @@ public class Payment_Activity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.putExtra("message", "ok");//Put Message to pass over intent
         setResult(1, intent);
+    }
+
+    public void getMyprofileRespponse(JSONObject response) {
+
+        try {
+
+            Log.e(TAG, "onResponse: " + response);
+
+            if (!GlobalClass.isNull(response.getString(Constants.closing_balance))) {
+                closing_balance_pref = response.getString(Constants.closing_balance);
+            } else {
+                closing_balance_pref = "0";
+            }
+
+            if (!GlobalClass.isNull(response.getString(Constants.credit_limit))) {
+                crd_amt = response.getString(Constants.credit_limit);
+            } else {
+                crd_amt = "0";
+            }
+
+            if (!GlobalClass.isNull(response.getString(Constants.unbilledMaterial))) {
+                unbillmt = response.getString(Constants.unbilledMaterial);
+            } else {
+                unbillmt = "0";
+            }
+
+            unbillwoe = response.getString(Constants.unbilledWOE);
+            billavg = response.getString(Constants.Billamount);
+            dayavg = response.getString(Constants.DAYAVG);
+            Today_bill = Double.parseDouble(unbillmt) + Double.parseDouble(unbillwoe);
+
+            CBamount = (Double.parseDouble(closing_balance_pref) + Today_bill) - Double.parseDouble(crd_amt);
+
+
+            if (!GlobalClass.isNull(billavg)) {
+                GlobalClass.SetEditText(et_avg_bill, billavg);
+            } else {
+                GlobalClass.SetEditText(et_avg_bill, "" + 0);
+            }
+
+            if (!GlobalClass.isNull(dayavg)) {
+                GlobalClass.SetEditText(et_per_day, dayavg);
+            } else {
+                GlobalClass.SetEditText(et_per_day, "" + 0);
+            }
+
+
+            GlobalClass.SetEditText(edt_closing_bal, "" + String.format("%.2f", CBamount));
+
+            SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+            saveProfileDetails.putString("closing_balance", closing_balance_pref);
+            saveProfileDetails.commit();
+
+        } catch (Exception e) {
+            Log.e(TAG, "on error --->" + e.getLocalizedMessage());
+        }
     }
 
     class AsyncTaskstartpayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
@@ -790,7 +652,7 @@ public class Payment_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            System.out.println(strUrl);
+            Log.v("TAG", strUrl);
 
             InputStream inputStream = null;
             String result = "";
@@ -799,7 +661,7 @@ public class Payment_Activity extends AppCompatActivity {
                 HttpPost httpPost = new HttpPost(strUrl);
                 String strJson = "";
                 strJson = jobj.toString();
-                System.out.println("Sending data: " + strJson);
+                Log.v("TAG", "Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
                 httpPost.setHeader("Accept", "application/json");
@@ -808,7 +670,7 @@ public class Payment_Activity extends AppCompatActivity {
                 inputStream = httpResponse.getEntity().getContent();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    System.out.println("Response : " + result);
+                    Log.v("TAG", "Response : " + result);
                     Log.e(TAG, "doInBackground_response: " + result);
                 }
 
@@ -834,7 +696,7 @@ public class Payment_Activity extends AppCompatActivity {
             try {
                 if (result != null) {
                     Log.e(TAG, "onPostExecute: result" + result);
-                    if (result.getString("RESPONSE").equalsIgnoreCase("SUCCESS")) {
+                    if (!GlobalClass.isNull(result.getString("RESPONSE")) && result.getString("RESPONSE").equalsIgnoreCase("SUCCESS")) {
                         if (result.getString("encCheckSum") != null && !result.getString("encCheckSum").isEmpty()) {
                             PayuHashes payuHashes = new PayuHashes();
                             Iterator<String> payuHashIterator = result.keys();
@@ -894,18 +756,18 @@ public class Payment_Activity extends AppCompatActivity {
 
                                 new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
                             launchSdkUI(payuHashes);// Start PayU transaction request.
 
                         } else {
-                            System.out.println("Success but no Checksum");
+                            Log.v("TAG", "Success but no Checksum");
                         }
                     } else {
-                        System.out.println("failed to generate Checksum 1");
+                        Log.v("TAG", "failed to generate Checksum 1");
                     }
 
                 } else {
-                    System.out.println("failed to generate Checksum 2");
+                    Log.v("TAG", "failed to generate Checksum 2");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -935,7 +797,7 @@ public class Payment_Activity extends AppCompatActivity {
         protected JSONObject doInBackground(Void... params) {
 
             String strUrl = BASE_URL_TOCHECK + UPDATE_PAYMENT_URL;
-            System.out.println(strUrl);
+            Log.v("TAG", strUrl);
             Log.e(TAG, "doInBackground: " + strUrl);
             InputStream inputStream = null;
             String result = "";
@@ -944,7 +806,7 @@ public class Payment_Activity extends AppCompatActivity {
                 HttpPost httpPost = new HttpPost(strUrl);
                 String strJson = "";
                 strJson = postdata.toString();
-                System.out.println("Sending data: " + strJson);
+                Log.v("TAG", "Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
                 httpPost.setHeader("Accept", "application/json");
@@ -954,7 +816,7 @@ public class Payment_Activity extends AppCompatActivity {
                 inputStream = httpResponse.getEntity().getContent();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    System.out.println("Response : " + result);
+                    Log.v("TAG", "Response : " + result);
                 }
 
             } catch (Exception e) {
@@ -979,23 +841,23 @@ public class Payment_Activity extends AppCompatActivity {
             try {
                 if (tlog_paymentrequest_status_code == 200) {
                     if (result != null) {
-                        System.out.println("Response logs " + result.toString());
+                        Log.v("TAG", "Response logs " + result.toString());
                         String value = result.optString("RESPONSE", "");
                         String res_id = result.optString("RES_ID", "");
-                        System.out.println("Response from server: " + value);
+                        Log.v("TAG", "Response from server: " + value);
                         if (value.equalsIgnoreCase("SUCCESS")) {
 
-                            GlobalClass.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..");
-                            System.out.println("Successful");
+                            GlobalClass.showTastyToast(Payment_Activity.this, "Redirecting to Payment gateway..", 1);
+                            Log.v("TAG", "Successful");
 
                         } else {
-                            System.out.println("Unsuccessful");
+                            Log.v("TAG", "Unsuccessful");
                         }
                     } else {
-                        System.out.println("failed result is null ");
+                        Log.v("TAG", "failed result is null ");
                     }
                 } else {
-                    System.out.println("failed status code ");
+                    Log.v("TAG", "failed status code ");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1005,8 +867,6 @@ public class Payment_Activity extends AppCompatActivity {
     }
 
     class AsyncTaskVerifypayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
-
-        String orderamount, orderno;
         JSONObject mPayU_response, postdata;
         ProgressDialog progressDialog;
 
@@ -1056,7 +916,7 @@ public class Payment_Activity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            System.out.println(strUrl);
+            Log.v("TAG", strUrl);
 
             InputStream inputStream = null;
             String result = "";
@@ -1066,18 +926,17 @@ public class Payment_Activity extends AppCompatActivity {
                 HttpPost httpPost = new HttpPost(strUrl);
                 String strJson = "";
                 strJson = jobj.toString();
-                System.out.println("Sending data: " + strJson);
+                Log.v("TAG", "Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
-               // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setEntity(se);
-                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT + "/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);
                 inputStream = httpResponse.getEntity().getContent();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    System.out.println("Response : " + result);
+                    Log.v("TAG", "Response : " + result);
                 }
 
             } catch (Exception e) {
@@ -1120,7 +979,7 @@ public class Payment_Activity extends AppCompatActivity {
                                 flag_for_same_orderno = false;// this flag is to use same order no if transaction fails
                                 new AsyncTaskupdatepaymentstatus(postdata, SUCCESS).execute();
                             } else {
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
                             }
                         } else {
                             postdata.put(CLIENT_STATUS, FAILURE);
@@ -1129,7 +988,7 @@ public class Payment_Activity extends AppCompatActivity {
                                 flag_for_same_orderno = true; // this flag is to use same order no transaction fails
                                 new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
                             } else {
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
                             }
                         }
 
@@ -1141,7 +1000,7 @@ public class Payment_Activity extends AppCompatActivity {
                             flag_for_same_orderno = true; // this flag is to use same order no transaction fails
                             new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
                         } else {
-                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            GlobalClass.showTastyToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 2);
                         }
 
                     }
@@ -1181,7 +1040,7 @@ public class Payment_Activity extends AppCompatActivity {
 
             String strUrl = Api.THYROCARE + "PaymentGateway.svc/PaymentLog_franchise";
             Log.e(TAG, "doInBackground: " + strUrl);
-            System.out.println(strUrl);
+            Log.v("TAG", strUrl);
 
             InputStream inputStream = null;
             String result = "";
@@ -1191,10 +1050,10 @@ public class Payment_Activity extends AppCompatActivity {
                 HttpPost httpPost = new HttpPost(strUrl);
                 String strJson = "";
                 strJson = postdata.toString();
-                System.out.println("Sending data: " + strJson);
+                Log.v("TAG", "Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
-                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT + "/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -1203,7 +1062,7 @@ public class Payment_Activity extends AppCompatActivity {
 
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    System.out.println("Response : " + result);
+                    Log.v("TAG", "Response : " + result);
                 }
 
             } catch (Exception e) {
@@ -1237,31 +1096,32 @@ public class Payment_Activity extends AppCompatActivity {
                             }
                             String value = jObject.getString("Value");
                             String Key = jObject.getString("Key");
-                            System.out.println("Response from server: " + value);
+                            Log.v("TAG", "Response from server: " + value);
                             if (!value.equalsIgnoreCase("SUCCESS")) {
-                                Toast.makeText(Payment_Activity.this, "Something went wrong - Response log failed", Toast.LENGTH_SHORT).show();
+                                GlobalClass.showTastyToast(Payment_Activity.this, "Something went wrong - Response log failed", 2);
+
                             }
 
                             if (paymentstatus.equalsIgnoreCase(SUCCESS)) {
-                                Toast.makeText(Payment_Activity.this, "Transaction successful...", Toast.LENGTH_SHORT).show();
-                                edt_enter_amt.setText("");
-                                System.out.println("Success " + result.toString());
+                                GlobalClass.showTastyToast(Payment_Activity.this, "Transaction successful...", 2);
+                                GlobalClass.SetEditText(edt_enter_amt, "");
+                                Log.v("TAG", "Success " + result.toString());
                             } else {
-                                Toast.makeText(context, "Transaction failed.", Toast.LENGTH_SHORT).show();
+                                GlobalClass.showTastyToast(mActivity, "Transaction failed.", 2);
                             }
 
 
                         } else {
-                            System.out.println("Dictionary_Array is null ");
-                            Toast.makeText(Payment_Activity.this, "UNSUCCESSFUL ", Toast.LENGTH_SHORT).show();
+                            Log.v("TAG", "Dictionary_Array is null ");
+                            GlobalClass.showTastyToast(mActivity, "UNSUCCESSFUL ", 2);
                         }
                     } else {
-                        System.out.println("Result is null ");
-                        Toast.makeText(Payment_Activity.this, "UNSUCCESSFUL ", Toast.LENGTH_SHORT).show();
+                        Log.v("TAG", "Result is null ");
+                        GlobalClass.showTastyToast(mActivity, "UNSUCCESSFUL ", 2);
                     }
                 } else {
-                    System.out.println("failed status code " + result.toString());
-                    Toast.makeText(Payment_Activity.this, "UNSUCCESSFUL ", Toast.LENGTH_SHORT).show();
+                    Log.v("TAG", "failed status code " + result.toString());
+                    GlobalClass.showTastyToast(mActivity, "UNSUCCESSFUL ", 2);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

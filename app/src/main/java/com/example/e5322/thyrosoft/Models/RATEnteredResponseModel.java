@@ -16,6 +16,7 @@ public class RATEnteredResponseModel {
     private String currentTIME;
     private String resID;
     private String response;
+    private int timespan;
     private ArrayList<PatientDETAILSBean> patientDETAILS;
 
     public String getCurrentTIME() {
@@ -28,6 +29,14 @@ public class RATEnteredResponseModel {
 
     public String getResID() {
         return resID;
+    }
+
+    public int getTimespan() {
+        return timespan;
+    }
+
+    public void setTimespan(int timespan) {
+        this.timespan = timespan;
     }
 
     public void setResID(String resID) {

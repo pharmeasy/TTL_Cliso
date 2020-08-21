@@ -21,7 +21,6 @@ import android.preference.PreferenceManager
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import android.text.TextUtils
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -35,8 +34,8 @@ import com.android.volley.toolbox.StringRequest
 import com.bumptech.glide.Glide
 import com.example.e5322.thyrosoft.*
 import com.example.e5322.thyrosoft.API.Constants
-import com.example.e5322.thyrosoft.API.Global
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS
 import com.example.e5322.thyrosoft.Models.*
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster
@@ -45,7 +44,6 @@ import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model
 import com.example.e5322.thyrosoft.TestListModel.Tests
 import com.example.e5322.thyrosoft.startscreen.Login
-import com.sdsmdg.tastytoast.TastyToast
 import id.zelory.compressor.Compressor
 import java.io.File
 import java.io.FileInputStream
@@ -402,7 +400,7 @@ class KTGlobalclass {
     }
 
     fun redirectToLogin(activity: Activity) {
-        TastyToast.makeText(activity, ToastFile.relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO)
+        GlobalClass.showTastyToast(activity, ToastFile.relogin, 2)
         val i = Intent(activity, Login::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         activity.startActivity(i)
@@ -575,15 +573,15 @@ class KTGlobalclass {
 
 
     fun toastySuccess(context: Context?, string: String?, b: Boolean) {
-        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.SUCCESS)
+        GlobalClass.showTastyToast(context as Activity?, string,1)
     }
 
     fun toastyInfo(context: Context?, string: String?, b: Boolean) {
-        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.INFO)
+        GlobalClass.showTastyToast(context as Activity?, string, 2)
     }
 
     fun toastyError(context: Context?, string: String?, b: Boolean) {
-        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.INFO)
+        GlobalClass.showTastyToast(context as Activity?, string, 2)
     }
 
     fun ToastLength(b: Boolean): Int {
@@ -629,7 +627,7 @@ class KTGlobalclass {
 
         if (flag == 1) {
             val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-            if (myBitmap != null) imgView.setImageBitmap(myBitmap) else Global.showCustomToast(activity, "Image not found")
+            if (myBitmap != null) imgView.setImageBitmap(myBitmap) else GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found,0)
         } else {
             Glide.with(activity)
                     .load(url)
@@ -754,7 +752,7 @@ class KTGlobalclass {
     /*  fun currencyFormat(amount: String): String? {
           var amount = amount
           var formatter: DecimalFormat? = null
-          if (!TextUtils.isEmpty(amount)) {
+          if (!GlobalClass.isNull(amount)) {
               formatter = DecimalFormat("##,##,##,###.##")
               return formatter.format(amount.toDouble())
           } else {
@@ -767,7 +765,7 @@ class KTGlobalclass {
     fun currencyFormat(amount: String): String? {
         var amount = amount
         var formatter: DecimalFormat? = null
-        if (!TextUtils.isEmpty(amount)) {
+        if (!GlobalClass.isNull(amount)) {
             formatter = DecimalFormat("##,##,##,###.##")
             return formatter.format(amount.toDouble())
         } else {
@@ -812,14 +810,9 @@ class KTGlobalclass {
         }
     }
 
-    fun showShortToast(activity: Activity?, message: String?) {
-        if (activity != null) {
-            val context = activity.applicationContext
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
+
     }
 
 
 
 
-}

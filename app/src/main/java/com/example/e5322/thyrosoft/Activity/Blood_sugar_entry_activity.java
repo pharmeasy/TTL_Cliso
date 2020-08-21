@@ -1,10 +1,6 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,6 +14,11 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 public class Blood_sugar_entry_activity extends AppCompatActivity {
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
     TextView enter, enetered;
@@ -30,6 +31,17 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blood_sugar_entry_activity);
 
+        initViews();
+
+        final BS_EntryFragment bs_entryFragment = new BS_EntryFragment();
+        replaceFragment(bs_entryFragment);
+
+        initListneer();
+
+    }
+
+
+    private void initViews() {
         enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
         unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
 
@@ -45,6 +57,9 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
         enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
         enter_arrow_entered.setVisibility(View.GONE);
 
+    }
+
+    private void initListneer() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,9 +73,6 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 GlobalClass.goToHome(Blood_sugar_entry_activity.this);
             }
         });
-
-        final BS_EntryFragment bs_entryFragment = new BS_EntryFragment();
-        replaceFragment(bs_entryFragment);
 
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +97,8 @@ public class Blood_sugar_entry_activity extends AppCompatActivity {
                 replaceFragment(bs_misEntryFragment);
             }
         });
+
+
     }
 
     @Override

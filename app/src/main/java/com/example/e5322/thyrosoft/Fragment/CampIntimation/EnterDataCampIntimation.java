@@ -1,10 +1,6 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
 import android.app.DatePickerDialog;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,6 +11,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
 import com.example.e5322.thyrosoft.R;
 
@@ -22,6 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import static com.example.e5322.thyrosoft.GlobalClass.global_camp_intimatgion_list_models_arrlst;
 
@@ -49,6 +50,7 @@ public class EnterDataCampIntimation extends Fragment {
     private String mParam2;
     final Calendar myCalendar = Calendar.getInstance();
     private OnFragmentInteractionListener mListener;
+    private String testName;
 
     public EnterDataCampIntimation() {
         // Required empty public constructor
@@ -86,15 +88,17 @@ public class EnterDataCampIntimation extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_enter_data_camp_intimation, container, false);
-        final String testName = getArguments().getString("testName");
-        txt_camp_rate = (EditText) view.findViewById(R.id.txt_camp_rate);
-        txt_camp_days = (EditText) view.findViewById(R.id.txt_camp_days);
-        txt_camp_address = (EditText) view.findViewById(R.id.txt_camp_address);
-        txt_camp_duration = (EditText) view.findViewById(R.id.txt_camp_duration);
-        txt_reameks = (EditText) view.findViewById(R.id.txt_reameks);
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        txt_camp_date = (TextView) view.findViewById(R.id.txt_camp_date);
+        testName = getArguments().getString("testName");
 
+        initViews(view);
+       iniListner();
+
+
+        // Inflate the layout for this fragment
+        return view;
+    }
+
+    private void iniListner() {
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -148,8 +152,16 @@ public class EnterDataCampIntimation extends Fragment {
             }
         });
 
-        // Inflate the layout for this fragment
-        return view;
+    }
+
+    private void initViews(View view) {
+        txt_camp_rate = (EditText) view.findViewById(R.id.txt_camp_rate);
+        txt_camp_days = (EditText) view.findViewById(R.id.txt_camp_days);
+        txt_camp_address = (EditText) view.findViewById(R.id.txt_camp_address);
+        txt_camp_duration = (EditText) view.findViewById(R.id.txt_camp_duration);
+        txt_reameks = (EditText) view.findViewById(R.id.txt_reameks);
+        btn_save = (Button) view.findViewById(R.id.btn_save);
+        txt_camp_date = (TextView) view.findViewById(R.id.txt_camp_date);
     }
 
     private boolean validate() {
@@ -187,7 +199,7 @@ public class EnterDataCampIntimation extends Fragment {
         String myFormat = "dd-MM-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-        txt_camp_date.setText(sdf.format(myCalendar.getTime()));
+        GlobalClass.SetText(txt_camp_date,sdf.format(myCalendar.getTime()));
     }
 
     // TODO: Rename method, update argument and hook method into UI event

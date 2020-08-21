@@ -12,11 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,36 +19,25 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
-import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.RATEnteredAdapter;
-import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.RATEnteredController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
-import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
 
 import org.apache.http.HttpResponse;
@@ -71,7 +55,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -79,12 +62,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -121,6 +101,8 @@ public class RATEnteredFrag extends Fragment {
     private SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
     private String putDate, showDate, from_formateDate;
     private String Value;
+    Activity mActivity;
+
     final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
         @Override
@@ -158,7 +140,7 @@ public class RATEnteredFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_r_a_t_entered, container, false);
-
+        mActivity = getActivity();
 
         initui(root);
         initlistner();
@@ -220,6 +202,7 @@ public class RATEnteredFrag extends Fragment {
             ratEnteredRequestModel.setToDATE(from_formateDate);
         }
 
+
         RATEnteredController ratEnteredController = new RATEnteredController(this, ratEnteredRequestModel);
         ratEnteredController.CallAPI();
     }
@@ -248,17 +231,23 @@ public class RATEnteredFrag extends Fragment {
         tv_fromDate = root.findViewById(R.id.tv_fromDate);
         ll_date = root.findViewById(R.id.ll_date);
         rg_radio = root.findViewById(R.id.rg_radio);
-        tv_fromDate.setText(showDate);
+
+        GlobalClass.SetText(tv_fromDate, showDate);
 
     }
 
     public void getresponse(RATEnteredResponseModel body) {
 
-
         try {
-            if (body.getResID().equalsIgnoreCase("RES0000")) {
+            if (!GlobalClass.isNull(body.getResID()) && body.getResID().equalsIgnoreCase("RES0000")) {
                 patientDETAILSBeans = body.getPatientDETAILS();
-                ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME());
+                int timespan = 0;
+                if (body.getTimespan() != 0) {
+                    timespan = body.getTimespan();
+                } else {
+                    timespan = 240;
+                }
+                ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME(), timespan);
                 ratEnteredAdapter.Click(new RATEnteredAdapter.Passdata() {
                     @Override
                     public void pass(RATEnteredResponseModel.PatientDETAILSBean postmaterial) {
@@ -271,44 +260,36 @@ public class RATEnteredFrag extends Fragment {
                 rc_view.setAdapter(ratEnteredAdapter);
                 ratEnteredAdapter.notifyDataSetChanged();
             } else {
-                Toast.makeText(activity, "" + body.getResponse(), Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(mActivity, "" + body.getResponse(), 2);
                 rc_view.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(activity, "Something wnt wrong", Toast.LENGTH_SHORT).show();
+            GlobalClass.showTastyToast(mActivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
         }
 
     }
 
     private void updateLabel() {
         putDate = sdf.format(myCalendar.getTime());
-        tv_fromDate.setText(putDate);
+
+        GlobalClass.SetText(tv_fromDate, putDate);
+
         from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
-        if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
-            if (cd.isConnectingToInternet()) {
 
 
-                RATEnteredRequestModel ratEnteredRequestModel = new RATEnteredRequestModel();
-                ratEnteredRequestModel.setApikey(apikey);
-                ratEnteredRequestModel.setSourceCODE(usercode);
-                if (rd_done.isChecked()) {
-                    ratEnteredRequestModel.setStatus("2");
-                } else if (rd_expired.isChecked()) {
-                    ratEnteredRequestModel.setStatus("3");
-
-                }
-                ratEnteredRequestModel.setTest("COVAG");
-                ratEnteredRequestModel.setToDATE(from_formateDate);
-                RATEnteredController ratEnteredController = new RATEnteredController(this, ratEnteredRequestModel);
-                ratEnteredController.CallAPI();
-
-            } else {
-                GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
-            }
-        } else {
-            GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
+        RATEnteredRequestModel ratEnteredRequestModel = new RATEnteredRequestModel();
+        ratEnteredRequestModel.setApikey(apikey);
+        ratEnteredRequestModel.setSourceCODE(usercode);
+        if (rd_done.isChecked()) {
+            ratEnteredRequestModel.setStatus("2");
+        } else if (rd_expired.isChecked()) {
+            ratEnteredRequestModel.setStatus("3");
         }
+        ratEnteredRequestModel.setTest("CRAT");
+        ratEnteredRequestModel.setToDATE(from_formateDate);
+        RATEnteredController ratEnteredController = new RATEnteredController(this, ratEnteredRequestModel);
+        ratEnteredController.CallAPI();
 
     }
 
@@ -325,7 +306,7 @@ public class RATEnteredFrag extends Fragment {
 
     private void buildCamera() {
         camera = new com.mindorks.paracamera.Camera.Builder()
-                .resetToCorrectOrientation(true)// it will rotate the camera bitmap to the correct orientation from meta data
+                .resetToCorrectOrientation(false)// it will rotate the camera bitmap to the correct orientation from meta data
                 .setTakePhotoRequestCode(1)
                 .setDirectory("pics")
                 .setName("img" + System.currentTimeMillis())
@@ -389,7 +370,7 @@ public class RATEnteredFrag extends Fragment {
         if (myBitmap != null)
             imgView.setImageBitmap(myBitmap);
         else
-            Global.showCustomToast(activity, "Image not found");
+            GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 0);
 
         rd_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -406,11 +387,10 @@ public class RATEnteredFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!rd_negative.isChecked() && !rd_positive.isChecked()) {
-                    Toast.makeText(activity, "Select the result status", Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(mActivity, "Select the result status", 2);
                 } else {
                     dialog.dismiss();
                     new AsyncTaskPost_uploadfile().execute();
-
                 }
 
             }
@@ -427,7 +407,6 @@ public class RATEnteredFrag extends Fragment {
         int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.90);
 
         dialog.getWindow().setLayout(width, height);
-        // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
 
@@ -458,9 +437,7 @@ public class RATEnteredFrag extends Fragment {
             try {
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httpPost = new HttpPost(strUrl);
-                // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setEntity(builder.build());
-
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 
                 builder.addPart("KEY", new StringBody("" + apikey));
@@ -511,23 +488,22 @@ public class RATEnteredFrag extends Fragment {
 
                     try {
                         JSONObject obj = new JSONObject(response);
-                        if (obj.getString("ResId").equalsIgnoreCase("RES0000")) {
-                            Toast.makeText(activity, "" + obj.getString("Response"), Toast.LENGTH_SHORT).show();
+                        if (!GlobalClass.isNull(obj.getString("ResId")) && obj.getString("ResId").equalsIgnoreCase("RES0000")) {
+                            GlobalClass.showTastyToast(mActivity, "" + obj.getString("Response"), 1);
                             CallAPI("1");
                             obj.getString("currentTIME");
-                            //   07-07-2020 13:39
 
                         } else {
-                            Toast.makeText(activity, "" + obj.getString("Response"), Toast.LENGTH_SHORT).show();
+                            GlobalClass.showTastyToast(mActivity, "" + obj.getString("Response"), 2);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(activity, "Result is null", Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(mActivity, MessageConstants.RESULTNULL, 2);
                 }
             } else {
-                Toast.makeText(activity, "Something went wrong", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(mActivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
             }
         }
 
@@ -542,6 +518,4 @@ public class RATEnteredFrag extends Fragment {
         }
 
     }
-
-
 }

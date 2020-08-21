@@ -24,12 +24,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
+import com.example.e5322.thyrosoft.CommonItils.AccessRuntimePermissions;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
@@ -62,11 +62,11 @@ import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class CovidEditActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView tv_name, tv_verifiedmob, tv_amt;
-    ConnectionDetector cd;
-    Activity activity;
-    String usercode, apikey;
-    Button btn_choosefile_presc, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
+    private TextView tv_name, tv_verifiedmob, tv_amt;
+    private ConnectionDetector cd;
+    private Activity activity;
+    private String usercode, apikey;
+    private Button btn_choosefile_presc, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
     ImageView back, home;
     RelativeLayout rel_mobno;
     TextView txt_nofilepresc, txt_nofileadhar, txt_nofiletrf, txt_nofilevial, txt_nofileother;
@@ -101,6 +101,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     String mobileno, name, UniqueId, amtcoll;
     TextView txt_presfileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +109,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         activity = CovidEditActivity.this;
         cd = new ConnectionDetector(activity);
         Bundle bundle = getIntent().getExtras();
+
         if (bundle != null) {
             mobileno = bundle.getString("Mobile");
             name = bundle.getString("name");
@@ -117,23 +119,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         }
 
         initview();
+        initListner();
     }
 
-    private void initview() {
-        preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-        usercode = preferences.getString("USER_CODE", null);
-        apikey = preferences.getString("API_KEY", null);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-
-        tv_name = findViewById(R.id.tv_name);
-        tv_verifiedmob = findViewById(R.id.tv_verifiedmob);
-        tv_amt = findViewById(R.id.tv_amt);
-        tv_amt.setText("Rs " + amtcoll);
-
-        tv_name.setText(name);
-        tv_verifiedmob.setText(mobileno);
-
+    private void initListner() {
+        btn_reset.setOnClickListener(this);
+        btn_submit.setOnClickListener(this);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,6 +139,35 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             }
         });
 
+        txt_presfileupload.setOnClickListener(this);
+        txt_adharfileupload.setOnClickListener(this);
+        txt_trffileupload.setOnClickListener(this);
+        txt_vialrfileupload.setOnClickListener(this);
+        txt_otherfileupload.setOnClickListener(this);
+
+        btn_choosefile_presc.setOnClickListener(this);
+        btn_choosefile_adhar.setOnClickListener(this);
+        btn_choosefile_trf.setOnClickListener(this);
+        btn_choosefile_vial.setOnClickListener(this);
+        btn_choosefile_other.setOnClickListener(this);
+    }
+
+    private void initview() {
+        preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        usercode = preferences.getString("USER_CODE", "");
+        apikey = preferences.getString("API_KEY", "");
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+
+        tv_name = findViewById(R.id.tv_name);
+        tv_verifiedmob = findViewById(R.id.tv_verifiedmob);
+        tv_amt = findViewById(R.id.tv_amt);
+
+        GlobalClass.SetText(tv_amt, "Rs " + amtcoll);
+        GlobalClass.SetText(tv_name, name);
+        GlobalClass.SetText(tv_verifiedmob, mobileno);
+
+
         txt_presfileupload = findViewById(R.id.txt_presfileupload);
         txt_adharfileupload = findViewById(R.id.txt_adharfileupload);
         txt_trffileupload = findViewById(R.id.txt_trffileupload);
@@ -161,11 +181,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         btn_choosefile_vial = findViewById(R.id.btn_choosefile_vial);
         btn_choosefile_other = findViewById(R.id.btn_choosefile_other);
 
-        txt_presfileupload.setOnClickListener(this);
-        txt_adharfileupload.setOnClickListener(this);
-        txt_trffileupload.setOnClickListener(this);
-        txt_vialrfileupload.setOnClickListener(this);
-        txt_otherfileupload.setOnClickListener(this);
 
         aadharlist = new ArrayList<>();
         trflist = new ArrayList<>();
@@ -191,21 +206,12 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         lin_vial_images = findViewById(R.id.lin_vial_images);
         lin_other_images = findViewById(R.id.lin_other_images);
 
-        btn_reset.setOnClickListener(this);
-        btn_submit.setOnClickListener(this);
 
-        txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
-        txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
-        txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
-        txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
-        txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
-
-        btn_choosefile_presc.setOnClickListener(this);
-        btn_choosefile_adhar.setOnClickListener(this);
-        btn_choosefile_trf.setOnClickListener(this);
-        btn_choosefile_vial.setOnClickListener(this);
-        btn_choosefile_other.setOnClickListener(this);
-
+        GlobalClass.SetText(txt_nofilepresc, getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofileadhar, getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofiletrf, getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofilevial, getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofileother, getResources().getString(R.string.nofilechoosen));
 
     }
 
@@ -235,23 +241,27 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         txt_nofilevial.setVisibility(View.VISIBLE);
         txt_nofileother.setVisibility(View.VISIBLE);
 
-        txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+
+        GlobalClass.SetText(txt_nofilepresc, getResources().getString(R.string.nofilechoosen));
         txt_nofilepresc.setTextColor(getResources().getColor(R.color.black));
         txt_nofilepresc.setPaintFlags(0);
 
-        txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofileadhar, getResources().getString(R.string.nofilechoosen));
+
         txt_nofileadhar.setTextColor(getResources().getColor(R.color.black));
         txt_nofileadhar.setPaintFlags(0);
 
-        txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
+
+        GlobalClass.SetText(txt_nofiletrf, getResources().getString(R.string.nofilechoosen));
         txt_nofiletrf.setTextColor(getResources().getColor(R.color.black));
         txt_nofiletrf.setPaintFlags(0);
 
-        txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
+
+        GlobalClass.SetText(txt_nofilevial, getResources().getString(R.string.nofilechoosen));
         txt_nofilevial.setTextColor(getResources().getColor(R.color.black));
         txt_nofilevial.setPaintFlags(0);
 
-        txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
+        GlobalClass.SetText(txt_nofileother, getResources().getString(R.string.nofilechoosen));
         txt_nofileother.setTextColor(getResources().getColor(R.color.black));
         txt_nofileother.setPaintFlags(0);
 
@@ -291,12 +301,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     if (!GlobalClass.isNetworkAvailable(activity)) {
                         GlobalClass.showAlertDialog(activity);
                     } else {
-
                         try {
                             if (ControllersGlobalInitialiser.covidmultipart_controller != null) {
                                 ControllersGlobalInitialiser.covidmultipart_controller = null;
                             }
-
 
                             Covidpostdata covidpostdata = new Covidpostdata();
                             covidpostdata.setUNIQUEID(UniqueId);
@@ -356,20 +364,20 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     if (checkPermission()) {
 
                         if (presc_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one image");
+                            GlobalClass.showTastyToast(activity, MessageConstants.only_one_img, 2);
                         } else {
                             ispresciption = true;
                             isadhar = false;
                             istrf = false;
                             isvial = false;
                             isother = false;
-                            selectImage();
+                            checpremissionproceed();
                         }
                     } else {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showTastyToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -377,14 +385,14 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showTastyToast(activity, MessageConstants.UPLOADTWOFILES, 2);
                         } else {
                             ispresciption = false;
                             isadhar = true;
                             istrf = false;
                             isvial = false;
                             isother = false;
-                            selectImage();
+                            checpremissionproceed();
                         }
 
                     } else {
@@ -392,7 +400,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     }
 
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showTastyToast(activity, MessageConstants.VERIFY, 2);
                 }
 
                 break;
@@ -400,20 +408,20 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (trf_file != null && trf_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showTastyToast(activity, MessageConstants.UPLOADTWOFILES, 2);
                         } else {
                             ispresciption = false;
                             isadhar = false;
                             istrf = true;
                             isvial = false;
                             isother = false;
-                            selectImage();
+                            checpremissionproceed();
                         }
                     } else {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showTastyToast(activity, MessageConstants.VERIFY, 2);
                 }
                 break;
 
@@ -422,20 +430,20 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (vial_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one images");
+                            GlobalClass.showTastyToast(activity, MessageConstants.UPLOAD_ONEFILE, 2);
                         } else {
                             ispresciption = false;
                             isadhar = false;
                             istrf = false;
                             isvial = true;
                             isother = false;
-                            selectImage();
+                            checpremissionproceed();
                         }
                     } else {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showTastyToast(activity, MessageConstants.VERIFY, 2);
                 }
                 break;
 
@@ -443,49 +451,49 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showTastyToast(activity, MessageConstants.UPLOADTWOFILES, 2);
                         } else {
                             ispresciption = false;
                             isadhar = false;
                             istrf = false;
                             isvial = false;
                             isother = true;
-                            selectImage();
+                            checpremissionproceed();
                         }
                     } else {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showTastyToast(activity, MessageConstants.VERIFY, 2);
                 }
                 break;
 
             case R.id.txt_presfileupload:
-                if (presclist != null && presclist.size() > 0) {
+                if (GlobalClass.CheckArrayList(presclist)) {
                     setviewpager(presclist, "pres");
                 }
                 break;
 
             case R.id.txt_adharfileupload:
-                if (aadharlist != null && aadharlist.size() > 0) {
+                if (GlobalClass.CheckArrayList(aadharlist)) {
                     setviewpager(aadharlist, "adhar");
                 }
                 break;
 
             case R.id.txt_trffileupload:
-                if (trflist != null && trflist.size() > 0) {
+                if (GlobalClass.CheckArrayList(trflist)) {
                     setviewpager(trflist, "trf");
                 }
                 break;
 
             case R.id.txt_vialrfileupload:
-                if (viallist != null && viallist.size() > 0) {
+                if (GlobalClass.CheckArrayList(viallist)) {
                     setviewpager(viallist, "vial");
                 }
                 break;
 
             case R.id.txt_otherfileupload:
-                if (otherlist != null && otherlist.size() > 0) {
+                if (GlobalClass.CheckArrayList(otherlist)) {
                     setviewpager(otherlist, "other");
                 }
                 break;
@@ -497,16 +505,13 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
 
         if (aadhar_file == null && aadhar_file1 == null) {
-            // Global.showCustomToast(activity, ToastFile.SELECT_ADHIMAGE);
             return false;
         }
 
         if (trf_file == null && trf_file1 == null) {
-            //   Global.showCustomToast(activity, ToastFile.SELECT_TRFDHIMAGE);
             return false;
         }
         if (vial_file == null) {
-            //    Global.showCustomToast(activity, ToastFile.SELECT_VIALDHIMAGE);
             return false;
         }
 
@@ -521,6 +526,14 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
     private void requestPermission() {
         ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
+    }
+
+    private void checpremissionproceed() {
+        if (AccessRuntimePermissions.checkcameraPermission(activity)) {
+            selectImage();
+        } else {
+            AccessRuntimePermissions.checkcameraPermission(activity);
+        }
     }
 
     private void selectImage() {
@@ -605,7 +618,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     presc_file = new File(destFile);
                     GlobalClass.copyFile(new File(imageurl), presc_file);
                     lin_pres_preview.setVisibility(View.VISIBLE);
-                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    GlobalClass.SetText(txt_presfileupload, "1 " + getResources().getString(R.string.imgupload));
                     txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilepresc.setVisibility(View.GONE);
                     presclist = new ArrayList<>();
@@ -630,7 +643,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), aadhar_file1);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(imageurl);
@@ -643,7 +656,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), aadhar_file);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_adharfileupload, "1 " + getResources().getString(R.string.imgupload));
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(imageurl);
@@ -653,7 +666,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         isadhar = false;
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
@@ -672,7 +686,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), trf_file1);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(imageurl);
@@ -685,7 +701,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), trf_file);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_trffileupload, "1 " + getResources().getString(R.string.imgupload));
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(imageurl);
@@ -695,7 +711,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         istrf = false;
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
@@ -711,7 +729,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     GlobalClass.copyFile(new File(imageurl), vial_file);
                     lin_vial_images.setVisibility(View.VISIBLE);
                     txt_vialrfileupload.setVisibility(View.VISIBLE);
-                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                    GlobalClass.SetText(txt_vialrfileupload, "1 " + getResources().getString(R.string.imgupload));
+
                     txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilevial.setVisibility(View.GONE);
                     if (vial_file != null) {
@@ -732,7 +752,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), other_file1);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(imageurl);
@@ -745,7 +767,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         GlobalClass.copyFile(new File(imageurl), other_file);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+
+                        GlobalClass.SetText(txt_otherfileupload, "1 " + getResources().getString(R.string.imgupload));
+
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(imageurl);
@@ -758,7 +783,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         buttonval();
                     }
@@ -770,7 +797,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             }
         } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
             if (data == null) {
-                Toast.makeText(activity, "Failed to load image!", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(activity, MessageConstants.Failedto_load_image, 2);
                 return;
             }
 
@@ -784,7 +811,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     presc_file = GlobalClass.getCompressedFile(activity, presc_file);
                     lin_pres_preview.setVisibility(View.VISIBLE);
                     txt_presfileupload.setVisibility(View.VISIBLE);
-                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+
+                    GlobalClass.SetText(txt_presfileupload, "1 " + getResources().getString(R.string.imgupload));
+
                     txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilepresc.setVisibility(View.GONE);
                     presclist = new ArrayList<>();
@@ -808,7 +838,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file1.toString());
@@ -823,7 +855,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_adharfileupload, "1 " + getResources().getString(R.string.imgupload));
+
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file.toString());
@@ -834,7 +868,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         isadhar = false;
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
-                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+
+                        GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
@@ -856,7 +893,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(trf_file1.toString());
@@ -869,7 +908,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         trf_file = GlobalClass.getCompressedFile(activity, trf_file);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "1 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(trf_file.toString());
@@ -880,7 +921,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         istrf = false;
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
-                        txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                         btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
@@ -897,7 +940,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     vial_file = GlobalClass.getCompressedFile(activity, vial_file);
                     lin_vial_images.setVisibility(View.VISIBLE);
                     txt_vialrfileupload.setVisibility(View.VISIBLE);
-                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                    GlobalClass.SetText(txt_vialrfileupload, "1 " + getResources().getString(R.string.imgupload));
+
                     txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     txt_nofilevial.setVisibility(View.GONE);
                     viallist.add(vial_file.toString());
@@ -919,7 +964,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         other_file1 = GlobalClass.getCompressedFile(activity, other_file1);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
+
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(other_file1.toString());
@@ -933,7 +980,10 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         other_file = GlobalClass.getCompressedFile(activity, other_file);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                        GlobalClass.SetText(txt_otherfileupload, "1 " + getResources().getString(R.string.imgupload));
+
+
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(other_file.toString());
@@ -946,7 +996,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
-                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
                         txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         buttonval();
                     }
@@ -955,7 +1005,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 }
 
             } catch (IOException e) {
-                Toast.makeText(activity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(activity, MessageConstants.Failed_to_read_img, 2);
                 e.printStackTrace();
             }
         }
@@ -984,15 +1034,15 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             String RESPONSE = jsonObject.optString("Response");
             String RESPONSEID = jsonObject.optString("ResId");
 
-            if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
-                Global.showCustomToast(activity, RESPONSE);
+            if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
+                GlobalClass.showTastyToast(activity, RESPONSE, 1);
 
                 Intent i = new Intent(activity, ManagingTabsActivity.class);
                 startActivity(i);
                 Constants.covidfrag_flag = "1";
                 finish();
-            }else {
-                Global.showCustomToast(activity, RESPONSE);
+            } else {
+                GlobalClass.showTastyToast(activity, RESPONSE, 2);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -1026,7 +1076,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         maindialog.setContentView(R.layout.preview_dialog);
-        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
@@ -1035,7 +1084,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         viewPagerAdapter.notifyDataSetChanged();
 
         final PageIndicatorView pageIndicatorView = maindialog.findViewById(R.id.pageIndicatorView);
-        if (imagelist != null && imagelist.size() > 1) {
+        if (GlobalClass.CheckArrayList(imagelist)) {
             pageIndicatorView.setVisibility(View.VISIBLE);
             pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
             pageIndicatorView.setSelection(0);
@@ -1074,19 +1123,19 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
 
-                        if (type.equalsIgnoreCase("pres")) {
+                        if (!GlobalClass.isNull(type) && type.equalsIgnoreCase("pres")) {
                             presc_file = null;
                             presclist.clear();
                             txt_nofilepresc.setVisibility(View.VISIBLE);
-                            txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
+                            GlobalClass.SetText(txt_nofilepresc, getResources().getString(R.string.nofilechoosen));
                             lin_pres_preview.setVisibility(View.GONE);
                             btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
                             btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
                             txt_nofilepresc.setVisibility(View.VISIBLE);
                             buttonval();
-                        } else if (type.equalsIgnoreCase("adhar")) {
+                        } else if (!GlobalClass.isNull(type) && type.equalsIgnoreCase("adhar")) {
 
-                            if (aadharlist != null && aadharlist.size() > 0) {
+                            if (GlobalClass.CheckArrayList(aadharlist)) {
                                 if (0 == viewPager.getCurrentItem()) {
                                     if (aadhar_file != null) {
                                         aadhar_file = null;
@@ -1110,13 +1159,15 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                     lin_adhar_images.setVisibility(View.VISIBLE);
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
                                     btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
-                                    txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_adharfileupload, "1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                                     btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
-                                    txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_adharfileupload, "2 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1131,8 +1182,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                 txt_nofileadhar.setVisibility(View.VISIBLE);
                                 lin_adhar_images.setVisibility(View.GONE);
                             }
-                        } else if (type.equalsIgnoreCase("trf")) {
-                            if (trflist != null && trflist.size() > 0) {
+                        } else if (!GlobalClass.isNull(type) && type.equalsIgnoreCase("trf")) {
+                            if (GlobalClass.CheckArrayList(trflist)) {
                                 if (0 == viewPager.getCurrentItem()) {
                                     if (trf_file != null) {
                                         trf_file = null;
@@ -1156,14 +1207,16 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                     btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
-                                    txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_trffileupload, "1 " + getResources().getString(R.string.imgupload));
+
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (trflist.size() == 2) {
                                     btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
                                     btn_choosefile_trf.setTextColor(getResources().getColor(R.color.black));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
-                                    txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_trffileupload, "2 " + getResources().getString(R.string.imgupload));
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
@@ -1177,18 +1230,18 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                 lin_trf_images.setVisibility(View.GONE);
                             }
                             buttonval();
-                        } else if (type.equalsIgnoreCase("vial")) {
+                        } else if (!GlobalClass.isNull(type) && type.equalsIgnoreCase("vial")) {
                             vial_file = null;
                             viallist.clear();
                             txt_nofilevial.setVisibility(View.VISIBLE);
-                            txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
+                            GlobalClass.SetText(txt_nofilevial, getResources().getString(R.string.nofilechoosen));
                             lin_vial_images.setVisibility(View.GONE);
                             btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
                             btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
                             txt_nofilevial.setVisibility(View.VISIBLE);
                             buttonval();
-                        } else if (type.equalsIgnoreCase("other")) {
-                            if (otherlist != null && otherlist.size() > 0) {
+                        } else if (!GlobalClass.isNull(type) && type.equalsIgnoreCase("other")) {
+                            if (GlobalClass.CheckArrayList(otherlist)) {
                                 if (0 == viewPager.getCurrentItem()) {
                                     if (other_file != null) {
                                         other_file = null;
@@ -1197,7 +1250,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                     }
 
                                     otherlist.remove(otherlist.get(0));
-                                    //   viewPagerAdapter.notifyDataSetChanged();
                                 } else if (1 == viewPager.getCurrentItem()) {
                                     other_file1 = null;
                                     if (otherlist.size() == 2) {
@@ -1205,7 +1257,6 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                     } else {
                                         otherlist.remove(otherlist.get(0));
                                     }
-                                    //  viewPagerAdapter.notifyDataSetChanged();
                                 }
 
                                 if (otherlist.size() == 1) {
@@ -1213,14 +1264,15 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                                     btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
-                                    txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+
+                                    GlobalClass.SetText(txt_otherfileupload, "1 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (otherlist.size() == 2) {
                                     btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
                                     btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
-                                    txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                                    GlobalClass.SetText(txt_otherfileupload, "2 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
                                     btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));

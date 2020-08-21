@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -19,13 +18,13 @@ import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetOTPCreditMISController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.OTPCreditMISRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.ToastFile;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,12 +33,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class OTPCreditMISActivity extends AppCompatActivity {
 
     private ImageView back, home;
     private Activity mActivity;
     private ConnectionDetector cd;
-    private String user, passwrd, access, api_key;
+    String user, passwrd, access, api_key;
     private LinearLayout ll_fromDate, ll_toDate;
     private TextView tv_fromDate, tv_toDate, tv_noResult;
     private Calendar to_cal, from_cal;
@@ -65,20 +66,21 @@ public class OTPCreditMISActivity extends AppCompatActivity {
 
             Date currDate = new Date();
             if (fromDate.after(currDate)) {
-                GlobalClass.showShortToast(mActivity, "Kindly choose correct Date");
+                GlobalClass.showTastyToast(mActivity, MessageConstants.Kindly_choose_correct_date,2);
             } else {
-                tv_fromDate.setText(putDate);
+                GlobalClass.SetText(tv_fromDate,putDate);
+
                 if (!GlobalClass.isNull(To_formatDate)) {
                     if (toDate.before(fromDate)) {
-                        GlobalClass.showShortToast(mActivity, "Kindly choose correct Date");
-                        tv_fromDate.setText("");
+                        GlobalClass.showTastyToast(mActivity,MessageConstants.Kindly_choose_correct_date,2);
+                        GlobalClass.SetText(tv_fromDate,"");
                         From_formatDate = "";
                         tl_misData.removeAllViews();
                     } else {
                         callFetchOTPCreditMISAPI();
                     }
                 } else {
-                    GlobalClass.showShortToast(mActivity, "Kindly select to date");
+                    GlobalClass.showTastyToast(mActivity,MessageConstants.Kindly_choose_correct_date,2);
                 }
             }
         }
@@ -97,20 +99,21 @@ public class OTPCreditMISActivity extends AppCompatActivity {
 
             Date currDate = new Date();
             if (toDate.after(currDate)) {
-                GlobalClass.showShortToast(mActivity, "Kindly choose correct Date");
+                GlobalClass.showTastyToast(mActivity,MessageConstants.Kindly_choose_correct_date,2);
+
             } else {
-                tv_toDate.setText(putDate);
+                GlobalClass.SetText(tv_toDate,putDate);
                 if (!GlobalClass.isNull(From_formatDate)) {
                     if (toDate.before(fromDate)) {
-                        GlobalClass.showShortToast(mActivity, "Kindly choose correct Date");
-                        tv_toDate.setText("");
+                        GlobalClass.showTastyToast(mActivity,MessageConstants.Kindly_choose_correct_date,2);
+                        GlobalClass.SetText(tv_toDate,"");
                         To_formatDate = "";
                         tl_misData.removeAllViews();
                     } else {
                         callFetchOTPCreditMISAPI();
                     }
                 } else {
-                    GlobalClass.showShortToast(mActivity, "Kindly select from date");
+                    GlobalClass.showTastyToast(mActivity,MessageConstants.Kindly_choose_correct_date,2);
                 }
             }
         }
@@ -132,10 +135,10 @@ public class OTPCreditMISActivity extends AppCompatActivity {
         cd = new ConnectionDetector(mActivity);
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         from_cal = Calendar.getInstance();
         to_cal = Calendar.getInstance();
@@ -152,14 +155,17 @@ public class OTPCreditMISActivity extends AppCompatActivity {
         From_formatDate = GlobalClass.formatDate("dd-MM-yyyy", "yyyy-MM-dd", putDate);
         To_formatDate = GlobalClass.formatDate("dd-MM-yyyy", "yyyy-MM-dd", putDate);
 
-        tv_fromDate.setText(putDate);
-        tv_toDate.setText(putDate);
+
+        GlobalClass.SetText(tv_fromDate,putDate);
+        GlobalClass.SetText(tv_toDate,putDate);
 
         fromDate = returnDate(fromDate, putDate);
         toDate = returnDate(toDate, putDate);
 
         callFetchOTPCreditMISAPI();
     }
+
+
 
     private void initUI() {
         back = findViewById(R.id.back);
@@ -239,20 +245,20 @@ public class OTPCreditMISActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            GlobalClass.showShortToast(mActivity, ToastFile.intConnection);
+            GlobalClass.showTastyToast(mActivity,MessageConstants.CHECK_INTERNET_CONN,2);
         }
     }
 
     public void getOTPCreditMISResponse(OTPCreditResponseModel responseModel) {
         if (!GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
-            if (responseModel.getOutput() != null && responseModel.getOutput().size() > 0) {
+            if (GlobalClass.CheckArrayList(responseModel.getOutput())) {
                 displayData(responseModel.getOutput());
             } else {
                 tv_noResult.setVisibility(View.VISIBLE);
                 tl_misData.removeAllViews();
             }
         } else {
-            GlobalClass.showShortToast(mActivity, responseModel.getResponse());
+            GlobalClass.showTastyToast(mActivity,responseModel.getResponse(),2);
             tv_noResult.setVisibility(View.VISIBLE);
             tl_misData.removeAllViews();
         }
@@ -260,7 +266,7 @@ public class OTPCreditMISActivity extends AppCompatActivity {
 
     private void displayData(ArrayList<OTPCreditResponseModel.OutputBean> arrayList) {
         tl_misData.removeAllViews();
-        if (arrayList.size() > 0) {
+        if (GlobalClass.CheckArrayList(arrayList)) {
             tv_noResult.setVisibility(View.GONE);
             int sr_no;
             for (int i = 0; i < arrayList.size(); i++) {

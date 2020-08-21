@@ -10,6 +10,7 @@
     <string name="windup">Are you want to wind up all test</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
+    <string name="specialoffer">"Special offers"</string>
     <string name="bs_pt_name">Name*</string>
     <string name="bs_enter_mobile_number">Mobile number*</string>
     <string name="bs_enter_email_address">Email ID</string>

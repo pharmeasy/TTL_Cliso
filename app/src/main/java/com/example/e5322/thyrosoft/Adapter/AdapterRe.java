@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.Adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.Activity.MultipleLeadActivity;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.LeadOrderIdMainModel;
 import com.example.e5322.thyrosoft.LeadOrderIDModel.Leads;
 import com.example.e5322.thyrosoft.R;
@@ -30,7 +30,6 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
 
     private LayoutInflater inflater;
     Leads[] leads;
-    Dialog dialog;
     Context context;
     String getVial_numbver;
     LeadOrderIdMainModel leadOrderIdMainModel;
@@ -70,15 +69,16 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
     public void onBindViewHolder(AdapterRe.MyViewHolder holder, final int position) {
         testname = new ArrayList<>();
 
-        if (leads[position].getLeadData() != null) {
+        if (GlobalClass.checkArray(leads) && GlobalClass.checkArray(leads[position].getLeadData())) {
             for (int i = 0; i < leads[position].getLeadData().length; i++) {
                 testname.add(leads[position].getLeadData()[i].getTest());
                 leadTESTS = TextUtils.join(",", testname);
-                holder.txt_name.setText("NAME : " + leadTESTS);
+                GlobalClass.SetText(holder.txt_name,"NAME : " + leadTESTS);
             }
 
         }
-        holder.txt_leadId.setText("LEAD ID : " + leads[position].getLEAD_ID());
+
+        GlobalClass.SetText(holder.txt_leadId,"LEAD ID : " + leads[position].getLEAD_ID());
 
         holder.lin_leadid.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,12 +92,18 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
                 editor1.putString("leadData", json);
                 editor1.commit();
 
-                for (int i = 0; i < leads[position].getLeadData().length; i++) {
-                    if (leads[position].getLeadData()[i].getSample_type().length > 1) {
-                        sizeflag = true;
-                        break;
+                if (GlobalClass.checkArray(leads) && GlobalClass.checkArray(leads[position].getLeadData())) {
+                    for (int i = 0; i < leads[position].getLeadData().length; i++) {
+                        if (GlobalClass.checkArray(leads[position].getLeadData()[i].getSample_type())){
+                            if (leads[position].getLeadData()[i].getSample_type().length > 1) {
+                                sizeflag = true;
+                                break;
+                            }
+                        }
+
                     }
                 }
+
                 Intent i = null;
                 if (sizeflag) {
                     i = new Intent(context, MultipleLeadActivity.class);
@@ -141,6 +147,5 @@ public class AdapterRe extends RecyclerView.Adapter<AdapterRe.MyViewHolder> {
             txt_leadId = (TextView) itemView.findViewById(R.id.txt_leadid);
             lin_leadid = itemView.findViewById(R.id.lin_leadid);
         }
-
     }
 }

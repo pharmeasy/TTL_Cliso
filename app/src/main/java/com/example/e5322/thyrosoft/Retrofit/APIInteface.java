@@ -1,7 +1,7 @@
 package com.example.e5322.thyrosoft.Retrofit;
 
-import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledeResponse;
-import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledmentreq;
+import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
+import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
@@ -16,9 +16,12 @@ import com.example.e5322.thyrosoft.Models.InsertScandetailReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailRes;
 import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
 import com.example.e5322.thyrosoft.Models.OTPCreditMISRequestModel;
+import com.example.e5322.thyrosoft.Models.PaitientDataResponseModel;
+import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
@@ -29,6 +32,7 @@ import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
 import com.example.e5322.thyrosoft.Models.VideoTime_Model;
 import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
+import com.example.e5322.thyrosoft.Models.WOERequestModel;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
 
 import java.util.List;
@@ -49,10 +53,6 @@ public interface APIInteface {
     @GET("{passSpinner_value}/{Contact_Details}")
     Call<Cmpdt_Model.ContactArrayListBean> getemployeedt(@Path("passSpinner_value") String passSpinner_value, @Path("Contact_Details") String Contact_Details);
 
-
-
-/*    @GET("Showlang")
-    Call<Language_Model> getlanguage();*/
 
     @GET("MasterData/GetCenterMaster/{user}")
     Call<List<CenterList_Model>> getcenterList(@Header("Authorization") String header, @Path("user") String user);
@@ -75,6 +75,16 @@ public interface APIInteface {
 
     @POST("COMMON.svc/VideoData")
     Call<VideoTime_Model> postvideotime(@Body PostVideoTime_module postVideoTime_module);
+
+    @POST("Common.svc/GetCampid")
+    Call<CampIdResponseModel> GetCampID(@Body CampIdRequestModel campIdRequestModel);
+
+
+    @POST("WO.svc/postworkorder")
+    Call<WOEResponseModel> GetResponse(@Body WOERequestModel woeRequestModel);
+
+    @POST("Common.svc/PostPatientData")
+    Call<PaitientDataResponseModel> PostPatientdetails(@Body PaitientdataRequestModel paitientdataRequestModel);
 
 
     @POST("Mapping")

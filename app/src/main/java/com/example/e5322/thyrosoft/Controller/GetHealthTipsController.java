@@ -28,7 +28,7 @@ public class GetHealthTipsController {
             @Override
             public void onResponse(Call<HealthTipsApiResponseModel> call, Response<HealthTipsApiResponseModel> response) {
                 globalClass.hideProgressDialog();
-                System.out.println("HealthTips Onsuccess");
+                Log.v("HealthTips Onsuccess");
 
                 if (response.isSuccessful() && response.body() != null && response != null) {
                     HealthTipsApiResponseModel healthTipsApiResponseModel = response.body();
@@ -47,7 +47,7 @@ public class GetHealthTipsController {
                 globalClass.hideProgressDialog();
                 // globalClass.showcenterCustomToast(mContext , UnableToConnectMsg);
                 Log.d("Errror", t.getMessage());
-                System.out.println("HealthTips OnFailure");
+                Log.v("HealthTips OnFailure");
             }
         });*/
     }

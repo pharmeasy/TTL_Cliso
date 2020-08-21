@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,11 +31,6 @@ import androidx.viewpager.widget.ViewPager;
 public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewholder> {
     Context context;
     List<Covidmis_response.OutputBean> covidMISmodelList;
-    List<String> presclist = new ArrayList<>();
-    List<String> aadharlist = new ArrayList<>();
-    List<String> trflist = new ArrayList<>();
-    List<String> viallist = new ArrayList<>();
-    List<String> otherlist = new ArrayList<>();
     Activity activity;
     List<String> doclist = new ArrayList<>();
 
@@ -62,23 +56,23 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
 
 
-        if (!TextUtils.isEmpty(covidMISmodel.getAmount_Collected())) {
+        if (!GlobalClass.isNull(covidMISmodel.getAmount_Collected())) {
             viewholder.txt_amt.setVisibility(View.VISIBLE);
             GlobalClass.SetText(viewholder.txt_amt, "Rs " + covidMISmodel.getAmount_Collected());
         } else {
             viewholder.txt_amt.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(covidMISmodel.getEntryDate().trim())) {
+        if (!GlobalClass.isNull(covidMISmodel.getEntryDate().trim())) {
             GlobalClass.SetText(viewholder.txt_time, covidMISmodel.getEntryDate().trim());
         }
 
 
-        if (!TextUtils.isEmpty(covidMISmodel.getStatusName())) {
+        if (!GlobalClass.isNull(covidMISmodel.getStatusName())) {
             GlobalClass.SetText(viewholder.txt_ccc, covidMISmodel.getStatusName());
         }
 
-        if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED") && !TextUtils.isEmpty(covidMISmodel.getRemarks())) {
+        if (!GlobalClass.isNull(covidMISmodel.getStatusName()) && covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED") && !GlobalClass.isNull(covidMISmodel.getRemarks())) {
             viewholder.lin_reason.setVisibility(View.VISIBLE);
             GlobalClass.SetText(viewholder.txt_reason, covidMISmodel.getRemarks().trim());
         } else {
@@ -86,7 +80,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         }
 
         try {
-            if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
+            if (!GlobalClass.isNull(covidMISmodel.getStatusName()) &&  covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
                 viewholder.btn_resubmit.setVisibility(View.VISIBLE);
             } else {
                 viewholder.btn_resubmit.setVisibility(View.GONE);
@@ -112,7 +106,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             public void onClick(View view) {
                 doclist.clear();
                 String url = "";
-                if (!TextUtils.isEmpty(covidMISmodel.getPrescription())) {
+                if (!GlobalClass.isNull(covidMISmodel.getPrescription())) {
                     url = covidMISmodel.getPrescription().replaceAll("\\\\", "//");
                     if (url != null && !url.isEmpty()) {
                         doclist.add(url);
@@ -121,12 +115,12 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
 
                 String adharurl = "";
                 String adharurl2 = "";
-                if (!TextUtils.isEmpty(covidMISmodel.getAadhar())) {
+                if (!GlobalClass.isNull(covidMISmodel.getAadhar())) {
                     adharurl = covidMISmodel.getAadhar().replaceAll("\\\\", "//");
                     doclist.add(adharurl);
                 }
 
-                if (!TextUtils.isEmpty(covidMISmodel.getAadhar1())) {
+                if (!GlobalClass.isNull(covidMISmodel.getAadhar1())) {
                     adharurl2 = covidMISmodel.getAadhar1().replaceAll("\\\\", "//");
                     doclist.add(adharurl2);
                 }
@@ -134,19 +128,19 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 String trf_url = "";
                 String trf_url2 = "";
 
-                if (!TextUtils.isEmpty(covidMISmodel.getTrf())) {
+                if (!GlobalClass.isNull(covidMISmodel.getTrf())) {
                     trf_url = covidMISmodel.getTrf().replaceAll("\\\\", "//");
                     doclist.add(trf_url);
                 }
 
-                if (!TextUtils.isEmpty(covidMISmodel.getTrf1())) {
+                if (!GlobalClass.isNull(covidMISmodel.getTrf1())) {
                     trf_url2 = covidMISmodel.getTrf1().replaceAll("\\\\", "//");
                     doclist.add(trf_url2);
 
                 }
 
                 String vial_url = "";
-                if (!TextUtils.isEmpty(covidMISmodel.getVialImage())) {
+                if (!GlobalClass.isNull(covidMISmodel.getVialImage())) {
                     vial_url = covidMISmodel.getVialImage().replaceAll("\\\\", "//");
                     doclist.add(vial_url);
                 }
@@ -155,12 +149,12 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 String other_url1 = "";
 
 
-                if (!TextUtils.isEmpty(covidMISmodel.getOther())) {
+                if (!GlobalClass.isNull(covidMISmodel.getOther())) {
                     other_url = covidMISmodel.getOther().replaceAll("\\\\", "//");
                     doclist.add(other_url);
 
                 }
-                if (!TextUtils.isEmpty(covidMISmodel.getOther1())) {
+                if (!GlobalClass.isNull(covidMISmodel.getOther1())) {
                     other_url1 = covidMISmodel.getOther1().replaceAll("\\\\", "//");
                     doclist.add(other_url1);
 
@@ -198,7 +192,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             txt_ccc = itemView.findViewById(R.id.txt_ccc);
             txt_reason = itemView.findViewById(R.id.txt_reason);
             txt_time = itemView.findViewById(R.id.txt_time);
-            lin_reason=itemView.findViewById(R.id.lin_reason);
+            lin_reason = itemView.findViewById(R.id.lin_reason);
         }
     }
 
@@ -207,7 +201,6 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.preview_dialog);
-        //  dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         ImageView ic_close = (ImageView) dialog.findViewById(R.id.img_close);
@@ -223,7 +216,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         viewPager.setAdapter(viewPagerAdapter);
 
         final PageIndicatorView pageIndicatorView = dialog.findViewById(R.id.pageIndicatorView);
-        if (imagelist != null && imagelist.size() > 1) {
+        if (GlobalClass.CheckArrayList(imagelist)&& imagelist.size() > 1) {
             pageIndicatorView.setVisibility(View.VISIBLE);
             pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
             pageIndicatorView.setSelection(0);

@@ -52,7 +52,7 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
     @Override
     protected String doInBackground(Void... voids) {
         String strUrl = Api.POST_COMM_MULTIPART;
-        System.out.println(strUrl);
+        Log.v("TAG",strUrl);
 
         InputStream inputStream = null;
         String result = "";
@@ -87,7 +87,7 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                System.out.println("Response : " + result);
+                Log.v("TAG","Response : " + result);
             }
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
@@ -106,10 +106,10 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             if (response != null && !response.isEmpty()) {
                 composeCommunicationActivity.getPOSTCommunicationResponse(response);
             } else {
-                Toast.makeText(mActivity, response, Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(mActivity, response, 2);
             }
         } else {
-            Toast.makeText(mActivity, "Failed", Toast.LENGTH_LONG).show();
+            GlobalClass.showTastyToast(mActivity, "Failed",2);
         }
     }
 

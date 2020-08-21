@@ -3,12 +3,9 @@ package com.example.e5322.thyrosoft.SpecialOffer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -16,7 +13,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,29 +26,22 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.TestListAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetClientDetail_Controller;
-import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.OTPtoken_controller;
+import com.example.e5322.thyrosoft.Controller.ProductListController;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
-import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
@@ -60,22 +49,15 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
-import com.example.e5322.thyrosoft.Models.OTPrequest;
-import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
-import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
 import com.example.e5322.thyrosoft.SourceILSModel.SourceILSMainModel;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -92,8 +74,6 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import retrofit2.Call;
-import retrofit2.Callback;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
@@ -143,10 +123,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     String my_var, checktime = "Default";
     String strdate;
     String strtime;
-    EditText patientAddress, pincode_edt;
     ArrayList<BaseModel.Barcodes> barcodesList = new ArrayList<>();
     String woereferedby, tspaddress, pincode;
-    Spinner btechname;
     SharedPreferences preferences;
     String myFormat = "dd-MM-yyyy"; //In which you need put here
     SimpleDateFormat currsdf = new SimpleDateFormat("HH:mm");
@@ -172,14 +150,12 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     private String sctHr, sctMin, sctSEc, getFinalDate;
     private ArrayList<String> btechSpinner;
     private String str_dps = "DPS", str_home;
-    private ProgressDialog progressDialog;
     private ArrayList<String> Selcted_Outlab_Test = new ArrayList<>();
     private boolean timerflag = false;
     private String TAG = getClass().getSimpleName();
     private ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
     private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
     private TestListAdapter testListAdapter;
-    private ProgressDialog barProgressDialog;
     private AutoCompleteTextView referedby;
     private String selecttest_name, btechIDToPass;
     private MyPojo myPojo;
@@ -190,7 +166,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
         activity = SpecialOffer_Activity.this;
-        cd=new ConnectionDetector(activity);
+        cd = new ConnectionDetector(activity);
         initView();
 
 
@@ -210,67 +186,25 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
         strdate = showDate;
-        if (checktime.equalsIgnoreCase("Default")){
+        if (checktime.equalsIgnoreCase("Default")) {
             String showtime = currsdf.format(minDate);
             strtime = twelvehoursdf.format(minDate);
             txt_ctime.setText(strdate + " " + showtime);
-        }else {
+        } else {
             strtime = currsdf.format(minDate);
             txt_ctime.setText(strdate + " " + strtime);
         }
 
         Log.e(TAG, "MIN DATE --->" + strdate);
 
-        listner();
+
         getAllproduct();
         setSpinner();
         setTimeDate();
         textwatcher();
         agetextwatcher();
         Disablefields();
-
-        referedby.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                String setText = s.toString();
-                if (setText != null || setText != "") {
-                    ref_check_linear.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
-                    TastyToast.makeText(SpecialOffer_Activity.this, "Enter correct Ref By", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-                    if (enteredString.length() > 0) {
-                        referedby.setText(enteredString.substring(1));
-                    } else {
-                        referedby.setText("");
-                    }
-                    if (enteredString.equals("")) {
-                        ref_check_linear.setVisibility(View.VISIBLE);
-                    } else {
-                        ref_check_linear.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String setText = s.toString();
-                if (setText.equals("")) {
-                    ref_check_linear.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+        listner();
 
 
     }
@@ -282,7 +216,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             public void onTick(long millisUntilFinished) {
 
-                if (timerflag == false) {
+                if (!timerflag) {
                     tv_timer.setVisibility(View.VISIBLE);
                 } else {
                     tv_timer.setVisibility(View.GONE);
@@ -294,7 +228,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             public void onFinish() {
                 tv_timer.setVisibility(View.GONE);
-                btn_sendotp.setText("Resend OTP");
+                btn_sendotp.setText(MessageConstants.RESENTOTP);
 
                 et_mobno.setEnabled(true);
                 et_mobno.setClickable(true);
@@ -328,9 +262,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(SpecialOffer_Activity.this,
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this,
                             ToastFile.crt_age,
-                            Toast.LENGTH_SHORT).show();
+                            2);
                     if (enteredString.length() > 0) {
                         et_age.setText(enteredString.substring(1));
                     } else {
@@ -338,9 +272,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                     }
                 }
 
-                if (et_age.getText().toString().equals("")) {
-
-                } else {
+                if (!GlobalClass.isNull(et_age.getText().toString())) {
                     if (agesinteger < 12) {
                         ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(SpecialOffer_Activity.this, R.array.Patientsagespinner,
                                 R.layout.name_age_spinner);
@@ -394,131 +326,21 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
     private void getAllproduct() {
-        final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(SpecialOffer_Activity.this);
 
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
-        Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproductsOffer", new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.e(TAG, "onResponse: RESPONSE" + response);
-               /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                    barProgressDialog.dismiss();
-                }*/
+        String url = Api.getAllTests + api_key + "/ALL/getproductsOffer";
+        Log.e(TAG, "Product URL --->" + url);
 
-                GlobalClass.hideProgress(SpecialOffer_Activity.this, barProgressDialog);
-
-                String getResponse = response.optString("RESPONSE", "");
-                if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                    redirectToLogin(SpecialOffer_Activity.this);
-                } else {
-                    Gson gson = new Gson();
-                    MainModel mainModel;
-                    mainModel = gson.fromJson(response.toString(), MainModel.class);
-
-                    b2bmasterarraylist = new ArrayList<>();
-                    b2bmasterarraylist.add(mainModel.B2B_MASTERS);
-                    ArrayList<Product_Rate_MasterModel> finalproductlist = new ArrayList<Product_Rate_MasterModel>();
-
-                    String testtype = "";
-                    if (mainModel.B2B_MASTERS != null) {
-                        if (!b2bmasterarraylist.get(0).getTESTS().isEmpty()) {
-                            for (int i = 0; i < b2bmasterarraylist.size(); i++) {
-
-                                Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
-                                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
-
-                                for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                                    testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                                    Selcted_Outlab_Test.add(product_rate_masterModel.getTestRateMasterModels().get(j).getRate().getB2c());
-                                }
-
-
-
-
-                           /* product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
-                            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
-                            for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                            }
-                            product_rate_masterModel = new Product_Rate_MasterModel();
-                            product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
-                            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
-
-                            for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
-                            }
-                            product_rate_masterModel = new Product_Rate_MasterModel();
-                            product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
-                            product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
-                            for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
-                            }*/
-
-                            }
-                        } else {
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(SpecialOffer_Activity.this);
-                            // Set the Alert Dialog Message
-                            builder.setMessage("Special offer tests is not mapped to this login");
-                            builder.setCancelable(false);
-                            builder.setPositiveButton("Ok",
-                                    new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog,
-                                                            int id) {
-                                            dialog.dismiss();
-                                            finish();
-                                        }
-                                    });
-                            AlertDialog alert = builder.create();
-                            alert.show();
-
-                        }
-
-                        testListAdapter = new TestListAdapter(SpecialOffer_Activity.this,
-                                R.layout.list_ite, R.id.title, testRateMasterModels);
-                        spin_test.setAdapter(testListAdapter);
-                        barcodesList.clear();
-
-                        spin_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                selecttest_name = parent.getItemAtPosition(position).toString();
-                                ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
-                                barcodesList.addAll(Arrays.asList(testRateMasterModels.get(position).getBarcodes()));
-                                if (testRateMasterModels.get(position).getBillrate() != null)
-                                    txt_availcnt.setText(testRateMasterModels.get(position).getBillrate());
-                                Log.e(TAG, "onItemSelected barcodesList size : " + barcodesList.size());
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> parent) {
-
-                            }
-                        });
-
-
-                    }
-
-                }
-
+        try {
+            if (ControllersGlobalInitialiser.productListController != null) {
+                ControllersGlobalInitialiser.productListController = null;
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        // Show timeout error message
-                    }
-                }
-            }
-        });
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueuepoptestILS.add(jsonObjectRequestPop);
-        Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
+            ControllersGlobalInitialiser.productListController = new ProductListController(activity, SpecialOffer_Activity.this);
+            ControllersGlobalInitialiser.productListController.productListingController(url, requestQueuepoptestILS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -537,6 +359,50 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     }
 
     private void listner() {
+
+        referedby.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String setText = s.toString();
+                if (!GlobalClass.isNull(setText)) {
+                    ref_check_linear.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                        || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.ENTER_CORR_REFBY, 2);
+
+                    if (enteredString.length() > 0) {
+                        referedby.setText(enteredString.substring(1));
+                    } else {
+                        referedby.setText("");
+                    }
+                    if (enteredString.equals("")) {
+                        ref_check_linear.setVisibility(View.VISIBLE);
+                    } else {
+                        ref_check_linear.setVisibility(View.GONE);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String setText = s.toString();
+                if (GlobalClass.isNull(setText)) {
+                    ref_check_linear.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         rd_dps.setOnClickListener(this);
         rd_home.setOnClickListener(this);
 
@@ -577,7 +443,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
         TextView txt_name = findViewById(R.id.txt_name);
-        txt_name.setText("Special offers");
+        txt_name.setText(getResources().getString(R.string.specialoffer));
         txt_name.setAllCaps(true);
         txt_name.setTextColor(getResources().getColor(R.color.maroon));
         txt_name.setTextSize(20f);
@@ -586,8 +452,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         rd_dps = (RadioButton) findViewById(R.id.rd_dps);
         rd_home = (RadioButton) findViewById(R.id.rd_home);
         dateShow = findViewById(R.id.date);
-
-        ///  btechname = (Spinner) findViewById(R.id.btech_spinner);
 
         /**Button*/
         btn_next = findViewById(R.id.next_btn_patient);
@@ -615,11 +479,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         et_name = findViewById(R.id.et_name);
         et_age = findViewById(R.id.et_age);
 
-        //   patientAddress = findViewById(R.id.patientAddress);
-        //  pincode_edt = findViewById(R.id.pincode_edt);
-
         et_name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
 
         et_name.setFilters(new InputFilter[]{EMOJI_FILTER});
 
@@ -637,7 +497,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.crt_name, 2);
 
                     if (enteredString.length() > 0) {
                         et_name.setText(enteredString.substring(1));
@@ -657,69 +517,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             }
         });
-
-
- /*       patientAddress.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-
-                }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });*/
-
-
-/*
-        pincode_edt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0")) {
-                    TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.crt_pincode, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-                    if (enteredString.length() > 0) {
-                        pincode_edt.setText(enteredString.substring(1));
-                    } else {
-                        pincode_edt.setText("");
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                String enteredString = s.toString();
-            }
-
-        });
-*/
 
 
         /**Initilize Button */
@@ -752,13 +549,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         //Call getClient Doctor Name API
         if (!GlobalClass.isNetworkAvailable(SpecialOffer_Activity.this)) {
-            TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.intConnection, 2);
         } else {
             if (ControllersGlobalInitialiser.getClientDetail_controller != null) {
                 ControllersGlobalInitialiser.getClientDetail_controller = null;
             }
 
-            ControllersGlobalInitialiser.getClientDetail_controller = new GetClientDetail_Controller(SpecialOffer_Activity.this);
+            ControllersGlobalInitialiser.getClientDetail_controller = new GetClientDetail_Controller(activity, SpecialOffer_Activity.this);
             ControllersGlobalInitialiser.getClientDetail_controller.CallgetClient(user, api_key);
 
         }
@@ -774,26 +571,17 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         btechSpinner = new ArrayList<>();
 
         if (myPojo != null) {
-            if (myPojo.getMASTERS().getBCT_LIST() != null) {
+            if (myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
                 for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
                     btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                 }
             } else {
-                TastyToast.makeText(SpecialOffer_Activity.this, "Please register NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.REGISTER_NED, 2);
             }
         } else {
-            TastyToast.makeText(SpecialOffer_Activity.this, "Please register NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.REGISTER_NED, 2);
         }
-
-       /* btechSpinner.add("Select Btech name");
-        for (int i = 0; i < getBtechList.size(); i++) {
-
-            btechSpinner.add(getBtechList.get(i).getNAME());
-            if (btechSpinner.size() != 0) {
-                btechname.setAdapter(new ArrayAdapter<String>(SpecialOffer_Activity.this, R.layout.spinnerproperty, btechSpinner));
-            }
-        }*/
 
     }
 
@@ -813,7 +601,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             @Override
             public void afterTextChanged(Editable s) {
                 if (!GlobalClass.isNetworkAvailable(SpecialOffer_Activity.this)) {
-                    TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.intConnection, 2);
                 }
 
             }
@@ -822,48 +610,16 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     }
 
     private void generateToken() {
-        PackageInfo pInfo = null;
         try {
-            pInfo = activity.getPackageManager().getPackageInfo(activity.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
+            if (ControllersGlobalInitialiser.otPtoken_controller != null) {
+                ControllersGlobalInitialiser.otPtoken_controller = null;
+            }
+            ControllersGlobalInitialiser.otPtoken_controller = new OTPtoken_controller(activity, SpecialOffer_Activity.this);
+            ControllersGlobalInitialiser.otPtoken_controller.getotptokencontroller();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-        int versionCode = pInfo.versionCode;
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
-        OTPrequest otPrequest = new OTPrequest();
-        otPrequest.setAppId(OTPAPPID);
-        otPrequest.setPurpose("OTP");
-        otPrequest.setVersion(""+versionCode);
-        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
-        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
-        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
-
-        responseCall.enqueue(new Callback<Tokenresponse>() {
-            @Override
-            public void onResponse(Call<Tokenresponse> call, retrofit2.Response<Tokenresponse> response) {
-                GlobalClass.hideProgress(activity, progressDialog);
-                try {
-                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
-                        if (!TextUtils.isEmpty(response.body().getToken())) {
-                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
-                            callsendOTP(response.body().getToken(), response.body().getRequestId());
-                        }
-                    } else {
-                        Toast.makeText(activity, response.body().getResponse(), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Tokenresponse> call, Throwable t) {
-
-            }
-        });
     }
 
     private void updateLabel() {
@@ -878,23 +634,19 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     public void onClick(View v) {
         switch (v.getId()) {
 
-            case R.id.rd_dps:
-                //str_dps = rd_dps.getText().toString();
-                break;
-
             case R.id.rd_home:
                 str_dps = rd_home.getText().toString();
                 break;
 
             case R.id.btn_sendotp:
                 if (!GlobalClass.isNetworkAvailable(SpecialOffer_Activity.this)) {
-                    TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.intConnection, 2);
                 } else {
-                    if (btn_sendotp.getText().equals("Reset")) {
+                    if (btn_sendotp.getText().toString().equalsIgnoreCase(getResources().getString(R.string.reset))) {
                         Log.e(TAG, "onClick: " + btn_sendotp.getText().toString());
                         et_mobno.setEnabled(true);
                         et_mobno.setClickable(true);
-                        btn_sendotp.setText("Send OTP");
+                        btn_sendotp.setText(MessageConstants.SENTOTP);
 
                         btn_sendotp.setClickable(true);
                         btn_sendotp.setEnabled(true);
@@ -904,20 +656,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                         btn_verifyotp.setVisibility(View.GONE);
                         lin_otp.setVisibility(View.GONE);
 
-                    } else if (btn_sendotp.getText().equals("Resend OTP")) {
+                    } else if (!GlobalClass.isNull(btn_sendotp.getText().toString()) &&
+                            btn_sendotp.getText().toString().equalsIgnoreCase(MessageConstants.RESENTOTP)) {
                         Log.e(TAG, "onClick: " + btn_sendotp.getText().toString());
-                        if (cd.isConnectingToInternet()) {
-                            generateToken();
-                        } else {
-                            Global.showCustomToast(activity, ToastFile.intConnection);
-                        }
-                    } else if (btn_sendotp.getText().equals("Send OTP")) {
+                        generateToken();
+                    } else if (!GlobalClass.isNull(btn_sendotp.getText().toString()) && btn_sendotp.getText().toString().equalsIgnoreCase(MessageConstants.SENTOTP)) {
                         Log.e(TAG, "onClick: " + btn_sendotp.getText().toString());
-                        if (cd.isConnectingToInternet()) {
-                            generateToken();
-                        } else {
-                            Global.showCustomToast(activity, ToastFile.intConnection);
-                        }
+                        generateToken();
 
                     }
                 }
@@ -926,11 +671,11 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 break;
 
             case R.id.btn_verifyotp:
-                if (TextUtils.isEmpty(et_otp.getText().toString())) {
-                    Toast.makeText(SpecialOffer_Activity.this, "Please enter OTP", Toast.LENGTH_SHORT).show();
+                if (GlobalClass.isNull(et_otp.getText().toString())) {
+                    GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.ENTER_OTP, 2);
                 } else {
                     if (!GlobalClass.isNetworkAvailable(SpecialOffer_Activity.this)) {
-                        TastyToast.makeText(SpecialOffer_Activity.this, ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.intConnection, 2);
                     } else {
                         if (ControllersGlobalInitialiser.verifyotpController != null) {
                             ControllersGlobalInitialiser.verifyotpController = null;
@@ -943,7 +688,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             case R.id.uncheck_sct:
                 checktime = "Custom";
-                if (sctflag == false) {
+                if (!sctflag) {
                     sctflag = true;
                     check_sct.setVisibility(View.VISIBLE);
                     uncheck_sct.setVisibility(View.GONE);
@@ -965,7 +710,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             case R.id.check_sct:
                 checktime = "Default";
-                if (sctflag == false) {
+                if (!sctflag) {
                     sctflag = true;
                     check_sct.setVisibility(View.GONE);
                     uncheck_sct.setVisibility(View.VISIBLE);
@@ -985,14 +730,14 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             case R.id.male:
 
-                if (genderId == false) {
+                if (!genderId) {
                     genderId = true;
                     saveGenderId = "M";
                     male_red.setVisibility(View.VISIBLE);
                     female.setVisibility(View.VISIBLE);
                     female_red.setVisibility(View.GONE);
                     male.setVisibility(View.GONE);
-                } else if (genderId == true) {
+                } else if (genderId) {
                     genderId = false;
                     saveGenderId = "M";
                     male_red.setVisibility(View.VISIBLE);
@@ -1004,7 +749,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
             case R.id.female:
 
-                if (genderId == false) {
+                if (!genderId) {
                     genderId = true;
                     saveGenderId = "F";
                     female_red.setVisibility(View.VISIBLE);
@@ -1012,7 +757,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                     male_red.setVisibility(View.GONE);
                     female.setVisibility(View.GONE);
 
-                } else if (genderId == true) {
+                } else if (genderId) {
                     genderId = false;
                     saveGenderId = "F";
                     female_red.setVisibility(View.VISIBLE);
@@ -1073,10 +818,10 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
     private void callsendOTP(String token, String requestId) {
 
-        if (et_mobno.getText().toString().equals("")) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please enter Mobile Number", Toast.LENGTH_SHORT).show();
+        if (GlobalClass.isNull(et_mobno.getText().toString())) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.MOBNO, 2);
         } else if (et_mobno.getText().toString().length() < 10) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please enter valid Mobile Number", Toast.LENGTH_SHORT).show();
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.ValidMOb, 2);
             lin_otp.setVisibility(View.GONE);
         } else {
 
@@ -1089,38 +834,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 }
 
                 ControllersGlobalInitialiser.validateMob_controller = new ValidateMob_Controller(SpecialOffer_Activity.this);
-                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(),token);
+                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(), token);
             }
-
-
-//            JSONObject jsonObject = null;
-//            try {
-//                GenerateOTPRequestModel requestModel = new GenerateOTPRequestModel();
-//                requestModel.setApi_key(Constants.GENRATE_OTP_API_KEY);
-//                requestModel.setMobile(et_mobno.getText().toString());
-//                requestModel.setType("WOEROUTINE");
-//                requestModel.setAccessToken(token);
-//                requestModel.setReqId(requestId);
-//
-//                String json = new Gson().toJson(requestModel);
-//                jsonObject = new JSONObject(json);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            if (cd.isConnectingToInternet()) {
-//                try {
-//                    if (ControllersGlobalInitialiser.getOTPController != null) {
-//                        ControllersGlobalInitialiser.getOTPController = null;
-//                    }
-//                    ControllersGlobalInitialiser.getOTPController = new GetOTPController(activity, SpecialOffer_Activity.this);
-//                    ControllersGlobalInitialiser.getOTPController.GetOTP(jsonObject);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                Global.showCustomToast(activity, ToastFile.intConnection);
-//            }
         }
     }
 
@@ -1129,7 +844,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         Date getCurrentDateandTime = new Date();
 
         String sctSEc = timeampm.getSelectedItem().toString();
-        System.out.println("Spinner value -->" + sctSEc);
+        Log.v("TAG", "Spinner value -->" + sctSEc);
 
         sctHr = timehr.getSelectedItem().toString();
         sctMin = timesecond.getSelectedItem().toString();
@@ -1146,25 +861,27 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         } catch (ParseException e) {
 
-            if (getDateToCompare.contains("AM")) {
-                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                getDateToCompare = getDateToCompare + "a.m.";
-            } else if (getDateToCompare.contains("PM")) {
-                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                getDateToCompare = getDateToCompare + "p.m.";
+            try {
+                if (getDateToCompare.contains("AM")) {
+                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                    getDateToCompare = getDateToCompare + "a.m.";
+                } else if (getDateToCompare.contains("PM")) {
+                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                    getDateToCompare = getDateToCompare + "p.m.";
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
 
             String input = getDateToCompare;
-            //Format of the date defined in the input String
             DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-            //Desired format: 24 hour format: Change the pattern as per the need
             DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             Date date = null;
             String output = null;
             try {
                 dCompare = df.parse(input);
                 output = outputformat.format(dCompare);
-                System.out.println(output);
+                Log.v("TAG", output);
             } catch (ParseException pe) {
                 pe.printStackTrace();
             }
@@ -1172,30 +889,30 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         }
 
 
-        if (spin_test.getSelectedItem().toString().equals("Select Test")) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please Select Test", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(et_name.getText().toString())) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(et_age.getText().toString())) {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
-        } else if (saveGenderId == null || saveGenderId == "") {
-            Toast.makeText(SpecialOffer_Activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-        } else if (checktime.equals("Custom")) {
+        if (!GlobalClass.isNull(spin_test.getSelectedItem().toString()) && spin_test.getSelectedItem().toString().equalsIgnoreCase(MessageConstants.SL_TEST)) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.PLZ_SL_TEST, 2);
+        } else if (GlobalClass.isNull(et_name.getText().toString())) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.crt_name_woe, 2);
+        } else if (GlobalClass.isNull(et_age.getText().toString())) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.ent_age, 2);
+        } else if (GlobalClass.isNull(saveGenderId)) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.ent_gender, 2);
+        } else if (!GlobalClass.isNull(checktime) && checktime.equals("Custom")) {
             if (timehr.getSelectedItem().toString().equals("HR")) {
-                Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.slt_hr, 2);
             } else if (timesecond.getSelectedItem().toString().equals("MIN")) {
-                Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.slt_min, 2);
             } else if (sctSEc.equals("AM/PM")) {
-                Toast.makeText(SpecialOffer_Activity.this, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.slt_ampm, 2);
             } else if (dCompare.after(getCurrentDateandTime)) {
-                Toast.makeText(SpecialOffer_Activity.this, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
-            } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
-                Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, ToastFile.sct_grt_than_crnt_tm, 2);
+            } else if (GlobalClass.isNull(referedby.getText().toString())) {
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.ENTER_CORR_REFBY, 2);
             } else {
                 sendIntent();
             }
-        } else if (TextUtils.isEmpty(referedby.getText().toString()) && referenceBy == null) {
-            Toast.makeText(SpecialOffer_Activity.this, "Please select Refer By", Toast.LENGTH_SHORT).show();
+        } else if (GlobalClass.isNull(referedby.getText().toString())) {
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.PLZ_SL_REFBY, 2);
         } else {
             sendIntent();
         }
@@ -1205,9 +922,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     private void sendIntent() {
         woereferedby = referedby.getText().toString();
 
-        if (woereferedby.equals("") || woereferedby.equals(null)) {
+        if (GlobalClass.isNull(woereferedby)) {
             if (referenceBy == null) {
-                Toast.makeText(SpecialOffer_Activity.this, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                GlobalClass.showTastyToast(SpecialOffer_Activity.this, MessageConstants.PLZ_SL_REFBY, 2);
             } else {
                 if (referenceBy.equalsIgnoreCase("SELF")) {
                     referenceBy = "SELF";
@@ -1272,10 +989,14 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         saveDetails.commit();
 
         int sum = 0;
-        ArrayList<String> getTestNameLits = new ArrayList<>();
-        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-            sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i));
+        if (GlobalClass.CheckArrayList(Selcted_Outlab_Test)) {
+            for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                if (!GlobalClass.isNull(Selcted_Outlab_Test.get(i))) {
+                    sum = sum + Integer.parseInt(Selcted_Outlab_Test.get(i));
+                }
+            }
         }
+
         startActivity(new Intent(SpecialOffer_Activity.this, OfferScan_Activity.class).putParcelableArrayListExtra("barcodelist", barcodesList).putExtra("ts_name", selecttest_name).putExtra("payment", sum)
                 .putExtra("type", str_dps).putExtra("contactno", et_mobno.getText().toString()));
     }
@@ -1284,7 +1005,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         DatePickerDialog datePickerDialog = new DatePickerDialog(SpecialOffer_Activity.this, R.style.DialogTheme, date, myCalendar
                 .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                 myCalendar.get(Calendar.DAY_OF_MONTH));
-        /*datePickerDialog.getDatePicker().setMinDate(minDate);*/
         datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         datePickerDialog.show();
 
@@ -1299,12 +1019,13 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         getReferenceNmae = new ArrayList<>();
         getReferenceName1 = new ArrayList<>();
 
-        if (sourceILSMainModel.getMASTERS().getREF_DR() != null && sourceILSMainModel.getMASTERS().getREF_DR().length != 0) {
+        if (GlobalClass.checkArray(sourceILSMainModel.getMASTERS().getREF_DR())) {
             for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
                 getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
                 getReferenceName1.add(sourceILSMainModel.getMASTERS().getREF_DR()[j]);
                 ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
-                if (referedby.getText().toString().equals(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
+                if (!GlobalClass.isNull(referedby.getText().toString()) && !GlobalClass.isNull(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName()) &&
+                        referedby.getText().toString().equalsIgnoreCase(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
                     referredID = sourceILSMainModel.getMASTERS().getREF_DR()[j].getId();
                 }
             }
@@ -1329,22 +1050,9 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     }
 
 
-    public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
+    public void onvalidatemob(ValidateOTPmodel validateOTPmodel) {
 
-        if (validateOTPmodel.getResponseId().equals(Constants.RES0001)) {
-            GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
-
-
-        /*    et_mobno.setEnabled(true);
-            et_mobno.setClickable(true);
-            btn_sendotp.setText("Send OTP");
-            et_otp.setText("");
-            et_otp.setVisibility(View.GONE);
-
-            btn_verifyotp.setVisibility(View.GONE);
-            lin_otp.setVisibility(View.GONE);*/
-
-
+        if (!GlobalClass.isNull(validateOTPmodel.getResponseId()) && validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0001)) {
             et_mobno.setEnabled(false);
             et_mobno.setClickable(false);
 
@@ -1364,7 +1072,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
-            GlobalClass.hideProgress(SpecialOffer_Activity.this, progressDialog);
         }
     }
 
@@ -1389,15 +1096,6 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         spinyr.setEnabled(false);
         spinyr.setClickable(false);
-
-        // patientAddress.setEnabled(false);
-        // patientAddress.setClickable(false);
-/*
-        pincode_edt.setEnabled(false);
-        pincode_edt.setClickable(false);*/
-
-      /*  btechname.setEnabled(false);
-        btechname.setEnabled(false);*/
 
         timehr.setEnabled(false);
         timehr.setClickable(false);
@@ -1473,31 +1171,20 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         btn_next.setClickable(true);
         btn_next.setEnabled(true);
-
-        // patientAddress.setEnabled(true);
-        // patientAddress.setClickable(true);
-
-       /* pincode_edt.setEnabled(true);
-        pincode_edt.setClickable(true);
-*/
-    /*    btechname.setEnabled(true);
-        btechname.setEnabled(true);
-*/
-
     }
 
     public void onVerifyotp(VerifyotpModel validateOTPmodel) {
 
-        if (validateOTPmodel.getResponseId().equals("RES0001")) {
+        if (!GlobalClass.isNull(validateOTPmodel.getResponseId()) && validateOTPmodel.getResponseId().equalsIgnoreCase("RES0001")) {
             timerflag = true;
-            Toast.makeText(SpecialOffer_Activity.this,
+            GlobalClass.showTastyToast(SpecialOffer_Activity.this,
                     validateOTPmodel.getResponse(),
-                    Toast.LENGTH_SHORT).show();
+                    1);
 
             btn_verifyotp.setText("Verified");
             btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.green));
 
-            btn_sendotp.setText("Reset");
+            btn_sendotp.setText(getResources().getString(R.string.reset));
 
             et_mobno.setEnabled(false);
             et_mobno.setClickable(false);
@@ -1516,6 +1203,90 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
             Enablefields();
         } else {
             et_otp.setText("");
+        }
+    }
+
+    public void getotptokenResponse(retrofit2.Response<Tokenresponse> response) {
+        try {
+            if (!GlobalClass.isNull(response.body().getRespId()) && response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(response.body().getToken())) {
+                    Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                    callsendOTP(response.body().getToken(), response.body().getRequestId());
+                }
+            } else {
+                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getProductListResponse(JSONObject response) {
+        Log.e(TAG, "onResponse: RESPONSE" + response);
+        String getResponse = response.optString("RESPONSE", "");
+        if (!GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+            redirectToLogin(SpecialOffer_Activity.this);
+        } else {
+            Gson gson = new Gson();
+            MainModel mainModel;
+            mainModel = gson.fromJson(response.toString(), MainModel.class);
+
+            b2bmasterarraylist = new ArrayList<>();
+            b2bmasterarraylist.add(mainModel.B2B_MASTERS);
+
+
+            String testtype = "";
+            if (mainModel.B2B_MASTERS != null) {
+                if (!b2bmasterarraylist.get(0).getTESTS().isEmpty()) {
+                    for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                        Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                        product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+
+                        for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                            testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                            Selcted_Outlab_Test.add(product_rate_masterModel.getTestRateMasterModels().get(j).getRate().getB2c());
+                        }
+                    }
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SpecialOffer_Activity.this);
+                    builder.setMessage(MessageConstants.SPCIALOFFER_NOTMAP);
+                    builder.setCancelable(false);
+                    builder.setPositiveButton(MessageConstants.OK,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+
+                }
+
+                testListAdapter = new TestListAdapter(SpecialOffer_Activity.this,
+                        R.layout.list_ite, R.id.title, testRateMasterModels);
+                spin_test.setAdapter(testListAdapter);
+                barcodesList.clear();
+
+                spin_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        selecttest_name = parent.getItemAtPosition(position).toString();
+                        ((TextView) parent.getChildAt(0)).setTextColor(getResources().getColor(R.color.black));
+                        barcodesList.addAll(Arrays.asList(testRateMasterModels.get(position).getBarcodes()));
+                        if (!GlobalClass.isNull(testRateMasterModels.get(position).getBillrate()))
+                            txt_availcnt.setText(testRateMasterModels.get(position).getBillrate());
+                        Log.e(TAG, "onItemSelected barcodesList size : " + barcodesList.size());
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+
+            }
         }
     }
 }

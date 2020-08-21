@@ -97,7 +97,7 @@ public class NotificationUtils {
                 mContext,channelId);
 
 
-        if (!TextUtils.isEmpty(imageUrl)) {
+        if (!GlobalClass.isNull(imageUrl)) {
 
             if (imageUrl.length() > 4 && Patterns.WEB_URL.matcher(imageUrl).matches()) {
 
