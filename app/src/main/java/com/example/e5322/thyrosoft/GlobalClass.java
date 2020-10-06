@@ -26,9 +26,22 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.SpannableString;
-import android.text.TextUtils;
+import android.text.Spanned;
+
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.crowdfire.cfalertdialog.BuildConfig;
+import com.example.e5322.thyrosoft.Controller.Log;
+
 import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -60,18 +73,29 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.crowdfire.cfalertdialog.BuildConfig;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MyHurlStack;
-import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
+import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
+import com.example.e5322.thyrosoft.Models.BaseModel;
+import com.example.e5322.thyrosoft.Models.CAMP_LIST;
 import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
+import com.example.e5322.thyrosoft.Models.CommInbox_Model;
+import com.example.e5322.thyrosoft.Models.CommToCpl_Model;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
-import com.example.e5322.thyrosoft.startscreen.Login;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster;
+import com.example.e5322.thyrosoft.Models.billingDetailsModel;
+import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
+import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
+import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
+import com.example.e5322.thyrosoft.TestListModel.Tests;
+import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.io.File;
@@ -90,13 +114,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import id.zelory.compressor.Compressor;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -112,12 +135,15 @@ public class GlobalClass {
 
     public static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     public static int flag = 0;
-    public static String setHomeAddress, getPhoneNumberTofinalPost, getFinalEmailAddressToPOst, selectedTestnamesOutlab;
+    public static String setHomeAddress, getPhoneNumberTofinalPost, getFinalEmailAddressToPOst, getFinalPincode, selectedTestnamesOutlab;
     public static String windupCountDataToShow;
+    public static ArrayList<BaseModel> saveSlectedList = new ArrayList<>();
     public static String saveDtaeTopass;
     public static boolean setflagToRefreshData;
+    public static boolean toCPLflag;
     public static String setScp_Constant;
     public static String setReferenceBy_Name;
+    public static String getSelectedItemFor_Rate_calculator;
     public static String CHN_Date;
     public static String mode, routine_code, flight_name, flight_number, departure_time, arrival_time, dispatch_time, CourierName, bsv_barcode, total_sample, rpl_sample, cpl_sample, Consignment_barcode;
     public static String passDate;
@@ -130,6 +156,7 @@ public class GlobalClass {
     public static long differ_millis = 0;
     public static String getCourier_name;
     public static String get_edt_bus_name;
+    public static String bus_name;
     public static String bus_number;
     public static int flagtsp;
     public static String bus_name_to_pass;
@@ -139,30 +166,83 @@ public class GlobalClass {
     public static String packaging_dtl;
     public static String expt_transit_tm;
     public static String temp_consignment;
+    public static String getSelectedScp;
     public static boolean setFlagToClose = false;
     public static AlertDialog alert;
+    public static boolean flagforRefresh = false;
     public static String cutString;
-    public static String getPatientIdforDeleteDetails, typeName;
+    public static String[] putData;
+    public static String getPatientIdforDeleteDetails, brandName, typeName;
+    public static boolean setFlag = true;
+    public static ArrayList<String> items = new ArrayList<>();
+    public static ArrayList<Summary_model> summary_models;
+    public static ArrayList<Barcodelist> barcodelists;
+    public static ArrayList<Barcodelist> BMC_barcodelists;
     public static boolean flagToSend = false;
     public static boolean flagToSendfromnavigation = false;
     public static boolean flagtoMove = false;
-    public static String getYesterdaysDate;
-    public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, email_id, id_value, responseVariable, setSR_NO;
-    public static String setWindUpCount, getscannedData;
+    public static String getAllPhoneNumber, getEmailAddre, getYesterdaysDate;
+    public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, srNo_item, mobile_number, email_id, id_value, globalNameAadhar, globalAgeAadhar, globalGenderAadhar, responseVariable, setSR_NO;
+    public static String getDate, setWindUpCount, getscannedData;
+    public static String getPhoneofTTlDPS, getEmailofTTlDPS;
+    //Selected test for WOE adapter lisy
+    public static ArrayList<String> selctedTestNames = new ArrayList<>();
+    public static ArrayList<String> selctedTestNamesILS = new ArrayList<>();
     public static ArrayList<String> windupBarcodeList = new ArrayList<>();
+    public static ArrayList<Tests> testCartArrayList = new ArrayList<>();
+    public static ArrayList<TESTS_GETALLTESTS> putPopDtaa = new ArrayList<>();
+    public static ArrayList<BCT_LIST> getBtechList = new ArrayList<>();
+    public static ArrayList<SetBarcodeDetails> setScannedBarcodes = new ArrayList<>();
+    public static ArrayList<SetBarcodeDetails> setScannedBarcodesULC = new ArrayList<>();
     public static ArrayList<Camp_Intimatgion_List_Model> global_camp_intimatgion_list_models_arrlst = new ArrayList<>();
+    public static ArrayList<CAMP_LIST> getcamp_list = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist = new ArrayList<>();
     public static String specimenttype;
+    public static ArrayList<SetBarcodeDetails> BMC_setScannedBarcodes = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsList = new ArrayList<>();
+    ;
+    public static ArrayList<ScannedBarcodeDetails> BMC_BarcodeDetailsTTLOTHERSList = new ArrayList<>();
+    public static String BMC_specimenttype;
+    public static Bitmap TRF_BITMAP;
+    public static Bitmap RECEIPT_BITMAP;
+    public static List<Fragment> mFragmentList = new ArrayList<>();
+    public static List<String> mFragmentTitleList = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> scannedBarcodeDetails = new ArrayList<>();
+    //Selected profile for WOE adapter lisy
+    public static ArrayList<String> selctedProfileNames = new ArrayList<>();
+    public static ArrayList<String> selctedProfileNamesILS = new ArrayList<>();
+    //Selected pop for WOE adapter lisy
+    public static ArrayList<String> selctedPopNames = new ArrayList<>();
+    public static ArrayList<String> selctedPopNamesILS = new ArrayList<>();
+    public static ArrayList<String> selctedoutLabTestNames = new ArrayList<>();
+    public static ArrayList<Integer> getPosition = new ArrayList<>();///for checkbox for employees in Employee adapetr
+    public static ArrayList<Integer> getPositionOutlab = new ArrayList<>();///for checkbox for employees in Employee adapetr
+    public static ArrayList<billingDetailsModel> billingDETArray = new ArrayList<billingDetailsModel>();
+    public static ArrayList<String> billingDETheaderArray = new ArrayList<>();
+    public static ArrayList<String> empList = new ArrayList<>();//new arralist for employee
     public static String date = "";
+    public static String reg_name_glo, reg_landline_glo, reg_profession_glo, reg_qualification_glo, reg_int_location_glo, reg_pincode_glo, reg_Addr_glo, reg_city_glo, reg_state_glo, reg_country_glo, reg_email_glo, reg_number_glo;
     public static String type = "";
-    public static String MONTH = "";
-    public static String YEAR = "";
+    public static ArrayList<CommunicationMaster> commSpinner = new ArrayList<CommunicationMaster>();
+    public static ArrayList<CommInbox_Model> commFromCPL;
+    public static ArrayList<CommToCpl_Model> commToCPL;
+    public static int FromCPLInt = 0;
+    //0 means from ,1 means to
+    public static String MONTH = ""; //0 means from ,1 means to
+    public static String YEAR = ""; //0 means from ,1 means to
+    public static int CHANGEMONTH = 0; //0 means from ,1 means to
     public static ArrayList<String> listdata = new ArrayList<String>();
+    public static ArrayList<BaseModel> selectedTestsList = new ArrayList<>();
+    public static ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
     public static ArrayList<String> debitlist = new ArrayList<String>();
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
     private static Dialog dialog;
     private static String stringofconvertedTime;
     private final Context context;
+    int[] colors = {R.color.WOE, R.color.entered, R.color.confirmed, R.color.imported};
+    int[] textcolors = {R.color.WOEtext, R.color.enteredtext, R.color.confirmedtext, R.color.importedtext};
+    ArrayList<Base_Model_Rate_Calculator> selectedTestsListCampIntimation = new ArrayList<>();
     ProgressDialog progressDialog;
 
     public GlobalClass(Context context) {
@@ -182,18 +262,6 @@ public class GlobalClass {
         return date;
     }
 
-    public static boolean checkArray(Object[] array) {
-        return array != null && array.length > 0;
-    }
-
-    public static boolean CheckArrayList(Collection<?> arrylist) {
-        if (arrylist != null && arrylist.size() > 0) {
-            return true;
-        }
-        return false;
-    }
-
-
 
     public static boolean buildModelContainsEmulatorHints(String buildModel) {
         return buildModel.startsWith("sdk")
@@ -202,10 +270,26 @@ public class GlobalClass {
                 || buildModel.contains("Android SDK");
     }
 
+
     public static String getHeaderValue(Context pContext) {
+
+        SharedPreferences profile_pref = pContext.getSharedPreferences("profile", MODE_PRIVATE);
         String header;
-        header = Constants.APPNAME + "/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + getSerialnum(pContext);
+        header = Constants.APPNAME + "/" + getversion(pContext) + "(" + getversioncode(pContext) + ")/" + profile_pref.getString("user_code", "") + "/" + getSerialnum(pContext);
+        System.out.println("" + header);
         return header;
+    }
+
+    public static boolean emailValidation(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\." +
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+
+        Pattern pat = Pattern.compile(emailRegex);
+        if (email == null)
+            return false;
+        return pat.matcher(email).matches();
     }
 
     public static String bytes2long(long sizeInBytes) {
@@ -308,6 +392,146 @@ public class GlobalClass {
     public static void requestAudioPermission(Activity activity, int code) {
         ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, RECORD_AUDIO}, code);
     }
+
+    public static boolean checkArray(Object[] array) {
+        return array != null && array.length > 0;
+    }
+
+    public static boolean CheckArrayList(Collection<?> arrylist) {
+        if (arrylist != null && arrylist.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void SetText(TextView txtview, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetAutocomplete(AutoCompleteTextView txtview, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetRadiobutton(RadioButton radioButton, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (radioButton != null) {
+                radioButton.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetSpannable(TextView txtview, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                SpannableString content = new SpannableString((msg));
+                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                txtview.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void EditSetText(EditText editText, String msg) {
+        try {
+
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (editText != null) {
+                editText.setText(msg);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetHTML(TextView txtview, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                txtview.setText(Html.fromHtml(msg));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetEditText(EditText txtview, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (txtview != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    txtview.setText("");
+                } else {
+                    txtview.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void SetButtonText(Button button, String msg) {
+        try {
+            if (msg == null) {
+                msg = "";
+            }
+
+            if (button != null) {
+                if (msg.equalsIgnoreCase("null")) {
+                    button.setText("");
+                } else {
+                    button.setText("" + msg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static boolean isWhatsApp(Activity mActivity) {
         try {
@@ -426,6 +650,25 @@ public class GlobalClass {
         return rotatedBitmap;
     }
 
+    public static Bitmap RotateImage(Bitmap bm) {
+        try {
+            if (bm.getWidth() > bm.getHeight()) {
+                Bitmap bMapRotate = null;
+                Matrix mat = new Matrix();
+                mat.postRotate(90);
+                bMapRotate = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mat, true);
+                bm.recycle();
+                bm = null;
+                return bMapRotate;
+            } else {
+                return bm;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bm;
+    }
+
     public static String getReadableFileSize(long size) {
         if (size <= 0) {
             return "0";
@@ -535,6 +778,8 @@ public class GlobalClass {
     }
 
     public static void clearPreference(Activity activity) {
+
+
         SharedPreferences.Editor getProfileName = activity.getSharedPreferences("profilename", 0).edit();
         getProfileName.clear();
         getProfileName.commit();
@@ -543,46 +788,40 @@ public class GlobalClass {
         editor1.clear();
         editor1.commit();
 
+        SharedPreferences.Editor profile = activity.getSharedPreferences("profile", MODE_PRIVATE).edit();
+        profile.clear();
+        profile.commit();
+
         SharedPreferences.Editor editor = activity.getSharedPreferences("Userdetails", 0).edit();
         editor.clear();
         editor.commit();//
-
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-        prefsEditor1.clear();
-        prefsEditor1.commit();
-
-        SharedPreferences profilenamesharedpref = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor profile_shared = profilenamesharedpref.edit();
-        profile_shared.clear();
-        profile_shared.commit();
-
-        SharedPreferences prifleDataShared = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor profile_shared_pref = prifleDataShared.edit();
-        profile_shared_pref.clear();
-        profile_shared_pref.commit();
+        SharedPreferences.Editor getprodutcs = activity.getSharedPreferences("MyObject", MODE_PRIVATE).edit();
+        getprodutcs.clear();
+        getprodutcs.commit();
 
 
-        SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor deletepredf = saveAlldata.edit();
-        deletepredf.clear();
-        deletepredf.commit();
+        SharedPreferences.Editor covidprefeditor = activity.getSharedPreferences("COVIDETAIL", MODE_PRIVATE).edit();
+        covidprefeditor.clear();
+        covidprefeditor.apply();
 
-        SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(activity);
-        SharedPreferences.Editor prefsEditordata = myData.edit();
-        prefsEditordata.clear();
-        prefsEditordata.commit();
 
         SharedPreferences appSharedPrefsDtaa = PreferenceManager.getDefaultSharedPreferences(activity);
         SharedPreferences.Editor mydataModel = appSharedPrefsDtaa.edit();
         mydataModel.clear();
         mydataModel.commit();
+
+        Constants.covidwoe_flag = "0";
+        Constants.covidfrag_flag = "0";
+        Constants.ratfrag_flag = "0";
+        Constants.pushrat_flag = 0;
+        Constants.universal = 0;
+        Constants.PUSHNOT_FLAG = false;
     }
 
     public static void redirectToLogin(Activity activity) {
         try {
-            GlobalClass.showTastyToast(activity, relogin, 4);
-            Intent i = new Intent(activity, Login.class);
+            TastyToast.makeText(activity, relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO);
+            Intent i = new Intent(activity, SplashScreen.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             activity.startActivity(i);
             clearPreference(activity);
@@ -674,11 +913,11 @@ public class GlobalClass {
                 || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                 || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
         ) {
-            GlobalClass.showTastyToast((Activity) context, ToastFile.crt_mob_num, 2);
+            TastyToast.makeText(context, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             if (enteredString.length() > 0) {
-                GlobalClass.SetText(kyc_format, enteredString.substring(1));
+                kyc_format.setText(enteredString.substring(1));
             } else {
-                GlobalClass.SetText(kyc_format, "");
+                kyc_format.setText("");
             }
 
         }
@@ -696,7 +935,7 @@ public class GlobalClass {
             date = df.parse(time);
             //old date format to new date format
             output = outputformat.format(date);
-            Log.v("TAG", output);
+            System.out.println(output);
         } catch (ParseException pe) {
             pe.printStackTrace();
         }
@@ -816,118 +1055,20 @@ public class GlobalClass {
         return isAutoTimeSelected[0];
     }
 
-
     public static String formatDate(String currentFormat, String outputFormat, String date) {
 
+        SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
+        SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
+        Date dateObj = null;
         try {
-            SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
-            SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
-            Date dateObj = null;
-            try {
-                dateObj = curFormater.parse(date);
-                date = postFormater.format(dateObj);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-        } catch (Exception e) {
+            dateObj = curFormater.parse(date);
+            date = postFormater.format(dateObj);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
         return date;
     }
 
-
-    public static void SetText(TextView txtview, String msg) {
-        try {
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (txtview != null) {
-                txtview.setText(msg);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SetAutocomplete(AutoCompleteTextView txtview, String msg) {
-        try {
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (txtview != null) {
-                txtview.setText(msg);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SetRadiobutton(RadioButton radioButton, String msg) {
-        try {
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (radioButton != null) {
-                radioButton.setText(msg);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SetSpannable(TextView txtview, String msg) {
-        try {
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (txtview != null) {
-                SpannableString content = new SpannableString((msg));
-                content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
-                txtview.setText(msg);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void EditSetText(EditText editText, String msg) {
-        try {
-
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (editText != null) {
-                editText.setText(msg);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void SetHTML(TextView txtview, String msg) {
-        try {
-            if (TextUtils.isEmpty(msg)) {
-                msg = "";
-            }
-
-            if (txtview != null) {
-                txtview.setText(Html.fromHtml(msg));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public static String getAge(int year, int month, int day) {
         Calendar dob = Calendar.getInstance();
@@ -947,57 +1088,28 @@ public class GlobalClass {
         return ageS;
     }
 
-    public static void SetEditText(EditText txtview, String msg) {
-        try {
-            if (msg == null) {
-                msg = "";
-            }
 
-            if (txtview != null) {
-                if (msg.equalsIgnoreCase("null")) {
-                    txtview.setText("");
-                } else {
-                    txtview.setText("" + msg);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static void showTastyToast(Activity activity, String message, int flag) {
+        if (flag == 0) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
+        } else if (flag == 1) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+        } else if (flag == 2) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+        } else if (flag == 3) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.INFO);
+        } else if (flag == 4) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
+        } else if (flag == 5) {
+            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.WARNING);
         }
+
     }
 
-    public static void SetButtonText(Button button, String msg) {
-        try {
-            if (msg == null) {
-                msg = "";
-            }
-
-            if (button != null) {
-                if (msg.equalsIgnoreCase("null")) {
-                    button.setText("");
-                } else {
-                    button.setText("" + msg);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static String IsNull(String msg) {
-        try {
-            if (msg == null) {
-                msg = "";
-            }
-
-            if (msg != null) {
-                if (msg.equalsIgnoreCase("null")) {
-                    msg = "";
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return msg;
+    public static void redirectToHome(Activity fromactivity) {
+        Intent myIntent = new Intent(fromactivity, ManagingTabsActivity.class);
+        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        fromactivity.startActivity(myIntent);
     }
 
     public static String getStringwithOutSpace(String str_gbls) {
@@ -1007,12 +1119,38 @@ public class GlobalClass {
         return str;
     }
 
+    public static void toastyError(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
+
+    public static void toastySuccess(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.SUCCESS);
+    }
+
+    public static void toastyInfo(Context context, String string, boolean b) {
+        TastyToast.makeText(context, string, ToastLength(b), TastyToast.INFO);
+    }
 
     private static int ToastLength(boolean b) {
         if (b) {
             return Toast.LENGTH_LONG;
         } else {
             return Toast.LENGTH_SHORT;
+        }
+    }
+
+    public static void setEmailFilter(EditText edt_email) {
+        try {
+            edt_email.setFilters(new InputFilter[]{
+                    new InputFilter.AllCaps() {
+                        @Override
+                        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                            return String.valueOf(source).toLowerCase();
+                        }
+                    }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1029,10 +1167,10 @@ public class GlobalClass {
                 } else if (Type.equalsIgnoreCase("Warning")) {
                     Log.w(Tag, " " + Label + ": " + msg);
                 } else if (Type.equalsIgnoreCase("sout")) {
-                    Log.v("TAG", Tag + " " + Label + ": " + msg);
+                    System.out.println(Tag + " " + Label + ": " + msg);
                 }
             } else {
-                Log.v("TAG", "Live....");
+                System.out.println("Live....");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1054,11 +1192,9 @@ public class GlobalClass {
             if (myBitmap != null)
                 imgView.setImageBitmap(myBitmap);
             else
-                GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 5);
+                Global.showCustomToast(activity, "Image not found");
         } else {
-            Glide.with(activity)
-                    .load(url)
-                    .into(imgView);
+            DisplayImgWithPlaceholderFromURL(activity,url,imgView,R.drawable.img_no_img_aval);
         }
 
         img_close.setOnClickListener(new View.OnClickListener() {
@@ -1077,16 +1213,87 @@ public class GlobalClass {
     }
 
 
-    public static void storeProductsCachingTime(Activity activity) {
-        SharedPreferences.Editor editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit();
+    public static void storeProductsCachingTime(Activity activity, String Product) {
+        SharedPreferences.Editor editor = null;
+        if (Product.equalsIgnoreCase("Product")) {
+            editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit();
+        } else if (Product.equalsIgnoreCase("Profile")) {
+            editor = activity.getSharedPreferences(Constants.PREF_Profile_CACHING, 0).edit();
+        } else if (Product.equalsIgnoreCase("Video")) {
+            editor = activity.getSharedPreferences(Constants.PREF_Video_CACHING, 0).edit();
+        }
+
+       /* SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Date strDate = sdf.parse(valid_until);
+        if (new Date().before(strDate)) {
+            catalog_outdated = 1;
+        }*/
         editor.putLong("offer_millis", System.currentTimeMillis()); // add this line and comment below line for cache
         editor.apply();
     }
 
 
-    public static int Dayscnt(Context context) {
+    public static void storeCachingDate(Activity activity, String type) {
+        try {
+            SharedPreferences.Editor editor = null;
+            if (type.equalsIgnoreCase("Profile")) {
+                editor = activity.getSharedPreferences(Constants.PREF_Profile_CACHING, 0).edit();
+            } else if (type.equalsIgnoreCase("Video")) {
+                editor = activity.getSharedPreferences(Constants.PREF_Video_CACHING, 0).edit();
+            } else if (type.equalsIgnoreCase("POCT")) {
+                editor = activity.getSharedPreferences(Constants.PREF_POCT_CACHING, 0).edit();
+            }
+            editor.putString("date", getCurrentDate());
+            editor.apply();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean checkSync(Activity mActivity, String type) {
+        SharedPreferences preferences = null;
+        if (type.equalsIgnoreCase("Profile")) {
+            preferences = mActivity.getSharedPreferences(Constants.PREF_Profile_CACHING, 0);
+        } else if (type.equalsIgnoreCase("Video")) {
+            preferences = mActivity.getSharedPreferences(Constants.PREF_Video_CACHING, 0);
+        } else if (type.equalsIgnoreCase("POCT")) {
+            preferences = mActivity.getSharedPreferences(Constants.PREF_POCT_CACHING, 0);
+        }
+        if (GlobalClass.isNull(preferences.getString("date", ""))) {
+            return true;
+        }
+        Date storedDate = returnDate(preferences.getString("date", ""));
+        Date currentDate = returnDate(getCurrentDate());
+
+        return storedDate != null && storedDate.before(currentDate);
+    }
+
+
+    public static Date returnDate(String putDate) {
+        Date date = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+            date = sdf.parse(putDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    public static String getCurrentDate() {
+        return new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+    }
+
+    public static int Dayscnt(Context context, String Product) {
         long offer_millis = 0, current_millis = 0, differ_millis = 0;
-        SharedPreferences pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, MODE_PRIVATE);
+        SharedPreferences pref_prod_caching = null;
+        if (Product.equalsIgnoreCase("Product")) {
+            pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, MODE_PRIVATE);
+        } else if (Product.equalsIgnoreCase("Profile")) {
+            pref_prod_caching = context.getSharedPreferences(Constants.PREF_Profile_CACHING, MODE_PRIVATE);
+        } else if (Product.equalsIgnoreCase("Video")) {
+            pref_prod_caching = context.getSharedPreferences(Constants.PREF_Video_CACHING, MODE_PRIVATE);
+        }
         offer_millis = pref_prod_caching.getLong("offer_millis", 0);
         current_millis = System.currentTimeMillis();
         differ_millis = current_millis - offer_millis;
@@ -1094,6 +1301,25 @@ public class GlobalClass {
         Log.e("TAG11", "<< DAYS >> " + days);
         return days;
     }
+
+
+    public static boolean syncProduct(Context context) {
+
+        AppPreferenceManager appPreferenceManager = new AppPreferenceManager(context);
+        return appPreferenceManager.getVersionResponseModel() != null && appPreferenceManager.getVersionResponseModel().getSyncproduct() != appPreferenceManager.getSynProductCount();
+
+    }
+
+
+    public static void StoresyncProduct(Context context) {
+        try {
+            AppPreferenceManager appPreferenceManager = new AppPreferenceManager(context);
+            appPreferenceManager.setSynProductCount(appPreferenceManager.getVersionResponseModel().getSyncproduct());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public static void dynamicolordot(Context mContext, LinearLayout lin_color, int color) {
         ImageView imageView = new ImageView(mContext);
@@ -1112,7 +1338,7 @@ public class GlobalClass {
         curr_time = System.currentTimeMillis();
         differ_millis = curr_time - syntime;
         int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
-        Log.v("TAG", "<< Days >> " + days);
+        System.out.println("<< Days >> " + days);
         return days;
     }
 
@@ -1128,19 +1354,17 @@ public class GlobalClass {
 
     public static void showVolleyError(VolleyError error, Activity activity) {
         if (error instanceof TimeoutError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.Time_error, 5);
+            Global.showCustomToast(activity, "Timeout Error");
         } else if (error instanceof ServerError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.Server_error, 5);
+            Global.showCustomToast(activity, "Server Error");
         } else if (error instanceof NetworkError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.Network_error, 5);
+            Global.showCustomToast(activity, "Network Error");
         } else if (error instanceof ParseError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.Parse_error, 5);
+            Global.showCustomToast(activity, "Parse Error");
         } else if (error instanceof NoConnectionError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.Parse_error, 5);
-        } else if (error instanceof NoConnectionError) {
-            GlobalClass.showTastyToast(activity, MessageConstants.NoConnection_error, 5);
+            Global.showCustomToast(activity, "NoConnection Error");
         } else {
-            GlobalClass.showTastyToast(activity, ToastFile.something_went_wrong, 5);
+            Global.showCustomToast(activity, ToastFile.something_went_wrong);
         }
     }
 
@@ -1155,7 +1379,7 @@ public class GlobalClass {
     }
 
     public static boolean isNull(String val) {
-        if (val == null || val.isEmpty() || val.equalsIgnoreCase(null) || val.trim().equals("") || val.trim().equalsIgnoreCase("null") || val.trim() == "" || val.trim() == "null")
+        if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
             return true;
         return false;
     }
@@ -1184,24 +1408,12 @@ public class GlobalClass {
         }
     }
 
-    public void DisplayImage(Activity activity, String Url, ImageView imageView) {
-
-        //            Glide.get(mActivity).clearMemory();
-        Glide.with(activity).load(Url)
-                .asBitmap()
-                .placeholder(R.drawable.userprofile).dontAnimate()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-                .error(R.drawable.userprofile)
-                .fitCenter()
-                .into(imageView);
-
-    }
-
     public void DisplayVideoImage(Activity activity, String Url, ImageView imageView) {
-
+        GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
+                .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
+                .build());
         //            Glide.get(mActivity).clearMemory();
-        Glide.with(activity).load(Url)
+        Glide.with(activity).load(glideUrl)
                 .asBitmap()
 //                .placeholder(R.drawable.thumbnailicon).dontAnimate()
 //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -1213,12 +1425,33 @@ public class GlobalClass {
     }
 
 
-    public void DisplayImage1(Activity activity, String Url, ImageView imageView) {
-        Glide.with(activity).load(Url)
-                .asBitmap()
-                .placeholder(R.drawable.userprofile).dontAnimate()
-                .error(R.drawable.userprofile)
-                .into(imageView);
+    public static void DisplayImgWithPlaceholderFromURL(Activity activity, String Url, ImageView imageView, int userprofile) {
+        try {
+            Glide.get(activity).clearMemory();
+            GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
+                    .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
+                    .build());
+            Glide.with(activity).load(glideUrl)
+                    .asBitmap()
+                    .placeholder(userprofile).dontAnimate()
+                    .error(userprofile)
+                    .into(imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void DisplayImgWithPlaceholder(Activity activity, String Url, ImageView imageView, int userprofile) {
+        try {
+            Glide.get(activity).clearMemory();
+            Glide.with(activity).load(Url)
+                    .asBitmap()
+                    .placeholder(userprofile).dontAnimate()
+                    .error(userprofile)
+                    .into(imageView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void showcenterCustomToast(Activity activity, String message) {
@@ -1299,6 +1532,12 @@ public class GlobalClass {
         }
     }
 
+    public static void showShortToast(Activity activity, String message) {
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+    }
 
     public static void setBordertoView(Context context, LinearLayout lin_main, int color, int backcolor) {
 
@@ -1312,20 +1551,24 @@ public class GlobalClass {
         }
     }
 
+    public static void showCustomToast(Activity activity, String message) {
 
-    public static void showTastyToast(Activity activity, String message, int flag) {
-        if (flag == 0) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.DEFAULT);
-        } else if (flag == 1) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-        } else if (flag == 2) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-        } else if (flag == 3) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.INFO);
-        } else if (flag == 4) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.CONFUSING);
-        } else if (flag == 5) {
-            TastyToast.makeText(activity, message, TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            LayoutInflater inflater = activity.getLayoutInflater();
+
+            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
+            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
+            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
+
+            relItem.getBackground().setAlpha(204);
+            txtToast.setText(message);
+
+            Toast toast = new Toast(context);
+            toast.setView(toastRoot);
+            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.show();
         }
 
     }

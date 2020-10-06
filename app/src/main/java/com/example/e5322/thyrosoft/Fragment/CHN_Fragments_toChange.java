@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.Fragment;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,6 @@ import android.widget.TextView;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
-
-import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,9 +73,20 @@ public class CHN_Fragments_toChange extends Fragment {
         // Inflate the layout for this fragment
         mContext = (ManagingTabsActivity) getActivity();
 
+
+
+
+
+
+
+
+
+
+//
         viewMain = (View) inflater.inflate(R.layout.fragment_chn__fragments_to_change, container, false);
 
-        initviews();
+        enetered = (TextView)viewMain. findViewById(R.id.enetered);
+        enter = (TextView) viewMain.findViewById(R.id.enter);
 
         enter.setBackgroundColor(Color.parseColor("#FFFFFF"));//FFFFFF
         enetered.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -85,13 +95,6 @@ public class CHN_Fragments_toChange extends Fragment {
         mContext.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
-        initListner();
-
-
-        return viewMain;
-    }
-
-    private void initListner() {
 
         enetered.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,11 +102,16 @@ public class CHN_Fragments_toChange extends Fragment {
                 enetered.setBackgroundColor(Color.parseColor("#FFFFFF"));//
                 enter.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-                GlobalClass.flagToSend = true;
-                GlobalClass.flagToSendfromnavigation = false;
+                GlobalClass.flagToSend=true;
+                GlobalClass.flagToSendfromnavigation=false;
+
+//                Updated_CHN_Entries fragment = new Updated_CHN_Entries();
+//                mContext.getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.frameLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+
+
             }
         });
-
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,14 +123,18 @@ public class CHN_Fragments_toChange extends Fragment {
                 mContext.getSupportFragmentManager().beginTransaction()
                         .replace(R.id.frameLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
 
+
+
+
+//                Old_Woe_Flow old_woe_flow = new Old_Woe_Flow();
+//                mContext.getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.frameLayout, old_woe_flow, old_woe_flow.getClass().getSimpleName()).addToBackStack(null).commit();
+
+
             }
         });
 
-    }
-
-    private void initviews() {
-        enetered = (TextView) viewMain.findViewById(R.id.enetered);
-        enter = (TextView) viewMain.findViewById(R.id.enter);
+        return viewMain;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

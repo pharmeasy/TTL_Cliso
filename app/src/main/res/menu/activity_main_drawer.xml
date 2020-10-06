@@ -194,7 +194,15 @@
     </group>
 
 
-
+    <group
+        android:id="@+id/groupHHH"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/HHH"
+            android:icon="@drawable/covid"
+            android:visible="false"
+            android:title ="DPT tests" />
+    </group>
     <group
         android:id="@+id/group555"
         android:checkableBehavior="single">
@@ -225,6 +233,17 @@
               android:title="Video" />
 
       </group>
+
+
+    <group
+        android:id="@+id/group_handbill"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/handbill_item"
+            android:icon="@drawable/handbillimg"
+            android:title="@string/dghandbill" />
+
+    </group>
 
     <group
         android:id="@+id/group211"
@@ -317,7 +336,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/synchronization"
-            android:icon="@drawable/synchro"
+            android:icon="@drawable/sync1"
             android:title="Sync" />
     </group>
 

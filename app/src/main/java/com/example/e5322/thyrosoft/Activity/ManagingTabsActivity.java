@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.SQLException;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -26,29 +27,35 @@ import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.CheckVideoDataController;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.BuildConfig;
+import com.example.e5322.thyrosoft.Cliso_BMC.BMC_StockAvailabilityActivity;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
-import com.example.e5322.thyrosoft.Controller.Myprofile_Controller;
-import com.example.e5322.thyrosoft.Controller.Videopoppost_Controller;
+import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.HHHtest.SelectTestsActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
+import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
+import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Sgc_Pgc_Entry_Activity;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.UploadDocument;
@@ -60,10 +67,12 @@ import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -73,24 +82,34 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.multidex.BuildConfig;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static com.example.e5322.thyrosoft.API.Constants.NHF;
 
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String getdate;
+    private static FragmentManager fragmentManager;
     public SharedPreferences sharedpreferences;
+    /*    SharedPreferences.Editor editorUserActivity;
+        SharedPreferences shr_user_log;*/
     String restoredText;
+    MyPojoWoe myPojoWoe;
     String passwrd, access, api_key, USER_CODE;
     SharedPreferences prefs;
+    ArrayList<MyPojoWoe> resultList;
+    SharedPreferences.Editor editor;
     TextView navigationDrawerNameTSP, ecode;
+    ImageView imageViewprofile, home;
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
     boolean IsFromNotification;
     boolean covidacc = false;
     int SCRID;
     boolean iscomfrom;
+    ArrayList<String> errorList;
     String VideoID;
     ImageView ic_close;
     AlertDialog dialog;
@@ -98,12 +117,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     TextView txt_toltime, txt_ctime;
     RelativeLayout rel_time;
     long milliseconds, minutes, seconds;
+    Handler handler;
     ImageView ic_play, ic_pause;
+    Runnable runnable;
     boolean iscomplete = false;
     boolean isVideosee = false;
     Activity activity;
     SharedPreferences covid_pref;
     SharedPreferences pref_versioncheck;
+    private int a = 0;
     private String TAG = getClass().getSimpleName();
     private CarouselFragment carouselFragment;
     private String user, CLIENT_TYPE;
@@ -112,7 +134,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private DatabaseHelper db;
     private VideoView video_view;
     private int offline_draft_counts;
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -128,15 +149,33 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                     Intent j = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
                     startActivity(j);
                     return true;
-
                 case R.id.loud:
                     Intent k = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
                     startActivity(k);
                     return true;
 
                 case R.id.bell_ic:
-                    Intent l = new Intent(ManagingTabsActivity.this, Notification_activity.class);
-                    startActivity(l);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(ManagingTabsActivity.this);
+                    builder1.setMessage("Do you want to Sync Data?");
+                    builder1.setCancelable(true);
+                    builder1.setPositiveButton(
+                            "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    SyncData();
+                                }
+                            });
+
+                    builder1.setNegativeButton(
+                            "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
                     return true;
 
                 case R.id.hamb_ic:
@@ -155,13 +194,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             try {
                 videoseekbar.setProgress(video_view.getCurrentPosition());
                 mSeekbarUpdateHandler.postDelayed(this, 50);
-                GlobalClass.SetText(txt_toltime, "" + video_view.getDuration());
+                txt_toltime.setText(video_view.getDuration());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
-    private ImageView imageViewprofile;
 
     public static boolean deleteFile(File file) {
         boolean deletedAll = true;
@@ -188,12 +226,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_main_ll);
         activity = this;
 
-        initViews(savedInstanceState);
 
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initViews(Bundle savedInstanceState) {
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
@@ -208,7 +241,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
 
         pref_versioncheck = getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
-
         if (pref_versioncheck != null) {
             int versionCode = BuildConfig.VERSION_CODE;
             int prefversioncode = pref_versioncheck.getInt("versioncode", 0);
@@ -216,23 +248,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             Log.e(TAG, "prefversioncode --->" + prefversioncode + "  versionCode-->" + versionCode);
 
             if (prefversioncode != versionCode) {
+                logout();
                 startActivity(new Intent(ManagingTabsActivity.this, Login.class));
                 finish();
             }
 
         }
 
+
         covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
         if (savedInstanceState == null) {
-            // withholding the previously created fragment from being created again
-            // On orientation change, it will prevent fragment recreation
-            // its necessary to reserving the fragment stack inside each tab
             initScreen();
         } else {
-            // restoring the previously created fragment
-            // and getting the reference
             carouselFragment = (CarouselFragment) getSupportFragmentManager().getFragments().get(0);
         }
 
@@ -244,16 +273,15 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         navigationView.setNavigationItemSelectedListener(this);
 
         View headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
+//        View headerView =(View) LayoutInflater.inflate(R.layout.nav_header_main, navigationView, false);
 
         navigationView.addHeaderView(headerView);
-
         navigationDrawerNameTSP = (TextView) headerView.findViewById(R.id.navigationDrawerNameTSP);
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
 
         covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
-
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
@@ -261,6 +289,18 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         api_key = prefs.getString("API_KEY", "");
         USER_CODE = prefs.getString("USER_CODE", "");
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+
+
+        SharedPreferences profile_pref = getSharedPreferences("profile", MODE_PRIVATE);
+        if (GlobalClass.isNull(profile_pref.getString("name", ""))) {
+            getProfileDetails(ManagingTabsActivity.this);
+        } else {
+            if (GlobalClass.checkSync(ManagingTabsActivity.this, "Profile")) {
+                if (GlobalClass.isNetworkAvailable(this)) {
+                    getProfileDetails(ManagingTabsActivity.this);
+                }
+            }
+        }
 
 
         try {
@@ -283,8 +323,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.phone).setVisible(true);
             navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
             navigationView.getMenu().findItem(R.id.logout).setVisible(true);
-
-
             navigationView.getMenu().findItem(R.id.upload_document_navigation).setVisible(false);
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.communication).setVisible(false);
@@ -302,13 +340,17 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.rbarcode).setVisible(false);
 
         } else {
-            if (!GlobalClass.isNull(access) && access.equals("STAFF")) {
+            if (access.equals("STAFF")) {
                 if (covidacc) {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
+                      navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
+
                 } else {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(false);
+                     navigationView.getMenu().findItem(R.id.HHH).setVisible(false);
+
                 }
 
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
@@ -320,11 +362,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
-            } else if (!GlobalClass.isNull(access) && access.equals("ADMIN")) {
+            } else if (access.equals("ADMIN")) {
                 if (covidacc) {
+                     navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
                 } else {
+                    navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
                 }
@@ -341,18 +385,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         }
 
         SharedPreferences getProfileName = getSharedPreferences("profilename", MODE_PRIVATE);
-        String name = getProfileName.getString("name", "");
-        String usercode = getProfileName.getString("usercode", "");
-        String profile_image = getProfileName.getString("image", "");
+        String name = getProfileName.getString("name", null);
+        String usercode = getProfileName.getString("usercode", null);
+        String profile_image = getProfileName.getString("image", null);
 
-        if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(NHF) && !CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+        if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
             if (getIntent().hasExtra(Constants.COMEFROM)) {
                 iscomfrom = getIntent().getBooleanExtra(Constants.COMEFROM, false);
                 if (iscomfrom) {
-                    Log.e(TAG, " C O M E F R O M -------->" + iscomfrom);
-                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                        CheckVideoData();
+                    if (GlobalClass.checkSync(ManagingTabsActivity.this, "Video")) {
+                        if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                            CheckVideoData();
+                        }
                     }
+
                 }
             }
         }
@@ -369,56 +415,316 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         }
 
-        if (!GlobalClass.isNull(name)) {
-            GlobalClass.SetText(navigationDrawerNameTSP, "HI " + name);
-            GlobalClass.SetText(ecode, "(" + usercode + ")");
+        if (name != null) {
+            navigationDrawerNameTSP.setText("HI " + name);
+            ecode.setText("(" + usercode + ")");
         }
 
-        if (GlobalClass.isNetworkAvailable(this)) {
-            getProfileDetails(ManagingTabsActivity.this);
-        } else {
+        ShowOfflineDialog();
+        GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
+    }
 
-            GlobalClass.showTastyToast(activity, MessageConstants.CHECK_INTERNET_CONN, 2);
+    private void ShowOfflineDialog() {
+        try {
+            resultList = getResults();
+            if (resultList.size() != 0) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                builder1.setMessage("You have " + resultList.size() + " Offline WOE(s) pending.Do you want to Sync?");
+                builder1.setCancelable(true);
+
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //Redirect to offline woe
+                                Bundle bundle = new Bundle();
+                                if (covidacc) {
+                                    bundle.putInt("position", 3);
+                                } else {
+                                    bundle.putInt("position", 1);
+                                }
+                                Constants.offline_flag = "1";
+                                carouselFragment = new CarouselFragment();
+                                carouselFragment.setArguments(bundle);
+                                final FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
+
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "Later",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-        Glide.with(ManagingTabsActivity.this)
-                .load(profile_image)
-                .placeholder(ManagingTabsActivity.this.getResources().getDrawable(R.drawable.userprofile))
-                .into(imageViewprofile);
-
     }
 
 
     private void CheckVideoData() {
-        try {
-            if (ControllersGlobalInitialiser.checkVideoDataController != null) {
-                ControllersGlobalInitialiser.checkVideoDataController = null;
+        GetVideopost_model getVideopost_model = new GetVideopost_model();
+        getVideopost_model.setApp(Constants.APP_ID);
+        getVideopost_model.setSourcedata(USER_CODE);
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.video_data).create(APIInteface.class);
+        Call<GetVideoResponse_Model> getVideoResponse_modelCall = apiInteface.getVideoData(getVideopost_model);
+        getVideoResponse_modelCall.enqueue(new Callback<GetVideoResponse_Model>() {
+            @Override
+            public void onResponse(Call<GetVideoResponse_Model> call, final retrofit2.Response<GetVideoResponse_Model> response) {
+
+                try {
+                    GlobalClass.storeCachingDate(ManagingTabsActivity.this, "Video");
+                    if (response.body().getResId().equalsIgnoreCase("RSS0000")) {
+                        if (response.body().getOutput() != null || !response.body().getOutput().isEmpty()) {
+                            /*TODO Launching New video Pop up fragment */
+                            if (!GlobalClass.isNull(response.body().getOutput().get(0).getPath())) {
+                                LayoutInflater inflater = getLayoutInflater();
+                                View alertLayout = inflater.inflate(R.layout.fragment_newvideo, null);
+                                ic_close = alertLayout.findViewById(R.id.img_close);
+
+                                getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+                                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                                TextView tv_title = alertLayout.findViewById(R.id.title);
+                                TextView tv_desc = alertLayout.findViewById(R.id.txt_desc);
+
+                                txt_ctime = alertLayout.findViewById(R.id.txt_ctime);
+                                txt_toltime = alertLayout.findViewById(R.id.txt_toltime);
+                                rel_time = alertLayout.findViewById(R.id.rel_time);
+
+                                ic_play = alertLayout.findViewById(R.id.img_start);
+                                ic_pause = alertLayout.findViewById(R.id.img_pause);
+
+                                final LinearLayout linvid = alertLayout.findViewById(R.id.linvid);
+
+                                final LinearLayout layoutVideo = alertLayout.findViewById(R.id.layoutVideo);
+
+                                video_view = alertLayout.findViewById(R.id.video_view);
+                                videoseekbar = alertLayout.findViewById(R.id.seekBar);
+
+                                if (!GlobalClass.isNull(response.body().getOutput().get(0).getTitle())) {
+                                    tv_title.setText(response.body().getOutput().get(0).getTitle());
+                                }
+
+                                if (!GlobalClass.isNull(response.body().getOutput().get(0).getDescription())) {
+                                    tv_desc.setText(response.body().getOutput().get(0).getDescription());
+                                }
+
+
+                                layoutVideo.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        try {
+
+                                            if (response.body().getOutput().get(0).getPath() != null) {
+
+                                                linvid.setVisibility(View.VISIBLE);
+                                                layoutVideo.setVisibility(View.GONE);
+                                                video_view.setVisibility(View.VISIBLE);
+
+
+                                                final MediaController mediaController = new MediaController(ManagingTabsActivity.this);
+                                                mediaController.setAnchorView(video_view);
+                                                video_view.setMediaController(mediaController);
+                                                Uri uri = Uri.parse(response.body().getOutput().get(0).getPath());
+                                                video_view.setVideoURI(uri);
+                                                video_view.requestFocus();
+                                                video_view.start();
+                                                isVideosee = true;
+
+                                                mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
+
+                                                rel_time.setVisibility(View.VISIBLE);
+                                                ic_pause.setVisibility(View.VISIBLE);
+
+                                                VideoID = response.body().getOutput().get(0).getId();
+
+                                                ic_pause.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        if (mediaController != null) {
+                                                            video_view.pause();
+                                                            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                            ic_pause.setVisibility(View.INVISIBLE);
+                                                            ic_play.setVisibility(View.VISIBLE);
+                                                            postdata(video_view);
+                                                        }
+                                                    }
+                                                });
+
+                                                ic_play.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        if (mediaController != null) {
+                                                            video_view.start();
+
+                                                            if (iscomplete) {
+                                                                videoseekbar.setProgress(0);
+                                                                video_view.requestFocus();
+                                                            }
+                                                            ic_play.setVisibility(View.INVISIBLE);
+                                                            ic_pause.setVisibility(View.VISIBLE);
+                                                            postdata(video_view);
+                                                        }
+                                                    }
+                                                });
+
+                                                video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                                                    @Override
+                                                    public void onCompletion(MediaPlayer mp) {
+                                                        if (mp != null) {
+                                                            iscomplete = true;
+                                                            ic_play.setVisibility(View.VISIBLE);
+                                                            ic_pause.setVisibility(View.INVISIBLE);
+                                                            postdata(video_view);
+                                                            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                            dialog.dismiss();
+                                                        }
+                                                    }
+                                                });
+
+                                                video_view.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                                    @Override
+                                                    public void onPrepared(MediaPlayer mp) {
+                                                        videoseekbar.setMax(video_view.getDuration());
+                                                        milliseconds = video_view.getDuration();
+                                                        minutes = (milliseconds / 1000) / 60;
+                                                        seconds = (milliseconds / 1000) % 60;
+                                                    }
+                                                });
+
+
+                                                videoseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                                                    @Override
+                                                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                                                        if (fromUser) {
+                                                            video_view.seekTo(progress);
+                                                            milliseconds = video_view.getCurrentPosition();
+                                                            minutes = (milliseconds / 1000) / 60;
+                                                            seconds = (milliseconds / 1000) % 60;
+                                                           /* Log.e(TAG, "VIDEO DUR ---->" + video_view.getDuration());
+                                                            Log.e(TAG, "minutes  ---->" + minutes);
+                                                            Log.e(TAG, "seconds---->" + seconds);*/
+
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onStartTrackingTouch(SeekBar seekBar) {
+                                                        // video_view.seekTo(videoseekbar.getProgress());
+                                                    }
+
+                                                    @Override
+                                                    public void onStopTrackingTouch(SeekBar seekBar) {
+                                                        //video_view.seekTo(videoseekbar.getProgress());
+                                                    }
+
+                                                });
+
+
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                });
+
+                                AlertDialog.Builder alert = new AlertDialog.Builder(ManagingTabsActivity.this);
+                                alert.setView(alertLayout);
+
+                                alert.setCancelable(false);
+                                dialog = alert.create();
+                                dialog.show();
+
+                                ic_close.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        if (!GlobalClass.isNull(response.body().getOutput().get(0).getId())) {
+                                            if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                                                ic_close.setClickable(false);
+                                                ic_close.setEnabled(false);
+                                                if (isVideosee) {
+                                                    mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
+                                                    postdata(video_view);
+                                                }
+                                                closeVideo(response.body().getOutput().get(0).getId(), dialog);
+                                            }
+                                        }
+
+                                    }
+                                });
+                            }
+
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.checkVideoDataController = new CheckVideoDataController(activity, ManagingTabsActivity.this);
-            ControllersGlobalInitialiser.checkVideoDataController.checkvideodata_controller(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            public void onFailure(Call<GetVideoResponse_Model> call, Throwable t) {
+
+            }
+        });
 
 
     }
 
     private void closeVideo(String id, final AlertDialog dialog) {
-        try {
-            if (ControllersGlobalInitialiser.videopoppost_controller != null) {
-                ControllersGlobalInitialiser.videopoppost_controller = null;
+
+        Videopoppost videopoppost = new Videopoppost();
+        videopoppost.setClientid(USER_CODE);
+        videopoppost.setVideoid(id);
+
+        APIInteface apiInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.video_data).create(APIInteface.class);
+        Call<Videopoppost_response> videopoppost_responseCall = apiInteface.Videopost(videopoppost);
+
+//        Log.e(TAG, "Video post  URL ---->" + videopoppost_responseCall.request().url());
+//        Log.e(TAG, "Video post  BODY ---->" + new GsonBuilder().create().toJson(videopoppost));
+
+        videopoppost_responseCall.enqueue(new Callback<Videopoppost_response>() {
+            @Override
+            public void onResponse(Call<Videopoppost_response> call, retrofit2.Response<Videopoppost_response> response) {
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        //Log.e(TAG, "RESPONSE ---->" + response.body().getResponse());
+                        dialog.dismiss();
+                        ic_close.setClickable(true);
+                        ic_close.setEnabled(true);
+                        iscomplete = false;
+                        isVideosee = false;
+                    } else {
+                        GlobalClass.toastyError(ManagingTabsActivity.this, response.body().getResponse(), false);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.videopoppost_controller = new Videopoppost_Controller(activity, ManagingTabsActivity.this);
-            ControllersGlobalInitialiser.videopoppost_controller.VideopostController(id, user, dialog);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            public void onFailure(Call<Videopoppost_response> call, Throwable t) {
+
+            }
+        });
+
     }
 
     private void callnotifiedScreen(int SCRID) {
         if (SCRID == Constants.SCR_1) {
-            if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(NHF) && !CLIENT_TYPE.equalsIgnoreCase(NHF)) {
+            if (!CLIENT_TYPE.equalsIgnoreCase(NHF)) {
                 Intent startIntent = new Intent(ManagingTabsActivity.this, Payment_Activity.class);
                 startIntent.putExtra("COMEFROM", "ManagingTabsActivity");
                 startActivity(startIntent);
@@ -436,17 +742,17 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         } else if (SCRID == Constants.SCR_4) {
             Bundle bundle = new Bundle();
-            if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(NHF) && CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 bundle.putInt("position", 0);
             } else {
-                if (!GlobalClass.isNull(access) && !GlobalClass.isNull(Constants.ADMIN) && access.equalsIgnoreCase(Constants.ADMIN)) {
+                if (access.equalsIgnoreCase(Constants.ADMIN)) {
                     if (covidacc) {
                         bundle.putInt("position", 8);
                     } else {
                         bundle.putInt("position", 7);
                     }
 
-                } else if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(Constants.STAFF) && access.equalsIgnoreCase(Constants.STAFF)) {
+                } else if (access.equalsIgnoreCase(Constants.STAFF)) {
                     if (covidacc) {
                         bundle.putInt("position", 7);
                     } else {
@@ -460,7 +766,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             fragmentManager.beginTransaction().replace(R.id.container, carouselFragment).commit();
 
         } else if (SCRID == Constants.SCR_5) {
-            if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(NHF) && !CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            if (!CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", 3);
                 carouselFragment = new CarouselFragment();
@@ -473,7 +779,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             Constants.pushrat_flag = 1;
             Constants.universal = 1;
             Bundle bundle = new Bundle();
-            if (!GlobalClass.isNull(CLIENT_TYPE) && !GlobalClass.isNull(NHF) && CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 bundle.putInt("position", 0);
             } else {
                 if (access.equalsIgnoreCase(Constants.ADMIN)) {
@@ -481,7 +787,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         bundle.putInt("position", 1);
                     }
 
-                } else if (!GlobalClass.isNull(access) && !GlobalClass.isNull(Constants.STAFF) && access.equalsIgnoreCase(Constants.STAFF)) {
+                } else if (access.equalsIgnoreCase(Constants.STAFF)) {
                     if (covidacc) {
                         bundle.putInt("position", 1);
                     }
@@ -499,6 +805,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle bottomNavigationView view item clicks here.
         int id = item.getItemId();
+//        fab.setVisibility(View.VISIBLE);
 
         if (id == R.id.home_navigation) {
             try {
@@ -625,6 +932,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Communication_Activity.class);
+//                i.putExtra("comefrom", "TSP");
                 startActivity(i);
             }
 
@@ -637,13 +945,22 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
+        } else if (id == R.id.handbill_item) {
+
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, ViewGenhandbill_Activity.class);
+                startActivity(i);
+            }
+
         } else if (id == R.id.thyroshop) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent httpIntent = new Intent(Intent.ACTION_VIEW);
-                httpIntent.setData(Uri.parse("http:\\/\\/www.charbi.com\\/cdn\\/applications\\/android\\/thyromart.apk"));
+                httpIntent.setData(Uri.parse(Constants.THYROMART_APP_LINK));
                 startActivity(httpIntent);
             }
 
@@ -673,6 +990,17 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, RapidAntibodyFrag.class);
+                startActivity(i);
+            }
+
+
+        } else if ((id == R.id.HHH)) {
+
+
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, SelectTestsActivity.class);
                 startActivity(i);
             }
 
@@ -725,6 +1053,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
+                /*Noticeboard_Fragment noticeboard_fragment = new Noticeboard_Fragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_mainLayout, noticeboard_fragment, noticeboard_fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
+
                 Intent i = new Intent(ManagingTabsActivity.this, Noticeboard_activity.class);
                 startActivity(i);
             }
@@ -739,6 +1071,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, Feedback_activity.class);
+//              i.putExtra("comefrom", "TSP");
                 startActivity(i);
 
             }
@@ -773,8 +1106,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                // Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
-                //startActivity(i);
+                Intent i = new Intent(ManagingTabsActivity.this, BMC_StockAvailabilityActivity.class);
+                startActivity(i);
             }
         } else if (id == R.id.bs_entry) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -810,20 +1143,20 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             new AlertDialog.Builder(this)
                     .setMessage(ToastFile.surelogout)
                     .setCancelable(false)
-                    .setPositiveButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            GlobalClass.showTastyToast(activity, getResources().getString(R.string.Success), 1);
-                            distoye();
+                            TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            //   distoye();
                             new LogUserActivityTagging(activity, Constants.LOGOUT);
                             logout();
                         }
                     })
-                    .setNegativeButton(MessageConstants.NO, null)
+                    .setNegativeButton("No", null)
                     .show();
         } else if (id == R.id.phone) {
             new AlertDialog.Builder(this)
                     .setMessage("Would you like to proceed with call?")
-                    .setPositiveButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             SharedPreferences prefs = getSharedPreferences("TspNumber", MODE_PRIVATE);
                             restoredText = prefs.getString("TSPMobileNumber", null);
@@ -838,13 +1171,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                             startActivity(intent);
                         }
                     })
-                    .setNegativeButton(MessageConstants.NO, null)
+                    .setNegativeButton("No", null)
                     .show();
 
         } else if (id == R.id.whatsapp) {
             new AlertDialog.Builder(this)
                     .setMessage("Would you like to proceed with whatsapp?")
-                    .setPositiveButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             SharedPreferences prefs1 = getSharedPreferences("TspNumber", MODE_PRIVATE);
                             restoredText = prefs1.getString("TSPMobileNumber", null);
@@ -859,7 +1192,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
                         }
                     })
-                    .setNegativeButton(MessageConstants.NO, null)
+                    .setNegativeButton("No", null)
                     .show();
         } else if (id == R.id.offer_data) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -872,28 +1205,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                prefsEditor1.remove("MyObject");
-                prefsEditor1.commit();
-
-                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
-                prefsEditor2.remove("savelabnames");
-                prefsEditor2.commit();
-
-                SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor deletepredf = saveAlldata.edit();
-                deletepredf.remove("saveAlldata");
-                deletepredf.commit();
-
-                SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-                SharedPreferences.Editor prefsEditordata = myData.edit();
-                prefsEditordata.remove("getBtechnames");
-                prefsEditordata.commit();
-
-                Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
-                startActivity(i);
+                SyncData();
 
             }
         } else if (id == R.id.faq_data) {
@@ -906,8 +1218,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
         } else if (id == R.id.accr_data) {
-            Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
-            startActivity(i);
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, AccreditationActivity.class);
+                startActivity(i);
+            }
 
         } else if (id == R.id.articles_data) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
@@ -940,6 +1256,64 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         return true;
     }
 
+    private void SyncData() {
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+        prefsEditor1.remove("MyObject");
+        prefsEditor1.commit();
+
+        SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+        SharedPreferences.Editor prefsEditor2 = appSharedPrefsdata.edit();
+        prefsEditor2.remove("savelabnames");
+        prefsEditor2.commit();
+
+        SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+        SharedPreferences.Editor deletepredf = saveAlldata.edit();
+        deletepredf.remove("saveAlldata");
+        deletepredf.commit();
+
+        SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
+        SharedPreferences.Editor prefsEditordata = myData.edit();
+        prefsEditordata.remove("getBtechnames");
+        prefsEditordata.commit();
+
+        getProfileDetails(this);
+        CheckVideoData();
+
+        Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
+        startActivity(i);
+    }
+
+
+    private ArrayList<MyPojoWoe> getResults() {
+
+        DatabaseHelper db = new DatabaseHelper(activity); //my database helper file
+        db.open();
+
+        ArrayList<MyPojoWoe> resultList = new ArrayList<MyPojoWoe>();
+        errorList = new ArrayList<String>();
+
+        Cursor c = db.getAllData(); //function to retrieve all values from a table- written in MyDb.java file
+        while (c.moveToNext()) {
+            String woejson = c.getString(c.getColumnIndex("WOEJSON"));
+            String error = c.getString(c.getColumnIndex("ERROR"));
+
+            try {
+                Gson gson = new Gson();
+                myPojoWoe = new MyPojoWoe();
+                myPojoWoe = gson.fromJson(woejson, MyPojoWoe.class);
+                resultList.add(myPojoWoe);
+                errorList.add(error);
+            } catch (Exception e) {
+                Log.e(TAG, "Error " + e.toString());
+            }
+        }
+        c.close();
+        db.close();
+        return resultList;
+
+    }
+
     public void distoye() {
         Intent intent = new Intent(ManagingTabsActivity.this, SplashScreen.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -969,18 +1343,84 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void getProfileDetails(final Context context) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        String strurl = Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile";
-        try {
-            if (ControllersGlobalInitialiser.myprofile_controller != null) {
-                ControllersGlobalInitialiser.myprofile_controller = null;
-            }
-            ControllersGlobalInitialiser.myprofile_controller = new Myprofile_Controller(activity, ManagingTabsActivity.this);
-            ControllersGlobalInitialiser.myprofile_controller.getmyprofilecontroller(strurl, queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        RequestQueue queue = GlobalClass.setVolleyReq(context);
+        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                new Response.Listener<JSONObject>() {
 
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response != null) {
+
+                                GlobalClass.storeCachingDate(ManagingTabsActivity.this, "Profile");
+                                Log.e(TAG, "onResponse: " + response);
+
+                                Gson gson = new Gson();
+                                ProfileDetailsResponseModel responseModel = gson.fromJson(String.valueOf(response), ProfileDetailsResponseModel.class);
+
+                                if (responseModel != null) {
+                                    SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
+                                    saveProfileDetails.putString("prof", responseModel.getTsp_image());
+                                    saveProfileDetails.putString("ac_code", responseModel.getAc_code());
+                                    saveProfileDetails.putString("address", responseModel.getAddress());
+                                    saveProfileDetails.putString("email", responseModel.getEmail());
+                                    saveProfileDetails.putString("mobile", responseModel.getMobile());
+                                    saveProfileDetails.putString("name", responseModel.getName());
+                                    saveProfileDetails.putString("pincode", responseModel.getPincode());
+                                    saveProfileDetails.putString("user_code", responseModel.getUser_code());
+                                    saveProfileDetails.putString("closing_balance", responseModel.getClosing_balance());
+                                    saveProfileDetails.putString("balance", responseModel.getBalance());
+                                    saveProfileDetails.putString(Constants.credit_limit, responseModel.getCredit_limit());
+                                    saveProfileDetails.putString("doj", responseModel.getDoj());
+                                    saveProfileDetails.putString("source_code", responseModel.getSource_code());
+                                    saveProfileDetails.putString("tsp_image", responseModel.getTsp_image());
+                                    saveProfileDetails.putString("PriOTP", responseModel.getPriOTP());
+                                    saveProfileDetails.putString(Constants.unbilledWOE, responseModel.getUnbilledWOE());
+                                    saveProfileDetails.putString(Constants.unbilledMaterial, responseModel.getUnbilledmaterial());
+                                    saveProfileDetails.putInt(Constants.rate_percent, responseModel.getRatePercent());
+                                    saveProfileDetails.putInt(Constants.tcpPercent, responseModel.getTPCPercent());
+                                    saveProfileDetails.putInt(Constants.max_amt, responseModel.getMaxAmount());
+                                    saveProfileDetails.apply();
+
+
+                                    SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
+                                    saveProfileData.putString("name", responseModel.getName());
+                                    saveProfileData.putString("usercode", responseModel.getUser_code());
+                                    saveProfileData.putString("mobile", responseModel.getMobile());
+                                    saveProfileData.putString("image", responseModel.getTsp_image());
+                                    saveProfileData.putString("email", responseModel.getEmail());
+                                    saveProfileData.apply();
+
+                                    Log.e(TAG, "onResponse: tsp name and code" + responseModel.getName() + " " + responseModel.getUser_code());
+
+                                    if (responseModel.getName() != null && responseModel.getUser_code() != null) {
+                                        navigationDrawerNameTSP.setText("HI " + responseModel.getName());
+                                        ecode.setText("(" + responseModel.getUser_code() + ")");
+                                    } else {
+                                        navigationDrawerNameTSP.setText("HI");
+                                    }
+                                    GlobalClass.DisplayImgWithPlaceholderFromURL(activity, responseModel.getTsp_image(), imageViewprofile, R.drawable.userprofile);
+                                } else {
+                                    Toast.makeText(ManagingTabsActivity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(ManagingTabsActivity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // GlobalClass.hideProgress(context, progressDialog);
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "getProfileDetails: url" + jsonObjectRequest);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
     }
 
     public void logout() {
@@ -996,6 +1436,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         profile.clear();
         profile.commit();
 
+
+        SharedPreferences.Editor getprodutcs = getSharedPreferences("MyObject", MODE_PRIVATE).edit();
+        getprodutcs.clear();
+        getprodutcs.commit();
+
+
         SharedPreferences.Editor editor1 = getSharedPreferences("profilename", 0).edit();
         editor1.clear();
         editor1.commit();
@@ -1009,32 +1455,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         prefsEditor1.clear();
         prefsEditor1.commit();
 
-        SharedPreferences profilenamesharedpref = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-        SharedPreferences.Editor profile_shared = profilenamesharedpref.edit();
-        profile_shared.clear();
-        profile_shared.commit();
-
-        SharedPreferences prifleDataShared = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-        SharedPreferences.Editor profile_shared_pref = prifleDataShared.edit();
-        profile_shared_pref.clear();
-        profile_shared_pref.commit();
-
-
-        SharedPreferences saveAlldata = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-        SharedPreferences.Editor deletepredf = saveAlldata.edit();
-        deletepredf.clear();
-        deletepredf.commit();
-
-        SharedPreferences myData = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-        SharedPreferences.Editor prefsEditordata = myData.edit();
-        prefsEditordata.clear();
-        prefsEditordata.commit();
-
-        SharedPreferences appSharedPrefsDtaa = PreferenceManager.getDefaultSharedPreferences(ManagingTabsActivity.this);
-        SharedPreferences.Editor mydataModel = appSharedPrefsDtaa.edit();
-        mydataModel.clear();
-        mydataModel.commit();
-
         clearApplicationData();
 
         Constants.covidwoe_flag = "0";
@@ -1043,7 +1463,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         Constants.pushrat_flag = 0;
         Constants.universal = 0;
         Constants.PUSHNOT_FLAG = false;
-
+//        prefsEditor.putString("myData", jsondata);
 
         Intent f = new Intent(getApplicationContext(), Login.class);
         startActivity(f);
@@ -1051,7 +1471,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void clearApplicationData() {
-//        Log.e(TAG, "<< Clear App Data >>");
         File cacheDirectory = getCacheDir();
         File applicationDirectory = new File(cacheDirectory.getParent());
         if (applicationDirectory.exists()) {
@@ -1073,6 +1492,19 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 .commit();
     }
 
+    /**
+     * Only Activity has this special callback method
+     * Fragment doesn't have any onBackPressed callback
+     * <p>
+     * Logic:
+     * Each time when the back button is pressed, this Activity will propagate the call to the
+     * container Fragment and that Fragment will propagate the call to its each tab Fragment
+     * those Fragments will propagate this method call to their child Fragments and
+     * eventually all the propagated calls will get back to this initial method
+     * <p>
+     * If the container Fragment or any of its Tab Fragments and/or Tab child Fragments couldn't
+     * handle the onBackPressed propagated call then this Activity will handle the callback itself
+     */
 
     @Override
     public void onBackPressed() {
@@ -1117,292 +1549,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onPause() {
         super.onPause();
-    }
 
-    public void getCheckdataResponse(final retrofit2.Response<GetVideoResponse_Model> response) {
-        try {
-            if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase("RSS0000")) {
-                if (GlobalClass.CheckArrayList(response.body().getOutput())) {
-                    /*TODO Launching New video Pop up fragment */
-
-                    if (!GlobalClass.isNull(response.body().getOutput().get(0).getPath())) {
-
-                        LayoutInflater inflater = getLayoutInflater();
-                        View alertLayout = inflater.inflate(R.layout.fragment_newvideo, null);
-                        ic_close = alertLayout.findViewById(R.id.img_close);
-
-                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-                        TextView tv_title = alertLayout.findViewById(R.id.title);
-                        TextView tv_desc = alertLayout.findViewById(R.id.txt_desc);
-
-                        txt_ctime = alertLayout.findViewById(R.id.txt_ctime);
-                        txt_toltime = alertLayout.findViewById(R.id.txt_toltime);
-                        rel_time = alertLayout.findViewById(R.id.rel_time);
-
-                        ic_play = alertLayout.findViewById(R.id.img_start);
-                        ic_pause = alertLayout.findViewById(R.id.img_pause);
-
-                        final LinearLayout linvid = alertLayout.findViewById(R.id.linvid);
-
-                        final LinearLayout layoutVideo = alertLayout.findViewById(R.id.layoutVideo);
-
-                        video_view = alertLayout.findViewById(R.id.video_view);
-                        videoseekbar = alertLayout.findViewById(R.id.seekBar);
-
-                        if (!GlobalClass.isNull(response.body().getOutput().get(0).getTitle())) {
-                            GlobalClass.SetText(tv_title, response.body().getOutput().get(0).getTitle());
-                        }
-
-                        if (!GlobalClass.isNull(response.body().getOutput().get(0).getDescription())) {
-                            GlobalClass.SetText(tv_desc, response.body().getOutput().get(0).getDescription());
-                        }
-
-
-                        layoutVideo.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                try {
-
-                                    if (response.body() != null && !GlobalClass.isNull(response.body().getOutput().get(0).getPath())) {
-
-                                        linvid.setVisibility(View.VISIBLE);
-                                        layoutVideo.setVisibility(View.GONE);
-                                        video_view.setVisibility(View.VISIBLE);
-
-
-                                        final MediaController mediaController = new MediaController(ManagingTabsActivity.this);
-                                        mediaController.setAnchorView(video_view);
-                                        video_view.setMediaController(mediaController);
-                                        Uri uri = Uri.parse(response.body().getOutput().get(0).getPath());
-                                        video_view.setVideoURI(uri);
-                                        video_view.requestFocus();
-                                        video_view.start();
-                                        isVideosee = true;
-
-                                        mSeekbarUpdateHandler.postDelayed(mUpdateSeekbar, 0);
-
-                                        rel_time.setVisibility(View.VISIBLE);
-                                        ic_pause.setVisibility(View.VISIBLE);
-
-                                        VideoID = response.body().getOutput().get(0).getId();
-
-                                        ic_pause.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if (mediaController != null) {
-                                                    video_view.pause();
-                                                    mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
-                                                    ic_pause.setVisibility(View.INVISIBLE);
-                                                    ic_play.setVisibility(View.VISIBLE);
-                                                    postdata(video_view);
-                                                }
-                                            }
-                                        });
-
-                                        ic_play.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                if (mediaController != null) {
-                                                    video_view.start();
-
-                                                    if (iscomplete) {
-                                                        videoseekbar.setProgress(0);
-                                                        video_view.requestFocus();
-                                                    }
-                                                    ic_play.setVisibility(View.INVISIBLE);
-                                                    ic_pause.setVisibility(View.VISIBLE);
-                                                    postdata(video_view);
-                                                }
-                                            }
-                                        });
-
-                                        video_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                            @Override
-                                            public void onCompletion(MediaPlayer mp) {
-                                                if (mp != null) {
-                                                    iscomplete = true;
-                                                    ic_play.setVisibility(View.VISIBLE);
-                                                    ic_pause.setVisibility(View.INVISIBLE);
-                                                    postdata(video_view);
-                                                    mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
-                                                    dialog.dismiss();
-                                                }
-                                            }
-                                        });
-
-                                        video_view.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                            @Override
-                                            public void onPrepared(MediaPlayer mp) {
-                                                videoseekbar.setMax(video_view.getDuration());
-                                                milliseconds = video_view.getDuration();
-                                                minutes = (milliseconds / 1000) / 60;
-                                                seconds = (milliseconds / 1000) % 60;
-                                            }
-                                        });
-
-
-                                        videoseekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                                            @Override
-                                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                                                if (fromUser) {
-                                                    video_view.seekTo(progress);
-                                                    milliseconds = video_view.getCurrentPosition();
-                                                    minutes = (milliseconds / 1000) / 60;
-                                                    seconds = (milliseconds / 1000) % 60;
-
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onStartTrackingTouch(SeekBar seekBar) {
-                                            }
-
-                                            @Override
-                                            public void onStopTrackingTouch(SeekBar seekBar) {
-                                            }
-
-                                        });
-
-
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-                        });
-
-                        AlertDialog.Builder alert = new AlertDialog.Builder(ManagingTabsActivity.this);
-                        alert.setView(alertLayout);
-
-                        alert.setCancelable(false);
-                        dialog = alert.create();
-                        dialog.show();
-
-                        ic_close.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                if (!GlobalClass.isNull(response.body().getOutput().get(0).getId())) {
-                                    if (GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
-                                        ic_close.setClickable(false);
-                                        ic_close.setEnabled(false);
-                                        if (isVideosee) {
-                                            mSeekbarUpdateHandler.removeCallbacks(mUpdateSeekbar);
-                                            postdata(video_view);
-                                        }
-                                        if (GlobalClass.isNetworkAvailable(activity)) {
-                                            closeVideo(response.body().getOutput().get(0).getId(), dialog);
-                                        } else {
-                                            GlobalClass.showTastyToast(activity, MessageConstants.CHECK_INTERNET_CONN, 2);
-                                        }
-
-                                    }
-                                }
-
-                            }
-                        });
-                    }
-
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getVideopostResponse(retrofit2.Response<Videopoppost_response> response, AlertDialog dialog) {
-
-        try {
-            if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                dialog.dismiss();
-                ic_close.setClickable(true);
-                ic_close.setEnabled(true);
-                iscomplete = false;
-                isVideosee = false;
-            } else {
-                GlobalClass.showTastyToast(ManagingTabsActivity.this, MessageConstants.SOMETHING_WENT_WRONG, 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
     }
 
-    public void getMyprofileRespponse(JSONObject response) {
-        try {
-            if (response != null) {
-                Log.e(TAG, "onResponse: " + response);
-
-                Gson gson = new Gson();
-                ProfileDetailsResponseModel responseModel = gson.fromJson(String.valueOf(response), ProfileDetailsResponseModel.class);
-
-                if (responseModel != null) {
-                    Constants.preotp = responseModel.getPriOTP();
-
-                    if (GlobalClass.isNull(Constants.preotp)) {
-                        Constants.preotp = "";
-                    }
-
-                    Log.e(TAG, "balance ---->" + responseModel.getBalance());
-
-                    SharedPreferences.Editor saveProfileDetails = getSharedPreferences("profile", 0).edit();
-                    saveProfileDetails.putString("prof", responseModel.getTsp_image());
-                    saveProfileDetails.putString("ac_code", responseModel.getAc_code());
-                    saveProfileDetails.putString("address", responseModel.getAddress());
-                    saveProfileDetails.putString("email", responseModel.getEmail());
-                    saveProfileDetails.putString("mobile", responseModel.getMobile());
-                    saveProfileDetails.putString("name", responseModel.getName());
-                    saveProfileDetails.putString("pincode", responseModel.getPincode());
-                    saveProfileDetails.putString("user_code", responseModel.getUser_code());
-                    saveProfileDetails.putString("closing_balance", responseModel.getClosing_balance());
-                    saveProfileDetails.putString("balance", responseModel.getBalance());
-                    saveProfileDetails.putString(Constants.credit_limit, responseModel.getCredit_limit());
-                    saveProfileDetails.putString("doj", responseModel.getDoj());
-                    saveProfileDetails.putString("source_code", responseModel.getSource_code());
-                    saveProfileDetails.putString("tsp_image", responseModel.getTsp_image());
-                    saveProfileDetails.putString(Constants.unbilledWOE, responseModel.getUnbilledWOE());
-                    saveProfileDetails.putString(Constants.unbilledMaterial, responseModel.getUnbilledmaterial());
-                    saveProfileDetails.putInt(Constants.rate_percent, responseModel.getRatePercent());
-                    saveProfileDetails.putInt(Constants.max_amt, responseModel.getMaxAmount());
-                    saveProfileDetails.apply();
-
-
-                    SharedPreferences.Editor saveProfileData = getSharedPreferences("profilename", 0).edit();
-                    saveProfileData.putString("name", responseModel.getName());
-                    saveProfileData.putString("usercode", responseModel.getUser_code());
-                    saveProfileData.putString("mobile", responseModel.getMobile());
-                    saveProfileData.putString("image", responseModel.getTsp_image());
-                    saveProfileData.putString("email", responseModel.getEmail());
-                    saveProfileData.apply();
-
-                    Log.e(TAG, "onResponse: tsp name and code" + responseModel.getName() + " " + responseModel.getUser_code());
-
-                    if (!GlobalClass.isNull(responseModel.getName()) && !GlobalClass.isNull(responseModel.getUser_code())) {
-                        GlobalClass.SetText(navigationDrawerNameTSP, "HI " + responseModel.getName());
-                        GlobalClass.SetText(ecode, "(" + responseModel.getUser_code() + ")");
-
-                    } else {
-                        GlobalClass.SetText(navigationDrawerNameTSP, "HI");
-
-                    }
-
-                    Glide.with(activity)
-                            .load(responseModel.getTsp_image())
-                            .placeholder(activity.getResources().getDrawable(R.drawable.userprofile))
-                            .into(imageViewprofile);
-                } else {
-                    GlobalClass.showTastyToast(activity, ToastFile.something_went_wrong, 2);
-                }
-            } else {
-                GlobalClass.showTastyToast(activity, ToastFile.something_went_wrong, 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

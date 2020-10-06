@@ -20,16 +20,26 @@ import com.example.e5322.thyrosoft.Models.EmailValidationResponse;
 import com.example.e5322.thyrosoft.Models.GetVideoLanguageWiseRequestModel;
 import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.Models.Hospital_req;
+import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
+import com.example.e5322.thyrosoft.Models.LeadRequestModel;
+import com.example.e5322.thyrosoft.Models.LeadResponseModel;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
+import com.example.e5322.thyrosoft.Models.WOERequestModel;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface PostAPIInteface {
 
@@ -58,11 +68,17 @@ public interface PostAPIInteface {
     Call<Covidotpresponse> generateotp(@Body COVIDgetotp_req coviDgetotp_req);
 
     @GET("Common.svc/GetCovidStatus")
-    Call<COVfiltermodel> getfilter();
+    Call<COVfiltermodel>getfilter();
 
     @POST("Common.svc/Verifyotp")
     Call<Covid_validateotp_res> validateotp(@Body Covid_validateotp_req covid_validateotp_req);
 
+    @POST("order.svc/Leads_products")
+    Call<LeadResponseModel> getLead(@Body LeadRequestModel leadRequestModel);
+
+
+    @POST("ORDER.svc/PostorderdataPromo")
+    Call<LeadDataResponseModel> PostdataLead(@Body PostLeadDataModel postLeadDataModel);
 
     @POST("B2B/COMMON.svc/GetWOEPatientImagedetails")
     Call<RATEnteredResponseModel> GetEnteredResponse(@Body RATEnteredRequestModel enteredRequestModel);
@@ -72,6 +88,11 @@ public interface PostAPIInteface {
 
     @POST("MASTER.svc/Emailvalidate")
     Call<EmailValidationResponse> getvalidemail(@Body EmailModel emailModel);
+
+    @POST("B2B/WO.svc/postworkorder")
+    Call<WOEResponseModel> PostUserLog(@Body WOERequestModel requestModel);
+
+
 
 
 }

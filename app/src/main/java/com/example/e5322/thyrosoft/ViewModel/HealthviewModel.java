@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 
-import com.example.e5322.thyrosoft.Adapter.VerticalViewPager;
+import com.example.e5322.thyrosoft.Activity.VerticalViewPager;
 import com.example.e5322.thyrosoft.Adapter.HealthTipsPagerAdapter;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
 import com.example.e5322.thyrosoft.Repository.HealthRepository;

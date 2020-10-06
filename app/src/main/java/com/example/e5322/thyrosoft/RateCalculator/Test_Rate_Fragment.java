@@ -121,6 +121,7 @@ public class Test_Rate_Fragment extends Fragment {
         value = getArguments().getParcelableArrayList("send");
         if(value.size()!=0){
 
+//            Toast.makeText(mContext, ""+value.toString(), Toast.LENGTH_SHORT).show();
             setTestNames=new ArrayList<>();
             fastingOrNot1=new ArrayList<>();
             for (int i = 0; i <value.size() ; i++) {

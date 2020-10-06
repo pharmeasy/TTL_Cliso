@@ -1,6 +1,12 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +18,15 @@ import android.widget.TextView;
 import com.example.e5322.thyrosoft.Activity.ScanSummaryActivity;
 import com.example.e5322.thyrosoft.R;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 public class NHFFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
     TextView enter, enetered;
-    ImageView enter_arrow_enter, enter_arrow_entered;
+    ImageView back, home, enter_arrow_enter, enter_arrow_entered;
     FrameLayout fragment_main;
+    private Object currentFragment;
 
 
     public static NHFFragment newInstance(String param1, String param2) {
@@ -50,17 +51,7 @@ public class NHFFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initViews(view);
 
-
-        PETCT_Frag petct_frag = new PETCT_Frag();
-        replaceFragment(petct_frag);
-
-        initListner();
-
-    }
-
-    private void initViews(View view) {
         enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
         unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
 
@@ -75,9 +66,9 @@ public class NHFFragment extends Fragment {
         enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
         enter_arrow_entered.setVisibility(View.GONE);
 
-    }
 
-    private void initListner() {
+        PETCT_Frag petct_frag = new PETCT_Frag();
+        replaceFragment(petct_frag);
 
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override

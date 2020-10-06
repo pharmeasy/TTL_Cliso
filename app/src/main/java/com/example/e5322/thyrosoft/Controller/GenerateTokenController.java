@@ -10,7 +10,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.ScanSummaryActivity;
 import com.example.e5322.thyrosoft.Fragment.PETCT_Frag;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -25,37 +24,37 @@ public class GenerateTokenController {
     private PETCT_Frag petct_frag;
     private ScanSummaryActivity scanSummaryActivity;
     ProgressDialog progressDialog;
-    int flag = 0;
+    int flag=0;
 
     public GenerateTokenController(Activity activity, PETCT_Frag petct_frag) {
         this.mActivity = activity;
         this.petct_frag = petct_frag;
         globalClass = new GlobalClass(mActivity);
-        flag = 0;
+        flag=0;
     }
 
     public GenerateTokenController(Activity activity, ScanSummaryActivity scanSummaryActivity) {
         this.mActivity = activity;
         this.scanSummaryActivity = scanSummaryActivity;
         globalClass = new GlobalClass(mActivity);
-        flag = 1;
+        flag=1;
     }
 
     public void generateToken(boolean b, JSONObject jsonObject) {
         try {
             if (b) {
-                progressDialog = GlobalClass.ShowprogressDialog(mActivity);
+                progressDialog= GlobalClass.ShowprogressDialog(mActivity);
             }
             if (requestQueue == null)
-                requestQueue = Volley.newRequestQueue(mActivity);
-            String Url = Api.gettoken;
+                requestQueue = GlobalClass.setVolleyReq(mActivity);
+            String Url =  Api.gettoken;
             globalClass.printLog("Error", TAG, "generateTokenAPI", Url);
             globalClass.printLog("Error", TAG, "generateToken post data: ", "" + jsonObject);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, Url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
-                        globalClass.hideProgressDialog(progressDialog, mActivity);
+                        globalClass.hideProgressDialog(progressDialog,mActivity);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -63,14 +62,14 @@ public class GenerateTokenController {
                     try {
                         globalClass.printLog("Error", TAG, "generateTokenAPIResponse", String.valueOf(response));
                         if (response != null) {
-                            if (flag == 0) {
+                            if (flag==0){
                                 petct_frag.getGenerateTokenResponse(response);
-                            } else {
+                            }else {
                                 scanSummaryActivity.getGenerateTokenResponse(response);
                             }
 
                         } else {
-                            GlobalClass.showTastyToast(mActivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
+                            GlobalClass.toastyError(mActivity, "Something went wrong",false);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -80,11 +79,11 @@ public class GenerateTokenController {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     try {
-                        globalClass.hideProgressDialog(progressDialog, mActivity);
-                        GlobalClass.showVolleyError(error, mActivity);
+                        globalClass.hideProgressDialog(progressDialog,mActivity);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    globalClass.printLog("Error", TAG, "generateTokenAPIResponse", error.getMessage());
                     GlobalClass.showVolleyError(error, mActivity);
                 }
             });

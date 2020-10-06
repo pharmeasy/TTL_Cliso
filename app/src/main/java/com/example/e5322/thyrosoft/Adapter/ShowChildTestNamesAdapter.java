@@ -1,18 +1,16 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ShowChildTestNamesAdapter  extends RecyclerView.Adapter<ShowChildTestNamesAdapter.ViewHolder> {
     Context context1;
@@ -36,8 +34,8 @@ public class ShowChildTestNamesAdapter  extends RecyclerView.Adapter<ShowChildTe
     @Override
     public void onBindViewHolder(@NonNull ShowChildTestNamesAdapter.ViewHolder holder, int position) {
 
-        if(GlobalClass.CheckArrayList(testname)){
-            GlobalClass.SetText(holder.showlist,testname.get(position));
+        if(testname.size()!=0){
+            holder.showlist.setText(testname.get(position));
         }
     }
 

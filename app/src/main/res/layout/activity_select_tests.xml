@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context=".HHHtest.SelectTestsActivity">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cement_light"
+        android:orientation="horizontal"
+        android:visibility="visible"
+        android:weightSum="5">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@drawable/color_back" />
+
+        <TextView
+            android:id="@+id/txt_header"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="4"
+            android:gravity="center"
+            android:text="Select POCT"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@drawable/color_homr" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/_5sdp"
+        android:text="Select Tests:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/_18sdp" />
+
+    <LinearLayout
+        android:id="@+id/ll_spinnerlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@drawable/custom_border_edittext_blue"
+        android:padding="@dimen/_5sdp"
+        android:visibility="visible">
+
+        <Spinner
+            android:id="@+id/spr_test"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_20sdp"
+            android:background="@color/transparent"
+            android:gravity="center|left" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_submit"
+        android:layout_width="@dimen/_100sdp"
+        android:layout_height="@dimen/_26sdp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/_3sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_20sdp"
+        android:background="@drawable/covidbtn"
+        android:text="@string/submit"
+        android:visibility="gone"
+        android:textColor="@color/maroon"
+        android:textSize="@dimen/_12sdp" />
+
+</LinearLayout>

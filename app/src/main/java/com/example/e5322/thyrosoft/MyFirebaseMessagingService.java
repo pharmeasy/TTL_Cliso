@@ -125,14 +125,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 if (!GlobalClass.isNull(mobile)) {
                     if (mobile.equalsIgnoreCase(loginMobileNumber)) {
-                        if (TextUtils.isEmpty(imageUrl)) {
+                        if (GlobalClass.isNull(imageUrl)) {
                             showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                         } else {
                             showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                         }
                     }
                 } else {
-                    if (TextUtils.isEmpty(imageUrl)) {
+                    if (GlobalClass.isNull(imageUrl)) {
                         showNotificationMessage(getApplicationContext(), title, message, timestamp, resultIntent, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);
                     } else {
                         showNotificationMessageWithBigImage(getApplicationContext(), title, message, timestamp, resultIntent, imageUrl, NotificationID, onGoing, autoCancel, bigText, Screen_category, Product_name);

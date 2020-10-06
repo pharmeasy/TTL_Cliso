@@ -1,9 +1,16 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
+import androidx.fragment.app.Fragment;
+
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -15,11 +22,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.Activity.CampIntimation;
 import com.example.e5322.thyrosoft.Adapter.Camp_Test_LIst;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SendTestListfromCampList;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
@@ -27,15 +33,10 @@ import com.example.e5322.thyrosoft.RateCalculatorForModels.GetMainModel;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.RateCalB2B_MASTERS_Main_Model;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -72,7 +73,7 @@ public class SelectTest extends Fragment {
     private RecyclerView recycler_all_test;
     Camp_Test_LIst camp_test_lIst;
     ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal = new ArrayList<>();
-    private String displayslectedtestToShow = "";
+    private String displayslectedtestToShow="";
     EditText sv_testsList1;
 
     public SelectTest() {
@@ -112,8 +113,26 @@ public class SelectTest extends Fragment {
         View view = inflater.inflate(R.layout.fragment_select_test, container, false);
 
         mContext = (CampIntimation) getActivity();
+        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
 
-        initViews(view);
+        recycler_all_test = (RecyclerView) view.findViewById(R.id.recycler_all_test);
+        btn_save = (Button) view.findViewById(R.id.btn_save);
+        btn_clear = (Button) view.findViewById(R.id.btn_clear);
+        sv_testsList1 = (EditText) view.findViewById(R.id.sv_testsList1);
+        show_selected_tests_list_test_ils1 = (TextView) view.findViewById(R.id.show_selected_tests_list_test_ils1);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recycler_all_test.setLayoutManager(linearLayoutManager);
+
+        sv_testsList1.setFilters(new InputFilter[]{EMOJI_FILTER});
+
+        if(displayslectedtestToShow.length()>0)
+        show_selected_tests_list_test_ils1.setText(displayslectedtestToShow);
 
         sv_testsList1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -124,13 +143,13 @@ public class SelectTest extends Fragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(getActivity(),
+                    Toast.makeText(getActivity(),
                             ToastFile.ent_feedback,
-                            2);
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(sv_testsList1, enteredString.substring(1));
+                        sv_testsList1.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(sv_testsList1, "");
+                        sv_testsList1.setText("");
                     }
                 }
             }
@@ -176,6 +195,7 @@ public class SelectTest extends Fragment {
         });
 
 
+
         btn_clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -187,8 +207,8 @@ public class SelectTest extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (show_selected_tests_list_test_ils1.getText().toString().length() == 0) {
-                    GlobalClass.showTastyToast(getActivity(), "Please select a test !", 2);
+                if (show_selected_tests_list_test_ils1.getText().toString().length()==0) {
+                    TastyToast.makeText(getActivity(), "Please select a test !", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                 } else {
                     EnterDataCampIntimation fragmentB = new EnterDataCampIntimation();
                     Bundle bundle = new Bundle();
@@ -202,30 +222,6 @@ public class SelectTest extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
-    }
-
-    private void initViews(View view) {
-        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-
-        recycler_all_test = (RecyclerView) view.findViewById(R.id.recycler_all_test);
-        btn_save = (Button) view.findViewById(R.id.btn_save);
-        btn_clear = (Button) view.findViewById(R.id.btn_clear);
-        sv_testsList1 = (EditText) view.findViewById(R.id.sv_testsList1);
-        show_selected_tests_list_test_ils1 = (TextView) view.findViewById(R.id.show_selected_tests_list_test_ils1);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        recycler_all_test.setLayoutManager(linearLayoutManager);
-
-        sv_testsList1.setFilters(new InputFilter[]{EMOJI_FILTER});
-
-        if (displayslectedtestToShow.length() > 0)
-            GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtestToShow);
-
     }
 
     private void getDataFromSharedPref() {
@@ -243,35 +239,29 @@ public class SelectTest extends Fragment {
                 totalproductlist = new ArrayList<>();
 
                 finalproductlist = new ArrayList<Base_Model_Rate_Calculator>();
+                for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                    for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+                        finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                        b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                        b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
 
-                if (GlobalClass.CheckArrayList(b2bmasterarraylistRate)){
-                    for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                        for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                            finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
-                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
-
-                            getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                        }
-
-                        if (GlobalClass.CheckArrayList(b2bmasterarraylistRate.get(i).getPROFILE())){
-                            for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
-                                b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
-                                b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
-
-                                getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
-                            }
-                        }
-
-
+                        getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                     }
-                    totalproductlist = getAllTests;
+                    for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
+                        b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
+                        b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
 
-                    callAdapaterTosetData(finalproductlist, totalproductlist);
+                        getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
+                    }
 
                 }
+                totalproductlist = getAllTests;
+
+                callAdapaterTosetData(finalproductlist, totalproductlist);
 
 
+            } else {
+                //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
 
             }
         }
@@ -282,18 +272,19 @@ public class SelectTest extends Fragment {
 
             @Override
             public void onClisktheTest(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
-                Log.v("TAG", "check changed");
+                System.out.println("check changed");
                 selectedTestsListRateCal = selectedTests;
                 camp_test_lIst.notifyDataSetChanged();
-                if (GlobalClass.CheckArrayList(selectedTestsListRateCal)) {
+                if (selectedTestsListRateCal.size() != 0) {
                     showTestNmaesRateCal = new ArrayList<>();
+
                     for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                         showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
                     }
                     displayslectedtestToShow = TextUtils.join(", ", showTestNmaesRateCal);
-                    GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtestToShow);
+                    show_selected_tests_list_test_ils1.setText(displayslectedtestToShow);
                 } else if (selectedTestsListRateCal.size() == 0) {
-                    GlobalClass.SetText(show_selected_tests_list_test_ils1, "");
+                    show_selected_tests_list_test_ils1.setText("");
                 }
 
 

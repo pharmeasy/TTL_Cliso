@@ -28,12 +28,14 @@ public class HealthRepository {
         apiInterface = RetroFit_APIClient.getInstance().getClient((Activity)context, Api.BASE_URL_TOCHECK).create(APIInteface.class);
         final MutableLiveData<List<HealthTipsApiResponseModel.HArt>> listMutableLiveData = new MutableLiveData<>();
         Call<HealthTipsApiResponseModel> responseCall = apiInterface.getHealth();
+        ///Log.e("TAG", "URL --->" + responseCall.request().url());
         responseCall.enqueue(new Callback<HealthTipsApiResponseModel>() {
             @Override
             public void onResponse(Call<HealthTipsApiResponseModel> call, Response<HealthTipsApiResponseModel> response) {
                 try {
-                    if (response.body()!=null && response.body().getHArt()!=null && response.body().getHArt().length != 0) {
+                    if (response.body().getHArt().length != 0) {
                         listMutableLiveData.setValue(Arrays.asList(response.body().getHArt()));
+                       // Log.e("TGA", "onResponse: " + listMutableLiveData.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

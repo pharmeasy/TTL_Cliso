@@ -3,7 +3,7 @@ package com.example.e5322.thyrosoft.Summary_MainModel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.example.e5322.thyrosoft.API.Urls;
+import com.example.e5322.thyrosoft.Cliso_BMC.Models.Urls;
 
 public class Woeditlist implements Parcelable {
     private Woe woe;

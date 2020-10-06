@@ -55,31 +55,24 @@ class KtCompanyAdapter(var mcontect: Context, var cmplist: ArrayList<KTCompanydt
 
         viewholder.name!!.text = cmplist.get(p1).NAME
         viewholder.designation!!.text = cmplist.get(p1).DESIGNATION
-        viewholder.role!!.text = "Role: "+cmplist.get(p1).ROLE
+        viewholder.role!!.text = "Role: " + cmplist.get(p1).ROLE
         viewholder.email_id!!.text = cmplist.get(p1).EMAIL_ID
 
-        Linkify.addLinks(viewholder.email_id, Linkify.EMAIL_ADDRESSES)
-        viewholder.email_id!!.movementMethod=LinkMovementMethod.getInstance()
+        Linkify.addLinks(viewholder.email_id!!, Linkify.EMAIL_ADDRESSES)
+        viewholder.email_id!!.movementMethod = LinkMovementMethod.getInstance()
 
         if (cmplist.get(p1).CATEGORY.equals("MANAGER", true)) {
             viewholder.mobile_number!!.setVisibility(View.GONE)
         } else {
-            if (cmplist.get(p1).MOBILE!= null) {
+            if (cmplist.get(p1).MOBILE != null) {
                 viewholder.mobile_number!!.setVisibility(View.VISIBLE)
-                viewholder.mobile_number!!.text="Mobile number: " + cmplist.get(p1).MOBILE
+                viewholder.mobile_number!!.text = "Mobile number: " + cmplist.get(p1).MOBILE
             } else {
                 viewholder.mobile_number!!.setVisibility(View.GONE)
             }
         }
 
         val url = Api.imgURL + cmplist.get(p1).ECODE + ".jpg"
-        if (url != null) {
-            KTGlobalclass().DisplayImage(mcontect, url, viewholder.profile)
-        } else {
-            Glide.with(mcontect)
-                    .load("")
-                    .placeholder(mcontect.getResources().getDrawable(R.drawable.userprofile))
-                    .into(viewholder.profile)
-        }
+        KTGlobalclass().DisplayImage(mcontect, url, viewholder.profile, R.drawable.userprofile)
     }
 }

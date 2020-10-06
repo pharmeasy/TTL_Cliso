@@ -2,8 +2,8 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -24,14 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.DeleteWoe_Controller;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.DeleteWOEResponseModel;
@@ -45,7 +47,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,7 +67,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class SummaryActivity_New extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class SummaryActivity_New extends AppCompatActivity {
     public static com.android.volley.RequestQueue sendGPSDetails;
     public static com.android.volley.RequestQueue POstQue;
     private static String stringofconvertedTime;
@@ -71,35 +75,38 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
     LinearLayoutManager linearLayoutManager;
     LinearLayout SGCLinearid, ll_patient_age, ll_patient_gender;
-    TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, txt_pat_age, txt_pat_gender;
+    TextView saverepeat, title, delete_woe, ref_by_txt, serial_number, serial_number_re, txt_pat_age, txt_pat_gender;
     RecyclerView sample_list;
     String getSelctedTests, passProdcucts, getbrandname;
-    String getStateName, getCountryName, getCityName;
+    int saveSrNumber;
+    AlertDialog.Builder alertDialog;
     SharedPreferences prefs;
     SharedPreferences savepatientDetails;
     SharedPreferences preferences;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
+    ArrayList<BarcodelistModel> barcodelists;
+    ProgressDialog barProgressDialog;
+    BarcodelistModel barcodelist;
     Barcodelist barcodelistData;
     RequestQueue deletePatienDetail;
     DatabaseHelper myDb;
     LinearLayout btech_layout, refbylinear;
-    Activity mActivity;
+    int convertSrno;
+    Date date;
+    Context context1;
     ImageView back, home;
-    GoogleApiClient mGoogleApiClient;
-    Location mLocation;
-    LocationManager mLocationManager;
-    LocationRequest mLocationRequest;
+
+
     com.google.android.gms.location.LocationListener listener;
     long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     long FASTEST_INTERVAL = 2000; /* 2 sec */
+    LocationManager locationManager;
     String getIMEINUMBER;
     String mobileModel;
-    String latitudePassTOAPI;
-    String longitudePassTOAPI;
     LinearLayout linamt_collected;
     TextView amtcollected;
     private String totalAmount, amt_collected, patient_id_to_delete_tests;
-    private String patientName, patientYearType, user, passwrd, access, api_key;
+    private String patientName, patientYearType, user, passwrd, access, api_key, status;
     private String patientYear, patientGender;
     private String sampleCollectionDate;
     private String message;
@@ -107,7 +114,7 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String getFinalAddressToPost;
     private String getFinalPhoneNumberToPost;
     private String getFinalEmailIdToPost;
-    private String TAG = mActivity.getClass().getSimpleName();
+    private String TAG = SummaryActivity_New.this.getClass().getSimpleName();
     private String outputDateStr;
     private String nameString;
     private String getFinalAge;
@@ -141,7 +148,6 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     private String location, fromcome;
     private LinearLayout ll_location;
     private TextView txt_setLocation;
-    public ArrayList<Barcodelist> barcodelists;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
@@ -169,259 +175,6 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.summary_activity_new);
-        mActivity = SummaryActivity_New.this;
-
-        initViews();
-
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
-
-        SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
-        myDb = new DatabaseHelper(this);
-        SharedPreferences getModelNumber = getSharedPreferences("MobileName", MODE_PRIVATE);
-        mobileModel = getModelNumber.getString("mobileName", null);
-
-        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-        savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        nameString = savepatientDetails.getString("name", null);
-        getFinalAge = savepatientDetails.getString("age", null);
-        saveGenderId = savepatientDetails.getString("gender", null);
-        getFinalTime = savepatientDetails.getString("sct", null);
-        getageType = savepatientDetails.getString("ageType", null);
-        getFinalDate = savepatientDetails.getString("date", null);
-
-        labname = savepatientDetails.getString("labname", null);
-        labAddress = savepatientDetails.getString("labAddress", null);
-
-        patientAddress = savepatientDetails.getString("patientAddress", null);
-        referrredBy = savepatientDetails.getString("refBy", null);
-        referenceID = savepatientDetails.getString("refId", null);
-        labIDaddress = savepatientDetails.getString("labIDaddress", null);
-        btechIDToPass = savepatientDetails.getString("btechIDToPass", null);
-        btechNameToPass = savepatientDetails.getString("btechNameToPass", null);
-        getcampIDtoPass = savepatientDetails.getString("getcampIDtoPass", null);
-        kycinfo = savepatientDetails.getString("kycinfo", null);
-        typename = savepatientDetails.getString("woetype", null);
-        sr_number = savepatientDetails.getString("SR_NO", null);
-
-
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        version = pInfo.versionName;
-        versionCode = pInfo.versionCode;
-
-        if (!GlobalClass.isNull(referrredBy)) {
-            refbylinear.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(ref_by_txt, referrredBy);
-        } else {
-            refbylinear.setVisibility(View.GONE);
-        }
-
-        initListner();
-
-        if (!GlobalClass.isNull(saveGenderId)) {
-            if (saveGenderId.equalsIgnoreCase("F")) {
-                genderType = "Female";
-            } else if (saveGenderId.equalsIgnoreCase("M")) {
-                genderType = "Male";
-            }
-        }
-
-        if (!GlobalClass.isNull(getageType)) {
-            if (getageType.equalsIgnoreCase("Years")) {
-                ageType = "Y";
-            } else if (getageType.equalsIgnoreCase("Months")) {
-                ageType = "M";
-            } else if (getageType.equalsIgnoreCase("Days")) {
-                ageType = "D";
-            }
-        }
-
-        finalspecimenttypewiselist = new ArrayList<>();
-        mActivity.setTitle("Summary");
-
-        Bundle bundle = getIntent().getExtras();
-        getSelctedTests = bundle.getString("tetsts");
-        getbrandname = bundle.getString("brandname");
-        fromcome = bundle.getString("fromcome", "");
-        location = bundle.getString("location");
-        passProdcucts = bundle.getString("passProdcucts");
-        totalAmount = bundle.getString("TotalAmt");
-        amt_collected = bundle.getString("CollectedAmt");
-        patient_id_to_delete_tests = bundle.getString("patientId");
-        finalspecimenttypewiselist = bundle.getParcelableArrayList("sendArraylist");
-        getBarcodesOffline = bundle.getString("barcodes");
-        preferences = getSharedPreferences("patientDetails", MODE_PRIVATE);
-
-        patientName = preferences.getString("name", "");
-        patientYear = preferences.getString("year", "");
-        patientYearType = preferences.getString("yearType", "");
-        patientGender = preferences.getString("gender", "");
-
-        getFinalTime = GlobalClass.changetimeformate(getFinalTime);
-
-        Log.e(TAG, "getFinalDate---->" + getFinalDate);
-        Log.e(TAG, "getFinalTime---->" + getFinalTime);
-
-
-        GlobalClass.SetText(pat_type, getbrandname + "/" + typename + "/" + user);
-        GlobalClass.SetText(pat_sct, getFinalDate + " " + getFinalTime);
-        GlobalClass.SetText(pat_name, nameString);
-
-        if (GlobalClass.isNull(fromcome)) {
-            linamt_collected.setVisibility(View.GONE);
-        } else {
-            linamt_collected.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(amtcollected, amt_collected);
-        }
-
-        try {
-            if (!GlobalClass.isNull(typename) && typename.equalsIgnoreCase("WHATERS")) {
-                ll_patient_age.setVisibility(View.GONE);
-                ll_patient_gender.setVisibility(View.GONE);
-            } else {
-                if (!GlobalClass.isNull(getFinalAge)) {
-                    ll_patient_age.setVisibility(View.VISIBLE);
-                    GlobalClass.SetText(txt_pat_age, getFinalAge + " " + getageType);
-                } else {
-                    ll_patient_age.setVisibility(View.GONE);
-                }
-                if (!GlobalClass.isNull(genderType)) {
-                    ll_patient_gender.setVisibility(View.VISIBLE);
-                    GlobalClass.SetText(txt_pat_gender, genderType);
-                } else {
-                    ll_patient_gender.setVisibility(View.GONE);
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        GlobalClass.SetText(pat_amt_collected, amt_collected);
-        GlobalClass.SetText(serial_number, sr_number);
-
-        if (!GlobalClass.isNull(location)) {
-            ll_location.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(txt_setLocation, location);
-        } else {
-            ll_location.setVisibility(View.GONE);
-        }
-
-        GlobalClass.SetText(title, "Summary");
-
-        getFinalAddressToPost = GlobalClass.setHomeAddress;
-        getFinalPhoneNumberToPost = GlobalClass.getPhoneNumberTofinalPost;
-        getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
-
-        GlobalClass.SetText(tests, passProdcucts);
-
-        barcodelists = new ArrayList<>();
-
-        if (GlobalClass.CheckArrayList(finalspecimenttypewiselist)) {
-            for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
-                barcodelistData = new Barcodelist();
-                barcodelistData.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
-                barcodelistData.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
-                barcodelists.add(barcodelistData);
-            }
-        }
-
-
-        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(mActivity, barcodelists, pass_to_api);
-        sample_list.setAdapter(getPatientSampleDetails);
-
-
-    }
-
-    private void initListner() {
-        saverepeat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                fetchData();
-            }
-        });
-
-        delete_woe.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
-                alertDialogBuilder.setTitle(MessageConstants.CONFIRM_DT);
-                alertDialogBuilder.setMessage(ToastFile.wish_woe_dlt);
-                alertDialogBuilder.setPositiveButton(MessageConstants.YES,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                if (!GlobalClass.isNetworkAvailable(mActivity)) {
-                                    boolean deletedRows = myDb.deleteData(getBarcodesOffline);
-                                    if (deletedRows)
-                                        GlobalClass.showTastyToast(mActivity, ToastFile.woeDelete, 1);
-                                    finish();
-                                    Constants.covidwoe_flag = "1";
-                                    Intent i = new Intent(mActivity, ManagingTabsActivity.class);
-                                    startActivity(i);
-                                } else {
-                                    deleteWoe();
-                                }
-                            }
-                        });
-
-                alertDialogBuilder.setNegativeButton(MessageConstants.NO, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                AlertDialog alertDialog = alertDialogBuilder.create();
-                alertDialog.show();
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-
-            }
-        });
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(mActivity);
-            }
-        });
-
-    }
-
-    private void initViews() {
         pat_type = (TextView) findViewById(R.id.pat_type);
         pat_sct = (TextView) findViewById(R.id.pat_sct);
         pat_name = (TextView) findViewById(R.id.pat_name);
@@ -453,9 +206,265 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         amtcollected = findViewById(R.id.txt_amtcollect);
         linamt_collected = findViewById(R.id.ll_amtcollect);
 
-        linearLayoutManager = new LinearLayoutManager(mActivity);
+        linearLayoutManager = new LinearLayoutManager(SummaryActivity_New.this);
         sample_list.setLayoutManager(linearLayoutManager);
 
+
+//        setHasOptionsMenu(true);
+
+        context1 = SummaryActivity_New.this;
+
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
+
+        SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
+        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
+        myDb = new DatabaseHelper(this);
+        SharedPreferences getModelNumber = getSharedPreferences("MobileName", MODE_PRIVATE);
+        mobileModel = getModelNumber.getString("mobileName", null);
+
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+
+
+        savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        nameString = savepatientDetails.getString("name", null);
+        getFinalAge = savepatientDetails.getString("age", null);
+        saveGenderId = savepatientDetails.getString("gender", null);
+        getFinalTime = savepatientDetails.getString("sct", null);
+        getageType = savepatientDetails.getString("ageType", null);
+        getFinalDate = savepatientDetails.getString("date", null);
+
+        labname = savepatientDetails.getString("labname", null);
+        labAddress = savepatientDetails.getString("labAddress", null);
+
+        patientAddress = savepatientDetails.getString("patientAddress", null);
+        referrredBy = savepatientDetails.getString("refBy", null);
+        referenceID = savepatientDetails.getString("refId", null);
+        labIDaddress = savepatientDetails.getString("labIDaddress", null);
+        btechIDToPass = savepatientDetails.getString("btechIDToPass", null);
+        btechNameToPass = savepatientDetails.getString("btechNameToPass", null);
+        getcampIDtoPass = savepatientDetails.getString("getcampIDtoPass", null);
+        kycinfo = savepatientDetails.getString("kycinfo", null);
+        typename = savepatientDetails.getString("woetype", null);
+        sr_number = savepatientDetails.getString("SR_NO", null);
+
+   /*     if (sr_number != null)
+            pass_to_api = Integer.parseInt(sr_number);
+
+        pass_to_api = Integer.parseInt(sr_number);
+        int edta_sr_num = pass_to_api + 1;*/
+
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        version = pInfo.versionName;
+        //get the app version Code for checking
+        versionCode = pInfo.versionCode;
+        //display the current version in a TextView
+
+        if (referrredBy != null) {
+            refbylinear.setVisibility(View.VISIBLE);
+            ref_by_txt.setText(referrredBy);
+        } else {
+            refbylinear.setVisibility(View.GONE);
+        }
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+//                Intent i = new Intent(SummaryActivity_New.this, ProductLisitngActivityNew.class);
+//                startActivity(i);
+
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(SummaryActivity_New.this);
+            }
+        });
+
+   /*     if (saveGenderId.equalsIgnoreCase("F")) {
+            genderType = "Female";
+        } else if (saveGenderId.equalsIgnoreCase("M")) {
+            genderType = "Male";
+        }
+
+        if (getageType.equalsIgnoreCase("Years")) {
+            ageType = "Y";
+        } else if (getageType.equalsIgnoreCase("Months")) {
+            ageType = "M";
+        } else if (getageType.equalsIgnoreCase("Days")) {
+            ageType = "D";
+        }*/
+
+
+        if (!GlobalClass.isNull(saveGenderId)) {
+            if (saveGenderId.equalsIgnoreCase("F")) {
+                genderType = "Female";
+            } else if (saveGenderId.equalsIgnoreCase("M")) {
+                genderType = "Male";
+            }
+        }
+
+        if (!GlobalClass.isNull(getageType)) {
+            if (getageType.equalsIgnoreCase("Years")) {
+                ageType = "Y";
+            } else if (getageType.equalsIgnoreCase("Months")) {
+                ageType = "M";
+            } else if (getageType.equalsIgnoreCase("Days")) {
+                ageType = "D";
+            }
+        }
+
+        finalspecimenttypewiselist = new ArrayList<>();
+        SummaryActivity_New.this.setTitle("Summary");
+
+        Bundle bundle = getIntent().getExtras();
+        getSelctedTests = bundle.getString("tetsts");
+        getbrandname = bundle.getString("brandname");
+        fromcome = bundle.getString("fromcome", "");
+        location = bundle.getString("location");
+        passProdcucts = bundle.getString("passProdcucts");
+//        amountPaid = bundle.getString("payment");
+        totalAmount = bundle.getString("TotalAmt");
+        amt_collected = bundle.getString("CollectedAmt");
+        patient_id_to_delete_tests = bundle.getString("patientId");
+        finalspecimenttypewiselist = bundle.getParcelableArrayList("sendArraylist");
+        getBarcodesOffline = bundle.getString("barcodes");
+
+        //   finalspecimenttypewiselist= bundle.getParcelableArrayList("getOutlablist");
+        preferences = getSharedPreferences("patientDetails", MODE_PRIVATE);
+
+        patientName = preferences.getString("name", null);
+        patientYear = preferences.getString("year", null);
+        patientYearType = preferences.getString("yearType", null);
+        patientGender = preferences.getString("gender", null);
+
+        getFinalTime = GlobalClass.changetimeformate(getFinalTime);
+
+        Log.e(TAG, "getFinalDate---->" + getFinalDate);
+        Log.e(TAG, "getFinalTime---->" + getFinalTime);
+
+        pat_type.setText(getbrandname + "/" + typename + "/" + user);
+        pat_sct.setText(getFinalDate + " " + getFinalTime);
+        pat_name.setText(nameString);
+
+        if (fromcome.equals("")) {
+            linamt_collected.setVisibility(View.GONE);
+        } else {
+            linamt_collected.setVisibility(View.VISIBLE);
+            amtcollected.setText(amt_collected);
+        }
+
+        try {
+            if (typename.equalsIgnoreCase("WHATERS")) {
+                ll_patient_age.setVisibility(View.GONE);
+                ll_patient_gender.setVisibility(View.GONE);
+            } else {
+                if (getFinalAge != null && !getFinalAge.equalsIgnoreCase("") && getageType != null && !getageType.equalsIgnoreCase("")) {
+                    ll_patient_age.setVisibility(View.VISIBLE);
+                    txt_pat_age.setText(getFinalAge + " " + getageType);
+                } else {
+                    ll_patient_age.setVisibility(View.GONE);
+                }
+                if (genderType != null && !genderType.equalsIgnoreCase("")) {
+                    ll_patient_gender.setVisibility(View.VISIBLE);
+                    txt_pat_gender.setText(genderType);
+                } else {
+                    ll_patient_gender.setVisibility(View.GONE);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        pat_amt_collected.setText(amt_collected);
+        serial_number.setText(sr_number);
+        if (location != null && !location.equalsIgnoreCase("")) {
+            ll_location.setVisibility(View.VISIBLE);
+            txt_setLocation.setText(location);
+        } else {
+            ll_location.setVisibility(View.GONE);
+        }
+        title.setText("Summary");
+
+        getFinalAddressToPost = GlobalClass.setHomeAddress;
+        getFinalPhoneNumberToPost = GlobalClass.getPhoneNumberTofinalPost;
+        getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
+
+        tests.setText(passProdcucts);
+
+        GlobalClass.barcodelists = new ArrayList<>();
+
+        for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
+            barcodelistData = new Barcodelist();
+            barcodelistData.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
+            barcodelistData.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
+            GlobalClass.barcodelists.add(barcodelistData);
+        }
+
+        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(SummaryActivity_New.this, GlobalClass.barcodelists, pass_to_api);
+        sample_list.setAdapter(getPatientSampleDetails);
+
+        saverepeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                fetchData();
+            }
+        });
+        delete_woe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context1);
+                alertDialogBuilder.setTitle("Confirm delete !");
+                alertDialogBuilder.setMessage(ToastFile.wish_woe_dlt);
+                alertDialogBuilder.setPositiveButton("Yes",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                if (Global.isoffline || !GlobalClass.isNetworkAvailable(SummaryActivity_New.this)) {
+                                    boolean deletedRows = myDb.deleteData(getBarcodesOffline);
+                                    if (deletedRows == true)
+                                        TastyToast.makeText(SummaryActivity_New.this, ToastFile.woeDelete, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                    finish();
+                                    Constants.covidwoe_flag = "1";
+                                    Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
+                                    startActivity(i);
+                                } else {
+                                    deleteWoe();
+                                }
+                            }
+                        });
+
+                alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
+        });
     }
 
     private void deleteWoe() {
@@ -480,10 +489,20 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         editor.remove("WOEbrand");
         editor.commit();
 
+        barProgressDialog = new ProgressDialog(context1);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
 
         if (!flagforOnce) {
             flagforOnce = true;
-            deletePatienDetail = GlobalClass.setVolleyReq(mActivity);
+            deletePatienDetail = GlobalClass.setVolleyReq(context1);
 
             JSONObject jsonObject = null;
             try {
@@ -498,54 +517,49 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            try {
-                if (ControllersGlobalInitialiser.deleteWoe_controller != null) {
-                    ControllersGlobalInitialiser.deleteWoe_controller = null;
+            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.deleteWOE, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.e(TAG, "onResponse: " + response);
+                    try {
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
+                        Gson gson = new Gson();
+                        DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
+                        if (deleteWOEResponseModel != null) {
+                            if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                                Constants.covidwoe_flag = "1";
+                                TastyToast.makeText(context1, ToastFile.woe_dlt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                Intent intent = new Intent(context1, ManagingTabsActivity.class);
+                                startActivity(intent);
+                            } else {
+                                TastyToast.makeText(context1, deleteWOEResponseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }
+                        } else {
+                            TastyToast.makeText(context1, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                ControllersGlobalInitialiser.deleteWoe_controller = new DeleteWoe_Controller(mActivity, SummaryActivity_New.this);
-                ControllersGlobalInitialiser.deleteWoe_controller.deletewoe(jsonObject, deletePatienDetail);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+
+                }
+            });
+            deletePatienDetail.add(jsonObjectRequest1);
+            Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest1);
+            Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
         } else {
-            GlobalClass.showTastyToast(mActivity, MessageConstants.Sample_not_delete, 2);
+            TastyToast.makeText(context1, "Sample not deleted successfully !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-
-        latitudePassTOAPI = String.valueOf(location.getLatitude());
-        longitudePassTOAPI = String.valueOf(location.getLongitude());
-
-        Double getlat = Double.parseDouble(latitudePassTOAPI);
-        Double getlog = Double.parseDouble(longitudePassTOAPI);
-
-        Geocoder gcd = new Geocoder(mActivity, Locale.getDefault());
-        List<Address> addresses = null;
-        try {
-            addresses = gcd.getFromLocation(getlat, getlog, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (GlobalClass.CheckArrayList(addresses)) {
-            if (addresses.size() != 0) {
-                getStateName = addresses.get(0).getAdminArea();
-                getCountryName = addresses.get(0).getCountryName();
-                getCityName = addresses.get(0).getLocality();
-
-                Log.v("TAG", addresses.get(0).getAdminArea());
-                Log.v("TAG", addresses.get(0).getCountryName());
-                Log.v("TAG", addresses.get(0).getLocality());
-            }
-        } else {
-            getStateName = "";
-            getCountryName = "";
-            getCityName = "";
-        }
-    }
 
     private void fetchData() {
 
@@ -572,14 +586,14 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
         GlobalClass.setflagToRefreshData = true;
         Intent intent = null;
 
-        if (GlobalClass.isNull(fromcome)) {
+        if (fromcome.equals("")) {
             Constants.covidwoe_flag = "1";
-            intent = new Intent(mActivity, ManagingTabsActivity.class);
+            intent = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         } else {
-            intent = new Intent(mActivity, SpecialOffer_Activity.class);
+            intent = new Intent(SummaryActivity_New.this, SpecialOffer_Activity.class);
             intent.putExtra("passToWoefragment", "frgamnebt");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -597,87 +611,13 @@ public class SummaryActivity_New extends AppCompatActivity implements GoogleApiC
 
 
     @Override
-    public void onConnected(Bundle bundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        startLocationUpdates();
-
-        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if (mLocation != null) {
-            startLocationUpdates();
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    protected void startLocationUpdates() {
-        // Create the location request
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
-        // Request location updates
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-                mLocationRequest, this);
-        Log.e("reque", "--->>>>");
-    }
-
-
-    @Override
     public void onBackPressed() {
         finish();
         Constants.covidwoe_flag = "1";
-        Intent i = new Intent(mActivity, ManagingTabsActivity.class);
+        Intent i = new Intent(SummaryActivity_New.this, ManagingTabsActivity.class);
         startActivity(i);
         super.onBackPressed();
     }
 
-    public void getdeletewoe(JSONObject response) {
-        try {
-            Gson gson = new Gson();
-            DeleteWOEResponseModel deleteWOEResponseModel = gson.fromJson(String.valueOf(response), DeleteWOEResponseModel.class);
-            if (deleteWOEResponseModel != null) {
-                if (!GlobalClass.isNull(deleteWOEResponseModel.getRES_ID()) && deleteWOEResponseModel.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
-                    Constants.covidwoe_flag = "1";
-                    GlobalClass.showTastyToast(mActivity, ToastFile.woe_dlt, 1);
-                    Intent intent = new Intent(mActivity, ManagingTabsActivity.class);
-                    startActivity(intent);
-                } else {
-                    GlobalClass.showTastyToast(mActivity, deleteWOEResponseModel.getResponse(), 2);
-                }
-            } else {
-                GlobalClass.showTastyToast(mActivity, ToastFile.something_went_wrong, 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
 }

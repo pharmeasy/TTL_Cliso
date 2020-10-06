@@ -15,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.EditTestExpandListAdapterCheckboxDelegate;
 import com.example.e5322.thyrosoft.Interface.EditTestExpandListAdapterCheckboxDelegateAddWOE;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Product_Rate_MasterModel;
@@ -121,10 +118,10 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
         } else {
             holder = (ViewParentHolder) convertView.getTag();
         }
-        if (GlobalClass.CheckArrayList(filteredList)) {
-            GlobalClass.SetText(holder.txtHeader, filteredList.get(groupPosition).getTestType());
+        if (filteredList != null && !filteredList.isEmpty()) {
+            holder.txtHeader.setText(filteredList.get(groupPosition).getTestType());
         } else {
-            GlobalClass.SetText(holder.txtHeader, "");
+            holder.txtHeader.setText("");
         }
 
 
@@ -140,7 +137,7 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
             holder = new ViewChildHolder();
 
             SharedPreferences getAddtionalTest = activity.getSharedPreferences("AddTestType", Context.MODE_PRIVATE);
-            getTestName = getAddtionalTest.getString("TESTS", "");
+            getTestName = getAddtionalTest.getString("TESTS", null);
 
             holder.txt_test = (TextView) convertView.findViewById(R.id.txt_test);
             holder.txt_dis_amt = (TextView) convertView.findViewById(R.id.txt_dis_amt);
@@ -159,22 +156,21 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
 
 
         final BaseModel testRateMasterModel = filteredList.get(groupPosition).getTestRateMasterModels().get(childPosition);
-
-        GlobalClass.SetText(holder.txt_test, testRateMasterModel.getName());
-        GlobalClass.SetText(holder.txt_dis_amt, "₹ " + testRateMasterModel.getBillrate() + "/-");
+        holder.txt_test.setText(testRateMasterModel.getName());
+        holder.txt_dis_amt.setText("₹ " + testRateMasterModel.getBillrate() + "/-");
         holder.txt_dis_amt.setVisibility(View.GONE);
 
-        if (!GlobalClass.isNull(testRateMasterModel.getType()) && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
+        if (testRateMasterModel.getType() != null && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
             holder.img_test_type.setImageDrawable(activity.getResources().getDrawable(R.drawable.p));
-        } else if (!GlobalClass.isNull(testRateMasterModel.getType()) && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
+        } else if (testRateMasterModel.getType() != null && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
             holder.img_test_type.setImageDrawable(activity.getResources().getDrawable(R.drawable.p));
-        } else if (!GlobalClass.isNull(testRateMasterModel.getType()) && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+        } else if (testRateMasterModel.getType() != null && testRateMasterModel.getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
             holder.img_test_type.setImageDrawable(activity.getResources().getDrawable(R.drawable.t));
         }
-        if (!GlobalClass.isNull(testRateMasterModel.getFasting()) && testRateMasterModel.getFasting().equalsIgnoreCase("FASTING")) {
+        if (testRateMasterModel.getFasting().equalsIgnoreCase("FASTING")) {
             holder.imgTestFasting.setVisibility(View.GONE);
             holder.imgTestFasting.setImageDrawable(activity.getResources().getDrawable(R.drawable.visit_fasting));
-        } else if (!GlobalClass.isNull(testRateMasterModel.getFasting()) && testRateMasterModel.getFasting().equalsIgnoreCase("NON FASTING")) {
+        } else if (testRateMasterModel.getFasting().equalsIgnoreCase("NON FASTING")) {
             holder.imgTestFasting.setVisibility(View.GONE);
             holder.imgTestFasting.setImageDrawable(activity.getResources().getDrawable(R.drawable.visit_non_fasting));
         } else {
@@ -188,41 +184,35 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
         holder.imgCheck.setVisibility(View.VISIBLE);
 
 
-        if (!GlobalClass.isNull(testNames)) {
+        if (testNames != null) {
             String[] elements = testNames.split(",");
             List<String> fixedLenghtList = Arrays.asList(elements);
             listOfString = new ArrayList<String>(fixedLenghtList);
 
         }
 
-        if (GlobalClass.CheckArrayList(selectedTests)) {
+        if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {
                 BaseModel selectedTestModel = selectedTests.get(i);
-                if (!GlobalClass.isNull(selectedTestModel.getCode()) &&
-                        !GlobalClass.isNull(testRateMasterModel.getCode()) &&
-                        selectedTestModel.getCode().equalsIgnoreCase(testRateMasterModel.getCode())) {
+                if (selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
                     holder.imgChecked.setVisibility(View.VISIBLE);
                     holder.imgCheck.setVisibility(View.GONE);
                     holder.isSelectedDueToParent = false;
                     holder.parentTestCode = "";
                     isChecked = true;
-                } else if (GlobalClass.checkArray(selectedTestModel.getChilds())
-                        && GlobalClass.checkArray(testRateMasterModel.getChilds()) &&
-                        selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
+                } else if (selectedTestModel.getChilds() != null && testRateMasterModel.getChilds() != null && selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
                     holder.imgChecked.setVisibility(View.GONE);
+//                    holder.imgChecked.setVisibility(View.VISIBLE);
                     holder.imgCheck.setVisibility(View.GONE);
                     holder.isSelectedDueToParent = true;
                     holder.parentTestCode = selectedTestModel.getCode();
                     holder.parentTestname = selectedTestModel.getName();
                     isChecked = true;
                 } else {
-                    if (GlobalClass.checkArray(selectedTestModel.getChilds())) {
+                    if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
                         for (BaseModel.Childs ctm :
                                 selectedTestModel.getChilds()) {
-                            if (!GlobalClass.isNull(ctm.getCode()) &&
-                                    !GlobalClass.isNull(testRateMasterModel.getCode()) &&
-                                    ctm.getCode().equalsIgnoreCase(testRateMasterModel.getCode())) {
-
+                            if (ctm.getCode().equals(testRateMasterModel.getCode())) {
                                 holder.imgChecked.setVisibility(View.GONE);
                                 holder.imgCheck.setVisibility(View.GONE);
                                 holder.isSelectedDueToParent = true;
@@ -246,15 +236,10 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
             holder.imgCheck.setVisibility(View.VISIBLE);
         }
 
-
-        if (GlobalClass.CheckArrayList(listOfString)) {
-            for (int i = 0; i < listOfString.size(); i++) {
-                if (!GlobalClass.isNull(testRateMasterModel.getCode()) &&
-                        !GlobalClass.isNull(listOfString.get(i)) &&
-                        testRateMasterModel.getCode().equalsIgnoreCase(listOfString.get(i))) {
-                    holder.imgCheck.setVisibility(View.GONE);
-                    holder.imgChecked.setVisibility(View.INVISIBLE);
-                }
+        for (int i = 0; i < listOfString.size(); i++) {
+            if (testRateMasterModel.getCode().equalsIgnoreCase(listOfString.get(i))) {
+                holder.imgCheck.setVisibility(View.GONE);
+                holder.imgChecked.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -263,54 +248,54 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
             @Override
             public void onClick(View v) {
 
+
+                String str = "";
+
+                str = str + testRateMasterModel.getCode() + ",";
+
+
                 String slectedpackage = "";
+
+
                 slectedpackage = testRateMasterModel.getName();
 
                 tempselectedTests = new ArrayList<>();
                 tempselectedTests1 = new ArrayList<>();
 
-                if (!GlobalClass.isNull(testRateMasterModel.getType()) &&
-                        testRateMasterModel.getType().equalsIgnoreCase("PROFILE")) {
-
-                    if (GlobalClass.CheckArrayList(selectedTests)) {
-                        for (int h = 0; h < selectedTests.size(); h++) {
-                            if (!GlobalClass.isNull(selectedTests.get(h).getType()) &&
-                                    selectedTests.get(h).getType().equalsIgnoreCase("TEST")) {
-
-                                if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
-                                    for (int l = 0; l < testRateMasterModel.getChilds().length; l++) {
-                                        if (!GlobalClass.isNull(testRateMasterModel.getChilds()[l].getCode()) &&
-                                                !GlobalClass.isNull(selectedTests.get(h).getCode()) &&
-                                                testRateMasterModel.getChilds()[l].getCode().equalsIgnoreCase(selectedTests.get(h).getCode())) {
-                                            selectedTests.remove(selectedTests.get(h));
-                                        }
-                                    }
+                if (testRateMasterModel.getType().equalsIgnoreCase("PROFILE")) {
+                    //<---------------TODO allow user to add maximum 5 tests from 'TEST' and minimum 1 from 'PROFILE'
+                    //<-------------TODO if parent'PROFILE' test containing child test from 'TEST' then it removes the tests from 'TEST' ---------------->
+                    for (int h = 0; h < selectedTests.size(); h++) {
+                        if (selectedTests.get(h).getType().equalsIgnoreCase("TEST")) {
+                            for (int l = 0; l < testRateMasterModel.getChilds().length; l++) {
+                                if (testRateMasterModel.getChilds()[l].getCode().equalsIgnoreCase(selectedTests.get(h).getCode())) {
+                                    selectedTests.remove(selectedTests.get(h));
                                 }
                             }
+
                         }
                     }
 
-                    if (setFlagFortests) {
-                        if (flagToChangetheTest) {
+                    //<--------------TODO 'setFlagFortests' is set for if any tests is selected in 'TEST'
+                    //<---------------TODO 'flagToChangetheTest' is set for if any tests is selected in 'PROFILE'
+                    if (setFlagFortests == true) {
+                        if (flagToChangetheTest == true) {
                             selectedTestFlag = new ArrayList<>();
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                for (int i = 0; i < selectedTests.size(); i++) {
-                                    if (!GlobalClass.isNull(selectedTests.get(i).getType()) && selectedTests.get(i).getType().equalsIgnoreCase("TEST")) {
-                                        selectedTestFlag.add(selectedTests.get(i));
-                                    }
+                            for (int i = 0; i < selectedTests.size(); i++) {
+                                if (selectedTests.get(i).getType().equalsIgnoreCase("TEST")) {
+                                    selectedTestFlag.add(selectedTests.get(i));
                                 }
                             }
-
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
+                            if (selectedTests != null && selectedTests.size() > 0) {
+//                            Alter box
                                 selectedTests.clear();
-                                if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                                if (testRateMasterModel.getChilds() != null) {
                                     for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-
+                                        //tejas t -----------------------------
                                         for (int j = 0; j < selectedTests.size(); j++) {
-                                            if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+
+                                            if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                                System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
 
                                                 tempselectedTests1.add(selectedTests.get(j).getName());
                                                 tempselectedTests.add(selectedTests.get(j));
@@ -318,19 +303,15 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                         }
                                     }
                                 }
-
-                                if (GlobalClass.CheckArrayList(selectedTests)) {
-                                    for (int j = 0; j < selectedTests.size(); j++) {
-                                        BaseModel selectedTestModel123 = selectedTests.get(j);
-                                        if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                            tempselectedTests1.add(selectedTests.get(j).getName());
-                                            tempselectedTests.add(selectedTestModel123);
-                                        }
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    BaseModel selectedTestModel123 = selectedTests.get(j);
+                                    if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+                                        tempselectedTests1.add(selectedTests.get(j).getName());
+                                        tempselectedTests.add(selectedTestModel123);
                                     }
                                 }
 
-
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                                if (tempselectedTests != null && tempselectedTests.size() > 0) {
                                     String cartproduct = TextUtils.join(",", tempselectedTests1);
                                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                                     alertDialogBuilder
@@ -344,122 +325,39 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                     androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                                     alertDialog.show();
                                 }
-
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                    for (int i = 0; i < tempselectedTests.size(); i++) {
-                                        if (GlobalClass.CheckArrayList(selectedTests)) {
-                                            for (int j = 0; j < selectedTests.size(); j++) {
-                                                if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                                        !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                        tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                    selectedTests.remove(j);
-                                                }
-                                            }
+                                for (int i = 0; i < tempselectedTests.size(); i++) {
+                                    for (int j = 0; j < selectedTests.size(); j++) {
+                                        if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            selectedTests.remove(j);
                                         }
-
                                     }
                                 }
+                                //tejas t -----------------------------
 
                                 selectedTests.add(testRateMasterModel);
-
-                                if (GlobalClass.CheckArrayList(selectedTestFlag)) {
-                                    for (int i = 0; i < selectedTestFlag.size(); i++) {
-                                        selectedTests.add(selectedTestFlag.get(i));
-                                    }
-                                    mcallback.onCheckChange(selectedTests);
-                                    flagToChangetheTest = true;
+                                for (int i = 0; i < selectedTestFlag.size(); i++) {
+                                    selectedTests.add(selectedTestFlag.get(i));
                                 }
-
-
+                                mcallback.onCheckChange(selectedTests);
+                                flagToChangetheTest = true;
                             }
                         } else {
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-
+                            if (selectedTests != null && selectedTests.size() > 0) {
+//                            Alter box
                                 selectedTestFlag = new ArrayList<>();
                                 for (int i = 0; i < selectedTests.size(); i++) {
-                                    if (!GlobalClass.isNull(selectedTests.get(i).getType()) && selectedTests.get(i).getType().equalsIgnoreCase("TEST")) {
+                                    if (selectedTests.get(i).getType().equalsIgnoreCase("TEST")) {
                                         selectedTestFlag.add(selectedTests.get(i));
                                     }
                                 }
                                 selectedTests.clear();
-                                if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                                if (testRateMasterModel.getChilds() != null) {
                                     for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                                        if (GlobalClass.CheckArrayList(selectedTests)) {
-                                            for (int j = 0; j < selectedTests.size(); j++) {
-                                                if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                        !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                        testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                    Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
-                                                    tempselectedTests1.add(selectedTests.get(j).getName());
-                                                    tempselectedTests.add(selectedTests.get(j));
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
-
-                                if (GlobalClass.CheckArrayList(selectedTests)) {
-                                    for (int j = 0; j < selectedTests.size(); j++) {
-                                        BaseModel selectedTestModel123 = selectedTests.get(j);
-                                        if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                            tempselectedTests1.add(selectedTests.get(j).getName());
-                                            tempselectedTests.add(selectedTestModel123);
-                                        }
-                                    }
-                                }
-
-
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                    String cartproduct = TextUtils.join(",", tempselectedTests1);
-                                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-                                    alertDialogBuilder
-                                            .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
-                                            .setCancelable(true)
-                                            .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
-                                                public void onClick(DialogInterface dialog, int id) {
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                                    alertDialog.show();
-                                }
-
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                    for (int i = 0; i < tempselectedTests.size(); i++) {
-                                        if (GlobalClass.CheckArrayList(selectedTests)) {
-                                            for (int j = 0; j < selectedTests.size(); j++) {
-                                                if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                                        !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                        tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                    selectedTests.remove(j);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                selectedTests.add(testRateMasterModel);
-
-                                if (GlobalClass.CheckArrayList(selectedTestFlag)) {
-                                    for (int i = 0; i < selectedTestFlag.size(); i++) {
-                                        selectedTests.add(selectedTestFlag.get(i));
-                                    }
-                                }
-
-                                mcallback.onCheckChange(selectedTests);
-                                flagToChangetheTest = true;
-
-                            } else {
-                                if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
-                                    for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                                        //tejas t -----------------------------
                                         for (int j = 0; j < selectedTests.size(); j++) {
 
-                                            if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+                                            if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                                System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
 
                                                 tempselectedTests1.add(selectedTests.get(j).getName());
                                                 tempselectedTests.add(selectedTests.get(j));
@@ -467,24 +365,22 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                         }
                                     }
                                 }
-                                if (GlobalClass.CheckArrayList(selectedTests)) {
-                                    for (int j = 0; j < selectedTests.size(); j++) {
-                                        BaseModel selectedTestModel123 = selectedTests.get(j);
-                                        if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                            tempselectedTests1.add(selectedTests.get(j).getName());
-                                            tempselectedTests.add(selectedTestModel123);
-                                        }
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    BaseModel selectedTestModel123 = selectedTests.get(j);
+                                    if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+
+                                        tempselectedTests1.add(selectedTests.get(j).getName());
+                                        tempselectedTests.add(selectedTestModel123);
                                     }
                                 }
 
-
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                                if (tempselectedTests != null && tempselectedTests.size() > 0) {
                                     String cartproduct = TextUtils.join(",", tempselectedTests1);
                                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                                     alertDialogBuilder
                                             .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                                             .setCancelable(true)
-                                            .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                 public void onClick(DialogInterface dialog, int id) {
                                                     dialog.dismiss();
                                                 }
@@ -492,129 +388,102 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                     androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                                     alertDialog.show();
                                 }
+                                for (int i = 0; i < tempselectedTests.size(); i++) {
+                                    for (int j = 0; j < selectedTests.size(); j++) {
+                                        if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            selectedTests.remove(j);
+                                        }
+                                    }
+                                }
+                                //tejas t -----------------------------
+                                selectedTests.add(testRateMasterModel);
+                                for (int i = 0; i < selectedTestFlag.size(); i++) {
+                                    selectedTests.add(selectedTestFlag.get(i));
+                                }
+                                mcallback.onCheckChange(selectedTests);
+                                flagToChangetheTest = true;
 
-                                if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                    for (int i = 0; i < tempselectedTests.size(); i++) {
-                                        if (GlobalClass.CheckArrayList(selectedTests)){
-                                            for (int j = 0; j < selectedTests.size(); j++) {
-                                                if (!GlobalClass.isNull(tempselectedTests.get(i).getCode())&&
-                                                        !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                         tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                    selectedTests.remove(j);
-                                                }
+                            } else {
+                                if (testRateMasterModel.getChilds() != null) {
+                                    for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                                        //tejas t -----------------------------
+                                        for (int j = 0; j < selectedTests.size(); j++) {
+
+                                            if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                                System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+
+                                                tempselectedTests1.add(selectedTests.get(j).getName());
+                                                tempselectedTests.add(selectedTests.get(j));
                                             }
                                         }
+                                    }
+                                }
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    BaseModel selectedTestModel123 = selectedTests.get(j);
+                                    if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
 
+                                        tempselectedTests1.add(selectedTests.get(j).getName());
+                                        tempselectedTests.add(selectedTestModel123);
                                     }
                                 }
 
+                                if (tempselectedTests != null && tempselectedTests.size() > 0) {
+                                    String cartproduct = TextUtils.join(",", tempselectedTests1);
+                                    alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+                                    alertDialogBuilder
+                                            .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
+                                            .setCancelable(true)
+                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
+                                }
+                                for (int i = 0; i < tempselectedTests.size(); i++) {
+                                    for (int j = 0; j < selectedTests.size(); j++) {
+                                        if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            selectedTests.remove(j);
+                                        }
+                                    }
+                                }
 
                                 flagToChangetheTest = true;
+                                //tejas t -----------------------------
                                 selectedTests.add(testRateMasterModel);
                                 mcallback.onCheckChange(selectedTests);
                             }
                         }
                     } else {
-                        if (GlobalClass.CheckArrayList(selectedTests)) {
+                        if (selectedTests != null && selectedTests.size() > 0) {
+//                            Alter box
                             selectedTests.clear();
                             flagToChangetheTest = true;
-                            if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                            if (testRateMasterModel.getChilds() != null) {
                                 for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                                    //tejas t -----------------------------
+                                    for (int j = 0; j < selectedTests.size(); j++) {
 
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
+                                        if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
 
-                                            if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
-                                                tempselectedTests1.add(selectedTests.get(j).getName());
-                                                tempselectedTests.add(selectedTests.get(j));
-                                            }
+                                            tempselectedTests1.add(selectedTests.get(j).getName());
+                                            tempselectedTests.add(selectedTests.get(j));
                                         }
                                     }
+                                }
+                            }
+                            for (int j = 0; j < selectedTests.size(); j++) {
+                                BaseModel selectedTestModel123 = selectedTests.get(j);
+                                if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
 
-
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTestModel123);
                                 }
                             }
 
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                for (int j = 0; j < selectedTests.size(); j++) {
-                                    BaseModel selectedTestModel123 = selectedTests.get(j);
-                                    if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                        tempselectedTests1.add(selectedTests.get(j).getName());
-                                        tempselectedTests.add(selectedTestModel123);
-                                    }
-                                }
-                            }
-
-
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                String cartproduct = TextUtils.join(",", tempselectedTests1);
-                                alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-                                alertDialogBuilder
-                                        .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
-                                        .setCancelable(true)
-                                        .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog, int id) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-                                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
-                                alertDialog.show();
-                            }
-
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                for (int i = 0; i < tempselectedTests.size(); i++) {
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
-                                            if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                selectedTests.remove(j);
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-
-                            selectedTests.add(testRateMasterModel);
-                            mcallback.onCheckChange(selectedTests);
-                            flagToChangetheTest = true;
-
-                        } else {
-                            if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
-                                for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                                   if (GlobalClass.CheckArrayList(selectedTests)){
-                                       for (int j = 0; j < selectedTests.size(); j++) {
-                                           if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                   !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                   testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                               Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
-                                               tempselectedTests1.add(selectedTests.get(j).getName());
-                                               tempselectedTests.add(selectedTests.get(j));
-                                           }
-                                       }
-                                   }
-
-                                }
-                            }
-
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                for (int j = 0; j < selectedTests.size(); j++) {
-                                    BaseModel selectedTestModel123 = selectedTests.get(j);
-                                    if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                                        tempselectedTests1.add(selectedTests.get(j).getName());
-                                        tempselectedTests.add(selectedTestModel123);
-                                    }
-                                }
-                            }
-
-
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                            if (tempselectedTests != null && tempselectedTests.size() > 0) {
                                 String cartproduct = TextUtils.join(",", tempselectedTests1);
                                 alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                                 alertDialogBuilder
@@ -628,19 +497,63 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                 androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             }
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                for (int i = 0; i < tempselectedTests.size(); i++) {
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
-                                            if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                selectedTests.remove(j);
-                                            }
+                            for (int i = 0; i < tempselectedTests.size(); i++) {
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                        selectedTests.remove(j);
+                                    }
+                                }
+                            }
+                            //tejas t -----------------------------
+                            selectedTests.add(testRateMasterModel);
+                            mcallback.onCheckChange(selectedTests);
+                            flagToChangetheTest = true;
+
+                        } else {
+                            if (testRateMasterModel.getChilds() != null) {
+                                for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
+                                    //tejas t -----------------------------
+                                    for (int j = 0; j < selectedTests.size(); j++) {
+
+                                        if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+
+                                            tempselectedTests1.add(selectedTests.get(j).getName());
+                                            tempselectedTests.add(selectedTests.get(j));
                                         }
                                     }
+                                }
+                            }
+                            for (int j = 0; j < selectedTests.size(); j++) {
+                                BaseModel selectedTestModel123 = selectedTests.get(j);
+                                if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
 
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTestModel123);
                                 }
                             }
 
+                            if (tempselectedTests != null && tempselectedTests.size() > 0) {
+                                String cartproduct = TextUtils.join(",", tempselectedTests1);
+                                alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+                                alertDialogBuilder
+                                        .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
+                                        .setCancelable(true)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+                            }
+                            for (int i = 0; i < tempselectedTests.size(); i++) {
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                        selectedTests.remove(j);
+                                    }
+                                }
+                            }
 
                             flagToChangetheTest = true;
                             //tejas t -----------------------------
@@ -648,10 +561,10 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                             mcallback.onCheckChange(selectedTests);
                         }
                     }
-                } else if (!GlobalClass.isNull(testRateMasterModel.getType()) && testRateMasterModel.getType().equalsIgnoreCase("TEST")) {
+                } else if (testRateMasterModel.getType().equalsIgnoreCase("TEST")) {
                     //<---------------TODO allow user to add maximum 5 tests from 'TEST' and minimum 1 from 'PROFILE'
 
-                    if (GlobalClass.CheckArrayList(selectedTests)) {
+                    if (selectedTests != null && selectedTests.size() > 0) {
                         for (int i = 0; i < selectedTests.size(); i++) {
                             if (selectedTests.get(i).getType().equalsIgnoreCase("PROFILE")) {
                                 flagToChangetheTest = true;
@@ -659,12 +572,12 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                         }
                     }
                     //<-------------------TODO if tests is selected from 'PROFILE' then user can add tests from 'TEST'
-                    if (flagToChangetheTest) {
-                        if (GlobalClass.CheckArrayList(selectedTests) && selectedTests.size() > 5) {
+                    if (flagToChangetheTest == true) {
+                        if (selectedTests != null && selectedTests.size() > 5) {
 //                            Alter box
                             new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                    .setContentText(MessageConstants.select_max_5_test)
-                                    .setConfirmText(MessageConstants.OK)
+                                    .setContentText("You can select maximum 5 tests at a time")
+                                    .setConfirmText("Ok")
                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
                                         public void onClick(SweetAlertDialog sDialog) {
@@ -673,45 +586,36 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                     })
                                     .show();
                         } else {
-                            if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                            if (testRateMasterModel.getChilds() != null) {
                                 for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                                   if (GlobalClass.CheckArrayList(selectedTests)){
-                                       for (int j = 0; j < selectedTests.size(); j++) {
-                                           if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                   !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                   testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                               Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+                                    //tejas t -----------------------------
+                                    for (int j = 0; j < selectedTests.size(); j++) {
 
-                                               tempselectedTests1.add(selectedTests.get(j).getName());
-                                               tempselectedTests.add(selectedTests.get(j));
-                                           }
-                                       }
-                                   }
+                                        if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
 
-                                }
-                            }
-
-
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                for (int j = 0; j < selectedTests.size(); j++) {
-                                    BaseModel selectedTestModel123 = selectedTests.get(j);
-                                    if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds())
-                                            && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-
-                                        tempselectedTests1.add(selectedTests.get(j).getName());
-                                        tempselectedTests.add(selectedTestModel123);
+                                            tempselectedTests1.add(selectedTests.get(j).getName());
+                                            tempselectedTests.add(selectedTests.get(j));
+                                        }
                                     }
                                 }
                             }
+                            for (int j = 0; j < selectedTests.size(); j++) {
+                                BaseModel selectedTestModel123 = selectedTests.get(j);
+                                if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
 
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTestModel123);
+                                }
+                            }
 
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                            if (tempselectedTests != null && tempselectedTests.size() > 0) {
                                 String cartproduct = TextUtils.join(",", tempselectedTests1);
                                 alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                                 alertDialogBuilder
                                         .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                                         .setCancelable(true)
-                                        .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 dialog.dismiss();
                                             }
@@ -719,22 +623,13 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                 androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             }
-
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                for (int i = 0; i < tempselectedTests.size(); i++) {
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
-                                            if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                selectedTests.remove(j);
-                                            }
-                                        }
+                            for (int i = 0; i < tempselectedTests.size(); i++) {
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                        selectedTests.remove(j);
                                     }
-
                                 }
                             }
-
                             //tejas t -----------------------------
                             selectedTests.add(testRateMasterModel);
                             mcallback.onCheckChange(selectedTests);
@@ -743,10 +638,11 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                         }
                     } else {
                         //<-----------------TODO if tests is not selected from 'PROFILE' then max array size should be 4
-                        if (GlobalClass.CheckArrayList(selectedTests) && selectedTests.size() > 4) {
+                        if (selectedTests != null && selectedTests.size() > 4) {
+//                            Alter box
                             new SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-                                    .setContentText(MessageConstants.select_max_5_test)
-                                    .setConfirmText(MessageConstants.OK)
+                                    .setContentText("You can select maximum 5 tests at a time")
+                                    .setConfirmText("Ok")
                                     .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                                         @Override
                                         public void onClick(SweetAlertDialog sDialog) {
@@ -755,50 +651,36 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                     })
                                     .show();
                         } else {
-                            if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                            if (testRateMasterModel.getChilds() != null) {
                                 for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
                                     //tejas t -----------------------------
-
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
-
-                                            if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode())&&
-                                                    testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
-                                                tempselectedTests1.add(selectedTests.get(j).getName());
-                                                tempselectedTests.add(selectedTests.get(j));
-                                            }
-                                        }
-                                    }
-
-                                }
-                            }
-
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                if (GlobalClass.CheckArrayList(selectedTests)){
                                     for (int j = 0; j < selectedTests.size(); j++) {
-                                        BaseModel selectedTestModel123 = selectedTests.get(j);
-                                        if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds())
-                                                && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+
+                                        if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
 
                                             tempselectedTests1.add(selectedTests.get(j).getName());
-                                            tempselectedTests.add(selectedTestModel123);
+                                            tempselectedTests.add(selectedTests.get(j));
                                         }
                                     }
                                 }
+                            }
+                            for (int j = 0; j < selectedTests.size(); j++) {
+                                BaseModel selectedTestModel123 = selectedTests.get(j);
+                                if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
 
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTestModel123);
+                                }
                             }
 
-
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                            if (tempselectedTests != null && tempselectedTests.size() > 0) {
                                 String cartproduct = TextUtils.join(",", tempselectedTests1);
                                 alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                                 alertDialogBuilder
                                         .setMessage(Html.fromHtml("As " + "<b>" + slectedpackage + "</b>" + " already includes " + "<b>" + cartproduct + "</b>" + " test(s),We have removed " + "<b>" + cartproduct + "</b>" + " test(s) from your Selected test list"))
                                         .setCancelable(true)
-                                        .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
                                                 dialog.dismiss();
                                             }
@@ -806,21 +688,13 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                                 androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                                 alertDialog.show();
                             }
-                            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                                for (int i = 0; i < tempselectedTests.size(); i++) {
-                                    if (GlobalClass.CheckArrayList(selectedTests)){
-                                        for (int j = 0; j < selectedTests.size(); j++) {
-                                            if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                                    !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                                    tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                                selectedTests.remove(j);
-                                            }
-                                        }
+                            for (int i = 0; i < tempselectedTests.size(); i++) {
+                                for (int j = 0; j < selectedTests.size(); j++) {
+                                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                        selectedTests.remove(j);
                                     }
-
                                 }
                             }
-
                             //tejas t -----------------------------
                             selectedTests.add(testRateMasterModel);
                             mcallback.onCheckChange(selectedTests);
@@ -836,27 +710,22 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
             public void onClick(View v) {
                 if (!isSelectedDueToParent) {
 
-                    if (GlobalClass.CheckArrayList(selectedTests)) {
-                        for (int i = 0; i < selectedTests.size(); i++) {
-                            if (!GlobalClass.isNull(selectedTests.get(i).getType()) &&
-                                    selectedTests.get(i).getType().equalsIgnoreCase("PROFILE")) {
-                                selectedTests.remove(testRateMasterModel);
-                                mcallback.onCheckChange(selectedTests);
-                                flagToChangetheTest = false;
-                            } else {
-                                selectedTests.remove(testRateMasterModel);
-                                mcallback.onCheckChange(selectedTests);
-                            }
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getType().equalsIgnoreCase("PROFILE")) {
+                            selectedTests.remove(testRateMasterModel);
+                            mcallback.onCheckChange(selectedTests);
+                            flagToChangetheTest = false;
+                        } else {
+                            selectedTests.remove(testRateMasterModel);
+                            mcallback.onCheckChange(selectedTests);
                         }
                     }
-
-
                 } else {
                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                     alertDialogBuilder
-                            .setMessage(Html.fromHtml(MessageConstants.parent_test_already_select + parentTestCode))
+                            .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                             .setCancelable(true)
-                            .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.dismiss();
                                 }
@@ -868,27 +737,19 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
             }
 
         });
-
-        if (GlobalClass.CheckArrayList(testRateMasterModels)) {
-            for (int i = 0; i < testRateMasterModels.size(); i++) {
-                if (GlobalClass.CheckArrayList(testRateMasterModels.get(i).getTestRateMasterModels())) {
-                    for (int j = 0; j < testRateMasterModels.get(i).getTestRateMasterModels().size(); j++) {
-                        if (!GlobalClass.isNull(testRateMasterModels.get(i).getTestRateMasterModels().get(j).getName()) &&
-                                !GlobalClass.isNull(getTestName) &&
-                                testRateMasterModels.get(i).getTestRateMasterModels().get(j).getName().equalsIgnoreCase(getTestName)) {
-                            defaultselectedModel.add(testRateMasterModels.get(i).getTestRateMasterModels().get(j));
-                            mcallbackforAdd.onCheckChangeAddWoe(defaultselectedModel);
-                        } else if (!GlobalClass.isNull(testRateMasterModels.get(i).getTestRateMasterModels().get(j).getCode()) &&
-                                !GlobalClass.isNull(getTestName) &&
-                                testRateMasterModels.get(i).getTestRateMasterModels().get(j).getCode().equalsIgnoreCase(getTestName)) {
-                            defaultselectedModel.add(testRateMasterModels.get(i).getTestRateMasterModels().get(j));
-                            mcallbackforAdd.onCheckChangeAddWoe(defaultselectedModel);
-                        }
+        for (int i = 0; i < testRateMasterModels.size(); i++) {
+            if (testRateMasterModels.get(i).getTestRateMasterModels().size() != 0) {
+                for (int j = 0; j < testRateMasterModels.get(i).getTestRateMasterModels().size(); j++) {
+                    if (testRateMasterModels.get(i).getTestRateMasterModels().get(j).getName().equals(getTestName)) {
+                        defaultselectedModel.add(testRateMasterModels.get(i).getTestRateMasterModels().get(j));
+                        mcallbackforAdd.onCheckChangeAddWoe(defaultselectedModel);
+                    } else if (testRateMasterModels.get(i).getTestRateMasterModels().get(j).getCode().equals(getTestName)) {
+                        defaultselectedModel.add(testRateMasterModels.get(i).getTestRateMasterModels().get(j));
+                        mcallbackforAdd.onCheckChangeAddWoe(defaultselectedModel);
                     }
                 }
             }
         }
-
         return convertView;
     }
 
@@ -914,6 +775,7 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
     public void filterData(String query) {
 
         query = query.toLowerCase();
+//        Logger.verbose("FilteredListSizeBeforeFilter: " + String.valueOf(filteredList.size()));
         if (query.isEmpty()) {
             if (filteredList != null) {
                 filteredList = null;
@@ -936,12 +798,14 @@ public class ExpandableAdpaterAddWorkOrderEntry extends BaseExpandableListAdapte
                         newList.add(testModel);
                     }
                 }
-                if (GlobalClass.CheckArrayList(newList)) {
+                if (newList.size() > 0) {
                     Product_Rate_MasterModel nContinent = new Product_Rate_MasterModel(testTypeModel.getTestType(), newList);
                     filteredList.add(nContinent);
                 }
             }
         }
+
+//        Logger.verbose("FilteredListSizeAfterFilter: " + String.valueOf(filteredList.size()));
 
         notifyDataSetChanged();
 

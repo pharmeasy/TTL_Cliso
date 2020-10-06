@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +20,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.Validator;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.Postreportmail_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
@@ -46,9 +48,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ResultDtlAdapter extends BaseAdapter {
     public static RequestQueue PostQue;
-    ImageView mail, clon;
+    final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    ImageView mail, clon, print;
     Context mContext;
     ArrayList<TrackDetModel> trackdet = new ArrayList<>();
+    int selectedPosition = 0;
     int[] SelectedArray;
     SharedPreferences sharedpreferences;
     private String TAG = ManagingTabsActivity.class.getSimpleName();
@@ -97,28 +101,32 @@ public class ResultDtlAdapter extends BaseAdapter {
         mail = (ImageView) convertView.findViewById(R.id.mail);
         clon = (ImageView) convertView.findViewById(R.id.colon);
 
+       /* if (trackdet.get(position).getEmail().equals("") || trackdet.get(position).getEmail().equals(null)) {
+            mail.setVisibility(View.GONE);
+        } else {
+            mail.setVisibility(View.VISIBLE);
+        }*/
 
         if (!GlobalClass.isNull(trackdet.get(position).getChn_pending())) {
             if (trackdet.get(position).getChn_pending().equals("null")) {
-                GlobalClass.SetText(name, trackdet.get(position).getName());
-                GlobalClass.SetText(Refby, "Ref by:" + trackdet.get(position).getRef_By());
-                GlobalClass.SetText(barcode, trackdet.get(position).getBarcode());
-                GlobalClass.SetText(tests, trackdet.get(position).getTests());
+                name.setText(trackdet.get(position).getName());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
                 clon.setVisibility(View.GONE);
             } else {
-                GlobalClass.SetText(name, trackdet.get(position).getName());
+                name.setText(trackdet.get(position).getName());
                 clon.setVisibility(View.VISIBLE);
-                GlobalClass.SetText(Refby, "Ref by:" + trackdet.get(position).getRef_By());
-                GlobalClass.SetText(barcode, trackdet.get(position).getBarcode());
-                GlobalClass.SetText(tests, trackdet.get(position).getTests());
+                Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+                barcode.setText(trackdet.get(position).getBarcode());
+                tests.setText(trackdet.get(position).getTests());
             }
         } else {
-            GlobalClass.SetText(name, trackdet.get(position).getName());
-            GlobalClass.SetText(Refby, "Ref by:" + trackdet.get(position).getRef_By());
-            GlobalClass.SetText(barcode, trackdet.get(position).getBarcode());
-            GlobalClass.SetText(tests, trackdet.get(position).getTests());
+            name.setText(trackdet.get(position).getName());
+            Refby.setText("Ref by:" + trackdet.get(position).getRef_By());
+            barcode.setText(trackdet.get(position).getBarcode());
+            tests.setText(trackdet.get(position).getTests());
             clon.setVisibility(View.GONE);
-
         }
 
         try {
@@ -210,6 +218,8 @@ public class ResultDtlAdapter extends BaseAdapter {
 
     private void GetData(String patient_ID, String barcode, String email, String date) {
 
+        PostQue = GlobalClass.setVolleyReq(mContext);
+
         JSONObject jsonObject = new JSONObject();
         try {
 
@@ -227,16 +237,45 @@ public class ResultDtlAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.postmailLive, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
+                            String finalJson = response.toString();
+                            JSONObject parentObjectOtp = new JSONObject(finalJson);
+//                            JSONArray jsonArray = response.optJSONArray(Constants.billingDetails);
 
-        try {
-            if (ControllersGlobalInitialiser.postreportmail_controller != null) {
-                ControllersGlobalInitialiser.postreportmail_controller = null;
+                            if (parentObjectOtp != null) {
+                                String response1 = parentObjectOtp.getString("response");
+                                String RES_ID = parentObjectOtp.getString("RES_ID");
+                                String error = parentObjectOtp.getString("error");
+                                Toast.makeText(mContext, "" + response1, Toast.LENGTH_SHORT).show();
+
+                            }
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.postreportmail_controller = new Postreportmail_Controller((Activity)mContext, ResultDtlAdapter.this);
-            ControllersGlobalInitialiser.postreportmail_controller.getreportcontroller(jsonObject,queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "GetData: JSON" + jsonObject);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+
     }
 
     public void ShowMailAlert(final String patient_ID, final String barcode, final String email, final String date) {
@@ -260,13 +299,13 @@ public class ResultDtlAdapter extends BaseAdapter {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast((Activity)mContext,
+                    Toast.makeText(mContext,
                             ToastFile.crt_eml,
-                            2);
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(emailid,enteredString.substring(1));
+                        emailid.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(emailid,"");
+                        emailid.setText("");
                     }
                 }
             }
@@ -283,9 +322,10 @@ public class ResultDtlAdapter extends BaseAdapter {
 
 
         if (!email.equals("")) {
-            GlobalClass.SetEditText(emailid,email);
-        }
+            emailid.setText(email);
+        } else {
 
+        }
         final Button cancel = (Button) dialog.findViewById(R.id.cancel);
         Button ok = (Button) dialog.findViewById(R.id.ok);
         dialog.getWindow().setAttributes(lp);
@@ -294,11 +334,12 @@ public class ResultDtlAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                if (Validator.emailValidation((Activity)mContext,emailid)){
+                if (emailid.equals("")) {
+                    Toast.makeText(mContext, "Please enter E-mail id", Toast.LENGTH_SHORT).show();
+                } else {
                     GetData(patient_ID, barcode, emailid.getText().toString(), date);
                     dialog.dismiss();
                 }
-
             }
         });
 
@@ -316,22 +357,5 @@ public class ResultDtlAdapter extends BaseAdapter {
         trackdet = new ArrayList<>();
         trackdet.addAll(countryModels);
         notifyDataSetChanged();
-    }
-
-    public void getreceiptresp(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            String finalJson = response.toString();
-            JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-            if (parentObjectOtp != null) {
-                String response1 = parentObjectOtp.getString("response");
-                GlobalClass.showTastyToast((Activity) mContext, "" + response1,0);
-            }
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

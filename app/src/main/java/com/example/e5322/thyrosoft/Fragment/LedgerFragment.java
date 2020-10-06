@@ -1,9 +1,11 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +15,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.LedgerSumm_Controller;
-import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.LedgerSummaryRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.LedgerSummaryResponseModel;
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -68,7 +73,7 @@ public class LedgerFragment extends RootFragment {
     ArrayList<String> monthlist;
     int thismonth = 0;
     int MonthSEND = 0;
-
+    ProgressDialog barProgressDialog;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -76,7 +81,6 @@ public class LedgerFragment extends RootFragment {
     private boolean flagfor1sttime = false;
     private int selectedMonthPosition = 0;
     private String TAG = getClass().getSimpleName();
-    Activity mActivity;
 
     public LedgerFragment() {
         // Required empty public constructor
@@ -113,25 +117,43 @@ public class LedgerFragment extends RootFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mActivity = getActivity();
         View view = inflater.inflate(R.layout.fragment_ledger, container, false);
 
         SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
 
         String CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
-        initViews(view);
+        open_bal = (TextView) view.findViewById(R.id.open_bal);
+        credit_limit = (TextView) view.findViewById(R.id.credit_limit);
+        closing__bal = (TextView) view.findViewById(R.id.closing__bal);
+        credit = (TextView) view.findViewById(R.id.credit);
+        debit = (TextView) view.findViewById(R.id.debit);
+        billed_amt = (TextView) view.findViewById(R.id.billed_amt);
+        cash_cheque = (TextView) view.findViewById(R.id.cash_cheque);
+        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
+        parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
+
+        txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
+        txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
 
         try {
             if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-                GlobalClass.SetText(txt_unbill_woe, "Unbilled Scan");
+                txt_unbillwoe.setText("Unbilled Scan");
             } else {
-                GlobalClass.SetText(txt_unbill_woe, "Unbilled WOE");
+                txt_unbillwoe.setText("Unbilled WOE");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        txt_unbill_material = view.findViewById(R.id.unbilled_material);
+
+        // TextView dateview = getActivity().findViewById(R.id.show_date);
+        // dateview.setVisibility(View.GONE);
+
+        month = (Spinner) view.findViewById(R.id.month);
+        year = (Spinner) view.findViewById(R.id.year);
+        ledgerdetails = (Button) view.findViewById(R.id.ledgerdetails);
 
         years = new ArrayList<String>();
         monthlist = new ArrayList<String>();
@@ -159,11 +181,6 @@ public class LedgerFragment extends RootFragment {
         yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         year.setAdapter(yearadap);
 
-        initListner();
-        return view;
-    }
-
-    private void initListner() {
         year.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -202,15 +219,12 @@ public class LedgerFragment extends RootFragment {
                     month.setSelection(selectedMonthPosition);
                 }
 
-                if (monthNames != null && monthNames.length != 0) {
-                    for (int i = 0; i < monthNames.length; i++) {
-                        if (month.getSelectedItem().equals(monthNames[i])) {
-                            monthSEND = i + 1;
-                            break;
-                        }
+                for (int i = 0; i < monthNames.length; i++) {
+                    if (month.getSelectedItem().equals(monthNames[i])) {
+                        monthSEND = i + 1;
+                        break;
                     }
                 }
-
 
                 ledgerdetails.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -219,6 +233,8 @@ public class LedgerFragment extends RootFragment {
                         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
                         transaction.addToBackStack(null);
                         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
+                        /*Intent i = new Intent(getActivity(), LedgerDetailsActivity.class);
+                        getActivity().startActivity(i);*/
 
                     }
                 });
@@ -257,6 +273,7 @@ public class LedgerFragment extends RootFragment {
 
                 if (!GlobalClass.isNetworkAvailable(getActivity())) {
                     offline_img.setVisibility(View.VISIBLE);
+
                 } else {
                     GetData();
                     offline_img.setVisibility(View.GONE);
@@ -269,37 +286,20 @@ public class LedgerFragment extends RootFragment {
             }
         });
 
-    }
-
-    private void initViews(View view) {
-        open_bal = (TextView) view.findViewById(R.id.open_bal);
-        credit_limit = (TextView) view.findViewById(R.id.credit_limit);
-        closing__bal = (TextView) view.findViewById(R.id.closing__bal);
-        credit = (TextView) view.findViewById(R.id.credit);
-        debit = (TextView) view.findViewById(R.id.debit);
-        billed_amt = (TextView) view.findViewById(R.id.billed_amt);
-        cash_cheque = (TextView) view.findViewById(R.id.cash_cheque);
-        offline_img = (LinearLayout) view.findViewById(R.id.offline_img);
-        parent_ll = (LinearLayout) view.findViewById(R.id.parent_ll);
-
-        txt_unbill_woe = view.findViewById(R.id.unbilled_woe);
-        txt_unbillwoe = view.findViewById(R.id.txt_unbillwoe);
-
-        txt_unbill_material = view.findViewById(R.id.unbilled_material);
-
-        month = (Spinner) view.findViewById(R.id.month);
-        year = (Spinner) view.findViewById(R.id.year);
-        ledgerdetails = (Button) view.findViewById(R.id.ledgerdetails);
-
+        return view;
     }
 
 
     private void GetData() {
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = null;
         try {
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+
             String user = prefs.getString("Username", null);
+            String passwrd = prefs.getString("password", null);
+            String access = prefs.getString("ACCESS_TYPE", null);
             String api_key = prefs.getString("API_KEY", null);
 
             LedgerSummaryRequestModel requestModel = new LedgerSummaryRequestModel();
@@ -321,17 +321,101 @@ public class LedgerFragment extends RootFragment {
             e.printStackTrace();
         }
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
+        Log.e(TAG, "GetData Request: " + jsonObject.toString());
+        Log.e(TAG, "GetData API: " + Api.LedgerSummLive);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.LedgerSummLive, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
+                            Gson gson = new Gson();
+                            LedgerSummaryResponseModel responseModel = gson.fromJson(String.valueOf(response),LedgerSummaryResponseModel.class);
 
-        try {
-            if (ControllersGlobalInitialiser.ledgerSumm_controller != null) {
-                ControllersGlobalInitialiser.ledgerSumm_controller = null;
+                            if (responseModel!=null){
+                                if (!GlobalClass.isNull(responseModel.getResponse())&&responseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)){
+                                    GlobalClass.redirectToLogin(getActivity());
+                                }else {
+                                    SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
+
+                                    String credit_limit_value = prefs.getString(Constants.credit_limit, null);
+
+                                    NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
+                                    String opening_bal = responseModel.getOpeningBalance();
+                                    String closing_bal = responseModel.getClosingBalance();
+                                    String credit_bal = responseModel.getCreditNotes();
+                                    String debit_bal = responseModel.getDebitNotes();
+                                    String billed_bal = responseModel.getBillAmount();
+                                    String cheque_bal = responseModel.getCashCheque();
+                                    String unbill_woe = responseModel.getUnbilledWOE();
+                                    String unbill_mat = responseModel.getUnbilledMaterial();
+
+
+                                    double openingbal = Double.parseDouble(opening_bal);
+                                    double closingbal = Double.parseDouble(closing_bal);
+                                    double creditbal = Double.parseDouble(credit_bal);
+                                    double debitbal = Double.parseDouble(debit_bal);
+                                    double billedbal = Double.parseDouble(billed_bal);
+                                    double chequebal = Double.parseDouble(cheque_bal);
+                                    double credit_bal_ltd = Double.parseDouble(credit_limit_value);
+                                    double unbillwoe = Double.parseDouble(unbill_woe);
+                                    double unbillmat = Double.parseDouble(unbill_mat);
+
+                                    String ope_bal_str = numberFormat.format(openingbal);
+                                    String clos_bal_str = numberFormat.format(closingbal);
+                                    String credit_bal_str = numberFormat.format(creditbal);
+                                    String debit_bal_str = numberFormat.format(debitbal);
+                                    String billed_bal_str = numberFormat.format(billedbal);
+                                    String cheque_bal_str = numberFormat.format(chequebal);
+                                    String str_unbillwoe = numberFormat.format(unbillwoe);
+                                    String str_unbillmat = numberFormat.format(unbillmat);
+                                    String credit_bal_str_value = numberFormat.format(credit_bal_ltd);
+
+                                    open_bal.setText(ope_bal_str);
+                                    closing__bal.setText(clos_bal_str);
+                                    credit.setText(credit_bal_str);
+                                    debit.setText(debit_bal_str);
+                                    billed_amt.setText(billed_bal_str);
+                                    cash_cheque.setText(cheque_bal_str);
+                                    txt_unbill_woe.setText(str_unbillwoe);
+                                    txt_unbill_material.setText(str_unbillmat);
+
+                                    credit_limit.setText("Credit Limit :" + credit_bal_str_value);
+                                }
+                            }else {
+                                Toast.makeText(getActivity(), ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
+                            Log.e(TAG, "on error-->" + e.getLocalizedMessage());
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.ledgerSumm_controller = new LedgerSumm_Controller(mActivity, LedgerFragment.this);
-            ControllersGlobalInitialiser.ledgerSumm_controller.ledgersummcontroller(jsonObject, queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        queue.add(jsonObjectRequest);
+        /*TODO below line is added for handle out of memory for Volly*/
+        jsonObjectRequest.setShouldCache(false);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: json" + jsonObject);
     }
 
 
@@ -342,72 +426,17 @@ public class LedgerFragment extends RootFragment {
         }
     }
 
-    public void getledgerResp(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            Gson gson = new Gson();
-            LedgerSummaryResponseModel responseModel = gson.fromJson(String.valueOf(response), LedgerSummaryResponseModel.class);
 
-            if (responseModel != null) {
-                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase(caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(getActivity());
-                } else {
-                    SharedPreferences prefs = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
-
-                    String credit_limit_value = prefs.getString(Constants.credit_limit, null);
-
-                    NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
-                    String opening_bal = responseModel.getOpeningBalance();
-                    String closing_bal = responseModel.getClosingBalance();
-                    String credit_bal = responseModel.getCreditNotes();
-                    String debit_bal = responseModel.getDebitNotes();
-                    String billed_bal = responseModel.getBillAmount();
-                    String cheque_bal = responseModel.getCashCheque();
-                    String unbill_woe = responseModel.getUnbilledWOE();
-                    String unbill_mat = responseModel.getUnbilledMaterial();
-
-
-                    double openingbal = Double.parseDouble(opening_bal);
-                    double closingbal = Double.parseDouble(closing_bal);
-                    double creditbal = Double.parseDouble(credit_bal);
-                    double debitbal = Double.parseDouble(debit_bal);
-                    double billedbal = Double.parseDouble(billed_bal);
-                    double chequebal = Double.parseDouble(cheque_bal);
-                    double credit_bal_ltd = Double.parseDouble(credit_limit_value);
-                    double unbillwoe = Double.parseDouble(unbill_woe);
-                    double unbillmat = Double.parseDouble(unbill_mat);
-
-                    String ope_bal_str = numberFormat.format(openingbal);
-                    String clos_bal_str = numberFormat.format(closingbal);
-                    String credit_bal_str = numberFormat.format(creditbal);
-                    String debit_bal_str = numberFormat.format(debitbal);
-                    String billed_bal_str = numberFormat.format(billedbal);
-                    String cheque_bal_str = numberFormat.format(chequebal);
-                    String str_unbillwoe = numberFormat.format(unbillwoe);
-                    String str_unbillmat = numberFormat.format(unbillmat);
-                    String credit_bal_str_value = numberFormat.format(credit_bal_ltd);
-
-
-                    GlobalClass.SetText(open_bal, ope_bal_str);
-                    GlobalClass.SetText(closing__bal, clos_bal_str);
-                    GlobalClass.SetText(credit, credit_bal_str);
-                    GlobalClass.SetText(debit, debit_bal_str);
-                    GlobalClass.SetText(billed_amt, billed_bal_str);
-                    GlobalClass.SetText(cash_cheque, cheque_bal_str);
-                    GlobalClass.SetText(txt_unbill_woe, str_unbillwoe);
-                    GlobalClass.SetText(txt_unbill_material, str_unbillmat);
-                    GlobalClass.SetText(credit_limit, "Credit Limit :" + credit_bal_str_value);
-
-                }
-            } else {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.something_went_wrong, 2);
-            }
-        } catch (Exception e) {
-
-            Log.e(TAG, "on error-->" + e.getLocalizedMessage());
-        }
-    }
-
+    /**
+     * This interface must be implemented by activities that contain this
+     * fragment to allow an interaction in this fragment to be communicated
+     * to the activity and potentially other fragments contained in that
+     * activity.
+     * <p>
+     * See the Android Training lesson <a href=
+     * "http://developer.android.com/training/basics/fragments/communicating.html"
+     * >Communicating with Other Fragments</a> for more information.
+     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

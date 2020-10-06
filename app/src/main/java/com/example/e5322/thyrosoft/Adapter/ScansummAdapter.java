@@ -1,6 +1,10 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +18,6 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ScansummAdapter extends RecyclerView.Adapter<ScansummAdapter.Viewholder> {
 
@@ -41,7 +40,7 @@ public class ScansummAdapter extends RecyclerView.Adapter<ScansummAdapter.Viewho
     public void onBindViewHolder(@NonNull ScansummAdapter.Viewholder viewholder, int i) {
 
         try {
-            if (GlobalClass.CheckArrayList(scansummlist)) {
+            if (scansummlist != null) {
 
                 ScansummaryModel scansummaryModel = scansummlist.get(i);
 
@@ -53,6 +52,7 @@ public class ScansummAdapter extends RecyclerView.Adapter<ScansummAdapter.Viewho
                 GlobalClass.SetText(viewholder.txt_name, scansummaryModel.getNAME());
                 GlobalClass.SetText(viewholder.txt_leadsts, scansummaryModel.getSTATUS()+" / Rs : "+scansummaryModel.getBilling_Rate());
 
+        /*        GlobalClass.SetText(viewholder.txt_billing, "Rs "+scansummaryModel.getBilling_Rate());*/
 
                 viewholder.btn_receipt.setOnClickListener(new View.OnClickListener() {
                     @Override

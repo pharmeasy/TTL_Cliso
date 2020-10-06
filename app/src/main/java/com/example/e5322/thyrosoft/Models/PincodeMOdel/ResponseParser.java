@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.AppConstants;
 import com.example.e5322.thyrosoft.Models.tspspinnerResponseModel;
 import com.google.gson.Gson;
@@ -75,6 +74,7 @@ public class ResponseParser implements AppConstants {
     }
 
 
+
     public int countSpacesInMessage(String message) {
         int counter = 0;
         for (int i = 0; i < message.length(); i++) {
@@ -84,6 +84,7 @@ public class ResponseParser implements AppConstants {
         }
         return counter;
     }
+
 
 
     public boolean parseIntoError(String json, int statusCode) {
@@ -117,11 +118,17 @@ public class ResponseParser implements AppConstants {
                     if (errorResponseModel != null && errorResponseModel.getError_description() != null) {
                         if (isToShowToast && !DeviceUtils.isAppIsInBackground(context)) {
                             if (errorResponseModel.getError_description().contains(" ") && countSpacesInMessage(errorResponseModel.getError_description()) >= SPACE_COUNT_FOR_TOAST_TIME) {
-                                GlobalClass.showTastyToast((Activity) context, errorResponseModel.getError_description(), 2);
+                                // if (!appPreferenceManager.isAppInBackground()) {
 
+
+                                CommonUtils.toastytastyError(context, errorResponseModel.getError_description(), false);
+                                // }
                             } else {
-                                GlobalClass.showTastyToast((Activity) context, errorResponseModel.getError_description(), 2);
+                                //  if (!appPreferenceManager.isAppInBackground()) {
 
+
+                                CommonUtils.toastytastyError(context, errorResponseModel.getError_description(), false);
+                                //  }
                             }
                         }
                         return true;
@@ -241,6 +248,8 @@ public class ResponseParser implements AppConstants {
     }
 
 
+
+
     private boolean parseAfterError(String json, ErrorModel errorModel) {
         if (errorModel != null && errorModel.getError() != null && errorModel.getError_description() != null) {
             if (errorModel.getError_description().equals(MSG_SERVER_EXCEPTION)) {
@@ -285,19 +294,17 @@ public class ResponseParser implements AppConstants {
         return true;
 
     }
-
     public WithoutexpiryResponsemodel getWithoutexpiryResponsemodel(String json, int statusCode) {
 
-        WithoutexpiryResponsemodel withoutexpiryResponsemodel = null;
+        WithoutexpiryResponsemodel withoutexpiryResponsemodel= null;
         if (!parseIntoError(json, statusCode)) {
             withoutexpiryResponsemodel = gson.fromJson(json, WithoutexpiryResponsemodel.class);
         }
         return withoutexpiryResponsemodel;
     }
-
     public tspspinnerResponseModel gettspspinnerResponseModel(String json, int statusCode) {
 
-        tspspinnerResponseModel tspspinnerResponseModel = null;
+        tspspinnerResponseModel tspspinnerResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             tspspinnerResponseModel = gson.fromJson(json, tspspinnerResponseModel.class);
         }
@@ -306,43 +313,39 @@ public class ResponseParser implements AppConstants {
 
     public NedResponseModel getNedResponseModel(String json, int statusCode) {
 
-        NedResponseModel nedResponseModel = null;
+        NedResponseModel nedResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             nedResponseModel = gson.fromJson(json, NedResponseModel.class);
         }
         return nedResponseModel;
     }
-
     public PgcsResponseModel getPgcsResponseModel(String json, int statusCode) {
 
-        PgcsResponseModel pgcsResponseModel = null;
+        PgcsResponseModel pgcsResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             pgcsResponseModel = gson.fromJson(json, PgcsResponseModel.class);
         }
         return pgcsResponseModel;
     }
-
     public StaffResponseModel getStaffResponseModel(String json, int statusCode) {
 
-        StaffResponseModel staffResponseModel = null;
+        StaffResponseModel staffResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             staffResponseModel = gson.fromJson(json, StaffResponseModel.class);
         }
         return staffResponseModel;
     }
-
     public sgcsResponseModel getsgcsResponseModel(String json, int statusCode) {
 
-        sgcsResponseModel sgcsResponseModel = null;
+        sgcsResponseModel sgcsResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             sgcsResponseModel = gson.fromJson(json, sgcsResponseModel.class);
         }
         return sgcsResponseModel;
     }
-
     public uploadspinnerResponseModel getuploadspinnerResponseModel(String json, int statusCode) {
 
-        uploadspinnerResponseModel uploadspinnerResponseModel = null;
+        uploadspinnerResponseModel uploadspinnerResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             uploadspinnerResponseModel = gson.fromJson(json, uploadspinnerResponseModel.class);
         }
@@ -406,6 +409,8 @@ public class ResponseParser implements AppConstants {
     }
 
 
+
+
     private class DialogOkButtonListener implements AlertDialogMessage.AlertDialogOkListener {
 
         @Override
@@ -427,6 +432,7 @@ public class ResponseParser implements AppConstants {
             }
 
         }
+
 
 
     }
@@ -454,9 +460,11 @@ public class ResponseParser implements AppConstants {
     }
 
 
+
+
     public DefaultuploadResponseModel getDefaultuploadResponseModel(String json, int statusCode) {
 
-        DefaultuploadResponseModel defaultuploadResponseModel = null;
+        DefaultuploadResponseModel defaultuploadResponseModel= null;
         if (!parseIntoError(json, statusCode)) {
             defaultuploadResponseModel = gson.fromJson(json, DefaultuploadResponseModel.class);
         }

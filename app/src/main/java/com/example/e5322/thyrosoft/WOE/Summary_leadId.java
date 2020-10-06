@@ -1,10 +1,11 @@
 package com.example.e5322.thyrosoft.WOE;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -13,16 +14,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
-import com.example.e5322.thyrosoft.Controller.ClientController;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.LeadWoeController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -39,6 +41,7 @@ import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,7 +51,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -65,6 +67,7 @@ public class Summary_leadId extends AppCompatActivity {
     RecyclerView sample_list;
     ImageView home, back;
     SharedPreferences prefs;
+    SharedPreferences preferences, prefe;
     ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     String getDateTopass, getDate_and_time, get_time, finalgettime;
     ArrayList<com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel> barcodelists;
@@ -80,21 +83,24 @@ public class Summary_leadId extends AppCompatActivity {
     SourceILSMainModel sourceILSMainModel;
     REF_DR[] ref_drs;
     LABS[] labs;
+    int convertSrno;
     LinearLayout ll_patient_age, ll_patient_gender;
-    private String patientYearType, user, passwrd, api_key, access;
+    private String totalAnount;
+    private String patientYearType, user, passwrd, getFinalSrNO, api_key, access;
     private String patientGender;
     private String sampleCollectionTime;
     private String typeName;
+    private ProgressDialog progressDialog;
     private Global globalClass;
     private String TAG = Summary_leadId.this.getClass().getSimpleName();
+    private String outputDateStr;
     private String samplCollectiondate, referenceBy, leadREF_ID, labName, leadLABAddress;
     private String version;
     private int versionCode;
     private String sr_number;
     private int sr_number_pass_to_api;
+    private String fulldate;
     public String fromcome;
-    private ArrayList<Barcodelist> barcodelists1;
-    Activity mActivity;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
@@ -118,143 +124,6 @@ public class Summary_leadId extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary_lead_id);
-        mActivity = Summary_leadId.this;
-        initView();
-        getClient();
-        initListner();
-
-
-    }
-
-    private void getClient() {
-        String url = Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients";
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        try {
-            if (ControllersGlobalInitialiser.clientController != null) {
-                ControllersGlobalInitialiser.clientController = null;
-            }
-            ControllersGlobalInitialiser.clientController = new ClientController(mActivity, Summary_leadId.this);
-            ControllersGlobalInitialiser.clientController.getclientController(url, requestQueue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (!GlobalClass.isNull(leadAGE_TYPE)) {
-            if (leadAGE_TYPE.equals("Y")) {
-                patientYearType = "Year";
-            } else if (leadAGE_TYPE.equals("M")) {
-                patientYearType = "Month";
-            } else if (leadAGE_TYPE.equals("D")) {
-                patientYearType = "Days";
-            }
-        }
-        if (!GlobalClass.isNull(leadGENDER)) {
-            if (leadGENDER.equals("F")) {
-                patientGender = "Female";
-            } else if (leadGENDER.equals("M")) {
-                patientGender = "Male";
-
-            }
-        }
-
-
-        GlobalClass.SetText(pat_type, brandtype + "/" + leadTYPE);
-        GlobalClass.SetText(pat_name, leadNAME);
-        GlobalClass.SetText(pat_sct, leadSCT);
-        GlobalClass.SetText(pat_ref, leadREF_BY);
-        GlobalClass.SetText(btech, leadBCT);
-        GlobalClass.SetText(pat_scp, leadAddress);
-        GlobalClass.SetText(id_number, leadORDER_NO);
-
-        if (!GlobalClass.isNull(leadAGE)) {
-            ll_patient_age.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(txt_pat_age, leadAGE + " " + patientYearType);
-        } else {
-            ll_patient_age.setVisibility(View.GONE);
-        }
-        if (!GlobalClass.isNull(patientGender)) {
-            ll_patient_gender.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(txt_pat_gender, patientGender);
-        } else {
-            ll_patient_gender.setVisibility(View.GONE);
-        }
-
-
-        Summary_leadId.this.setTitle("Summary");
-        Bundle bundle = getIntent().getExtras();
-
-        finalspecimenttypewiselist = bundle.getParcelableArrayList("leadArraylist");
-        leadTESTS = "";
-
-        if (GlobalClass.CheckArrayList(finalspecimenttypewiselist)) {
-            for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
-                leadTESTS += finalspecimenttypewiselist.get(i).getProducts() + ",";
-                Log.e(TAG, "leadTESTS---" + leadTESTS);
-            }
-            try {
-                if (!GlobalClass.isNull(leadTESTS)&& leadTESTS.endsWith(",")) {
-                    leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            GlobalClass.SetText(tests, leadTESTS);
-        }
-        getDateTopass = bundle.getString("Date");
-        get_time = bundle.getString("Time");
-        getDate_and_time = bundle.getString("DateTime");
-
-        if (!GlobalClass.isNull(get_time)){
-            if (get_time.contains("AM")) {
-                finalgettime = get_time.replaceAll("AM", "");
-            } else {
-                finalgettime = get_time.replaceAll("PM", "");
-            }
-        }
-
-
-        barcodelists1 = new ArrayList<>();
-
-        if (GlobalClass.CheckArrayList(finalspecimenttypewiselist)) {
-            for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
-                barcodelistData = new Barcodelist();
-                barcodelistData.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
-                barcodelistData.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
-                barcodelists1.add(barcodelistData);
-            }
-
-        }
-
-        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(Summary_leadId.this, barcodelists1, passvalue);
-        sample_list.setAdapter(getPatientSampleDetails);
-
-    }
-
-    private void initListner() {
-        saveclose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveandClose();
-            }
-        });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(Summary_leadId.this);
-            }
-        });
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initView() {
 
         pat_type = (TextView) findViewById(R.id.pat_type);
         pat_sct = (TextView) findViewById(R.id.pat_sct);
@@ -281,15 +150,15 @@ public class Summary_leadId extends AppCompatActivity {
         txt_pat_age = (TextView) findViewById(R.id.txt_pat_age);
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
 
         SharedPreferences prefe = getSharedPreferences("getBrandTypeandName", MODE_PRIVATE);
 
-        typeName = prefe.getString("typeName", "");
-        sr_number = prefe.getString("SR_NO", "");
+        typeName = prefe.getString("typeName", null);
+        sr_number = prefe.getString("SR_NO", null);
         if (sr_number == null) {
             sr_number_pass_to_api = Integer.parseInt("0");
         } else {
@@ -303,21 +172,31 @@ public class Summary_leadId extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        GlobalClass.SetText(title, "Summary");
+        title.setText("Summary");
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(Summary_leadId.this);
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 
         fromcome = getIntent().getExtras().getString("fromcome");
         leadLEAD_ID = getIntent().getExtras().getString("LeadID");
         leadOrderIdMainModel = (LeadOrderIdMainModel) getIntent().getParcelableExtra("MyClass");
         finalspecimenttypewiselist = new ArrayList<>();
-
-        if (!GlobalClass.isNull(fromcome) && fromcome.equalsIgnoreCase("adapter")) {
-            if (leadOrderIdMainModel != null && GlobalClass.checkArray(leadOrderIdMainModel.getLeads())) {
-
+        if (fromcome.equalsIgnoreCase("adapter")) {
+            if ( leadOrderIdMainModel!=null && leadOrderIdMainModel.getLeads()!=null){
                 for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
-
-                    if (!GlobalClass.isNull(leadOrderIdMainModel.getLeads()[i].getLEAD_ID()) &&
-                            !GlobalClass.isNull(leadLEAD_ID) &&
-                            leadOrderIdMainModel.getLeads()[i].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
+                    if (leadOrderIdMainModel.getLeads()[i].getLEAD_ID().equalsIgnoreCase(leadLEAD_ID)) {
 
                         SharedPreferences.Editor editor = getSharedPreferences("LeadOrderID", 0).edit();
                         editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
@@ -356,38 +235,38 @@ public class Summary_leadId extends AppCompatActivity {
                         editor.commit();
 
                         SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
-                        leadAddress = sharedPreferences.getString("ADDRESS", "");
-                        brandtype = sharedPreferences.getString("brandtype", "");
-                        leadAGE = sharedPreferences.getString("AGE", "");
-                        leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", "");
-                        leadBCT = sharedPreferences.getString("BCT", "");
-                        leadEDTA = sharedPreferences.getString("EDTA", "");
-                        leadEMAIL = sharedPreferences.getString("EMAIL", "");
-                        leadERROR = sharedPreferences.getString("ERROR", "");
-                        leadFLUORIDE = sharedPreferences.getString("FLUORIDE", "");
-                        leadGENDER = sharedPreferences.getString("GENDER", "");
-                        leadHEPARIN = sharedPreferences.getString("HEPARIN", "");
+                        leadAddress = sharedPreferences.getString("ADDRESS", null);
+                        brandtype = sharedPreferences.getString("brandtype", null);
+                        leadAGE = sharedPreferences.getString("AGE", null);
+                        leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
+                        leadBCT = sharedPreferences.getString("BCT", null);
+                        leadEDTA = sharedPreferences.getString("EDTA", null);
+                        leadEMAIL = sharedPreferences.getString("EMAIL", null);
+                        leadERROR = sharedPreferences.getString("ERROR", null);
+                        leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
+                        leadGENDER = sharedPreferences.getString("GENDER", null);
+                        leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
 
-                        leadLAB_ID = sharedPreferences.getString("LAB_ID", "");
-                        leadLAB_NAME = sharedPreferences.getString("LAB_NAME", "");
-                        leadLEAD_ID = sharedPreferences.getString("LEAD_ID", "");
-                        leadMOBILE = sharedPreferences.getString("MOBILE", "");
-                        leadNAME = sharedPreferences.getString("NAME", "");
-                        leadORDER_NO = sharedPreferences.getString("ORDER_NO", "");
-                        leadPACKAGE = sharedPreferences.getString("PACKAGE", "");
-                        leadPINCODE = sharedPreferences.getString("PINCODE", "");
-                        leadPRODUCT = sharedPreferences.getString("PRODUCT", "");
-                        leadRATE = sharedPreferences.getString("RATE", "");
+                        leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
+                        leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
+                        leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
+                        leadMOBILE = sharedPreferences.getString("MOBILE", null);
+                        leadNAME = sharedPreferences.getString("NAME", null);
+                        leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
+                        leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
+                        leadPINCODE = sharedPreferences.getString("PINCODE", null);
+                        leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
+                        leadRATE = sharedPreferences.getString("RATE", null);
 
-                        leadREF_BY = sharedPreferences.getString("REF_BY", "");
-                        leadRESPONSE = sharedPreferences.getString("RESPONSE", "");
-                        leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", "");
-                        leadSCT = sharedPreferences.getString("SCT", "");
-                        leadSERUM = sharedPreferences.getString("SERUM", "");
-                        leadTESTS = sharedPreferences.getString("TESTS", "");
-                        leadTYPE = sharedPreferences.getString("TYPE", "");
-                        leadURINE = sharedPreferences.getString("URINE", "");
-                        leadWATER = sharedPreferences.getString("WATER", "");
+                        leadREF_BY = sharedPreferences.getString("REF_BY", null);
+                        leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
+                        leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
+                        leadSCT = sharedPreferences.getString("SCT", null);
+                        leadSERUM = sharedPreferences.getString("SERUM", null);
+                        leadTESTS = sharedPreferences.getString("TESTS", null);
+                        leadTYPE = sharedPreferences.getString("TYPE", null);
+                        leadURINE = sharedPreferences.getString("URINE", null);
+                        leadWATER = sharedPreferences.getString("WATER", null);
                         leadleadData = sharedPreferences.getString("leadData", null);
                     }
                 }
@@ -395,93 +274,263 @@ public class Summary_leadId extends AppCompatActivity {
 
         } else {
             SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
-            leadAddress = sharedPreferences.getString("ADDRESS", "");
-            brandtype = sharedPreferences.getString("brandtype", "");
-            leadAGE = sharedPreferences.getString("AGE", "");
-            leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", "");
-            leadBCT = sharedPreferences.getString("BCT", "");
-            leadEDTA = sharedPreferences.getString("EDTA", "");
-            leadEMAIL = sharedPreferences.getString("EMAIL", "");
-            leadERROR = sharedPreferences.getString("ERROR", "");
-            leadFLUORIDE = sharedPreferences.getString("FLUORIDE", "");
-            leadGENDER = sharedPreferences.getString("GENDER", "");
-            leadHEPARIN = sharedPreferences.getString("HEPARIN", "");
+            leadAddress = sharedPreferences.getString("ADDRESS", null);
+            brandtype=sharedPreferences.getString("brandtype",null);
+            leadAGE = sharedPreferences.getString("AGE", null);
+            leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
+            leadBCT = sharedPreferences.getString("BCT", null);
+            leadEDTA = sharedPreferences.getString("EDTA", null);
+            leadEMAIL = sharedPreferences.getString("EMAIL", null);
+            leadERROR = sharedPreferences.getString("ERROR", null);
+            leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
+            leadGENDER = sharedPreferences.getString("GENDER", null);
+            leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
 
-            leadLAB_ID = sharedPreferences.getString("LAB_ID", "");
-            leadLAB_NAME = sharedPreferences.getString("LAB_NAME", "");
-            leadLEAD_ID = sharedPreferences.getString("LEAD_ID", "");
-            leadMOBILE = sharedPreferences.getString("MOBILE", "");
-            leadNAME = sharedPreferences.getString("NAME", "");
-            leadORDER_NO = sharedPreferences.getString("ORDER_NO", "");
-            leadPACKAGE = sharedPreferences.getString("PACKAGE", "");
-            leadPINCODE = sharedPreferences.getString("PINCODE", "");
-            leadPRODUCT = sharedPreferences.getString("PRODUCT", "");
-            leadRATE = sharedPreferences.getString("RATE", "");
+            leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
+            leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
+            leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
+            leadMOBILE = sharedPreferences.getString("MOBILE", null);
+            leadNAME = sharedPreferences.getString("NAME", null);
+            leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
+            leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
+            leadPINCODE = sharedPreferences.getString("PINCODE", null);
+            leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
+            leadRATE = sharedPreferences.getString("RATE", null);
 
-            leadREF_BY = sharedPreferences.getString("REF_BY", "");
-            leadRESPONSE = sharedPreferences.getString("RESPONSE", "");
-            leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", "");
-            leadSCT = sharedPreferences.getString("SCT", "");
-            leadSERUM = sharedPreferences.getString("SERUM", "");
-            leadTESTS = sharedPreferences.getString("TESTS", "");
-            leadTYPE = sharedPreferences.getString("TYPE", "");
-            leadURINE = sharedPreferences.getString("URINE", "");
-            leadWATER = sharedPreferences.getString("WATER", "");
-            leadleadData = sharedPreferences.getString("leadData", "");
+            leadREF_BY = sharedPreferences.getString("REF_BY", null);
+            leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
+            leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
+            leadSCT = sharedPreferences.getString("SCT", null);
+            leadSERUM = sharedPreferences.getString("SERUM", null);
+            leadTESTS = sharedPreferences.getString("TESTS", null);
+            leadTYPE = sharedPreferences.getString("TYPE", null);
+            leadURINE = sharedPreferences.getString("URINE", null);
+            leadWATER = sharedPreferences.getString("WATER", null);
+            leadleadData = sharedPreferences.getString("leadData", null);
         }
 
-        if (!GlobalClass.isNull(leadSCT)) {
+
+        // Added leadSCT ! = null &&
+        if (leadSCT != null && leadSCT.length() != 0) {
             samplCollectiondate = leadSCT.substring(0, leadSCT.length() - 6);
             sampleCollectionTime = leadSCT.substring(11, leadSCT.length());
         }
 
 
-        version =GlobalClass.getversion(mActivity);
-        versionCode = GlobalClass.getversioncode(mActivity);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        version = pInfo.versionName;
+        //get the app version Code for checking
+        versionCode = pInfo.versionCode;
+        //display the current version in a TextView
+        RequestQueue requestQueue = GlobalClass.setVolleyReq(this);
 
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                Log.e(TAG, "onResponse: RESPONSE" + response);
+                Gson gson = new Gson();
+                getReferenceNmae = new ArrayList<>();
+                getLabNmae = new ArrayList<>();
+                sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
+                if (sourceILSMainModel.getMASTERS().getLABS().length != 0) {
+                    for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
+                        getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
+                        labs = sourceILSMainModel.getMASTERS().getLABS();
+                    }
+                }
+                if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0) {
+                    for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
+                        getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
+                        ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
+                    }
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+
+                    }
+                }
+            }
+        });
+        requestQueue.add(jsonObjectRequestfetchData);
+
+        Log.e(TAG, "onCreate: URL" + jsonObjectRequestfetchData);
+
+        if (leadAGE_TYPE != null) {
+            if (leadAGE_TYPE.equals("Y")) {
+                patientYearType = "Year";
+            } else if (leadAGE_TYPE.equals("M")) {
+                patientYearType = "Month";
+            } else if (leadAGE_TYPE.equals("D")) {
+                patientYearType = "Days";
+            }
+        }
+        if (leadGENDER != null) {
+            if (leadGENDER.equals("F")) {
+                patientGender = "Female";
+            } else if (leadGENDER.equals("M")) {
+                patientGender = "Male";
+
+            }
+        }
+
+        pat_type.setText(brandtype+"/"+ leadTYPE);
+        pat_name.setText(leadNAME);
+        pat_sct.setText(leadSCT);
+        pat_ref.setText(leadREF_BY);
+        btech.setText(leadBCT);
+        pat_scp.setText(leadAddress);
+
+        id_number.setText(leadORDER_NO);
+
+        if (leadAGE != null && !leadAGE.equalsIgnoreCase("") && patientYearType != null && !patientYearType.equalsIgnoreCase("")) {
+            ll_patient_age.setVisibility(View.VISIBLE);
+            txt_pat_age.setText(leadAGE + " " + patientYearType);
+        } else {
+            ll_patient_age.setVisibility(View.GONE);
+        }
+        if (patientGender != null && !patientGender.equalsIgnoreCase("")) {
+            ll_patient_gender.setVisibility(View.VISIBLE);
+            txt_pat_gender.setText(patientGender);
+        } else {
+            ll_patient_gender.setVisibility(View.GONE);
+        }
+
+        GlobalClass.barcodelists = new ArrayList<>();
+
+        Summary_leadId.this.setTitle("Summary");
+        Bundle bundle = getIntent().getExtras();
+
+        finalspecimenttypewiselist = bundle.getParcelableArrayList("leadArraylist");
+        leadTESTS="";
+
+        if (finalspecimenttypewiselist!=null && finalspecimenttypewiselist.size()>0) {
+            for (int i = 0; i <finalspecimenttypewiselist.size() ; i++) {
+                leadTESTS+=finalspecimenttypewiselist.get(i).getProducts()+",";
+                Log.e(TAG,"leadTESTS---"+leadTESTS);
+            }
+            try {
+                if (leadTESTS.endsWith(",")) {
+                    leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            tests.setText(leadTESTS);
+        }
+        getDateTopass = bundle.getString("Date");
+        get_time = bundle.getString("Time");
+        getDate_and_time = bundle.getString("DateTime");
+        if (get_time.contains("AM")) {
+            finalgettime = get_time.replaceAll("AM", "");
+        } else {
+            finalgettime = get_time.replaceAll("PM", "");
+        }
+
+        for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
+            barcodelistData = new Barcodelist();
+            barcodelistData.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
+            barcodelistData.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
+            GlobalClass.barcodelists.add(barcodelistData);
+        }
+
+        GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(Summary_leadId.this, GlobalClass.barcodelists, passvalue);
+        sample_list.setAdapter(getPatientSampleDetails);
+
+        saveclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveandClose();
+            }
+        });
 
     }
 
     private void saveandClose() {
+        /*DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
 
-        labName = leadLAB_NAME;
-        if (GlobalClass.isNull(labName)) {
-            leadLABAddress = "";
-        } else {
-            if (GlobalClass.checkArray(sourceILSMainModel.getMASTERS().getLABS())) {
-                for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
-                    if (!GlobalClass.isNull(labName) &&
-                            !GlobalClass.isNull(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName()) &&
-                            labName.equals(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName())) {
-                        leadLABAddress = sourceILSMainModel.getMASTERS().getLABS()[i].getLabAddress();
+        Date date = null;
+        try {
+            date = inputFormat.parse(samplCollectiondate);
+        } catch (ParseException e) {
+            Log.e("TAG", e.getLocalizedMessage());
+        }
+        outputDateStr = outputFormat.format(date);
+        //sampleCollectionTime
+        GlobalClass.Req_Date_Req(getDate_and_time, "hh:mm a", "HH:mm:ss");
+
+        Log.e(TAG, "fetchData: " + outputDateStr);*/
+
+        //  sendFinalWoe();
+
+        try {
+            labName = leadLAB_NAME;
+            if (labName.equals("")) {
+                leadLABAddress = "";
+            } else {
+                if (sourceILSMainModel != null) {
+                    if (sourceILSMainModel.getMASTERS()!=null){
+                        if (sourceILSMainModel.getMASTERS().getLABS() != null) {
+                            for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
+                                if (labName.equals(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName())) {
+                                    leadLABAddress = sourceILSMainModel.getMASTERS().getLABS()[i].getLabAddress();
+                                }
+                            }
+                        }
                     }
                 }
+
+
             }
-        }
 
-        referenceBy = leadREF_BY;
+            referenceBy = leadREF_BY;
 
-        if (!GlobalClass.isNull(referenceBy)) {
-            if (sourceILSMainModel != null) {
-                if (GlobalClass.checkArray(sourceILSMainModel.getMASTERS().getREF_DR())) {
-                    for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
-                        if (!GlobalClass.isNull(referenceBy) && !GlobalClass.isNull(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName()) &&
-                                referenceBy.equalsIgnoreCase(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
-                            leadREF_ID = sourceILSMainModel.getMASTERS().getREF_DR()[j].getId();
+            if (referenceBy != null) {
+                if (sourceILSMainModel != null) {
+                    if (sourceILSMainModel.getMASTERS()!=null){
+                        if (sourceILSMainModel.getMASTERS().getREF_DR().length != 0 && sourceILSMainModel.getMASTERS().getREF_DR() != null) {
+                            for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
+                                if (referenceBy.equalsIgnoreCase(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName())) {
+                                    leadREF_ID = sourceILSMainModel.getMASTERS().getREF_DR()[j].getId().toString();
+                                } else {
+                                    leadREF_ID = "";
+                                }
+                            }
                         } else {
                             leadREF_ID = "";
                         }
                     }
+
                 } else {
                     leadREF_ID = "";
                 }
-            } else {
-                leadREF_ID = "";
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-
-        POstQue = Volley.newRequestQueue(Summary_leadId.this);
+        progressDialog = new ProgressDialog(Summary_leadId.this);
+        progressDialog.setTitle("Kindly wait ...");
+        progressDialog.setMessage(ToastFile.processing_request);
+        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
+        progressDialog.setProgress(0);
+        progressDialog.setMax(20);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+        POstQue = GlobalClass.setVolleyReq(Summary_leadId.this);
 
         MyPojoWoe myPojoWoe = new MyPojoWoe();
         Woe woe = new Woe();
@@ -532,14 +581,12 @@ public class Summary_leadId extends AppCompatActivity {
         myPojoWoe.setWoe(woe);
         barcodelists = new ArrayList<>();
 
-        if (GlobalClass.CheckArrayList(finalspecimenttypewiselist)) {
-            for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
-                barcodelist = new BarcodelistModel();
-                barcodelist.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
-                barcodelist.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
-                barcodelist.setTESTS(finalspecimenttypewiselist.get(i).getProducts());
-                barcodelists.add(barcodelist);
-            }
+        for (int i = 0; i < finalspecimenttypewiselist.size(); i++) {
+            barcodelist = new BarcodelistModel();
+            barcodelist.setSAMPLE_TYPE(finalspecimenttypewiselist.get(i).getSpecimen_type());
+            barcodelist.setBARCODE(finalspecimenttypewiselist.get(i).getBarcode());
+            barcodelist.setTESTS(finalspecimenttypewiselist.get(i).getProducts());
+            barcodelists.add(barcodelist);
         }
 
         myPojoWoe.setBarcodelistModel(barcodelists);
@@ -555,68 +602,46 @@ public class Summary_leadId extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        if (GlobalClass.isNetworkAvailable(mActivity)) {
-            try {
-                if (ControllersGlobalInitialiser.leadWoeController != null) {
-                    ControllersGlobalInitialiser.leadWoeController = null;
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                    Gson woeGson = new Gson();
+                    WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
+                    progressDialog.dismiss();
+                    if (woeResponseModel != null) {
+                        if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+                            TastyToast.makeText(Summary_leadId.this, woeResponseModel.getMessage(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent i = new Intent(Summary_leadId.this, ManagingTabsActivity.class);
+                            i.putExtra("passToWoefragment", "frgamnebt");
+                            startActivity(i);
+                        } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(Summary_leadId.this);
+                        } else {
+                            TastyToast.makeText(Summary_leadId.this, woeResponseModel.getMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } else {
+                        TastyToast.makeText(Summary_leadId.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                ControllersGlobalInitialiser.leadWoeController = new LeadWoeController(mActivity, Summary_leadId.this);
-                ControllersGlobalInitialiser.leadWoeController.getleadwoeController(jsonObj, POstQue);
-            } catch (Exception e) {
-                e.printStackTrace();
             }
-        } else {
-            GlobalClass.showTastyToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 2);
-        }
-    }
-
-    public void doleadwoe(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            Gson woeGson = new Gson();
-            WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
-
-            if (woeResponseModel != null) {
-                if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
-                    GlobalClass.showTastyToast(Summary_leadId.this, woeResponseModel.getMessage(), 1);
-                    Intent i = new Intent(Summary_leadId.this, ManagingTabsActivity.class);
-                    i.putExtra("passToWoefragment", "frgamnebt");
-                    startActivity(i);
-                } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(Summary_leadId.this);
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
                 } else {
-                    GlobalClass.showTastyToast(Summary_leadId.this, woeResponseModel.getMessage(), 2);
+                    //Log.v(TAG,error);
                 }
-            } else {
-                GlobalClass.showTastyToast(Summary_leadId.this, ToastFile.something_went_wrong, 2);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+        POstQue.add(jsonObjectRequest1);
+        Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
+        Log.e(TAG, "saveandClose: URL" + jsonObj);
     }
 
-    public void getclientResponse(JSONObject response) {
 
-        Log.e(TAG, "onResponse: RESPONSE" + response);
-        Gson gson = new Gson();
-        getReferenceNmae = new ArrayList<>();
-        getLabNmae = new ArrayList<>();
-        sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
-
-        if (sourceILSMainModel != null && sourceILSMainModel.getMASTERS() != null &&
-                GlobalClass.checkArray(sourceILSMainModel.getMASTERS().getLABS())) {
-            for (int i = 0; i < sourceILSMainModel.getMASTERS().getLABS().length; i++) {
-                getLabNmae.add(sourceILSMainModel.getMASTERS().getLABS()[i].getLabName());
-                labs = sourceILSMainModel.getMASTERS().getLABS();
-            }
-        }
-
-        if (sourceILSMainModel != null && sourceILSMainModel.getMASTERS() != null && GlobalClass.checkArray(sourceILSMainModel.getMASTERS().getREF_DR())) {
-            for (int j = 0; j < sourceILSMainModel.getMASTERS().getREF_DR().length; j++) {
-                getReferenceNmae.add(sourceILSMainModel.getMASTERS().getREF_DR()[j].getName());
-                ref_drs = sourceILSMainModel.getMASTERS().getREF_DR();
-            }
-        }
-    }
 }

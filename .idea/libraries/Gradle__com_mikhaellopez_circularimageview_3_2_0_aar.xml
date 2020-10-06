@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.mikhaellopez:circularimageview:3.2.0@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/0aeb4565e230044e6112e07d3bd784fc/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/0aeb4565e230044e6112e07d3bd784fc/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/0aeb4565e230044e6112e07d3bd784fc/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/69f84138febec0ccb891d8998089409c/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/69f84138febec0ccb891d8998089409c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-circularimageview-3.2.0.aar/69f84138febec0ccb891d8998089409c/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

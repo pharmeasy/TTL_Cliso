@@ -1,9 +1,8 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,15 +10,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.NoticeBoard_Adapter;
-import com.example.e5322.thyrosoft.Controller.AcknowledgeNoticeBoard_Controller;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.NoticeBoardController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
@@ -28,19 +31,19 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.AckNoticeResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class Noticeboard_activity extends AppCompatActivity {
-
+    View view;
     RecyclerView noticeboard_list;
     ImageView back, home;
     String msgCode;
@@ -52,26 +55,33 @@ public class Noticeboard_activity extends AppCompatActivity {
     LinearLayout lin_cmsoon;
     private String TAG = getClass().getSimpleName(), CLIENT_TYPE;
     private RequestQueue PostQueOtp;
-    Activity mactivity;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_noticeboard_);
-        initviews();
-        initListner();
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initviews() {
         noticeboard_list = findViewById(R.id.noticeboard_list);
-        linearLayoutManager = new LinearLayoutManager(mactivity);
+        linearLayoutManager = new LinearLayoutManager(Noticeboard_activity.this);
         noticeboard_list.setLayoutManager(linearLayoutManager);
         back = findViewById(R.id.back);
         offline_img = findViewById(R.id.offline_img);
         lin_cmsoon = findViewById(R.id.lin_cmsoon);
         home = findViewById(R.id.home);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(Noticeboard_activity.this);
+            }
+        });
+
         if (Global.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -81,13 +91,13 @@ public class Noticeboard_activity extends AppCompatActivity {
 
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
 
-        if (!GlobalClass.isNetworkAvailable(mactivity)) {
+        if (!GlobalClass.isNetworkAvailable(Noticeboard_activity.this)) {
             offline_img.setVisibility(View.VISIBLE);
             noticeboard_list.setVisibility(View.GONE);
         } else {
@@ -96,6 +106,7 @@ public class Noticeboard_activity extends AppCompatActivity {
                 lin_cmsoon.setVisibility(View.VISIBLE);
             } else {
                 lin_cmsoon.setVisibility(View.GONE);
+//                getNoticeBoardData();
             }
             getNoticeBoardData();
             offline_img.setVisibility(View.GONE);
@@ -103,110 +114,106 @@ public class Noticeboard_activity extends AppCompatActivity {
         }
     }
 
-    private void initListner() {
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(mactivity);
-            }
-        });
-
-    }
-
     private void getNoticeBoardData() {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Noticeboard_activity.this);
+        requestQueueNoticeBoard = GlobalClass.setVolleyReq(Noticeboard_activity.this);
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.NoticeBoardData + "" + api_key + "/getNoticeMessages", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: " + response);
+                GlobalClass.hideProgress(Noticeboard_activity.this, progressDialog);
 
-        requestQueueNoticeBoard = Volley.newRequestQueue(mactivity);
-
-        try {
-            if (ControllersGlobalInitialiser.noticeBoardController != null) {
-                ControllersGlobalInitialiser.noticeBoardController = null;
-            }
-            ControllersGlobalInitialiser.noticeBoardController = new NoticeBoardController(mactivity, Noticeboard_activity.this);
-            ControllersGlobalInitialiser.noticeBoardController.noticeboardController(api_key, requestQueueNoticeBoard);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public void getnoticeboardresponse(JSONObject response) {
-        Log.e(TAG, "onResponse: " + response);
-        NoticeBoard_Model noticeBoard_model = new Gson().fromJson(String.valueOf(response), NoticeBoard_Model.class);
-        if (noticeBoard_model != null) {
-
-            if (!GlobalClass.isNull(noticeBoard_model.getResponse()) && noticeBoard_model.getResponse().equalsIgnoreCase(Constants.caps_invalidApikey)) {
-                GlobalClass.redirectToLogin(mactivity);
-            } else {
-                ArrayList<NoticeBoard_Model> array_notice = new ArrayList<>();
-                if (noticeBoard_model != null && GlobalClass.checkArray(noticeBoard_model.getMessages())) {
-                    array_notice.add(noticeBoard_model);
-                    if (!GlobalClass.isNull(array_notice.get(0).getMessages()[0].getMessageCode())) {
-                        msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
-                        NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(mactivity, array_notice, msgCode);
-
-                        noticeBoard_adapter.clickListerforAckNoticeboard(new RefreshNoticeBoard() {
-                            @Override
-                            public void onClickAcknowledge(String msgCode) {
-                                PostQueOtp = Volley.newRequestQueue(mactivity);
-                                JSONObject jsonObject = null;
-                                try {
-                                    AckNoticeRequestModel requestModel = new AckNoticeRequestModel();
-                                    requestModel.setApiKey(api_key);
-                                    requestModel.setMessageCode(msgCode);
-                                    requestModel.setUserCode(user);
-
-                                    String json = new Gson().toJson(requestModel);
-                                    jsonObject = new JSONObject(json);
-
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    if (ControllersGlobalInitialiser.acknowledgeNoticeBoard_controller != null) {
-                                        ControllersGlobalInitialiser.acknowledgeNoticeBoard_controller = null;
-                                    }
-                                    ControllersGlobalInitialiser.acknowledgeNoticeBoard_controller = new AcknowledgeNoticeBoard_Controller(mactivity, Noticeboard_activity.this);
-                                    ControllersGlobalInitialiser.acknowledgeNoticeBoard_controller.acknowledgeNoticeBoardController(jsonObject, PostQueOtp);
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                        noticeboard_list.setAdapter(noticeBoard_adapter);
+                NoticeBoard_Model noticeBoard_model = new Gson().fromJson(String.valueOf(response), NoticeBoard_Model.class);
+                if (noticeBoard_model != null) {
+                    if (!GlobalClass.isNull(noticeBoard_model.getResponse()) && noticeBoard_model.getResponse().equalsIgnoreCase(Constants.caps_invalidApikey)) {
+                        GlobalClass.redirectToLogin(Noticeboard_activity.this);
                     } else {
-                        GlobalClass.showTastyToast(mactivity, "" + noticeBoard_model.getResponse(), 2);
+                        ArrayList<NoticeBoard_Model> array_notice = new ArrayList<>();
+                        if (noticeBoard_model.getMessages() != null) {
+                            array_notice.add(noticeBoard_model);
+                            if (array_notice.get(0).getMessages()[0].getMessageCode() != null) {
+
+                                msgCode = (array_notice.get(0).getMessages()[0].getMessageCode());
+                                NoticeBoard_Adapter noticeBoard_adapter = new NoticeBoard_Adapter(Noticeboard_activity.this, array_notice, msgCode);
+
+                                noticeBoard_adapter.clickListerforAckNoticeboard(new RefreshNoticeBoard() {
+                                    @Override
+                                    public void onClickAcknowledge(String msgCode) {
+                                        PostQueOtp = GlobalClass.setVolleyReq(Noticeboard_activity.this);
+                                        JSONObject jsonObject = null;
+                                        try {
+                                            AckNoticeRequestModel requestModel = new AckNoticeRequestModel();
+                                            requestModel.setApiKey(api_key);
+                                            requestModel.setMessageCode(msgCode);
+                                            requestModel.setUserCode(user);
+
+                                            String json = new Gson().toJson(requestModel);
+                                            jsonObject = new JSONObject(json);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.acknowledgeNoticeBoard,
+                                                jsonObject, new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+                                                    Log.e(TAG, "onResponse: response" + response);
+                                                    AckNoticeResponseModel responseModel = new Gson().fromJson(String.valueOf(response), AckNoticeResponseModel.class);
+                                                    if (responseModel != null) {
+                                                        if (!GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
+                                                            TastyToast.makeText(Noticeboard_activity.this, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                            getNoticeBoardData();
+                                                        } else {
+                                                            TastyToast.makeText(Noticeboard_activity.this, responseModel.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                        }
+                                                    } else {
+                                                        Toast.makeText(Noticeboard_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                if (error != null) {
+                                                } else {
+                                                    System.out.println(error);
+                                                }
+                                            }
+                                        });
+
+                                        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+                                        PostQueOtp.add(jsonObjectRequest1);
+                                        Log.e(TAG, "onClick: URL" + jsonObjectRequest1);
+                                        Log.e(TAG, "post data: " + jsonObject);
+                                    }
+                                });
+                                noticeboard_list.setAdapter(noticeBoard_adapter);
+                            } else {
+                                Toast.makeText(Noticeboard_activity.this, "" + noticeBoard_model.getResponse(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
-
-    public void getacknowledgeNoticeBoard(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: response" + response);
-            AckNoticeResponseModel responseModel = new Gson().fromJson(String.valueOf(response), AckNoticeResponseModel.class);
-            if (responseModel != null) {
-                if (!GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase(Constants.RES0000)) {
-
-                    GlobalClass.showTastyToast(mactivity, responseModel.getResponse(), 1);
-                    getNoticeBoardData();
-                } else {
-                    GlobalClass.showTastyToast(mactivity, responseModel.getResponse(), 2);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                GlobalClass.hideProgress(Noticeboard_activity.this, progressDialog);
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        TastyToast.makeText(Noticeboard_activity.this, "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        // Show timeout error message
+                    }
                 }
-            } else {
-                GlobalClass.showTastyToast(mactivity, ToastFile.something_went_wrong, 2);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestProfile);
+        requestQueueNoticeBoard.add(jsonObjectRequestProfile);
+        Log.e(TAG, "getNoticeBoardData: url" + jsonObjectRequestProfile);
+
     }
 }

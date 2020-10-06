@@ -19,6 +19,7 @@ public class BackPressImpl implements OnBackPressListener {
 
         if (parentFragment == null) return false;
 
+
         int childCount = parentFragment.getChildFragmentManager().getBackStackEntryCount();
 
         if (childCount == 0) {

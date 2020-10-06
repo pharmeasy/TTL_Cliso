@@ -3,15 +3,15 @@ package com.example.e5322.thyrosoft.Kotlin.KTActivity
 import android.annotation.TargetApi
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import com.example.e5322.thyrosoft.API.Api
 import com.example.e5322.thyrosoft.API.Constants
 import com.example.e5322.thyrosoft.API.Global
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants
+import com.example.e5322.thyrosoft.Activity.MessageConstants
 import com.example.e5322.thyrosoft.GlobalClass
 import com.example.e5322.thyrosoft.Kotlin.KTAdapter.KTExpandableListAdapter_FAQ
 import com.example.e5322.thyrosoft.Kotlin.KTGlobalclass
@@ -70,7 +70,7 @@ class FAQ_activity : AppCompatActivity() {
         if (KTGlobalclass().isNetworkAvailable(this@FAQ_activity)) {
             getAll_FAQ_data()
         } else {
-            GlobalClass.showTastyToast(this@FAQ_activity, MessageConstants.CHECK_INTERNET_CONN, 2)
+            GlobalClass.toastyError(this@FAQ_activity, MessageConstants.CHECK_INTERNET_CONN, false)
         }
 
     }
@@ -86,6 +86,7 @@ class FAQ_activity : AppCompatActivity() {
         val progressDialog = KTGlobalclass().ShowprogressDialog(this@FAQ_activity)
         val apiInteface = KTRetrofitClient().getInstance()!!.getClient(this@FAQ_activity,Api.FAQAPI + Constants.DAC + "/")!!.create(KTAPIInteface::class.java)
         val responsecall: Call<KTFAQandANSArray?> = apiInteface.getFAQ()
+       // Log.e(TAG, "FAQ URL ---->" + responsecall.request().url())
 
         responsecall.enqueue(object : Callback<KTFAQandANSArray?> {
             override fun onFailure(call: Call<KTFAQandANSArray?>, t: Throwable) {
@@ -105,7 +106,7 @@ class FAQ_activity : AppCompatActivity() {
                             faq_list_expandable.setAdapter(expandableListAdapter)
                         } else {
                             KTGlobalclass().hideProgress(this@FAQ_activity, progressDialog)
-                            GlobalClass.showTastyToast(this@FAQ_activity, MessageConstants.NODATA, 2)
+                            GlobalClass.toastyError(this@FAQ_activity, MessageConstants.NODATA, false)
                             faq_list_expandable.visibility = View.GONE
                         }
 

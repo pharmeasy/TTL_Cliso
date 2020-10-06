@@ -1,20 +1,22 @@
 package com.example.e5322.thyrosoft.Fragment.CampIntimation;
 
+import androidx.fragment.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.CampIntimation_Adapter;
 import com.example.e5322.thyrosoft.Fragment.SecondFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
 import com.example.e5322.thyrosoft.R;
 
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +36,8 @@ public class Camp_Mis_Data_fragment extends Fragment {
     private String mParam2;
 
     private SecondFragment.OnFragmentInteractionListener mListener;
+    Camp_Intimatgion_List_Model camp_intimatgion_list_model;
+    ArrayList<Camp_Intimatgion_List_Model> campIntimatgionList;
     RecyclerView camp_intimation_recycle;
     CampIntimation_Adapter campIntimation_adapter;
     private View viewMain;
@@ -65,25 +69,21 @@ public class Camp_Mis_Data_fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         viewMain = (View) inflater.inflate(R.layout.activity_camp__intimation, container, false);
-
-       initView();
-
-
-        return viewMain;
-    }
-
-    private void initView() {
         camp_intimation_recycle= (RecyclerView)viewMain.findViewById(R.id.camp_intimation_recycle);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         camp_intimation_recycle.setLayoutManager(linearLayoutManager);
 
 
+        // String sr_no,camp_date,camp_profile,camp_rate,camp_days,camp_address,camp_duration;
+
         if(GlobalClass.global_camp_intimatgion_list_models_arrlst!=null && GlobalClass.global_camp_intimatgion_list_models_arrlst.size()!=0){
             campIntimation_adapter = new CampIntimation_Adapter(getActivity(), GlobalClass.global_camp_intimatgion_list_models_arrlst);
             camp_intimation_recycle.setAdapter(campIntimation_adapter);
         }else{
-            GlobalClass.showTastyToast(getActivity(), MessageConstants.NODATA, 2);
+            Toast.makeText(getActivity(), "No data found", Toast.LENGTH_SHORT).show();
         }
+
+        return viewMain;
     }
 
 

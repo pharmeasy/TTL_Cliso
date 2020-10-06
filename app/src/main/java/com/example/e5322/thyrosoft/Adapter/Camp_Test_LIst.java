@@ -1,7 +1,10 @@
 package com.example.e5322.thyrosoft.Adapter;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,22 +15,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.Activity.CampIntimation;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SendTestListfromCampList;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+import java.util.Locale;
 
 
 public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHolder> {
+    String selected = "n";
     private SendTestListfromCampList mcallback;
     View view;
     CampIntimation mContext;
@@ -35,8 +36,18 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
     ArrayList<Base_Model_Rate_Calculator> filteredList;
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     private List<String> tempselectedTests1;
+    Base_Model_Rate_Calculator getSelected_test;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
+    Base_Model_Rate_Calculator.Childs selectedchildlist[];
+    private ArrayList<Base_Model_Rate_Calculator> totalgetAllTests;
     private androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
+    ShowChildTestNamesAdapter showChildTestNamesAdapter;
+    RecyclerView testdetails;
+    private ImageView imgClose;
+    private LinearLayoutManager linearLayoutManager;
+    ArrayList<String> storetestlist;
+    AlertDialog alertDialog, alert;
+    public static com.android.volley.RequestQueue POstQueSendEstimation;
     public String TAG = RateCalculatorFragment.class.getSimpleName().toString();
 
     @NonNull
@@ -52,6 +63,7 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
     public Camp_Test_LIst(CampIntimation mContext, ArrayList<Base_Model_Rate_Calculator> finalgetAllTests, ArrayList<Base_Model_Rate_Calculator> getTotalArray, ArrayList<Base_Model_Rate_Calculator> selectedTests, SendTestListfromCampList mcallback) {
         this.mContext = mContext;
         this.base_model_rate_calculators = finalgetAllTests;
+        this.totalgetAllTests = getTotalArray;
         this.filteredList = finalgetAllTests;
         this.mcallback = mcallback;
         this.selectedTests = selectedTests;
@@ -62,7 +74,12 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull Camp_Test_LIst.ViewHolder viewHolder, int position) {
-        GlobalClass.SetText(viewHolder.test_name_rate_txt,base_model_rate_calculators.get(position).getName());
+        viewHolder.test_name_rate_txt.setText(base_model_rate_calculators.get(position).getName());
+
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
+        int passThvalue = Integer.parseInt(base_model_rate_calculators.get(position).getRate().getB2c());
+
+        String setRtaesToTests = numberFormat.format(passThvalue);
 
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
         final String parentTestCode = viewHolder.parentTestCode;
@@ -70,22 +87,29 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
 
         viewHolder.test_rate_cal_txt.setVisibility(View.GONE);
 
+
+     /*   if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_TEST)) {
+            viewHolder.txt_type.setText("T");
+        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_PROFILE)) {
+            viewHolder.txt_type.setText("P");
+        } else if (base_model_rate_calculators.get(position).getType().equalsIgnoreCase(Constants.PRODUCT_POP)) {
+            viewHolder.txt_type.setText("PO");
+        }*/
         boolean isChecked = false;
         viewHolder.isSelectedDueToParent = false;
         viewHolder.parentTestCode = "";
 
-        if (GlobalClass.CheckArrayList(selectedTests)) {
+        if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {
                 Base_Model_Rate_Calculator selectedTestModel = selectedTests.get(i);
-                if (!GlobalClass.isNull(selectedTestModel.getCode()) && !GlobalClass.isNull(getSelected_test.getCode()) &&
-                        selectedTestModel.getCode().equals(getSelected_test.getCode())) {
+                if (selectedTestModel.getCode().equals(getSelected_test.getCode())) {
                     viewHolder.iv_checked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
                     viewHolder.iv_locked.setVisibility(View.GONE);
                     viewHolder.isSelectedDueToParent = false;
                     viewHolder.parentTestCode = "";
                     isChecked = true;
-                } else if (GlobalClass.checkArray(selectedTestModel.getChilds()) && GlobalClass.checkArray(getSelected_test.getChilds()) && selectedTestModel.checkIfChildsContained(getSelected_test)) {
+                } else if (selectedTestModel.getChilds() != null && getSelected_test.getChilds() != null && selectedTestModel.checkIfChildsContained(getSelected_test)) {
                     viewHolder.iv_checked.setVisibility(View.GONE);
                     viewHolder.iv_locked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
@@ -93,10 +117,10 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
                     viewHolder.parentTestCode = selectedTestModel.getCode();
                     isChecked = true;
                 } else {
-                    if (GlobalClass.checkArray(selectedTestModel.getChilds())) {
+                    if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
                         for (Base_Model_Rate_Calculator.Childs ctm :
                                 selectedTestModel.getChilds()) {
-                            if (GlobalClass.isNull(ctm.getCode()) && !GlobalClass.isNull(getSelected_test.getCode()) && ctm.getCode().equalsIgnoreCase(getSelected_test.getCode())) {
+                            if (ctm.getCode().equals(getSelected_test.getCode())) {
 
                                 viewHolder.iv_checked.setVisibility(View.GONE);
                                 viewHolder.iv_unchecked.setVisibility(View.GONE);
@@ -131,54 +155,52 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
             @Override
             public void onClick(View view) {
 
-                if(GlobalClass.CheckArrayList(selectedTests)){
-                    GlobalClass.showTastyToast((Activity)mContext, MessageConstants.only_one_test,2);
-
+                if(selectedTests.size()>0){
+                    TastyToast.makeText(mContext, "Only one test can be selected", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 }
 
                 else{
+                    String str = "";
 
+                    str = str + getSelected_test.getCode() + ",";
                     String slectedpackage = "";
+
+
                     slectedpackage = getSelected_test.getName();
                     tempselectedTests = new ArrayList<>();
                     tempselectedTests1 = new ArrayList<>();
 
 
-                    if (GlobalClass.checkArray(getSelected_test.getChilds())) {
+                    if (getSelected_test.getChilds() != null) {
                         for (int i = 0; i < getSelected_test.getChilds().length; i++) {
-                            if (GlobalClass.CheckArrayList(selectedTests)) {
-                                for (int j = 0; j < selectedTests.size(); j++) {
-                                    if (!GlobalClass.isNull(getSelected_test.getChilds()[i].getCode()) &&
-                                            !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                            getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                        Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
-
-                                        tempselectedTests1.add(selectedTests.get(j).getName());
-                                        tempselectedTests.add(selectedTests.get(j));
+                            //tejas t -----------------------------
+                            for (int j = 0; j < selectedTests.size(); j++) {
 
 
-                                    } else if (!GlobalClass.isNull(selectedTests.get(j).getCode()) && selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
-                                        tempselectedTests1.add(selectedTests.get(j).getName());
-                                        tempselectedTests.add(selectedTests.get(j));
-                                    }
+                                if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                    System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTests.get(j));
+
+
+                                } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
+                                    tempselectedTests1.add(selectedTests.get(j).getName());
+                                    tempselectedTests.add(selectedTests.get(j));
                                 }
                             }
                         }
                     }
+                    for (int j = 0; j < selectedTests.size(); j++) {
+                        Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
+                        if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
 
-                    if (GlobalClass.CheckArrayList(selectedTests)){
-                        for (int j = 0; j < selectedTests.size(); j++) {
-                            Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
-                            if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(getSelected_test.getChilds()) && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
-                                tempselectedTests1.add(selectedTests.get(j).getName());
-                                tempselectedTests.add(selectedTestModel123);
-                            }
+                            tempselectedTests1.add(selectedTests.get(j).getName());
+                            tempselectedTests.add(selectedTestModel123);
                         }
                     }
 
-
-
-                    if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                    if (tempselectedTests != null && tempselectedTests.size() > 0) {
                         String cartproduct = TextUtils.join(",", tempselectedTests1);
                         alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
                         alertDialogBuilder
@@ -186,53 +208,48 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
                                 .setCancelable(true)
                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
+//                                    alertDialog.dismiss();
                                     }
                                 });
                         androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                         alertDialog.show();
                     }
-
-                    if (GlobalClass.CheckArrayList(tempselectedTests)){
-                        for (int i = 0; i < tempselectedTests.size(); i++) {
-                            if (GlobalClass.CheckArrayList(selectedTests)){
-                                for (int j = 0; j < selectedTests.size(); j++) {
-                                    if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) &&
-                                            !GlobalClass.isNull(selectedTests.get(j).getCode()) &&
-                                            tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                                        selectedTests.remove(j);
-                                    }
-                                }
+                    for (int i = 0; i < tempselectedTests.size(); i++) {
+                        for (int j = 0; j < selectedTests.size(); j++) {
+                            if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                                selectedTests.remove(j);
                             }
-
                         }
                     }
-
                     selectedTests.add(getSelected_test);
                     mcallback.onClisktheTest(selectedTests);
                     notifyDataSetChanged();
                 }
             }
         });
-
         viewHolder.iv_checked.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (!isSelectedDueToParent) {
+
                     selectedTests.remove(getSelected_test);
                     mcallback.onClisktheTest(selectedTests);
+
                 } else {
                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
                     alertDialogBuilder
-                            .setMessage(Html.fromHtml(MessageConstants.PARENT_CHILD_REALTION_MSG + parentTestCode))
+                            .setMessage(Html.fromHtml("This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode))
                             .setCancelable(true)
-                            .setPositiveButton(MessageConstants.OK, new DialogInterface.OnClickListener() {
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-
+//                                    alertDialog.dismiss();
                                 }
                             });
                     androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
+
+                    //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
             }
@@ -257,6 +274,7 @@ public class Camp_Test_LIst extends RecyclerView.Adapter<Camp_Test_LIst.ViewHold
             super(itemView);
             test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
             test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
+            //txt_type = (TextView) itemView.findViewById(R.id.txt_type);
             iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
             iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);

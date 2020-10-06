@@ -107,9 +107,6 @@ public class APICall implements AppConstants {
                     httpGet.addHeader(requestModel.getHeader().get(i)
                             .getHeaderKey(), requestModel.getHeader().get(i)
                             .getHeaderValue());
-
-
-
                 }
             }
 

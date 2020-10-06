@@ -6,7 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -109,7 +113,7 @@ public class MultiSelectSpinner extends androidx.appcompat.widget.AppCompatSpinn
                     listener.selectedIndices(getSelectedIndices());
                     listener.selectedStrings(getSelectedStrings(), value);
                 } else {
-                    Global.showTastyToast(mActivity, "Select Symtoms");
+                    Global.showCustomToast(mActivity, "Select Symtoms");
                 }*/
             }
         });

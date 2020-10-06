@@ -26,20 +26,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.CovidAccess_Controller;
-import com.example.e5322.thyrosoft.Controller.Firebasetoken_Controller;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
 import com.example.e5322.thyrosoft.DownloadInAppTask;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
+import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.APIInteface;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,38 +51,77 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.GsonBuilder;
 import com.scottyab.rootbeer.RootBeer;
 
+import java.io.File;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import io.fabric.sdk.android.Fabric;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
+    private static final int MEGABYTE = 1024 * 1024;
     private static final int APPPERMISSTION = 110;
-    public static SharedPreferences profile;
-    public static SharedPreferences.Editor editor;
-    String androidOS;
-    String strtoken = "";
+    public static String str_login_test, profile_test, IMEI;
+    public static SharedPreferences sh, profile;
+    public static SharedPreferences.Editor editor, editor1;
+    SharedPreferences shr_user_log;
+    String androidOS, shr_osversion, shr_versionname;
+    static String path;
+    String strtoken="";
     private static String TAG = SplashScreen.class.getSimpleName();
-    String version="";
+    AlertDialog alert;
+    String strmodtype;
+    String version, islogin;
+    Boolean isInternetPresent = false;  // flag for Internet connection status
     ConnectionDetector cd;
+    SharedPreferences covid_pred;
+    String z = "";
     Animation anim;
+    String version1;
+    String response1;
+    String resId;
     ImageView iv;
     String USER_CODE = "";
+    ProgressDialog barProgressDialog;
+    File ThyrosoftLite;
     Activity activity;
     String newToken, storetoken;
+    String firebasenewToken;
     boolean IsFromNotification;
     String user, passwrd;
     int SCRID;
+    private int versionCode = 0;
+    private boolean isfirsttime = true;
+    private String ApkUrl, username;
     private GlobalClass globalClass;
+    private boolean firstRunSplash;
     private int WRITE_EXTERNAL_STORAGE = 123;
+    SharedPreferences.Editor editoractivity;
     private boolean covidacc;
     private SharedPreferences prefs_CovidSync;
     boolean isemulator = false;
-    private int versionCode;
+
+    public static boolean deleteFile(File file) {
+        boolean deletedAll = true;
+        if (file != null) {
+            if (file.isDirectory()) {
+                String[] children = file.list();
+                for (int i = 0; i < children.length; i++) {
+                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
+                }
+            } else {
+                deletedAll = file.delete();
+            }
+        }
+        return deletedAll;
+    }
+
 
     @SuppressLint("NewApi")
     @Override
@@ -87,13 +130,6 @@ public class SplashScreen extends AppCompatActivity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.splash_screen);
         activity = SplashScreen.this;
-
-        initViews();
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initViews() {
         prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
         anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
         iv = (ImageView) findViewById(R.id.logo);
@@ -137,29 +173,26 @@ public class SplashScreen extends AppCompatActivity {
             getAllpermission();
         }
 
-        try {
-            version = GlobalClass.getversion(activity);
-            versionCode = GlobalClass.getversioncode(activity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        version = GlobalClass.getversion(activity);
+        versionCode = GlobalClass.getversioncode(activity);
 
         TextView versionText = (TextView) findViewById(R.id.version);
-        GlobalClass.SetText(versionText, version);
+        versionText.setText(version);
 
         cd = new ConnectionDetector(getApplicationContext());
 
         androidOS = Build.VERSION.RELEASE;
 
         SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        String access = prefs.getString("ACCESS_TYPE", "");
-        String api_key = prefs.getString("API_KEY", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        String access = prefs.getString("ACCESS_TYPE", null);
+        String api_key = prefs.getString("API_KEY", null);
         USER_CODE = prefs.getString("USER_CODE", "");
 
         SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
         storetoken = fire_pref.getString(Constants.F_TOKEN, "");
+
     }
 
     private void getAllpermission() {
@@ -178,6 +211,8 @@ public class SplashScreen extends AppCompatActivity {
                         ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
                         ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+
                     ActivityCompat.requestPermissions(SplashScreen.this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                                     Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -216,7 +251,7 @@ public class SplashScreen extends AppCompatActivity {
                     }
                     if (!allGranted) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                        builder.setMessage(MessageConstants.PAERMISSION_REQUEST)
+                        builder.setMessage("Please provide the permissions requested. Application will shutdown now.")
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         activity.finish();
@@ -228,7 +263,7 @@ public class SplashScreen extends AppCompatActivity {
                     }
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                    builder.setMessage(MessageConstants.FAILED_PAERMISSION_REQUEST)
+                    builder.setMessage("Failed to recognize the permissions. Please restart the app and try again")
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     activity.finish();
@@ -256,7 +291,7 @@ public class SplashScreen extends AppCompatActivity {
                         if (pendingDynamicLinkData != null) {
 
                             deepLink = pendingDynamicLinkData.getLink();
-                            Log.v("TAG", "Dynamic Link : " + deepLink.toString());
+                            System.out.println("Dynamic Link : " + deepLink.toString());
                             String SrcID = String.valueOf(deepLink.getQueryParameter("ScreenID"));
                             int ScreenID = 0;
                             try {
@@ -284,16 +319,44 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void pushToken() {
-        try {
-            if (ControllersGlobalInitialiser.firebasetoken_controller != null) {
-                ControllersGlobalInitialiser.firebasetoken_controller = null;
-            }
-            ControllersGlobalInitialiser.firebasetoken_controller = new Firebasetoken_Controller(activity, SplashScreen.this);
-            ControllersGlobalInitialiser.firebasetoken_controller.Pushfirebasetoken(user, newToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.PushToken).create(APIInteface.class);
+        Firebasepost firebasepost = new Firebasepost();
+        firebasepost.setClient_Id(user);
+        firebasepost.setAppName(Constants.APPNAME);
+        firebasepost.setEnterBy(user);
+        firebasepost.setToken(strtoken);
+        firebasepost.setTopic(Constants.TOPIC);
+
+
+        Call<FirebaseModel> responseCall = apiInterface.pushtoken(firebasepost);
+        Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
+        //Log.e("TAG", "PUSH URL" + responseCall.request().url());
+        responseCall.enqueue(new Callback<FirebaseModel>() {
+            @Override
+            public void onResponse(Call<FirebaseModel> call, Response<FirebaseModel> response) {
+                try {
+                    if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)) {
+                        Intent prefe = new Intent(activity, ManagingTabsActivity.class);
+                        prefe.putExtra("Screen_category", SCRID);
+                        prefe.putExtra(Constants.COMEFROM, true);
+                        prefe.putExtra(Constants.IsFromNotification, IsFromNotification);
+                        activity.startActivity(prefe);
+                        ((Activity) activity).finish();
+                        Constants.PUSHNOT_FLAG=false;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<FirebaseModel> call, Throwable t) {
+                Log.e(TAG, "o n E r r o r ---->" + t.getLocalizedMessage());
+            }
+        });
     }
 
     private void GoAhead() {
@@ -356,8 +419,10 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     public void getVersionResponse(final String apiVersion, final String apkUrl, String response) {
-        if (!GlobalClass.isNull(apiVersion)  && !GlobalClass.isNull(response) && response.equalsIgnoreCase(Constants.SUCCESS)) {
+        if (apiVersion != null && response.equalsIgnoreCase("Success")) {
+            globalClass.printLog("Error", TAG, "onResponse apiVersion: ", apiVersion);
             iv.startAnimation(anim);
+
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -384,7 +449,7 @@ public class SplashScreen extends AppCompatActivity {
                 }
             });
         } else {
-            GlobalClass.showTastyToast(activity, response, 2);
+            GlobalClass.showShortToast(activity, response);
             ActivityCompat.finishAffinity(activity);
         }
     }
@@ -392,19 +457,24 @@ public class SplashScreen extends AppCompatActivity {
 
     private void callIntent() {
         new LogUserActivityTagging(activity, "");
-        if (!GlobalClass.isNull(user) && !GlobalClass.isNull(passwrd)) {
+        if (user != null && passwrd != null) {
             long PreviousTime = prefs_CovidSync.getLong("PreivousTimeOfSync", 0);
             long currenttime = System.currentTimeMillis();
             long differ_millis = currenttime - PreviousTime;
             int days = (int) (differ_millis / (1000 * 60 * 60 * 24));
 
             if (days >= 1) {
-                checkcovidaccess();
+                if (GlobalClass.isNetworkAvailable(activity)) {
+                    checkcovidaccess();
+                } else
+                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN);
             } else {
                 Log.e(TAG, " Caching :Less than 1 Day");
             }
 
-            if (Constants.PUSHNOT_FLAG) {
+            Log.e(TAG,"Constants.PUSHNOT_FLAG---->"+Constants.PUSHNOT_FLAG);
+
+            if (Constants.PUSHNOT_FLAG){
                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -413,7 +483,7 @@ public class SplashScreen extends AppCompatActivity {
                         pushToken();
                     }
                 });
-            } else {
+            }else {
                 Intent prefe = new Intent(activity, ManagingTabsActivity.class);
                 prefe.putExtra("Screen_category", SCRID);
                 prefe.putExtra(Constants.COMEFROM, true);
@@ -421,6 +491,7 @@ public class SplashScreen extends AppCompatActivity {
                 activity.startActivity(prefe);
                 ((Activity) activity).finish();
             }
+
 
 
         } else {
@@ -431,15 +502,48 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void checkcovidaccess() {
-        try {
-            if (ControllersGlobalInitialiser.covidAccess_controller != null) {
-                ControllersGlobalInitialiser.covidAccess_controller = null;
+
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+
+        CovidAccessReq covidAccessReq = new CovidAccessReq();
+        covidAccessReq.setSourceCode(user);
+
+        Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+
+
+        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+            @Override
+            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
+
+                SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
+                editor.commit();
+
+                try {
+                    if (response.body().getResponse().equalsIgnoreCase("True")) {
+                        covidacc = true;
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", covidacc);
+                        editor.commit();
+                    } else {
+                        covidacc = false;
+                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                        editor.putBoolean("covidacc", covidacc);
+                        editor.commit();
+                    }
+
+                    Log.e(TAG, "COVID ACCESS FLAG --->" + covidacc);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.covidAccess_controller = new CovidAccess_Controller(activity, SplashScreen.this);
-            ControllersGlobalInitialiser.covidAccess_controller.getcovidaccessController(user);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+
+            }
+        });
     }
 
 
@@ -540,47 +644,4 @@ public class SplashScreen extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    public void getpushtokenResponse(FirebaseModel body) {
-        try {
-            if (body != null && !GlobalClass.isNull(body.getResponseId()) &&
-                    body.getResponseId().equalsIgnoreCase(Constants.RES0000)) {
-
-                Intent prefe = new Intent(activity, ManagingTabsActivity.class);
-                prefe.putExtra("Screen_category", SCRID);
-                prefe.putExtra(Constants.COMEFROM, true);
-                prefe.putExtra(Constants.IsFromNotification, IsFromNotification);
-                activity.startActivity(prefe);
-                ((Activity) activity).finish();
-                Constants.PUSHNOT_FLAG = false;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getcovidaccResponse(Response<CovidaccessRes> response) {
-        SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
-        editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
-        editor.commit();
-
-        try {
-            if (response.body() != null && !GlobalClass.isNull(response.body().getResponse()) && response.body().getResponse().equalsIgnoreCase("True")) {
-                covidacc = true;
-                editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                editor.putBoolean("covidacc", covidacc);
-                editor.commit();
-            } else {
-                covidacc = false;
-                editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                editor.putBoolean("covidacc", covidacc);
-                editor.commit();
-            }
-
-            Log.e(TAG, "COVID ACCESS FLAG --->" + covidacc);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

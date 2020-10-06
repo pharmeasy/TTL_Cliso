@@ -1,14 +1,17 @@
 package com.example.e5322.thyrosoft.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.List;
@@ -19,10 +22,12 @@ public class ViewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
     private List<String> imagelist;
+    private int flag;
 
-    public ViewPagerAdapter(Context context, List<String> imagelist) {
+    public ViewPagerAdapter(Context context, List<String> imagelist, int i) {
         this.context = context;
         this.imagelist = imagelist;
+        this.flag = i;
     }
 
     @Override
@@ -42,10 +47,12 @@ public class ViewPagerAdapter extends PagerAdapter {
         View view = layoutInflater.inflate(R.layout.custom_slider, null);
         ImageView imageView = (ImageView) view.findViewById(R.id.imageView);
 
-        Glide.with(context)
-                .load(imagelist.get(position))
-                .placeholder(context.getResources().getDrawable(R.drawable.img_no_img_aval))
-                .into(imageView);
+        if (flag == 0) {
+            GlobalClass.DisplayImgWithPlaceholder(((Activity) context), imagelist.get(position), imageView, R.drawable.img_no_img_aval);
+        } else {
+            GlobalClass.DisplayImgWithPlaceholderFromURL(((Activity) context), imagelist.get(position), imageView, R.drawable.img_no_img_aval);
+        }
+
 
         //  ShowImagePinchZoom.ZoomImage(imageView);
 

@@ -9,18 +9,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.Adapter.VerticalViewPager;
+import com.example.e5322.thyrosoft.Adapter.HealthTipsPagerAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ViewModel.HealthviewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HealthArticle_Activity extends AppCompatActivity implements View.OnClickListener {
 
+    HealthTipsPagerAdapter mAdapter;
     TextView tvname;
     HealthviewModel healthviewModel;
+    private ArrayList<HealthTipsApiResponseModel.HArt> HealthTipsArrylst;
     private VerticalViewPager healthTipViewpager;
 
     @Override
@@ -33,7 +36,7 @@ public class HealthArticle_Activity extends AppCompatActivity implements View.On
     private void initView() {
         healthTipViewpager = findViewById(R.id.healthTipViewpager);
         tvname = findViewById(R.id.txt_name);
-        GlobalClass.SetText(tvname,"Health Articles");
+        tvname.setText("Health Articles");
         tvname.setAllCaps(true);
         tvname.setTextColor(getResources().getColor(R.color.maroon));
         tvname.setTextSize(20f);

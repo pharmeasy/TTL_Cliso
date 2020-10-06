@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     package="com.example.e5322.thyrosoft">
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -17,7 +16,6 @@
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
     <uses-feature android:name="android.hardware.camera" />
-
 
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -42,25 +40,24 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
 
-
     <application
         android:name=".Controller.ControllersGlobalInitialiser"
         android:allowBackup="false"
+        android:appComponentFactory="@string/app_name"
         android:configChanges="orientation|screenSize|keyboardHidden"
         android:debuggable="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/middle_logo"
         android:label="@string/app_name"
         android:largeHeap="true"
-        tools:replace="android:icon,android:appComponentFactory,android:allowBackup"
-        android:appComponentFactory="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-
-
-        <activity android:name=".Activity.LeadGenerationActivity"
-            android:screenOrientation="portrait"/>
+        android:usesCleartextTraffic="true"
+        tools:replace="android:icon,android:appComponentFactory,android:allowBackup">
+        <activity
+            android:name=".Activity.LeadGenerationActivity"
+            android:screenOrientation="portrait" />
 
         <uses-library
             android:name="org.apache.http.legacy"
@@ -69,17 +66,37 @@
         <activity
             android:name=".Activity.Blood_sugar_entry_activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".Activity.CampIntimation"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".BroadcastViewPagerActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.frags.RapidAntibodyFrag"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.CampIntimation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".BroadcastViewPagerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.BroadcastDataActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.LedgerDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.frags.RapidAntibodyFrag"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ViewGenhandbill_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.ShowTemplateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.HandBillform"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Previewhandbill_Activity"
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/googlemapkey" />
-
 
         <activity
             android:name=".startscreen.SplashScreen"
@@ -90,6 +107,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activity.VideoFullScreen"
+            android:screenOrientation="landscape" />
 
         <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
@@ -102,43 +122,36 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-<!--        <service-->
-<!--            android:name="com.example.e5322.thyrosoft.MyFirebaseInstanceIDService"-->
-<!--            android:stopWithTask="false"-->
-<!--            android:exported="false"-->
-<!--            android:permission="com.example.e5322.thyrosoft.permission.FirebaseNotification">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
-
-<!--        <service-->
-<!--            android:name="com.example.e5322.thyrosoft.MyFirebaseMessagingService"-->
-<!--            android:stopWithTask="false"-->
-<!--            android:exported="false"-->
-<!--            android:permission="com.example.e5322.thyrosoft.permission.FirebaseNotification">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
+        </service> <!-- <service -->
+        <!-- android:name="com.example.e5322.thyrosoft.MyFirebaseInstanceIDService" -->
+        <!-- android:stopWithTask="false" -->
+        <!-- android:exported="false" -->
+        <!-- android:permission="com.example.e5322.thyrosoft.permission.FirebaseNotification"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.google.firebase.INSTANCE_ID_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
+        <!-- <service -->
+        <!-- android:name="com.example.e5322.thyrosoft.MyFirebaseMessagingService" -->
+        <!-- android:stopWithTask="false" -->
+        <!-- android:exported="false" -->
+        <!-- android:permission="com.example.e5322.thyrosoft.permission.FirebaseNotification"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.google.firebase.MESSAGING_EVENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </service> -->
         <activity
             android:name=".Kotlin.KTActivity.KTCompanyContact_activity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".Activity.ConfirmbookDetail"
             android:screenOrientation="portrait" />
-
-        <activity android:name=".Activity.MultipleLeadActivity"
-            android:screenOrientation="portrait"/>
-
-        <activity android:name=".Activity.Noticeboard_activity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".Activity.MultipleLeadActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Noticeboard_activity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.CovidReg_Activity"
             android:screenOrientation="portrait" />
@@ -171,8 +184,11 @@
             android:name=".Activity.ReportBarcode_activity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".Activity.BMC_SelectSampleTypeActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activity.Cliso_SelctSampleActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Kotlin.KTActivity.KTReportBarcode_activity"
             android:screenOrientation="portrait" />
@@ -192,6 +208,7 @@
             android:label="@string/title_activity_main2"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
+        <activity android:name=".RevisedScreenNewUser.NewLoginScreenWithOtp" />
 
         <receiver android:name=".startscreen.MySMSBroadCastReceiver">
             <intent-filter>
@@ -214,6 +231,12 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RevisedScreenNewUser.ProductLisitngActivityNew"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HHHtest.SelectTestsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".HHHtest.HHHMainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".WOE.MainActivityFirebase"
@@ -260,6 +283,7 @@
         <activity
             android:name=".RevisedScreenNewUser.SummaryActivity_New"
             android:screenOrientation="portrait" />
+        <activity android:name=".WOE.FragmentsHandlerActivity" />
         <activity android:name=".GeoLocation" />
 
         <meta-data
@@ -268,6 +292,12 @@
 
         <activity
             android:name=".RevisedScreenNewUser.Sgc_Pgc_Entry_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RevisedScreenNewUser.Consignment_entry_form"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Fragment.BarcodeWiseReport_Download"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RevisedScreenNewUser.UploadDocument"
@@ -292,6 +322,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.ComposeCommunication_activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.Faq_activity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.Feedback_activity"
@@ -330,17 +363,42 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                tools:replace="android:resource"
-                android:resource="@xml/filepaths" />
+                android:resource="@xml/filepaths"
+                tools:replace="android:resource" />
         </provider>
 
         <activity android:name=".Activity.BroadcastActivity" />
         <activity
+            android:name=".Cliso_BMC.BMC_ProductListingActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".Activity.HealthArticle_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_WOE_SummaryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_WOE_EditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_Scan_BarcodeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.HealthTipsDetail_Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_SummaryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SpecialOffer.OfferScan_Activity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".Cliso_BMC.BMC_VideoActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".Cliso_BMC.BMC_StockAvailabilityActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".Cliso_BMC.BMC_UpdateMaterialActivity" />
     </application>
 
 </manifest>

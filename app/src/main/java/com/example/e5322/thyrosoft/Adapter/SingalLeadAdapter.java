@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 
@@ -33,9 +32,8 @@ public class SingalLeadAdapter extends RecyclerView.Adapter<SingalLeadAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int position) {
-
-        GlobalClass.SetText(myViewHolder.tv_product_name,singalLead_list.get(position).getProducts());
-        GlobalClass.SetText(myViewHolder.tv_sample_type,singalLead_list.get(position).getSpecimen_type());
+        myViewHolder.tv_product_name.setText(singalLead_list.get(position).getProducts());
+        myViewHolder.tv_sample_type.setText(singalLead_list.get(position).getSpecimen_type());
     }
 
     @Override

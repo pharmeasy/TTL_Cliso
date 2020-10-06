@@ -1,9 +1,8 @@
 package com.example.e5322.thyrosoft.Controller;
 
-import android.app.Activity;
+import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
@@ -15,25 +14,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+
 public class GetClientDetail_Controller {
     SpecialOffer_Activity specialOffer_activity;
     GlobalClass globalClass;
     int flag = 0;
-    Activity mActivity;
 
 
-    public GetClientDetail_Controller(Activity mActivity, SpecialOffer_Activity mContext) {
-        this.mActivity = mActivity;
+    public GetClientDetail_Controller(SpecialOffer_Activity mContext) {
         this.specialOffer_activity = mContext;
+        globalClass = new GlobalClass(mContext);
         flag = 1;
     }
-
 
 
     public void CallgetClient(String user, String api_key) {
 
         APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(specialOffer_activity, Api.SOURCEils).create(APIInteface.class);
         Call<SourceILSMainModel> responseCall = apiInterface.getClient(api_key, user, "/B2BAPP/getclients");
+       // Log.e("TAG", "Client URL --->" + responseCall.request().url());
 
         responseCall.enqueue(new Callback<SourceILSMainModel>() {
             @Override
@@ -47,14 +46,15 @@ public class GetClientDetail_Controller {
                         }
                     }
                 } else {
-                    GlobalClass.showTastyToast(specialOffer_activity, MessageConstants.SOMETHING_WENT_WRONG, 2);
+                    globalClass.showcenterCustomToast(specialOffer_activity, "Something went wrong please try after sometime.");
                 }
             }
 
             @Override
             public void onFailure(Call<SourceILSMainModel> call, Throwable t) {
 
-                Log.v("TAG", "HealthTips OnFailure");
+                Log.d("Errror", t.getMessage());
+                System.out.println("HealthTips OnFailure");
             }
         });
     }

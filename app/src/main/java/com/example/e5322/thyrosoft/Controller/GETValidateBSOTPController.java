@@ -38,7 +38,7 @@ public class GETValidateBSOTPController {
             progressDialog = GlobalClass.ShowprogressDialog(mactivity);
 
             if (requestQueue == null)
-                requestQueue = Volley.newRequestQueue(mactivity);
+                requestQueue = GlobalClass.setVolleyReq(mactivity);
             String url = Api.SUGARSO + Api.VERIFY_OTP_BS + strMobile + "/" + otp;
             Log.e(TAG, "validateOTPAPI " + url);
 
@@ -56,7 +56,7 @@ public class GETValidateBSOTPController {
                         if (flag == 0)
                             bs_entryFragment.getValidateOTPResponse(response);
                     } else {
-                        GlobalClass.showTastyToast(mactivity, ToastFile.something_went_wrong,2);
+                        Global.showCustomToast(mactivity, ToastFile.something_went_wrong);
                     }
                 }
             }, new Response.ErrorListener() {

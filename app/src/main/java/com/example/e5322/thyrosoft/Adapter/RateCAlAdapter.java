@@ -11,13 +11,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.TestDetails_Controller;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
@@ -48,10 +50,13 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     ManagingTabsActivity mContext;
     ArrayList<Base_Model_Rate_Calculator> mgetSingleList;
     ArrayList<Base_Model_Rate_Calculator> filteredList;
+    Base_Model_Rate_Calculator getSelected_test;
+    Base_Model_Rate_Calculator.Childs selectedchildlist[];
     ShowChildTestNamesAdapter showChildTestNamesAdapter;
     RecyclerView testdetails;
     ArrayList<String> storetestlist;
-    AlertDialog alertDialog;
+    AlertDialog alertDialog, alert;
+    ImageView imageView = null;
     private ArrayList<Base_Model_Rate_Calculator> tempselectedTests;
     private List<String> tempselectedTests1;
     private ArrayList<Base_Model_Rate_Calculator> selectedTests = new ArrayList<>();
@@ -96,26 +101,23 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
     public void onBindViewHolder(@NonNull final RateCAlAdapter.ViewHolder viewHolder, final int position) {
 
         viewHolder.lin_color.removeAllViews();
-        GlobalClass.SetText(viewHolder.test_name_rate_txt, mgetSingleList.get(position).getName());
 
+        viewHolder.test_name_rate_txt.setText(mgetSingleList.get(position).getName());
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("en", "in"));
         int passThvalue = Integer.parseInt(mgetSingleList.get(position).getRate().getB2c());
         String setRtaesToTests = numberFormat.format(passThvalue);
-
-        GlobalClass.SetText(viewHolder.test_rate_cal_txt, "₹ " + setRtaesToTests + "/-");
-
-
+        viewHolder.test_rate_cal_txt.setText("₹ " + setRtaesToTests + "/-");
         final boolean isSelectedDueToParent = viewHolder.isSelectedDueToParent;
         final String parentTestCode = viewHolder.parentTestCode;
         final Base_Model_Rate_Calculator getSelected_test = filteredList.get(position);
 
         /*TODO Below logic for TTL Sample type color code*/
-        if (GlobalClass.CheckArrayList(mgetSingleList)) {
+        if (mgetSingleList != null || mgetSingleList.size() != 0) {
             SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, mgetSingleList, position);
             sampleTypeColor.ttlcolor(viewHolder.lin_color);
         }
 
-        if (GlobalClass.checkArray(getSelected_test.getChilds())) {
+        if (getSelected_test.getChilds().length != 0) {
 
             viewHolder.parent_ll.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -135,19 +137,60 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     }
                     POstQueSendEstimation = GlobalClass.setVolleyReq(mContext);
 
-                    try {
-                        if (ControllersGlobalInitialiser.testDetails_controller != null) {
-                            ControllersGlobalInitialiser.testDetails_controller = null;
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.testDetails, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                Log.e(TAG, "onResponse: " + response);
+                                TestDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), TestDetailsResponseModel.class);
+                                if (responseModel != null) {
+                                    if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
+                                        if (responseModel.getTestName() != null && responseModel.getTestName().size() > 0) {
+                                            showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, responseModel.getTestName());
+                                            LayoutInflater li = LayoutInflater.from(mContext);
+                                            View promptsView = li.inflate(R.layout.activity_show_child_list, null);
+                                            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
+                                            alertDialogBuilder.setView(promptsView);
+                                            testdetails = (RecyclerView) promptsView.findViewById(R.id.testdetails);
+                                            imgClose = (ImageView) promptsView.findViewById(R.id.imgClose);
+                                            linearLayoutManager = new LinearLayoutManager(mContext);
+                                            testdetails.setLayoutManager(linearLayoutManager);
+                                            testdetails.setAdapter(showChildTestNamesAdapter);
+                                            alertDialog = alertDialogBuilder.create();
+                                            if (!((Activity) mContext).isFinishing()) {
+                                                alertDialog.show();
+                                                //show dialog
+                                            }
+                                            imgClose.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    alertDialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        ControllersGlobalInitialiser.testDetails_controller = new TestDetails_Controller((Activity)mContext,RateCAlAdapter.this);
-                        ControllersGlobalInitialiser.testDetails_controller.gettestdetail_controller(jsonObject,POstQueSendEstimation);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
+                    }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (error != null) {
+                            } else {
+                                System.out.println(error);
+                            }
+                        }
+                    });
+                    POstQueSendEstimation.add(jsonObjectRequest1);
+                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+                    Log.e(TAG, "onClick: URl" + jsonObjectRequest1);
                     Log.e(TAG, "onClick: jsonObject " + jsonObject);
 
-                    if (GlobalClass.checkArray(getSelected_test.getChilds())) {
+                    if (getSelected_test.getChilds().length != 0) {
                         storetestlist = new ArrayList<>();
                         for (int i = 0; i < getSelected_test.getChilds().length; i++) {
                             storetestlist.add(getSelected_test.getChilds()[i].getCode());
@@ -164,20 +207,22 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         viewHolder.parentTestCode = "";
 
 
-        if (GlobalClass.CheckArrayList(selectedTests)) {
+        /*for (int i = 0; i <selectedTests.get(0).getBarcodes().length ; i++) {
+            Log.e(TAG,"BARCODE TYPE --->"+selectedTests.get(position).getBarcodes());
+        }*/
+
+        if (selectedTests != null && selectedTests.size() > 0) {
             for (int i = 0; !isChecked && i < selectedTests.size(); i++) {
                 Base_Model_Rate_Calculator selectedTestModel = selectedTests.get(i);
 
-                if (!GlobalClass.isNull(selectedTestModel.getCode()) &&
-                        !GlobalClass.isNull(getSelected_test.getCode()) &&
-                        selectedTestModel.getCode().equalsIgnoreCase(getSelected_test.getCode())) {
+                if (selectedTestModel.getCode().equals(getSelected_test.getCode())) {
                     viewHolder.iv_checked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
                     viewHolder.iv_locked.setVisibility(View.GONE);
                     viewHolder.isSelectedDueToParent = false;
                     viewHolder.parentTestCode = "";
                     isChecked = true;
-                } else if (GlobalClass.checkArray(selectedTestModel.getChilds()) && selectedTestModel.checkIfChildsContained(getSelected_test)) {
+                } else if (selectedTestModel.getChilds() != null && getSelected_test.getChilds() != null && selectedTestModel.checkIfChildsContained(getSelected_test)) {
                     viewHolder.iv_checked.setVisibility(View.GONE);
                     viewHolder.iv_locked.setVisibility(View.VISIBLE);
                     viewHolder.iv_unchecked.setVisibility(View.GONE);
@@ -185,7 +230,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     viewHolder.parentTestCode = selectedTestModel.getCode();
                     isChecked = true;
                 } else {
-                    if (GlobalClass.checkArray(selectedTestModel.getChilds())) {
+                    if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
                         for (Base_Model_Rate_Calculator.Childs ctm :
                                 selectedTestModel.getChilds()) {
                             if (ctm.getCode().equals(getSelected_test.getCode())) {
@@ -230,16 +275,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     }
                     if (isCAGCA) {
                         Base_Model_Rate_Calculator ProfileToSelect = null;
-
-                        if (GlobalClass.CheckArrayList(AllProductArrayList)){
-                            for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                    ProfileToSelect = AllProductArrayList.get(i);
-                                    break;
-                                }
+                        for (int i = 0; i < AllProductArrayList.size(); i++) {
+                            if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                ProfileToSelect = AllProductArrayList.get(i);
+                                break;
                             }
                         }
-
                         if (ProfileToSelect != null) {
                             CallCheckFunction(ProfileToSelect);
                         } else {
@@ -249,31 +290,22 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                         CallCheckFunction(mgetSingleList.get(position));
                     }
 
-                } else if (!GlobalClass.isNull(mgetSingleList.get(position).getCode()) &&
-                        mgetSingleList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                } else if (mgetSingleList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
                     boolean isCATC = false;
-
-                    if (GlobalClass.CheckArrayList(selectedTests)){
-                        for (int i = 0; i < selectedTests.size(); i++) {
-                            if (selectedTests.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
-                                isCATC = true;
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
+                            isCATC = true;
+                            break;
+                        }
+                    }
+                    if (isCATC) {
+                        Base_Model_Rate_Calculator ProfileToSelect = null;
+                        for (int i = 0; i < AllProductArrayList.size(); i++) {
+                            if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                ProfileToSelect = AllProductArrayList.get(i);
                                 break;
                             }
                         }
-                    }
-
-                    if (isCATC) {
-                        Base_Model_Rate_Calculator ProfileToSelect = null;
-
-                        if (GlobalClass.CheckArrayList(AllProductArrayList)){
-                            for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                    ProfileToSelect = AllProductArrayList.get(i);
-                                    break;
-                                }
-                            }
-                        }
-
                         if (ProfileToSelect != null) {
                             CallCheckFunction(ProfileToSelect);
                         } else {
@@ -292,14 +324,11 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 if (!isSelectedDueToParent) {
-                    if (GlobalClass.CheckArrayList(selectedTests)){
-                        for (int i = 0; i < selectedTests.size(); i++) {
-                            if (selectedTests.get(i).getName().equalsIgnoreCase(getSelected_test.getName())) {
-                                selectedTests.remove(i);
-                            }
+                    for (int i = 0; i < selectedTests.size(); i++) {
+                        if (selectedTests.get(i).getName().equalsIgnoreCase(getSelected_test.getName())) {
+                            selectedTests.remove(i);
                         }
                     }
-
                     mcallback.onCheckChangeRateCalculator(selectedTests);
                 } else {
                     alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
@@ -308,12 +337,13 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                             .setCancelable(true)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
+//                                    alertDialog.dismiss();
                                 }
                             });
                     androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
 
-
+                    //Toast.makeText(activity, "This test was selected because of its parent. If you wish to remove this test please remove the parent: " + parentTestCode, Toast.LENGTH_SHORT).show();
                 }
                 notifyDataSetChanged();
             }
@@ -332,12 +362,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         tempselectedTests1 = new ArrayList<>();
 
         try {
-            if (GlobalClass.checkArray(getSelected_test.getChilds())) {
+            if (getSelected_test.getChilds() != null) {
                 for (int i = 0; i < getSelected_test.getChilds().length; i++) {
                     //tejas t -----------------------------
                     for (int j = 0; j < selectedTests.size(); j++) {
                         if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                            Log.v("TAG", "Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
+                            System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
                             tempselectedTests1.add(selectedTests.get(j).getName());
                             tempselectedTests.add(selectedTests.get(j));
                         } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
@@ -353,21 +383,18 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
 
 
         try {
-            if (GlobalClass.CheckArrayList(selectedTests)) {
-                for (int j = 0; j < selectedTests.size(); j++) {
-                    Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
-                    if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
-                        tempselectedTests1.add(selectedTests.get(j).getName());
-                        tempselectedTests.add(selectedTestModel123);
-                    }
+            for (int j = 0; j < selectedTests.size(); j++) {
+                Base_Model_Rate_Calculator selectedTestModel123 = selectedTests.get(j);
+                if (selectedTestModel123.getChilds() != null && getSelected_test.getChilds() != null && getSelected_test.checkIfChildsContained(selectedTestModel123)) {
+                    tempselectedTests1.add(selectedTests.get(j).getName());
+                    tempselectedTests.add(selectedTestModel123);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if (GlobalClass.CheckArrayList(tempselectedTests)) {
+        if (tempselectedTests != null && tempselectedTests.size() > 0) {
             String cartproduct = TextUtils.join(",", tempselectedTests1);
             alertDialogBuilder = new androidx.appcompat.app.AlertDialog.Builder(mContext);
             alertDialogBuilder
@@ -375,68 +402,27 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                     .setCancelable(true)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+//                                    alertDialog.dismiss();
                         }
                     });
             androidx.appcompat.app.AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
-
-        if (GlobalClass.CheckArrayList(tempselectedTests)) {
-            for (int i = 0; i < tempselectedTests.size(); i++) {
-                for (int j = 0; j < selectedTests.size(); j++) {
-                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
-                        selectedTests.remove(j);
-                    }
+        for (int i = 0; i < tempselectedTests.size(); i++) {
+            for (int j = 0; j < selectedTests.size(); j++) {
+                if (tempselectedTests.get(i).getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
+                    selectedTests.remove(j);
                 }
             }
-            selectedTests.add(getSelected_test);
-            mcallback.onCheckChangeRateCalculator(selectedTests);
-            notifyDataSetChanged();
         }
-
+        selectedTests.add(getSelected_test);
+        mcallback.onCheckChangeRateCalculator(selectedTests);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
         return mgetSingleList.size();
-    }
-
-    public void getTestdetailResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: " + response);
-            TestDetailsResponseModel responseModel = new Gson().fromJson(String.valueOf(response), TestDetailsResponseModel.class);
-            if (responseModel != null) {
-                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
-                    if (GlobalClass.CheckArrayList(responseModel.getTestName())) {
-                        showChildTestNamesAdapter = new ShowChildTestNamesAdapter(mContext, responseModel.getTestName());
-                        LayoutInflater li = LayoutInflater.from(mContext);
-                        View promptsView = li.inflate(R.layout.activity_show_child_list, null);
-                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mContext);
-                        alertDialogBuilder.setView(promptsView);
-                        testdetails = (RecyclerView) promptsView.findViewById(R.id.testdetails);
-                        imgClose = (ImageView) promptsView.findViewById(R.id.imgClose);
-                        linearLayoutManager = new LinearLayoutManager(mContext);
-                        testdetails.setLayoutManager(linearLayoutManager);
-                        testdetails.setAdapter(showChildTestNamesAdapter);
-                        alertDialog = alertDialogBuilder.create();
-                        if (!((Activity) mContext).isFinishing()) {
-                            alertDialog.show();
-
-                        }
-                        imgClose.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertDialog.dismiss();
-                            }
-                        });
-                    }
-                }
-            } else {
-                GlobalClass.showTastyToast(mContext, ToastFile.something_went_wrong,2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -450,6 +436,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
             super(itemView);
             test_name_rate_txt = (TextView) itemView.findViewById(R.id.test_name_rate_txt);
             test_rate_cal_txt = (TextView) itemView.findViewById(R.id.test_rate_cal_txt);
+            /*  txt_type = (TextView) itemView.findViewById(R.id.txt_type);*/
             iv_checked = (ImageView) itemView.findViewById(R.id.iv_checked);
             iv_unchecked = (ImageView) itemView.findViewById(R.id.iv_unchecked);
             iv_locked = (ImageView) itemView.findViewById(R.id.iv_locked);

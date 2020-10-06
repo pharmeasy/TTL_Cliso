@@ -5,13 +5,14 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.Log;
+import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
 import com.example.e5322.thyrosoft.Fragment.Offline_woe;
+import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Scan_Barcode_ILS_New;
 import com.example.e5322.thyrosoft.WOE.Scan_Barcode_Outlabs;
@@ -150,6 +151,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                     + "\"TRF_UPLOAD_SIZE\"" + ":\"" + trfModelArrayList.size() + "\"");
 
             httpPost.setEntity(builder.build());
+            httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
             Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
@@ -191,14 +193,15 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                         scan_barcode_outlabs_activity.getUploadFileResponse();
                     }
                 } else {
-                    GlobalClass.showTastyToast(mActivity, response, 2);
-
+                    Toast.makeText(mActivity, response, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, ToastFile.IMAGE_UPLOAD_FAILED, Toast.LENGTH_LONG).show();
                 }
             } else {
-                GlobalClass.showTastyToast(mActivity, MessageConstants.RESULTNULL, 2);
+                Toast.makeText(mActivity, "Result is null", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, ToastFile.IMAGE_UPLOAD_FAILED, Toast.LENGTH_LONG).show();
             }
         } else {
-            GlobalClass.showTastyToast(mActivity, ToastFile.IMAGE_UPLOAD_FAILED,2);
+            Toast.makeText(mActivity, ToastFile.IMAGE_UPLOAD_FAILED, Toast.LENGTH_LONG).show();
         }
     }
 

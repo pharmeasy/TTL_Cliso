@@ -1,5 +1,9 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,11 +18,6 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.List;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 public class CampIntimation extends AppCompatActivity {
     LinearLayout enter_ll_unselected, unchecked_entered_ll;
     TextView enter, enetered;
@@ -31,15 +30,27 @@ public class CampIntimation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camp_intimation);
 
-        initViews();
+        enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
+        unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
+
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
+
+        enter = (TextView) findViewById(R.id.enter);
+        enetered = (TextView) findViewById(R.id.enetered);
+
+        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
+
+        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+        enter_arrow_enter.setVisibility(View.VISIBLE);
+        enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+        enter_arrow_entered.setVisibility(View.GONE);
 
         SelectTest c = new SelectTest();
         replaceFragment(c);
 
-        initListner();
-    }
-
-    private void initListner() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,46 +91,36 @@ public class CampIntimation extends AppCompatActivity {
         });
     }
 
-    private void initViews() {
-        enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
-        unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
-
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
-
-        enter = (TextView) findViewById(R.id.enter);
-        enetered = (TextView) findViewById(R.id.enetered);
-
-        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
-
-        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-        enter_arrow_enter.setVisibility(View.VISIBLE);
-        enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-        enter_arrow_entered.setVisibility(View.GONE);
-    }
-
     @Override
     public void onBackPressed() {
         try {
             List fragments = getSupportFragmentManager().getFragments();
-            currentFragment = fragments.get(fragments.size() - 1);
-            if (currentFragment.toString().contains("Camp_Mis_Data_fragment")) {
+            currentFragment = fragments.get(fragments.size()-1);
+            if(currentFragment.toString().contains("Camp_Mis_Data_fragment")){
                 enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_entered.setVisibility(View.GONE);
                 SelectTest c = new SelectTest();
                 replaceFragment(c);
-            }
-            if (currentFragment.toString().contains("SelectTest")) {
+            }if(currentFragment.toString().contains("SelectTest")){
                 finish();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        /*FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_mainLayout);
+
+        if(currentFragment.getTag().equals("SelectTest")) {
+            Toast.makeText(this, "Select test", Toast.LENGTH_SHORT).show();
+        }
+
+        if(currentFragment.getTag().equals("Camp_Mis_Data_fragment")) {
+            Toast.makeText(this, "Mis data", Toast.LENGTH_SHORT).show();
+        }*/
     }
 
     public void replaceFragment(Fragment destFragment) {

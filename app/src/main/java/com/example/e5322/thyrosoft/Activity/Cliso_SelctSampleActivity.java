@@ -13,7 +13,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.CLISO_SelectSampleTypeTTLOthersAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -24,22 +30,19 @@ import com.example.e5322.thyrosoft.ToastFile;
 
 import java.util.ArrayList;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class Cliso_SelctSampleActivity extends AppCompatActivity {
 
-    private ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test = new ArrayList<>();
-    private ArrayList<Outlabdetails_OutLab> TTLOthersSelectedList;
-    private RecyclerView rec_sample_type_ttlothers;
-    private TextView show_selected_tests_data;
-    private TextView title;
+    ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test = new ArrayList<>();
+    ArrayList<Outlabdetails_OutLab> TTLOthersSelectedList;
+    String selectedTest;
+    String getTypeName;
+    RecyclerView rec_sample_type_ttlothers, rec_sample_type_ttl;
+    TextView show_selected_tests_data, tv_ttl;
+    TextView title;
     Button next;
     ImageView back;
     ImageView home;
-    SharedPreferences prefe;
+    SharedPreferences prefe, prefs;
     String brandName, typeName, testsnames;
     LinearLayoutManager linearLayoutManager;
     private ArrayList<String> locationlist;
@@ -47,7 +50,7 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
     private boolean sampleTypeNULL = false;
     ArrayList<ScannedBarcodeDetails> BMC_TTLOthersBarcodeDetailsList;
     ArrayList<ScannedBarcodeDetails> BMC_FinalBarcodeDetailsList;
-
+    private ArrayList<String> temparraylist;
     private AlertDialog.Builder alertDialogBuilder;
     ScannedBarcodeDetails scannedBarcodeDetails;
 
@@ -70,21 +73,20 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
         BMC_FinalBarcodeDetailsList = new ArrayList<>();
 
         prefe = getSharedPreferences(Constants.PREF_SAVEPATIENTDETAILS, MODE_PRIVATE);
-        brandName = prefe.getString("WOEbrand", "");
-        typeName = prefe.getString("woetype", "");
-
-        GlobalClass.SetText(title, "Select sample types");
+        brandName = prefe.getString("WOEbrand", null);
+        typeName = prefe.getString("woetype", null);
+        title.setText("Select sample types");
 
         Bundle bundle = getIntent().getExtras();
-        Selcted_Outlab_Test = bundle.getParcelableArrayList("getOutlablist");
-
+        Selcted_Outlab_Test = Global.Selcted_Outlab_Test_global;
         testsnames = bundle.getString("selectedTest");
         Log.e("TAG", "test names ::: " + testsnames);
-
-        GlobalClass.SetText(show_selected_tests_data, testsnames);
+        show_selected_tests_data.setText(testsnames);
 
         linearLayoutManager = new LinearLayoutManager(Cliso_SelctSampleActivity.this);
         rec_sample_type_ttlothers.setLayoutManager(linearLayoutManager);
+
+        //  temparraylist = new ArrayList<>();
 
         initListeners();
 
@@ -92,20 +94,18 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
         TTLOthersSelectedList = new ArrayList<>();
 
 
-        if (GlobalClass.CheckArrayList(BMC_TTLOthersBarcodeDetailsList)) {
+        if (BMC_TTLOthersBarcodeDetailsList != null) {
             BMC_TTLOthersBarcodeDetailsList = null;
         }
 
         BMC_TTLOthersBarcodeDetailsList = new ArrayList<>();
 
-        if (GlobalClass.CheckArrayList(Selcted_Outlab_Test)) {
-            for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
-                scannedBarcodeDetails.setLocation("TTL-OTHERS");
-                scannedBarcodeDetails.setSpecimen_type("");
-                scannedBarcodeDetails.setProducts(Selcted_Outlab_Test.get(i).getProduct());
-                BMC_TTLOthersBarcodeDetailsList.add(scannedBarcodeDetails);
-            }
+        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+            ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+            scannedBarcodeDetails.setLocation("TTL-OTHERS");
+            scannedBarcodeDetails.setSpecimen_type("");
+            scannedBarcodeDetails.setProducts(Selcted_Outlab_Test.get(i).getProduct());
+            BMC_TTLOthersBarcodeDetailsList.add(scannedBarcodeDetails);
         }
 
 
@@ -113,20 +113,13 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
         cliso_selectSampleTypeTTLOthersAdapter.setOnItemClickListener(new CLISO_SelectSampleTypeTTLOthersAdapter.OnItemClickListener() {
             @Override
             public void onItemSelected(String product, String sample_type) {
-
-                if (GlobalClass.CheckArrayList(BMC_TTLOthersBarcodeDetailsList)) {
-                    for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
-                        if (!GlobalClass.isNull(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts()) &&
-                                !GlobalClass.isNull(product) &&
-                                BMC_TTLOthersBarcodeDetailsList.get(i).getProducts().equalsIgnoreCase(product)) {
-                            BMC_TTLOthersBarcodeDetailsList.get(i).setSpecimen_type(sample_type);
-                        }
+                for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
+                    if (BMC_TTLOthersBarcodeDetailsList.get(i).getProducts().equalsIgnoreCase(product)) {
+                        BMC_TTLOthersBarcodeDetailsList.get(i).setSpecimen_type(sample_type);
                     }
                 }
-
             }
         });
-
         rec_sample_type_ttlothers.setAdapter(cliso_selectSampleTypeTTLOthersAdapter);
 
     }
@@ -152,14 +145,11 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
 
                 String selectedTestNames = show_selected_tests_data.getText().toString();
 
-                if (GlobalClass.CheckArrayList(BMC_TTLOthersBarcodeDetailsList)) {
-                    for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
-                        if (GlobalClass.isNull(BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type())) {
-                            sampleTypeNULL = true;
-                        }
+                for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
+                    if (BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type() == null || BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type().isEmpty()) {
+                        sampleTypeNULL = true;
                     }
                 }
-
 
                 if (sampleTypeNULL) {
                     sampleTypeNULL = false;
@@ -175,44 +165,39 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 } else {
-                    if (GlobalClass.CheckArrayList(BMC_TTLOthersBarcodeDetailsList)) {
-                        for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
-                            boolean isSameSampleType = false;
-                            for (int j = 0; j < BMC_FinalBarcodeDetailsList.size(); j++) {
-                                if (!GlobalClass.isNull(BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type()) &&
-                                        !GlobalClass.isNull(BMC_FinalBarcodeDetailsList.get(j).getSpecimen_type()) &&
-                                        BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(BMC_FinalBarcodeDetailsList.get(j).getSpecimen_type())) {
-                                    BMC_FinalBarcodeDetailsList.get(j).setProducts(BMC_FinalBarcodeDetailsList.get(j).getProducts() + "," + BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
-                                    isSameSampleType = true;
-                                    break;
-                                }
-                            }
-                            if (!isSameSampleType) {
-                                scannedBarcodeDetails = new ScannedBarcodeDetails();
-                                scannedBarcodeDetails.setLocation(BMC_TTLOthersBarcodeDetailsList.get(i).getLocation());
-                                scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
-                                scannedBarcodeDetails.setSpecimen_type(BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type());
-                                scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
-                                BMC_FinalBarcodeDetailsList.add(scannedBarcodeDetails);
+
+                    for (int i = 0; i < BMC_TTLOthersBarcodeDetailsList.size(); i++) {
+                        boolean isSameSampleType = false;
+                        for (int j = 0; j < BMC_FinalBarcodeDetailsList.size(); j++) {
+                            if (BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(BMC_FinalBarcodeDetailsList.get(j).getSpecimen_type())) {
+                                BMC_FinalBarcodeDetailsList.get(j).setProducts(BMC_FinalBarcodeDetailsList.get(j).getProducts() + "," + BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
+                                isSameSampleType = true;
+                                break;
                             }
                         }
+                        if (!isSameSampleType) {
+                            scannedBarcodeDetails = new ScannedBarcodeDetails();
+                            scannedBarcodeDetails.setLocation(BMC_TTLOthersBarcodeDetailsList.get(i).getLocation());
+                            scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
+                            scannedBarcodeDetails.setSpecimen_type(BMC_TTLOthersBarcodeDetailsList.get(i).getSpecimen_type());
+                            scannedBarcodeDetails.setProducts(BMC_TTLOthersBarcodeDetailsList.get(i).getProducts());
+                            BMC_FinalBarcodeDetailsList.add(scannedBarcodeDetails);
+                        }
                     }
-
 
                     ArrayList<String> getTestNameLits = new ArrayList<>();
-
-                    if (GlobalClass.CheckArrayList(Selcted_Outlab_Test)) {
-                        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                            getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
-                        }
+                    for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                        getTestNameLits.add(Selcted_Outlab_Test.get(i).getProduct());
                     }
-
                     Intent intent = new Intent(Cliso_SelctSampleActivity.this, Scan_Barcode_Outlabs_Activity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
+
+                    Global.Selcted_Outlab_Test_global= Selcted_Outlab_Test;
+                    // bundle.putString("payment", getAmount);
                     bundle.putString("writeTestName", selectedTestNames);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
-                    bundle.putParcelableArrayList("FinalBarcodeList", BMC_FinalBarcodeDetailsList);
+                    Global.FinalBarcodeDetailsList_global=BMC_FinalBarcodeDetailsList;
+//                    bundle.putParcelableArrayList("FinalBarcodeList", BMC_FinalBarcodeDetailsList);
                     bundle.putString("come_from", "SelectSampleType");
                     intent.putExtras(bundle);
                     startActivity(intent);

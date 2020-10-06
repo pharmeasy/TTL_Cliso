@@ -1,46 +1,44 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.FeedbackController;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.FeedbackRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.FeedbackResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class Feedback_activity extends AppCompatActivity {
-
     public static com.android.volley.RequestQueue PostQueOtp;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -58,12 +56,15 @@ public class Feedback_activity extends AppCompatActivity {
         }
     };
     ImageView cry, sad, happy;
+    View view;
     ImageView back, home;
+    // ProgressDialog barProgressDialog;
     Button submitcomment;
     EditText query;
     String blockCharacterSetdata = "~#^|$%&*!+:`";
+    String comefrom;
     String emoji = "";
-    SharedPreferences  prefs;
+    SharedPreferences sharedpreferences, prefs;
     String user, passwrd, access, api_key, email_pref, mobile_pref;
     private Global globalClass;
     private String blockCharacterSet = "#$^*+-/|><";
@@ -91,21 +92,40 @@ public class Feedback_activity extends AppCompatActivity {
     };
     private String feedbackText;
     private String TAG = Feedback_activity.class.getSimpleName().toString();
-    Activity mactivity;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_feedback);
-        mactivity = Feedback_activity.this;
-        initViews();
-        initListner();
+
+        cry = (ImageView) findViewById(R.id.cry);
+        sad = (ImageView) findViewById(R.id.sad);
+        happy = (ImageView) findViewById(R.id.happy);
+        if (globalClass.checkForApi21()) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+        }
+
+        query = (EditText) findViewById(R.id.query);
+        query.setFilters(new InputFilter[]{filter});
+        query.setFilters(new InputFilter[]{filter1});
+        query.setFilters(new InputFilter[]{EMOJI_FILTER});
+        submitcomment = (Button) findViewById(R.id.submitcomment);
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+        email_pref = prefs.getString("email", null);
+        mobile_pref = prefs.getString("mobile_user", null);
+
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
 
 
-    }
-
-    private void initListner() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,11 +149,13 @@ public class Feedback_activity extends AppCompatActivity {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(mactivity, ToastFile.ent_feedback, 2);
+                    Toast.makeText(Feedback_activity.this,
+                            ToastFile.ent_feedback,
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(query, enteredString.substring(1));
+                        query.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(query, "");
+                        query.setText("");
                     }
                 }
             }
@@ -191,61 +213,27 @@ public class Feedback_activity extends AppCompatActivity {
             public void onClick(View v) {
                 String getFeedback = query.getText().toString();
                 Log.e(TAG, "Feedback length---->" + getFeedback.length());
-                if (GlobalClass.isNull(getFeedback)) {
-                    GlobalClass.showTastyToast(Feedback_activity.this, MessageConstants.Kindly_give_feedback, 2);
+                if (getFeedback.equals("")) {
+                    GlobalClass.toastyError(Feedback_activity.this, "Kindly give the feedback for app", false);
                 } else if (getFeedback.length() > 250) {
-                    GlobalClass.showTastyToast(Feedback_activity.this, MessageConstants.Kindly_give_feedback_250, 2);
+                    GlobalClass.toastyError(Feedback_activity.this, "kindly enter feedback upto 250 character", false);
                 } else {
-                    if (GlobalClass.isNull(emoji)) {
-                        GlobalClass.showTastyToast(Feedback_activity.this, MessageConstants.PLZ_SL_emoji, 2);
+                    if (emoji.equals("")) {
+                        Toast.makeText(Feedback_activity.this, "Please select emoji", Toast.LENGTH_SHORT).show();
                     } else {
-
                         SendFeedbackToAPI();
-
-
                     }
                 }
             }
         });
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initViews() {
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
-        cry = (ImageView) findViewById(R.id.cry);
-        sad = (ImageView) findViewById(R.id.sad);
-        happy = (ImageView) findViewById(R.id.happy);
-        query = (EditText) findViewById(R.id.query);
-        query.setFilters(new InputFilter[]{filter});
-        query.setFilters(new InputFilter[]{filter1});
-        query.setFilters(new InputFilter[]{EMOJI_FILTER});
-        submitcomment = (Button) findViewById(R.id.submitcomment);
-        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
-        email_pref = prefs.getString("email", "");
-        mobile_pref = prefs.getString("mobile_user", "");
-
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-
-
     }
 
     private void SendFeedbackToAPI() {
-
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Feedback_activity.this);
 
         feedbackText = query.getText().toString();
 
-        PostQueOtp = Volley.newRequestQueue(Feedback_activity.this);
+        PostQueOtp = GlobalClass.setVolleyReq(Feedback_activity.this);
         JSONObject jsonObject = null;
         try {
             FeedbackRequestModel requestModel = new FeedbackRequestModel();
@@ -265,42 +253,49 @@ public class Feedback_activity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.feedback, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: " + response);
+                    GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
 
-
-        try {
-            if (ControllersGlobalInitialiser.feedbackController != null) {
-                ControllersGlobalInitialiser.feedbackController = null;
-            }
-            ControllersGlobalInitialiser.feedbackController = new FeedbackController(mactivity, Feedback_activity.this);
-            ControllersGlobalInitialiser.feedbackController.getfeedbackcontroller(jsonObject, PostQueOtp);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void getfeedbackResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: " + response);
-            FeedbackResponseModel responseModel = new Gson().fromJson(String.valueOf(response), FeedbackResponseModel.class);
-            if (responseModel != null) {
-                if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase("RES0001")) {
-                    GlobalClass.showTastyToast(mactivity, "" + responseModel.getRESPONSE(), 2);
-                } else if (!GlobalClass.isNull(responseModel.getRESPONSE()) && responseModel.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(Feedback_activity.this);
-                } else if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equals("RES0000")) {
-                    GlobalClass.showTastyToast(Feedback_activity.this, "" + responseModel.getRESPONSE() + " " + emoji, 1);
-                    Intent i = new Intent(Feedback_activity.this, Feedback_activity.class);
-                    startActivity(i);
-                    finish();
+                    FeedbackResponseModel responseModel = new Gson().fromJson(String.valueOf(response), FeedbackResponseModel.class);
+                    if (responseModel != null) {
+                        if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase("RES0001")) {
+                            TastyToast.makeText(Feedback_activity.this, "" + responseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else if (!GlobalClass.isNull(responseModel.getRESPONSE()) && responseModel.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(Feedback_activity.this);
+                        } else if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equals("RES0000")) {
+                            TastyToast.makeText(Feedback_activity.this, "" + responseModel.getRESPONSE() + " " + emoji, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            Intent i = new Intent(Feedback_activity.this, Feedback_activity.class);
+                            startActivity(i);
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(Feedback_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
+                    TastyToast.makeText(Feedback_activity.this, "Feedback not sent successfully", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    e.printStackTrace();
                 }
-            } else {
-                GlobalClass.showTastyToast(mactivity, ToastFile.something_went_wrong, 2);
             }
-        } catch (Exception e) {
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                GlobalClass.hideProgress(Feedback_activity.this, progressDialog);
+                if (error != null) {
+                } else {
+                    System.out.println(error);
+                }
+            }
+        });
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+        PostQueOtp.add(jsonObjectRequest1);
 
-            GlobalClass.showTastyToast(mactivity, MessageConstants.Feedback_not_succuss, 2);
-            e.printStackTrace();
-        }
+        Log.e(TAG, "SendFeedbackToAPI: json" + jsonObject);
+        Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
     }
+
 }

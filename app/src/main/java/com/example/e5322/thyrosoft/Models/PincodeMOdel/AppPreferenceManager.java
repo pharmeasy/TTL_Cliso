@@ -3,23 +3,19 @@ package com.example.e5322.thyrosoft.Models.PincodeMOdel;
 import android.app.Activity;
 import android.content.Context;
 
+import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.VersionResponseModel;
+import com.google.gson.Gson;
+
 
 public class AppPreferenceManager {
 
     private AppPreference appPreference;
-
-    private String AppVersion = "app_version";
-    private String APISessionKey = "ApiSessionKey";
-    private String ChatPassword = "ChatPassword";
-    private String loginTime = "loginTime";
-    private String isAfterLogin = "isAfterLogin";
     private String leaveFromDate = "leaveFromDate";
-    private String leaveToDate = "leaveToDate";
-    private String isAChatRgister = "isAChatRgister";
     private String isAppInBackground = "isAppInBackground";
-    private String are_terms_and_conditions_accepted = "are_terms_and_conditions_accepted";
-    private String loginResponse = "loginResponse";
-    private String Role="Role";
+    private String versionresponse = "versionresponse";
+    private String pocttest = "pocttest";
+    private String synProductCount="synProductCount";
 
 
     public AppPreferenceManager(Activity activity) {
@@ -32,72 +28,44 @@ public class AppPreferenceManager {
     }
 
 
-    public String getAppVersion() {
-        return appPreference.getString(AppVersion, "");
-    }
 
-    public void setAppVersion(String appVersion) {
-        appPreference.putString(this.AppVersion, appVersion);
-    }
-
-    public String getAPISessionKey() {
-        return appPreference.getString(APISessionKey, "");
-    }
-
-    public void setAPISessionKey(String aPISessionKey) {
-        appPreference.putString(this.APISessionKey, aPISessionKey);
+    public GetTestResponseModel getTestResponseModel() {
+        String value = appPreference.getString(this.pocttest, "");
+        return new Gson().fromJson(value, GetTestResponseModel.class);
     }
 
 
-    public String getChatPassword() {
-        return appPreference.getString(ChatPassword, "");
+    public void setTestResponseModel(GetTestResponseModel responseModel) {
+        appPreference.putString(this.pocttest, new Gson().toJson(responseModel));
     }
 
-    public void setChatPassword(String password) {
-        appPreference.putString(this.ChatPassword, password);
+
+    public VersionResponseModel getVersionResponseModel() {
+        String value = appPreference.getString(this.versionresponse, "");
+        return new Gson().fromJson(value, VersionResponseModel.class);
     }
 
-    public String getLoginTime() {
-        return appPreference.getString(loginTime, "");
+
+    public void setVersionResponseModel(VersionResponseModel responseModel) {
+        appPreference.putString(this.versionresponse, new Gson().toJson(responseModel));
     }
 
-    public void setLoginTime(String loginTime) {
-        appPreference.putString(this.loginTime, loginTime);
+
+    public int getSynProductCount() {
+        return appPreference.getInt(synProductCount,0);
     }
+
+    public void setSynProductCount(int count) {
+        appPreference.putInt(synProductCount,count);
+    }
+
+
     public String getLeaveFromDate() {
         return appPreference.getString(leaveFromDate, "");
     }
 
     public void setLeaveFromDate(String leaveFromDate) {
         appPreference.putString(this.leaveFromDate, leaveFromDate);
-    }
-
-    public String getLeaveToDate() {
-        return appPreference.getString(leaveToDate, "");
-    }
-
-    public void setLeaveToDate(String leaveToDate) {
-        appPreference.putString(this.leaveToDate, leaveToDate);
-    }
-    public void clearAllPreferences() {
-        boolean termsAndConditionsAccepted = appPreference.getBoolean(this.are_terms_and_conditions_accepted, false);
-        appPreference.clearPreferences();
-        appPreference.putBoolean(this.are_terms_and_conditions_accepted, termsAndConditionsAccepted);
-    }
-
-    public boolean isAfterLogin() {
-        return appPreference.getBoolean(this.isAfterLogin, false);
-    }
-
-    public void setIsAfterLogin(boolean value) {
-        appPreference.putBoolean(this.isAfterLogin, value);
-    }
-    public boolean isChatRegister() {
-        return appPreference.getBoolean(this.isAChatRgister, false);
-    }
-
-    public void setChatRegister(boolean value) {
-        appPreference.putBoolean(this.isAChatRgister, value);
     }
 
     public boolean isAppInBackground() {
@@ -108,13 +76,8 @@ public class AppPreferenceManager {
         appPreference.putBoolean(this.isAppInBackground, isAppInBackground);
     }
 
-    public boolean areTermsAndConditionsAccepted() {
-        return appPreference.getBoolean(this.are_terms_and_conditions_accepted, false);
-    }
 
-    public void setAreTermsAndConditionsAccepted(boolean areTermsAndConditionsAccepted) {
-        appPreference.putBoolean(this.are_terms_and_conditions_accepted, areTermsAndConditionsAccepted);
-    }
+
 
 
 

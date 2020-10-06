@@ -31,6 +31,11 @@ import androidx.viewpager.widget.ViewPager;
 public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewholder> {
     Context context;
     List<Covidmis_response.OutputBean> covidMISmodelList;
+    List<String> presclist = new ArrayList<>();
+    List<String> aadharlist = new ArrayList<>();
+    List<String> trflist = new ArrayList<>();
+    List<String> viallist = new ArrayList<>();
+    List<String> otherlist = new ArrayList<>();
     Activity activity;
     List<String> doclist = new ArrayList<>();
 
@@ -51,9 +56,16 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     public void onBindViewHolder(@NonNull CovidMISAdapter.Viewholder viewholder, int i) {
         final Covidmis_response.OutputBean covidMISmodel = covidMISmodelList.get(i);
 
-
         GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
+
+//        if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
+//            viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
+//            GlobalClass.SetText(viewholder.txt_ppebrcd, "PPE Barcode : " + covidMISmodel.getPPEBarcode());
+//        }else {
+//            viewholder.txt_ppebrcd.setVisibility(View.GONE);
+//        }
+
 
 
         if (!GlobalClass.isNull(covidMISmodel.getAmount_Collected())) {
@@ -72,7 +84,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             GlobalClass.SetText(viewholder.txt_ccc, covidMISmodel.getStatusName());
         }
 
-        if (!GlobalClass.isNull(covidMISmodel.getStatusName()) && covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED") && !GlobalClass.isNull(covidMISmodel.getRemarks())) {
+        if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED") && !GlobalClass.isNull(covidMISmodel.getRemarks())) {
             viewholder.lin_reason.setVisibility(View.VISIBLE);
             GlobalClass.SetText(viewholder.txt_reason, covidMISmodel.getRemarks().trim());
         } else {
@@ -80,7 +92,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         }
 
         try {
-            if (!GlobalClass.isNull(covidMISmodel.getStatusName()) &&  covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
+            if (covidMISmodel.getStatusName().equalsIgnoreCase("REJECTED")) {
                 viewholder.btn_resubmit.setVisibility(View.VISIBLE);
             } else {
                 viewholder.btn_resubmit.setVisibility(View.GONE);
@@ -97,6 +109,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 intent.putExtra("name", covidMISmodel.getPatientName());
                 intent.putExtra("UniqueId", covidMISmodel.getUniqueId());
                 intent.putExtra("amtcoll", covidMISmodel.getAmount_Collected());
+               // intent.putExtra("ppebarcode", covidMISmodel.getPPEBarcode());
                 context.startActivity(intent);
             }
         });
@@ -177,7 +190,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason;
+        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason,txt_ppebrcd;
         Button btn_resubmit, btn_viewupload;
         LinearLayout lin_reason;
 
@@ -187,12 +200,13 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             btn_resubmit = itemView.findViewById(R.id.btn_resubmit);
             btn_viewupload = itemView.findViewById(R.id.btn_viewupload);
             txt_name = itemView.findViewById(R.id.patientName);
+          //  txt_ppebrcd=itemView.findViewById(R.id.txt_ppebrcd);
             txt_mob = itemView.findViewById(R.id.txt_mobile);
             txt_amt = itemView.findViewById(R.id.txt_amt);
             txt_ccc = itemView.findViewById(R.id.txt_ccc);
             txt_reason = itemView.findViewById(R.id.txt_reason);
             txt_time = itemView.findViewById(R.id.txt_time);
-            lin_reason = itemView.findViewById(R.id.lin_reason);
+            lin_reason=itemView.findViewById(R.id.lin_reason);
         }
     }
 
@@ -201,6 +215,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.preview_dialog);
+        //  dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         ImageView ic_close = (ImageView) dialog.findViewById(R.id.img_close);
@@ -212,11 +227,11 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         });
 
         ViewPager viewPager = (ViewPager) dialog.findViewById(R.id.viewPager);
-        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(context, imagelist);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(context, imagelist, 1);
         viewPager.setAdapter(viewPagerAdapter);
 
         final PageIndicatorView pageIndicatorView = dialog.findViewById(R.id.pageIndicatorView);
-        if (GlobalClass.CheckArrayList(imagelist)&& imagelist.size() > 1) {
+        if (imagelist != null && imagelist.size() > 1) {
             pageIndicatorView.setVisibility(View.VISIBLE);
             pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
             pageIndicatorView.setSelection(0);

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
 import com.example.e5322.thyrosoft.Activity.frags.AntiBodyEnterFrag;
@@ -135,7 +136,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
                 }
 
-                Log.v("POST DATA","\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
+                System.out.println("\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
                         "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
                         + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED()
                         + "\nTESTCODE:" + covidpostdata.getTESTCODE()
@@ -182,7 +183,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
                 builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
                 builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
-
+              //  builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
 
                 if (covidpostdata.getPRESCRIPTION() != null) {
                     FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
@@ -231,17 +232,24 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 }
             }
 
+
+            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID() + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
+                  //  + "\nPPEBARCODE:" + covidpostdata.getPPEBARCODE()
+                    + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1()
+                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1());
             httpPost.setEntity(builder.build());
+            httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
             //   Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                Log.v("TAG","Response : " + result);
+                System.out.println("Response : " + result);
             }
 
         } catch (Exception e) {
+            //    Log.e("InputStream", e.getLocalizedMessage());
             result = "Something went wrong";
         }
         return result;
@@ -268,10 +276,10 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 }
 
             } else {
-                GlobalClass.showTastyToast(mActivity, response,2);
+                Global.showCustomToast(mActivity, response);
             }
         } else {
-            GlobalClass.showTastyToast(mActivity, response,2);
+            Global.showCustomToast(mActivity, response);
         }
     }
 

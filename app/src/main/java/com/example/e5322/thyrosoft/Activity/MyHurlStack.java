@@ -7,7 +7,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.toolbox.HurlStack;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 
 import org.apache.http.HttpResponse;
@@ -27,9 +26,7 @@ public class MyHurlStack  extends HurlStack {
     public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders) throws IOException, AuthFailureError {
 
         Map<String, String> headers = new HashMap<>(additionalHeaders);
-        headers.put(Constants.HEADER_USER_AGENT, Constants.APPNAME + "/" + GlobalClass.getversion(mContext) + "(" + GlobalClass.getversioncode(mContext) + ")" + GlobalClass.getSerialnum(mContext));
-
-        Log.v("TAG",headers.toString());
+        headers.put(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mContext));
         try {
             return super.performRequest(request, headers);
         } catch (IOException e) {

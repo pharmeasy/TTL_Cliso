@@ -6,10 +6,13 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -23,7 +26,6 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,27 +45,35 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MultipleLeadActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.AdapterRe;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
-import com.example.e5322.thyrosoft.Controller.Barcodedetail_Controller;
-import com.example.e5322.thyrosoft.Controller.CheckNumber_Controller;
-import com.example.e5322.thyrosoft.Controller.ClientController;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Getorderdetails_Controller;
-import com.example.e5322.thyrosoft.Controller.Getwomaster_Controller;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.OTPtoken_controller;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -75,11 +85,14 @@ import com.example.e5322.thyrosoft.Models.BRAND_LIST;
 import com.example.e5322.thyrosoft.Models.Brand_type;
 import com.example.e5322.thyrosoft.Models.CAMP_LIST;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.ProductLisitngActivityNew;
 import com.example.e5322.thyrosoft.SourceILSModel.LABS;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
@@ -93,7 +106,9 @@ import com.example.e5322.thyrosoft.WorkOrder_entry_Model.AddWOETestsForSerum;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.Patients;
 import com.example.e5322.thyrosoft.WorkOrder_entry_Model.WOE_Model_Patient_Details;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONObject;
 
@@ -109,14 +124,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
@@ -140,8 +152,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     // TODO: Rename and change types of parameters
     public static RequestQueue PostQueOtp;
     public static ArrayList<BCT_LIST> getBtechList;
-    public ArrayList<String> items = new ArrayList<>();
-    public String[] putData;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         ConnectionDetector cd;
 
@@ -178,6 +188,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     REF_DR[] ref_drs;
     Brand_type[] brandType;
     ImageView male, female, male_red, female_red;
+    ProgressDialog barProgressDialog;
     Button next_btn, btn_snd_otp, btn_verifyotp;
     ArrayList<String> getWindupCount;
     int agesinteger;
@@ -374,6 +385,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     ConnectionDetector cd;
     SharedPreferences covid_pref;
     boolean covidacc = false;
+    SharedPreferences getshared;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -420,17 +432,95 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
-        initViews();
+        name = (EditText) viewMain.findViewById(R.id.name);
+        age = (EditText) viewMain.findViewById(R.id.age);
+        id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
+        barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
+        pincode_edt = (EditText) viewMain.findViewById(R.id.pincode_edt);
+        kyc_format = (EditText) viewMain.findViewById(R.id.kyc_format);
+        home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
+        patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
+        vial_number = (EditText) viewMain.findViewById(R.id.vial_number);
 
+        et_mobno = viewMain.findViewById(R.id.et_mobno);
+        et_otp = viewMain.findViewById(R.id.et_otp);
 
+        chk_otp = viewMain.findViewById(R.id.chk_otp);
+        lin_ckotp = viewMain.findViewById(R.id.lin_ckotp);
+
+        male = (ImageView) viewMain.findViewById(R.id.male);
+        male_red = (ImageView) viewMain.findViewById(R.id.male_red);
+        female = (ImageView) viewMain.findViewById(R.id.female);
+        female_red = (ImageView) viewMain.findViewById(R.id.female_red);
+        next_btn = (Button) viewMain.findViewById(R.id.next_btn_patient);
+
+        btn_snd_otp = viewMain.findViewById(R.id.btn_sendotp);
+        btn_snd_otp.setOnClickListener(this);
+
+        btn_verifyotp = viewMain.findViewById(R.id.btn_verifyotp);
+        btn_verifyotp.setOnClickListener(this);
+
+        spinyr = (Spinner) viewMain.findViewById(R.id.spinyr);
+        scrollView2 = (ScrollView) viewMain.findViewById(R.id.scrollView2);
+        dateShow = (TextView) viewMain.findViewById(R.id.date);
+        leadbarcodename = (TextView) viewMain.findViewById(R.id.leadbarcodename);
+        leadidbarcodetest = (TextView) viewMain.findViewById(R.id.leadidbarcodetest);
+        leadbarcoderefdr = (TextView) viewMain.findViewById(R.id.leadbarcoderefdr);
+        leadbarcodesct = (TextView) viewMain.findViewById(R.id.leadbarcodesct);
+        leadname = (TextView) viewMain.findViewById(R.id.leadname);
+        leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
+        leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
+        add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
         GlobalClass.setflagToRefreshData = false;
+        timehr = (Spinner) viewMain.findViewById(R.id.timehr);
+        timesecond = (Spinner) viewMain.findViewById(R.id.timesecond);
+        selectTypeSpinner = (Spinner) viewMain.findViewById(R.id.selectTypeSpinner);
+        brand_spinner = (Spinner) viewMain.findViewById(R.id.brand_spinner);
+        camp_spinner_olc = (Spinner) viewMain.findViewById(R.id.camp_spinner_olc);
+        btechname = (Spinner) viewMain.findViewById(R.id.btech_spinner);
+        timeampm = (Spinner) viewMain.findViewById(R.id.timeampm);
+        samplecollectionponit = (TextView) viewMain.findViewById(R.id.samplecollectionponit);
+        referedbyText = (AutoCompleteTextView) viewMain.findViewById(R.id.referedby);//
+        radio = (TextView) viewMain.findViewById(R.id.radio);
+        tv_timer = viewMain.findViewById(R.id.tv_timer);
+        refby_linear = (LinearLayout) viewMain.findViewById(R.id.refby_linear);
+        camp_layout_woe = (LinearLayout) viewMain.findViewById(R.id.camp_layout_woe);
+        btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
+        labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
+        home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
+        pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
+
+        mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
+        Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
+        ll_mobileno_otp = viewMain.findViewById(R.id.ll_mobileno_otp);
+        lin_otp = viewMain.findViewById(R.id.lin_otp);
+
+        enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
+        leadbarcodelayout = (LinearLayout) viewMain.findViewById(R.id.leadbarcodelayout);
+        ref_check_linear = (LinearLayout) viewMain.findViewById(R.id.ref_check_linear);
+        namePatients = (LinearLayout) viewMain.findViewById(R.id.namePatients);
+        AGE_layout = (LinearLayout) viewMain.findViewById(R.id.AGE_layout);
+        time_layout = (LinearLayout) viewMain.findViewById(R.id.time_layout);
+        id_layout = (LinearLayout) viewMain.findViewById(R.id.id_layout);
+        barcode_layout = (LinearLayout) viewMain.findViewById(R.id.barcode_layout);
+        leadlayout = (LinearLayout) viewMain.findViewById(R.id.leadlayout);
+        unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
+        enetered = (TextView) viewMain.findViewById(R.id.enetered);
+        enter = (TextView) viewMain.findViewById(R.id.enter);
+        tv_mob_note = (TextView) viewMain.findViewById(R.id.tv_mob_note);
+        enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
+        uncheck_ref = (ImageView) viewMain.findViewById(R.id.uncheck_ref);
+        ref_check = (ImageView) viewMain.findViewById(R.id.ref_check);
+        btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
+
+        getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-
 
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
@@ -439,16 +529,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         String showDate = sdf.format(d);
-
-        GlobalClass.SetText(dateShow, showDate);
+        dateShow.setText(showDate);
         myCalendar = Calendar.getInstance();
         myCalendar.add(Calendar.DAY_OF_MONTH, -2);
         myCalendar.setTime(d);
         minDate = myCalendar.getTime().getTime();
         myDb = new DatabaseHelper(mContext);
 
+        name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
-        if (GlobalClass.flagToSendfromnavigation) {
+        patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
+        if (GlobalClass.flagToSendfromnavigation == true) {
             GlobalClass.flagToSendfromnavigation = false;
             enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
             enter_arrow_enter.setVisibility(View.GONE);
@@ -469,7 +561,23 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
         }
 
-        iniListner();
+        viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterNextFragment();
+            }
+        });
+
+        enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                enter_arrow_enter.setVisibility(View.VISIBLE);
+                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                enter_arrow_entered.setVisibility(View.GONE);
+                scrollView2.setVisibility(View.VISIBLE);
+            }
+        });
 
         SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
         saveDetails.remove("name");
@@ -495,6 +603,181 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
         getCurrentDateandTime = new Date();
 
+        btn_clear_data.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
+                Start_New_Woe fragment = new Start_New_Woe();
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+//                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+            }
+        });
+
+        vial_number.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(getActivity(),
+                            ToastFile.vial_no,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        vial_number.setText(enteredString.substring(1));
+                    } else {
+                        vial_number.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        dateShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMinDate(minDate);
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
+            }
+        });
+
+        chk_otp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    btn_snd_otp.setVisibility(View.VISIBLE);
+                    btn_snd_otp.setText("Send OTP");
+                    Disablefields();
+                } else {
+                    btn_snd_otp.setVisibility(View.GONE);
+                    et_mobno.setEnabled(true);
+                    et_mobno.setClickable(true);
+
+                    if (yourCountDownTimer != null) {
+                        yourCountDownTimer.cancel();
+                        yourCountDownTimer = null;
+                        btn_snd_otp.setEnabled(true);
+                        btn_snd_otp.setClickable(true);
+                        lin_otp.setVisibility(View.GONE);
+                        tv_timer.setVisibility(View.GONE);
+                    }
+
+                    Enablefields();
+                }
+
+            }
+        });
+
+
+        et_mobno.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
+                ) {
+                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                    if (enteredString.length() > 0) {
+                        et_mobno.setText(enteredString.substring(1));
+                    } else {
+                        et_mobno.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(final Editable s) {
+                final String checkNumber = s.toString();
+                if (checkNumber.length() < 10) {
+                    flag = true;
+                }
+
+                if (flag == true) {
+                    if (s.length() == 10) {
+
+                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                            flag = false;
+                            et_mobno.setText(s);
+                        } else {
+                            flag = false;
+                            barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
+                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                            StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + s, new
+                                    Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Log.e(TAG, "onResponse: response" + response);
+
+                                            String getResponse = response;
+                                            if (response.equals("\"proceed\"")) {
+
+                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                et_mobno.setText(s);
+                                                mobno_verify = true;
+
+                                                if (chk_otp.isChecked()) {
+                                                    btn_snd_otp.setVisibility(View.VISIBLE);
+                                                } else {
+                                                    btn_snd_otp.setVisibility(View.GONE);
+                                                }
+
+                                            } else {
+                                                mobno_verify = false;
+                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                et_mobno.setText("");
+                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                            }
+                                        }
+                                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (error.networkResponse == null) {
+                                        if (error.getClass().equals(TimeoutError.class)) {
+                                            // Show timeout error message
+                                        }
+                                    }
+                                }
+                            });
+                            jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                    300000,
+                                    3,
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                            reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                            Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                        }
+
+
+                    }
+                }
+            }
+        });
+
 
         ref_check.setVisibility(View.GONE);
         uncheck_ref.setVisibility(View.VISIBLE);
@@ -509,14 +792,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 if (flagtoAdjustClisk == 0) {
                     flagtoAdjustClisk = 1;
                     referenceBy = "SELF";
-                    GlobalClass.SetAutocomplete(referedbyText, "");
+                    referedbyText.setText("");
                     refby_linear.setVisibility(View.GONE);
                     ref_check.setVisibility(View.VISIBLE);
                     uncheck_ref.setVisibility(View.GONE);
                 } else if (flagtoAdjustClisk == 1) {
                     flagtoAdjustClisk = 0;
                     referenceBy = null;
-                    GlobalClass.SetAutocomplete(referedbyText, "");
+                    referedbyText.setText("");
                     refby_linear.setVisibility(View.VISIBLE);
                     ref_check.setVisibility(View.GONE);
                     uncheck_ref.setVisibility(View.VISIBLE);
@@ -533,10 +816,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
-        if (!GlobalClass.isNull(GlobalClass.setScp_Constant)) {
-            GlobalClass.SetText(samplecollectionponit, GlobalClass.setScp_Constant);
+        if (GlobalClass.setScp_Constant != null) {
+            samplecollectionponit.setText(GlobalClass.setScp_Constant);
         } else {
-            GlobalClass.SetText(samplecollectionponit, "");
+            samplecollectionponit.setText("");
         }
 
         pincode_edt.addTextChangedListener(new TextWatcher() {
@@ -549,13 +832,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0")) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-
+                    TastyToast.makeText(getActivity(), ToastFile.crt_pincode, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(pincode_edt, enteredString.substring(1));
+                        pincode_edt.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(pincode_edt, "");
+                        pincode_edt.setText("");
                     }
                 }
             }
@@ -585,12 +867,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(home_kyc_format, enteredString.substring(1));
+                        home_kyc_format.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(home_kyc_format, "");
+                        home_kyc_format.setText("");
                     }
                 }
             }
@@ -618,12 +900,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                         || enteredString.startsWith("6") || enteredString.startsWith("7") || enteredString.startsWith("8") || enteredString.startsWith("9")) {
+                    TastyToast.makeText(getActivity(), "Enter correct Ref By", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
-                    GlobalClass.showTastyToast(getActivity(), MessageConstants.ENTER_CORR_REFBY, 2);
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetAutocomplete(referedbyText, enteredString.substring(1));
+                        referedbyText.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetAutocomplete(referedbyText, "");
+                        referedbyText.setText("");
                     }
                     if (enteredString.equals("")) {
                         ref_check_linear.setVisibility(View.VISIBLE);
@@ -645,7 +927,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
                 String setText = s.toString();
-                if (!GlobalClass.isNull(setText)) {
+                if (setText != null || setText != "") {
                     ref_check_linear.setVisibility(View.GONE);
                 }
             }
@@ -666,11 +948,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 getSubSource = new ArrayList();
 
                 try {
-                    if (!GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST())) {
+                    if (myPojo.getMASTERS().getBRAND_LIST() != null) {
                         for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                             getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                             spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                             camp_lists = myPojo.getMASTERS().getCAMP_LIST();
+                            // GlobalClass.getcamp_lists=camp_lists;
 
                             if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                 String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
@@ -687,7 +970,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 }
 
                 if (myPojo != null) {
-                    if (myPojo.getMASTERS() != null && !GlobalClass.checkArray(myPojo.getMASTERS().getSUB_SOURCECODE())) {
+                    if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
                         for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
                             getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
                         }
@@ -700,8 +983,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 getTypeListSMT = new ArrayList<>();
 
                 try {
-                    if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST())) {
-                        if (GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type())) {
+                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                        if (myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type() != null) {
                             for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
                                 getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
                             }
@@ -709,81 +992,65 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     }
 
 
-                    if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST())) {
+                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
                         if (myPojo.getMASTERS().getBRAND_LIST().length > 1) {
 
-                            if (!GlobalClass.isNull(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name()) && myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().contains("SMT")) {
+                            if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().contains("SMT")) {
 
-                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST())) {
-                                    if (GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type())) {
+                                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length != 0) {
+                                    if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type() != null) {
                                         for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; i++) {
                                             getTypeListSMT.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[i].getType());
                                         }
                                     }
                                 }
 
-                                try {
-                                    if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
-                                        Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
-                                        Brand_type c1 = new Brand_type();
-                                        getTypeListsecond = new ArrayList<>();
-                                        for (int j = 0; j < c.length; j++) {
-                                            Log.v("TAG", c[j].getType());
-                                            String type12 = "";
-                                            type12 = c[j].getType();
-                                            getTypeListsecond.add(c[j].getType());
-                                        }
+                                if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
+                                    Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
+                                    Brand_type c1 = new Brand_type();
+                                    getTypeListsecond = new ArrayList<>();
+                                    for (int j = 0; j < c.length; j++) {
+                                        System.out.println(c[j].getType());
+                                        String type12 = "";
+                                        type12 = c[j].getType();
+                                        getTypeListsecond.add(c[j].getType());
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
 
-                                try {
-                                    if (myPojo.getMASTERS().getBRAND_LIST()[3] != null) {
-                                        Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type();
-                                        Brand_type d1 = new Brand_type();
-                                        getTypeListthird = new ArrayList<>();
-                                        for (int k = 0; k < data.length; k++) {
-                                            Log.v("TAG", data[k].getType());
-                                            String type12 = "";
-                                            type12 = data[k].getType();
-                                            getTypeListthird.add(data[k].getType());
-                                        }
+                                if (myPojo.getMASTERS().getBRAND_LIST()[3] != null) {
+                                    Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type();
+                                    Brand_type d1 = new Brand_type();
+                                    getTypeListthird = new ArrayList<>();
+                                    for (int k = 0; k < data.length; k++) {
+                                        System.out.println(data[k].getType());
+                                        String type12 = "";
+                                        type12 = data[k].getType();
+                                        getTypeListthird.add(data[k].getType());
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             } else {
-                                try {
-                                    if (myPojo.getMASTERS().getBRAND_LIST()[1] != null) {
-                                        Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type();
-                                        Brand_type c1 = new Brand_type();
-                                        getTypeListsecond = new ArrayList<>();
-                                        for (int j = 0; j < c.length; j++) {
-                                            Log.v("TAG", c[j].getType());
-                                            String type12 = "";
-                                            type12 = c[j].getType();
-                                            getTypeListsecond.add(c[j].getType());
-                                        }
+                                if (myPojo.getMASTERS().getBRAND_LIST()[1] != null) {
+                                    Brand_type[] c = myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type();
+                                    Brand_type c1 = new Brand_type();
+                                    getTypeListsecond = new ArrayList<>();
+                                    for (int j = 0; j < c.length; j++) {
+                                        System.out.println(c[j].getType());
+                                        String type12 = "";
+                                        type12 = c[j].getType();
+                                        getTypeListsecond.add(c[j].getType());
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
 
-                                try {
-                                    if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
-                                        Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
-                                        Brand_type d1 = new Brand_type();
-                                        getTypeListthird = new ArrayList<>();
-                                        for (int k = 0; k < data.length; k++) {
-                                            Log.v("TAG", data[k].getType());
-                                            String type12 = "";
-                                            type12 = data[k].getType();
-                                            getTypeListthird.add(data[k].getType());
-                                        }
+                                if (myPojo.getMASTERS().getBRAND_LIST()[2] != null) {
+                                    Brand_type[] data = myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type();
+                                    Brand_type d1 = new Brand_type();
+                                    getTypeListthird = new ArrayList<>();
+                                    for (int k = 0; k < data.length; k++) {
+                                        System.out.println(data[k].getType());
+                                        String type12 = "";
+                                        type12 = data[k].getType();
+                                        getTypeListthird.add(data[k].getType());
                                     }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
                             }
 
@@ -796,7 +1063,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
 
                         if (obj != null) {
-                            if (obj.getMASTERS() != null && !GlobalClass.isNull(obj.getUSER_TYPE())) {
+                            if (obj.getMASTERS() != null && obj.getUSER_TYPE() != null) {
                                 callAdapter(obj);
                             } else {
                                 fetchData();
@@ -822,12 +1089,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     ScpAddress.commit();
                 }
 
-                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getLAB_ALERTS())) {
-                    putData = myPojo.getMASTERS().getLAB_ALERTS();
-                    if (GlobalClass.checkArray(putData)) {
-                        for (int i = 0; i < putData.length; i++) {
-                            items.add(putData[i]);
-                        }
+                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
+                    GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
+                    for (int i = 0; i < GlobalClass.putData.length; i++) {
+                        GlobalClass.items.add(GlobalClass.putData[i]);
                     }
                 }
 
@@ -875,12 +1140,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         btechSpinner = new ArrayList<>();
 
         if (myPojo != null) {
-            if (myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+            if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getBCT_LIST() != null) {
                 for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
                 }
             } else {
-                GlobalClass.showTastyToast(getActivity(), "Please register NED", 2);
+                TastyToast.makeText(getActivity(), "Please register NED", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
 
             try {
@@ -892,13 +1157,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
 
             getCampNames.add("Select Camp");
-            if (myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getCAMP_LIST())) {
-
+            if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getCAMP_LIST() != null) {
                 for (int k = 0; k < myPojo.getMASTERS().getCAMP_LIST().length; k++) {
                     getCampNames.add(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE());
                 }
-
-                if (GlobalClass.CheckArrayList(getCampNames)) {
+                if (getCampNames != null) {
+//                    camp_spinner_olc.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getCampNames));
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
                             mContext, R.layout.spinnerproperty, getCampNames);
                     camp_spinner_olc.setAdapter(adapter2);
@@ -907,34 +1171,41 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
 
             btechSpinner.add("SELECT BTECH NAME");
-            if (GlobalClass.CheckArrayList(getBtechList)) {
-                for (int i = 0; i < getBtechList.size(); i++) {
-                    btechSpinner.add(getBtechList.get(i).getNAME());
-                    if (btechSpinner.size() != 0) {
-                        btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, btechSpinner));
-                    }
+            for (int i = 0; i < getBtechList.size(); i++) {
+                btechSpinner.add(getBtechList.get(i).getNAME());
+                if (btechSpinner.size() != 0) {
+                    btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, btechSpinner));
                 }
             }
 
-
         } else {
             getTspNumber();
-            SharedPreferences getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
+
             prof = getshared.getString("prof", null);
             if (prof != null) {
-                mobile = getshared.getString("mobile", "");
-                nameofProfile = getshared.getString("name", "");
+                String ac_code = getshared.getString("ac_code", null);
+                String address = getshared.getString("address", null);
+                String email = getshared.getString("email", null);
+                mobile = getshared.getString("mobile", null);
+                nameofProfile = getshared.getString("name", null);
+                String pincode = getshared.getString("pincode", null);
+                String user_code = getshared.getString("user_code", null);
+                String closing_balance = getshared.getString("closing_balance", null);
+                String credit_limit = getshared.getString("credit_limit", null);
+                String doj = getshared.getString("doj", "");
+                String source_code = getshared.getString("source_code", null);
+                String tsp_img = getshared.getString("tsp_image", null);
             }
         }
 
-        if (GlobalClass.CheckArrayList(getLabNmae) && GlobalClass.CheckArrayList(getReferenceNmae)) {
+        if (getLabNmae != null && getReferenceNmae != null) {
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// With
 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
                 public void onClick(String s, int i) {
-                    GlobalClass.SetAutocomplete(referedbyText, s);
+                    referedbyText.setText(s);
                     add_ref.setVisibility(View.VISIBLE);
                 }
             });
@@ -942,7 +1213,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
                 public void onClick(String item, int position) {
-                    GlobalClass.SetAutocomplete(referedbyText, item);
+                    referedbyText.setText(item);
                     add_ref.setVisibility(View.VISIBLE);
                 }
             });
@@ -1004,7 +1275,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         namestr = name.getText().toString();
         saveGenderId = "";
 
-        if (GlobalClass.CheckArrayList(patientsagespinner)) {
+        if (patientsagespinner != null) {
             ArrayAdapter<String> adap = new ArrayAdapter<String>(
                     mContext, R.layout.name_age_spinner, patientsagespinner);
             adap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1035,13 +1306,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                    Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
 
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(name, enteredString.substring(1));
+                        name.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(name, "");
+                        name.setText("");
                     }
 
                 }
@@ -1068,11 +1338,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                    Toast.makeText(getActivity(), ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(patientAddress, enteredString.substring(1));
+                        patientAddress.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(patientAddress, "");
+                        patientAddress.setText("");
                     }
                 }
 
@@ -1093,14 +1363,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!genderId) {
+                if (genderId == false) {
                     genderId = true;
                     saveGenderId = "M";
                     male_red.setVisibility(View.VISIBLE);
                     female.setVisibility(View.VISIBLE);
                     female_red.setVisibility(View.GONE);
                     male.setVisibility(View.GONE);
-                } else if (genderId) {
+                } else if (genderId == true) {
                     genderId = false;
                     saveGenderId = "M";
                     male_red.setVisibility(View.VISIBLE);
@@ -1116,7 +1386,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             @Override
             public void onClick(View v) {
 
-                if (!genderId) {
+                if (genderId == false) {
                     genderId = true;
                     saveGenderId = "F";
                     female_red.setVisibility(View.VISIBLE);
@@ -1124,7 +1394,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     male_red.setVisibility(View.GONE);
                     female.setVisibility(View.GONE);
 
-                } else if (genderId) {
+                } else if (genderId == true) {
                     genderId = false;
                     saveGenderId = "F";
                     female_red.setVisibility(View.VISIBLE);
@@ -1160,12 +1430,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 String enteredString = s.toString();
 
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_age, 2);
+                    Toast.makeText(mContext,
+                            ToastFile.crt_age,
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-
-                        GlobalClass.SetEditText(age, enteredString.substring(1));
+                        age.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(age, "");
+                        age.setText("");
                     }
                 }
                 if (age.getText().toString().equals("")) {
@@ -1197,274 +1468,213 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         return viewMain;
     }
 
-    private void iniListner() {
-        viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enterNextFragment();
-            }
-        });
-
-        enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-                enter_arrow_enter.setVisibility(View.VISIBLE);
-                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-                enter_arrow_entered.setVisibility(View.GONE);
-                scrollView2.setVisibility(View.VISIBLE);
-            }
-        });
-        name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
-        patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
-        btn_snd_otp.setOnClickListener(this);
-        btn_verifyotp.setOnClickListener(this);
-        btn_clear_data.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.SetText(samplecollectionponit, MessageConstants.SEARCH_SMP_TYPE);
-                Start_New_Woe fragment = new Start_New_Woe();
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
-            }
-        });
-
-        vial_number.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                    if (enteredString.length() > 0) {
-                        GlobalClass.SetText(vial_number, enteredString.substring(1));
-                    } else {
-                        GlobalClass.SetText(vial_number, "");
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        dateShow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.getDatePicker().setMinDate(minDate);
-                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-                datePickerDialog.show();
-            }
-        });
-
-        chk_otp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    btn_snd_otp.setVisibility(View.VISIBLE);
-                    GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
-                    Disablefields();
-                } else {
-                    btn_snd_otp.setVisibility(View.GONE);
-                    et_mobno.setEnabled(true);
-                    et_mobno.setClickable(true);
-
-                    if (yourCountDownTimer != null) {
-                        yourCountDownTimer.cancel();
-                        yourCountDownTimer = null;
-                        btn_snd_otp.setEnabled(true);
-                        btn_snd_otp.setClickable(true);
-                        lin_otp.setVisibility(View.GONE);
-                        tv_timer.setVisibility(View.GONE);
-                    }
-
-                    Enablefields();
-                }
-
-            }
-        });
-
-
-        et_mobno.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                ) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_mob_num, 2);
-
-
-                    if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(et_mobno, enteredString.substring(1));
-                    } else {
-                        GlobalClass.SetEditText(et_mobno, "");
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(final Editable s) {
-                final String checkNumber = s.toString();
-                if (checkNumber.length() < 10) {
-                    flag = true;
-                }
-
-                if (flag) {
-                    if (s.length() == 10) {
-
-                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                            flag = false;
-                            GlobalClass.SetEditText(et_mobno, s.toString());
-                        } else {
-                            flag = false;
-
-                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
-                            try {
-                                if (ControllersGlobalInitialiser.checkNumber_controller != null) {
-                                    ControllersGlobalInitialiser.checkNumber_controller = null;
-                                }
-                                ControllersGlobalInitialiser.checkNumber_controller = new CheckNumber_Controller(getActivity(), Start_New_Woe.this, "1");
-                                ControllersGlobalInitialiser.checkNumber_controller.getchecknumbercontroll(s.toString(), reques5tQueueCheckNumber);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
-
-                    }
-                }
-            }
-        });
-    }
-
-    private void initViews() {
-        timehr = (Spinner) viewMain.findViewById(R.id.timehr);
-        timesecond = (Spinner) viewMain.findViewById(R.id.timesecond);
-        selectTypeSpinner = (Spinner) viewMain.findViewById(R.id.selectTypeSpinner);
-        brand_spinner = (Spinner) viewMain.findViewById(R.id.brand_spinner);
-        camp_spinner_olc = (Spinner) viewMain.findViewById(R.id.camp_spinner_olc);
-        btechname = (Spinner) viewMain.findViewById(R.id.btech_spinner);
-        timeampm = (Spinner) viewMain.findViewById(R.id.timeampm);
-        samplecollectionponit = (TextView) viewMain.findViewById(R.id.samplecollectionponit);
-        referedbyText = (AutoCompleteTextView) viewMain.findViewById(R.id.referedby);//
-        radio = (TextView) viewMain.findViewById(R.id.radio);
-        tv_timer = viewMain.findViewById(R.id.tv_timer);
-        refby_linear = (LinearLayout) viewMain.findViewById(R.id.refby_linear);
-        camp_layout_woe = (LinearLayout) viewMain.findViewById(R.id.camp_layout_woe);
-        btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
-        labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
-        home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
-        pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
-
-        mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
-        Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
-        ll_mobileno_otp = viewMain.findViewById(R.id.ll_mobileno_otp);
-        lin_otp = viewMain.findViewById(R.id.lin_otp);
-
-        enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
-        leadbarcodelayout = (LinearLayout) viewMain.findViewById(R.id.leadbarcodelayout);
-        ref_check_linear = (LinearLayout) viewMain.findViewById(R.id.ref_check_linear);
-        namePatients = (LinearLayout) viewMain.findViewById(R.id.namePatients);
-        AGE_layout = (LinearLayout) viewMain.findViewById(R.id.AGE_layout);
-        time_layout = (LinearLayout) viewMain.findViewById(R.id.time_layout);
-        id_layout = (LinearLayout) viewMain.findViewById(R.id.id_layout);
-        barcode_layout = (LinearLayout) viewMain.findViewById(R.id.barcode_layout);
-        leadlayout = (LinearLayout) viewMain.findViewById(R.id.leadlayout);
-        unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
-        enetered = (TextView) viewMain.findViewById(R.id.enetered);
-        enter = (TextView) viewMain.findViewById(R.id.enter);
-        tv_mob_note = (TextView) viewMain.findViewById(R.id.tv_mob_note);
-        enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
-        uncheck_ref = (ImageView) viewMain.findViewById(R.id.uncheck_ref);
-        ref_check = (ImageView) viewMain.findViewById(R.id.ref_check);
-        btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
-        spinyr = (Spinner) viewMain.findViewById(R.id.spinyr);
-        scrollView2 = (ScrollView) viewMain.findViewById(R.id.scrollView2);
-        dateShow = (TextView) viewMain.findViewById(R.id.date);
-        leadbarcodename = (TextView) viewMain.findViewById(R.id.leadbarcodename);
-        leadidbarcodetest = (TextView) viewMain.findViewById(R.id.leadidbarcodetest);
-        leadbarcoderefdr = (TextView) viewMain.findViewById(R.id.leadbarcoderefdr);
-        leadbarcodesct = (TextView) viewMain.findViewById(R.id.leadbarcodesct);
-        leadname = (TextView) viewMain.findViewById(R.id.leadname);
-        leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
-        leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
-        add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
-        btn_verifyotp = viewMain.findViewById(R.id.btn_verifyotp);
-        btn_snd_otp = viewMain.findViewById(R.id.btn_sendotp);
-        name = (EditText) viewMain.findViewById(R.id.name);
-        age = (EditText) viewMain.findViewById(R.id.age);
-        id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
-        barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
-        pincode_edt = (EditText) viewMain.findViewById(R.id.pincode_edt);
-        kyc_format = (EditText) viewMain.findViewById(R.id.kyc_format);
-        home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
-        patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
-        vial_number = (EditText) viewMain.findViewById(R.id.vial_number);
-
-        et_mobno = viewMain.findViewById(R.id.et_mobno);
-        et_otp = viewMain.findViewById(R.id.et_otp);
-
-        chk_otp = viewMain.findViewById(R.id.chk_otp);
-        lin_ckotp = viewMain.findViewById(R.id.lin_ckotp);
-
-        male = (ImageView) viewMain.findViewById(R.id.male);
-        male_red = (ImageView) viewMain.findViewById(R.id.male_red);
-        female = (ImageView) viewMain.findViewById(R.id.female);
-        female_red = (ImageView) viewMain.findViewById(R.id.female_red);
-        next_btn = (Button) viewMain.findViewById(R.id.next_btn_patient);
-
-    }
-
     private void enterNextFragment() {
         Woe_fragment a2Fragment = new Woe_fragment();
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.addToBackStack(null);
+        //transaction.replace(R.id.fragment_mainLayout, a2Fragment).commit();
         transaction.replace(R.id.fragment_mainLayout, a2Fragment).commitAllowingStateLoss();
     }
 
     private void requestJsonObject() {
         try {
+            barProgressDialog = new ProgressDialog(getActivity());
+            barProgressDialog.setTitle("Kindly wait ...");
+            barProgressDialog.setMessage(ToastFile.processing_request);
+            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+            barProgressDialog.setProgress(0);
+            barProgressDialog.setMax(20);
+            barProgressDialog.show();
+            barProgressDialog.setCanceledOnTouchOutside(false);
+            barProgressDialog.setCancelable(false);
             RequestQueue requestQueue = GlobalClass.setVolleyReq(mContext);
-            try {
-                if (ControllersGlobalInitialiser.getwomaster_controller != null) {
-                    ControllersGlobalInitialiser.getwomaster_controller = null;
-                }
-                ControllersGlobalInitialiser.getwomaster_controller = new Getwomaster_Controller(getActivity(), Start_New_Woe.this);
-                ControllersGlobalInitialiser.getwomaster_controller.getwoeMaster_Controller(api_key, user, requestQueue);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            String url = Api.getData + api_key + "/" + user + "/B2BAPP/getwomaster";
+            Log.e(TAG, "request API: " + url);
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.e(TAG, "onResponse: RESPONSE" + response);
+                        if (response != null) {
+                            Gson gson = new Gson();
+                            myPojo = new MyPojo();
+                            myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
+                            if (myPojo != null && !GlobalClass.isNull(myPojo.getRESPONSE()) && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
+                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                GlobalClass.redirectToLogin(getActivity());
+                            } else {
+                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                                Gson gson22 = new Gson();
+                                String json22 = gson22.toJson(myPojo);
+                                prefsEditor1.putString("saveAlldata", json22);
+                                prefsEditor1.apply();
+
+                                fetchData();
+
+                                isLoaded = true;
+                                getBrandName = new ArrayList<>();
+                                spinnerBrandName = new ArrayList<String>();
+                                /*spinnerBrandName.add("Select Brand Name");*/
+                                getDatafetch = new ArrayList();
+                                getSubSource = new ArrayList();
+
+                                try {
+                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
+                                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
+                                            getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                                            spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                                            camp_lists = myPojo.getMASTERS().getCAMP_LIST();
+                                            // GlobalClass.getcamp_lists=camp_lists;
+                                            String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
+                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
+                                            editor.putString("TSPMobileNumber", TspNumber);
+                                            editor.apply();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                try {
+                                    if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getSUB_SOURCECODE() != null) {
+                                        for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
+                                            getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                spinnerTypeName = new ArrayList<>();
+                                getTypeListfirst = new ArrayList<>();
+                                getTypeListsecond = new ArrayList<>();
+                                getTypeListSMT = new ArrayList<>();
+
+                                if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length > 1) {
+
+                                    for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
+                                        getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
+                                    }
+
+                                    if (myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().equalsIgnoreCase("SMT")) {
+                                        for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; k++) {
+                                            getTypeListSMT.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[k].getType());
+                                        }
+
+                                        for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type().length; k++) {
+                                            getTypeListsecond.add(myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type()[k].getType());
+                                        }
+
+                                        getTypeListthird = new ArrayList<>();
+                                        for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type().length; l++) {
+                                            getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type()[l].getType());
+                                        }
+                                        getTypeListthird = new ArrayList<>();
+                                        for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[4].getBrand_type().length; l++) {
+                                            getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[4].getBrand_type()[l].getType());
+                                        }
+                                    } else {
+                                        for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; k++) {
+                                            getTypeListsecond.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[k].getType());
+                                        }
+                                        getTypeListthird = new ArrayList<>();
+                                        for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type().length; l++) {
+                                            getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type()[l].getType());
+                                        }
+                                        getTypeListthird = new ArrayList<>();
+                                        for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type().length; l++) {
+                                            getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type()[l].getType());
+                                        }
+                                    }
+
+                                } else {
+                                    if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null && myPojo.getMASTERS().getBRAND_LIST().length == 1) {
+                                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
+                                            getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
+                                        }
+                                    }
+                                }
+
+
+                                try {
+                                    if (myPojo != null) {
+                                        if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                            String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+
+                                            SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
+                                            ScpAddress.putString("scp_addrr", getAddress);
+                                            ScpAddress.commit();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
+                                    GlobalClass.putData = myPojo.getMASTERS().getLAB_ALERTS();
+                                }
+
+
+                                if (GlobalClass.putData != null) {
+                                    for (int i = 0; i < GlobalClass.putData.length; i++) {
+                                        GlobalClass.items.add(GlobalClass.putData[i]);
+                                    }
+                                }
+
+                                // Spinner adapter
+                                try {
+                                    if (spinnerBrandName != null) {
+                                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
+                                                mContext, R.layout.name_age_spinner, spinnerBrandName);
+                                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        brand_spinner.setAdapter(adapter2);
+                                        brand_spinner.setSelection(0);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+                                startDataSetting();
+                            }
+                        } else {
+                            Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getActivity(), "" + e, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse == null) {
+                        if (error.getClass().equals(TimeoutError.class)) {
+                            // Show timeout error message
+                        }
+                    }
+                }
+            });
+
+            jsonObjectRequest2.setRetryPolicy(new DefaultRetryPolicy(
+                    300000,
+                    3,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(jsonObjectRequest2);
+            Log.e(TAG, "requestJsonObject: URL" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private String getOTPFlag() {
+        return getshared.getString("PriOTP", "NO");
     }
 
     private void startDataSetting() {
@@ -1477,202 +1687,151 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     selectTypeSpinner.setAdapter(adapter2);
                     selectTypeSpinner.setSelection(0);
-
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            Global.OTPVERIFIED = false;
                             vial_number.getText().clear();
                             id_for_woe.getText().clear();
 
-                            if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) && selectTypeSpinner.getSelectedItem().toString().equalsIgnoreCase("ILS")) {
+                            if (selectTypeSpinner.getSelectedItem().equals("ILS")) {
                                 Enablefields();
 
-                                if (yourCountDownTimer != null) {
-                                    yourCountDownTimer.cancel();
-                                    yourCountDownTimer = null;
-                                    btn_snd_otp.setEnabled(true);
-                                    btn_snd_otp.setClickable(true);
-                                }
+                                try {
+                                    if (yourCountDownTimer != null) {
+                                        yourCountDownTimer.cancel();
+                                        yourCountDownTimer = null;
+                                        btn_snd_otp.setEnabled(true);
+                                        btn_snd_otp.setClickable(true);
+                                    }
+
+                                    samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
+                                    et_mobno.getText().clear();
+                                    ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
+                                    et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    lin_otp.setVisibility(View.GONE);
+                                    tv_timer.setVisibility(View.GONE);
 
 
-                                GlobalClass.SetText(samplecollectionponit, MessageConstants.SEARCH_SMP_TYPE);
-                                et_mobno.getText().clear();
-                                ll_mobileno_otp.setVisibility(View.GONE);
-                                tv_mob_note.setVisibility(View.GONE);
-                                et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                                lin_otp.setVisibility(View.GONE);
-                                tv_timer.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
 
+                                    mobile_number_kyc.setVisibility(View.GONE);
 
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                next_btn.setVisibility(View.VISIBLE);
-                                vial_number.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.GONE);
-                                home_layout.setVisibility(View.GONE);
-                                pincode_linear_data.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.VISIBLE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    ref_check.setVisibility(View.GONE);
 
-                                mobile_number_kyc.setVisibility(View.GONE);
+                                    referedbyText.setText("");
 
-                                labname_linear.setVisibility(View.VISIBLE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-                                time_layout.setVisibility(View.VISIBLE);
-                                refby_linear.setVisibility(View.VISIBLE);
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-                                ref_check.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    id_woe = id_for_woe.getText().toString();
+                                    barcode_woe_str = barcode_woe.getText().toString();
+                                    referenceBy = "";
+//                                            btnClick();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
 
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
 
-                                GlobalClass.SetAutocomplete(referedbyText, "");
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                id_woe = id_for_woe.getText().toString();
-                                barcode_woe_str = barcode_woe.getText().toString();
-                                referenceBy = "";
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
 
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-
-                                        } catch (ParseException e) {
-
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
                                             try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                Log.v("TAG", output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
-                                            }
-                                            e.printStackTrace();
-                                        }
+                                                dCompare = sdfform.parse(getDateToCompare);
 
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
+                                            } catch (ParseException e) {
 
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        scpoint = samplecollectionponit.getText().toString();
-                                        getLabName = samplecollectionponit.getText().toString();
-                                        GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
-                                        kycdata = kyc_format.getText().toString();
-                                        leadlayout.setVisibility(View.GONE);
-                                        kycdata = "";
-                                        btechIDToPass = "";
-                                        btechnameTopass = "";
-                                        getcampIDtoPass = "";
-
-                                        if (GlobalClass.isNull(woereferedby)) {
-                                            if (referenceBy == null) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
-                                            } else {
-                                                if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
-                                                    referredID = "";
-                                                    woereferedby = referenceBy;
-                                                } else {
-                                                    referenceBy = referedbyText.getText().toString();
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
                                                 }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
                                             }
 
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
 
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            scpoint = samplecollectionponit.getText().toString();
+                                            getLabName = samplecollectionponit.getText().toString();
+                                            GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+                                            kycdata = kyc_format.getText().toString();
+                                            leadlayout.setVisibility(View.GONE);
+                                            kycdata = "";
+                                            btechIDToPass = "";
+                                            btechnameTopass = "";
+                                            getcampIDtoPass = "";
 
-                                        if (!GlobalClass.isNull(woereferedby)) {
-                                            if (obj != null) {
-                                                if (GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                            referenceBy = woereferedby;
-                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                        }
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+                                                        referenceBy = referedbyText.getText().toString();
                                                     }
                                                 }
 
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
                                             }
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
 
 
-                                        if (!GlobalClass.isNull(ageString)) {
-                                            conertage = Integer.parseInt(ageString);
-                                        }
-
-                                        if (GlobalClass.isNull(getVial_numbver)) {
-                                            vial_number.setError(ToastFile.vial_no);
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                        } else if (GlobalClass.isNull(nameString)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
-                                        } else if (nameString.length() < 2) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                        } else if (GlobalClass.isNull(ageString)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
-                                        } else if (conertage > 120) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
-                                        } else if (sctHr.equals("HR")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
-                                        } else if (sctMin.equals("MIN")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
-                                        } else if (sctSEc.equals("AM/PM")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
-                                        } else if (scpoint.equalsIgnoreCase(MessageConstants.SEARCH_SMP_TYPE) || scpoint.equals("") || scpoint.equals(null)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_scp, 2);
-                                        } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                        } else if (getLabName.equalsIgnoreCase(MessageConstants.SEARCH_SMP_TYPE)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_sample_cll_point, 2);
-                                        } else {
-                                            if (!GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && !GlobalClass.isNull(woereferedby) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -1683,145 +1842,197 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 referredID = "";
                                             }
 
-                                            String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
-                                            s1.trim();
-                                            getLabCode = s1;
-                                            if (labs == null) {
-                                                labAddressTopass = "";
-                                                labIDTopass = "";
-                                            } else {
-                                                if (GlobalClass.checkArray(labs)) {
-                                                    for (int i = 0; i < labs.length; i++) {
-                                                        if (getLabCode.contains("-")) {
-                                                            String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
-                                                            s2.trim();
-                                                            getLabCode = s2;
-                                                        }
-                                                        if (!GlobalClass.isNull(labs[i].getClientid()) && getLabCode.equalsIgnoreCase(labs[i].getClientid())) {
-                                                            getFullDataLabs = new LABS();
-                                                            getFullDataLabs.setPincode(labs[i].getPincode());
-                                                            getFullDataLabs.setPassingname(labs[i].getPassingname());
-                                                            getFullDataLabs.setName(labs[i].getName());
-                                                            getFullDataLabs.setMobile(labs[i].getMobile());
-                                                            getFullDataLabs.setLabName(labs[i].getLabName());
-                                                            getFullDataLabs.setLabAddress(labs[i].getLabAddress());
-                                                            getFullDataLabs.setIdaddress(labs[i].getIdaddress());
-                                                            getFullDataLabs.setEmail(labs[i].getEmail());
-                                                            getFullDataLabs.setClientid(labs[i].getClientid());
 
-                                                            labAddressTopass = getFullDataLabs.getLabAddress();
-                                                            labIDTopass = getFullDataLabs.getIdaddress();
-                                                            labLabNAmeTopass = getFullDataLabs.getLabName();
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            }
+
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
+                                                Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                Toast.makeText(mContext, ToastFile.slt_sample_cll_point, Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
                                                         }
                                                     }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
                                                 }
 
-                                            }
-
-                                            nameString = nameString.replaceAll("\\s+", " ");
-
-                                            final String getAgeType = spinyr.getSelectedItem().toString();
-
-                                            sctHr = timehr.getSelectedItem().toString();
-                                            sctMin = timesecond.getSelectedItem().toString();
-                                            sctSEc = timeampm.getSelectedItem().toString();
-                                            final String getFinalAge = age.getText().toString();
-                                            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                            final String getFinalDate = dateShow.getText().toString();
-
-                                            if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                        .setContentText(MessageConstants.PGC10_DEVBIT)
-                                                        .setConfirmText("Ok")
-                                                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                            @Override
-                                                            public void onClick(SweetAlertDialog sDialog) {
-                                                                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                i.putExtra("name", nameString);
-                                                                i.putExtra("age", getFinalAge);
-                                                                i.putExtra("gender", saveGenderId);
-                                                                i.putExtra("sct", getFinalTime);
-                                                                i.putExtra("date", getFinalDate);
-                                                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                startActivity(i);
-
-                                                                Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-                                                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                saveDetails.putString("name", nameString);
-                                                                saveDetails.putString("age", getFinalAge);
-                                                                saveDetails.putString("gender", saveGenderId);
-                                                                saveDetails.putString("sct", getFinalTime);
-                                                                saveDetails.putString("date", getFinalDate);
-                                                                saveDetails.putString("ageType", getAgeType);
-                                                                saveDetails.putString("labname", labLabNAmeTopass);
-                                                                saveDetails.putString("labAddress", labAddressTopass);
-                                                                saveDetails.putString("patientAddress", labAddressTopass);
-                                                                saveDetails.putString("refBy", referenceBy);
-                                                                saveDetails.putString("refId", referredID);
-                                                                saveDetails.putString("labIDaddress", labIDTopass);
-                                                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                saveDetails.putString("kycinfo", kycdata);
-                                                                saveDetails.putString("woetype", typename);
-                                                                saveDetails.putString("WOEbrand", brandNames);
-                                                                saveDetails.putString("SR_NO", getVial_numbver);
-                                                                saveDetails.putString("pincode", "");
-                                                                saveDetails.commit();
-                                                                sDialog.dismissWithAnimation();
+                                                String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
+                                                s1.trim();
+                                                getLabCode = s1;
+                                                if (labs == null) {
+                                                    labAddressTopass = "";
+                                                    labIDTopass = "";
+                                                } else {
+                                                    if (labs.length != 0) {
+                                                        for (int i = 0; i < labs.length; i++) {
+                                                            if (getLabCode.contains("-")) {
+                                                                String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
+                                                                s2.trim();
+                                                                getLabCode = s2;
                                                             }
-                                                        }).show();
+                                                            if (getLabCode.equalsIgnoreCase(labs[i].getClientid())) {
+                                                                getFullDataLabs = new LABS();
+                                                                getFullDataLabs.setPincode(labs[i].getPincode());
+                                                                getFullDataLabs.setPassingname(labs[i].getPassingname());
+                                                                getFullDataLabs.setName(labs[i].getName());
+                                                                getFullDataLabs.setMobile(labs[i].getMobile());
+                                                                getFullDataLabs.setLabName(labs[i].getLabName());
+                                                                getFullDataLabs.setLabAddress(labs[i].getLabAddress());
+                                                                getFullDataLabs.setIdaddress(labs[i].getIdaddress());
+                                                                getFullDataLabs.setEmail(labs[i].getEmail());
+                                                                getFullDataLabs.setClientid(labs[i].getClientid());
 
-                                            } else {
-                                                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                i.putExtra("name", nameString);
-                                                i.putExtra("age", getFinalAge);
-                                                i.putExtra("gender", saveGenderId);
-                                                i.putExtra("sct", getFinalTime);
-                                                i.putExtra("date", getFinalDate);
-                                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                                startActivity(i);
+                                                                labAddressTopass = getFullDataLabs.getLabAddress();
+                                                                labIDTopass = getFullDataLabs.getIdaddress();
+                                                                labLabNAmeTopass = getFullDataLabs.getLabName();
+                                                            }
+                                                        }
+                                                    }
 
-                                                GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
-                                                Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
-                                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                saveDetails.putString("name", nameString);
-                                                saveDetails.putString("age", getFinalAge);
-                                                saveDetails.putString("gender", saveGenderId);
-                                                saveDetails.putString("sct", getFinalTime);
-                                                saveDetails.putString("date", getFinalDate);
-                                                saveDetails.putString("ageType", getAgeType);
-                                                saveDetails.putString("labname", labLabNAmeTopass);
-                                                saveDetails.putString("labAddress", labAddressTopass);
-                                                saveDetails.putString("patientAddress", labAddressTopass);
-                                                saveDetails.putString("refBy", referenceBy);
-                                                saveDetails.putString("refId", referredID);
-                                                saveDetails.putString("labIDaddress", labIDTopass);
-                                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                saveDetails.putString("kycinfo", kycdata);
-                                                saveDetails.putString("woetype", typename);
-                                                saveDetails.putString("WOEbrand", brandNames);
-                                                saveDetails.putString("SR_NO", getVial_numbver);
-                                                saveDetails.putString("pincode", "");
-                                                saveDetails.commit();
+                                                }
+
+                                                nameString = nameString.replaceAll("\\s+", " ");
+
+                                                final String getAgeType = spinyr.getSelectedItem().toString();
+                                                String sctDate = dateShow.getText().toString();
+
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                final String getFinalAge = age.getText().toString();
+                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                final String getFinalDate = dateShow.getText().toString();
+
+                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                            .setConfirmText("Ok")
+                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                @Override
+                                                                public void onClick(SweetAlertDialog sDialog) {
+                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                    i.putExtra("name", nameString);
+                                                                    i.putExtra("age", getFinalAge);
+                                                                    i.putExtra("gender", saveGenderId);
+                                                                    i.putExtra("sct", getFinalTime);
+                                                                    i.putExtra("date", getFinalDate);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    startActivity(i);
+
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                    saveDetails.putString("name", nameString);
+                                                                    saveDetails.putString("age", getFinalAge);
+                                                                    saveDetails.putString("gender", saveGenderId);
+                                                                    saveDetails.putString("sct", getFinalTime);
+                                                                    saveDetails.putString("date", getFinalDate);
+                                                                    saveDetails.putString("ageType", getAgeType);
+                                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                                    saveDetails.putString("patientAddress", labAddressTopass);
+                                                                    saveDetails.putString("refBy", referenceBy);
+                                                                    saveDetails.putString("refId", referredID);
+                                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                    saveDetails.putString("kycinfo", kycdata);
+                                                                    saveDetails.putString("woetype", typename);
+                                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", "");
+                                                                    saveDetails.commit();
+                                                                    sDialog.dismissWithAnimation();
+                                                                }
+                                                            }).show();
+
+                                                } else {
+                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                    i.putExtra("name", nameString);
+                                                    i.putExtra("age", getFinalAge);
+                                                    i.putExtra("gender", saveGenderId);
+                                                    i.putExtra("sct", getFinalTime);
+                                                    i.putExtra("date", getFinalDate);
+                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                    startActivity(i);
+
+                                                    GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
+                                                    Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
+                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                    saveDetails.putString("name", nameString);
+                                                    saveDetails.putString("age", getFinalAge);
+                                                    saveDetails.putString("gender", saveGenderId);
+                                                    saveDetails.putString("sct", getFinalTime);
+                                                    saveDetails.putString("date", getFinalDate);
+                                                    saveDetails.putString("ageType", getAgeType);
+                                                    saveDetails.putString("labname", labLabNAmeTopass);
+                                                    saveDetails.putString("labAddress", labAddressTopass);
+                                                    saveDetails.putString("patientAddress", labAddressTopass);
+                                                    saveDetails.putString("refBy", referenceBy);
+                                                    saveDetails.putString("refId", referredID);
+                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                    saveDetails.putString("kycinfo", kycdata);
+                                                    saveDetails.putString("woetype", typename);
+                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", "");
+                                                    saveDetails.commit();
+                                                }
                                             }
+
+
                                         }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-
-                                    }
-                                });
-
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) && selectTypeSpinner.getSelectedItem().toString().equalsIgnoreCase("DPS")) {
+                            } else if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
 
                                 try {
-                                    if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
-                                    } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase(MessageConstants.YES)) {
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
@@ -1830,7 +2041,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                         if (chk_otp.isChecked()) {
                                             btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
                                             btn_snd_otp.setVisibility(View.GONE);
                                         }
@@ -1847,1285 +2058,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 }
 
 
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.VISIBLE);
-                                pincode_linear_data.setVisibility(View.VISIBLE);
-                                home_layout.setVisibility(View.VISIBLE);
-                                vial_number.setVisibility(View.VISIBLE);
-
-
-                                labname_linear.setVisibility(View.GONE);
-                                ref_check.setVisibility(View.GONE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-
-
-                                GlobalClass.SetAutocomplete(referedbyText, "");
-                                woereferedby = referedbyText.getText().toString();
-
-                                refby_linear.setVisibility(View.VISIBLE);
-                                referenceBy = "";
-
-
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-                                time_layout.setVisibility(View.VISIBLE);
-                                referenceBy = "";
-                                getTSP_AddressStringTopass = getTSP_Address;
-
-                                kyc_format.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before,
-                                                              int count) {
-                                        String enteredString = s.toString();
-                                        if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                                                enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                                                enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                                                enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                                                || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                                                || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_mob_num, 2);
-
-                                            if (enteredString.length() > 0) {
-                                                GlobalClass.SetEditText(kyc_format, enteredString.substring(1));
-                                            } else {
-                                                GlobalClass.SetEditText(kyc_format, "");
-                                            }
-                                        }
-                                    }
-
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count,
-                                                                  int after) {
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        final String checkNumber = s.toString();
-                                        if (checkNumber.length() < 10) {
-                                            flag = true;
-                                        }
-
-                                        if (flag) {
-                                            if (checkNumber.length() == 10) {
-
-                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                    flag = false;
-                                                    GlobalClass.SetEditText(kyc_format, checkNumber);
-                                                } else {
-                                                    flag = false;
-                                                    RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
-
-                                                    try {
-                                                        if (ControllersGlobalInitialiser.checkNumber_controller != null) {
-                                                            ControllersGlobalInitialiser.checkNumber_controller = null;
-                                                        }
-                                                        ControllersGlobalInitialiser.checkNumber_controller = new CheckNumber_Controller(getActivity(), Start_New_Woe.this, "2");
-                                                        ControllersGlobalInitialiser.checkNumber_controller.getchecknumbercontroll(checkNumber, reques5tQueueCheckNumber);
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-
-                                                }
-
-
-                                            }
-
-                                        }
-                                    }
-                                });
-
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
-                                            try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                Log.v("TAG", output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
-                                            }
-                                            e.printStackTrace();
-                                        }
-
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        patientAddressdataToPass = patientAddress.getText().toString();
-                                        pincode_pass = pincode_edt.getText().toString();
-
-
-                                        if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                            kycdata = et_mobno.getText().toString();
-                                        } else {
-                                            kycdata = kyc_format.getText().toString();
-                                        }
-
-                                        labAddressTopass = "";
-                                        labIDTopass = "";
-                                        getcampIDtoPass = "";
-
-                                        if (!GlobalClass.isNull(btechname.getSelectedItem().toString()))
-                                            btechnameTopass = btechname.getSelectedItem().toString();
-
-                                        try {
-                                            if (!GlobalClass.isNull(btechnameTopass)) {
-                                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
-                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                        if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
-                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-
-                                        if (GlobalClass.isNull(woereferedby)) {
-                                            if (referenceBy == null) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
-                                            } else {
-                                                if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
-                                                    referredID = "";
-                                                    woereferedby = referenceBy;
-                                                } else {
-                                                    referenceBy = referedbyText.getText().toString();
-                                                }
-                                            }
-
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        try {
-                                            if (!GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName())
-                                                                && !GlobalClass.isNull(woereferedby) &&
-                                                                woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-
-                                                            referenceBy = woereferedby;
-                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                referenceBy = woereferedby;
-                                                referredID = "";
-                                            }
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-
-                                        if (!GlobalClass.isNull(ageString)) {
-                                            conertage = Integer.parseInt(ageString);
-                                        }
-
-                                        if (getVial_numbver.equalsIgnoreCase("")) {
-                                            vial_number.setError(ToastFile.vial_no);
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                        } else if (nameString.equalsIgnoreCase("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
-                                        } else if (nameString.length() < 2) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                        } else if (ageString.equalsIgnoreCase("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
-                                        } else if (conertage > 120) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
-                                        } else if (saveGenderId == null || saveGenderId == "") {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
-                                        } else if (sctHr.equalsIgnoreCase("HR")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
-                                        } else if (sctMin.equalsIgnoreCase("MIN")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
-                                        } else if (sctSEc.equalsIgnoreCase("AM/PM")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                        } else if (patientAddressdataToPass.equals("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
-                                        } else if (pincode_pass.equalsIgnoreCase("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-                                        } else if (pincode_pass.length() < 6) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
-                                        } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
-                                        } else {
-                                            try {
-                                                if (!GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
-                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && !GlobalClass.isNull(woereferedby) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                referenceBy = woereferedby;
-                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    referenceBy = woereferedby;
-                                                    referredID = "";
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            if (kycdata.length() == 0) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
-                                            } else if (kycdata.length() < 10) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
-                                            } else {
-
-                                                try {
-                                                    if (GlobalClass.isNull(woereferedby)) {
-                                                        if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
-                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && !GlobalClass.isNull(woereferedby) &&
-                                                                        woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                    referenceBy = woereferedby;
-                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                                }
-                                                            }
-                                                        }
-                                                    } else {
-                                                        referenceBy = woereferedby;
-                                                        referredID = "";
-                                                    }
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-
-
-                                                final String getAgeType = spinyr.getSelectedItem().toString();
-                                                String sctDate = dateShow.getText().toString();
-                                                sctHr = timehr.getSelectedItem().toString();
-                                                sctMin = timesecond.getSelectedItem().toString();
-                                                sctSEc = timeampm.getSelectedItem().toString();
-                                                final String getFinalAge = age.getText().toString();
-                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                                final String getFinalDate = dateShow.getText().toString();
-
-
-                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                            .setConfirmText("Ok")
-                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                @Override
-                                                                public void onClick(SweetAlertDialog sDialog) {
-                                                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                                                        getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                                                                    }
-
-                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                    i.putExtra("name", nameString);
-                                                                    i.putExtra("age", getFinalAge);
-                                                                    i.putExtra("gender", saveGenderId);
-                                                                    i.putExtra("sct", getFinalTime);
-                                                                    i.putExtra("date", getFinalDate);
-                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                    startActivity(i);
-                                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
-                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                    saveDetails.putString("name", nameString);
-                                                                    saveDetails.putString("age", getFinalAge);
-                                                                    saveDetails.putString("gender", saveGenderId);
-                                                                    saveDetails.putString("sct", getFinalTime);
-                                                                    saveDetails.putString("date", getFinalDate);
-                                                                    saveDetails.putString("ageType", getAgeType);
-                                                                    saveDetails.putString("labname", "");
-                                                                    saveDetails.putString("labAddress", getTSP_Address);
-                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                                    saveDetails.putString("refBy", referenceBy);
-                                                                    saveDetails.putString("refId", referredID);
-                                                                    saveDetails.putString("labIDaddress", "");
-                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                    saveDetails.putString("kycinfo", kycdata);
-                                                                    saveDetails.putString("woetype", typename);
-                                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                                    saveDetails.putString("pincode", pincode_pass);
-                                                                    saveDetails.commit();
-                                                                    sDialog.dismissWithAnimation();
-                                                                }
-                                                            })
-                                                            .show();
-
-                                                } else {
-
-                                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                                        getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                                                    }
-
-                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                    i.putExtra("name", nameString);
-                                                    i.putExtra("age", getFinalAge);
-                                                    i.putExtra("gender", saveGenderId);
-                                                    i.putExtra("sct", getFinalTime);
-                                                    i.putExtra("date", getFinalDate);
-                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                    startActivity(i);
-                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
-                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                    saveDetails.putString("name", nameString);
-                                                    saveDetails.putString("age", getFinalAge);
-                                                    saveDetails.putString("gender", saveGenderId);
-                                                    saveDetails.putString("sct", getFinalTime);
-                                                    saveDetails.putString("date", getFinalDate);
-                                                    saveDetails.putString("ageType", getAgeType);
-                                                    saveDetails.putString("labname", "");
-                                                    saveDetails.putString("labAddress", getTSP_Address);
-                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                    saveDetails.putString("refBy", referenceBy);
-                                                    saveDetails.putString("refId", referredID);
-                                                    saveDetails.putString("labIDaddress", "");
-                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                    saveDetails.putString("kycinfo", kycdata);
-                                                    saveDetails.putString("woetype", typename);
-                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                    saveDetails.putString("pincode", pincode_pass);
-                                                    saveDetails.commit();
-                                                }
-
-
-                                            }
-                                        }
-                                    }
-                                });
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString())
-                                    && selectTypeSpinner.getSelectedItem().toString().equalsIgnoreCase("HOME")) {
-
                                 try {
-                                    if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
-                                        Enablefields();
-                                        Home_mobile_number_kyc.setVisibility(View.VISIBLE);
-                                        ll_mobileno_otp.setVisibility(View.GONE);
-                                        tv_mob_note.setVisibility(View.GONE);
-                                    } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("YES")) {
-                                        Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-                                        Home_mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
-                                    } else {
-                                        GlobalClass.redirectToLogin(getActivity());
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.VISIBLE);
-                                pincode_linear_data.setVisibility(View.VISIBLE);
-                                home_layout.setVisibility(View.VISIBLE);
-
-
-                                vial_number.setVisibility(View.VISIBLE);
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                GlobalClass.SetEditText(patientAddress, "");
-
-                                ref_check.setVisibility(View.GONE);
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-                                refby_linear.setVisibility(View.VISIBLE);
-                                GlobalClass.SetAutocomplete(referedbyText, "");
-
-                                referenceBy = "";
-
-
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-                                time_layout.setVisibility(View.VISIBLE);
-//
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            String output = null;
-                                            try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                Log.v("TAG", output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
-                                            }
-                                            e.printStackTrace();
-                                        }
-
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
-
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-
-                                        ageString = age.getText().toString();
-                                        woereferedby = referedbyText.getText().toString();
-                                        GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                        patientAddressdataToPass = patientAddress.getText().toString();
-                                        pincode_pass = pincode_edt.getText().toString();
-
-
-                                        if (!GlobalClass.isNull(btechname.getSelectedItem().toString()))
-                                            btechnameTopass = btechname.getSelectedItem().toString();
-
-
-                                        if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                            kycdata = et_mobno.getText().toString();
-                                        } else {
-                                            kycdata = home_kyc_format.getText().toString();
-                                        }
-
-
-                                        labIDTopass = "";
-                                        labAddressTopass = "";
-                                        getcampIDtoPass = "";
-
-                                        if (!GlobalClass.isNull(btechnameTopass)) {
-                                            if (GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
-                                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                    if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
-                                                        btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
-                                                    }
-                                                }
-                                            }
-
-                                        }
-
-                                        if (GlobalClass.isNull(woereferedby)) {
-                                            if (referenceBy == null || referenceBy.length() <= 1) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
-                                            } else {
-                                                if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF")) {
-                                                    referenceBy = "SELF";
-                                                    referredID = "";
-                                                    woereferedby = referenceBy;
-                                                } else {
-
-                                                    referenceBy = referedbyText.getText().toString();
-                                                }
-                                            }
-
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        if (!GlobalClass.isNull(woereferedby)) {
-                                            if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                    if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                        referenceBy = woereferedby;
-                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            referenceBy = woereferedby;
-                                            referredID = "";
-                                        }
-
-
-                                        if (!GlobalClass.isNull(ageString)) {
-                                            conertage = Integer.parseInt(ageString);
-                                        }
-
-                                        if (GlobalClass.isNull(getVial_numbver)) {
-                                            vial_number.setError(ToastFile.vial_no);
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                        } else if (GlobalClass.isNull(nameString)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
-                                        } else if (nameString.length() < 2) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-
-                                        } else if (GlobalClass.isNull(ageString)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
-                                        } else if (conertage > 120) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
-                                        } else if (GlobalClass.isNull(saveGenderId)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
-                                        } else if (sctHr.equalsIgnoreCase("HR")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
-                                        } else if (sctMin.equalsIgnoreCase("MIN")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
-                                        } else if (sctSEc.equalsIgnoreCase("AM/PM")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                        } else if (dCompare.after(getCurrentDateandTime)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                        } else if (patientAddressdataToPass.equalsIgnoreCase("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
-                                        } else if (patientAddressdataToPass.length() < 25) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
-                                        } else if (pincode_pass.equalsIgnoreCase("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-                                        } else if (pincode_pass.length() < 6) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-                                        } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
-                                        } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
-                                        } else {
-                                            if (kycdata.length() == 0) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
-                                            } else if (kycdata.length() < 10) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
-                                            } else {
-
-                                                if (!GlobalClass.isNull(woereferedby)) {
-
-                                                    if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
-                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && !GlobalClass.isNull(woereferedby) &&
-                                                                    woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                referenceBy = woereferedby;
-                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    referenceBy = woereferedby;
-                                                    referredID = "";
-                                                }
-
-                                                final String getAgeType = spinyr.getSelectedItem().toString();
-                                                sctHr = timehr.getSelectedItem().toString();
-                                                sctMin = timesecond.getSelectedItem().toString();
-                                                sctSEc = timeampm.getSelectedItem().toString();
-                                                final String getFinalAge = age.getText().toString();
-                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                                final String getFinalDate = dateShow.getText().toString();
-
-                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                            .setConfirmText("Ok")
-                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                @Override
-                                                                public void onClick(SweetAlertDialog sDialog) {
-                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                    i.putExtra("name", nameString);
-                                                                    i.putExtra("age", getFinalAge);
-                                                                    i.putExtra("gender", saveGenderId);
-                                                                    i.putExtra("sct", getFinalTime);
-                                                                    i.putExtra("date", getFinalDate);
-                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                    startActivity(i);
-                                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                    saveDetails.putString("name", nameString);
-                                                                    saveDetails.putString("age", getFinalAge);
-                                                                    saveDetails.putString("gender", saveGenderId);
-                                                                    saveDetails.putString("sct", getFinalTime);
-                                                                    saveDetails.putString("date", getFinalDate);
-                                                                    saveDetails.putString("ageType", getAgeType);
-                                                                    saveDetails.putString("labname", "");
-                                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                                    saveDetails.putString("refBy", referenceBy);
-                                                                    saveDetails.putString("refId", referredID);
-                                                                    saveDetails.putString("labIDaddress", labIDTopass);
-                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                    saveDetails.putString("kycinfo", kycdata);
-                                                                    saveDetails.putString("woetype", typename);
-                                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                                    saveDetails.putString("pincode", pincode_pass);
-                                                                    saveDetails.commit();
-                                                                    sDialog.dismissWithAnimation();
-                                                                }
-                                                            })
-                                                            .show();
-
-                                                } else {
-                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                    i.putExtra("name", nameString);
-                                                    i.putExtra("age", getFinalAge);
-                                                    i.putExtra("gender", saveGenderId);
-                                                    i.putExtra("sct", getFinalTime);
-                                                    i.putExtra("date", getFinalDate);
-                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                    startActivity(i);
-                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                    saveDetails.putString("name", nameString);
-                                                    saveDetails.putString("age", getFinalAge);
-                                                    saveDetails.putString("gender", saveGenderId);
-                                                    saveDetails.putString("sct", getFinalTime);
-                                                    saveDetails.putString("date", getFinalDate);
-                                                    saveDetails.putString("ageType", getAgeType);
-                                                    saveDetails.putString("labname", "");
-                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                    saveDetails.putString("refBy", referenceBy);
-                                                    saveDetails.putString("refId", referredID);
-                                                    saveDetails.putString("labIDaddress", labIDTopass);
-                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                    saveDetails.putString("kycinfo", kycdata);
-                                                    saveDetails.putString("woetype", typename);
-                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                    saveDetails.putString("pincode", pincode_pass);
-                                                    saveDetails.commit();
-                                                }
-
-
-                                            }
-
-                                        }
-
-                                    }
-                                });
-
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) && selectTypeSpinner.getSelectedItem().toString().equals("CAMP")) {
-                                Enablefields();
-                                leadlayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.GONE);
-                                pincode_linear_data.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                next_btn.setVisibility(View.VISIBLE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.VISIBLE);
-                                home_layout.setVisibility(View.GONE);
-                                vial_number.setVisibility(View.VISIBLE);
-                                ref_check.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                ll_mobileno_otp.setVisibility(View.GONE);
-                                tv_mob_note.setVisibility(View.GONE);
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-                                camp_layout_woe.setVisibility(View.VISIBLE);
-                                btech_linear_layout.setVisibility(View.GONE);
-                                home_layout.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                ref_check_linear.setVisibility(View.GONE);
-                                refby_linear.setVisibility(View.GONE);
-                                GlobalClass.SetAutocomplete(referedbyText, "");
-                                ref_check_linear.setVisibility(View.VISIBLE);
-                                uncheck_ref.setVisibility(View.VISIBLE);
-                                refby_linear.setVisibility(View.VISIBLE);
-                                namePatients.setVisibility(View.VISIBLE);
-                                AGE_layout.setVisibility(View.VISIBLE);
-                                time_layout.setVisibility(View.VISIBLE);
-
-                                GlobalClass.SetEditText(patientAddress, "");
-                                referenceBy = "";
-
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        nameString = name.getText().toString();
-                                        nameString = nameString.replaceAll("\\s+", " ");
-                                        sctHr = timehr.getSelectedItem().toString();
-                                        sctMin = timesecond.getSelectedItem().toString();
-                                        sctSEc = timeampm.getSelectedItem().toString();
-                                        getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                        getFinalDate = dateShow.getText().toString();
-
-                                        String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                        SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                        try {
-                                            dCompare = sdfform.parse(getDateToCompare);
-                                        } catch (ParseException e) {
-                                            if (getDateToCompare.contains("AM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "a.m.";
-                                            } else if (getDateToCompare.contains("PM")) {
-                                                getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
-                                                getDateToCompare = getDateToCompare + "p.m.";
-                                            }
-
-                                            String input = getDateToCompare;
-                                            //Format of the date defined in the input String
-                                            DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                                            //Desired format: 24 hour format: Change the pattern as per the need
-                                            DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                                            Date date = null;
-                                            String output = null;
-                                            try {
-                                                dCompare = df.parse(input);
-                                                output = outputformat.format(dCompare);
-                                                Log.v("TAG", output);
-                                            } catch (ParseException pe) {
-                                                pe.printStackTrace();
-                                            }
-                                            e.printStackTrace();
-                                        }
-
-                                        typename = selectTypeSpinner.getSelectedItem().toString();
-                                        brandNames = brand_spinner.getSelectedItem().toString();
-                                        getVial_numbver = vial_number.getText().toString();
-                                        if (!GlobalClass.isNull(typename) && typename.equals("CAMP")) {
-
-                                            ageString = age.getText().toString();
-                                            woereferedby = referedbyText.getText().toString();
-                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
-                                            if (!GlobalClass.isNull(camp_spinner_olc.getSelectedItem().toString())) {
-                                                scpoint = camp_spinner_olc.getSelectedItem().toString();
-                                            }
-                                            kycdata = kyc_format.getText().toString();
-
-                                            kycdata = "";
-                                            labIDTopass = "";
-                                            btechIDToPass = "";
-                                            btechnameTopass = "";
-                                            labAddressTopass = "";
-
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (GlobalClass.isNull(referenceBy)) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
-                                                } else {
-                                                    if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF")) {
-                                                        referenceBy = "SELF";
-                                                        referredID = "";
-                                                        woereferedby = referenceBy;
-                                                    } else {
-
-                                                        referenceBy = referedbyText.getText().toString();
-                                                    }
-                                                }
-
-                                            } else {
-                                                referenceBy = woereferedby;
-                                                referredID = "";
-                                            }
-
-
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && !GlobalClass.isNull(woereferedby) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                            referenceBy = woereferedby;
-                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                        }
-                                                    }
-                                                }
-                                            } else {
-                                                referenceBy = woereferedby;
-                                                referredID = "";
-                                            }
-
-
-                                            try {
-                                                if (!GlobalClass.isNull(scpoint)) {
-                                                    if (GlobalClass.checkArray(myPojo.getMASTERS().getCAMP_LIST())) {
-                                                        for (int k = 0; k < myPojo.getMASTERS().getCAMP_LIST().length; k++) {
-                                                            if (!GlobalClass.isNull(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE()) && scpoint.equals(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE())) {
-                                                                getcampIDtoPass = myPojo.getMASTERS().getCAMP_LIST()[k].getCAMP_ID();
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            if (!GlobalClass.isNull(ageString)) {
-                                                conertage = Integer.parseInt(ageString);
-                                            }
-
-                                            if (GlobalClass.isNull(getVial_numbver)) {
-                                                vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
-                                            } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
-                                            } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
-                                            } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
-                                            } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
-                                            } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
-                                            } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
-                                            } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
-                                            } else if (scpoint.equals("Select Camp")) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_CAMPNAME, 2);
-                                            } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                            } else {
-
-                                                if (GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null &&
-                                                            obj.getMASTERS().getREF_DR().length != 0) {
-                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                referenceBy = woereferedby;
-                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                            }
-                                                        }
-                                                    }
-                                                } else {
-                                                    referenceBy = woereferedby;
-                                                    referredID = "";
-                                                }
-
-                                                final String getAgeType = spinyr.getSelectedItem().toString();
-                                                String sctDate = dateShow.getText().toString();
-                                                sctHr = timehr.getSelectedItem().toString();
-                                                sctMin = timesecond.getSelectedItem().toString();
-                                                sctSEc = timeampm.getSelectedItem().toString();
-                                                final String getFinalAge = age.getText().toString();
-                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                                final String getFinalDate = dateShow.getText().toString();
-
-
-                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-
-                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                            .setConfirmText("Ok")
-                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                @Override
-                                                                public void onClick(SweetAlertDialog sDialog) {
-                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                    i.putExtra("name", nameString);
-                                                                    i.putExtra("age", getFinalAge);
-                                                                    i.putExtra("gender", saveGenderId);
-                                                                    i.putExtra("sct", getFinalTime);
-                                                                    i.putExtra("date", getFinalDate);
-                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                    startActivity(i);
-                                                                    Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
-                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                    saveDetails.putString("name", nameString);
-                                                                    saveDetails.putString("age", getFinalAge);
-                                                                    saveDetails.putString("gender", saveGenderId);
-                                                                    saveDetails.putString("sct", getFinalTime);
-                                                                    saveDetails.putString("date", getFinalDate);
-                                                                    saveDetails.putString("ageType", getAgeType);
-                                                                    saveDetails.putString("labname", "");
-                                                                    saveDetails.putString("labAddress", scpoint);
-                                                                    saveDetails.putString("patientAddress", scpoint);
-                                                                    saveDetails.putString("refBy", referenceBy);
-                                                                    saveDetails.putString("refId", referredID);
-                                                                    saveDetails.putString("labIDaddress", labIDTopass);
-                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                    saveDetails.putString("kycinfo", kycdata);
-                                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                                    saveDetails.putString("woetype", typename);
-                                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                                    saveDetails.putString("pincode", "");
-                                                                    saveDetails.commit();
-                                                                    sDialog.dismissWithAnimation();
-                                                                }
-                                                            })
-                                                            .show();
-
-                                                } else {
-                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                    i.putExtra("name", nameString);
-                                                    i.putExtra("age", getFinalAge);
-                                                    i.putExtra("gender", saveGenderId);
-                                                    i.putExtra("sct", getFinalTime);
-                                                    i.putExtra("date", getFinalDate);
-                                                    GlobalClass.setReferenceBy_Name = referenceBy;
-                                                    startActivity(i);
-                                                    Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
-                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                    saveDetails.putString("name", nameString);
-                                                    saveDetails.putString("age", getFinalAge);
-                                                    saveDetails.putString("gender", saveGenderId);
-                                                    saveDetails.putString("sct", getFinalTime);
-                                                    saveDetails.putString("date", getFinalDate);
-                                                    saveDetails.putString("ageType", getAgeType);
-                                                    saveDetails.putString("labname", "");
-                                                    saveDetails.putString("labAddress", scpoint);
-                                                    saveDetails.putString("patientAddress", scpoint);
-                                                    saveDetails.putString("refBy", referenceBy);
-                                                    saveDetails.putString("refId", referredID);
-                                                    saveDetails.putString("labIDaddress", labIDTopass);
-                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                    saveDetails.putString("kycinfo", kycdata);
-                                                    saveDetails.putString("WOEbrand", brandNames);
-                                                    saveDetails.putString("woetype", typename);
-                                                    saveDetails.putString("SR_NO", getVial_numbver);
-                                                    saveDetails.putString("pincode", "");
-                                                    saveDetails.commit();
-                                                }
-
-
-                                            }
-                                        }
-
-                                    }
-                                });
-
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) && selectTypeSpinner.getSelectedItem().toString().equalsIgnoreCase("ORDERS")) {
-                                LeadIdwoe();
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) && selectTypeSpinner.getSelectedItem().equals("ADD")) {
-
-                                GlobalClass.SetEditText(barcode_woe, "");
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                ll_mobileno_otp.setVisibility(View.GONE);
-                                tv_mob_note.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                pincode_linear_data.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.VISIBLE);
-                                vial_number.setVisibility(View.GONE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.GONE);
-                                home_layout.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                GlobalClass.SetEditText(patientAddress, "");
-
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-                                ref_check_linear.setVisibility(View.GONE);
-                                refby_linear.setVisibility(View.GONE);
-                                namePatients.setVisibility(View.GONE);
-                                AGE_layout.setVisibility(View.GONE);
-                                time_layout.setVisibility(View.GONE);
-                                next_btn.setVisibility(View.GONE);
-
-                                barcode_woe.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        if (s.length() < 8) {
-                                            leadbarcodelayout.setVisibility(View.GONE);
-                                        }
-                                        if (s.length() == 8) {
-                                            String passBarcode = s.toString();
-                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                GlobalClass.showAlertDialog(getActivity());
-                                            } else {
-                                                RecheckType(passBarcode);
-                                            }
-                                        }
-                                    }
-                                });
-                                referenceBy = "";
-
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        if (GlobalClass.isNull(type_string)) {
-                                            GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_TYPNAME, 2);
-                                        } else if (barcode_woe.getText().toString().equals("")) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.entr_brcd, 2);
-                                        } else {
-                                            GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
-                                            GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
-                                            GlobalClass.id_value = id_for_woe.getText().toString();
-
-                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("AddTestType", 0).edit();
-                                            savePrefe.putString("ALERT", ALERT);
-                                            savePrefe.putString("BARCODE", BARCODE);
-                                            savePrefe.putString("BVT_HRS", BVT_HRS);
-                                            savePrefe.putString("LABCODE", LABCODE);
-                                            savePrefe.putString("PATIENT", PATIENT);
-                                            savePrefe.putString("REF_DR", REF_DR);
-                                            savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
-                                            savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
-                                            savePrefe.putString("RES_ID", RES_ID);
-                                            savePrefe.putString("SDATE", SDATE);
-                                            savePrefe.putString("SL_NO", SL_NO);
-                                            savePrefe.putString("STATUS", STATUS);
-                                            savePrefe.putString("SU_CODE1", SU_CODE1);
-                                            savePrefe.putString("SU_CODE2", SU_CODE2);
-                                            savePrefe.putString("TESTS", TESTS);
-                                            savePrefe.commit();
-
-                                            Intent a = new Intent(getActivity(), AddWOETestsForSerum.class);
-                                            startActivity(a);
-
-                                        }
-                                    }
-                                });
-                            } else if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()) &&
-                                    selectTypeSpinner.getSelectedItem().toString().equalsIgnoreCase("RECHECK")) {
-                                GlobalClass.SetEditText(barcode_woe, "");
-                                ll_mobileno_otp.setVisibility(View.GONE);
-                                tv_mob_note.setVisibility(View.GONE);
-                                leadbarcodelayout.setVisibility(View.GONE);
-                                id_layout.setVisibility(View.GONE);
-                                pincode_linear_data.setVisibility(View.GONE);
-                                barcode_layout.setVisibility(View.VISIBLE);
-                                vial_number.setVisibility(View.GONE);
-                                camp_layout_woe.setVisibility(View.GONE);
-                                btech_linear_layout.setVisibility(View.GONE);
-                                home_layout.setVisibility(View.GONE);
-                                labname_linear.setVisibility(View.GONE);
-                                GlobalClass.SetEditText(patientAddress, "");
-                                mobile_number_kyc.setVisibility(View.GONE);
-                                Home_mobile_number_kyc.setVisibility(View.GONE);
-                                ref_check_linear.setVisibility(View.GONE);
-                                refby_linear.setVisibility(View.GONE);
-                                namePatients.setVisibility(View.GONE);
-                                AGE_layout.setVisibility(View.GONE);
-
-                                time_layout.setVisibility(View.GONE);
-                                leadlayout.setVisibility(View.GONE);
-                                brand_string = brand_spinner.getSelectedItem().toString();
-                                type_string = selectTypeSpinner.getSelectedItem().toString();
-
-
-                                next_btn.setVisibility(View.GONE);
-                                barcode_woe.addTextChangedListener(new TextWatcher() {
-                                    @Override
-                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                                    }
-
-                                    @Override
-                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                                    }
-
-                                    @Override
-                                    public void afterTextChanged(Editable s) {
-                                        if (s.length() < 8) {
-                                            leadbarcodelayout.setVisibility(View.GONE);
-                                        }
-                                        if (s.length() == 8) {
-                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                                                GlobalClass.showAlertDialog(getActivity());
-                                            } else {
-                                                String passBarcode = s.toString();
-                                                RecheckType(passBarcode);
-                                            }
-                                        }
-                                    }
-                                });
-                                referenceBy = "";
-
-                                next_btn.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-
-                                        if (!GlobalClass.isNull(brand_string) && brand_string.equals("Select brand name")) {
-                                            GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_BRANDSTYPE, 2);
-                                        } else if (GlobalClass.isNull(type_string)) {
-                                            GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_TYPNAME, 2);
-                                        } else if (GlobalClass.isNull(barcode_woe.getText().toString())) {
-                                            GlobalClass.showTastyToast(getActivity(), ToastFile.entr_brcd, 2);
-                                        } else {
-                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("RecheckTestType", 0).edit();
-                                            savePrefe.putString("ALERT", ALERT);
-                                            savePrefe.putString("BARCODE", BARCODE);
-                                            savePrefe.putString("BVT_HRS", BVT_HRS);
-                                            savePrefe.putString("LABCODE", LABCODE);
-                                            savePrefe.putString("PATIENT", PATIENT);
-                                            savePrefe.putString("REF_DR", REF_DR);
-                                            savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
-                                            savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
-                                            savePrefe.putString("RES_ID", RES_ID);
-                                            savePrefe.putString("SDATE", SDATE);
-                                            savePrefe.putString("SL_NO", SL_NO);
-                                            savePrefe.putString("STATUS", STATUS);
-                                            savePrefe.putString("SU_CODE1", SU_CODE1);
-                                            savePrefe.putString("SU_CODE2", SU_CODE2);
-                                            savePrefe.putString("TESTS", TESTS);
-
-                                            savePrefe.commit();
-                                            GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
-                                            GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
-                                            Intent a = new Intent(getActivity(), RecheckAllTest.class);
-                                            startActivity(a);
-
-                                        }
-                                    }
-                                });
-
-                            }
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-
-                        }
-                    });
-                }
-
-
-                if (position > 0) {
-                    vial_number.getText().clear();
-                    id_for_woe.getText().clear();
-                    if (!GlobalClass.isNull(brand_spinner.getSelectedItem().toString()) &&
-                            brand_spinner.getSelectedItem().toString().equalsIgnoreCase("SMT")) {
-                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListSMT);
-                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        selectTypeSpinner.setAdapter(adapter2);
-                        selectTypeSpinner.setSelection(0);
-
-                        selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
-
-                                    try {
-                                        if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
-                                            Enablefields();
-                                            mobile_number_kyc.setVisibility(View.VISIBLE);
-                                            ll_mobileno_otp.setVisibility(View.GONE);
-                                            tv_mob_note.setVisibility(View.GONE);
-                                        } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("YES")) {
-                                            Disablefields();
-                                            et_mobno.setFocusable(true);
-                                            et_mobno.requestFocus();
-                                            chk_otp.setChecked(true);
-                                            lin_ckotp.setVisibility(View.VISIBLE);
-
-                                            if (chk_otp.isChecked()) {
-                                                btn_snd_otp.setVisibility(View.VISIBLE);
-                                                GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
-                                            } else {
-                                                btn_snd_otp.setVisibility(View.GONE);
-                                            }
-
-                                            mobile_number_kyc.setVisibility(View.GONE);
-                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                            tv_mob_note.setVisibility(View.VISIBLE);
-
-                                        } else {
-                                            GlobalClass.redirectToLogin(getActivity());
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-
-
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -3147,7 +2080,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
 
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     woereferedby = referedbyText.getText().toString();
 
                                     refby_linear.setVisibility(View.VISIBLE);
@@ -3171,13 +2104,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
-                                                    GlobalClass.SetEditText(kyc_format, enteredString.substring(1));
+                                                    kyc_format.setText(enteredString.substring(1));
                                                 } else {
-
-                                                    GlobalClass.SetEditText(kyc_format, "");
+                                                    kyc_format.setText("");
                                                 }
                                             }
                                         }
@@ -3194,25 +2126,61 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 flag = true;
                                             }
 
-                                            if (flag) {
+                                            if (flag == true) {
                                                 if (checkNumber.length() == 10) {
+
                                                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
                                                         flag = false;
-                                                        GlobalClass.SetEditText(kyc_format, checkNumber);
+                                                        kyc_format.setText(checkNumber);
                                                     } else {
                                                         flag = false;
-                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        barProgressDialog = new ProgressDialog(mContext);
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
 
-                                                        try {
-                                                            if (ControllersGlobalInitialiser.checkNumber_controller != null) {
-                                                                ControllersGlobalInitialiser.checkNumber_controller = null;
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
+                                                                        Log.e(TAG, "onResponse: response" + response);
+
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
                                                             }
-                                                            ControllersGlobalInitialiser.checkNumber_controller = new CheckNumber_Controller(getActivity(), Start_New_Woe.this, "3");
-                                                            ControllersGlobalInitialiser.checkNumber_controller.getchecknumbercontroll(checkNumber, reques5tQueueCheckNumber);
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
                                                     }
+
 
                                                 }
 
@@ -3257,7 +2225,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -3290,10 +2258,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 btechnameTopass = btechname.getSelectedItem().toString();
 
                                             try {
-                                                if (!GlobalClass.isNull(btechnameTopass)) {
-                                                    if (myPojo != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+                                                if (btechnameTopass != null) {
+                                                    if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
                                                         for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                            if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                                 btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                                                             }
                                                         }
@@ -3305,9 +2273,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -3325,11 +2293,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                                             try {
-                                                if (GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                                if (woereferedby != null) {
+                                                    if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null) {
                                                         for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(woereferedby) &&
-                                                                    !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                 referenceBy = woereferedby;
                                                                 referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
@@ -3344,51 +2311,50 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (!GlobalClass.isNull(ageString)) {
+                                            if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
-
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                 try {
-                                                    if (GlobalClass.isNull(woereferedby)) {
-                                                        if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
                                                             for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                     referenceBy = woereferedby;
                                                                     referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                                 }
@@ -3403,16 +2369,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
 
                                                     try {
-                                                        if (GlobalClass.isNull(woereferedby)) {
-                                                            if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                                        if (woereferedby != null) {
+                                                            if (obj != null) {
                                                                 for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                    if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                         referenceBy = woereferedby;
                                                                         referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                                     }
@@ -3486,7 +2452,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                                     } else {
 
-                                                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                        if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                             getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                         }
 
@@ -3528,36 +2494,40 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
                                         }
                                     });
-                                } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
 
-                                    try {
-                                        if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
-                                            Enablefields();
-                                            Home_mobile_number_kyc.setVisibility(View.VISIBLE);
-                                            ll_mobileno_otp.setVisibility(View.GONE);
-                                            tv_mob_note.setVisibility(View.GONE);
-                                        } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("YES")) {
-                                            Disablefields();
-                                            et_mobno.setFocusable(true);
-                                            et_mobno.requestFocus();
-                                            chk_otp.setChecked(true);
-                                            lin_ckotp.setVisibility(View.VISIBLE);
-                                            if (chk_otp.isChecked()) {
-                                                btn_snd_otp.setVisibility(View.VISIBLE);
-                                                GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
-                                            } else {
-                                                btn_snd_otp.setVisibility(View.GONE);
-                                            }
-                                            Home_mobile_number_kyc.setVisibility(View.GONE);
-                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                            tv_mob_note.setVisibility(View.VISIBLE);
+                                try {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
+                                        Enablefields();
+                                        Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                        Disablefields();
+                                        et_mobno.setFocusable(true);
+                                        et_mobno.requestFocus();
+                                        chk_otp.setChecked(true);
+                                        lin_ckotp.setVisibility(View.VISIBLE);
+                                        if (chk_otp.isChecked()) {
+                                            btn_snd_otp.setVisibility(View.VISIBLE);
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
-                                            GlobalClass.redirectToLogin(getActivity());
+                                            btn_snd_otp.setVisibility(View.GONE);
                                         }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                        tv_mob_note.setVisibility(View.VISIBLE);
+                                    } else {
+                                        GlobalClass.redirectToLogin(getActivity());
                                     }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
+                                try {
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -3575,12 +2545,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     vial_number.setVisibility(View.VISIBLE);
                                     mobile_number_kyc.setVisibility(View.GONE);
                                     labname_linear.setVisibility(View.GONE);
-                                    GlobalClass.SetEditText(patientAddress, "");
+                                    patientAddress.setText("");
                                     ref_check.setVisibility(View.GONE);
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
                                     refby_linear.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     referenceBy = "";
 
 
@@ -3625,7 +2595,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -3643,8 +2613,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
                                             patientAddressdataToPass = patientAddress.getText().toString();
                                             pincode_pass = pincode_edt.getText().toString();
+                                            // btechnameTopass = btechname.getSelectedItem().toString();
 
-                                            if (!GlobalClass.isNull(btechname.getSelectedItem().toString()))
+                                            if (btechname.getSelectedItem() != null)
                                                 btechnameTopass = btechname.getSelectedItem().toString();
 
 
@@ -3660,8 +2631,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             getcampIDtoPass = "";
 
                                             if (btechnameTopass != null) {
-                                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
-
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                                                         if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
@@ -3671,9 +2641,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             }
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null || referenceBy.length() <= 1) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -3691,8 +2661,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
                                                         if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
@@ -3706,56 +2676,1357 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (!GlobalClass.isNull(ageString)) {
+                                            if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
 
-                                                    if (GlobalClass.isNull(woereferedby)) {
-                                                        if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
                                                             for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", getFinalAge);
+                                                                        saveDetails.putString("gender", saveGenderId);
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", getAgeType);
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                        sDialog.dismissWithAnimation();
+                                                                    }
+                                                                })
+                                                                .show();
+
+                                                    } else {
+                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", getFinalAge);
+                                                        saveDetails.putString("gender", saveGenderId);
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", getAgeType);
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
+
+                                                }
+
+                                            }
+
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else if (selectTypeSpinner.getSelectedItem().equals("CAMP")) {
+                                Enablefields();
+                                try {
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    ref_check.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    camp_layout_woe.setVisibility(View.VISIBLE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.GONE);
+                                    refby_linear.setVisibility(View.GONE);
+                                    referedbyText.setText("");
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+
+                                    patientAddress.setText("");
+                                    referenceBy = "";
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+                                            if (typename.equals("CAMP")) {
+
+                                                ageString = age.getText().toString();
+                                                woereferedby = referedbyText.getText().toString();
+                                                GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                // scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                                if (camp_spinner_olc.getSelectedItem().toString() != null) {
+                                                    scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                                }
+                                                kycdata = kyc_format.getText().toString();
+
+                                                kycdata = "";
+                                                labIDTopass = "";
+                                                btechIDToPass = "";
+                                                btechnameTopass = "";
+                                                labAddressTopass = "";
+
+                                                if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                    if (referenceBy == null) {
+                                                        Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                            referenceBy = "SELF";
+                                                            referredID = "";
+                                                            woereferedby = referenceBy;
+                                                        } else {
+
+                                                            referenceBy = referedbyText.getText().toString();
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (scpoint != null) {
+                                                    if (myPojo.getMASTERS().getCAMP_LIST() != null) {
+                                                        for (int k = 0; k < myPojo.getMASTERS().getCAMP_LIST().length; k++) {
+                                                            if (scpoint.equals(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE())) {
+                                                                getcampIDtoPass = myPojo.getMASTERS().getCAMP_LIST()[k].getCAMP_ID();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                if (!ageString.equals("")) {
+                                                    conertage = Integer.parseInt(ageString);
+                                                }
+
+                                                if (getVial_numbver.equals("")) {
+                                                    vial_number.setError(ToastFile.vial_no);
+                                                    Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.length() < 2) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                                } else if (ageString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                                } else if (saveGenderId == null || saveGenderId == "") {
+                                                    Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                                } else if (conertage > 120) {
+                                                    Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                                } else if (sctHr.equals("HR")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                                } else if (sctMin.equals("MIN")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                                } else if (sctSEc.equals("AM/PM")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                                } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                    Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                                } else if (scpoint.equals("Select Camp")) {
+                                                    Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
+                                                } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
+                                                    Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                                } else {
+
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", getFinalAge);
+                                                                        saveDetails.putString("gender", saveGenderId);
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", getAgeType);
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", scpoint);
+                                                                        saveDetails.putString("patientAddress", scpoint);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", "");
+                                                                        saveDetails.commit();
+                                                                        sDialog.dismissWithAnimation();
+                                                                    }
+                                                                })
+                                                                .show();
+
+                                                    } else {
+                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", getFinalAge);
+                                                        saveDetails.putString("gender", saveGenderId);
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", getAgeType);
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", scpoint);
+                                                        saveDetails.putString("patientAddress", scpoint);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", labIDTopass);
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", "");
+                                                        saveDetails.commit();
+                                                    }
+
+
+                                                }
+                                            }
+
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else if (selectTypeSpinner.getSelectedItem().equals("ORDERS")) {
+                                LeadIdwoe();
+                            } else if (selectTypeSpinner.getSelectedItem().equals("ADD")) {
+                                barcode_woe.setText("");
+                                leadbarcodelayout.setVisibility(View.GONE);
+                                ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
+                                id_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
+                                barcode_layout.setVisibility(View.VISIBLE);
+                                vial_number.setVisibility(View.GONE);
+                                camp_layout_woe.setVisibility(View.GONE);
+                                btech_linear_layout.setVisibility(View.GONE);
+                                home_layout.setVisibility(View.GONE);
+                                labname_linear.setVisibility(View.GONE);
+                                patientAddress.setText("");
+                                mobile_number_kyc.setVisibility(View.GONE);
+                                Home_mobile_number_kyc.setVisibility(View.GONE);
+                                leadlayout.setVisibility(View.GONE);
+                                brand_string = brand_spinner.getSelectedItem().toString();
+                                type_string = selectTypeSpinner.getSelectedItem().toString();
+                                ref_check_linear.setVisibility(View.GONE);
+                                refby_linear.setVisibility(View.GONE);
+                                namePatients.setVisibility(View.GONE);
+                                AGE_layout.setVisibility(View.GONE);
+                                time_layout.setVisibility(View.GONE);
+                                next_btn.setVisibility(View.GONE);
+
+                                barcode_woe.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable s) {
+                                        if (s.length() < 8) {
+                                            leadbarcodelayout.setVisibility(View.GONE);
+                                        }
+                                        if (s.length() == 8) {
+                                            String passBarcode = s.toString();
+                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                GlobalClass.showAlertDialog(getActivity());
+                                            } else {
+                                                RecheckType(passBarcode);
+                                            }
+                                        }
+                                    }
+                                });
+                                referenceBy = "";
+
+                                next_btn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        if (type_string.equals("")) {
+                                            Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                        } else if (barcode_woe.getText().toString().equals("")) {
+                                            Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
+                                            GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
+                                            GlobalClass.id_value = id_for_woe.getText().toString();
+
+                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("AddTestType", 0).edit();
+                                            savePrefe.putString("ALERT", ALERT);
+                                            savePrefe.putString("BARCODE", BARCODE);
+                                            savePrefe.putString("BVT_HRS", BVT_HRS);
+                                            savePrefe.putString("LABCODE", LABCODE);
+                                            savePrefe.putString("PATIENT", PATIENT);
+                                            savePrefe.putString("REF_DR", REF_DR);
+                                            savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
+                                            savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
+                                            savePrefe.putString("RES_ID", RES_ID);
+                                            savePrefe.putString("SDATE", SDATE);
+                                            savePrefe.putString("SL_NO", SL_NO);
+                                            savePrefe.putString("STATUS", STATUS);
+                                            savePrefe.putString("SU_CODE1", SU_CODE1);
+                                            savePrefe.putString("SU_CODE2", SU_CODE2);
+                                            savePrefe.putString("TESTS", TESTS);
+                                            savePrefe.commit();
+
+                                            Intent a = new Intent(getActivity(), AddWOETestsForSerum.class);
+                                            startActivity(a);
+
+                                        }
+                                    }
+                                });
+                            } else if (selectTypeSpinner.getSelectedItem().equals("RECHECK")) {
+                                barcode_woe.setText("");
+                                ll_mobileno_otp.setVisibility(View.GONE);
+                                tv_mob_note.setVisibility(View.GONE);
+                                leadbarcodelayout.setVisibility(View.GONE);
+                                id_layout.setVisibility(View.GONE);
+                                pincode_linear_data.setVisibility(View.GONE);
+                                barcode_layout.setVisibility(View.VISIBLE);
+                                vial_number.setVisibility(View.GONE);
+                                camp_layout_woe.setVisibility(View.GONE);
+                                btech_linear_layout.setVisibility(View.GONE);
+                                home_layout.setVisibility(View.GONE);
+                                labname_linear.setVisibility(View.GONE);
+                                patientAddress.setText("");
+                                mobile_number_kyc.setVisibility(View.GONE);
+                                Home_mobile_number_kyc.setVisibility(View.GONE);
+                                ref_check_linear.setVisibility(View.GONE);
+                                refby_linear.setVisibility(View.GONE);
+                                namePatients.setVisibility(View.GONE);
+                                AGE_layout.setVisibility(View.GONE);
+
+                                time_layout.setVisibility(View.GONE);
+                                leadlayout.setVisibility(View.GONE);
+                                brand_string = brand_spinner.getSelectedItem().toString();
+                                type_string = selectTypeSpinner.getSelectedItem().toString();
+
+
+                                next_btn.setVisibility(View.GONE);
+                                barcode_woe.addTextChangedListener(new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(Editable s) {
+                                        if (s.length() < 8) {
+                                            leadbarcodelayout.setVisibility(View.GONE);
+                                        }
+                                        if (s.length() == 8) {
+                                            if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                GlobalClass.showAlertDialog(getActivity());
+                                            } else {
+                                                String passBarcode = s.toString();
+                                                RecheckType(passBarcode);
+                                            }
+                                        }
+                                    }
+                                });
+                                referenceBy = "";
+
+                                next_btn.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                        if (brand_string.equals("Select brand name")) {
+                                            Toast.makeText(getActivity(), "Please select brand name", Toast.LENGTH_SHORT).show();
+                                        } else if (type_string.equals("")) {
+                                            Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                        } else if (barcode_woe.getText().toString().equals("")) {
+                                            Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("RecheckTestType", 0).edit();
+                                            savePrefe.putString("ALERT", ALERT);
+                                            savePrefe.putString("BARCODE", BARCODE);
+                                            savePrefe.putString("BVT_HRS", BVT_HRS);
+                                            savePrefe.putString("LABCODE", LABCODE);
+                                            savePrefe.putString("PATIENT", PATIENT);
+                                            savePrefe.putString("REF_DR", REF_DR);
+                                            savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
+                                            savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
+                                            savePrefe.putString("RES_ID", RES_ID);
+                                            savePrefe.putString("SDATE", SDATE);
+                                            savePrefe.putString("SL_NO", SL_NO);
+                                            savePrefe.putString("STATUS", STATUS);
+                                            savePrefe.putString("SU_CODE1", SU_CODE1);
+                                            savePrefe.putString("SU_CODE2", SU_CODE2);
+                                            savePrefe.putString("TESTS", TESTS);
+
+                                            savePrefe.commit();
+                                            GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
+                                            GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
+                                            Intent a = new Intent(getActivity(), RecheckAllTest.class);
+                                            startActivity(a);
+
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+                }
+
+
+                if (position > 0) {
+                    vial_number.getText().clear();
+                    id_for_woe.getText().clear();
+                    if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("SMT")) {
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListSMT);
+                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        selectTypeSpinner.setAdapter(adapter2);
+                        selectTypeSpinner.setSelection(0);
+
+                        selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
+
+                                    try {
+                                        if (getOTPFlag().equalsIgnoreCase("NO")) {
+                                            Enablefields();
+                                            mobile_number_kyc.setVisibility(View.VISIBLE);
+                                            ll_mobileno_otp.setVisibility(View.GONE);
+                                            tv_mob_note.setVisibility(View.GONE);
+                                        } else if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                            Disablefields();
+                                            et_mobno.setFocusable(true);
+                                            et_mobno.requestFocus();
+                                            chk_otp.setChecked(true);
+                                            lin_ckotp.setVisibility(View.VISIBLE);
+
+                                            if (chk_otp.isChecked()) {
+                                                btn_snd_otp.setVisibility(View.VISIBLE);
+                                                btn_snd_otp.setText("Send OTP");
+                                            } else {
+                                                btn_snd_otp.setVisibility(View.GONE);
+                                            }
+
+                                            mobile_number_kyc.setVisibility(View.GONE);
+                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                            tv_mob_note.setVisibility(View.VISIBLE);
+
+                                        } else {
+                                            GlobalClass.redirectToLogin(getActivity());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+                                    vial_number.setVisibility(View.VISIBLE);
+
+
+                                    labname_linear.setVisibility(View.GONE);
+                                    ref_check.setVisibility(View.GONE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+
+                                    referedbyText.setText("");
+                                    woereferedby = referedbyText.getText().toString();
+
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+
+
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+                                    referenceBy = "";
+                                    getTSP_AddressStringTopass = getTSP_Address;
+
+                                    kyc_format.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before,
+                                                                  int count) {
+                                            String enteredString = s.toString();
+                                            if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                                                    enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                                                    enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                                                    enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                                                    || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                                                    || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                if (enteredString.length() > 0) {
+                                                    kyc_format.setText(enteredString.substring(1));
+                                                } else {
+                                                    kyc_format.setText("");
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count,
+                                                                      int after) {
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+                                            final String checkNumber = s.toString();
+                                            if (checkNumber.length() < 10) {
+                                                flag = true;
+                                            }
+
+                                            if (flag == true) {
+                                                if (checkNumber.length() == 10) {
+
+                                                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                        flag = false;
+                                                        kyc_format.setText(checkNumber);
+                                                    } else {
+                                                        flag = false;
+                                                        barProgressDialog = new ProgressDialog(mContext);
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
+
+                                                        RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
+                                                                        Log.e(TAG, "onResponse: response" + response);
+
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                                                    }
+
+
+                                                }
+
+                                            }
+                                        }
+                                    });
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+
+
+                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                                kycdata = et_mobno.getText().toString();
+                                            } else {
+                                                kycdata = kyc_format.getText().toString();
+                                            }
+
+                                            labAddressTopass = "";
+                                            labIDTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (btechname.getSelectedItem() != null)
+                                                btechnameTopass = btechname.getSelectedItem().toString();
+
+                                            try {
+                                                if (btechnameTopass != null) {
+                                                    if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                        for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                            if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                                btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            try {
+                                                if (woereferedby != null) {
+                                                    if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            }
+
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                try {
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                                if (kycdata.length() == 0) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+                                                } else if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                } else {
+
+                                                    try {
+                                                        if (woereferedby != null) {
+                                                            if (obj != null) {
+                                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                        referenceBy = woereferedby;
+                                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            referenceBy = woereferedby;
+                                                            referredID = "";
+                                                        }
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
+                                                    }
+
+
+                                                    final String getAgeType = spinyr.getSelectedItem().toString();
+                                                    String sctDate = dateShow.getText().toString();
+                                                    sctHr = timehr.getSelectedItem().toString();
+                                                    sctMin = timesecond.getSelectedItem().toString();
+                                                    sctSEc = timeampm.getSelectedItem().toString();
+                                                    final String getFinalAge = age.getText().toString();
+                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                    final String getFinalDate = dateShow.getText().toString();
+
+
+                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                .setConfirmText("Ok")
+                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                    @Override
+                                                                    public void onClick(SweetAlertDialog sDialog) {
+                                                                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                                            getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                                                        }
+
+                                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                        i.putExtra("name", nameString);
+                                                                        i.putExtra("age", getFinalAge);
+                                                                        i.putExtra("gender", saveGenderId);
+                                                                        i.putExtra("sct", getFinalTime);
+                                                                        i.putExtra("date", getFinalDate);
+                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                        startActivity(i);
+                                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
+                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                        saveDetails.putString("name", nameString);
+                                                                        saveDetails.putString("age", getFinalAge);
+                                                                        saveDetails.putString("gender", saveGenderId);
+                                                                        saveDetails.putString("sct", getFinalTime);
+                                                                        saveDetails.putString("date", getFinalDate);
+                                                                        saveDetails.putString("ageType", getAgeType);
+                                                                        saveDetails.putString("labname", "");
+                                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                        saveDetails.putString("refBy", referenceBy);
+                                                                        saveDetails.putString("refId", referredID);
+                                                                        saveDetails.putString("labIDaddress", "");
+                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                        saveDetails.putString("kycinfo", kycdata);
+                                                                        saveDetails.putString("woetype", typename);
+                                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                                        saveDetails.putString("pincode", pincode_pass);
+                                                                        saveDetails.commit();
+                                                                        sDialog.dismissWithAnimation();
+                                                                    }
+                                                                })
+                                                                .show();
+
+                                                    } else {
+
+                                                        if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                            getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                                        }
+
+                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                        i.putExtra("name", nameString);
+                                                        i.putExtra("age", getFinalAge);
+                                                        i.putExtra("gender", saveGenderId);
+                                                        i.putExtra("sct", getFinalTime);
+                                                        i.putExtra("date", getFinalDate);
+                                                        GlobalClass.setReferenceBy_Name = referenceBy;
+                                                        startActivity(i);
+                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
+                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                        saveDetails.putString("name", nameString);
+                                                        saveDetails.putString("age", getFinalAge);
+                                                        saveDetails.putString("gender", saveGenderId);
+                                                        saveDetails.putString("sct", getFinalTime);
+                                                        saveDetails.putString("date", getFinalDate);
+                                                        saveDetails.putString("ageType", getAgeType);
+                                                        saveDetails.putString("labname", "");
+                                                        saveDetails.putString("labAddress", getTSP_Address);
+                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                        saveDetails.putString("refBy", referenceBy);
+                                                        saveDetails.putString("refId", referredID);
+                                                        saveDetails.putString("labIDaddress", "");
+                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                        saveDetails.putString("kycinfo", kycdata);
+                                                        saveDetails.putString("woetype", typename);
+                                                        saveDetails.putString("WOEbrand", brandNames);
+                                                        saveDetails.putString("SR_NO", getVial_numbver);
+                                                        saveDetails.putString("pincode", pincode_pass);
+                                                        saveDetails.commit();
+                                                    }
+
+
+                                                }
+                                            }
+                                        }
+                                    });
+                                } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
+
+                                    try {
+                                        if (getOTPFlag().equalsIgnoreCase("NO")) {
+                                            Enablefields();
+                                            Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                            ll_mobileno_otp.setVisibility(View.GONE);
+                                            tv_mob_note.setVisibility(View.GONE);
+                                        } else if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                            Disablefields();
+                                            et_mobno.setFocusable(true);
+                                            et_mobno.requestFocus();
+                                            chk_otp.setChecked(true);
+                                            lin_ckotp.setVisibility(View.VISIBLE);
+                                            if (chk_otp.isChecked()) {
+                                                btn_snd_otp.setVisibility(View.VISIBLE);
+                                                btn_snd_otp.setText("Send OTP");
+                                            } else {
+                                                btn_snd_otp.setVisibility(View.GONE);
+                                            }
+                                            Home_mobile_number_kyc.setVisibility(View.GONE);
+                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
+                                            tv_mob_note.setVisibility(View.VISIBLE);
+                                        } else {
+                                            GlobalClass.redirectToLogin(getActivity());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    leadlayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.VISIBLE);
+                                    pincode_linear_data.setVisibility(View.VISIBLE);
+                                    home_layout.setVisibility(View.VISIBLE);
+
+
+                                    vial_number.setVisibility(View.VISIBLE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    patientAddress.setText("");
+                                    ref_check.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.VISIBLE);
+                                    uncheck_ref.setVisibility(View.VISIBLE);
+                                    refby_linear.setVisibility(View.VISIBLE);
+                                    referedbyText.setText("");
+                                    referenceBy = "";
+
+
+                                    namePatients.setVisibility(View.VISIBLE);
+                                    AGE_layout.setVisibility(View.VISIBLE);
+                                    time_layout.setVisibility(View.VISIBLE);
+//                                             btnClick();
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            nameString = name.getText().toString();
+                                            nameString = nameString.replaceAll("\\s+", " ");
+                                            sctHr = timehr.getSelectedItem().toString();
+                                            sctMin = timesecond.getSelectedItem().toString();
+                                            sctSEc = timeampm.getSelectedItem().toString();
+                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalDate = dateShow.getText().toString();
+
+                                            String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+
+                                            try {
+                                                dCompare = sdfform.parse(getDateToCompare);
+                                            } catch (ParseException e) {
+                                                if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }
+
+                                                String input = getDateToCompare;
+                                                //Format of the date defined in the input String
+                                                DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                //Desired format: 24 hour format: Change the pattern as per the need
+                                                DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                Date date = null;
+                                                String output = null;
+                                                try {
+                                                    dCompare = df.parse(input);
+                                                    output = outputformat.format(dCompare);
+                                                    System.out.println(output);
+                                                } catch (ParseException pe) {
+                                                    pe.printStackTrace();
+                                                }
+                                                e.printStackTrace();
+                                            }
+
+                                            typename = selectTypeSpinner.getSelectedItem().toString();
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+                                            getVial_numbver = vial_number.getText().toString();
+
+                                            brandNames = brand_spinner.getSelectedItem().toString();
+
+                                            ageString = age.getText().toString();
+                                            woereferedby = referedbyText.getText().toString();
+                                            GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                            patientAddressdataToPass = patientAddress.getText().toString();
+                                            pincode_pass = pincode_edt.getText().toString();
+                                            // btechnameTopass = btechname.getSelectedItem().toString();
+
+                                            if (btechname.getSelectedItem() != null)
+                                                btechnameTopass = btechname.getSelectedItem().toString();
+
+
+                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                                kycdata = et_mobno.getText().toString();
+                                            } else {
+                                                kycdata = home_kyc_format.getText().toString();
+                                            }
+
+
+                                            labIDTopass = "";
+                                            labAddressTopass = "";
+                                            getcampIDtoPass = "";
+
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                            btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                if (referenceBy == null || referenceBy.length() <= 1) {
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                        referenceBy = "SELF";
+                                                        referredID = "";
+                                                        woereferedby = referenceBy;
+                                                    } else {
+
+                                                        referenceBy = referedbyText.getText().toString();
+                                                    }
+                                                }
+
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                referenceBy = woereferedby;
+                                                referredID = "";
+                                            }
+
+
+                                            if (!ageString.equals("")) {
+                                                conertage = Integer.parseInt(ageString);
+                                            }
+
+                                            if (getVial_numbver.equals("")) {
+                                                vial_number.setError(ToastFile.vial_no);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.length() < 2) {
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                            } else if (conertage > 120) {
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                            } else if (saveGenderId == null || saveGenderId == "") {
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                            } else if (sctHr.equals("HR")) {
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                            } else if (sctMin.equals("MIN")) {
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                            } else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                            } else if (patientAddressdataToPass.length() < 25) {
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (pincode_pass.length() < 6) {
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                            } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                            } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                            } else {
+
+                                                if (kycdata.length() == 0) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
+                                                } else if (kycdata.length() < 10) {
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                } else {
+
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                     referenceBy = woereferedby;
                                                                     referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                                 }
@@ -3884,7 +4155,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
-                                    GlobalClass.SetText(samplecollectionponit, MessageConstants.SEARCH_SMP_TYPE);
+                                    samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
                                     et_mobno.getText().clear();
                                     ll_mobileno_otp.setVisibility(View.GONE);
                                     tv_mob_note.setVisibility(View.GONE);
@@ -3912,13 +4183,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     time_layout.setVisibility(View.VISIBLE);
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     refby_linear.setVisibility(View.VISIBLE);
                                     referenceBy = "";
                                     brand_string = brand_spinner.getSelectedItem().toString();
                                     type_string = selectTypeSpinner.getSelectedItem().toString();
                                     id_woe = id_for_woe.getText().toString();
                                     barcode_woe_str = barcode_woe.getText().toString();
+//                                            btnClick();
                                     next_btn.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -3954,44 +4226,46 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
                                                 e.printStackTrace();
                                             }
 
-                                            if (!GlobalClass.isNull(selectTypeSpinner.getSelectedItem().toString()))
+                                            if (selectTypeSpinner.getSelectedItem().toString() != null && selectTypeSpinner.getSelectedItem().toString().length() > 0)
                                                 typename = selectTypeSpinner.getSelectedItem().toString();
 
-                                            if (!GlobalClass.isNull(brand_spinner.getSelectedItem().toString()))
+                                            if (brand_spinner.getSelectedItem().toString() != null && brand_spinner.getSelectedItem().toString().length() > 0)
                                                 brandNames = brand_spinner.getSelectedItem().toString();
 
-                                            if (!GlobalClass.isNull(vial_number.getText().toString()))
+                                            if (vial_number.getText().toString() != null && vial_number.getText().toString().length() > 0)
                                                 getVial_numbver = vial_number.getText().toString();
 
-                                            if (!GlobalClass.isNull(age.getText().toString()))
+                                            if (age.getText().toString() != null && age.getText().toString().length() > 0)
                                                 ageString = age.getText().toString();
 
-                                            if (!GlobalClass.isNull(referedbyText.getText().toString())) {
+                                            if (referedbyText.getText().toString() != null && referedbyText.getText().toString().length() > 0) {
                                                 GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
                                                 woereferedby = referedbyText.getText().toString();
                                             }
 
-                                            if (!GlobalClass.isNull(samplecollectionponit.getText().toString())) {
+                                            if (samplecollectionponit.getText().toString() != null && samplecollectionponit.getText().toString().length() > 0) {
                                                 GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
                                                 scpoint = samplecollectionponit.getText().toString();
                                             }
 
-                                            if (!GlobalClass.isNull(kyc_format.getText().toString()))
+                                            if (kyc_format.getText().toString() != null && kyc_format.getText().toString().length() > 0)
                                                 kycdata = kyc_format.getText().toString();
 
-                                            if (!GlobalClass.isNull(samplecollectionponit.getText().toString()))
+                                            if (samplecollectionponit.getText().toString() != null && samplecollectionponit.getText().toString().length() > 0)
                                                 getLabName = samplecollectionponit.getText().toString();
 
                                             getVial_numbver = vial_number.getText().toString();
 
                                             typename = selectTypeSpinner.getSelectedItem().toString();
+                                            // brandNames = no_img_spinner.getSelectedItem().toString();
+
 
                                             ageString = age.getText().toString();
                                             woereferedby = referedbyText.getText().toString();
@@ -4009,11 +4283,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             getcampIDtoPass = "";
                                             scpoint = samplecollectionponit.getText().toString();
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null || referenceBy.length() <= 1) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
-                                                    if (!GlobalClass.isNull(referenceBy) && referenceBy.equalsIgnoreCase("SELF")) {
+                                                    if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
                                                         referredID = "";
                                                         woereferedby = referenceBy;
@@ -4029,11 +4303,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName())&& woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -4044,34 +4317,33 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 referredID = "";
                                             }
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
-                                            } else if (scpoint.equalsIgnoreCase(MessageConstants.SEARCH_SMP_TYPE) || scpoint.equals("") || scpoint.equals(null)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_scp, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
+                                                Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                            } else if (getLabName.equalsIgnoreCase(MessageConstants.SEARCH_SMP_TYPE)) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_SMPLTIME, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
                                             } else {
 
-                                                if (GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
                                                         for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) &&
-                                                                    woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                 referenceBy = woereferedby;
                                                                 referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
@@ -4090,7 +4362,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     labAddressTopass = "";
                                                     labIDTopass = "";
                                                 } else {
-                                                    if (GlobalClass.checkArray(labs)) {
+                                                    if (labs.length != 0) {
                                                         for (int i = 0; i < labs.length; i++) {
                                                             if (getLabCode.contains("-")) {
                                                                 String s2 = getLabCode.substring(getLabCode.indexOf("-") + 2);
@@ -4117,6 +4389,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                                 }
 
+                                                final String getAgeType = spinyr.getSelectedItem().toString();
+                                                String sctDate = dateShow.getText().toString();
                                                 sctHr = timehr.getSelectedItem().toString();
                                                 sctMin = timesecond.getSelectedItem().toString();
                                                 sctSEc = timeampm.getSelectedItem().toString();
@@ -4215,12 +4489,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
 
 
-                                    if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
-                                    } else if (!GlobalClass.isNull(Constants.preotp) &&  Constants.preotp.equalsIgnoreCase("YES")) {
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
@@ -4228,7 +4502,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         lin_ckotp.setVisibility(View.VISIBLE);
                                         if (chk_otp.isChecked()) {
                                             btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
                                             btn_snd_otp.setVisibility(View.GONE);
                                         }
@@ -4241,6 +4515,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
 
+
+                                    //mobile_number_kyc.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
 
                                     leadlayout.setVisibility(View.GONE);
@@ -4267,7 +4543,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     namePatients.setVisibility(View.VISIBLE);
                                     AGE_layout.setVisibility(View.GONE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     time_layout.setVisibility(View.VISIBLE);
                                     referenceBy = "";
                                     getTSP_AddressStringTopass = getTSP_Address;
@@ -4283,12 +4559,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                                             ) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
-                                                    GlobalClass.SetEditText(kyc_format, enteredString.substring(1));
+                                                    kyc_format.setText(enteredString.substring(1));
                                                 } else {
-                                                    GlobalClass.SetEditText(kyc_format, "");
+                                                    kyc_format.setText("");
                                                 }
                                             }
                                         }
@@ -4304,29 +4580,77 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (checkNumber.length() < 10) {
                                                 flag = true;
                                             }
-                                            if (flag) {
+                                            if (flag == true) {
                                                 if (checkNumber.length() == 10) {
                                                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
                                                         flag = false;
-                                                        GlobalClass.SetEditText(kyc_format, checkNumber);
+                                                        kyc_format.setText(checkNumber);
                                                     } else {
                                                         flag = false;
-
+                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
                                                         RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
 
-                                                        try {
-                                                            if (ControllersGlobalInitialiser.checkNumber_controller != null) {
-                                                                ControllersGlobalInitialiser.checkNumber_controller = null;
+                                                                        Log.e(TAG, "onResponse: response" + response);
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            /*if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            /*if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }*/
+
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
                                                             }
-                                                            ControllersGlobalInitialiser.checkNumber_controller = new CheckNumber_Controller(getActivity(), Start_New_Woe.this, "4");
-                                                            ControllersGlobalInitialiser.checkNumber_controller.getchecknumbercontroll(checkNumber, reques5tQueueCheckNumber);
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
                                                     }
 
                                                 }
+
+                                            } else {
 
                                             }
 
@@ -4368,7 +4692,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -4397,9 +4721,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             labIDTopass = "";
                                             getcampIDtoPass = "";
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -4417,10 +4741,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -4432,10 +4756,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (!GlobalClass.isNull(btechnameTopass)) {
-                                                if (GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                        if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                                                         }
                                                     }
@@ -4443,50 +4767,47 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
                                                 if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                     getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                 }
 
 
-                                                if (GlobalClass.isNull(woereferedby)) {
+                                                if (woereferedby != null) {
                                                     if (obj != null) {
-                                                        if (GlobalClass.checkArray(obj.getMASTERS().getREF_DR())){
-                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                    referenceBy = woereferedby;
-                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                                }
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
                                                         }
-
                                                     }
                                                 } else {
                                                     referenceBy = woereferedby;
@@ -4494,9 +4815,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
 
                                                     final String getAgeType = spinyr.getSelectedItem().toString();
@@ -4598,12 +4919,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
 
 
-                                    if (Constants.preotp.equalsIgnoreCase("NO")) {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
-                                    } else if (Constants.preotp.equalsIgnoreCase("YES")) {
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
@@ -4611,7 +4932,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         lin_ckotp.setVisibility(View.VISIBLE);
                                         if (chk_otp.isChecked()) {
                                             btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
                                             btn_snd_otp.setVisibility(View.GONE);
                                         }
@@ -4641,12 +4962,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     vial_number.setVisibility(View.VISIBLE);
                                     labname_linear.setVisibility(View.GONE);
-                                    GlobalClass.SetEditText(patientAddress, "");
+                                    patientAddress.setText("");
                                     ref_check.setVisibility(View.GONE);
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
                                     refby_linear.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     referenceBy = "";
 
 
@@ -4690,7 +5011,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -4709,6 +5030,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             patientAddressdataToPass = patientAddress.getText().toString();
                                             pincode_pass = pincode_edt.getText().toString();
                                             btechnameTopass = btechname.getSelectedItem().toString();
+                                            //kycdata = home_kyc_format.getText().toString();
+
+                                            /*if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
+                                                kycdata = et_mobno.getText().toString();
+                                            } else {
+                                                kycdata = home_kyc_format.getText().toString();
+                                            }*/
 
                                             if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
                                                 kycdata = et_mobno.getText().toString();
@@ -4720,10 +5048,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             labAddressTopass = "";
                                             getcampIDtoPass = "";
 
-                                            if (!GlobalClass.isNull(btechnameTopass)) {
-                                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+                                            if (btechnameTopass != null) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                        if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                                                         }
                                                     }
@@ -4731,9 +5059,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             }
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -4751,11 +5079,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null &&
-                                                        GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -4767,39 +5094,39 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_addre, 2);
+                                                Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(getActivity(), ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     final String getAgeType = spinyr.getSelectedItem().toString();
                                                     String sctDate = dateShow.getText().toString();
@@ -4951,7 +5278,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     time_layout.setVisibility(View.VISIBLE);
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     refby_linear.setVisibility(View.VISIBLE);
                                     referenceBy = "";
                                     brand_string = brand_spinner.getSelectedItem().toString();
@@ -4995,7 +5322,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -5019,9 +5346,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             btechnameTopass = "";
                                             getcampIDtoPass = "";
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -5039,12 +5366,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) &&
-                                                                woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -5056,43 +5381,43 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (!GlobalClass.isNull(ageString)) {
+                                            if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
-                                            } else if (scpoint.equals(MessageConstants.SEARCH_SMP_TYPE) || scpoint.equals(null)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_scp, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } else if (scpoint.equals("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals(null)) {
+                                                Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
-                                            } else if (getLabName.equalsIgnoreCase(MessageConstants.SEARCH_SMP_TYPE)) {
-                                                GlobalClass.showTastyToast(getActivity(), MessageConstants.SL_SMPLTIME, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                            } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
                                             } else {
 
-                                                if (GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
                                                         for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                 referenceBy = woereferedby;
                                                                 referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
@@ -5103,9 +5428,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     referredID = "";
                                                 }
 
-                                                String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
-                                                s1.trim();
-                                                getLabCode = s1;
+
+                                                try {
+                                                    String s1 = getLabName.substring(getLabName.indexOf("-") + 2);
+                                                    s1.trim();
+                                                    getLabCode = s1;
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
 
                                                 if (labs == null) {
                                                     labAddressTopass = "";
@@ -5147,7 +5477,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
                                                 final String getFinalDate = dateShow.getText().toString();
 
-                                                if (referenceBy.equalsIgnoreCase("SELF") || TextUtils.isEmpty(referredID)) {
+                                                if (referenceBy.equalsIgnoreCase("SELF") || GlobalClass.isNull(referredID)) {
                                                     new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
                                                             .setContentText("You can register the PGC to avoid 10 Rs debit")
                                                             .setConfirmText("Ok")
@@ -5236,14 +5566,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 1) {
-
-
-                                    if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
-                                    } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("YES")) {
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
@@ -5251,7 +5579,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         lin_ckotp.setVisibility(View.VISIBLE);
                                         if (chk_otp.isChecked()) {
                                             btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
                                             btn_snd_otp.setVisibility(View.GONE);
                                         }
@@ -5261,7 +5589,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
-
 
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
@@ -5285,7 +5612,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     refby_linear.setVisibility(View.VISIBLE);
                                     namePatients.setVisibility(View.VISIBLE);
                                     AGE_layout.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     time_layout.setVisibility(View.VISIBLE);
                                     referenceBy = "";
                                     getTSP_AddressStringTopass = getTSP_Address;
@@ -5301,12 +5628,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                                                     || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                                             ) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                                                 if (enteredString.length() > 0) {
-                                                    GlobalClass.SetEditText(kyc_format, enteredString.substring(1));
+                                                    kyc_format.setText(enteredString.substring(1));
                                                 } else {
-                                                    GlobalClass.SetEditText(kyc_format, "");
+                                                    kyc_format.setText("");
                                                 }
                                             }
                                         }
@@ -5326,23 +5653,72 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 if (checkNumber.length() == 10) {
                                                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
                                                         flag = false;
-                                                        GlobalClass.SetEditText(kyc_format, checkNumber);
+                                                        kyc_format.setText(checkNumber);
                                                     } else {
                                                         flag = false;
+                                                        barProgressDialog = new ProgressDialog(getActivity());
+                                                        barProgressDialog.setTitle("Kindly wait ...");
+                                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                        barProgressDialog.setProgress(0);
+                                                        barProgressDialog.setMax(20);
+                                                        barProgressDialog.show();
+                                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                                        barProgressDialog.setCancelable(false);
                                                         RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                        StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                Response.Listener<String>() {
+                                                                    @Override
+                                                                    public void onResponse(String response) {
 
-                                                        try {
-                                                            if (ControllersGlobalInitialiser.checkNumber_controller != null) {
-                                                                ControllersGlobalInitialiser.checkNumber_controller = null;
+                                                                        Log.e(TAG, "onResponse: response" + response);
+                                                                        String getResponse = response;
+                                                                        if (response.equals("\"proceed\"")) {
+
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                           /* if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText(checkNumber);
+                                                                        } else {
+                                                                            /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                                                barProgressDialog.dismiss();
+                                                                            }*/
+                                                                           /* if (mContext instanceof Activity) {
+                                                                                if (!((Activity) mContext).isFinishing())
+                                                                                    barProgressDialog.dismiss();
+                                                                            }*/
+                                                                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                            kyc_format.setText("");
+                                                                            TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                        }
+                                                                    }
+                                                                }, new Response.ErrorListener() {
+                                                            @Override
+                                                            public void onErrorResponse(VolleyError error) {
+                                                                if (error.networkResponse == null) {
+                                                                    if (error.getClass().equals(TimeoutError.class)) {
+                                                                        // Show timeout error message
+                                                                    }
+                                                                }
                                                             }
-                                                            ControllersGlobalInitialiser.checkNumber_controller = new CheckNumber_Controller(getActivity(), Start_New_Woe.this, "5");
-                                                            ControllersGlobalInitialiser.checkNumber_controller.getchecknumbercontroll(checkNumber, reques5tQueueCheckNumber);
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
+                                                        });
+                                                        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                300000,
+                                                                3,
+                                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                        reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                        Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
                                                     }
 
                                                 }
+
+                                            } else {
 
                                             }
 
@@ -5384,7 +5760,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -5415,9 +5791,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             labIDTopass = "";
                                             getcampIDtoPass = "";
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -5435,11 +5811,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
-                                                if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
-
+                                            if (woereferedby != null) {
+                                                if (obj != null) {
                                                     for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                        if (!GlobalClass.isNull(woereferedby) && !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) &&woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                             referenceBy = woereferedby;
                                                             referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
@@ -5452,56 +5827,56 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
 
                                             if (btechnameTopass != null) {
-                                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                        if (!GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                                                         }
                                                     }
                                                 }
                                             }
 
-                                            if (!GlobalClass.isNull(ageString)) {
+                                            if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
 
 
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
                                                 try {
-                                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                    if (myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                         getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                     }
                                                 } catch (Exception e) {
@@ -5509,12 +5884,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }
 
 
-                                                if (GlobalClass.isNull(woereferedby)) {
-                                                    if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null &&
-                                                            obj.getMASTERS().getREF_DR().length != 0) {
-
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
                                                         for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(woereferedby) &&  !GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
                                                                 referenceBy = woereferedby;
                                                                 referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
@@ -5526,9 +5899,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 }
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
 
                                                     final String getAgeType = spinyr.getSelectedItem().toString();
@@ -5627,12 +6000,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 } else if (selectTypeSpinner.getSelectedItemPosition() == 2) {
 
 
-                                    if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("NO")) {
+                                    if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
-                                    } else if (!GlobalClass.isNull(Constants.preotp) && Constants.preotp.equalsIgnoreCase("YES")) {
+                                    } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
                                         et_mobno.setFocusable(true);
                                         et_mobno.requestFocus();
@@ -5640,7 +6013,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         lin_ckotp.setVisibility(View.VISIBLE);
                                         if (chk_otp.isChecked()) {
                                             btn_snd_otp.setVisibility(View.VISIBLE);
-                                            GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+                                            btn_snd_otp.setText("Send OTP");
                                         } else {
                                             btn_snd_otp.setVisibility(View.GONE);
                                         }
@@ -5670,12 +6043,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     vial_number.setVisibility(View.VISIBLE);
 
                                     labname_linear.setVisibility(View.GONE);
-                                    GlobalClass.SetEditText(patientAddress, "");
+                                    patientAddress.setText("");
                                     ref_check.setVisibility(View.GONE);
                                     ref_check_linear.setVisibility(View.VISIBLE);
                                     uncheck_ref.setVisibility(View.VISIBLE);
                                     refby_linear.setVisibility(View.VISIBLE);
-                                    GlobalClass.SetAutocomplete(referedbyText, "");
+                                    referedbyText.setText("");
                                     referenceBy = "";
 
 
@@ -5718,7 +6091,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 try {
                                                     dCompare = df.parse(input);
                                                     output = outputformat.format(dCompare);
-                                                    Log.v("TAG", output);
+                                                    System.out.println(output);
                                                 } catch (ParseException pe) {
                                                     pe.printStackTrace();
                                                 }
@@ -5750,9 +6123,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             getcampIDtoPass = "";
 
                                             if (btechnameTopass != null) {
-                                                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
+                                                if (myPojo.getMASTERS().getBCT_LIST() != null) {
                                                     for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                                                        if (!GlobalClass.isNull(btechnameTopass) && !GlobalClass.isNull(myPojo.getMASTERS().getBCT_LIST()[j].getNAME()) && btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                        if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
                                                             btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
                                                         }
                                                     }
@@ -5760,9 +6133,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             }
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby.equals("") || woereferedby.equals(null)) {
                                                 if (referenceBy == null) {
-                                                    GlobalClass.showTastyToast(getActivity(), MessageConstants.REFBYTOAST, 2);
+                                                    Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     if (referenceBy.equalsIgnoreCase("SELF")) {
                                                         referenceBy = "SELF";
@@ -5780,17 +6153,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (GlobalClass.isNull(woereferedby)) {
+                                            if (woereferedby != null) {
                                                 if (obj != null) {
-                                                    if (GlobalClass.checkArray(obj.getMASTERS().getREF_DR())){
-                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                            if (!GlobalClass.isNull(obj.getMASTERS().getREF_DR()[i].getName()) && woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                referenceBy = woereferedby;
-                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                            }
+                                                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                            referenceBy = woereferedby;
+                                                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                         }
                                                     }
-
                                                 }
                                             } else {
                                                 referenceBy = woereferedby;
@@ -5798,48 +6168,48 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             }
 
 
-                                            if (!GlobalClass.isNull(ageString)) {
+                                            if (!ageString.equals("")) {
                                                 conertage = Integer.parseInt(ageString);
                                             }
-                                            if (GlobalClass.isNull(getVial_numbver)) {
+                                            if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
-                                            } else if (GlobalClass.isNull(nameString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name, 2);
+                                                Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            } else if (nameString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_name_woe, 2);
-                                            } else if (GlobalClass.isNull(ageString)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_age, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                            } else if (ageString.equals("")) {
+                                                Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.invalidage, 2);
+                                                Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.ent_gender, 2);
+                                                Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (sctHr.equals("HR")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_hr, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_min, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
                                             } else if (sctSEc.equals("AM/PM")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.slt_ampm, 2);
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
                                             } else if (dCompare.after(getCurrentDateandTime)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.sct_grt_than_crnt_tm, 2);
+                                                Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_addr, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.addre25long, 2);
+                                                Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.equalsIgnoreCase("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (pincode_pass.length() < 6) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_pincode, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
                                             } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.btech_name, 2);
+                                                Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
-                                                GlobalClass.showTastyToast(getActivity(), ToastFile.crt_ref_by, 2);
+                                                Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
                                                 if (kycdata.length() == 0) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_kyc_empty, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
-                                                    GlobalClass.showTastyToast(getActivity(), ToastFile.crt_MOB_num, 2);
+                                                    Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                 } else {
                                                     final String getAgeType = spinyr.getSelectedItem().toString();
                                                     String sctDate = dateShow.getText().toString();
@@ -5972,18 +6342,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
-        if (leadOrderIdMainModel != null && leadOrderIdMainModel.getLeads() != null && leadOrderIdMainModel.getLeads()[0].getLeadData() != null
-                && leadOrderIdMainModel.getLeads()[0].getLeadData().length != 0) {
-
-            for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
-                if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
-                    sizeflag = true;
-                    break;
-                }
+        for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
+            if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
+                sizeflag = true;
+                break;
             }
         }
-
-
         RecyclerView recyclerView = CustomLeaddialog.findViewById(R.id.recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         AdapterRe adapterRe = new AdapterRe((ManagingTabsActivity) getActivity(), leads, getVial_numbver, leadOrderIdMainModel, Start_New_Woe.this);
@@ -6008,32 +6372,167 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void RecheckType(String passBarcode) {
         requestQueueAddRecheck = GlobalClass.setVolleyReq(getActivity());
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+        String url = Api.addTestsUsingBarcode + api_key + "/" + user + "/" + passBarcode + "/getbarcodedtl";
+        Log.e(TAG, "RECHEKC API ====>" + url);
+        JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: RESPONSE" + response);
+                try {
+                    GlobalClass.hideProgress(getActivity(), progressDialog);
+                    if (response != null) {
+                        Gson gson = new Gson();
+                        GetBarcodeDetailsResponseModel responseModel = gson.fromJson(String.valueOf(response), GetBarcodeDetailsResponseModel.class);
 
-        try {
-            if (ControllersGlobalInitialiser.barcodedetail_controller != null) {
-                ControllersGlobalInitialiser.barcodedetail_controller = null;
+                        if (responseModel != null) {
+                            ALERT = responseModel.getALERT();
+                            BARCODE = responseModel.getBARCODE();
+                            BVT_HRS = responseModel.getBVT_HRS();
+                            LABCODE = responseModel.getLABCODE();
+                            PATIENT = responseModel.getPATIENT();
+                            REF_DR = responseModel.getREF_DR();
+                            REQUESTED_ADDITIONAL_TESTS = responseModel.getREQUESTED_ADDITIONAL_TESTS();
+                            REQUESTED_ON = responseModel.getREQUESTED_ON();
+                            RES_ID = responseModel.getRES_ID();
+                            SDATE = responseModel.getSDATE();
+                            SL_NO = responseModel.getSL_NO();
+                            STATUS = responseModel.getSTATUS();
+                            SU_CODE1 = responseModel.getSU_CODE1();
+                            SU_CODE2 = responseModel.getSU_CODE2();
+                            TESTS = responseModel.getTESTS();
+
+                            if (RES_ID != null && RES_ID.equalsIgnoreCase(Constants.RES0000)) {
+                                if (STATUS.equalsIgnoreCase(caps_invalidApikey)) {
+                                    GlobalClass.redirectToLogin(getActivity());
+                                } else if (GlobalClass.isNull(PATIENT)) {
+                                    TastyToast.makeText(getActivity(), responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                    barcode_woe.setText("");
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    next_btn.setVisibility(View.GONE);
+                                } else {
+                                    leadbarcodelayout.setVisibility(View.VISIBLE);
+                                    next_btn.setVisibility(View.VISIBLE);
+                                    leadbarcodename.setText("Name: " + PATIENT);
+                                    leadidbarcodetest.setText("Tests: " + TESTS);
+                                    leadbarcoderefdr.setText("Ref By: " + REF_DR);
+                                    leadbarcodesct.setText("SCT: " + SDATE);
+                                }
+                            } else if (STATUS != null && STATUS.equalsIgnoreCase(caps_invalidApikey)) {
+                                GlobalClass.redirectToLogin(getActivity());
+                            } else {
+                                barcode_woe.setText("");
+                                TastyToast.makeText(getActivity(), responseModel.getSTATUS(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }
+                        } else {
+                            TastyToast.makeText(getActivity(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+                    } else {
+                        TastyToast.makeText(getActivity(), ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    }
+                } catch (Exception e) {
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.barcodedetail_controller = new Barcodedetail_Controller(getActivity(), Start_New_Woe.this);
-            ControllersGlobalInitialiser.barcodedetail_controller.getbarcodedetais(api_key, user, passBarcode, requestQueueAddRecheck);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        TastyToast.makeText(getActivity(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        // Show timeout error message
+                    }
+
+                }
+            }
+        });
+
+        jsonObjectRequestProfile.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueueAddRecheck.add(jsonObjectRequestProfile);
+        jsonObjectRequestProfile.setShouldCache(false);
+        Log.e(TAG, "RecheckType: URL" + jsonObjectRequestProfile);
     }
 
     private void getTspNumber() {
         try {
             RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user +
+                    "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        Log.e(TAG, "onResponse: RESPONSE" + response);
+                        String getResponse = response.optString("RESPONSE", "");
 
-            try {
-                if (ControllersGlobalInitialiser.getwomaster_controller != null) {
-                    ControllersGlobalInitialiser.getwomaster_controller = null;
+                        if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                            GlobalClass.redirectToLogin(getActivity());
+                        } else {
+                            Gson gson = new Gson();
+                            MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
+
+                            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                            Gson gson22 = new Gson();
+                            String json22 = gson22.toJson(myPojo);
+                            prefsEditor1.putString("getBtechnames", json22);
+
+                            prefsEditor1.commit();
+
+                            getBtechList = new ArrayList<>();
+                            if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                                for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                    getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
+                                }
+                            } else {
+                                BCT_LIST bct_list = new BCT_LIST();
+                                bct_list.setMOBILE_NUMBER(mobile);
+                                bct_list.setNAME(nameofProfile);
+                                getBtechList.add(bct_list);
+                            }
+
+                            btechSpinner = new ArrayList<>();
+
+                            if (getBtechList != null && getBtechList.size() != 0) {
+                                for (int i = 0; i < getBtechList.size(); i++) {
+                                    btechSpinner.add(getBtechList.get(i).getNAME());
+                                    btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
+                                }
+                            } else {
+                                BCT_LIST bct_list = new BCT_LIST();
+                                bct_list.setMOBILE_NUMBER(mobile);
+                                bct_list.setNAME(nameofProfile);
+                                getBtechList.add(bct_list);
+
+                            }
+                        }
+
+
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                        // Toast.makeText(MainActivity.this, ""+e, Toast.LENGTH_SHORT).show();
+                    }
                 }
-                ControllersGlobalInitialiser.getwomaster_controller = new Getwomaster_Controller(getActivity(), Start_New_Woe.this, 1);
-                ControllersGlobalInitialiser.getwomaster_controller.getwoeMaster_Controller(api_key, user, requestQueue);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    if (error.networkResponse == null) {
+                        if (error.getClass().equals(TimeoutError.class)) {
+                            // Show timeout error message
 
+                        }
+                    }
+                }
+            });
+            requestQueue.add(jsonObjectRequest2);
+            jsonObjectRequest2.setShouldCache(false);
+            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
+            Log.e(TAG, "getTspNumber: URL" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -6041,37 +6540,69 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     private void fetchData() {
         RequestQueue requestQueue = GlobalClass.setVolleyReq(getActivity());
+        barProgressDialog = new ProgressDialog(getActivity());
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
 
-        String url = Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients";
-
-        try {
-            if (ControllersGlobalInitialiser.clientController != null) {
-                ControllersGlobalInitialiser.clientController = null;
+        Log.e(TAG, Api.SOURCEils + "" + api_key + "/" + "" + user + "/B2BAPP/getclients");
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + "" + api_key + "/" + "" + user +
+                "/B2BAPP/getclients", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
+                Log.e(TAG, "getclient onResponse: RESPONSE" + response);
+                autotextcompletefunction(response);
             }
-            ControllersGlobalInitialiser.clientController = new ClientController(getActivity(), Start_New_Woe.this);
-            ControllersGlobalInitialiser.clientController.getclientController(url, requestQueue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
+
+        requestQueue.add(jsonObjectRequestfetchData);
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestfetchData);
+        Log.e(TAG, "fetchData: URL" + jsonObjectRequestfetchData);
 
 
     }
 
     private void autotextcompletefunction(JSONObject response) {
-        Gson gson = new Gson();
-        sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
-        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-        Gson gson22 = new Gson();
-        String json22 = gson22.toJson(sourceILSMainModel);
-        prefsEditor1.putString("savelabnames", json22);
-        prefsEditor1.commit();
-        callAdapter(sourceILSMainModel);
+        try {
+            Gson gson = new Gson();
+            if (response != null) {
+                sourceILSMainModel = gson.fromJson(response.toString(), SourceILSMainModel.class);
+                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                Gson gson22 = new Gson();
+                String json22 = gson22.toJson(sourceILSMainModel);
+                prefsEditor1.putString("savelabnames", json22);
+                prefsEditor1.commit();
+                if (sourceILSMainModel != null) {
+                    callAdapter(sourceILSMainModel);
+                }
+                SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                Gson gsondata = new Gson();
+                String jsondata = appSharedPrefsdata.getString("savelabnames", "");
+                obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
+            }
 
-        SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Gson gsondata = new Gson();
-        String jsondata = appSharedPrefsdata.getString("savelabnames", "");
-        obj = gsondata.fromJson(jsondata, SourceILSMainModel.class);
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateLabel() {
@@ -6080,7 +6611,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         putDate = sdf.format(myCalendar.getTime());
         getFormatDate = sdf.format(myCalendar.getTime());
 
-        GlobalClass.SetText(dateShow, putDate);
+        dateShow.setText(putDate);
 
     }
 
@@ -6093,8 +6624,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void callAdapter(final SourceILSMainModel obj) {
-
-        if (obj != null && obj.getMASTERS() != null && GlobalClass.checkArray(obj.getMASTERS().getLABS())) {
+//        if (obj.getMASTERS().getLABS().length != 0) {
+        // if (obj.getMASTERS().getLABS().length != 0 && obj.getMASTERS().getLABS() != null) {
+        if (obj.getMASTERS().getLABS().length != 0 && obj.getMASTERS().getLABS() != null) {
             getReferenceNmae = new ArrayList<>();
             getLabNmae = new ArrayList<>();
             statusForColor = new ArrayList<>();
@@ -6115,16 +6647,39 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 }
             });
 
+           /* referedbyText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    spinnerDialogRef.showSpinerDialog();
+                }
+            });*/
+
+
+//            spinnerDialog = new SpinnerDialog(getActivity(), getLabNmae, "Search SCP", "Close");// With No Animation
+//            spinnerDialog = new SpinnerDialog(getActivity(), getLabNmae, "Search SCP", R.style.DialogAnimations_SmileWindow, "Close");// With Animation
+
 
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", "Close");// With No Animation
             spinnerDialogRef = new SpinnerDialog(getActivity(), getReferenceNmae, "Search Ref by", R.style.DialogAnimations_SmileWindow, "Close");// WithAnimation
 
+//            spinnerDialog.bindOnSpinerListener(new OnSpinerItemClick() {
+//                @Override
+//                public void onClick(String s, int i) {
+//                    samplecollectionponit.setText(s);
+//                }
+//            });
+/*
+            spinnerDialog.bindOnSpinerListener(new OnSpinerItemClick() {
+                @Override
+                public void onClick(String item, int position) {
+                    samplecollectionponit.setText(item);
+                }
+            });*/
 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
                 public void onClick(String s, int i) {
-
-                    GlobalClass.SetAutocomplete(referedbyText, s);
+                    referedbyText.setText(s);
                     add_ref.setVisibility(View.VISIBLE);
                 }
             });
@@ -6132,7 +6687,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             spinnerDialogRef.bindOnSpinerListener(new OnSpinerItemClick() {
                 @Override
                 public void onClick(String item, int position) {
-                    GlobalClass.SetAutocomplete(referedbyText, item);
+                    referedbyText.setText(item);
                     add_ref.setVisibility(View.VISIBLE);
                 }
             });
@@ -6157,14 +6712,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 alertDialog.show();
                 samplecollectionponit.setEnabled(false);
-
+//            TastyToast.makeText(getActivity(), ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
             }
         }
 
         getReferenceNmae = new ArrayList<>();
         getReferenceName1 = new ArrayList<>();
 
-        if (GlobalClass.checkArray(obj.getMASTERS().getREF_DR())) {
+        if (obj.getMASTERS().getREF_DR() != null && obj.getMASTERS().getREF_DR().length != 0) {
             for (int j = 0; j < obj.getMASTERS().getREF_DR().length; j++) {
                 getReferenceNmae.add(obj.getMASTERS().getREF_DR()[j].getName());
                 getReferenceName1.add(obj.getMASTERS().getREF_DR()[j]);
@@ -6173,6 +6728,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             ref_check_linear.setVisibility(View.VISIBLE);
             refby_linear.setVisibility(View.GONE);
+//            TastyToast.makeText(getActivity(), ToastFile.no_data_fnd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
 
 
@@ -6213,7 +6769,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         scp_name.setLayoutManager(linearLayoutManager);
 
-        GlobalClass.SetText(title, "Search SCP");
+
+        title.setText("Search SCP");
 
         labDetailsArrayList = new ArrayList<>();
         if (obj.getMASTERS() != null) {
@@ -6226,12 +6783,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sampleCollectionAdapter.setOnItemClickListener(new SampleCollectionAdapter.OnItemClickListener() {
             @Override
             public void onPassSgcID(LABS pos) {
-                GlobalClass.SetText(samplecollectionponit, pos.getLabName() + " - " + pos.getClientid());
+                samplecollectionponit.setText(pos.getLabName() + " - " + pos.getClientid());
                 selectedLABS = pos;
                 alertDialog.dismiss();
             }
 
-
+           /* @Override
+            public void onPassSgcName(String name) {
+                samplecollectionponit.setText(name);
+                alertDialog.dismiss();
+            }*/
         });
         scp_name.setAdapter(sampleCollectionAdapter);
 
@@ -6255,16 +6816,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 filterPatientsArrayList = new ArrayList<>();
                 String labname = "";
                 String clientId = "";
-                if (GlobalClass.CheckArrayList(labDetailsArrayList)) {
+                if (labDetailsArrayList != null) {
                     for (int i = 0; i < labDetailsArrayList.size(); i++) {
 
                         final String text1 = labDetailsArrayList.get(i).getLabName().toLowerCase();
                         final String text2 = labDetailsArrayList.get(i).getClientid().toLowerCase();
 
-                        if (!GlobalClass.isNull(labDetailsArrayList.get(i).getClientid())) {
+                        if (labDetailsArrayList.get(i).getClientid() != null || !labDetailsArrayList.get(i).getClientid().equals("")) {
                             clientId = labDetailsArrayList.get(i).getClientid().toLowerCase();
                         }
-                        if (!GlobalClass.isNull(labDetailsArrayList.get(i).getLabName())) {
+                        if (labDetailsArrayList.get(i).getLabName() != null || !labDetailsArrayList.get(i).getLabName().equals("")) {
                             labname = labDetailsArrayList.get(i).getLabName().toLowerCase();
                         }
 
@@ -6273,11 +6834,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             String testname = (labDetailsArrayList.get(i).getLabName());
                             filterPatientsArrayList.add(labDetailsArrayList.get(i));
 
+                        } else {
+
                         }
                         sampleCollectionAdapter.filteredArraylist(filterPatientsArrayList);
                         sampleCollectionAdapter.notifyDataSetChanged();
                     }
                 }
+                // filter your list from your input
+                //you can use runnable postDelayed like 500 ms to delay search text
             }
         });
 
@@ -6293,7 +6858,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
 
-    @Override
+   /* @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         if (getView() != null) {
             isViewShown = true;
@@ -6303,6 +6868,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             isViewShown = false;
         }
+    }*/
+
+    public void showMessage(String title, String Message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(Message);
+        builder.show();
     }
 
 
@@ -6311,12 +6884,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         switch (v.getId()) {
             case R.id.btn_sendotp:
                 if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                    GlobalClass.showTastyToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 2);
+                    TastyToast.makeText(getActivity(), ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 } else {
 
                     if (mobno_verify) {
 
-                        if (!GlobalClass.isNull(btn_snd_otp.getText().toString()) && btn_snd_otp.getText().toString().equalsIgnoreCase("Reset")) {
+                        if (btn_snd_otp.getText().equals("Reset")) {
 
                             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
                             alert.setMessage("Are you sure you want to reset?");
@@ -6336,8 +6909,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     lin_otp.setVisibility(View.GONE);
 
-                                    GlobalClass.SetEditText(et_otp, "");
-                                    GlobalClass.SetButtonText(btn_snd_otp, "Send OTP");
+
+                                    et_otp.setText("");
+                                    btn_snd_otp.setText("Send OTP");
                                     lin_ckotp.setVisibility(View.VISIBLE);
 
                                     btn_verifyotp.setVisibility(View.GONE);
@@ -6357,15 +6931,21 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             AlertDialog dialog = alert.create();
                             dialog.show();
 
-                        } else if (btn_snd_otp.getText().toString().equalsIgnoreCase(MessageConstants.RESENTOTP)) {
+                        } else if (btn_snd_otp.getText().equals("Resend OTP")) {
                             Log.e(TAG, "onClick: " + btn_snd_otp.getText().toString());
 
-                            generateToken();
-
+                            if (cd.isConnectingToInternet()) {
+                                generateToken();
+                            } else {
+                                Global.showCustomToast(getActivity(), ToastFile.intConnection);
+                            }
                         } else if (btn_snd_otp.getText().equals("Send OTP")) {
                             Log.e(TAG, "onClick: " + btn_snd_otp.getText().toString());
-                            generateToken();
-
+                            if (cd.isConnectingToInternet()) {
+                                generateToken();
+                            } else {
+                                Global.showCustomToast(getActivity(), ToastFile.intConnection);
+                            }
                         }
                     }
                 }
@@ -6375,10 +6955,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             case R.id.btn_verifyotp:
 
                 if (GlobalClass.isNull(et_otp.getText().toString())) {
-                    GlobalClass.showTastyToast(getActivity(), MessageConstants.ENTER_OTP, 2);
+                    Toast.makeText(getActivity(), "Please enter OTP", Toast.LENGTH_SHORT).show();
                 } else {
                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
-                        GlobalClass.showTastyToast(getActivity(), ToastFile.intConnection, 2);
+                        TastyToast.makeText(getActivity(), ToastFile.intConnection, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         if (ControllersGlobalInitialiser.verifyotpController != null) {
                             ControllersGlobalInitialiser.verifyotpController = null;
@@ -6393,23 +6973,57 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void generateToken() {
+        PackageInfo pInfo = null;
         try {
-            if (ControllersGlobalInitialiser.otPtoken_controller != null) {
-                ControllersGlobalInitialiser.otPtoken_controller = null;
-            }
-            ControllersGlobalInitialiser.otPtoken_controller = new OTPtoken_controller(getActivity(), Start_New_Woe.this);
-            ControllersGlobalInitialiser.otPtoken_controller.getotptokencontroller();
-        } catch (Exception e) {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+
+        int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.THYROCARE).create(PostAPIInteface.class);
+        OTPrequest otPrequest = new OTPrequest();
+        otPrequest.setAppId(OTPAPPID);
+        otPrequest.setPurpose("OTP");
+        otPrequest.setVersion("" + versionCode);
+        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<Tokenresponse>() {
+            @Override
+            public void onResponse(Call<Tokenresponse> call, retrofit2.Response<Tokenresponse> response) {
+                GlobalClass.hideProgress(getContext(), progressDialog);
+                try {
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (!GlobalClass.isNull(response.body().getToken())) {
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                            callsendOTP(response.body().getToken(), response.body().getRequestId());
+
+                        }
+                    } else {
+                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tokenresponse> call, Throwable t) {
+
+            }
+        });
     }
 
     private void callsendOTP(String token, String requestId) {
 
-        if (GlobalClass.isNull(et_mobno.getText().toString())) {
-            GlobalClass.showTastyToast(getActivity(), MessageConstants.MOBNO, 2);
+        if (et_mobno.getText().toString().equals("")) {
+            Toast.makeText(getActivity(), "Please enter Mobile Number", Toast.LENGTH_SHORT).show();
         } else if (et_mobno.getText().toString().length() < 10) {
-            GlobalClass.showTastyToast(getActivity(), MessageConstants.ValidMOb, 2);
+            Toast.makeText(getActivity(), "Please enter valid Mobile Number", Toast.LENGTH_SHORT).show();
             lin_otp.setVisibility(View.GONE);
         } else {
 
@@ -6427,9 +7041,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
     }
 
-    public void onvalidatemob(ValidateOTPmodel validateOTPmodel) {
+    public void onvalidatemob(ValidateOTPmodel validateOTPmodel, ProgressDialog progressDialog) {
 
-        if (!GlobalClass.isNull(validateOTPmodel.getResponseId()) && validateOTPmodel.getResponseId().equalsIgnoreCase(Constants.RES0001)) {
+        if (validateOTPmodel.getResponseId().equals(Constants.RES0001)) {
+            GlobalClass.hideProgress(getActivity(), progressDialog);
+
+
+        /*    et_mobno.setEnabled(true);
+            et_mobno.setClickable(true);
+            btn_sendotp.setText("Send OTP");
+            et_otp.setText("");
+            et_otp.setVisibility(View.GONE);
+
+            btn_verifyotp.setVisibility(View.GONE);
+            lin_otp.setVisibility(View.GONE);*/
+
+
             et_mobno.setEnabled(false);
             et_mobno.setClickable(false);
 
@@ -6443,8 +7070,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             btn_verifyotp.setVisibility(View.VISIBLE);
             btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.maroon));
-
-            GlobalClass.SetButtonText(btn_verifyotp, "Verify");
+            btn_verifyotp.setText("Verify");
 
             setCountDownTimer();
 
@@ -6452,30 +7078,32 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         } else {
             et_mobno.setEnabled(true);
             et_mobno.setClickable(true);
+            GlobalClass.hideProgress(getActivity(), progressDialog);
         }
     }
 
 
     public void onVerifyotp(VerifyotpModel validateOTPmodel) {
-        if (!GlobalClass.isNull(validateOTPmodel.getResponse()) && validateOTPmodel.getResponse().equalsIgnoreCase("OTP Validated Successfully")) {
+        if (validateOTPmodel.getResponse().equals("OTP Validated Successfully")) {
             timerflag = true;
-
-            GlobalClass.showTastyToast(getActivity(), validateOTPmodel.getResponse(), 1);
+            Global.OTPVERIFIED = true;
+            Toast.makeText(getActivity(),
+                    validateOTPmodel.getResponse(),
+                    Toast.LENGTH_SHORT).show();
 
             if (yourCountDownTimer != null) {
                 yourCountDownTimer.cancel();
                 yourCountDownTimer = null;
             }
 
-
-            GlobalClass.SetButtonText(btn_verifyotp, "Verified");
+            btn_verifyotp.setText("Verified");
             btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.green));
 
-            //new requirment
+
             et_otp.getText().clear();
             lin_otp.setVisibility(View.GONE);
 
-            GlobalClass.SetButtonText(btn_snd_otp, "Reset");
+            btn_snd_otp.setText("Reset");
 
             et_mobno.setEnabled(false);
             et_mobno.setClickable(false);
@@ -6500,7 +7128,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             Enablefields();
 
         } else {
-            GlobalClass.SetEditText(et_otp, "");
+            et_otp.setText("");
         }
     }
 
@@ -6514,7 +7142,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 if (lin_otp.getVisibility() == View.VISIBLE) {
                     tv_timer.setVisibility(View.VISIBLE);
-                    GlobalClass.SetText(tv_timer, "Please wait 00:" + numberFormat.format(time));
+                    tv_timer.setText("Please wait 00:" + numberFormat.format(time));
 
                 } else {
                     tv_timer.setVisibility(View.GONE);
@@ -6526,7 +7154,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             public void onFinish() {
                 tv_timer.setVisibility(View.GONE);
-                GlobalClass.SetButtonText(btn_snd_otp, MessageConstants.RESENTOTP);
+                btn_snd_otp.setText("Resend OTP");
 
                 et_otp.getText().clear();
                 lin_otp.setVisibility(View.VISIBLE);
@@ -6592,6 +7220,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         spinyr.setEnabled(false);
         spinyr.setClickable(false);
 
+        // patientAddress.setEnabled(false);
+        // patientAddress.setClickable(false);
         pincode_edt.getText().clear();
         pincode_edt.setEnabled(false);
         pincode_edt.setClickable(false);
@@ -6632,11 +7262,27 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         uncheck_ref.setVisibility(View.VISIBLE);
         ref_check.setVisibility(View.GONE);
 
+/*        btn_next.setClickable(false);
+        btn_next.setEnabled(false);
+
+        uncheck_sct.setEnabled(false);
+        uncheck_sct.setClickable(false);
+
+        check_sct.setEnabled(false);
+        check_sct.setClickable(false);*/
+
+
     }
 
     public void Enablefields() {
         vial_number.setEnabled(true);
         vial_number.setClickable(true);
+
+       /* uncheck_sct.setEnabled(true);
+        uncheck_sct.setClickable(true);
+
+        check_sct.setEnabled(true);
+        check_sct.setClickable(true);*/
 
         name.setEnabled(true);
         name.setClickable(true);
@@ -6697,584 +7343,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     }
 
-    public void getotptokenResponse(retrofit2.Response<Tokenresponse> response) {
-        try {
-            if (response.body() != null && !GlobalClass.isNull(response.body().getRespId()) && response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
-                if (!GlobalClass.isNull(response.body().getToken())) {
-                    Log.e(TAG, "TOKEN--->" + response.body().getToken());
-                    callsendOTP(response.body().getToken(), response.body().getRequestId());
-
-                }
-            } else {
-                GlobalClass.showTastyToast(getActivity(), response.body().getResponse(), 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getwoemasterResponse(JSONObject response) {
-
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            if (response != null) {
-                Gson gson = new Gson();
-                myPojo = new MyPojo();
-                myPojo = gson.fromJson(response.toString(), MyPojo.class);
-
-                if (myPojo != null && myPojo.getRESPONSE() != null && !GlobalClass.isNull(myPojo.getRESPONSE()) && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(getActivity());
-                } else {
-                    SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                    Gson gson22 = new Gson();
-                    String json22 = gson22.toJson(myPojo);
-                    prefsEditor1.putString("saveAlldata", json22);
-                    prefsEditor1.apply();
-
-                    fetchData();
-
-                    isLoaded = true;
-                    getBrandName = new ArrayList<>();
-                    spinnerBrandName = new ArrayList<String>();
-                    /*spinnerBrandName.add("Select Brand Name");*/
-                    getDatafetch = new ArrayList();
-                    getSubSource = new ArrayList();
-
-                    try {
-                        if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST())) {
-                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
-                                getDatafetch.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                                spinnerBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
-                                camp_lists = myPojo.getMASTERS().getCAMP_LIST();
-                                String TspNumber = myPojo.getMASTERS().getTSP_MASTER().getNumber();
-                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("TspNumber", 0).edit();
-                                editor.putString("TSPMobileNumber", TspNumber);
-                                editor.apply();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    try {
-                        if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getSUB_SOURCECODE())) {
-                            for (int i = 0; i < myPojo.getMASTERS().getSUB_SOURCECODE().length; i++) {
-                                getSubSource.add(myPojo.getMASTERS().getSUB_SOURCECODE()[i].getSub_source_code_pass());
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    spinnerTypeName = new ArrayList<>();
-                    getTypeListfirst = new ArrayList<>();
-                    getTypeListsecond = new ArrayList<>();
-                    getTypeListSMT = new ArrayList<>();
-
-                    if (myPojo != null && myPojo.getMASTERS() != null && !GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST()) && myPojo.getMASTERS().getBRAND_LIST().length > 1) {
-
-                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
-                            getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
-                        }
-
-                        if (!GlobalClass.isNull(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name()) && myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_name().equalsIgnoreCase("SMT")) {
-                            for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; k++) {
-                                getTypeListSMT.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[k].getType());
-                            }
-
-                            for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type().length; k++) {
-                                getTypeListsecond.add(myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type()[k].getType());
-                            }
-
-                            getTypeListthird = new ArrayList<>();
-                            for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type().length; l++) {
-                                getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type()[l].getType());
-                            }
-                            getTypeListthird = new ArrayList<>();
-                            for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[4].getBrand_type().length; l++) {
-                                getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[4].getBrand_type()[l].getType());
-                            }
-                        } else {
-                            for (int k = 0; k < myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type().length; k++) {
-                                getTypeListsecond.add(myPojo.getMASTERS().getBRAND_LIST()[1].getBrand_type()[k].getType());
-                            }
-                            getTypeListthird = new ArrayList<>();
-                            for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type().length; l++) {
-                                getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[2].getBrand_type()[l].getType());
-                            }
-                            getTypeListthird = new ArrayList<>();
-                            for (int l = 0; l < myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type().length; l++) {
-                                getTypeListthird.add(myPojo.getMASTERS().getBRAND_LIST()[3].getBrand_type()[l].getType());
-                            }
-                        }
-
-                    } else {
-                        if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBRAND_LIST()) && myPojo.getMASTERS().getBRAND_LIST().length == 1) {
-                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type().length; i++) {
-                                getTypeListfirst.add(myPojo.getMASTERS().getBRAND_LIST()[0].getBrand_type()[i].getType());
-                            }
-                        }
-                    }
-
-
-                    try {
-                        if (myPojo != null) {
-                            if (myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                String getAddress = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-
-                                SharedPreferences.Editor ScpAddress = getActivity().getSharedPreferences("ScpAddress", 0).edit();
-                                ScpAddress.putString("scp_addrr", getAddress);
-                                ScpAddress.commit();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getLAB_ALERTS() != null) {
-                        putData = myPojo.getMASTERS().getLAB_ALERTS();
-                    }
-
-                    if (putData != null && putData.length != 0) {
-                        for (int i = 0; i < putData.length; i++) {
-                            items.add(putData[i]);
-                        }
-                    }
-
-                    // Spinner adapter
-                    try {
-                        if (GlobalClass.CheckArrayList(spinnerBrandName)) {
-                            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(
-                                    mContext, R.layout.name_age_spinner, spinnerBrandName);
-                            adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            brand_spinner.setAdapter(adapter2);
-                            brand_spinner.setSelection(0);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-
-                    startDataSetting();
-                }
-            } else {
-                GlobalClass.showTastyToast(getActivity(), MessageConstants.SOMETHING_WENT_WRONG, 2);
-            }
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-            GlobalClass.showTastyToast(getActivity(), "" + e, 2);
-        }
-    }
-
-    public void getTSPResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            String getResponse = response.optString("RESPONSE", "");
-
-            if (!GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-                GlobalClass.redirectToLogin(getActivity());
-            } else {
-                Gson gson = new Gson();
-                MyPojo myPojo = gson.fromJson(response.toString(), MyPojo.class);
-
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                Gson gson22 = new Gson();
-                String json22 = gson22.toJson(myPojo);
-                prefsEditor1.putString("getBtechnames", json22);
-
-                prefsEditor1.commit();
-
-                getBtechList = new ArrayList<>();
-                if (myPojo != null && myPojo.getMASTERS() != null && GlobalClass.checkArray(myPojo.getMASTERS().getBCT_LIST())) {
-
-                    for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
-                        getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
-                    }
-                } else {
-                    BCT_LIST bct_list = new BCT_LIST();
-                    bct_list.setMOBILE_NUMBER(mobile);
-                    bct_list.setNAME(nameofProfile);
-                    getBtechList.add(bct_list);
-                }
-
-                btechSpinner = new ArrayList<>();
-
-                if (GlobalClass.CheckArrayList(getBtechList)) {
-                    for (int i = 0; i < getBtechList.size(); i++) {
-                        btechSpinner.add(getBtechList.get(i).getNAME());
-                        btechname.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, btechSpinner));
-                    }
-                } else {
-                    BCT_LIST bct_list = new BCT_LIST();
-                    bct_list.setMOBILE_NUMBER(mobile);
-                    bct_list.setNAME(nameofProfile);
-                    getBtechList.add(bct_list);
-
-                }
-            }
-
-
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void getclientResponse(JSONObject response) {
-
-        try {
-            Log.e(TAG, "getclient onResponse: RESPONSE" + response);
-            autotextcompletefunction(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getorderdetailresponse(JSONObject response) {
-        String getResponse = response.optString("RESPONSE", "");
-        if (!GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-            GlobalClass.redirectToLogin(getActivity());
-        } else {
-            Gson gson = new Gson();
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-
-            leadOrderIdMainModel = new LeadOrderIdMainModel();
-            leadOrderIdMainModel = gson.fromJson(response.toString(), LeadOrderIdMainModel.class);
-
-
-            if (leadOrderIdMainModel != null && !GlobalClass.isNull(leadOrderIdMainModel.getRESPONSE()) && leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
-
-                if (GlobalClass.checkArray(leadOrderIdMainModel.getLeads())) {
-
-                    for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
-                        SharedPreferences.Editor editor = getActivity().getSharedPreferences("LeadOrderID", 0).edit();
-                        editor.putString("brandtype", brand_spinner.getSelectedItem().toString());
-                        editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
-                        editor.putString("AGE", leadOrderIdMainModel.getLeads()[i].getAGE());
-                        editor.putString("AGE_TYPE", leadOrderIdMainModel.getLeads()[i].getAGE_TYPE());
-                        editor.putString("BCT", leadOrderIdMainModel.getLeads()[i].getBCT());
-                        editor.putString("EDTA", leadOrderIdMainModel.getLeads()[i].getEDTA());
-                        editor.putString("EMAIL", leadOrderIdMainModel.getLeads()[i].getEMAIL());
-                        editor.putString("ERROR", leadOrderIdMainModel.getLeads()[i].getERROR());
-                        editor.putString("FLUORIDE", leadOrderIdMainModel.getLeads()[i].getFLUORIDE());
-                        editor.putString("GENDER", leadOrderIdMainModel.getLeads()[i].getGENDER());
-                        editor.putString("HEPARIN", leadOrderIdMainModel.getLeads()[i].getHEPARIN());
-
-                        editor.putString("LAB_ID", leadOrderIdMainModel.getLeads()[i].getLAB_ID());
-                        editor.putString("LAB_NAME", leadOrderIdMainModel.getLeads()[i].getLAB_NAME());
-                        editor.putString("LEAD_ID", leadOrderIdMainModel.getLeads()[i].getLEAD_ID());
-                        editor.putString("MOBILE", leadOrderIdMainModel.getLeads()[i].getMOBILE());
-                        editor.putString("NAME", leadOrderIdMainModel.getLeads()[i].getNAME());
-                        editor.putString("ORDER_NO", leadOrderIdMainModel.getLeads()[i].getORDER_NO());
-                        editor.putString("PACKAGE", leadOrderIdMainModel.getLeads()[i].getPACKAGE());
-                        editor.putString("PINCODE", leadOrderIdMainModel.getLeads()[i].getPINCODE());
-                        editor.putString("PRODUCT", leadOrderIdMainModel.getLeads()[i].getPRODUCT());
-                        editor.putString("RATE", leadOrderIdMainModel.getLeads()[i].getRATE());
-
-                        editor.putString("REF_BY", leadOrderIdMainModel.getLeads()[i].getREF_BY());
-                        editor.putString("RESPONSE", leadOrderIdMainModel.getLeads()[i].getRESPONSE());
-                        editor.putString("SAMPLE_TYPE", leadOrderIdMainModel.getLeads()[i].getSAMPLE_TYPE());
-                        editor.putString("SCT", leadOrderIdMainModel.getLeads()[i].getSCT());
-                        editor.putString("SERUM", leadOrderIdMainModel.getLeads()[i].getSERUM());
-                        editor.putString("TESTS", leadOrderIdMainModel.getLeads()[i].getTESTS());
-                        editor.putString("TYPE", leadOrderIdMainModel.getLeads()[i].getTYPE());
-                        editor.putString("URINE", leadOrderIdMainModel.getLeads()[i].getURINE());
-                        editor.putString("WATER", leadOrderIdMainModel.getLeads()[i].getWATER());
-                        String json = new Gson().toJson(leadOrderIdMainModel.getLeads()[i].getLeadData());
-                        editor.putString("leadData", json);
-                        editor.commit();
-
-                    }
-                }
-
-
-                if (leadOrderIdMainModel != null && leadOrderIdMainModel.getLeads() != null && leadOrderIdMainModel.getLeads().length >= 2) {
-                    showDialog(getActivity(), leadOrderIdMainModel.getLeads());
-                }
-
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LeadOrderID", MODE_PRIVATE);
-                brandtype = sharedPreferences.getString("brandtype", null);
-                leadAddress = sharedPreferences.getString("ADDRESS", null);
-                leadAGE = sharedPreferences.getString("AGE", null);
-                leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
-                leadBCT = sharedPreferences.getString("BCT", null);
-                leadEDTA = sharedPreferences.getString("EDTA", null);
-                leadEMAIL = sharedPreferences.getString("EMAIL", null);
-                leadERROR = sharedPreferences.getString("ERROR", null);
-                leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
-                leadGENDER = sharedPreferences.getString("GENDER", null);
-                leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
-
-                leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
-                leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
-                leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
-                leadMOBILE = sharedPreferences.getString("MOBILE", null);
-                leadNAME = sharedPreferences.getString("NAME", null);
-                leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
-                leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
-                leadPINCODE = sharedPreferences.getString("PINCODE", null);
-                leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
-                leadRATE = sharedPreferences.getString("RATE", null);
-
-                leadREF_BY = sharedPreferences.getString("REF_BY", null);
-                leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
-                leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
-                leadSCT = sharedPreferences.getString("SCT", null);
-                leadSERUM = sharedPreferences.getString("SERUM", null);
-                leadTESTS = sharedPreferences.getString("TESTS", null);
-                leadTYPE = sharedPreferences.getString("TYPE", null);
-                leadURINE = sharedPreferences.getString("URINE", null);
-                leadWATER = sharedPreferences.getString("WATER", null);
-                leadleadData = sharedPreferences.getString("leadData", null);
-
-
-                Gson gson1 = new Gson();
-                Leads.LeadData[] nameList = gson1.fromJson(leadleadData, Leads.LeadData[].class);
-                List<Leads.LeadData> list = Arrays.asList(nameList);
-                leadTESTS = "";
-
-                if (GlobalClass.CheckArrayList(list)) {
-                    for (int i = 0; i < list.size(); i++) {
-                        leadTESTS += list.get(i).getTest() + ",";
-                    }
-                }
-
-                try {
-                    if (leadTESTS.endsWith(",")) {
-                        leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                if (sharedPreferences != null) {
-                    if (leadOrderIdMainModel.getLeads().length >= 2) {
-                        leadlayout.setVisibility(View.GONE);
-                    } else {
-                        leadlayout.setVisibility(View.VISIBLE);
-                    }
-
-                    next_btn.setVisibility(View.VISIBLE);
-
-                    GlobalClass.SetText(leadname, "Name :" + leadNAME);
-                    GlobalClass.SetText(leadidtest, "Test :" + leadTESTS);
-                    GlobalClass.SetText(leadrefdr, "Ref Dr :" + leadREF_BY);
-
-
-                    if (leadOrderIdMainModel != null && GlobalClass.checkArray(leadOrderIdMainModel.getLeads()[0].getLeadData())) {
-                        for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
-                            if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
-                                sizeflag = true;
-                                break;
-                            }
-                        }
-                    }
-
-
-                    leadlayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (sizeflag) {
-                                Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
-                                i.putExtra("MyClass", leadOrderIdMainModel);
-                                i.putExtra("fromcome", "woepage");
-                                i.putExtra("TESTS", leadTESTS);
-                                i.putExtra("SCT", leadSCT);
-                                i.putExtra("LeadID", leadLEAD_ID);
-                                i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
-                                i.putExtra("SR_NO", getVial_numbver);
-                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
-                                editor.putString("typeName", leadTYPE);
-                                editor.putString("SR_NO", getVial_numbver);
-                                // To retrieve object in second Activity
-                                startActivity(i);
-                            } else {
-
-                                if (leadOrderIdMainModel != null && GlobalClass.checkArray(leadOrderIdMainModel.getLeads()[0].getLeadData())) {
-                                    for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
-                                        if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
-                                            sizeflag = true;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (sizeflag) {
-                                    Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
-                                    i.putExtra("MyClass", leadOrderIdMainModel);
-                                    i.putExtra("fromcome", "woepage");
-                                    i.putExtra("TESTS", leadTESTS);
-                                    i.putExtra("SCT", leadSCT);
-                                    i.putExtra("LeadID", leadLEAD_ID);
-                                    i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
-                                    i.putExtra("SR_NO", getVial_numbver);
-                                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
-                                    editor.putString("typeName", leadTYPE);
-                                    editor.putString("SR_NO", getVial_numbver);
-                                    // To retrieve object in second Activity
-                                    startActivity(i);
-                                } else {
-                                    Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
-                                    i.putExtra("MyClass", leadOrderIdMainModel);
-                                    i.putExtra("fromcome", "woepage");
-                                    i.putExtra("TESTS", leadTESTS);
-                                    i.putExtra("SCT", leadSCT);
-                                    i.putExtra("LeadID", leadLEAD_ID);
-                                    i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
-
-                                    SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
-                                    editor.putString("typeName", leadTYPE);
-                                    editor.putString("SR_NO", getVial_numbver);
-                                    // To retrieve object in second Activity
-                                    startActivity(i);
-                                }
-
-                            }
-                        }
-                    });
-                }
-
-            } else {
-                leadlayout.setVisibility(View.GONE);
-                next_btn.setVisibility(View.GONE);
-                GlobalClass.showTastyToast(getActivity(), "No leads found", 2);
-            }
-        }
-    }
-
-    public void getbarcodedetail(JSONObject response) {
-        Log.e(TAG, "onResponse: RESPONSE" + response);
-        try {
-
-            if (response != null) {
-                Gson gson = new Gson();
-                GetBarcodeDetailsResponseModel responseModel = gson.fromJson(String.valueOf(response), GetBarcodeDetailsResponseModel.class);
-
-                if (responseModel != null) {
-                    ALERT = responseModel.getALERT();
-                    BARCODE = responseModel.getBARCODE();
-                    BVT_HRS = responseModel.getBVT_HRS();
-                    LABCODE = responseModel.getLABCODE();
-                    PATIENT = responseModel.getPATIENT();
-                    REF_DR = responseModel.getREF_DR();
-                    REQUESTED_ADDITIONAL_TESTS = responseModel.getREQUESTED_ADDITIONAL_TESTS();
-                    REQUESTED_ON = responseModel.getREQUESTED_ON();
-                    RES_ID = responseModel.getRES_ID();
-                    SDATE = responseModel.getSDATE();
-                    SL_NO = responseModel.getSL_NO();
-                    STATUS = responseModel.getSTATUS();
-                    SU_CODE1 = responseModel.getSU_CODE1();
-                    SU_CODE2 = responseModel.getSU_CODE2();
-                    TESTS = responseModel.getTESTS();
-
-                    if (!GlobalClass.isNull(RES_ID)&& RES_ID.equalsIgnoreCase(Constants.RES0000)) {
-                        if (!GlobalClass.isNull(STATUS) && STATUS.equalsIgnoreCase(caps_invalidApikey)) {
-                            GlobalClass.redirectToLogin(getActivity());
-                        } else if (GlobalClass.isNull(PATIENT)) {
-                            GlobalClass.showTastyToast(getActivity(), responseModel.getSTATUS(), 2);
-
-                            GlobalClass.SetEditText(barcode_woe, "");
-                            leadbarcodelayout.setVisibility(View.GONE);
-                            next_btn.setVisibility(View.GONE);
-                        } else {
-                            leadbarcodelayout.setVisibility(View.VISIBLE);
-                            next_btn.setVisibility(View.VISIBLE);
-
-                            GlobalClass.SetText(leadbarcodename, "Name: " + PATIENT);
-                            GlobalClass.SetText(leadidbarcodetest, "Tests: " + TESTS);
-                            GlobalClass.SetText(leadbarcoderefdr, "Ref By: " + REF_DR);
-                            GlobalClass.SetText(leadbarcodesct, "SCT: " + SDATE);
-                        }
-                    } else if (!GlobalClass.isNull(STATUS) && STATUS.equalsIgnoreCase(caps_invalidApikey)) {
-                        GlobalClass.redirectToLogin(getActivity());
-                    } else {
-                        GlobalClass.SetEditText(barcode_woe, "");
-                        GlobalClass.showTastyToast(getActivity(), responseModel.getSTATUS(), 2);
-                    }
-                } else {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.something_went_wrong, 2);
-                }
-            } else {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.something_went_wrong, 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void getchecknumberResp(String response, String fromwoe, String checkNumber) {
-
-        if (!GlobalClass.isNull(fromwoe) && fromwoe.equalsIgnoreCase("1")) {
-            Log.e(TAG, "onResponse: response" + response);
-
-            String getResponse = response.toString();
-            if (!GlobalClass.isNull(response.toString()) && response.equals("\"proceed\"")) {
-
-                GlobalClass.SetEditText(et_mobno, checkNumber);
-                mobno_verify = true;
-
-                if (chk_otp.isChecked()) {
-                    btn_snd_otp.setVisibility(View.VISIBLE);
-                } else {
-                    btn_snd_otp.setVisibility(View.GONE);
-                }
-
-            } else {
-                mobno_verify = false;
-                GlobalClass.SetEditText(et_mobno, "");
-                GlobalClass.showTastyToast(getActivity(), getResponse, 2);
-            }
-        } else if (!GlobalClass.isNull(fromwoe) && fromwoe.equalsIgnoreCase("2")) {
-            String getResponse = response;
-            if (!GlobalClass.isNull(response) && response.equals("\"proceed\"")) {
-                GlobalClass.SetEditText(kyc_format, checkNumber);
-            } else {
-                GlobalClass.SetEditText(kyc_format, "");
-
-                GlobalClass.showTastyToast(getActivity(), getResponse, 2);
-
-            }
-        } else if (!GlobalClass.isNull(fromwoe) && fromwoe.equalsIgnoreCase("3")) {
-            Log.e(TAG, "onResponse: response" + response);
-
-            String getResponse = response;
-            if (!GlobalClass.isNull(response) && response.equals("\"proceed\"")) {
-                GlobalClass.SetEditText(kyc_format, checkNumber);
-            } else {
-
-                GlobalClass.SetEditText(kyc_format, "");
-                GlobalClass.showTastyToast(getActivity(), getResponse, 2);
-            }
-        } else if (!GlobalClass.isNull(fromwoe) && fromwoe.equalsIgnoreCase("4")) {
-            Log.e(TAG, "onResponse: response" + response);
-            String getResponse = response;
-            if (!GlobalClass.isNull(response) && response.equals("\"proceed\"")) {
-                GlobalClass.SetEditText(kyc_format, checkNumber);
-            } else {
-                GlobalClass.SetEditText(kyc_format, "");
-                GlobalClass.showTastyToast(getActivity(), getResponse, 2);
-            }
-        } else if (!GlobalClass.isNull(fromwoe) && fromwoe.equalsIgnoreCase("5")) {
-            Log.e(TAG, "onResponse: response" + response);
-            String getResponse = response;
-            if (!GlobalClass.isNull(response) && response.equals("\"proceed\"")) {
-
-                GlobalClass.SetEditText(kyc_format, checkNumber);
-            } else {
-
-                GlobalClass.SetEditText(kyc_format, "");
-                GlobalClass.showTastyToast(getActivity(), getResponse, 2);
-            }
-        }
-
-
-    }
-
 
     /**
      * This interface must be implemented by activities that contain this
@@ -7318,8 +7386,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 dd11 = "0" + day;
             }
-
-            GlobalClass.SetText(dateShow, dd11 + "-" + mm11 + "-" + year);
+            dateShow.setText(dd11 + "-" + mm11 + "-" + year);
         }
     }
 
@@ -7341,8 +7408,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         btech_linear_layout.setVisibility(View.GONE);
         home_layout.setVisibility(View.GONE);
         labname_linear.setVisibility(View.GONE);
-
-        GlobalClass.SetEditText(patientAddress, "");
+        patientAddress.setText("");
         ref_check_linear.setVisibility(View.GONE);
         refby_linear.setVisibility(View.GONE);
         namePatients.setVisibility(View.GONE);
@@ -7360,12 +7426,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                 String enteredString = s.toString();
                 if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.ent_pin, 2);
+                    Toast.makeText(getActivity(),
+                            ToastFile.ent_pin,
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(id_for_woe, enteredString.substring(1));
+                        id_for_woe.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(id_for_woe, "");
+                        id_for_woe.setText("");
                     }
                 }
             }
@@ -7388,28 +7455,221 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     } else {
                         getVial_numbver = vial_number.getText().toString();
                         if (!GlobalClass.isNull(getVial_numbver)) {
+                            final ProgressDialog pd_dialog = GlobalClass.ShowprogressDialog(getActivity());
                             String getId = s.toString();
                             String getLeadId = getId.toString();
                             requestQueueNoticeBoard = GlobalClass.setVolleyReq(getActivity());
+                            JsonObjectRequest jsonObjectRequestProfile = new JsonObjectRequest(Request.Method.GET, Api.ValidateWorkOrderLeadId + api_key
+                                    + "/" + user + "/" + getLeadId + "/" + brand_spinner.getSelectedItem().toString() + "/getorderdetails", new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+
+                                    String getResponse = response.optString("RESPONSE", "");
+
+                                    if (!GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                                        GlobalClass.redirectToLogin(getActivity());
+                                    } else {
+                                        Gson gson = new Gson();
+                                        Log.e(TAG, "onResponse: RESPONSE" + response);
+
+                                        leadOrderIdMainModel = new LeadOrderIdMainModel();
+                                        leadOrderIdMainModel = gson.fromJson(response.toString(), LeadOrderIdMainModel.class);
 
 
-                            try {
-                                if (ControllersGlobalInitialiser.getorderdetails_controller != null) {
-                                    ControllersGlobalInitialiser.getorderdetails_controller = null;
+                                        if (!GlobalClass.isNull(leadOrderIdMainModel.getRESPONSE()) &&leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
+                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
+
+                                            for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {
+
+
+                                                SharedPreferences.Editor editor = getActivity().getSharedPreferences("LeadOrderID", 0).edit();
+                                                editor.putString("brandtype", brand_spinner.getSelectedItem().toString());
+                                                editor.putString("ADDRESS", leadOrderIdMainModel.getLeads()[i].getADDRESS());
+                                                editor.putString("AGE", leadOrderIdMainModel.getLeads()[i].getAGE());
+                                                editor.putString("AGE_TYPE", leadOrderIdMainModel.getLeads()[i].getAGE_TYPE());
+                                                editor.putString("BCT", leadOrderIdMainModel.getLeads()[i].getBCT());
+                                                editor.putString("EDTA", leadOrderIdMainModel.getLeads()[i].getEDTA());
+                                                editor.putString("EMAIL", leadOrderIdMainModel.getLeads()[i].getEMAIL());
+                                                editor.putString("ERROR", leadOrderIdMainModel.getLeads()[i].getERROR());
+                                                editor.putString("FLUORIDE", leadOrderIdMainModel.getLeads()[i].getFLUORIDE());
+                                                editor.putString("GENDER", leadOrderIdMainModel.getLeads()[i].getGENDER());
+                                                editor.putString("HEPARIN", leadOrderIdMainModel.getLeads()[i].getHEPARIN());
+
+                                                editor.putString("LAB_ID", leadOrderIdMainModel.getLeads()[i].getLAB_ID());
+                                                editor.putString("LAB_NAME", leadOrderIdMainModel.getLeads()[i].getLAB_NAME());
+                                                editor.putString("LEAD_ID", leadOrderIdMainModel.getLeads()[i].getLEAD_ID());
+                                                editor.putString("MOBILE", leadOrderIdMainModel.getLeads()[i].getMOBILE());
+                                                editor.putString("NAME", leadOrderIdMainModel.getLeads()[i].getNAME());
+                                                editor.putString("ORDER_NO", leadOrderIdMainModel.getLeads()[i].getORDER_NO());
+                                                editor.putString("PACKAGE", leadOrderIdMainModel.getLeads()[i].getPACKAGE());
+                                                editor.putString("PINCODE", leadOrderIdMainModel.getLeads()[i].getPINCODE());
+                                                editor.putString("PRODUCT", leadOrderIdMainModel.getLeads()[i].getPRODUCT());
+                                                editor.putString("RATE", leadOrderIdMainModel.getLeads()[i].getRATE());
+
+                                                editor.putString("REF_BY", leadOrderIdMainModel.getLeads()[i].getREF_BY());
+                                                editor.putString("RESPONSE", leadOrderIdMainModel.getLeads()[i].getRESPONSE());
+                                                editor.putString("SAMPLE_TYPE", leadOrderIdMainModel.getLeads()[i].getSAMPLE_TYPE());
+                                                editor.putString("SCT", leadOrderIdMainModel.getLeads()[i].getSCT());
+                                                editor.putString("SERUM", leadOrderIdMainModel.getLeads()[i].getSERUM());
+                                                editor.putString("TESTS", leadOrderIdMainModel.getLeads()[i].getTESTS());
+                                                editor.putString("TYPE", leadOrderIdMainModel.getLeads()[i].getTYPE());
+                                                editor.putString("URINE", leadOrderIdMainModel.getLeads()[i].getURINE());
+                                                editor.putString("WATER", leadOrderIdMainModel.getLeads()[i].getWATER());
+                                                String json = new Gson().toJson(leadOrderIdMainModel.getLeads()[i].getLeadData());
+                                                editor.putString("leadData", json);
+                                                editor.commit();
+
+                                            }
+
+                                            if (leadOrderIdMainModel != null && leadOrderIdMainModel.getLeads() != null && leadOrderIdMainModel.getLeads().length >= 2) {
+                                                showDialog(getActivity(), leadOrderIdMainModel.getLeads());
+                                            }
+
+                                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LeadOrderID", MODE_PRIVATE);
+                                            brandtype = sharedPreferences.getString("brandtype", null);
+                                            leadAddress = sharedPreferences.getString("ADDRESS", null);
+                                            leadAGE = sharedPreferences.getString("AGE", null);
+                                            leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
+                                            leadBCT = sharedPreferences.getString("BCT", null);
+                                            leadEDTA = sharedPreferences.getString("EDTA", null);
+                                            leadEMAIL = sharedPreferences.getString("EMAIL", null);
+                                            leadERROR = sharedPreferences.getString("ERROR", null);
+                                            leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
+                                            leadGENDER = sharedPreferences.getString("GENDER", null);
+                                            leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
+
+                                            leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
+                                            leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
+                                            leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
+                                            leadMOBILE = sharedPreferences.getString("MOBILE", null);
+                                            leadNAME = sharedPreferences.getString("NAME", null);
+                                            leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
+                                            leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
+                                            leadPINCODE = sharedPreferences.getString("PINCODE", null);
+                                            leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
+                                            leadRATE = sharedPreferences.getString("RATE", null);
+
+                                            leadREF_BY = sharedPreferences.getString("REF_BY", null);
+                                            leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
+                                            leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
+                                            leadSCT = sharedPreferences.getString("SCT", null);
+                                            leadSERUM = sharedPreferences.getString("SERUM", null);
+                                            leadTESTS = sharedPreferences.getString("TESTS", null);
+                                            leadTYPE = sharedPreferences.getString("TYPE", null);
+                                            leadURINE = sharedPreferences.getString("URINE", null);
+                                            leadWATER = sharedPreferences.getString("WATER", null);
+                                            leadleadData = sharedPreferences.getString("leadData", null);
+
+
+                                            Gson gson1 = new Gson();
+                                            Leads.LeadData[] nameList = gson1.fromJson(leadleadData, Leads.LeadData[].class);
+                                            List<Leads.LeadData> list = Arrays.asList(nameList);
+                                            leadTESTS = "";
+                                            for (int i = 0; i < list.size(); i++) {
+                                                leadTESTS += list.get(i).getTest() + ",";
+                                            }
+
+                                            try {
+                                                if (leadTESTS.endsWith(",")) {
+                                                    leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
+                                                }
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+                                            if (sharedPreferences != null) {
+                                                if (leadOrderIdMainModel.getLeads().length >= 2) {
+                                                    leadlayout.setVisibility(View.GONE);
+                                                } else {
+                                                    leadlayout.setVisibility(View.VISIBLE);
+                                                }
+
+                                                next_btn.setVisibility(View.VISIBLE);
+                                                leadname.setText("Name :" + leadNAME);
+                                                leadidtest.setText("Test :" + leadTESTS);
+                                                leadrefdr.setText("Ref Dr :" + leadREF_BY);
+
+
+                                                for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
+                                                    if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
+                                                        sizeflag = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                leadlayout.setOnClickListener(new View.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(View v) {
+
+                                                        if (sizeflag) {
+                                                            Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
+                                                            i.putExtra("MyClass", leadOrderIdMainModel);
+                                                            i.putExtra("fromcome", "woepage");
+                                                            i.putExtra("TESTS", leadTESTS);
+                                                            i.putExtra("SCT", leadSCT);
+                                                            i.putExtra("LeadID", leadLEAD_ID);
+                                                            i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
+                                                            i.putExtra("SR_NO", getVial_numbver);
+                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                                                            editor.putString("typeName", leadTYPE);
+                                                            editor.putString("SR_NO", getVial_numbver);
+                                                            // To retrieve object in second Activity
+                                                            startActivity(i);
+                                                        } else {
+                                                            Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
+                                                            i.putExtra("MyClass", leadOrderIdMainModel);
+                                                            i.putExtra("fromcome", "woepage");
+                                                            i.putExtra("TESTS", leadTESTS);
+                                                            i.putExtra("SCT", leadSCT);
+                                                            i.putExtra("LeadID", leadLEAD_ID);
+                                                            i.putExtra("brandtype", brand_spinner.getSelectedItem().toString());
+
+                                                            SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
+                                                            editor.putString("typeName", leadTYPE);
+                                                            editor.putString("SR_NO", getVial_numbver);
+                                                            // To retrieve object in second Activity
+                                                            startActivity(i);
+
+                                                        }
+                                                    }
+                                                });
+                                            }
+
+                                        } else {
+                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
+
+                                            leadlayout.setVisibility(View.GONE);
+                                            next_btn.setVisibility(View.GONE);
+                                            Toast.makeText(getActivity(), "No leads found", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
                                 }
-                                ControllersGlobalInitialiser.getorderdetails_controller = new Getorderdetails_Controller(getActivity(), Start_New_Woe.this);
-                                ControllersGlobalInitialiser.getorderdetails_controller.getorderdetailcontroller(api_key, user, getLeadId, brand_spinner, requestQueueNoticeBoard);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (error.networkResponse == null) {
+                                        if (error.getClass().equals(TimeoutError.class)) {
+                                            GlobalClass.hideProgress(getActivity(), pd_dialog);
+                                            TastyToast.makeText(getActivity(), "Timeout Error", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                            // Show timeout error message
+                                        }
+                                    }
+                                }
+                            });
+                            jsonObjectRequestProfile.setRetryPolicy(new DefaultRetryPolicy(
+                                    150000,
+                                    3,
+                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                            requestQueueNoticeBoard.add(jsonObjectRequestProfile);
+                            Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestProfile);
                         } else {
                             vial_number.setError(ToastFile.vial_no);
-                            GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
+                            Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                             id_for_woe.getText().clear();
                         }
                     }
+//                                            getCityStateAPI(getId);
                 }
             }
         });
@@ -7419,26 +7679,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             public void onClick(View v) {
                 String getLead = id_for_woe.getText().toString();
                 getVial_numbver = vial_number.getText().toString();
-                if (GlobalClass.isNull(getVial_numbver)) {
+                if (getVial_numbver.equals("")) {
                     vial_number.setError(ToastFile.vial_no);
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.vial_no, 2);
+                    Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
                 } else if (getLead.equals("")) {
-                    GlobalClass.showTastyToast(getActivity(), "Please enter lead", 2);
+                    Toast.makeText(getActivity(), "Please enter lead", Toast.LENGTH_SHORT).show();
                 } else if (getLead.length() < 10) {
-                    GlobalClass.showTastyToast(getActivity(), "Please enter correct lead", 2);
+                    Toast.makeText(getActivity(), "Please enter correct lead", Toast.LENGTH_SHORT).show();
                 } else if (leadNAME.equals(null)) {
-                    GlobalClass.showTastyToast(getActivity(), "Please wait for some time", 2);
+                    Toast.makeText(getActivity(), "Please wait for some time", Toast.LENGTH_SHORT).show();
                 } else {
-                    if (leadOrderIdMainModel != null && GlobalClass.checkArray(leadOrderIdMainModel.getLeads())&& GlobalClass.checkArray(leadOrderIdMainModel.getLeads()[0].getLeadData())) {
-                        for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
-                            if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
-                                sizeflag = true;
-                                break;
-                            }
+                    for (int i = 0; i < leadOrderIdMainModel.getLeads()[0].getLeadData().length; i++) {
+                        if (leadOrderIdMainModel.getLeads()[0].getLeadData()[i].getSample_type().length > 1) {
+                            sizeflag = true;
+                            break;
                         }
                     }
-
-
                     if (sizeflag) {
                         Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
                         i.putExtra("MyClass", leadOrderIdMainModel);
@@ -7464,6 +7720,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         SharedPreferences.Editor editor = getActivity().getSharedPreferences("getBrandTypeandName", MODE_PRIVATE).edit();
                         editor.putString("typeName", leadTYPE);
                         editor.putString("SR_NO", getVial_numbver);
+                        // To retrieve object in second Activity
                         startActivity(i);
                     }
 

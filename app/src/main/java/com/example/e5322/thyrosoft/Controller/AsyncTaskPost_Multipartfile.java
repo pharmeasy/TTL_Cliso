@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.example.e5322.thyrosoft.API.Api;
@@ -93,13 +95,14 @@ public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
                     + "\nPincode:" + BSPostDataModel.getPincode() + "\nfile:" + BSPostDataModel.getFile());
 
             httpPost.setEntity(builder.build());
+            httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
             Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                Log.v("Response : " , result);
+                System.out.println("Response : " + result);
             }
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
@@ -120,10 +123,10 @@ public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
             if (response != null && !response.isEmpty()) {
                 bs_entryFragment.getUploadResponse(response);
             } else {
-                GlobalClass.showTastyToast(mActivity, response,1);
+                Global.showCustomToast(mActivity, response);
             }
         } else {
-            GlobalClass.showTastyToast(mActivity, response,2);
+            Global.showCustomToast(mActivity, response);
         }
     }
 

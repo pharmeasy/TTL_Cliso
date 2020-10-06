@@ -2,15 +2,22 @@ package com.example.e5322.thyrosoft.Activity.frags;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +30,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.Blood_sugar_entry_activity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.CommonItils.AccessRuntimePermissions;
 import com.example.e5322.thyrosoft.CommonItils.GPSTracker;
 import com.example.e5322.thyrosoft.Controller.AsyncTaskPost_Multipartfile;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
@@ -37,16 +44,19 @@ import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.GETValidateBSOTPController;
 import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.OTPtoken_controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
+import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mindorks.paracamera.Camera;
 
 import org.json.JSONException;
@@ -58,9 +68,14 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.regex.Pattern;
 
-import androidx.fragment.app.Fragment;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -96,12 +111,14 @@ public class BS_EntryFragment extends Fragment {
     private ConnectionDetector cd;
     private File imageFile = null;
     private String range;
+    private int PERMISSION_REQUEST_CODE = 200;
     private int PICK_PHOTO_FROM_GALLERY = 202;
     private String userChoosenTask;
     private GPSTracker gpsTracker;
+    private int LOCATION_PERMISSION_REQUEST_CODE = 199;
     private SharedPreferences prefs;
     private CountDownTimer countDownTimer;
-     String user, passwrd, access, api_key, USER_CODE;
+    private String user, passwrd, access, api_key, USER_CODE;
 
     public BS_EntryFragment() {
         // Required empty public constructor
@@ -129,11 +146,11 @@ public class BS_EntryFragment extends Fragment {
         cd = new ConnectionDetector(activity);
 
         prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
-        USER_CODE = prefs.getString("USER_CODE", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+        USER_CODE = prefs.getString("USER_CODE", null);
 
         initUI(viewMain);
 
@@ -199,13 +216,21 @@ public class BS_EntryFragment extends Fragment {
                 String enteredString = s.toString();
                 if (enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
-                    GlobalClass.SetEditText(mobile_edt, enteredString.substring(1));
+                    mobile_edt.setText(enteredString.substring(1));
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                /*validMobileNumber = false;
+                String enteredString = s.toString();
+                if (enteredString.length() == 10) {
+                    if (cd.isConnectingToInternet()) {
+                        verifyMobileNumber(enteredString);
+                    } else {
+                        Global.showCustomToast(activity, ToastFile.intConnection);
+                    }
+                }*/
             }
 
             @Override
@@ -223,7 +248,7 @@ public class BS_EntryFragment extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
                 if (str.startsWith("0") || str.startsWith("9")) {
-                    GlobalClass.SetEditText(edt_pincode, str.substring(1));
+                    edt_pincode.setText(str.substring(1));
                 }
             }
 
@@ -237,22 +262,26 @@ public class BS_EntryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String btnText = btn_send_otp.getText().toString();
-                if (!GlobalClass.isNull(btnText) && btnText.equalsIgnoreCase(getString(R.string.send_otp))) {
+                if (btnText.equalsIgnoreCase(getString(R.string.send_otp))) {
                     mobile_number = mobile_edt.getText().toString();
                     if ((mobile_number.length() > 0) && (mobile_number.length() < 10)) {
-                        GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
+                        Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
                         validMobileNumber = false;
                     } else if (mobile_number.length() == 0) {
-                        GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_MOBILE, 2);
+                        Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
                         validMobileNumber = false;
                     } else {
-                        generateToken();
-
+                        if (cd.isConnectingToInternet()) {
+                            generateToken();
+                            //callGenerateOTP(mobile_number);
+                        } else {
+                            Global.showCustomToast(activity, ToastFile.intConnection);
+                        }
                     }
-                } else if (!GlobalClass.isNull(btnText) &&  btnText.equalsIgnoreCase(getString(R.string.reset))) {
+                } else if (btnText.equalsIgnoreCase(getString(R.string.reset))) {
                     mobile_edt.setEnabled(true);
                     mobile_edt.requestFocus();
-                    GlobalClass.SetButtonText(btn_send_otp, activity.getString(R.string.send_otp));
+                    btn_send_otp.setText(activity.getString(R.string.send_otp));
                     ll_OTP.setVisibility(View.GONE);
                     tv_timer.setVisibility(View.GONE);
                     tv_resendotp.setVisibility(View.GONE);
@@ -282,9 +311,9 @@ public class BS_EntryFragment extends Fragment {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
                     if (enteredString.length() == 0) {
-                        GlobalClass.SetEditText(edt_name, "");
+                        edt_name.setText("");
                     } else {
-                        GlobalClass.SetEditText(edt_name, enteredString.substring(1));
+                        edt_name.setText(enteredString.substring(1));
                     }
                 }
             }
@@ -306,9 +335,9 @@ public class BS_EntryFragment extends Fragment {
                 String enteredString = s.toString();
                 if (enteredString.startsWith("0")) {
                     if (enteredString.length() > 1) {
-                        GlobalClass.SetEditText(edt_age, enteredString.substring(1));
+                        edt_age.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(edt_age, "");
+                        edt_age.setText("");
                     }
                 }
             }
@@ -319,8 +348,8 @@ public class BS_EntryFragment extends Fragment {
                 if (enteredString.length() > 0) {
                     int result = Integer.parseInt(enteredString);
                     if (result > 200) {
-                        GlobalClass.SetEditText(edt_age, enteredString.substring(0, 2));
-                        GlobalClass.SetEditText(edt_age, "");
+                        edt_age.setText(enteredString.substring(0, 2));
+                        edt_age.setText("");
                     }
                 }
             }
@@ -337,9 +366,9 @@ public class BS_EntryFragment extends Fragment {
                 String enteredString = s.toString();
                 if (enteredString.startsWith("0")) {
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(edt_val, enteredString.substring(1));
+                        edt_val.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(edt_val, "");
+                        edt_val.setText("");
                     }
                 }
             }
@@ -375,7 +404,7 @@ public class BS_EntryFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    GlobalClass.SetText(txt_ref_msg, "");
+                    txt_ref_msg.setText("");
                     edt_val.setVisibility(View.INVISIBLE);
                     ll_refRange.setVisibility(View.GONE);
                 } else {
@@ -383,9 +412,9 @@ public class BS_EntryFragment extends Fragment {
                     ll_refRange.setVisibility(View.VISIBLE);
                     minValue = GlobalClass.getTestList().get(position).getMinVal();
                     maxValue = GlobalClass.getTestList().get(position).getMaxVal();
-                    GlobalClass.SetText(txt_ref_msg, "Ref. Range: " + GlobalClass.getTestList().get(position).getRangeVal());
+                    txt_ref_msg.setText("Ref. Range: " + GlobalClass.getTestList().get(position).getRangeVal());
                     range = GlobalClass.getTestList().get(position).getRangeVal();
-                    GlobalClass.SetEditText(edt_val, "");
+                    edt_val.setText("");
                 }
             }
 
@@ -398,12 +427,10 @@ public class BS_EntryFragment extends Fragment {
         btn_choose_file.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AccessRuntimePermissions.checkcameraPermission(getActivity())
-                        && AccessRuntimePermissions.checkExternalPerm(getActivity())) {
+                if (checkPermission()) {
                     selectImage();
                 } else {
-                    AccessRuntimePermissions.requestCamerapermission(getActivity());
-                    AccessRuntimePermissions.requestExternalpermission(getActivity());
+                    requestPermission();
                 }
             }
         });
@@ -414,7 +441,7 @@ public class BS_EntryFragment extends Fragment {
                 if (imageFile != null && imageFile.exists())
                     GlobalClass.showImageDialog(activity, imageFile, "", 1);
                 else
-                    GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 2);
+                    Global.showCustomToast(activity, "Image not found");
             }
         });
 
@@ -422,7 +449,8 @@ public class BS_EntryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (Validation()) {
-                    if (AccessRuntimePermissions.checkLocationPerm(activity)) {
+//                    if (global.checkMultipleValidation(Integer.parseInt(edt_collamount.getText().toString()))) {
+                    if (checkLocationPerm()) {
                         if (edt_email.getText().length() > 0) {
                             try {
                                 if (ControllersGlobalInitialiser.emailValidationController != null) {
@@ -434,15 +462,14 @@ public class BS_EntryFragment extends Fragment {
                                 e.printStackTrace();
                             }
                         } else {
-                            if (cd.isConnectingToInternet()) {
-                                callPOSTAPI();
-                            } else {
-                                GlobalClass.showTastyToast(activity, MessageConstants.CHECK_INTERNET_CONN, 2);
-                            }
+                            callPOSTAPI();
                         }
                     } else {
-                        AccessRuntimePermissions.requestLocationPerm(activity);
+                        requestLocationPerm();
                     }
+
+                    /*} else
+                        Global.showCustomToast(activity, ToastFile.ENTER_VALID_AMOUNT);*/
                 }
             }
         });
@@ -452,12 +479,17 @@ public class BS_EntryFragment extends Fragment {
             public void onClick(View v) {
                 if (countDownTimer != null)
                     countDownTimer.cancel();
-                GlobalClass.SetEditText(edt_otp, "");
+                edt_otp.setText("");
                 mobile_number = mobile_edt.getText().toString();
                 if (mobile_number.length() < 10) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
+                    Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
                 } else {
-                    generateToken();
+                    if (cd.isConnectingToInternet()) {
+                        //  callGenerateOTP(mobile_number);
+                        generateToken();
+                    } else {
+                        Global.showCustomToast(activity, ToastFile.intConnection);
+                    }
                 }
             }
         });
@@ -468,7 +500,7 @@ public class BS_EntryFragment extends Fragment {
                 mobile_number = mobile_edt.getText().toString().trim();
                 String otp = edt_otp.getText().toString().trim();
                 if (otp.length() < 4) {
-                    GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_VALID_OTP, 2);
+                    Global.showCustomToast(getActivity(), ToastFile.ENTER_VALID_OTP);
                 } else {
                     callValidateOTP(mobile_number, otp);
                 }
@@ -503,7 +535,7 @@ public class BS_EntryFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            GlobalClass.showTastyToast(activity, ToastFile.intConnection, 2);
+            Global.showCustomToast(activity, ToastFile.intConnection);
         }
     }
 
@@ -511,15 +543,15 @@ public class BS_EntryFragment extends Fragment {
         String RESPONSE = response.optString("RESPONSE", "");
         String RES_ID = response.optString("RES_ID", "");
 
-        if (!GlobalClass.isNull(RES_ID) && RES_ID.equalsIgnoreCase(Constants.RES0000)) {
+        if (RES_ID.equalsIgnoreCase(Constants.RES0000)) {
             mobile_edt.setEnabled(false);
-            GlobalClass.showTastyToast(activity, ToastFile.OTP_SENT_SUCCESS, 1);
+            Global.showCustomToast(activity, ToastFile.OTP_SENT_SUCCESS);
             ll_OTP.setVisibility(View.VISIBLE);
-            GlobalClass.SetButtonText(btn_verify_otp, activity.getString(R.string.verify));
+            btn_verify_otp.setText(activity.getString(R.string.verify));
             btn_send_otp.setEnabled(false);
             setCountDownTimer();
         } else
-            GlobalClass.showTastyToast(activity, RESPONSE, 2);
+            Global.showCustomToast(activity, RESPONSE);
     }
 
     private void setCountDownTimer() {
@@ -530,7 +562,7 @@ public class BS_EntryFragment extends Fragment {
                 long time = millisUntilFinished / 1000;
                 tv_timer.setVisibility(View.VISIBLE);
                 tv_resendotp.setVisibility(View.INVISIBLE);
-                GlobalClass.SetText(tv_timer, "Please wait 00:" + numberFormat.format(time));
+                tv_timer.setText("Please wait 00:" + numberFormat.format(time));
             }
 
             public void onFinish() {
@@ -552,7 +584,7 @@ public class BS_EntryFragment extends Fragment {
                 e.printStackTrace();
             }
         } else {
-            GlobalClass.showTastyToast(activity, ToastFile.intConnection, 2);
+            Global.showCustomToast(activity, ToastFile.intConnection);
         }
     }
 
@@ -561,20 +593,20 @@ public class BS_EntryFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(response);
             String RESPONSE = jsonObject.optString("Response", "");
             String RES_ID = jsonObject.optString("ResId", "");
-            if (!GlobalClass.isNull(RES_ID) && RES_ID.equalsIgnoreCase(Constants.RES0000)) {
-                GlobalClass.showTastyToast(activity, RESPONSE, 1);
+            if (RES_ID.equalsIgnoreCase(Constants.RES0000)) {
+                Global.showCustomToast(activity, RESPONSE);
                 validMobileNumber = true;
                 countDownTimer.cancel();
                 tv_timer.setVisibility(View.GONE);
                 tv_resendotp.setVisibility(View.GONE);
                 edt_otp.setEnabled(false);
                 btn_verify_otp.setEnabled(false);
-                GlobalClass.SetButtonText(btn_verify_otp, activity.getString(R.string.verified));
+                btn_verify_otp.setText(activity.getString(R.string.verified));
                 btn_send_otp.setEnabled(true);
-                GlobalClass.SetButtonText(btn_send_otp, activity.getString(R.string.reset));
+                btn_send_otp.setText(activity.getString(R.string.reset));
                 ll_detailsView.setVisibility(View.VISIBLE);
             } else {
-                GlobalClass.showTastyToast(activity, RESPONSE, 2);
+                Global.showCustomToast(activity, RESPONSE);
                 ll_detailsView.setVisibility(View.GONE);
                 validMobileNumber = false;
             }
@@ -625,13 +657,22 @@ public class BS_EntryFragment extends Fragment {
                 if (cd.isConnectingToInternet())
                     new AsyncTaskPost_Multipartfile(BS_EntryFragment.this, activity, bs_postDataModel).execute();
                 else
-                    GlobalClass.showTastyToast(activity, ToastFile.intConnection, 2);
+                    Global.showCustomToast(activity, ToastFile.intConnection);
             } else
-                GlobalClass.showTastyToast(activity, ToastFile.LOCATION_NOT_FOUND, 2);
+                Global.showCustomToast(activity, ToastFile.LOCATION_NOT_FOUND);
         } else
-            GlobalClass.showTastyToast(activity, ToastFile.LOCATION_NOT_FOUND, 2);
+            Global.showCustomToast(activity, ToastFile.LOCATION_NOT_FOUND);
     }
 
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(activity, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(activity, CAMERA);
+        return result1 == PackageManager.PERMISSION_GRANTED && result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(activity, new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
+    }
 
     private void selectImage() {
         CharSequence[] items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
@@ -678,8 +719,8 @@ public class BS_EntryFragment extends Fragment {
                 .setDirectory("/Uploads/Images")
                 .setName("img" + System.currentTimeMillis())
                 .setImageFormat(Camera.IMAGE_JPEG)
-                .setCompression(75)
-                .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;
+                .setCompression(Constants.setcompression)
+                .setImageHeight(Constants.setheight)// it will try to achieve this height as close as possible maintaining the aspect ratio;
                 .build(this);
     }
 
@@ -693,12 +734,12 @@ public class BS_EntryFragment extends Fragment {
                 Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
                 if (imageFile != null && imageFile.exists()) {
                     correct_img.setVisibility(View.VISIBLE);
-                    GlobalClass.SetButtonText(btn_choose_file, getString(R.string.re_upload));
+                    btn_choose_file.setText(getString(R.string.re_upload));
                     tvUploadImageText.setHint(getString(R.string.image_uploaded));
                     tvUploadImageText.setPaintFlags(tvUploadImageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 } else {
                     correct_img.setVisibility(View.GONE);
-                    GlobalClass.SetButtonText(btn_choose_file, getString(R.string.choose_file));
+                    btn_choose_file.setText(getString(R.string.choose_file));
                     tvUploadImageText.setHint(getString(R.string.img_upload));
                 }
             } catch (Exception e) {
@@ -706,7 +747,7 @@ public class BS_EntryFragment extends Fragment {
             }
         } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
             if (data == null) {
-                GlobalClass.showTastyToast(activity, MessageConstants.Failedto_load_image, 2);
+                Global.showCustomToast(activity, "Failed to load image!");
                 return;
             }
             try {
@@ -716,16 +757,16 @@ public class BS_EntryFragment extends Fragment {
                 Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(imageFile.length())));
                 if (imageFile != null && imageFile.exists()) {
                     correct_img.setVisibility(View.VISIBLE);
-                    GlobalClass.SetButtonText(btn_choose_file, getString(R.string.re_upload));
+                    btn_choose_file.setText(getString(R.string.re_upload));
                     tvUploadImageText.setHint(getString(R.string.image_uploaded));
                     tvUploadImageText.setPaintFlags(tvUploadImageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 } else {
                     correct_img.setVisibility(View.GONE);
-                    GlobalClass.SetButtonText(btn_choose_file, getString(R.string.choose_file));
+                    btn_choose_file.setText(getString(R.string.choose_file));
                     tvUploadImageText.setHint(getString(R.string.img_upload));
                 }
             } catch (IOException e) {
-                GlobalClass.showTastyToast(activity, MessageConstants.Failed_to_read_img, 2);
+                Global.showCustomToast(activity, "Failed to read image data!");
                 e.printStackTrace();
             }
         }
@@ -733,98 +774,98 @@ public class BS_EntryFragment extends Fragment {
 
     private boolean Validation() {
         if (mobile_edt.getText().toString().length() == 0) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_MOBILE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
             mobile_edt.requestFocus();
             return false;
         }
         if (mobile_edt.getText().toString().length() < 10) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
             mobile_edt.requestFocus();
             return false;
         }
         if (mobile_edt.getText().toString().length() > 10) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.MOBILE_10_DIGITS, 2);
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
             mobile_edt.requestFocus();
             return false;
         }
         if (!validMobileNumber) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.MOB_NOT_VERIFIED, 2);
+            Global.showCustomToast(getActivity(), ToastFile.MOB_NOT_VERIFIED);
             mobile_edt.requestFocus();
             return false;
         }
         if (edt_name.getText().toString().length() == 0) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_NAME, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_NAME);
             edt_name.requestFocus();
             return false;
         }
         if (edt_name.getText().toString().length() < 2) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_NAME, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_NAME);
             edt_name.requestFocus();
             return false;
         }
         if (edt_age.getText().toString().length() == 0) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_AGE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_AGE);
             edt_age.requestFocus();
             return false;
         }
 
         if (GlobalClass.isNull(gender)) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_GENDER, 2);
+            Global.showCustomToast(getActivity(), ToastFile.SELECT_GENDER);
             return false;
         }
         if (spin_bs_test.getSelectedItem().toString().equals("Select")) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_TEST_TYPE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.SELECT_TEST_TYPE);
             return false;
         }
         if (edt_val.getText().toString().equals("")) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_VALUE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_VALUE);
             edt_val.requestFocus();
             return false;
         }
         if (edt_systolic.getText().toString().length() > 0) {
             if (edt_diastolic.getText().toString().isEmpty()) {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_DIASTOLIC_VALUE, 2);
+                Global.showCustomToast(getActivity(), ToastFile.ENTER_DIASTOLIC_VALUE);
                 edt_diastolic.requestFocus();
                 return false;
             }
         }
         if (edt_diastolic.getText().toString().length() > 0) {
             if (edt_systolic.getText().toString().isEmpty()) {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_SYSTOLIC_VALUE, 2);
+                Global.showCustomToast(getActivity(), ToastFile.ENTER_SYSTOLIC_VALUE);
                 edt_systolic.requestFocus();
                 return false;
             }
         }
         if (correct_img.getVisibility() == View.GONE) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.UPLOAD_IMAGE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.UPLOAD_IMAGE);
             return false;
         }
 
         if (imageFile == null && !imageFile.exists()) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_IMAGE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.SELECT_IMAGE);
             return false;
         }
         if (spin_coll_amt.getSelectedItem().toString().equals("Select collected amount")) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.SELECT_COLL_AMT, 2);
+            Global.showCustomToast(getActivity(), ToastFile.SELECT_COLL_AMT);
             return false;
         }
         if (edt_pincode.getText().toString().length() == 0) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_PINCODE, 2);
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_PINCODE);
             edt_pincode.requestFocus();
             return false;
         }
         if (edt_pincode.getText().toString().length() < 6) {
-            GlobalClass.showTastyToast(getActivity(), ToastFile.PINCODE_6_DIGITS, 2);
+            Global.showCustomToast(getActivity(), ToastFile.PINCODE_6_DIGITS);
             edt_pincode.requestFocus();
             return false;
         }
         if (edt_email.getText().toString().length() > 0) {
             if (edt_email.getText().toString().length() == 0 || edt_email.getText().toString().isEmpty()) {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.ENTER_EMAIL, 2);
+                Global.showCustomToast(getActivity(), ToastFile.ENTER_EMAIL);
                 edt_email.requestFocus();
                 return false;
             } else if (!emailValidation(edt_email.getText().toString())) {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.VALID_EMAIL, 2);
+                Global.showCustomToast(getActivity(), ToastFile.VALID_EMAIL);
                 edt_email.requestFocus();
                 return false;
             }
@@ -852,8 +893,8 @@ public class BS_EntryFragment extends Fragment {
             String RESPONSE = jsonObject.optString("RESPONSE");
             String RESPONSEID = jsonObject.optString("RESPONSEID");
 
-            if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
-                GlobalClass.showTastyToast(activity, RESPONSE, 1);
+            if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
+                Global.showCustomToast(activity, RESPONSE);
                 Intent intent = new Intent(activity, Blood_sugar_entry_activity.class);
                 activity.startActivity(intent);
                 activity.finish();
@@ -866,36 +907,41 @@ public class BS_EntryFragment extends Fragment {
     }
 
     private void resetAll() {
-        GlobalClass.SetButtonText(btn_verify_otp, activity.getString(R.string.verify));
+        btn_verify_otp.setText(activity.getString(R.string.verify));
         edt_otp.setEnabled(true);
         btn_verify_otp.setEnabled(true);
-        GlobalClass.SetEditText(mobile_edt, "");
-
-        GlobalClass.SetEditText(edt_otp, "");
-        GlobalClass.SetEditText(edt_name, "");
-        GlobalClass.SetEditText(edt_age, "");
+        mobile_edt.setText("");
+        edt_otp.setText("");
+        edt_name.setText("");
+        edt_age.setText("");
+//        edt_collamount.setText("");
         spin_bs_test.setSelection(0);
         spin_coll_amt.setSelection(0);
-
-        GlobalClass.SetEditText(edt_val, "");
-        GlobalClass.SetEditText(edt_systolic, "");
-        GlobalClass.SetEditText(edt_diastolic, "");
-
+        edt_val.setText("");
+        edt_systolic.setText("");
+        edt_diastolic.setText("");
         imageFile = null;
-
-        GlobalClass.SetEditText(edt_email, "");
-        GlobalClass.SetEditText(edt_pincode, "");
-
+        edt_email.setText("");
+        edt_pincode.setText("");
         gender = "";
         male.setVisibility(View.VISIBLE);
         female.setVisibility(View.VISIBLE);
         male_red.setVisibility(View.GONE);
         female_red.setVisibility(View.GONE);
         correct_img.setVisibility(View.GONE);
-        GlobalClass.SetButtonText(btn_choose_file, getString(R.string.choose_file));
+        btn_choose_file.setText(getString(R.string.choose_file));
         tvUploadImageText.setHint(getString(R.string.img_upload));
     }
 
+    private boolean checkLocationPerm() {
+        int result = ContextCompat.checkSelfPermission(activity, ACCESS_FINE_LOCATION);
+        int result1 = ContextCompat.checkSelfPermission(activity, ACCESS_COARSE_LOCATION);
+        return result1 == PackageManager.PERMISSION_GRANTED && result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPerm() {
+        ActivityCompat.requestPermissions(activity, new String[]{ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+    }
 
     @Override
     public void onDestroy() {
@@ -917,33 +963,54 @@ public class BS_EntryFragment extends Fragment {
     }
 
     private void generateToken() {
+        PackageInfo pInfo = null;
         try {
-            if (ControllersGlobalInitialiser.otPtoken_controller != null) {
-                ControllersGlobalInitialiser.otPtoken_controller = null;
-            }
-            ControllersGlobalInitialiser.otPtoken_controller = new OTPtoken_controller(activity, BS_EntryFragment.this);
-            ControllersGlobalInitialiser.otPtoken_controller.getotptokencontroller();
-        } catch (Exception e) {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
+
+        int versionCode = pInfo.versionCode;
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getContext());
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(activity, Api.THYROCARE).create(PostAPIInteface.class);
+        OTPrequest otPrequest = new OTPrequest();
+        otPrequest.setAppId(OTPAPPID);
+        otPrequest.setPurpose("OTP");
+        otPrequest.setVersion("" + versionCode);
+        Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
+        Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
+        Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
+
+        responseCall.enqueue(new Callback<Tokenresponse>() {
+            @Override
+            public void onResponse(Call<Tokenresponse> call, Response<Tokenresponse> response) {
+                GlobalClass.hideProgress(getContext(), progressDialog);
+                try {
+                    if (response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (!GlobalClass.isNull(response.body().getToken())) {
+                            Log.e(TAG, "TOKEN--->" + response.body().getToken());
+                            //   if (!GlobalClass.isNull(response.body().getRequestId())){
+                            callGenerateOTP(mobile_number, response.body().getToken(), response.body().getRequestId());
+                            //  }
+
+                        }
+                    } else {
+                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Tokenresponse> call, Throwable t) {
+
+            }
+        });
     }
 
     public void getemailresponse() {
         callPOSTAPI();
-    }
-
-    public void getotptokenResponse(Response<Tokenresponse> response) {
-        try {
-            if (response.body() != null && !GlobalClass.isNull(response.body().getRespId()) && response.body().getRespId().equalsIgnoreCase(Constants.RES0000)) {
-                if (!GlobalClass.isNull(response.body().getToken())) {
-                    Log.e(TAG, "TOKEN--->" + response.body().getToken());
-                    callGenerateOTP(mobile_number, response.body().getToken(), response.body().getRequestId());
-                }
-            } else {
-                GlobalClass.showTastyToast(activity, response.body().getResponse(), 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

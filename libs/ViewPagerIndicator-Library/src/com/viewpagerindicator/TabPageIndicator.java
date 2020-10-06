@@ -156,7 +156,6 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
         tabView.setOnClickListener(mTabClickListener);
         tabView.setText(text);
 
-
         if (iconResId != 0) {
             tabView.setCompoundDrawablesWithIntrinsicBounds(iconResId, 0, 0, 0);
         }

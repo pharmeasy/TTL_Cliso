@@ -21,6 +21,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import androidx.core.content.FileProvider;
 
@@ -61,6 +63,12 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
         this.context = pcontext;
         this.mProgressDialog = pProgressDialog;
         this.appnameAPK = appNAMEAPK;
+//        try {
+//            APKSIZE= GlobalClass.getApkSize(context, context.getPackageName());
+//            Log.e(TAG,"APK SIZE ---->"+APKSIZE+" MB");
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -142,7 +150,6 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
         mProgressDialog.setIndeterminate(false);
         mProgressDialog.setProgress(progress[0]);
         mProgressDialog.setMax(100);
-        setProgressMessage(mProgressDialog, progress[0]);
         mProgressDialog.setProgressNumberFormat((GlobalClass.bytes2long(downloadedsize)) + "/" + (GlobalClass.bytes2long(fileLength)));
 
     }
@@ -170,7 +177,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
             mWakeLock.release();
             mProgressDialog.dismiss();
             if (result != null) {
-                GlobalClass.showTastyToast(mActivity, "Download error: " + result,2);
+                GlobalClass.showShortToast(mActivity, "Download error: " + result);
                 globalClass.printLog("Error", TAG, "onPostExecute: ", "" + result);
             } else {
                 CallAlertDialog();

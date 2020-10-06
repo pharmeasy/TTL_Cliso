@@ -2,12 +2,14 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,19 +21,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Downloadreceipt_Controller;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.Receiptmail_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Mail_Model_Receipt;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +56,7 @@ public class TrackDetAdapter extends BaseAdapter {
     ArrayList<Mail_Model_Receipt> barCodeDetail = new ArrayList<Mail_Model_Receipt>();
     Context mContext;
     ArrayList<TrackDetModel> trackdet = new ArrayList<>();
+    int selectedPosition = 0;
     int[] SelectedArray;
     LinearLayout cancelled_Layout;
     public static RequestQueue PostQue;
@@ -59,8 +66,8 @@ public class TrackDetAdapter extends BaseAdapter {
     private String user;
     String Barcodesend = "";
     private String api_key;
+    ProgressDialog barProgressDialog_nxt;
     final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
-    private int fposition;
 
     public TrackDetAdapter(Context ManagingTabsActivity, ArrayList<TrackDetModel> arrayList) {
         sharedpreferences = ManagingTabsActivity.getSharedPreferences(Constants.MyPREFERENCES, Context.MODE_PRIVATE);
@@ -89,6 +96,7 @@ public class TrackDetAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         if (convertView == null) {
+            // inflate the layout
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
 
             convertView = inflater.inflate(R.layout.track_det_row, parent, false);
@@ -103,14 +111,18 @@ public class TrackDetAdapter extends BaseAdapter {
         print = (ImageView) convertView.findViewById(R.id.print);
         cancelled_Layout = (LinearLayout) convertView.findViewById(R.id.cancelled_Layout);
 
+        name.setText(trackdet.get(position).getName().toString());
+        Refby.setText("Ref by:" + trackdet.get(position).getRef_By().toString());
+        barcode.setText(trackdet.get(position).getBarcode().toString());
+        tests.setText(trackdet.get(position).getTests().toString());
 
-        GlobalClass.SetText(name, trackdet.get(position).getName().toString());
-        GlobalClass.SetText(Refby, "Ref by:" + trackdet.get(position).getRef_By().toString());
-        GlobalClass.SetText(barcode, trackdet.get(position).getBarcode().toString());
-        GlobalClass.SetText(tests, trackdet.get(position).getTests().toString());
+        /*if (trackdet.get(position).getPdflink().toString().equals("") || trackdet.get(position).getPdflink().toString().equals(null)) {
+            download.setVisibility(View.INVISIBLE);
+        } else {
+            download.setVisibility(View.VISIBLE);
+        }*/
 
-
-        if (GlobalClass.isNull(trackdet.get(position).getEmail())) {
+        if (trackdet.get(position).getEmail().equals("") || trackdet.get(position).getEmail().equals(null)) {
             mail.setVisibility(View.GONE);
         } else {
             mail.setVisibility(View.VISIBLE);
@@ -119,6 +131,15 @@ public class TrackDetAdapter extends BaseAdapter {
         print.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                barProgressDialog_nxt = new ProgressDialog(mContext);
+                barProgressDialog_nxt.setTitle("Kindly wait ...");
+                barProgressDialog_nxt.setMessage(ToastFile.processing_request);
+                barProgressDialog_nxt.setProgressStyle(barProgressDialog_nxt.STYLE_SPINNER);
+                barProgressDialog_nxt.setProgress(0);
+                barProgressDialog_nxt.setMax(20);
+                barProgressDialog_nxt.show();
+                barProgressDialog_nxt.setCanceledOnTouchOutside(false);
+                barProgressDialog_nxt.setCancelable(false);
 
                 PostQue = GlobalClass.setVolleyReq(mContext);
 
@@ -141,16 +162,79 @@ public class TrackDetAdapter extends BaseAdapter {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.POST, Api.downloadreceipt, jsonObject,
+                            new com.android.volley.Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    if (barProgressDialog_nxt != null && barProgressDialog_nxt.isShowing()) {
+                                        barProgressDialog_nxt.dismiss();
+                                    }
+                                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                                    try { //Track_BarcodeModel
+                                        barCodeDetail = new ArrayList<Mail_Model_Receipt>();
+                                        Mail_Model_Receipt model = new Mail_Model_Receipt();
+                                        model.setAddress(response.optString("address"));
+                                        model.setAmount(response.optString("amount"));
+                                        model.setAmount_word(response.optString("amount_word"));
+                                        model.setEmail(response.optString("email"));
+                                        model.setMobile(response.optString("mobile"));
+                                        model.setName(response.optString("name"));
+                                        model.setOrderdate(response.optString("orderdate"));
+                                        model.setResponse(response.optString("response"));
+                                        model.setTest(response.optString("test"));
+                                        model.setUrl(response.optString("url"));
+                                        barCodeDetail.add(model);
+/*{"address":"","amount":"200","amount_word":"Two Hundred ","email":"sarathykodai@gmail.com","mobile":"9842187270","name":"MRS LINDA (31Y\/F)",
+"orderdate":"31-05-2018","res_id":"RES0000","response":"SUCCESS","test":",FT3,FT4,TSH","url":"https:\\www.thyrocare.com\\Wellness\\AutoReceipt\\G7919583.pdf"}*/
 
-                    try {
-                        if (ControllersGlobalInitialiser.downloadreceipt_controller!= null) {
-                            ControllersGlobalInitialiser.downloadreceipt_controller = null;
+                                        if (model.getUrl().equalsIgnoreCase("null")) {
+                                            TastyToast.makeText(mContext, model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                        } else {
+                                            Intent browserIntent = new Intent(
+                                                    Intent.ACTION_VIEW,
+                                                    Uri.parse(model.getUrl()));
+                                            mContext.startActivity(browserIntent);
+
+                                        }
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            try {
+                                System.out.println("error ala parat " + error);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        ControllersGlobalInitialiser.downloadreceipt_controller = new Downloadreceipt_Controller((Activity)mContext, TrackDetAdapter.this,1);
-                        ControllersGlobalInitialiser.downloadreceipt_controller.downrecpcontroller(jsonObject,PostQue);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
+                    jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+                        @Override
+                        public int getCurrentTimeout() {
+                            return 50000;
+                        }
+
+                        @Override
+                        public int getCurrentRetryCount() {
+                            return 50000;
+                        }
+
+                        @Override
+                        public void retry(VolleyError error) throws VolleyError {
+
+                        }
+                    });
+                    queue.add(jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: URL" + jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: json" + jsonObject);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -160,6 +244,18 @@ public class TrackDetAdapter extends BaseAdapter {
         download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                barProgressDialog_nxt = new ProgressDialog(mContext);
+                barProgressDialog_nxt.setTitle("Kindly wait ...");
+                barProgressDialog_nxt.setMessage(ToastFile.processing_request);
+                barProgressDialog_nxt.setProgressStyle(barProgressDialog_nxt.STYLE_SPINNER);
+                barProgressDialog_nxt.setProgress(0);
+                barProgressDialog_nxt.setMax(20);
+                barProgressDialog_nxt.show();
+                barProgressDialog_nxt.setCanceledOnTouchOutside(false);
+                barProgressDialog_nxt.setCancelable(false);
+
+                PostQue = GlobalClass.setVolleyReq(mContext);
+
 
                 try {
                     JSONObject jsonObject = new JSONObject();
@@ -180,17 +276,91 @@ public class TrackDetAdapter extends BaseAdapter {
                         e.printStackTrace();
                     }
                     RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+                    Log.e(TAG, "Post Data---" + jsonObject.toString());
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.POST, Api.downloadreceipt, jsonObject,
+                            new com.android.volley.Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
 
-                    try {
-                        if (ControllersGlobalInitialiser.downloadreceipt_controller!= null) {
-                            ControllersGlobalInitialiser.downloadreceipt_controller = null;
+                                    if (barProgressDialog_nxt != null && barProgressDialog_nxt.isShowing()) {
+                                        barProgressDialog_nxt.dismiss();
+                                    }
+
+                                    Log.e(TAG, "onResponse: RESPONSE" + response);
+
+                                    try {
+                                        //Track_BarcodeModel
+                                        barCodeDetail = new ArrayList<Mail_Model_Receipt>();
+                                        Mail_Model_Receipt model = new Mail_Model_Receipt();
+                                        model.setAddress(response.optString("address"));
+                                        model.setAmount(response.optString("amount"));
+                                        model.setAmount_word(response.optString("amount_word"));
+                                        model.setEmail(response.optString("email"));
+                                        model.setMobile(response.optString("mobile"));
+                                        model.setName(response.optString("name"));
+                                        model.setOrderdate(response.optString("orderdate"));
+                                        model.setResponse(response.optString("response"));
+                                        model.setTest(response.optString("test"));
+                                        model.setUrl(response.optString("url"));
+                                        model.setRes_id(response.optString("res_id"));
+                                        barCodeDetail.add(model);
+
+
+/*{"address":"","amount":"200","amount_word":"Two Hundred ","email":"sarathykodai@gmail.com","mobile":"9842187270","name":"MRS LINDA (31Y\/F)",
+"orderdate":"31-05-2018","res_id":"RES0000","response":"SUCCESS","test":",FT3,FT4,TSH","url":"https:\\www.thyrocare.com\\Wellness\\AutoReceipt\\G7919583.pdf"}*/
+                                        if (model.getRes_id().equalsIgnoreCase(Constants.RES0000)) {
+                                            if (model.getUrl().equalsIgnoreCase("null")) {
+                                                TastyToast.makeText(mContext, model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                            } else {
+                                                Intent browserIntent = new Intent(
+                                                        Intent.ACTION_VIEW,
+                                                        Uri.parse(model.getUrl()));
+                                                mContext.startActivity(browserIntent);
+
+                                            }
+                                        } else {
+                                            GlobalClass.toastyError(mContext, model.getResponse(), false);
+                                        }
+
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            try {
+                                System.out.println("error ala parat " + error);
+                                // TastyToast.makeText(mContext, error.getLocalizedMessage(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        ControllersGlobalInitialiser.downloadreceipt_controller = new Downloadreceipt_Controller((Activity)mContext, TrackDetAdapter.this,2);
-                        ControllersGlobalInitialiser.downloadreceipt_controller.downrecpcontroller(jsonObject,queue);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
+                    jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+                        @Override
+                        public int getCurrentTimeout() {
+                            return 50000;
+                        }
 
+                        @Override
+                        public int getCurrentRetryCount() {
+                            return 50000;
+                        }
+
+                        @Override
+                        public void retry(VolleyError error) throws VolleyError {
+
+                        }
+                    });
+                    queue.add(jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: URL" + jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: json" + jsonObject);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -201,6 +371,18 @@ public class TrackDetAdapter extends BaseAdapter {
         mail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                barProgressDialog_nxt = new ProgressDialog(mContext);
+                barProgressDialog_nxt.setTitle("Kindly wait ...");
+                barProgressDialog_nxt.setMessage(ToastFile.processing_request);
+                barProgressDialog_nxt.setProgressStyle(barProgressDialog_nxt.STYLE_SPINNER);
+                barProgressDialog_nxt.setProgress(0);
+                barProgressDialog_nxt.setMax(20);
+                barProgressDialog_nxt.show();
+                barProgressDialog_nxt.setCanceledOnTouchOutside(false);
+                barProgressDialog_nxt.setCancelable(false);
+
+                PostQue = GlobalClass.setVolleyReq(mContext);
+
 
                 try {
                     JSONObject jsonObject = new JSONObject();
@@ -221,18 +403,75 @@ public class TrackDetAdapter extends BaseAdapter {
                         e.printStackTrace();
                     }
                     RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                            Request.Method.POST, Api.downloadreceipt, jsonObject,
+                            new com.android.volley.Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    if (barProgressDialog_nxt != null && barProgressDialog_nxt.isShowing()) {
+                                        barProgressDialog_nxt.dismiss();
+                                    }
+                                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                                    try { //Track_BarcodeModel
+                                        barCodeDetail = new ArrayList<Mail_Model_Receipt>();
+                                        Mail_Model_Receipt model = new Mail_Model_Receipt();
+                                        model.setAddress(response.optString("address"));
+                                        model.setAmount(response.optString("amount"));
+                                        model.setAmount_word(response.optString("amount_word"));
+                                        model.setEmail(response.optString("email"));
+                                        model.setMobile(response.optString("mobile"));
+                                        model.setName(response.optString("name"));
+                                        model.setOrderdate(response.optString("orderdate"));
+                                        model.setResponse(response.optString("response"));
+                                        model.setTest(response.optString("test"));
+                                        model.setUrl(response.optString("url"));
+                                        barCodeDetail.add(model);
 
-                    fposition=position;
-                    try {
-                        if (ControllersGlobalInitialiser.downloadreceipt_controller!= null) {
-                            ControllersGlobalInitialiser.downloadreceipt_controller = null;
+                                        if (model.getUrl().equalsIgnoreCase("null")) {
+                                            TastyToast.makeText(mContext, model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                        } else {
+                                            ShowMailAlert(trackdet.get(position).getPatient_id().toString(), trackdet.get(position).getBarcode().toString(),
+                                                    trackdet.get(position).getEmail().toString(), trackdet.get(position).getDate().toString());
+                                        }
+/*{"address":"","amount":"200","amount_word":"Two Hundred ","email":"sarathykodai@gmail.com","mobile":"9842187270","name":"MRS LINDA (31Y\/F)",
+"orderdate":"31-05-2018","res_id":"RES0000","response":"SUCCESS","test":",FT3,FT4,TSH","url":"https:\\www.thyrocare.com\\Wellness\\AutoReceipt\\G7919583.pdf"}*/
+
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+
+                            }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            try {
+                                System.out.println("error ala parat " + error);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                        ControllersGlobalInitialiser.downloadreceipt_controller = new Downloadreceipt_Controller((Activity)mContext, TrackDetAdapter.this,3);
-                        ControllersGlobalInitialiser.downloadreceipt_controller.downrecpcontroller(jsonObject,queue);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    });
+                    jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+                        @Override
+                        public int getCurrentTimeout() {
+                            return 50000;
+                        }
 
+                        @Override
+                        public int getCurrentRetryCount() {
+                            return 50000;
+                        }
+
+                        @Override
+                        public void retry(VolleyError error) throws VolleyError {
+
+                        }
+                    });
+                    queue.add(jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: URL" + jsonObjectRequest);
+                    Log.e(TAG, "DownloadReceipt: json" + jsonObject);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -267,12 +506,12 @@ public class TrackDetAdapter extends BaseAdapter {
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                 ) {
-                    GlobalClass.showTastyToast((Activity)mContext, ToastFile.crt_mob_num, 2);
+                    TastyToast.makeText(mContext, ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(mob,enteredString.substring(1));
+                        mob.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(mob,"");
+                        mob.setText("");
                     }
                 }
             }
@@ -291,19 +530,19 @@ public class TrackDetAdapter extends BaseAdapter {
 
 
         if (barCodeDetail.get(0).getEmail().equalsIgnoreCase("null")) {
-            GlobalClass.SetEditText(emailid,"");
+            emailid.setText("");
         } else {
-            GlobalClass.SetEditText(emailid,barCodeDetail.get(0).getEmail());
+            emailid.setText(barCodeDetail.get(0).getEmail());
         }
         if (barCodeDetail.get(0).getName().equalsIgnoreCase("null")) {
-            GlobalClass.SetEditText(name,"");
+            name.setText("");
         } else {
-            GlobalClass.SetEditText(name,barCodeDetail.get(0).getName());
+            name.setText(barCodeDetail.get(0).getName());
         }
         if (barCodeDetail.get(0).getMobile().equalsIgnoreCase("null")) {
-            GlobalClass.SetEditText(mob,"");
+            mob.setText("");
         } else {
-            GlobalClass.SetEditText(mob,barCodeDetail.get(0).getMobile());
+            mob.setText(barCodeDetail.get(0).getMobile());
         }
 
 
@@ -318,15 +557,18 @@ public class TrackDetAdapter extends BaseAdapter {
                 email_id_string = emailid.getText().toString();
                 if (!email_id_string.equals("")) {
                     if (!emailid.getText().toString().matches(emailPattern)) {
-                        GlobalClass.showTastyToast((Activity) mContext, ToastFile.invalid_eml, 2);
+                        Toast.makeText(mContext, ToastFile.invalid_eml, Toast.LENGTH_SHORT).show();
                     } else {
                         SendMail();
                         dialog.dismiss();
                     }
 
                 } else {
-                    GlobalClass.showTastyToast((Activity) mContext, ToastFile.crt_eml,2);
+                    Toast.makeText(mContext, ToastFile.crt_eml, Toast.LENGTH_SHORT).show();
                 }
+                //GetData(patient_ID,barcode,email,date);
+//                SendMail();
+
 
             }
         });
@@ -342,6 +584,8 @@ public class TrackDetAdapter extends BaseAdapter {
     }
 
     private void SendMail() {
+        PostQue = GlobalClass.setVolleyReq(mContext);
+
         JSONObject jsonObject = new JSONObject();
         try {
 
@@ -365,16 +609,35 @@ public class TrackDetAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.Receipt_mail, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
+                            /*"name":"SELVI HARSHINI III (14Y\/F)"*/
+                            TastyToast.makeText(mContext, response.optString("response"), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
-        try {
-            if (ControllersGlobalInitialiser.receiptmail_controller != null) {
-                ControllersGlobalInitialiser.receiptmail_controller = null;
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.receiptmail_controller = new Receiptmail_Controller((Activity)mContext, TrackDetAdapter.this);
-            ControllersGlobalInitialiser.receiptmail_controller.getreceiptmail(jsonObject,queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "SendMail: " + jsonObjectRequest);
+        Log.e(TAG, "SendMail: json" + jsonObject);
     }
 
     public void setFilter(List<TrackDetModel> countryModels) {
@@ -383,117 +646,5 @@ public class TrackDetAdapter extends BaseAdapter {
         cancelled_Layout.setBackgroundResource(R.drawable.maroon_border_white_bg);
         notifyDataSetChanged();
 
-    }
-
-    public void getResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            GlobalClass.showTastyToast((Activity)mContext, response.optString("response"), 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void receiptdownResponse(JSONObject response, int fromcome) {
-        if (fromcome==0){
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            try { //Track_BarcodeModel
-                barCodeDetail = new ArrayList<Mail_Model_Receipt>();
-                Mail_Model_Receipt model = new Mail_Model_Receipt();
-                model.setAddress(response.optString("address"));
-                model.setAmount(response.optString("amount"));
-                model.setAmount_word(response.optString("amount_word"));
-                model.setEmail(response.optString("email"));
-                model.setMobile(response.optString("mobile"));
-                model.setName(response.optString("name"));
-                model.setOrderdate(response.optString("orderdate"));
-                model.setResponse(response.optString("response"));
-                model.setTest(response.optString("test"));
-                model.setUrl(response.optString("url"));
-                barCodeDetail.add(model);
-
-                if (model.getUrl().equalsIgnoreCase("null")) {
-                    GlobalClass.showTastyToast((Activity)mContext, model.getResponse(),2);
-
-                } else {
-                    Intent browserIntent = new Intent(
-                            Intent.ACTION_VIEW,
-                            Uri.parse(model.getUrl()));
-                    mContext.startActivity(browserIntent);
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }else if (fromcome==2){
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-
-            try {
-                //Track_BarcodeModel
-                barCodeDetail = new ArrayList<Mail_Model_Receipt>();
-                Mail_Model_Receipt model = new Mail_Model_Receipt();
-                model.setAddress(response.optString("address"));
-                model.setAmount(response.optString("amount"));
-                model.setAmount_word(response.optString("amount_word"));
-                model.setEmail(response.optString("email"));
-                model.setMobile(response.optString("mobile"));
-                model.setName(response.optString("name"));
-                model.setOrderdate(response.optString("orderdate"));
-                model.setResponse(response.optString("response"));
-                model.setTest(response.optString("test"));
-                model.setUrl(response.optString("url"));
-                model.setRes_id(response.optString("res_id"));
-                barCodeDetail.add(model);
-
-
-                if (!GlobalClass.isNull(model.getRes_id()) && model.getRes_id().equalsIgnoreCase(Constants.RES0000)) {
-                    if (model.getUrl().equalsIgnoreCase("null")) {
-                        GlobalClass.showTastyToast((Activity)mContext, model.getResponse(),2);
-                    } else {
-                        Intent browserIntent = new Intent(
-                                Intent.ACTION_VIEW,
-                                Uri.parse(model.getUrl()));
-                        mContext.startActivity(browserIntent);
-
-                    }
-                } else {
-                    GlobalClass.showTastyToast((Activity)mContext, model.getResponse(), 2);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }else if (fromcome==3){
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            try { //Track_BarcodeModel
-                barCodeDetail = new ArrayList<Mail_Model_Receipt>();
-                Mail_Model_Receipt model = new Mail_Model_Receipt();
-                model.setAddress(response.optString("address"));
-                model.setAmount(response.optString("amount"));
-                model.setAmount_word(response.optString("amount_word"));
-                model.setEmail(response.optString("email"));
-                model.setMobile(response.optString("mobile"));
-                model.setName(response.optString("name"));
-                model.setOrderdate(response.optString("orderdate"));
-                model.setResponse(response.optString("response"));
-                model.setTest(response.optString("test"));
-                model.setUrl(response.optString("url"));
-                barCodeDetail.add(model);
-
-                if (model.getUrl().equalsIgnoreCase("null")) {
-                    GlobalClass.showTastyToast((Activity)mContext, model.getResponse(), 2);
-
-                } else {
-                    ShowMailAlert(trackdet.get(fposition).getPatient_id().toString(), trackdet.get(fposition).getBarcode().toString(),
-                            trackdet.get(fposition).getEmail().toString(), trackdet.get(fposition).getDate().toString());
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 }

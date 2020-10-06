@@ -8,7 +8,7 @@
     <include
         layout="@layout/lay_toolbar"/>
 
-    <com.example.e5322.thyrosoft.Adapter.VerticalViewPager
+    <com.example.e5322.thyrosoft.Activity.VerticalViewPager
         android:id="@+id/healthTipViewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,9 +1,6 @@
 package com.example.e5322.thyrosoft.Models.PincodeMOdel;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-public class CommunicationMaster implements Parcelable
+public class CommunicationMaster
 {
     private String id;
 
@@ -12,38 +9,6 @@ public class CommunicationMaster implements Parcelable
     private String forwardTo;
 
     private String displayName;
-
-    protected CommunicationMaster(Parcel in) {
-        id = in.readString();
-        isBarcode = in.readString();
-        forwardTo = in.readString();
-        displayName = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(isBarcode);
-        dest.writeString(forwardTo);
-        dest.writeString(displayName);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<CommunicationMaster> CREATOR = new Creator<CommunicationMaster>() {
-        @Override
-        public CommunicationMaster createFromParcel(Parcel in) {
-            return new CommunicationMaster(in);
-        }
-
-        @Override
-        public CommunicationMaster[] newArray(int size) {
-            return new CommunicationMaster[size];
-        }
-    };
 
     public String getId ()
     {

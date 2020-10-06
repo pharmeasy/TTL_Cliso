@@ -103,7 +103,6 @@ public class  PayUBaseActivity extends FragmentActivity implements PaymentRelate
             ((TextView) findViewById(R.id.textview_amount)).setText(SdkUIConstants.AMOUNT + ": " + mPaymentParams.getAmount());
             ((TextView) findViewById(R.id.textview_txnid)).setText(SdkUIConstants.TXN_ID + ": " + mPaymentParams.getTxnId());
 
-
             if (mPaymentParams != null && mPayUHashes != null && payuConfig != null) {
                 /**
                  * Below merchant webservice is used to get all the payment options enabled on the merchant key.
@@ -129,6 +128,7 @@ public class  PayUBaseActivity extends FragmentActivity implements PaymentRelate
                         paymentRelatedDetailsForMobileSdkTask.execute(payuConfig);
                     } else {
                         Toast.makeText(this, postData.getResult(), Toast.LENGTH_LONG).show();
+//                 close the progress bar
                         mProgressBar.setVisibility(View.GONE);
                     }
                 }

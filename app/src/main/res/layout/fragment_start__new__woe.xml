@@ -328,11 +328,11 @@
                     android:id="@+id/tv_mob_note"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/str_mob_credit"
                     android:layout_marginStart="@dimen/dp_5"
+                    android:text="@string/str_mob_credit"
                     android:textColor="@color/maroon"
-                    android:visibility="gone"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <LinearLayout
                     android:id="@+id/namePatients"
@@ -603,6 +603,7 @@
                         android:maxLength="8"
                         android:textColor="@color/DARKGray"
                         android:textSize="12sp">
+
                         <requestFocus />
                     </EditText>
                 </LinearLayout>

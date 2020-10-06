@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.graphics.Paint;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
@@ -22,6 +23,7 @@ public class TRFDisplayAdapter extends RecyclerView.Adapter<TRFDisplayAdapter.My
     private Activity activity;
     private List<TRFModel> trfModelArrayList;
     private OnItemClickListener onItemClickListener;
+    private Dialog dialog;
 
     public TRFDisplayAdapter(Activity activity, List<TRFModel> trfModelArrayList) {
         this.activity = activity;
@@ -42,7 +44,7 @@ public class TRFDisplayAdapter extends RecyclerView.Adapter<TRFDisplayAdapter.My
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, final int pos) {
 
-        GlobalClass.SetText(myViewHolder.tv_productName,trfModelArrayList.get(pos).getProduct());
+        myViewHolder.tv_productName.setText(trfModelArrayList.get(pos).getProduct());
         myViewHolder.tv_productName.setPaintFlags(myViewHolder.tv_productName.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         File file = trfModelArrayList.get(pos).getTrf_image();
@@ -73,7 +75,7 @@ public class TRFDisplayAdapter extends RecyclerView.Adapter<TRFDisplayAdapter.My
                 if (file != null)
                     GlobalClass.showImageDialog(activity, file,"",1);
                 else
-                    GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 2);
+                    Toast.makeText(activity, "Image not found", Toast.LENGTH_SHORT).show();
 
             }
         });

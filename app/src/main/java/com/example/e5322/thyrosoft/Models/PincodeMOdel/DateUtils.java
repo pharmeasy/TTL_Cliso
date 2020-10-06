@@ -786,13 +786,13 @@ public class DateUtils {
 //
 //		SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //		//Current Date Time in Local Timezone
-//		Log.v("Current Date and Time in local timezone: " + localDateFormat.format( new Date(calendar.getTimeInMillis())));
+//		System.out.println("Current Date and Time in local timezone: " + localDateFormat.format( new Date(calendar.getTimeInMillis())));
 //
 //		SimpleDateFormat gmtDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 //		gmtDateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
 //
 //		//Current Date Time in GMT
-//		Log.v("Current Date and Time in GMT time zone: " + gmtDateFormat.format(new Date(calendar.getTimeInMillis())));
+//		System.out.println("Current Date and Time in GMT time zone: " + gmtDateFormat.format(new Date(calendar.getTimeInMillis())));
 
 
         return calendar.getTimeInMillis();

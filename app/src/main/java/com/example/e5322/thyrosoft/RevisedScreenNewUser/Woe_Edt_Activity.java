@@ -1,18 +1,20 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -24,25 +26,25 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
-import com.example.e5322.thyrosoft.API.ConnectionDetector;
-import com.example.e5322.thyrosoft.API.Constants;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.WoeController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,11 +54,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Woe_Edt_Activity extends AppCompatActivity {
     public boolean genderId = false;
+    ProgressDialog barProgressDialog;
     TextView brand_name, selectType_txt, samplecollectionponit, referedby, sct_txt, sub_source_code, barcode_number, test_names_txt, title;
     EditText name_edt, age_edt;
     Spinner spinyr;
@@ -68,11 +70,13 @@ public class Woe_Edt_Activity extends AppCompatActivity {
     int agesinteger;
     ImageView back, home;
     LinearLayout labname_linear;
+    private Edit_Woe.OnFragmentInteractionListener mListener;
+    private RequestQueue POstQue;
     private String RES_ID;
     private String barcode_patient_id;
     private String message;
     private String status;
-    private String user, passwrd, access, api_key;
+    private String patientName, patientYearType, user, passwrd, access, api_key;
     private String saveGenderId;
     private String age_type;
     private String getName;
@@ -86,186 +90,13 @@ public class Woe_Edt_Activity extends AppCompatActivity {
     private String versionNameTopass;
     private int versionCode;
     private String TAG = Woe_Edt_Activity.class.getSimpleName().toString();
-    Activity mActivity;
-    ConnectionDetector cd;
-    public ArrayList<Summary_model> summary_models = new ArrayList<>();
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit__woe);
-        mActivity = Woe_Edt_Activity.this;
-        cd = new ConnectionDetector(mActivity);
 
-        if (getIntent().getExtras() != null) {
-            summary_models = getIntent().getExtras().getParcelableArrayList("summary_models");
-        }
-
-        initViews();
-        initListner();
-
-    }
-
-    private void initListner() {
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(Woe_Edt_Activity.this);
-            }
-        });
-
-        age_edt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    agesinteger = Integer.parseInt(s.toString());
-                }
-
-
-                String enteredString = s.toString();
-
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_age, 1);
-                    if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(age_edt, enteredString.substring(1));
-                    } else {
-                        GlobalClass.SetEditText(age_edt, "");
-                    }
-                }
-                if (age_edt.getText().toString().equals("")) {
-
-                } else {
-                    try {
-                        if (agesinteger < 12) {
-                            ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
-                                    R.layout.spinner_item);
-                            spinyr.setAdapter(PatientsagespinnerAdapter);
-                        }
-                        if (agesinteger > 12) {
-                            ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyrday,
-                                    R.layout.spinner_item);
-                            spinyr.setAdapter(Patientsagespinner);
-                        }
-
-                        if (agesinteger > 29) {
-                            ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyr,
-                                    R.layout.spinner_item);
-                            spinyr.setAdapter(Patientsagesyr);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        name_edt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_name, 2);
-                    if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(name_edt, enteredString.substring(1));
-                    } else {
-                        GlobalClass.SetEditText(name_edt, "");
-                    }
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
-        male.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!genderId) {
-                    genderId = true;
-                    saveGenderId = "M";
-                } else if (genderId) {
-                    genderId = false;
-                    saveGenderId = "M";
-                }
-
-            }
-        });
-        female.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!genderId) {
-                    genderId = true;
-                    saveGenderId = "F";
-                } else if (genderId) {
-                    genderId = false;
-                    saveGenderId = "F";
-                }
-
-            }
-        });
-
-        next_btn_patient.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getName = name_edt.getText().toString();
-                getName = getName.replaceAll("\\s+", " ");
-                getAge = age_edt.getText().toString();
-                getAgeType = spinyr.getSelectedItem().toString();
-                if (GlobalClass.isNull(getName)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_name, 2);
-                } else if (GlobalClass.isNull(getAge)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_age, 2);
-                } else if (GlobalClass.isNull(getAgeType)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_age_type, 2);
-                } else if (GlobalClass.isNull(saveGenderId)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_gender, 2);
-                } else {
-                    if (!GlobalClass.isNull(getAgeType) && getAgeType.equals("Years")) {
-                        age_type = "Y";
-                    } else if (!GlobalClass.isNull(getAgeType) && getAgeType.equals("Months")) {
-                        age_type = "M";
-                    } else if (!GlobalClass.isNull(getAgeType) && getAgeType.equals("Days")) {
-                        age_type = "D";
-                    }
-
-                    doWOE_edit();
-                }
-            }
-        });
-
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initViews() {
         brand_name = (TextView) findViewById(R.id.brand_name);
         selectType_txt = (TextView) findViewById(R.id.selectType_txt);
         samplecollectionponit = (TextView) findViewById(R.id.samplecollectionponit);
@@ -302,13 +133,26 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
 
         prefs = Woe_Edt_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
 
-        GlobalClass.SetText(title, "WOE Edit");
+        System.out.println(TAG + prefs + " " + user + " " + api_key);
 
+        title.setText("WOE Edit");
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(Woe_Edt_Activity.this);
+            }
+        });
 
         PackageInfo pInfo = null;
         try {
@@ -321,27 +165,83 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         versionCode = pInfo.versionCode;
 
 
-        if (GlobalClass.CheckArrayList(summary_models)) {
+        age_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    agesinteger = Integer.parseInt(s.toString());
+                } else {
+
+                }
+
+
+                String enteredString = s.toString();
+
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(Woe_Edt_Activity.this,
+                            ToastFile.crt_age,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        age_edt.setText(enteredString.substring(1));
+                    } else {
+                        age_edt.setText("");
+                    }
+                }
+                if (age_edt.getText().toString().equals("")) {
+
+                } else {
+                    try {
+                        if (agesinteger < 12) {
+                            ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(PatientsagespinnerAdapter);
+                        }
+                        if (agesinteger > 12) {
+                            ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyrday,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(Patientsagespinner);
+                        }
+
+                        if (agesinteger > 29) {
+                            ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientspinyr,
+                                    R.layout.spinner_item);
+                            spinyr.setAdapter(Patientsagesyr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        if (GlobalClass.summary_models != null) {
 
             try {
-                GlobalClass.SetText(brand_name, summary_models.get(0).getWoeditlist().getWoe().getBRAND());
-                GlobalClass.SetText(selectType_txt, summary_models.get(0).getWoeditlist().getWoe().getTYPE());
-                GlobalClass.SetText(name_edt, summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
-                GlobalClass.SetText(sub_source_code, summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
-                GlobalClass.SetText(age_edt, summary_models.get(0).getWoeditlist().getWoe().getAGE());
+                brand_name.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND());
+                selectType_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTYPE());
+                name_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+                sub_source_code.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
+                age_edt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
 
-                if (GlobalClass.CheckArrayList(summary_models) && summary_models.get(0).getWoeditlist() != null
-                        && summary_models.get(0).getWoeditlist().getWoe() != null &&
-                        !GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME())) {
-
-                    if (!GlobalClass.isNull(selectType_txt.getText().toString()) && selectType_txt.getText().toString().equalsIgnoreCase("HOME") ||
-                            selectType_txt.getText().toString().equalsIgnoreCase("DPS")) {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() != null && !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals("")) {
+                    if (selectType_txt.getText().equals("HOME") || selectType_txt.getText().equals("DPS")) {
                         labname_linear.setVisibility(View.GONE);
                     } else {
                         labname_linear.setVisibility(View.VISIBLE);
                     }
 
-                    GlobalClass.SetText(samplecollectionponit, summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
+                    samplecollectionponit.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
                 } else {
                     labname_linear.setVisibility(View.GONE);
                 }
@@ -350,9 +250,9 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             }
 
             try {
-                if (GlobalClass.CheckArrayList(summary_models) && summary_models.get(0).getWoeditlist() != null && summary_models.get(0).getWoeditlist().getWoe() != null &&
-                        !GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME())) {
-                    GlobalClass.SetText(referedby, summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+                if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null && GlobalClass.summary_models.get(0).getWoeditlist().getWoe() != null &&
+                        !GlobalClass.isNull(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME())) {
+                    referedby.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
 
                 }
             } catch (Exception e) {
@@ -368,13 +268,13 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             try {
                 //Converting the input String to Date
-                if (GlobalClass.CheckArrayList(summary_models) && summary_models.get(0).getWoeditlist() != null) {
-                    date = sdf.parse(summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+                if (GlobalClass.summary_models != null && GlobalClass.summary_models.get(0).getWoeditlist() != null) {
+                    date = sdf.parse(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
                     //Changing the format of date and storing it in String
                     output = sdfOutput.format(date);
                     //Displaying the date
-                    Log.v("TAG", output);
-                    GlobalClass.SetText(sct_txt, summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
+                    System.out.println(output);
+                    sct_txt.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME());
                 }
 
             } catch (ParseException pe) {
@@ -384,19 +284,19 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             ArrayList<String> getOnlyBarcodes = new ArrayList<>();
             try {
-                if (GlobalClass.CheckArrayList(summary_models) && GlobalClass.checkArray(summary_models.get(0).getWoeditlist().getBarcodelist()))
-                    for (int i = 0; i < summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                        getOnlyBarcodes.add(summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
+                    for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+                        getOnlyBarcodes.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
                         String displayBarcodes = TextUtils.join(",", getOnlyBarcodes);
-                        GlobalClass.SetText(barcode_number, displayBarcodes);
+                        barcode_number.setText(displayBarcodes);
                     }
 
                 ArrayList<String> getOnlyTestNames = new ArrayList<>();
-                if (GlobalClass.CheckArrayList(summary_models) && GlobalClass.checkArray(summary_models.get(0).getWoeditlist().getBarcodelist()))
-                    for (int i = 0; i < summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                        getOnlyTestNames.add(summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0)
+                    for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+                        getOnlyTestNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
                         String displayslectedtest = TextUtils.join(",", getOnlyTestNames);
-                        GlobalClass.SetText(test_names_txt, "Tests : " + displayslectedtest);
+                        test_names_txt.setText("Tests : " + displayslectedtest);
                     }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -405,21 +305,22 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
             try {
 
-                if (!GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE()) && summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equalsIgnoreCase("Y")) {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("Y")) {
+                    //spinyr.setSelection(0);
                     age_type = "Y";
-                } else if (!GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE()) && summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equalsIgnoreCase("M")) {
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("M")) {
+                    // spinyr.setSelection(1);
                     age_type = "M";
-                } else if (!GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE()) && summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equalsIgnoreCase("D")) {
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE().equals("D")) {
+                    //  spinyr.setSelection(2);
                     age_type = "D";
                 }
 
-                if (!GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getGENDER()) &&
-                        summary_models.get(0).getWoeditlist().getWoe().getGENDER().equalsIgnoreCase("M")) {
+                if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("M")) {
                     male.setChecked(true);
                     female.setChecked(false);
                     saveGenderId = "M";
-                } else if (!GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getGENDER())
-                        && summary_models.get(0).getWoeditlist().getWoe().getGENDER().equalsIgnoreCase("F")) {
+                } else if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER().equals("F")) {
                     female.setChecked(true);
                     male.setChecked(false);
                     saveGenderId = "F";
@@ -431,16 +332,121 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
         }
 
+        name_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(Woe_Edt_Activity.this,
+                            ToastFile.crt_name,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        name_edt.setText(enteredString.substring(1));
+                    } else {
+                        name_edt.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        male.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (genderId == false) {
+                    genderId = true;
+                    saveGenderId = "M";
+                } else if (genderId == true) {
+                    genderId = false;
+                    saveGenderId = "M";
+                }
+
+            }
+        });
+        female.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (genderId == false) {
+                    genderId = true;
+                    saveGenderId = "F";
+                } else if (genderId == true) {
+                    genderId = false;
+                    saveGenderId = "F";
+                }
+
+            }
+        });
+
+        next_btn_patient.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getName = name_edt.getText().toString();
+                getName = getName.replaceAll("\\s+", " ");
+                getAge = age_edt.getText().toString();
+                getAgeType = spinyr.getSelectedItem().toString();
+                if (getName.equals("") || getName.equals(null)) {
+                    Toast.makeText(Woe_Edt_Activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                } else if (getAge.equals("") || getAge.equals(null)) {
+                    Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                } else if (getAgeType.equals("") || getAgeType.equals(null)) {
+                    Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_age_type, Toast.LENGTH_SHORT).show();
+                } else if (saveGenderId.equals("") || saveGenderId.equals(null)) {
+                    Toast.makeText(Woe_Edt_Activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                } else {
+                    if (getAgeType.equals("Years")) {
+                        age_type = "Y";
+                    } else if (getAgeType.equals("Months")) {
+                        age_type = "M";
+                    } else if (getAgeType.equals("Days")) {
+                        age_type = "D";
+                    }
+                    doWOE_edit();
+                }
+
+
+            }
+        });
+        // Inflate the layout for this fragment
     }
 
     private void doWOE_edit() {
+
+        barProgressDialog = new ProgressDialog(Woe_Edt_Activity.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
+        if (barProgressDialog.isShowing()) {
+            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                barProgressDialog.dismiss();
+            }
+        }
+
+
         String brand_type_to_send = null;
         String type_to_send = null;
         try {
-            summary_models.get(0).getWoeditlist().getWoe().setPATIENT_NAME(getName);
-            summary_models.get(0).getWoeditlist().getWoe().setAGE(getAge);
-            summary_models.get(0).getWoeditlist().getWoe().setAGE_TYPE(age_type);
-            summary_models.get(0).getWoeditlist().getWoe().setGENDER(saveGenderId);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setPATIENT_NAME(getName);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE(getAge);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setAGE_TYPE(age_type);
+            GlobalClass.summary_models.get(0).getWoeditlist().getWoe().setGENDER(saveGenderId);
             brand_type_to_send = brand_name.getText().toString();
             type_to_send = selectType_txt.getText().toString();
         } catch (Exception e) {
@@ -448,7 +454,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         }
 
 
-        String getDateTopass = summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME();
+        String getDateTopass = GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_COLLECTION_TIME();
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm");
         SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -460,86 +466,73 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        RequestQueue POstQue = GlobalClass.setVolleyReq(Woe_Edt_Activity.this);
+        POstQue = GlobalClass.setVolleyReq(Woe_Edt_Activity.this);
         MyPojoWoe myPojoWoe = new MyPojoWoe();
 
-        if (GlobalClass.CheckArrayList(summary_models)
-                && summary_models.get(0).getWoeditlist() != null &&
-                summary_models.get(0).getWoeditlist().getWoe() != null &&
-                summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE() != null) {
-
-            deliveryMode = Integer.valueOf(summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE());
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE() != null) {
+            deliveryMode = Integer.valueOf(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE());
         } else {
-            Woe_mode = Integer.parseInt(summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE());
+            Woe_mode = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE());
         }
-        if (GlobalClass.CheckArrayList(summary_models)
-                && summary_models.get(0).getWoeditlist() != null &&
-                summary_models.get(0).getWoeditlist().getWoe() != null &&
-                 !GlobalClass.isNull(summary_models.get(0).getWoeditlist().getWoe().getWO_MODE())) {
-
-            sr_no = Integer.parseInt(summary_models.get(0).getWoeditlist().getWoe().getSR_NO());
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_MODE() != null) {
+            sr_no = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO());
         }
 
         Woe woe = new Woe();
-        woe.setAADHAR_NO(summary_models.get(0).getWoeditlist().getWoe().getAADHAR_NO());
-        woe.setADDRESS(summary_models.get(0).getWoeditlist().getWoe().getADDRESS());
-        woe.setAGE(summary_models.get(0).getWoeditlist().getWoe().getAGE());
-        woe.setAGE_TYPE(summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE());
-        woe.setALERT_MESSAGE(summary_models.get(0).getWoeditlist().getWoe().getALERT_MESSAGE());
-        woe.setAMOUNT_COLLECTED(summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED());
-        woe.setAMOUNT_DUE(summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_DUE());
+        woe.setAADHAR_NO(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAADHAR_NO());
+        woe.setADDRESS(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getADDRESS());
+        woe.setAGE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE());
+        woe.setAGE_TYPE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAGE_TYPE());
+        woe.setALERT_MESSAGE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getALERT_MESSAGE());
+        woe.setAMOUNT_COLLECTED(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED());
+        woe.setAMOUNT_DUE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_DUE());
         woe.setAPP_ID(versionNameTopass);
-        woe.setBCT_ID(summary_models.get(0).getWoeditlist().getWoe().getBCT_ID());
+        woe.setBCT_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBCT_ID());
         woe.setBRAND(brand_type_to_send);
-        woe.setCAMP_ID(summary_models.get(0).getWoeditlist().getWoe().getCAMP_ID());
-        woe.setCONT_PERSON(summary_models.get(0).getWoeditlist().getWoe().getCONT_PERSON());
-        woe.setCONTACT_NO(summary_models.get(0).getWoeditlist().getWoe().getCONTACT_NO());
-        woe.setCUSTOMER_ID(summary_models.get(0).getWoeditlist().getWoe().getCUSTOMER_ID());
+        woe.setCAMP_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getCAMP_ID());
+        woe.setCONT_PERSON(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getCONT_PERSON());
+        woe.setCONTACT_NO(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getCONTACT_NO());
+        woe.setCUSTOMER_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getCUSTOMER_ID());
         woe.setDELIVERY_MODE(deliveryMode);
 
-        woe.setEMAIL_ID(summary_models.get(0).getWoeditlist().getWoe().getEMAIL_ID());
-        woe.setENTERED_BY(summary_models.get(0).getWoeditlist().getWoe().getENTERED_BY());
-        woe.setGENDER(summary_models.get(0).getWoeditlist().getWoe().getGENDER());
-        woe.setLAB_ADDRESS(summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS());
-        woe.setLAB_ID(summary_models.get(0).getWoeditlist().getWoe().getLAB_ID());
-        woe.setLAB_NAME(summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
-        woe.setLEAD_ID(summary_models.get(0).getWoeditlist().getWoe().getLEAD_ID());
-        woe.setMAIN_SOURCE(summary_models.get(0).getWoeditlist().getWoe().getMAIN_SOURCE());
-        woe.setORDER_NO(summary_models.get(0).getWoeditlist().getWoe().getORDER_NO());
-        woe.setOS(summary_models.get(0).getWoeditlist().getWoe().getOS());
-        woe.setPATIENT_NAME(summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
-        woe.setPINCODE(summary_models.get(0).getWoeditlist().getWoe().getPINCODE());
-        woe.setPRODUCT(summary_models.get(0).getWoeditlist().getWoe().getPRODUCT());
+        woe.setEMAIL_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getEMAIL_ID());
+        woe.setENTERED_BY(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getENTERED_BY());
+        woe.setGENDER(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getGENDER());
+        woe.setLAB_ADDRESS(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS());
+        woe.setLAB_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ID());
+        woe.setLAB_NAME(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
+        woe.setLEAD_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLEAD_ID());
+        woe.setMAIN_SOURCE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getMAIN_SOURCE());
+        woe.setORDER_NO(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getORDER_NO());
+        woe.setOS(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getOS());
+        woe.setPATIENT_NAME(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPATIENT_NAME());
+        woe.setPINCODE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPINCODE());
+        woe.setPRODUCT(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getPRODUCT());
         woe.setPurpose("mobile application");
-        woe.setREF_DR_ID(summary_models.get(0).getWoeditlist().getWoe().getREF_DR_ID());
-        woe.setREF_DR_NAME(summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+        woe.setREF_DR_ID(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_ID());
+        woe.setREF_DR_NAME(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
         woe.setREMARKS("MOBILE");
         woe.setSPECIMEN_COLLECTION_TIME(parsableDate);
-        woe.setSPECIMEN_SOURCE(summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_SOURCE());
+        woe.setSPECIMEN_SOURCE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSPECIMEN_SOURCE());
         woe.setSR_NO(sr_no);
-        woe.setSTATUS(summary_models.get(0).getWoeditlist().getWoe().getSTATUS());
-        woe.setSUB_SOURCE_CODE(summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
-        woe.setTOTAL_AMOUNT(summary_models.get(0).getWoeditlist().getWoe().getTOTAL_AMOUNT());
+        woe.setSTATUS(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSTATUS());
+        woe.setSUB_SOURCE_CODE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSUB_SOURCE_CODE());
+        woe.setTOTAL_AMOUNT(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTOTAL_AMOUNT());
         woe.setTYPE(type_to_send);
-        woe.setWATER_SOURCE(summary_models.get(0).getWoeditlist().getWoe().getWATER_SOURCE());
-        woe.setWO_MODE(Constants.WOEMODE);
+        woe.setWATER_SOURCE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWATER_SOURCE());
+        woe.setWO_MODE("THYROSOFTLITE APP");
         woe.setWO_STAGE(Woe_mode);
         myPojoWoe.setWoe(woe);
 
         barcodelists = new ArrayList<>();
 
-        if (GlobalClass.CheckArrayList(summary_models) && summary_models.get(0).getWoeditlist() != null && GlobalClass.checkArray(summary_models.get(0).getWoeditlist().getBarcodelist())) {
-
-            for (int i = 0; i < summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                barcodelist = new BarcodelistModel();
-                barcodelist.setSAMPLE_TYPE(summary_models.get(0).getWoeditlist().getBarcodelist()[i].getSAMPLE_TYPE());
-                barcodelist.setBARCODE(summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
-                barcodelist.setTESTS(summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
-                barcodelists.add(barcodelist);
-            }
-
+        for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+            barcodelist = new BarcodelistModel();
+            barcodelist.setSAMPLE_TYPE(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getSAMPLE_TYPE());
+            barcodelist.setBARCODE(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getBARCODE());
+            barcodelist.setTESTS(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
+            barcodelists.add(barcodelist);
         }
-
 
         myPojoWoe.setBarcodelistModel(barcodelists);
         myPojoWoe.setWoe_type("WO_EDIT");
@@ -555,63 +548,88 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        try {
-            if (ControllersGlobalInitialiser.woeController != null) {
-                ControllersGlobalInitialiser.woeController = null;
-            }
-            ControllersGlobalInitialiser.woeController = new WoeController(mActivity, Woe_Edt_Activity.this);
-            ControllersGlobalInitialiser.woeController.woeDoneController(jsonObj, POstQue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
 
-    }
+                    Log.e(TAG, "onResponse: " + response);
+                    String finalJson = response.toString();
+                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                    RES_ID = parentObjectOtp.getString("RES_ID");
+                    barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
+                    message = parentObjectOtp.getString("message");
+                    status = parentObjectOtp.getString("status");
 
-    public void getWoeResponse(JSONObject response) {
-        try {
-
-            Log.e(TAG, "onResponse: " + response);
-            String finalJson = response.toString();
-            JSONObject parentObjectOtp = new JSONObject(finalJson);
-            RES_ID = parentObjectOtp.getString("RES_ID");
-            barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
-            message = parentObjectOtp.getString("message");
-            status = parentObjectOtp.getString("status");
-
-            if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
-
-                GlobalClass.showTastyToast(mActivity, message, 1);
-                GlobalClass.setFlag_back_toWOE = true;
-                Constants.covidwoe_flag = "1";
-                Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
-                startActivity(i);
-                finish();
-
-            } else if (!GlobalClass.isNull(message) && message.equals(MessageConstants.CRDIT_LIMIT)) {
-
-                GlobalClass.showTastyToast(mActivity, message, 2);
-
-
-                final AlertDialog alertDialog = new AlertDialog.Builder(
-                        Woe_Edt_Activity.this).create();
-                alertDialog.setTitle(ToastFile.updateledger);
-                alertDialog.setMessage(ToastFile.update_ledger);
-                alertDialog.setButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(Woe_Edt_Activity.this, Payment_Activity.class);
-                        i.putExtra("COMEFROM", "Woe_Edt_Activity");
+                    if (status.equalsIgnoreCase("SUCCESS")) {
+                        TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                        GlobalClass.setFlag_back_toWOE = true;
+                        Constants.covidwoe_flag = "1";
+                        Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
                         startActivity(i);
+                        finish();
+
+                    } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
+
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
+                        TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+
+                        final AlertDialog alertDialog = new AlertDialog.Builder(
+                                Woe_Edt_Activity.this).create();
+
+                        // Setting Dialog Title
+                        alertDialog.setTitle("Update Ledger !");
+
+                        // Setting Dialog Message
+                        alertDialog.setMessage(ToastFile.update_ledger);
+                        // Setting OK Button
+                        alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent i = new Intent(Woe_Edt_Activity.this, Payment_Activity.class);
+                                i.putExtra("COMEFROM", "Woe_Edt_Activity");
+                                startActivity(i);
+                               /* Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
+                                startActivity(httpIntent);*/
+                                // Write your code here to execute after dialog closed
+                            }
+                        });
+                        alertDialog.show();
+
+                    } else {
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
+                        TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
-                });
-                alertDialog.show();
 
-            } else {
-                GlobalClass.showTastyToast(mActivity, message, 2);
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+                }
             }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error != null) {
+                } else {
 
-        } catch (JSONException e) {
+                    System.out.println(error);
+                }
+            }
+        });
+        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        POstQue.add(jsonObjectRequest1);
+        Log.e(TAG, "doWOE_edit: " + jsonObj);
+        Log.e(TAG, "doWOE_edit: " + jsonObjectRequest1);
 
-            e.printStackTrace();
-        }
+
     }
+
 }

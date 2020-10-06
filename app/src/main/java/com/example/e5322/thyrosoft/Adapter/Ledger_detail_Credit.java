@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Ledger_DetailsModel;
 import com.example.e5322.thyrosoft.R;
 
@@ -27,8 +26,8 @@ public class Ledger_detail_Credit extends BaseAdapter {
 
     public Ledger_detail_Credit(Context context, ArrayList<Ledger_DetailsModel> ledgerDetList) {
 
-        this.context = context;
-        this.ledgerDetAll = ledgerDetList;
+        this.context= context;
+        this.ledgerDetAll= ledgerDetList;
     }
 
     @Override
@@ -66,20 +65,22 @@ public class Ledger_detail_Credit extends BaseAdapter {
             TextView icon = (TextView) convertView.findViewById(R.id.icon);
 
 
-            GlobalClass.SetText(icon, "C");
-            GlobalClass.SetText(date, ledgerDetAll.get(position).getDate());
-            GlobalClass.SetText(narration, ledgerDetAll.get(position).getNarration().toString());
-            GlobalClass.SetText(amount, ledgerDetAll.get(position).getAmount().toString());
 
-            amount.setTextColor(context.getResources().getColor(R.color.darkgreen));
+                    icon.setText("C");
+                    date.setText(ledgerDetAll.get(position).getDate());
+
+                    narration.setText(ledgerDetAll.get(position).getNarration().toString());
+
+                    amount.setText("+" + ledgerDetAll.get(position).getAmount().toString() + "");
+                    amount.setTextColor(context.getResources().getColor(R.color.darkgreen));
 
 
-        } catch (Exception e) {
+
+        }catch (Exception e){
             e.printStackTrace();
         }
         return convertView;
     }
-
     public void setFilter(List<Ledger_DetailsModel> countryModels) {
         ledgerDetAll = new ArrayList<>();
         ledgerDetAll.addAll(countryModels);

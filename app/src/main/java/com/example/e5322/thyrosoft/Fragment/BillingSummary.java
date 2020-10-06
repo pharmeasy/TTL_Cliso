@@ -1,9 +1,12 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +14,15 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.BillingSummaryAdapter;
-import com.example.e5322.thyrosoft.Controller.BilligsumController;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.BillingSummaryRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.BillingSummaryResponseModel;
@@ -35,8 +39,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -58,6 +60,8 @@ public class BillingSummary extends RootFragment {
     public String fromDateTxt = "";
     public String Date = "", tempMonth = "";
     TextView txtFromDate, txt_to_date;
+    // ProgressDialog barProgressDialog;
+    SharedPreferences sharedpreferences;
     ListView list_billingSummary;
     BillingSummaryAdapter adapter;
     String user;
@@ -67,13 +71,18 @@ public class BillingSummary extends RootFragment {
     String access;
     java.util.Date daysBeforeDate;
     String api_key;
+    int fromday, frommonth, fromyear;
     SharedPreferences prefsBilling;
     String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private SimpleDateFormat sdf;
     // TODO: Rename and change types of parameters
+    private String mParam1;
+    private String mParam2;
     private OnFragmentInteractionListener mListener;
     private int mYear, mMonth, mDay;
+    private DatePicker dpAppointmentDate;
     private Date result, fromDate, toDate;
+    private SimpleDateFormat format;
     TextView txt_nodata;
 
     public BillingSummary() {
@@ -137,10 +146,27 @@ public class BillingSummary extends RootFragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_billing, container, false);
 
-        initViews(rootView);
+        txtFromDate = (TextView) rootView.findViewById(R.id.txt_from_date);
+        txt_to_date = (TextView) rootView.findViewById(R.id.txt_to_date);
+        txt_nodata=rootView.findViewById(R.id.txt_nodata);
+        list_billingSummary = (ListView) rootView.findViewById(R.id.list_billingSummary);
+        offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
+        parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
 
-        GlobalClass.SetText(txtFromDate, fromDateTxt);
-        GlobalClass.SetText(txt_to_date, toDateTxt);
+  /*      barProgressDialog = new ProgressDialog(getContext());
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+*/
+
+        //  ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getContext());
+
+        txtFromDate.setText(fromDateTxt);
+        txt_to_date.setText(toDateTxt);
 
         prefsBilling = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefsBilling.getString("Username", null);
@@ -154,14 +180,8 @@ public class BillingSummary extends RootFragment {
         } else {
             offline_img.setVisibility(View.GONE);
             parent_ll.setVisibility(View.VISIBLE);
+            GetData();
         }
-        GetData();
-        initListner();
-
-        return rootView;
-    }
-
-    private void initListner() {
 
         txtFromDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,7 +206,7 @@ public class BillingSummary extends RootFragment {
                                     try {
                                         fromDate = sdf.parse(getDateSecond);
                                         fromDateTxt = sdf.format(fromDate);
-                                        GlobalClass.SetText(txtFromDate, fromDateTxt);
+                                        txtFromDate.setText(fromDateTxt);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -235,8 +255,8 @@ public class BillingSummary extends RootFragment {
                                     try {
                                         toDate = sdf.parse(getDateSecond);
                                         toDateTxt = sdf.format(toDate);
-                                        GlobalClass.SetText(txt_to_date, toDateTxt);
-                                        Log.v("TAG", txt_to_date.getText().toString());
+                                        txt_to_date.setText(toDateTxt);
+                                        System.out.println(txt_to_date);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -261,21 +281,14 @@ public class BillingSummary extends RootFragment {
         });
 
 
-    }
-
-    private void initViews(View rootView) {
-        txtFromDate = (TextView) rootView.findViewById(R.id.txt_from_date);
-        txt_to_date = (TextView) rootView.findViewById(R.id.txt_to_date);
-        txt_nodata = rootView.findViewById(R.id.txt_nodata);
-        list_billingSummary = (ListView) rootView.findViewById(R.id.list_billingSummary);
-        offline_img = (LinearLayout) rootView.findViewById(R.id.offline_img);
-        parent_ll = (LinearLayout) rootView.findViewById(R.id.parent_ll);
-
-
+        return rootView;
     }
 
 
     private void GetData() {
+        final ProgressDialog barProgressDialog = GlobalClass.ShowprogressDialog(getActivity());
+
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = null;
         try {
@@ -319,16 +332,51 @@ public class BillingSummary extends RootFragment {
         }
 
         RequestQueue queue = GlobalClass.setVolleyReq(getContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.billingSUMLIVE, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e(TAG, "onResponse: " + response);
+                        try {
+                            GlobalClass.hideProgress(getActivity(), barProgressDialog);
 
-        try {
-            if (ControllersGlobalInitialiser.billigsumController != null) {
-                ControllersGlobalInitialiser.billigsumController = null;
+                            BillingSummaryResponseModel responseModel = new Gson().fromJson(String.valueOf(response), BillingSummaryResponseModel.class);
+                            if (responseModel != null) {
+                                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase(Constants.caps_invalidApikey)) {
+                                    GlobalClass.redirectToLogin(getActivity());
+                                } else {
+                                    if (responseModel.getBillingList() != null && responseModel.getBillingList().size() > 0) {
+                                        list_billingSummary.setVisibility(View.VISIBLE);
+                                        txt_nodata.setVisibility(View.GONE);
+                                        adapter = new BillingSummaryAdapter(getContext(), responseModel.getBillingList());
+                                        list_billingSummary.setAdapter(adapter);
+                                    }else {
+                                        list_billingSummary.setVisibility(View.GONE);
+                                        txt_nodata.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.billigsumController = new BilligsumController(getActivity(), BillingSummary.this);
-            ControllersGlobalInitialiser.billigsumController.getbillsummcontroller(jsonObject, queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: json" + jsonObject);
     }
 
 
@@ -336,32 +384,6 @@ public class BillingSummary extends RootFragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
-        }
-    }
-
-    public void getbillsummaryresp(JSONObject response) {
-        Log.e(TAG, "onResponse: " + response);
-        try {
-            BillingSummaryResponseModel responseModel = new Gson().fromJson(String.valueOf(response), BillingSummaryResponseModel.class);
-            if (responseModel != null) {
-                if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase(Constants.caps_invalidApikey)) {
-                    GlobalClass.redirectToLogin(getActivity());
-                } else {
-                    if (GlobalClass.CheckArrayList(responseModel.getBillingList())) {
-                        list_billingSummary.setVisibility(View.VISIBLE);
-                        txt_nodata.setVisibility(View.GONE);
-                        adapter = new BillingSummaryAdapter(getContext(), responseModel.getBillingList());
-                        list_billingSummary.setAdapter(adapter);
-                    } else {
-                        list_billingSummary.setVisibility(View.GONE);
-                        txt_nodata.setVisibility(View.VISIBLE);
-                    }
-                }
-            } else {
-                GlobalClass.showTastyToast(getActivity(), ToastFile.something_went_wrong, 2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.R;
 
@@ -30,7 +29,7 @@ public class TestListAdapter extends ArrayAdapter<BaseModel> {
         View rowview = flater.inflate(R.layout.list_ite, null, true);
 
         TextView txtTitle = (TextView) rowview.findViewById(R.id.title);
-        GlobalClass.SetText(txtTitle, baseModel.getCode());
+        txtTitle.setText(baseModel.getCode());
         txtTitle.setTextColor(Color.BLACK);
 
         return rowview;
@@ -44,9 +43,11 @@ public class TestListAdapter extends ArrayAdapter<BaseModel> {
         View rowview = flater.inflate(R.layout.list_ite, null, true);
 
         TextView txtTitle = (TextView) rowview.findViewById(R.id.title);
-        GlobalClass.SetText(txtTitle, baseModel.getCode());
+        txtTitle.setText(baseModel.getCode());
         txtTitle.setTextColor(Color.BLACK);
 
         return rowview;
     }
+
+
 }

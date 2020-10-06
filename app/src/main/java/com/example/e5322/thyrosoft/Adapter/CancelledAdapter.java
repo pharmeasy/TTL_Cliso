@@ -1,8 +1,9 @@
 package com.example.e5322.thyrosoft.Adapter;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +13,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Controller.Cancellead_Controller;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.DashboardFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.ToastFile;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,10 +40,14 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
     DashboardFragment dashboardFragment;
     Context mContext;
     ArrayList<TrackDetModel> trackdet = new ArrayList<>();
+    int selectedPosition = 0;
+    int[] SelectedArray;
     ListView canList;
     public static RequestQueue PostQue;
+    SharedPreferences sharedpreferences;
     LinearLayout cancelled_Layout, childView;
-    public String RES_ID, billedB2B, credit, error, orderNo, response1;
+    int Flag = 0;
+    private ProgressDialog barProgressDialog;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
 
     public CancelledAdapter(Context ManagingTabsActivity, DashboardFragment dashboardFragment, ArrayList<TrackDetModel> arrayList) {
@@ -110,11 +119,10 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
             mail = (ImageView) convertView.findViewById(R.id.mail);
             print = (ImageView) convertView.findViewById(R.id.print);
 
-            GlobalClass.SetText(name, trackdet.get(groupPosition).getName().toString());
-            GlobalClass.SetText(Refby, "Ref by:" + trackdet.get(groupPosition).getRef_By().toString());
-            GlobalClass.SetText(barcode, trackdet.get(groupPosition).getBarcode().toString());
-            GlobalClass.SetText(tests, trackdet.get(groupPosition).getTests().toString());
-
+            name.setText(trackdet.get(groupPosition).getName().toString());
+            Refby.setText("Ref by:" + trackdet.get(groupPosition).getRef_By().toString());
+            barcode.setText(trackdet.get(groupPosition).getBarcode().toString());
+            tests.setText(trackdet.get(groupPosition).getTests().toString());
             download.setVisibility(View.GONE);
             mail.setVisibility(View.GONE);
             print.setVisibility(View.GONE);
@@ -126,7 +134,7 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-
+        //final String childText = (String) getChild(groupPosition, childPosition);
         try {
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) mContext
@@ -143,11 +151,14 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
             } else {
                 childView.setVisibility(View.GONE);
             }
-
+//            else if (childPosition == 0 && trackdet.get(groupPosition).getCancel_tests_with_remark().size() != 1) {
+//                childView.setVisibility(View.GONE);
+//            }
             TextView test = (TextView) convertView.findViewById(R.id.test);
-            GlobalClass.SetText(remark, trackdet.get(groupPosition).getCancel_tests_with_remark().get(childPosition).getRemarks());
+            remark.setText(trackdet.get(groupPosition).getCancel_tests_with_remark().get(childPosition).getRemarks());
 
-            GlobalClass.SetText(test, trackdet.get(groupPosition).getCancel_tests_with_remark().get(childPosition).getTest_code() + " : ");
+            test.setText(trackdet.get(groupPosition).getCancel_tests_with_remark().get(childPosition).getTest_code() + " : ");
+
 
             ReqCredit.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -177,7 +188,16 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
 
 
     private void PostCancelledData(String Request, String patientID) {
-
+        barProgressDialog = new ProgressDialog(mContext, R.style.ProgressBarColor);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        PostQue = GlobalClass.setVolleyReq(mContext);
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -193,37 +213,55 @@ public class CancelledAdapter extends BaseExpandableListAdapter {
             e.printStackTrace();
         }
         RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.postcancellead, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    public String RES_ID, billedB2B, credit, error, orderNo, response1;
 
-        try {
-            if (ControllersGlobalInitialiser.cancellead_controller != null) {
-                ControllersGlobalInitialiser.cancellead_controller = null;
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            String finalJson = response.toString();
+                            Log.e(TAG, "onResponse: " + response);
+                            JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                            if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                barProgressDialog.dismiss();
+                            }
+
+                            RES_ID = parentObjectOtp.getString("RES_ID");
+                            billedB2B = parentObjectOtp.getString("billedB2B");
+                            credit = parentObjectOtp.getString("credit");
+                            error = parentObjectOtp.getString("error");
+                            orderNo = parentObjectOtp.getString("orderNo");
+                            response1 = parentObjectOtp.getString("response");
+
+                            TastyToast.makeText(mContext, response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            dashboardFragment.setNewFragment();
+                            GlobalClass.passDateFromLead = GlobalClass.lead_date;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.cancellead_controller = new Cancellead_Controller((Activity) mContext, CancelledAdapter.this);
-            ControllersGlobalInitialiser.cancellead_controller.getcancelLead(jsonObject,queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+        });
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
-    public void getleadResp(JSONObject response) {
-        try {
-            String finalJson = response.toString();
-            Log.e(TAG, "onResponse: " + response);
-            JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-            RES_ID = parentObjectOtp.getString("RES_ID");
-            billedB2B = parentObjectOtp.getString("billedB2B");
-            credit = parentObjectOtp.getString("credit");
-            error = parentObjectOtp.getString("error");
-            orderNo = parentObjectOtp.getString("orderNo");
-            response1 = parentObjectOtp.getString("response");
-
-            GlobalClass.showTastyToast((Activity) mContext, response1, 1);
-            dashboardFragment.setNewFragment();
-            GlobalClass.passDateFromLead = GlobalClass.lead_date;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "PostCancelledData: URL" + jsonObjectRequest);
+        Log.e(TAG, "PostCancelledData: json" + jsonObject);
     }
 }
 

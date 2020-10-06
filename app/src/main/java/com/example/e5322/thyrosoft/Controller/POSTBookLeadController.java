@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Controller;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -12,7 +13,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ConfirmbookDetail;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class POSTBookLeadController {
                 progressDialog = GlobalClass.ShowprogressDialog(mActivity);
             }
             if (requestQueue == null)
-                requestQueue = Volley.newRequestQueue(mActivity);
+                requestQueue = GlobalClass.setVolleyReq(mActivity);
             String url = Api.LEAD_BOOKING;
             globalClass.printLog("Error", TAG, "postBookLeadAPI", url);
             globalClass.printLog("Error", TAG, "postBookLeadAPI post data", "" + jsonObject);
@@ -56,7 +57,7 @@ public class POSTBookLeadController {
                         if (response != null) {
                             confirmbookDetail.getPOSTBookLeadResponse(response);
                         } else {
-                            GlobalClass.showTastyToast(mActivity, MessageConstants.SOMETHING_WENT_WRONG, 2);
+                            GlobalClass.toastyError(mActivity, MessageConstants.SOMETHING_WENT_WRONG, false);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -70,6 +71,7 @@ public class POSTBookLeadController {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+//                    GlobalClass.showVolleyError(error, mActivity);
                     if (error.networkResponse != null && error.networkResponse.data != null) {
                         String error_sd = new String(error.networkResponse.data);
                         confirmbookDetail.getPOSTBookLeadErrorResponse(error_sd);

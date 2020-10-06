@@ -8,10 +8,11 @@ import android.os.Build;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.Installation;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -97,7 +98,7 @@ public class LogUserActivityTagging {
                     }
                 }
 
-                if (TextUtils.isEmpty(imeiNo)) {
+                if (GlobalClass.isNull(imeiNo)) {
                     imeiNo = new Installation().id(activity);
                 }
             } catch (Exception e) {
@@ -123,7 +124,7 @@ public class LogUserActivityTagging {
                     ControllersGlobalInitialiser.logUserActivityController = new LogUserActivityController(activity);
                     ControllersGlobalInitialiser.logUserActivityController.updateUserActivity(requestModel);
                 } else {
-                    GlobalClass.showTastyToast(activity, MessageConstants.CHECK_INTERNET_CONN, 2);
+                    Toast.makeText(activity, MessageConstants.CHECK_INTERNET_CONN, Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
                 e.printStackTrace();

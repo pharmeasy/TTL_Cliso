@@ -1,12 +1,13 @@
 package com.example.e5322.thyrosoft.Adapter;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.PostCHN_Controller;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,9 +52,12 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
     private Context mContext;
     private ArrayList<TrackDetModel> List; // header titles
     java.util.List<String> items;
+
     public static RequestQueue PostQue;
     JSONArray PostArray = new JSONArray();
     JSONObject obj = new JSONObject();
+    ProgressDialog barProgressDialog;
+    private String eneterString;
     private String error;
     private String TAG = ManagingTabsActivity.class.getSimpleName().toString();
     private String RES_ID;
@@ -162,6 +170,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             TextView barcode = (TextView) convertView.findViewById(R.id.barcode);
             TextView tests = (TextView) convertView.findViewById(R.id.tests);
             TextView test_name = (TextView) convertView.findViewById(R.id.test_name);
+            TextView test_value = (TextView) convertView.findViewById(R.id.test_value);
             ImageView download = (ImageView) convertView.findViewById(R.id.download);
             ImageView mail = (ImageView) convertView.findViewById(R.id.mail);
             ImageView print = (ImageView) convertView.findViewById(R.id.print);
@@ -182,13 +191,13 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                             enteredString.startsWith("#") || enteredString.startsWith("$") ||
                             enteredString.startsWith("%") || enteredString.startsWith("^") ||
                             enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                        GlobalClass.showTastyToast((Activity)mContext,
+                        Toast.makeText(mContext,
                                 ToastFile.remark,
-                                2);
+                                Toast.LENGTH_SHORT).show();
                         if (enteredString.length() > 0) {
-                            GlobalClass.SetEditText(enter_remark,enteredString.substring(1));
+                            enter_remark.setText(enteredString.substring(1));
                         } else {
-                            GlobalClass.SetEditText(enter_remark,"");
+                            enter_remark.setText("");
                         }
                     }
                 }
@@ -203,12 +212,12 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                 }
             });
 
-
-            GlobalClass.SetText(name, List.get(groupPosition).getName());
-            GlobalClass.SetText(Refby, "Ref by:" + List.get(groupPosition).getRef_By());
-            GlobalClass.SetText(barcode, List.get(groupPosition).getBarcode());
-            GlobalClass.SetText(tests, List.get(groupPosition).getTests());
-            GlobalClass.SetText(test_name, List.get(groupPosition).getChn_test());
+            name.setText(List.get(groupPosition).getName().toString());
+            Refby.setText("Ref by:" + List.get(groupPosition).getRef_By().toString());
+            barcode.setText(List.get(groupPosition).getBarcode().toString());
+            tests.setText(List.get(groupPosition).getTests().toString());
+            test_name.setText(List.get(groupPosition).getChn_test().toString());
+//            test_value.setText(List.get(groupPosition).get().toString());
 
 
             download.setVisibility(View.GONE);
@@ -218,7 +227,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             enter_chn_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (serFlagVisible) {
+                    if (serFlagVisible == true) {
 
                         getName = List.get(groupPosition).getName().toString();
                         if (getName.equals(List.get(groupPosition).getName().toString())) {
@@ -226,11 +235,11 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                         }
                         chn_remark_layout.setVisibility(View.VISIBLE);
                         serFlagVisible = false;
-                        GlobalClass.SetButtonText(enter_chn_btn,"Hide Remark");
-                    } else if (!serFlagVisible) {
+                        enter_chn_btn.setText("Hide Remark");
+                    } else if (serFlagVisible == false) {
                         chn_remark_layout.setVisibility(View.GONE);
                         serFlagVisible = true;
-                        GlobalClass.SetButtonText(enter_chn_btn,"Enter CHN");
+                        enter_chn_btn.setText("Enter CHN");
                     }
 
                 }
@@ -241,28 +250,24 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                 public void onClick(View v) {
                     String getVAlue = enter_remark.getText().toString();
                     if (getVAlue.equals("")) {
-                        GlobalClass.showTastyToast((Activity)mContext, ToastFile.remark, 2);
+                        Toast.makeText(mContext, ToastFile.remark, Toast.LENGTH_SHORT).show();
                     } else if (getVAlue.length() < 3) {
-                        GlobalClass.showTastyToast((Activity)mContext, ToastFile.remark, 2);
+                        Toast.makeText(mContext, ToastFile.remark, Toast.LENGTH_SHORT).show();
                     } else {
-                        Log.v("TAG", "" + List);
+                        System.out.println("" + List);
                         PostArray = new JSONArray();
 
-                        if (GlobalClass.CheckArrayList(List) && GlobalClass.CheckArrayList(List.get(groupPosition).getChn_test_list())){
-                            for (int i = 0; i < List.get(groupPosition).getChn_test_list().size(); i++) {
-                                try {
-                                    obj = new JSONObject();
-                                    obj.put("test_code", List.get(groupPosition).getChn_test_list().get(i).getTest());
-                                    obj.put("remark", getVAlue);
-                                    PostArray.put(obj);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                        for (int i = 0; i < List.get(groupPosition).getChn_test_list().size(); i++) {
+                            try {
+                                obj = new JSONObject();
+                                obj.put("test_code", List.get(groupPosition).getChn_test_list().get(i).getTest());
+                                obj.put("remark", getVAlue);
+                                PostArray.put(obj);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
-
                         PostCHN();
-
                     }
                 }
             });
@@ -282,11 +287,11 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                 TextView Tests = (TextView) convertView.findViewById(R.id.Tests);
                 EditText remark = (EditText) convertView.findViewById(R.id.remarkwrite);
                 Button button = (Button) convertView.findViewById(R.id.submitBtn);
+//            MyTextWatcher textWatcher = new MyTextWatcher(remark);
+//            remark.addTextChangedListener(textWatcher);
 
-
-
-                GlobalClass.SetText(Tests, List.get(groupPosition).getChn_test_list().get(childPosition).getTest().toString());
-
+                Tests.setText(List.get(groupPosition).getChn_test_list().get(childPosition).getTest().toString());
+                //remark.setTag(chn_test);
                 remark.setTag(List.get(groupPosition).getChn_test_list().get(childPosition));
                 remark.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -299,7 +304,7 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
 
                     @Override
                     public void afterTextChanged(Editable s) {
-                        Log.v("TAG", "Nitya >> " + List.get(groupPosition).getChn_test_list().get(childPosition).getTest());
+                        System.out.println("Nitya >> " + List.get(groupPosition).getChn_test_list().get(childPosition).getTest());
                         List.get(groupPosition).getChn_test_list().get(childPosition).setRemark("" + s.toString());
                     }
                 });
@@ -311,7 +316,26 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
                     button.setVisibility(View.GONE);
                 }
 
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
+//                        System.out.println("" + List);
+//                        PostArray = new JSONArray();
+//
+//                        for (int i = 0; i < List.get(groupPosition).getChn_test_list().size(); i++) {
+//                            try {
+//                                obj = new JSONObject();
+//                                obj.put("test_code", List.get(groupPosition).getChn_test_list().get(i).getTest());
+//                                obj.put("remark", List.get(groupPosition).getChn_test_list().get(i).getRemark());
+//                                PostArray.put(obj);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                        PostCHN();
+                    }
+                });
             }
 
 
@@ -322,6 +346,29 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
     }
 
     private void PostCHN() {
+        barProgressDialog = new ProgressDialog(mContext);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
+        PostQue = GlobalClass.setVolleyReq(mContext);
+
+            /*{ "api_key": “",
+"tsp": "",
+"sdate": "",
+"sl_no": "",
+"chn_remark": [ {
+"test_code": "EOS",
+"remark": "Testing remark"
+},
+{ "test_code": "HB",
+"remark": "Test"
+} ]}*/
 
         SharedPreferences prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
         String user = prefs.getString("Username", null);
@@ -337,6 +384,8 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
             jsonObject.put("tsp", user);
             jsonObject.put("sdate", convertedDate);
             jsonObject.put("sl_no", getSL_No);
+
+            //jsonObject.put("value","");
             jsonObject.put("chn_remark", PostArray);
 
         } catch (JSONException e) {
@@ -344,47 +393,99 @@ public class CHN_Adapter extends BaseExpandableListAdapter {
         }
 
         RequestQueue queue = GlobalClass.setVolleyReq(mContext);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST, Api.chn_update, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
 
-        try {
-            if (ControllersGlobalInitialiser.postCHN_controller != null) {
-                ControllersGlobalInitialiser.postCHN_controller = null;
+                            String finalJson = response.toString();
+                            Log.e(TAG, "onResponse: RESPONSE" + response);
+                            JSONObject parentObjectOtp = new JSONObject(finalJson);
+
+                            error = parentObjectOtp.getString("error");
+                            RES_ID = parentObjectOtp.getString("RES_ID");
+                            response1 = parentObjectOtp.getString("response");
+
+                            if (response1.equals("CHN Details Updated Successfully")) {
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
+                                TastyToast.makeText(mContext, "" + response1, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                mCHNfragment.setNewFragment();
+                                GlobalClass.passDate = GlobalClass.CHN_Date;
+
+                            } else {
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
+                                TastyToast.makeText(mContext, "" + response1, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            ControllersGlobalInitialiser.postCHN_controller = new PostCHN_Controller((Activity)mContext, CHN_Adapter.this);
-            ControllersGlobalInitialiser.postCHN_controller.postchn_controller(jsonObject,queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
 
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+
+            }
+        });
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "onResponse: URL" + jsonObjectRequest);
+        Log.e(TAG, "onResponse: JSON" + jsonObject);
     }
 
+//    class MyTextWatcher implements TextWatcher {
+//        private EditText remark, reenter;
+//        LinearLayout linearEditbarcode, barcode_linear;
+//        Button scanBarcode;
+//        boolean flag = false;
+//
+//        public MyTextWatcher(EditText editText) {
+//            this.remark = editText;
+//        }
+//
+//        @Override
+//        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+//
+//        }
+//
+//        @Override
+//        public void onTextChanged(CharSequence s, int start, int before, int count) {
+//
+//        }
+//
+//        @Override
+//        public void afterTextChanged(Editable s) {
+//            eneterString = s.toString();
+//        }
+//    }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
-    }
-
-    public void getpostchnResp(JSONObject response) {
-        try {
-
-            String finalJson = response.toString();
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-            error = parentObjectOtp.getString("error");
-            RES_ID = parentObjectOtp.getString("RES_ID");
-            response1 = parentObjectOtp.getString("response");
-
-            if (!GlobalClass.isNull(response1) && response1.equals(MessageConstants.CHN_UPDATE_SUCCUSS)) {
-                GlobalClass.showTastyToast((Activity)mContext,"" + response1,1);
-                mCHNfragment.setNewFragment();
-                GlobalClass.passDate = GlobalClass.CHN_Date;
-
-            } else {
-                GlobalClass.showTastyToast((Activity)mContext,"" + response1,2);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

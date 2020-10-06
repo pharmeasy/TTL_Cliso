@@ -1,5 +1,11 @@
 package com.example.e5322.thyrosoft.Retrofit;
 
+import com.example.e5322.thyrosoft.HHHtest.Model.CampDetailsResponseModel;
+import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
+import com.example.e5322.thyrosoft.HHHtest.Model.PatientDetailRequestModel;
+import com.example.e5322.thyrosoft.HHHtest.Model.PatientResponseModel;
+import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledeResponse;
+import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledmentreq;
 import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
 import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
@@ -20,7 +26,9 @@ import com.example.e5322.thyrosoft.Models.PaitientDataResponseModel;
 import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
+import com.example.e5322.thyrosoft.Models.ResponseModels.HandbillsResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.TemplateResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
@@ -50,8 +58,24 @@ public interface APIInteface {
     @GET("ORDER.svc/Health")
     Call<HealthTipsApiResponseModel> getHealth();
 
+    @GET("Persuasion/Gethandbills")
+    Call<TemplateResponse> getTemplate();
+
+    @GET("Persuasion/GethandbillsofCustomer/{user}")
+    Call<HandbillsResponse> gethandbills(@Path("user") String user);
+
     @GET("{passSpinner_value}/{Contact_Details}")
     Call<Cmpdt_Model.ContactArrayListBean> getemployeedt(@Path("passSpinner_value") String passSpinner_value, @Path("Contact_Details") String Contact_Details);
+
+
+    @GET("Common.svc/GetTestList")
+    Call<GetTestResponseModel> gettestdata();
+
+/*    @GET("Showlang")
+    Call<Language_Model> getlanguage();*/
+
+    @POST("Common.svc/CampDetails")
+    Call<CampDetailsResponseModel> GetCampDetails(@Body CampIdRequestModel campIdRequestModel);
 
 
     @GET("MasterData/GetCenterMaster/{user}")
@@ -63,6 +87,8 @@ public interface APIInteface {
 
     @GET("LeadBooking/GetFMELeads/{fromDate}/{toDate}/{ReferenceId}")
     Call<List<ScansummaryModel>> getsummarydetail(@Header("Authorization") String header, @Path("fromDate") String fromDate, @Path("toDate") String toDate, @Path("ReferenceId") String ReferenceId);
+
+
 
     @GET("MasterData/GetServiceMaster/{centerID}/{user}")
     Call<List<ServiceModel>> getservicelist(@Header("Authorization") String header, @Path("centerID") String centerID, @Path("user") String user);
@@ -86,6 +112,9 @@ public interface APIInteface {
     @POST("Common.svc/PostPatientData")
     Call<PaitientDataResponseModel> PostPatientdetails(@Body PaitientdataRequestModel paitientdataRequestModel);
 
+
+    @POST("Common.svc/GetPOCTWOEPatientImagedetails")
+    Call<PatientResponseModel> getResponse(@Body PatientDetailRequestModel patientDetailRequestModel);
 
     @POST("Mapping")
     Call<FirebaseModel> pushtoken(@Body Firebasepost firebasepost);

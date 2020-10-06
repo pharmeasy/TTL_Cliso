@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 /**
@@ -70,15 +69,6 @@ public class Camp_Details_fragment extends Fragment {
 
         viewMain = (View) inflater.inflate(R.layout.fragment_camp__details_fragment, container, false);
 
-       initViews();
-
-
-
-        // Inflate the layout for this fragment
-        return viewMain;
-    }
-
-    private void initViews() {
         txt_camp_date = (TextView) viewMain.findViewById(R.id.txt_camp_date);
         txt_camp_profile = (TextView) viewMain.findViewById(R.id.txt_camp_profile);
         txt_camp_rate = (TextView) viewMain.findViewById(R.id.txt_camp_rate);
@@ -93,13 +83,15 @@ public class Camp_Details_fragment extends Fragment {
         camp_address =getArguments().getString("camp_address");
         camp_duration=getArguments().getString("camp_duration");
 
+        txt_camp_date.setText(camp_date);
+        txt_camp_profile.setText(camp_profile);
+        txt_camp_rate.setText(camp_rate);
+        txt_camp_days.setText(camp_days);
+        txt_camp_address.setText(camp_address);
+        txt_camp_duration.setText(camp_duration);
 
-        GlobalClass.SetText(txt_camp_date,camp_date);
-        GlobalClass.SetText(txt_camp_profile,camp_profile);
-        GlobalClass.SetText(txt_camp_rate,camp_rate);
-        GlobalClass.SetText(txt_camp_days,camp_days);
-        GlobalClass.SetText(txt_camp_address,camp_address);
-        GlobalClass.SetText(txt_camp_duration,camp_duration);
+        // Inflate the layout for this fragment
+        return viewMain;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

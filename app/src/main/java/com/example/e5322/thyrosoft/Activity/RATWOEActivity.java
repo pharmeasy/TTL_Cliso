@@ -2,6 +2,13 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +20,7 @@ import android.widget.TextView;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Fragment.RATEnterFrag;
 import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +33,11 @@ public class RATWOEActivity extends Fragment {
     TextView enter, enetered;
     ImageView back, home, enter_arrow_enter, enter_arrow_entered;
     FrameLayout fragment_main;
+    private Object currentFragment;
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+    private String mParam1;
+    private String mParam2;
     private RATWOEActivity.OnFragmentInteractionListener mListener;
 
     public RATWOEActivity() {
@@ -43,6 +48,7 @@ public class RATWOEActivity extends Fragment {
     public static RATWOEActivity newInstance(String param1, String param2) {
         RATWOEActivity fragment = new RATWOEActivity();
         Bundle args = new Bundle();
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -64,17 +70,28 @@ public class RATWOEActivity extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initViews(view);
+        enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
+        unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
 
-        if (!GlobalClass.isNull(Constants.ratfrag_flag) && Constants.ratfrag_flag.equalsIgnoreCase("1")) {
-            Constants.universal = 0;
+        back = (ImageView) view.findViewById(R.id.back);
+        home = (ImageView) view.findViewById(R.id.home);
+        enter_arrow_enter = (ImageView) view.findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) view.findViewById(R.id.enter_arrow_entered);
+        enter = (TextView) view.findViewById(R.id.enter);
+        enetered = (TextView) view.findViewById(R.id.enetered);
+        fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
+
+
+
+        if (Constants.ratfrag_flag.equalsIgnoreCase("1")){
+            Constants.universal=0;
             enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
             enter_arrow_entered.setVisibility(View.VISIBLE);
             enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
             enter_arrow_enter.setVisibility(View.GONE);
             RATEnteredFrag covidentered_frag = new RATEnteredFrag();
             replaceFragment(covidentered_frag);
-        } else {
+        }else {
             enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
             enter_arrow_enter.setVisibility(View.VISIBLE);
             enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -83,15 +100,11 @@ public class RATWOEActivity extends Fragment {
             replaceFragment(covidenter_frag);
         }
 
-        initListner();
-    }
-
-    private void initListner() {
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Constants.ratfrag_flag = "0";
-                Constants.universal = 0;
+                Constants.ratfrag_flag="0";
+                Constants.universal=0;
                 enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_enter.setVisibility(View.VISIBLE);
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -104,8 +117,8 @@ public class RATWOEActivity extends Fragment {
         unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Constants.ratfrag_flag = "0";
-                Constants.universal = 0;
+                Constants.ratfrag_flag="0";
+                Constants.universal=0;
                 enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_entered.setVisibility(View.VISIBLE);
                 enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
@@ -114,20 +127,6 @@ public class RATWOEActivity extends Fragment {
                 replaceFragment(covidentered_frag);
             }
         });
-    }
-
-    private void initViews(View view) {
-        enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
-        unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
-
-        back = (ImageView) view.findViewById(R.id.back);
-        home = (ImageView) view.findViewById(R.id.home);
-        enter_arrow_enter = (ImageView) view.findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) view.findViewById(R.id.enter_arrow_entered);
-        enter = (TextView) view.findViewById(R.id.enter);
-        enetered = (TextView) view.findViewById(R.id.enetered);
-        fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
-
     }
 
 

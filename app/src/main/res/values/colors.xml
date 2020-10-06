@@ -8,6 +8,8 @@
     <color name="DARKGray">#494444</color>
     <color name="lightgray">#e2dede</color>
     <color name="Gray">#bcb5b5</color>
+    <color name="div_color">#cccccc</color>
+    <color name="colorBackground">#E6E6E6</color>
     <color name="userloginColor">#941010</color>
     <color name="Graytoolbar">#747474</color>
     <color name="light_white">#FEFEFE</color>

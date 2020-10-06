@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.Log;
 import android.widget.Toast;
 
@@ -52,7 +54,7 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
     @Override
     protected String doInBackground(Void... voids) {
         String strUrl = Api.POST_COMM_MULTIPART;
-        Log.v("TAG",strUrl);
+        System.out.println(strUrl);
 
         InputStream inputStream = null;
         String result = "";
@@ -80,6 +82,7 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
                     + "\nSource:" + composeCommPOSTModel.getSource() + "\nfile:" + composeCommPOSTModel.getFile());
 
             httpPost.setEntity(builder.build());
+            httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);
             inputStream = httpResponse.getEntity().getContent();
             Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
@@ -87,7 +90,7 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             status_code = httpResponse.getStatusLine().getStatusCode();
             if (inputStream != null) {
                 result = convertInputStreamToString(inputStream);
-                Log.v("TAG","Response : " + result);
+                System.out.println("Response : " + result);
             }
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
@@ -106,10 +109,10 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             if (response != null && !response.isEmpty()) {
                 composeCommunicationActivity.getPOSTCommunicationResponse(response);
             } else {
-                GlobalClass.showTastyToast(mActivity, response, 2);
+                Toast.makeText(mActivity, response, Toast.LENGTH_SHORT).show();
             }
         } else {
-            GlobalClass.showTastyToast(mActivity, "Failed",2);
+            Toast.makeText(mActivity, "Failed", Toast.LENGTH_LONG).show();
         }
     }
 

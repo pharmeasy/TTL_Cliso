@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,10 +30,21 @@ public class RapidAntibodyFrag extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_rapid_antibody);
+        enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
+        unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
 
-        initViews();
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
+        enter = (TextView) findViewById(R.id.enter);
+        enetered = (TextView) findViewById(R.id.enetered);
+        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
 
-        if (!GlobalClass.isNull(Constants.ratfrag_flag) && Constants.ratfrag_flag.equalsIgnoreCase("1")) {
+
+        if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
             Constants.ratfrag_flag = "0";
             enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
             enter_arrow_entered.setVisibility(View.VISIBLE);
@@ -51,11 +61,6 @@ public class RapidAntibodyFrag extends AppCompatActivity {
             replaceFragment(covidenter_frag);
         }
 
-        initListner();
-
-    }
-
-    private void initListner() {
         enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,21 +101,6 @@ public class RapidAntibodyFrag extends AppCompatActivity {
                 finish();
             }
         });
-    }
-
-    private void initViews() {
-        enter_ll_unselected = (LinearLayout) findViewById(R.id.enter_ll_unselected);
-        unchecked_entered_ll = (LinearLayout) findViewById(R.id.unchecked_entered_ll);
-
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-        enter_arrow_enter = (ImageView) findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) findViewById(R.id.enter_arrow_entered);
-        enter = (TextView) findViewById(R.id.enter);
-        enetered = (TextView) findViewById(R.id.enetered);
-        fragment_main = (FrameLayout) findViewById(R.id.fragment_mainLayout);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
     }
 
 

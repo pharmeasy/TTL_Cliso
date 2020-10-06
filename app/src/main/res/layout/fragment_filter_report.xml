@@ -116,7 +116,7 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/maroon"
                 android:minHeight="20dp"
-                android:textAlignment="center"></Spinner>
+                android:textAlignment="center"/>
 
         </LinearLayout>
 
@@ -134,30 +134,21 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/maroon"
                 android:minHeight="20dp"
-                android:textAlignment="center"></Spinner>
+                android:textAlignment="center"/>
         </LinearLayout>
     </LinearLayout>
-
-    <!--<EditText
-        android:id="@+id/edtSearch"
+    <Button
+        android:id="@+id/btn_submit"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/purple_btn_bg"
+        android:text="Submit"
+        android:layout_gravity="center"
         android:layout_marginLeft="21dp"
+        android:layout_marginTop="4dp"
         android:layout_marginRight="21dp"
-        android:layout_marginTop="5dp"
-        android:layout_toLeftOf="@+id/imgSearch"
-        android:layout_toStartOf="@+id/imgSearch"
-        android:layout_weight="0.7"
-        android:background="@drawable/grey_curve_border"
-        android:digits=" "
-        android:drawableRight="@drawable/ic_search_black_24dp"
-        android:ems="10"
-        android:hint=" Select Filter By"
-        android:imeOptions="actionSearch"
-        android:paddingLeft="15dp"
-        android:paddingRight="18dp"
-        android:textColorHint="@color/grey"
-        android:textSize="13dp" />-->
+        android:textColor="@color/white" />
+
 
     <EditText
         android:id="@+id/searchbarcode"
@@ -167,6 +158,7 @@
         android:layout_marginLeft="21dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="21dp"
+        android:visibility="gone"
         android:layout_marginBottom="5dp"
         android:background="@drawable/grey_border"
         android:drawableRight="@drawable/ic_search_black_24dp"

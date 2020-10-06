@@ -12,10 +12,18 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
+
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,20 +39,17 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.CommonItils.AccessRuntimePermissions;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.MultipartComposeCommController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.ComposeCommPOSTModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.mindorks.paracamera.Camera;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,12 +58,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
@@ -82,8 +82,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     };
     private static Dialog dialog;
     Spinner spinnercomm;
-    ConnectionDetector cd;
     EditText commuTXT;
+    boolean isrecording = false;
     ImageView back, home, iv_tick_voice, iv_tick_img, iv_preview, iv_playAudio;
     LinearLayout parent_ll, offline_img;
     Button sendcomm, btn_reset;
@@ -108,7 +108,6 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private boolean audioflag = false;
     private String temp_audioPath = null;
     boolean mediarecorderflag = false;
-    ArrayList<CommunicationMaster> commSpinner = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -117,12 +116,6 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         setContentView(R.layout.fragment_compose_communication);
 
         mActivity = ComposeCommunication_activity.this;
-        cd = new ConnectionDetector(mActivity);
-
-        if (getIntent().getExtras() != null) {
-            commSpinner = getIntent().getExtras().getParcelableArrayList("commSpinner");
-        }
-
         initUI();
 
         if (!GlobalClass.isNetworkAvailable(ComposeCommunication_activity.this)) {
@@ -140,15 +133,18 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
+//        commuTXT.setFilters(new InputFilter[]{EMOJI_FILTER});
+
+        /*String[] string = new String[GlobalClass.commSpinner.size()];
+        for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+            string[i] = GlobalClass.commSpinner.get(i).getDisplayName();
+        }*/
 
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.add("-Select-");
-
-
-        if (GlobalClass.CheckArrayList(commSpinner)) {
-            for (int i = 0; i < commSpinner.size(); i++) {
-                stringArrayList.add(commSpinner.get(i).getDisplayName());
+        if (GlobalClass.commSpinner.size() > 0) {
+            for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+                stringArrayList.add(GlobalClass.commSpinner.get(i).getDisplayName());
             }
         }
 
@@ -198,10 +194,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         spinnercomm.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (GlobalClass.CheckArrayList(commSpinner)) {
-                    for (int i = 0; i < commSpinner.size(); i++) {
-                        if (!GlobalClass.isNull(spinnercomm.getSelectedItem().toString()) && !GlobalClass.isNull(commSpinner.get(i).getDisplayName()) && spinnercomm.getSelectedItem().toString().equalsIgnoreCase(commSpinner.get(i).getDisplayName())) {
-                            strForwardTo = commSpinner.get(i).getForwardTo();
+                if (GlobalClass.commSpinner.size() > 0) {
+                    for (int i = 0; i < GlobalClass.commSpinner.size(); i++) {
+                        if (spinnercomm.getSelectedItem().toString().equalsIgnoreCase(GlobalClass.commSpinner.get(i).getDisplayName())) {
+                            strForwardTo = GlobalClass.commSpinner.get(i).getForwardTo();
                         }
                     }
                 }
@@ -221,13 +217,12 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_txt, 2);
-
+                    TastyToast.makeText(ComposeCommunication_activity.this, ToastFile.crt_txt, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
-                        GlobalClass.SetText(commuTXT, enteredString.substring(1));
+                        commuTXT.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetText(commuTXT, "");
+                        commuTXT.setText("");
                     }
                 }
             }
@@ -247,22 +242,20 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String getCommunication = commuTXT.getText().toString().trim();
-
-                if (!GlobalClass.isNull(spinnercomm.getSelectedItem().toString()) && spinnercomm.getSelectedItem().toString().equalsIgnoreCase("-Select-")) {
-                    GlobalClass.showTastyToast(mActivity, MessageConstants.Sl_RELATED, 2);
-                } else if (GlobalClass.isNull(getCommunication)) {
-                    GlobalClass.showTastyToast(mActivity, MessageConstants.CMP_MSG, 2);
+                if (spinnercomm.getSelectedItem().toString().equalsIgnoreCase("-Select-")) {
+                    TastyToast.makeText(ComposeCommunication_activity.this, "Select related to", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                } else if (getCommunication.isEmpty()) {
+                    TastyToast.makeText(ComposeCommunication_activity.this, "Compose your message", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     commuTXT.requestFocus();
                 } else if (rd_audio.isSelected() || rd_audio.isChecked()) {
                     if (selectedFile == null || !selectedFile.exists()) {
-                        GlobalClass.showTastyToast(mActivity, MessageConstants.AUD_UPLOAD, 2);
+                        TastyToast.makeText(ComposeCommunication_activity.this, "Record audio to upload", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
-
                         proceed();
                     }
                 } else if (rd_image.isSelected() || rd_image.isChecked()) {
                     if (selectedFile == null || !selectedFile.exists()) {
-                        GlobalClass.showTastyToast(mActivity, MessageConstants.SL_UPLOAD, 2);
+                        TastyToast.makeText(ComposeCommunication_activity.this, "Select image to upload", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else {
                         proceed();
                     }
@@ -315,10 +308,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         ll_upImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AccessRuntimePermissions.checkcameraPermission(mActivity)) {
+                if (checkPermission()) {
                     selectImage();
                 } else {
-                    AccessRuntimePermissions.requestCamerapermission(mActivity);
+                    requestPermission();
                 }
             }
         });
@@ -329,7 +322,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 if (selectedFile != null) {
                     GlobalClass.showImageDialog(mActivity, selectedFile, "", 1);
                 } else {
-                    GlobalClass.showTastyToast(mActivity, MessageConstants.FILENOTFOUND, 2);
+                    Toast.makeText(mActivity, "File not found", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -370,7 +363,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private void showAlertDialog(final String value) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mActivity);
         alertDialog.setMessage("At a time you can upload only one, voice or image. Do you want to delete the selected file ?");
-        alertDialog.setPositiveButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 if (selectedFile.exists()) {
                     selectedFile.delete();
@@ -391,7 +384,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 }
             }
         });
-        alertDialog.setNegativeButton(MessageConstants.NO, new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
                 flag = true;
@@ -446,11 +439,11 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             JSONObject jsonObject = new JSONObject(response);
             String Response = jsonObject.optString("response", "");
             String respId = jsonObject.optString("resId", "");
-            if (!GlobalClass.isNull(respId) && respId.equalsIgnoreCase("RES000")) {
-                GlobalClass.showTastyToast(mActivity, Response, 1);
+            if (respId.equalsIgnoreCase("RES000")) {
+                TastyToast.makeText(mActivity, Response, Toast.LENGTH_SHORT, TastyToast.SUCCESS);
                 callIntent();
             } else {
-                GlobalClass.showTastyToast(mActivity, Response, 2);
+                TastyToast.makeText(mActivity, Response, Toast.LENGTH_SHORT, TastyToast.ERROR);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -463,6 +456,15 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         finish();
     }
 
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(mActivity, WRITE_EXTERNAL_STORAGE);
+        int result1 = ContextCompat.checkSelfPermission(mActivity, CAMERA);
+        return result1 == PackageManager.PERMISSION_GRANTED && result == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(mActivity, new String[]{WRITE_EXTERNAL_STORAGE, CAMERA}, PERMISSION_REQUEST_CODE);
+    }
 
     private void selectImage() {
         CharSequence[] items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
@@ -505,8 +507,8 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                 .setDirectory("/Uploads/Images")
                 .setName("img" + System.currentTimeMillis())
                 .setImageFormat(com.mindorks.paracamera.Camera.IMAGE_JPEG)
-                .setCompression(75)
-                .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;
+                .setCompression(Constants.setcompression)
+                .setImageHeight(Constants.setheight)// it will try to achieve this height as close as possible maintaining the aspect ratio;
                 .build(this);
     }
 
@@ -517,23 +519,21 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             try {
                 String imageurl = camera.getCameraBitmapPath();
                 selectedFile = new File(imageurl);
-                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
                 manageImageView(selectedFile);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
             if (data == null) {
-                GlobalClass.showTastyToast(mActivity, ToastFile.failed_to_open, 2);
+                Toast.makeText(mActivity, ToastFile.failed_to_open, Toast.LENGTH_SHORT).show();
+                return;
             }
             try {
                 selectedFile = FileUtil.from(this, data.getData());
-                Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
                 selectedFile = GlobalClass.getCompressedFile(mActivity, selectedFile);
-                Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(selectedFile.length())));
                 manageImageView(selectedFile);
             } catch (IOException e) {
-                GlobalClass.showTastyToast(mActivity, MessageConstants.Failed_to_read_img, 2);
+                Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
@@ -544,11 +544,11 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             flag = false;
             iv_tick_img.setVisibility(View.VISIBLE);
             iv_preview.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(tv_UpImage, getString(R.string.re_upload_image));
+            tv_UpImage.setText(getString(R.string.re_upload_image));
         } else {
             iv_tick_img.setVisibility(View.GONE);
             iv_preview.setVisibility(View.GONE);
-            GlobalClass.SetText(tv_UpImage, getString(R.string.upload_image));
+            tv_UpImage.setText(getString(R.string.upload_image));
         }
     }
 
@@ -598,6 +598,20 @@ public class ComposeCommunication_activity extends AppCompatActivity {
             }
         });
 
+ /*       btn_discard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+                if (selectedFile != null) {
+                    if (selectedFile.exists()) {
+                        selectedFile.delete();
+                    }
+                    selectedFile = null;
+                }
+                Log.e(TAG, "On discard Audio file: " + selectedFile);
+                manageAudioView(selectedFile);
+            }
+        });*/
 
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -652,15 +666,14 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         }
 
 
-                        GlobalClass.SetText(tv_record_title, getString(R.string.stop_record));
-
+                        tv_record_title.setText(getString(R.string.stop_record));
                         closeButton.setClickable(false);
                         img_record.setImageResource(R.drawable.ic_stop_record);
                         btn_save.setEnabled(false);
                         btn_save.setBackgroundResource(R.drawable.disabled_rect_box);
                         btn_discard.setEnabled(false);
                         btn_discard.setBackgroundResource(R.drawable.disabled_rect_box);
-                        GlobalClass.showTastyToast(activity, MessageConstants.Recording_Started, 1);
+                        Toast.makeText(activity, "Recording started", Toast.LENGTH_SHORT).show();
                     } else {
                         requestAudioPermission();
                     }
@@ -671,6 +684,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         if (mediarecorderflag) {
                             if (mediaRecorder != null) {
                                 mediaRecorder.release();
+                               // mediaRecorder.stop();
                                 mediarecorderflag = false;
                             }
                         }
@@ -679,15 +693,14 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-
-                    GlobalClass.SetText(tv_record_title, getString(R.string.start_record));
+                    tv_record_title.setText(getString(R.string.start_record));
                     closeButton.setClickable(true);
                     img_record.setImageResource(R.drawable.ic_start_record);
                     btn_save.setEnabled(true);
                     btn_save.setBackgroundResource(R.drawable.maroon_rect_box);
                     btn_discard.setEnabled(true);
                     btn_discard.setBackgroundResource(R.drawable.maroon_rect_box);
-                    GlobalClass.showTastyToast(mActivity, MessageConstants.Recording_completed, 1);
+                    Toast.makeText(activity, "Recording completed", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -700,11 +713,11 @@ public class ComposeCommunication_activity extends AppCompatActivity {
         if (selectedFile != null) {
             flag = false;
             iv_tick_voice.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(tv_UpVoice, getString(R.string.reupload_voice_message));
+            tv_UpVoice.setText(getString(R.string.reupload_voice_message));
             iv_playAudio.setVisibility(View.VISIBLE);
         } else {
             iv_tick_voice.setVisibility(View.INVISIBLE);
-            GlobalClass.SetText(tv_UpVoice, getString(R.string.upload_voice_message));
+            tv_UpVoice.setText(getString(R.string.upload_voice_message));
             iv_playAudio.setVisibility(View.GONE);
         }
 
@@ -757,6 +770,7 @@ public class ComposeCommunication_activity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 mediaPlayer.start();
+                //  Toast.makeText(activity, "Recording playing", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.Fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +19,6 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,17 +39,16 @@ public class SecondFragment extends Fragment {
     private String mParam2;
     ListView listview;
     public static RequestQueue PostQue;
-    int monthSEND = 0;
-    int thisYear = 0;
+    int monthSEND=0;
+    int thisYear=0;
     ArrayList<String> years;
     ArrayList<String> monthlist;
-    int thismonth = 0;
-    ArrayList<Ledger_DetailsModel> ledgerDetList;
+    int thismonth=0;
+    ArrayList<Ledger_DetailsModel> ledgerDetList ;
     private FirstFragment.OnFragmentInteractionListener mListener;
     Ledger_detail_Credit Adapter;
     ArrayList spinnerdataCredit;
     Spinner typespinner;
-
     public SecondFragment() {
         // Required empty public constructor
     }
@@ -83,34 +81,31 @@ public class SecondFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_second, container, false);
 
-        initViews(view);
-
+        listview=(ListView)view.findViewById(R.id.listview);
+        typespinner=(Spinner)view.findViewById(R.id.typespinner) ;
+       // GetData();
+        //adapter=new Fragment1_ledgerDet_adapter(getContext(),)
 
         ArrayList<String> getArrayTOpass = new ArrayList<>();
         try {
-
-            if (GlobalClass.CheckArrayList(GlobalClass.listdata)) {
-                for (int i = 0; i < GlobalClass.listdata.size(); i++) {
-                    if (!GlobalClass.isNull(GlobalClass.listdata.get(i)) && GlobalClass.listdata.get(i).equalsIgnoreCase("RECEIPT")) {
-                        GlobalClass.listdata.remove(GlobalClass.listdata.get(i));
-                    }
-                    getArrayTOpass.add(GlobalClass.listdata.get(i));
+            for (int i = 0; i <GlobalClass.listdata.size() ; i++) {
+                if(GlobalClass.listdata.get(i).equals("RECEIPT")){
+                    GlobalClass.listdata.remove(GlobalClass.listdata.get(i));
                 }
+                getArrayTOpass.add(GlobalClass.listdata.get(i));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        ArrayAdapter yearadap = new ArrayAdapter(getContext(), R.layout.spinner_item_single_view, getArrayTOpass);
+        ArrayAdapter yearadap = new ArrayAdapter(getContext(),R.layout.spinner_item_single_view, getArrayTOpass);
         yearadap.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         typespinner.setAdapter(yearadap);
 
-        if (getContext() != null && GlobalClass.CheckArrayList(GlobalClass.CREDITLIST)) {
-            Adapter = new Ledger_detail_Credit(getContext(), GlobalClass.CREDITLIST);
+        if(GlobalClass.CREDITLIST.size()>0&&getContext()!=null){
+            Adapter= new Ledger_detail_Credit(getContext(), GlobalClass.CREDITLIST);
             listview.setAdapter(Adapter);
         }
-
         typespinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -130,23 +125,124 @@ public class SecondFragment extends Fragment {
         });
         return view;
     }
-
-    private void initViews(View view) {
-        listview = (ListView) view.findViewById(R.id.listview);
-        typespinner = (Spinner) view.findViewById(R.id.typespinner);
-    }
-
     private List<Ledger_DetailsModel> filter(List<Ledger_DetailsModel> models, String query) {
-        query = query.toLowerCase();
-        final List<Ledger_DetailsModel> filteredModelList = new ArrayList<>();
+        query = query.toLowerCase();final List<Ledger_DetailsModel> filteredModelList = new ArrayList<>();
         for (Ledger_DetailsModel model : models) {
             final String name = model.getNarration().toLowerCase();
-            if (name.contains(query)) {
+           if (name.contains(query)) {
                 filteredModelList.add(model);
             }
         }
         return filteredModelList;
     }
+  /*  private void GetData() {
+
+
+        PostQue = GlobalClass.setVolleyReq(getContext());
+
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            // monthSEND= Integer.parseInt(month.getSelectedItem().toString());
+
+            SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+
+            String user = prefs.getString("Username", null);
+            String passwrd = prefs.getString("password", null);
+            String access = prefs.getString("ACCESS_TYPE", null);
+            String api_key = prefs.getString("API_KEY", null);
+
+           *//* {
+                "apiKey":"qpa6@YJ9XY@LP8Hzxn4PFz3M5WU4NaGo)bsELEn8lFY=",
+                    "month":"04" ,
+                    "userCode":"TC001" ,
+                    "year":"2018"
+            }*//*
+            jsonObject.put("apiKey",api_key);
+
+
+
+            jsonObject.put(Constants.month, GlobalClass.MONTH);
+
+            jsonObject.put(Constants.UserCode_billing,user);
+            jsonObject.put(Constants.year,GlobalClass.YEAR);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                com.android.volley.Request.Method.POST, Api.LedgerDetLive, jsonObject,
+                new com.android.volley.Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jsonArray = response.optJSONArray(Constants.ledgerListDetails);
+                            JSONArray jsonArraycredit = response.optJSONArray(Constants.credits);
+                           // JSONArray jsonArraydebit = response.optJSONArray(Constants.debits);
+
+                            ledgerDetList = new ArrayList<Ledger_DetailsModel>();
+
+
+
+                            for (int j = 0; j < jsonArray.length(); j++) {
+                                try {
+
+
+                                    JSONObject jsonObject = jsonArray.getJSONObject(j);
+                                    Ledger_DetailsModel ledgerModel = new Ledger_DetailsModel();
+
+                                    ledgerModel.setAmount(jsonObject.optString(Constants.amount).toString());
+                                    ledgerModel.setAmountType(jsonObject.optString(Constants.amountType).toString());
+                                    ledgerModel.setDate(jsonObject.optString(Constants.date).toString());
+                                    ledgerModel.setNarration(jsonObject.optString(Constants.narration).toString());
+                                    ledgerModel.setTransactionType(jsonObject.optString(Constants.transactionType).toString());
+
+                                    if(jsonObject.optString(Constants.amountType).toString().equals("CREDIT")){
+                                        ledgerDetList.add(ledgerModel);
+
+                                    }
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            ArrayList<String> listdata = new ArrayList<String>();
+                            JSONArray jArray = (JSONArray)jsonArraycredit;
+                            if (jArray != null) {
+                                for (int i=0;i<jArray.length();i++){
+                                    listdata.add(jArray.getString(i));
+                                }
+
+                            }
+
+                            if(ledgerDetList.size()>0&&getContext()!=null ){
+                                Adapter= new Ledger_detail_Credit(getContext(),ledgerDetList);
+                                listview.setAdapter(Adapter);
+
+
+
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+
+    }*/
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -154,6 +250,7 @@ public class SecondFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
+
 
 
     /**

@@ -390,7 +390,6 @@
                     android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center"
                     android:layout_weight="0.3"
-
                     android:src="@drawable/scan_barcode" />
 
                 <TextView

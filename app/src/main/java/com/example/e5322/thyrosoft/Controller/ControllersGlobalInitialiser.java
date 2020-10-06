@@ -2,6 +2,9 @@ package com.example.e5322.thyrosoft.Controller;
 
 import androidx.multidex.MultiDexApplication;
 
+import com.example.e5322.thyrosoft.Cliso_BMC.GetAvailableStockController;
+import com.example.e5322.thyrosoft.Cliso_BMC.UpdateStockController;
+
 public class ControllersGlobalInitialiser extends MultiDexApplication {
 
     public static GetHealthTipsController GetHealthTipsController;
@@ -11,7 +14,8 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static ValidateMob_Controller validateMob_controller;
     public static EmailValidationController emailValidationController;
     public static VerifyotpController verifyotpController;
-    public static GetCenterlist_Controller getCenterlist_controller;
+    public static GetAvailableStockController getAvailableStockController;
+    public static UpdateStockController updateStockController;
     public static GetOTPController getOTPController;
     public static GETValidateBSOTPController getValidateBSOTPController;
     public static BloodSugarMISController bloodSugarMISController;
@@ -19,78 +23,8 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static POSTBookLeadController POSTBookLeadController;
     public static VersionCheckAPIController versionCheckAPIController;
     public static GetOTPCreditMISController getOTPCreditMISController;
-    public static GetCampidController getCampidController;
-    public static PETCTSLOT_Controller petctslot_controller;
-    public static PETCTScansummary_Controller petctScansummaryController;
-    public static PETCTServiceTypes_Controller petctServiceTypesController;
-    public static AntibodySubmitWoeDetails_Controller antibodySubmitWoeDetails_controller;
-    public static Anti_Patineretdata_Controller anti_patineretdata_controller;
-    public static Firebasetoken_Controller firebasetoken_controller;
-    public static VideoLanguageController videoLanguageController;
-    public static CheckVideoDataController checkVideoDataController;
-    public static Videopoppost_Controller videopoppost_controller;
-    public static InsertScandetail_Controller insertScandetail_controller;
-    public static Insertreason_Controller insertreason_controller;
-    public static Displayrodeails_Controller displayrodeails_controller;
-    public static GetVideoLanguage_Controller getVideoLanguage_controller;
-    public static OTPtoken_controller otPtoken_controller;
-    public static GetHospitalController getHospitalController;
-    public static CovidRates_Controller covidRates_controller;
-    public static CovidMIS_Controller covidMIS_controller;
-    public static CovidMobverification_Controller covidMobverification_controller;
-    public static CovidAccess_Controller covidAccess_controller;
-    public static GenerateOTP_Controller generateOTP_controller;
-    public static CovidFilter_Controller covidFilter_controller;
-    public static ValidateOTP_Controller validateOTP_controller;
-    public static LoginController loginController;
-    public static LoginOTP_Controller loginOTP_controller;
-    public static DeleteWoe_Controller deleteWoe_controller;
-    public static ForgotPassController forgotPassController;
-    public static EmailPhoneOtpController emailPhoneOtpController;
-    public static LoginValidateOTP_Controller loginValidateOTP_controller;
-    public static RegisterUser_Controller registerUser_controller;
-    public static Multiplewindup_Controller multiplewindup_controller;
-    public static FetchwoeListDoneByTSP_Controller fetchWoeListDoneByTSP_controller;
-    public static SendGeoLocation_Controller sendGeoLocation_controller;
-    public static Getwomaster_Controller getwomaster_controller;
-    public static Getcheckulc_Controller getcheckulc_controller;
-    public static ProductListController productListController;
-    public static AddrecheckWOE_Controller addrecheckWOE_controller;
-    public static Checkbarcode_Controller checkbarcode_controller;
-    public static LeadWoeController leadWoeController;
-    public static WoeController woeController;
-    public static UploadDoc_Controller uploadDoc_controller;
-    public static NoticeBoardController noticeBoardController;
-    public static AcknowledgeNoticeBoard_Controller acknowledgeNoticeBoard_controller;
-    public static FeedbackController feedbackController;
-    public static PostCommunicationController postCommunicationController;
-    public static CommGetLive_Controller commGetLive_controller;
-    public static SGCController sgcController;
-    public static ValidateEmail_Controller validateEmail_controller;
-    public static ConsigmentEntry_Controller consigmentEntry_controller;
-    public static CongsigmentBarcode_Controller congsigmentBarcode_controller;
-    public static Myprofile_Controller myprofile_controller;
-    public static ClientController clientController;
-    public static TestDetails_Controller testDetails_controller;
-    public static Getorderdetails_Controller getorderdetails_controller;
-    public static PatientDetail_Controller patientDtailsWoe;
-    public static WindupControllerr windupControllerr;
-    public static Barcodedetail_Controller barcodedetail_controller;
-    public static CheckNumber_Controller checkNumber_controller;
-    public static CompnayContact_Controller compnayContact_controller;
-    public static SampleCountController sampleCountController;
-    public static Billingdetail_Controller billingdetail_controller;
-    public static BilligsumController billigsumController;
-    public static ResultLIVE_Controller resultLIVE_controller;
-    public static Trackdetails_Controller trackdetails_controller;
-    public static Receiptmail_Controller receiptmail_controller;
-    public static Downloadreceipt_Controller downloadreceipt_controller;
-    public static Postreportmail_Controller postreportmail_controller;
-    public static Trackbarc_Controller trackbarc_controller;
-    public static LedgerSumm_Controller ledgerSumm_controller;
-    public static LedgerDetail_Controller ledgerDetail_controller;
-    public static Cancellead_Controller cancellead_controller;
-    public static PostCHN_Controller postCHN_controller;
-    public static ConfirmConsignmentEntry_Controller confirmConsignmentEntry_controller;
+    public static Viewgenhandbill_Contoller viewgenhandbill_contoller;
+    public static Handbilltemplate_Controller handbilltemplate_controller;
+
 
 }

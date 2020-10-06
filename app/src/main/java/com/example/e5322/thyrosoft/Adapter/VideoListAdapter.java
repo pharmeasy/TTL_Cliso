@@ -1,6 +1,8 @@
 package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -16,8 +18,6 @@ import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import pl.droidsonroids.gif.GifImageView;
 
 public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyViewHolder> {
@@ -46,17 +46,17 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int position) {
 
-        GlobalClass.SetText(myViewHolder.tv_title, VideosArylist.get(position).getTitle());
+        myViewHolder.tv_title.setText(VideosArylist.get(position).getTitle());
 
         if (!GlobalClass.isNull(VideosArylist.get(position).getDescription())) {
-            GlobalClass.SetText(myViewHolder.tv_description, VideosArylist.get(position).getDescription());
+            myViewHolder.tv_description.setText(VideosArylist.get(position).getDescription());
             myViewHolder.tv_description.post(new Runnable() {
                 @Override
                 public void run() {
-
+                    int linecount = myViewHolder.tv_description.getLineCount();
+                   // Log.e(TAG, "Number of lines is " + linecount);
                     if (myViewHolder.tv_description.getLineCount() >= 3) {
-                       // myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.more) + "</u>"));
-                        GlobalClass.SetHTML(myViewHolder.tv_show,"<u>" + activity.getResources().getString(R.string.more) + "</u>");
+                        myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.more) + "</u>"));
                         myViewHolder.tv_show.setVisibility(View.VISIBLE);
                     } else {
                         myViewHolder.tv_show.setVisibility(View.GONE);
@@ -71,20 +71,17 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
             public void onClick(View v) {
                 if (!moreflag) {
                     myViewHolder.tv_description.setMaxLines(100);
-                   // myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.less) + "</u>"));
-                    GlobalClass.SetHTML(myViewHolder.tv_show,"<u>" + activity.getResources().getString(R.string.less) + "</u>");
+                    myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.less) + "</u>"));
                     moreflag = true;
                 } else {
                     myViewHolder.tv_description.setMaxLines(3);
-                   // myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.more) + "</u>"));
-                    GlobalClass.SetHTML(myViewHolder.tv_show,"<u>" + activity.getResources().getString(R.string.more) + "</u>");
+                    myViewHolder.tv_show.setText(Html.fromHtml("<u>" + activity.getResources().getString(R.string.more) + "</u>"));
                     moreflag = false;
                 }
             }
         });
 
-
-        GlobalClass.SetText(myViewHolder.tv_description,VideosArylist.get(position).getDescription());
+        myViewHolder.tv_description.setText(VideosArylist.get(position).getDescription());
 
         if (VideosArylist.get(position).isVideoPlaying()) {
             myViewHolder.tv_description.setMaxLines(3);
@@ -93,10 +90,10 @@ public class VideoListAdapter extends RecyclerView.Adapter<VideoListAdapter.MyVi
             myViewHolder.tv_nowPlaying.setVisibility(View.VISIBLE);
 
             if (VideosArylist.get(position).isVideoPaused()) {
-                GlobalClass.SetText(myViewHolder.tv_nowPlaying,"Paused");
+                myViewHolder.tv_nowPlaying.setText("Paused");
                 myViewHolder.GIF_VideoPlaying.setVisibility(View.GONE);
             } else {
-                GlobalClass.SetText(myViewHolder.tv_nowPlaying,"Now Playing..");
+                myViewHolder.tv_nowPlaying.setText("Now Playing..");
                 myViewHolder.GIF_VideoPlaying.setVisibility(View.VISIBLE);
             }
 

@@ -12,6 +12,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +30,13 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.RATEnteredAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.RATEnteredController;
@@ -63,10 +69,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -228,67 +230,72 @@ public class AnitbodyEnteredFrag extends Fragment {
         tv_fromDate = root.findViewById(R.id.tv_fromDate);
         ll_date = root.findViewById(R.id.ll_date);
         rg_radio = root.findViewById(R.id.rg_radio);
-
-        GlobalClass.SetText(tv_fromDate, showDate);
+        tv_fromDate.setText(showDate);
 
     }
 
     public void getresponse(RATEnteredResponseModel body) {
 
+
         try {
-            if (body != null) {
-                if (!GlobalClass.isNull(body.getResID()) && body.getResID().equalsIgnoreCase(Constants.RES0000)) {
-                    patientDETAILSBeans = body.getPatientDETAILS();
-                    int timespan = 0;
-                    if (body.getTimespan() != 0) {
-                        timespan = body.getTimespan();
-                    } else {
-                        timespan = 240;
-                    }
-                    ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME(), timespan);
-                    ratEnteredAdapter.Click(new RATEnteredAdapter.Passdata() {
-                        @Override
-                        public void pass(RATEnteredResponseModel.PatientDETAILSBean postmaterial) {
-                            patientid = postmaterial.getPatientID();
-                            flag = postmaterial.getStatus();
-                            openCamera();
-                        }
-                    });
-                    rc_view.setVisibility(View.VISIBLE);
-                    rc_view.setAdapter(ratEnteredAdapter);
-                    ratEnteredAdapter.notifyDataSetChanged();
+            if (body.getResID().equalsIgnoreCase("RES0000")) {
+                patientDETAILSBeans = body.getPatientDETAILS();
+                int timespan = 0;
+                if (body.getTimespan() != 0) {
+                    timespan = body.getTimespan();
                 } else {
-                    GlobalClass.ShowError(getActivity(), "Oops..", body.getResponse(), false);
+                    timespan = 240;
                 }
+                ratEnteredAdapter = new RATEnteredAdapter(this, patientDETAILSBeans, body.getCurrentTIME(),timespan);
+                ratEnteredAdapter.Click(new RATEnteredAdapter.Passdata() {
+                    @Override
+                    public void pass(RATEnteredResponseModel.PatientDETAILSBean postmaterial) {
+                        patientid = postmaterial.getPatientID();
+                        flag = postmaterial.getStatus();
+                        openCamera();
+                    }
+                });
+                rc_view.setVisibility(View.VISIBLE);
+                rc_view.setAdapter(ratEnteredAdapter);
+                ratEnteredAdapter.notifyDataSetChanged();
             } else {
-                GlobalClass.ShowError(getActivity(), "Oops..", MessageConstants.SOMETHING_WENT_WRONG, true);
+                GlobalClass.ShowError(getActivity(), "Oops..", body.getResponse(), false);
+             //   Toast.makeText(activity, "" + body.getResponse(), Toast.LENGTH_SHORT).show();
                 rc_view.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            GlobalClass.showTastyToast(activity, MessageConstants.SOMETHING_WENT_WRONG, 2);
+            Toast.makeText(activity, "Something wnt wrong", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     private void updateLabel() {
         putDate = sdf.format(myCalendar.getTime());
-        GlobalClass.SetText(tv_fromDate, putDate);
+        tv_fromDate.setText(putDate);
         from_formateDate = GlobalClass.formatDate(Constants.DATEFORMATE, Constants.YEARFORMATE, putDate);
+        if (GlobalClass.isNetworkAvailable((Activity) getContext())) {
+            if (cd.isConnectingToInternet()) {
 
-        RATEnteredRequestModel ratEnteredRequestModel = new RATEnteredRequestModel();
-        ratEnteredRequestModel.setApikey(apikey);
-        ratEnteredRequestModel.setSourceCODE(usercode);
-        if (rd_done.isChecked()) {
-            ratEnteredRequestModel.setStatus("2");
-        } else if (rd_expired.isChecked()) {
-            ratEnteredRequestModel.setStatus("3");
+                RATEnteredRequestModel ratEnteredRequestModel = new RATEnteredRequestModel();
+                ratEnteredRequestModel.setApikey(apikey);
+                ratEnteredRequestModel.setSourceCODE(usercode);
+                if (rd_done.isChecked()) {
+                    ratEnteredRequestModel.setStatus("2");
+                } else if (rd_expired.isChecked()) {
+                    ratEnteredRequestModel.setStatus("3");
+                }
+                ratEnteredRequestModel.setTest(Global.test);
+                ratEnteredRequestModel.setToDATE(from_formateDate);
+                RATEnteredController ratEnteredController = new RATEnteredController(this, ratEnteredRequestModel);
+                ratEnteredController.CallAPI();
+
+            } else {
+                GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+            }
+        } else {
+            GlobalClass.toastySuccess(getContext(), ToastFile.intConnection, false);
         }
-        ratEnteredRequestModel.setTest(Global.test);
-        ratEnteredRequestModel.setToDATE(from_formateDate);
-        RATEnteredController ratEnteredController = new RATEnteredController(this, ratEnteredRequestModel);
-        ratEnteredController.CallAPI();
-
 
     }
 
@@ -310,8 +317,8 @@ public class AnitbodyEnteredFrag extends Fragment {
                 .setDirectory("pics")
                 .setName("img" + System.currentTimeMillis())
                 .setImageFormat(Camera.IMAGE_PNG)
-                .setCompression(50)
-                .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;
+                .setCompression(Constants.setcompression)
+                .setImageHeight(Constants.setheight)// it will try to achieve this height as close as possible maintaining the aspect ratio;
                 .build(this);
     }
 
@@ -369,7 +376,7 @@ public class AnitbodyEnteredFrag extends Fragment {
         if (myBitmap != null)
             imgView.setImageBitmap(myBitmap);
         else
-            GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found, 2);
+            Global.showCustomToast(activity, "Image not found");
 
         rd_grp.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -386,7 +393,7 @@ public class AnitbodyEnteredFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 if (!rd_negative.isChecked() && !rd_positive.isChecked()) {
-                    GlobalClass.showTastyToast(activity, MessageConstants.SL_resultsttus, 2);
+                    Toast.makeText(activity, "Select the result status", Toast.LENGTH_SHORT).show();
                 } else {
                     dialog.dismiss();
                     new AsyncTaskPost_uploadfile().execute();
@@ -407,6 +414,7 @@ public class AnitbodyEnteredFrag extends Fragment {
         int height = (int) (activity.getResources().getDisplayMetrics().heightPixels * 0.90);
 
         dialog.getWindow().setLayout(width, height);
+        // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         dialog.show();
     }
 
@@ -437,6 +445,7 @@ public class AnitbodyEnteredFrag extends Fragment {
             try {
                 HttpClient httpclient = new DefaultHttpClient();
                 HttpPost httpPost = new HttpPost(strUrl);
+                // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setEntity(builder.build());
 
                 builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
@@ -459,6 +468,7 @@ public class AnitbodyEnteredFrag extends Fragment {
                         + "\"TRF_UPLOAD_SIZE\"" + ":\"" + sll_file + "\"");
 
                 httpPost.setEntity(builder.build());
+                httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(activity));
                 HttpResponse httpResponse = httpclient.execute(httpPost);
                 inputStream = httpResponse.getEntity().getContent();
                 Log.e(TAG, "Status Line: " + httpResponse.getStatusLine());
@@ -489,22 +499,23 @@ public class AnitbodyEnteredFrag extends Fragment {
 
                     try {
                         JSONObject obj = new JSONObject(response);
-                        if (!GlobalClass.isNull(obj.getString("ResId")) && obj.getString("ResId").equalsIgnoreCase(Constants.RES0000)) {
-                            GlobalClass.showTastyToast(activity, "" + obj.getString("Response"), 1);
+                        if (obj.getString("ResId").equalsIgnoreCase("RES0000")) {
+                            Toast.makeText(activity, "" + obj.getString("Response"), Toast.LENGTH_SHORT).show();
                             CallAPI("1");
                             obj.getString("currentTIME");
+                            //   07-07-2020 13:39
 
                         } else {
-                            GlobalClass.showTastyToast(activity, "" + obj.getString("Response"), 2);
+                            Toast.makeText(activity, "" + obj.getString("Response"), Toast.LENGTH_SHORT).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 } else {
-                    GlobalClass.showTastyToast(activity, MessageConstants.RESULTNULL, 2);
+                    Toast.makeText(activity, "Result is null", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                GlobalClass.showTastyToast(activity, MessageConstants.SOMETHING_WENT_WRONG, 2);
+                Toast.makeText(activity, "Something went wrong", Toast.LENGTH_SHORT).show();
             }
         }
 

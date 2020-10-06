@@ -12,11 +12,11 @@ import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
 
 public class Constants {
     public static String HEADER_USER_AGENT = "User-Agent";
-    public static String WOEMODE = "THYROSOFTLITE APP";
     public static String PRODUCT_POP = "POP";
     public static String PRODUCT_PROFILE = "PROFILE";
     public static String PRODUCT_TEST = "TEST";
     public static String SMT_TEST = "SMT";
+    public static String USERCODE = "";
     public static int DAYS_CNT = 1;
     public static String APPID = "6";
     public static String TOPIC = "CLISO_ALLDEVICE";
@@ -81,11 +81,16 @@ public class Constants {
     public static final String NHF_Whatsapp = "8422849939";
 
     public static final String PREF_PRODUCTS_CACHING = "syncpref";
+    public static final String PREF_Profile_CACHING = "syncprofile";
+    public static final String PREF_Video_CACHING = "syncvideo";
+    public static final String PREF_POCT_CACHING = "POCT";
+
+
+    public static final String syncproduct = "syncproduct";
 
     public static final String SH_FIRE = "sharefirebase";
     public static final String F_TOKEN = "token";
     public static final String servertoken = "IsTokensendToServer";
-
 
 
     //Todo TEST codes
@@ -97,10 +102,22 @@ public class Constants {
 
     public static final String NHF_EMAIL = "COMM_NHF";
 
+    //Image URL
+    public static String IMAG_URL = "IMAG_URL";
+    public static String B_NAME = "name";
+    public static String B_MOB = "mobileno";
+    public static String B_EMAIL = "email";
+    public static String B_ADDR = "address";
+    public static String B_PINCODE = "pincode";
+    public static String IMGID = "imgid";
+    public static String FROMCOME = "fromcome";
+
+
     public static String tab_flag = "0";
     public static String covidwoe_flag = "0";
     public static String covidfrag_flag = "0";
     public static String ratfrag_flag = "0";
+    public static String offline_flag = "0";
 
     public static boolean PUSHNOT_FLAG = false;
 
@@ -296,6 +313,7 @@ public class Constants {
     public static final String unbilledMaterial = "Unbilledmaterial";
     public static final String unbilledWOE = "UnbilledWOE";
     public static final String rate_percent = "rate_percent";
+    public static final String tcpPercent = "TPCPercent";
     public static final String max_amt = "max_amt";
     //public static String setVideoUrl="VideoURL";
 
@@ -323,7 +341,6 @@ public class Constants {
 
     public static final String tsp_image = "tsp_image";
     public static final String user_code = "user_code";
-    public static String preotp = "PreOTP";
 
     public static String DAC = "DAC";
 
@@ -566,20 +583,20 @@ public class Constants {
 
 
     //   USER LOG SHAREDPREF KEY
-    public static String SHR_USERLOG="Userlog";
-    public static String SHR_APPID= "sappId";
-    public static String SHR_IMEI= "imei";
-    public static String SHR_ISLOGIN= "islogin";
-    public static String SHR_MODTYPE= "modtype";
-    public static String SHR_FIRSTINSTALL= "isfirstinstall";
-    public static String SHR_OS= "os";
-    public static String SHR_TOKEN= "token";
-    public static String SHR_USERNAME= "username";
-    public static String SHR_VERSION= "version";
-    public static final int USER_APPID=5;
+    public static String SHR_USERLOG = "Userlog";
+    public static String SHR_APPID = "sappId";
+    public static String SHR_IMEI = "imei";
+    public static String SHR_ISLOGIN = "islogin";
+    public static String SHR_MODTYPE = "modtype";
+    public static String SHR_FIRSTINSTALL = "isfirstinstall";
+    public static String SHR_OS = "os";
+    public static String SHR_TOKEN = "token";
+    public static String SHR_USERNAME = "username";
+    public static String SHR_VERSION = "version";
+    public static final int USER_APPID = 9;
 
-    public static String SHLOGIN= "LOGIN";
-    public static String LOGOUT= "LOGOUT";
+    public static String SHLOGIN = "LOGIN";
+    public static String LOGOUT = "LOGOUT";
     /**
      * test Color Code
      */
@@ -595,8 +612,15 @@ public class Constants {
     public static String RES0000 = "RES0000";
     public static String RES0001 = "RES0001";
     public static String RES0082 = "RES0082";
-    public static int universal=0;
-    public static int pushrat_flag=0;
+    public static int universal = 0;
+    public static int pushrat_flag = 0;
+
+    public static int setcompression = 50;
+    public static int setheight = 480;
+    public static String Ratecal = "RateCal";
+    public static String TTLPrductList = "TTLProductlist";
+    public static String OutlabProductlist = "OutlabProductlist";
+    public static String THYROMART_APP_LINK = "https://play.google.com/store/apps/details?id=com.thyrocare.thyromart";
 
     public static String returnToken(Activity mContext) {
         String str = "";

@@ -9,33 +9,30 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
-import android.media.ExifInterface
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Environment
 import android.preference.PreferenceManager
-import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.example.e5322.thyrosoft.*
 import com.example.e5322.thyrosoft.API.Constants
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS
 import com.example.e5322.thyrosoft.Models.*
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.CommunicationMaster
@@ -44,6 +41,7 @@ import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model
 import com.example.e5322.thyrosoft.TestListModel.Tests
 import com.example.e5322.thyrosoft.startscreen.Login
+import com.sdsmdg.tastytoast.TastyToast
 import id.zelory.compressor.Compressor
 import java.io.File
 import java.io.FileInputStream
@@ -242,14 +240,20 @@ class KTGlobalclass {
                 matrix, true)
     }
 
-    fun DisplayImage(activity: Context, Url: String?, imageView: ImageView?) { //            Glide.get(mActivity).clearMemory();
-        Glide.with(activity).load(Url)
-                .asBitmap()
-                .placeholder(R.drawable.userprofile).dontAnimate() //                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-                .error(R.drawable.userprofile)
-                .fitCenter()
-                .into(imageView)
+    fun DisplayImage(activity: Context, Url: String?, imageView: ImageView?, userprofile: Int) { //            Glide.get(mActivity).clearMemory();
+        try {
+            Glide.get(activity).clearMemory()
+            val glideUrl = GlideUrl(Url, LazyHeaders.Builder()
+                    .addHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(activity))
+                    .build())
+            Glide.with(activity).load(glideUrl)
+                    .asBitmap()
+                    .placeholder(userprofile).dontAnimate()
+                    .error(userprofile)
+                    .into(imageView)
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
     }
 
 
@@ -271,24 +275,24 @@ class KTGlobalclass {
         }
     }
 
-    fun rotate(bitmap: Bitmap?, photoPath: String?): Bitmap? {
-        var ei: ExifInterface? = null
-        try {
-            ei = ExifInterface(photoPath)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        val orientation = ei!!.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
-        var rotatedBitmap: Bitmap? = null
-        rotatedBitmap = when (orientation) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> GlobalClass.rotateImage(bitmap, 90f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> GlobalClass.rotateImage(bitmap, 180f)
-            ExifInterface.ORIENTATION_ROTATE_270 -> GlobalClass.rotateImage(bitmap, 270f)
-            ExifInterface.ORIENTATION_NORMAL -> bitmap
-            else -> bitmap
-        }
-        return rotatedBitmap
-    }
+//    fun rotate(bitmap: Bitmap?, photoPath: String?): Bitmap? {
+//        var ei: ExifInterface? = null
+//        try {
+//            ei = ExifInterface(photoPath)
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//        val orientation = ei!!.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED)
+//        var rotatedBitmap: Bitmap? = null
+//        rotatedBitmap = when (orientation) {
+//            ExifInterface.ORIENTATION_ROTATE_90 -> GlobalClass.rotateImage(bitmap, 90f)
+//            ExifInterface.ORIENTATION_ROTATE_180 -> GlobalClass.rotateImage(bitmap, 180f)
+//            ExifInterface.ORIENTATION_ROTATE_270 -> GlobalClass.rotateImage(bitmap, 270f)
+//            ExifInterface.ORIENTATION_NORMAL -> bitmap
+//            else -> bitmap
+//        }
+//        return rotatedBitmap
+//    }
 
     fun getReadableFileSize(size: Long): String? {
         if (size <= 0) {
@@ -400,7 +404,7 @@ class KTGlobalclass {
     }
 
     fun redirectToLogin(activity: Activity) {
-        GlobalClass.showTastyToast(activity, ToastFile.relogin, 2)
+        TastyToast.makeText(activity, ToastFile.relogin, TastyToast.LENGTH_SHORT, TastyToast.INFO)
         val i = Intent(activity, Login::class.java)
         i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         activity.startActivity(i)
@@ -573,15 +577,15 @@ class KTGlobalclass {
 
 
     fun toastySuccess(context: Context?, string: String?, b: Boolean) {
-        GlobalClass.showTastyToast(context as Activity?, string,1)
+        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.SUCCESS)
     }
 
     fun toastyInfo(context: Context?, string: String?, b: Boolean) {
-        GlobalClass.showTastyToast(context as Activity?, string, 2)
+        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.INFO)
     }
 
     fun toastyError(context: Context?, string: String?, b: Boolean) {
-        GlobalClass.showTastyToast(context as Activity?, string, 2)
+        TastyToast.makeText(context, string, KTGlobalclass().ToastLength(b), TastyToast.INFO)
     }
 
     fun ToastLength(b: Boolean): Int {
@@ -594,162 +598,111 @@ class KTGlobalclass {
 
     fun printLog(Type: String, Tag: String, Label: String, msg: String) {
 
-        try {
-            if (BuildConfig.DEBUG) {
-                if (Type.equals("Error", ignoreCase = true)) {
-                    Log.e(Tag, " $Label: $msg")
-                } else if (Type.equals("Info", ignoreCase = true)) {
-                    Log.i(Tag, " $Label: $msg")
-                } else if (Type.equals("Debug", ignoreCase = true)) {
-                    Log.d(Tag, " $Label: $msg")
-                } else if (Type.equals("Warning", ignoreCase = true)) {
-                    Log.w(Tag, " $Label: $msg")
-                } else if (Type.equals("sout", ignoreCase = true)) {
-                    println("$Tag $Label: $msg")
+
+
+        fun storeProductsCachingTime(activity: Activity) {
+            val editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit()
+            editor.putLong("offer_millis", System.currentTimeMillis())
+            editor.apply()
+        }
+
+        fun Dayscnt(context: Context): Int {
+            var offer_millis: Long = 0
+            var current_millis: Long = 0
+            var differ_millis: Long = 0
+            val pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, Context.MODE_PRIVATE)
+            offer_millis = pref_prod_caching.getLong("offer_millis", 0)
+            current_millis = System.currentTimeMillis()
+            differ_millis = current_millis - offer_millis
+            val days = (differ_millis / (1000 * 60 * 60 * 24)).toInt()
+            Log.e("TAG11", "<< DAYS >> $days")
+            return days
+        }
+
+        fun dynamicolordot(context: Context?, lincolor: LinearLayout, color: Int) {
+            val imageView = ImageView(context)
+            imageView.setPadding(2, 0, 2, 2)
+            val layoutParams = LinearLayout.LayoutParams(50, 50)
+            layoutParams.gravity = Gravity.CENTER
+            layoutParams.marginStart = 10
+            imageView.layoutParams = layoutParams
+            imageView.setImageDrawable(GlobalClass.drawCircle(context, 50, 50, color))
+            lincolor.addView(imageView)
+        }
+
+        fun getStoreSynctime1(context: Context): Int {
+            val synpref = context.getSharedPreferences("Syncpref", Context.MODE_PRIVATE)
+            KTGlobalclass().syntime = synpref.getLong("synctime", 0)
+            curr_time = System.currentTimeMillis()
+            KTGlobalclass().differ_millis = KTGlobalclass().curr_time - KTGlobalclass().syntime
+            val days = (KTGlobalclass().differ_millis / (1000 * 60 * 60 * 24)).toInt()
+            return days
+        }
+
+
+        fun drawCircle(context: Context?, width: Int, height: Int, color: Int): ShapeDrawable? { //////Drawing oval & Circle programmatically /////////////
+            val oval = ShapeDrawable(OvalShape())
+            oval.intrinsicHeight = height
+            oval.intrinsicWidth = width
+            oval.paint.color = color
+            return oval
+        }
+
+        fun volleyRetryPolicy(request: JsonObjectRequest) {
+            val policy: RetryPolicy = DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            request.retryPolicy = policy
+        }
+
+        fun volleyRetryPolicy(request: StringRequest) {
+            val policy: RetryPolicy = DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+            request.retryPolicy = policy
+        }
+
+        fun isNull(str: String?): Boolean {
+            return if (str == null || str == null || str.trim { it <= ' ' } == "" || str.trim { it <= ' ' } == "null" || str.trim { it <= ' ' } === "" || str.trim { it <= ' ' } === "null") true else false
+        }
+
+        fun showProgressDialog(activity: Activity?): ProgressDialog? {
+            if (progressDialog != null && !progressDialog!!.isShowing) if (!(context as Activity).isFinishing) {
+                progressDialog = ProgressDialog(activity)
+                progressDialog!!.setTitle("Kindly wait ...")
+                progressDialog!!.setMessage(ToastFile.processing_request)
+                progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                progressDialog!!.progress = 0
+                progressDialog!!.max = 20
+                progressDialog!!.setCanceledOnTouchOutside(false)
+                progressDialog!!.setCancelable(false)
+                progressDialog!!.show()
+            }
+            return progressDialog
+        }
+
+        fun dismissProgressDialog() {
+            try {
+                if (progressDialog != null && progressDialog!!.isShowing) {
+                    progressDialog!!.dismiss()
                 }
-            } else {
-                println("Live....")
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
         }
-    }
 
-
-    fun showImageDialog(activity: Activity, file: File, url: String?, flag: Int) {
-        dialog = Dialog(activity)
-        dialog!!.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-        dialog!!.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog!!.setContentView(R.layout.trf_img_dialog)
-        dialog!!.setCancelable(true)
-        val imgView = KTGlobalclass().dialog!!.findViewById<View>(R.id.imageview) as ImageView
-        val img_close = KTGlobalclass().dialog!!.findViewById<View>(R.id.img_close) as ImageView
-
-        if (flag == 1) {
-            val myBitmap = BitmapFactory.decodeFile(file.absolutePath)
-            if (myBitmap != null) imgView.setImageBitmap(myBitmap) else GlobalClass.showTastyToast(activity, MessageConstants.Image_not_found,0)
-        } else {
-            Glide.with(activity)
-                    .load(url)
-                    .placeholder(activity.resources.getDrawable(R.drawable.img_no_img_aval))
-                    .into(imgView)
+        fun showcenterCustomToast(activity: Activity, message: String?) {
+            val context = activity.applicationContext
+            val inflater = activity.layoutInflater
+            val toastRoot = inflater.inflate(R.layout.custom_toast, null)
+            val relItem = toastRoot.findViewById<View>(R.id.relItem) as RelativeLayout
+            val txtToast = toastRoot.findViewById<View>(R.id.txtToast) as TextView
+            relItem.background.alpha = 204
+            txtToast.text = message
+            val toast = Toast(context)
+            toast.view = toastRoot
+            toast.setGravity(Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL, 0, 0)
+            toast.duration = Toast.LENGTH_LONG
+            toast.show()
         }
-        img_close.setOnClickListener { KTGlobalclass().dialog!!.dismiss() }
-        val width = (activity.resources.displayMetrics.widthPixels * 0.95).toInt()
-        val height = (activity.resources.displayMetrics.heightPixels * 0.90).toInt()
-        KTGlobalclass().dialog!!.window.setLayout(width, height)
-        // dialog.getWindow().setLayout(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        KTGlobalclass().dialog!!.show()
 
-    }
-
-    fun storeProductsCachingTime(activity: Activity) {
-        val editor = activity.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, 0).edit()
-        editor.putLong("offer_millis", System.currentTimeMillis())
-        editor.apply()
-    }
-
-    fun Dayscnt(context: Context): Int {
-        var offer_millis: Long = 0
-        var current_millis: Long = 0
-        var differ_millis: Long = 0
-        val pref_prod_caching = context.getSharedPreferences(Constants.PREF_PRODUCTS_CACHING, Context.MODE_PRIVATE)
-        offer_millis = pref_prod_caching.getLong("offer_millis", 0)
-        current_millis = System.currentTimeMillis()
-        differ_millis = current_millis - offer_millis
-        val days = (differ_millis / (1000 * 60 * 60 * 24)).toInt()
-        Log.e("TAG11", "<< DAYS >> $days")
-        return days
-    }
-
-    fun dynamicolordot(context: Context?, lincolor: LinearLayout, color: Int) {
-        val imageView = ImageView(context)
-        imageView.setPadding(2, 0, 2, 2)
-        val layoutParams = LinearLayout.LayoutParams(50, 50)
-        layoutParams.gravity = Gravity.CENTER
-        layoutParams.marginStart = 10
-        imageView.layoutParams = layoutParams
-        imageView.setImageDrawable(GlobalClass.drawCircle(context, 50, 50, color))
-        lincolor.addView(imageView)
-    }
-
-    fun getStoreSynctime1(context: Context): Int {
-        val synpref = context.getSharedPreferences("Syncpref", Context.MODE_PRIVATE)
-        KTGlobalclass().syntime = synpref.getLong("synctime", 0)
-        curr_time = System.currentTimeMillis()
-        KTGlobalclass().differ_millis = KTGlobalclass().curr_time - KTGlobalclass().syntime
-        val days = (KTGlobalclass().differ_millis / (1000 * 60 * 60 * 24)).toInt()
-        return days
-    }
-
-
-    fun drawCircle(context: Context?, width: Int, height: Int, color: Int): ShapeDrawable? { //////Drawing oval & Circle programmatically /////////////
-        val oval = ShapeDrawable(OvalShape())
-        oval.intrinsicHeight = height
-        oval.intrinsicWidth = width
-        oval.paint.color = color
-        return oval
-    }
-
-    fun volleyRetryPolicy(request: JsonObjectRequest) {
-        val policy: RetryPolicy = DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-        request.retryPolicy = policy
-    }
-
-    fun volleyRetryPolicy(request: StringRequest) {
-        val policy: RetryPolicy = DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
-        request.retryPolicy = policy
-    }
-
-    fun isNull(str: String?): Boolean {
-        return if (str == null || str == null || str.trim { it <= ' ' } == "" || str.trim { it <= ' ' } == "null" || str.trim { it <= ' ' } === "" || str.trim { it <= ' ' } === "null") true else false
-    }
-
-    fun showProgressDialog(activity: Activity?) : ProgressDialog?{
-        if (progressDialog != null && !progressDialog!!.isShowing) if (!(context as Activity).isFinishing) {
-            progressDialog = ProgressDialog(activity)
-            progressDialog!!.setTitle("Kindly wait ...")
-            progressDialog!!.setMessage(ToastFile.processing_request)
-            progressDialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-            progressDialog!!.progress = 0
-            progressDialog!!.max = 20
-            progressDialog!!.setCanceledOnTouchOutside(false)
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
-        }
-        return  progressDialog
-    }
-
-    fun dismissProgressDialog() {
-        try {
-            if (progressDialog != null && progressDialog!!.isShowing) {
-                progressDialog!!.dismiss()
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun DisplayVideoImage(activity: Activity, url: String, imageView: ImageView) {
-        Glide.with(activity).load(url).asBitmap().fitCenter().into(imageView)
-    }
-
-    fun showcenterCustomToast(activity: Activity, message: String?) {
-        val context = activity.applicationContext
-        val inflater = activity.layoutInflater
-        val toastRoot = inflater.inflate(R.layout.custom_toast, null)
-        val relItem = toastRoot.findViewById<View>(R.id.relItem) as RelativeLayout
-        val txtToast = toastRoot.findViewById<View>(R.id.txtToast) as TextView
-        relItem.background.alpha = 204
-        txtToast.text = message
-        val toast = Toast(context)
-        toast.view = toastRoot
-        toast.setGravity(Gravity.CENTER_HORIZONTAL or Gravity.CENTER_VERTICAL, 0, 0)
-        toast.duration = Toast.LENGTH_LONG
-        toast.show()
-    }
-
-    /*  fun currencyFormat(amount: String): String? {
+        /*  fun currencyFormat(amount: String): String? {
           var amount = amount
           var formatter: DecimalFormat? = null
           if (!GlobalClass.isNull(amount)) {
@@ -762,57 +715,61 @@ class KTGlobalclass {
       }*/
 
 
-    fun currencyFormat(amount: String): String? {
-        var amount = amount
-        var formatter: DecimalFormat? = null
-        if (!GlobalClass.isNull(amount)) {
-            formatter = DecimalFormat("##,##,##,###.##")
-            return formatter.format(amount.toDouble())
-        } else {
-            amount = "0"
-        }
-        return formatter!!.format(amount.toDouble())
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    fun hideProgressDialog(barProgressDialog: ProgressDialog?, context: Context?) {
-        var barProgressDialog = barProgressDialog
-        var context = context
-        if (barProgressDialog != null) {
-            if (barProgressDialog.isShowing) {
-                context = (barProgressDialog.context as ContextWrapper).baseContext
-                if (context is Activity) {
-                    if (!context.isFinishing && !context.isDestroyed) barProgressDialog.dismiss()
-                } else barProgressDialog.dismiss()
+        fun currencyFormat(amount: String): String? {
+            var amount = amount
+            var formatter: DecimalFormat? = null
+            if (!GlobalClass.isNull(amount)) {
+                formatter = DecimalFormat("##,##,##,###.##")
+                return formatter.format(amount.toDouble())
+            } else {
+                amount = "0"
             }
-            barProgressDialog = null
+            return formatter!!.format(amount.toDouble())
         }
-    }
 
-    fun showupdate(msg: String?) {
-        progressDialog = ProgressDialog(context)
-        progressDialog!!.setTitle(null)
-        progressDialog!!.setMessage(msg)
-        progressDialog!!.isIndeterminate = false
-        progressDialog!!.setCanceledOnTouchOutside(false)
-        progressDialog!!.setCancelable(false)
-        if (progressDialog != null && !progressDialog!!.isShowing) if (!(context as Activity).isFinishing) {
-            progressDialog!!.show()
+
+        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+        fun hideProgressDialog(barProgressDialog: ProgressDialog?, context: Context?) {
+            var barProgressDialog = barProgressDialog
+            var context = context
+            if (barProgressDialog != null) {
+                if (barProgressDialog.isShowing) {
+                    context = (barProgressDialog.context as ContextWrapper).baseContext
+                    if (context is Activity) {
+                        if (!context.isFinishing && !context.isDestroyed) barProgressDialog.dismiss()
+                    } else barProgressDialog.dismiss()
+                }
+                barProgressDialog = null
+            }
         }
-    }
 
-    fun hideProgressDialog1() {
-        try {
-            if (progressDialog != null && progressDialog!!.isShowing) progressDialog!!.dismiss()
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
+        fun showupdate(msg: String?) {
+            progressDialog = ProgressDialog(context)
+            progressDialog!!.setTitle(null)
+            progressDialog!!.setMessage(msg)
+            progressDialog!!.isIndeterminate = false
+            progressDialog!!.setCanceledOnTouchOutside(false)
+            progressDialog!!.setCancelable(false)
+            if (progressDialog != null && !progressDialog!!.isShowing) if (!(context as Activity).isFinishing) {
+                progressDialog!!.show()
+            }
         }
-    }
+
+        fun hideProgressDialog1() {
+            try {
+                if (progressDialog != null && progressDialog!!.isShowing) progressDialog!!.dismiss()
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        fun showShortToast(activity: Activity?, message: String?) {
+            if (activity != null) {
+                val context = activity.applicationContext
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
     }
-
-
-
-
+}

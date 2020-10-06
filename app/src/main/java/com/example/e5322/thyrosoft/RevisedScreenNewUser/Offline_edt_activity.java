@@ -2,6 +2,7 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,10 +22,10 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Adapter.AttachBarcodeAdpter;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -37,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,18 +53,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 public class Offline_edt_activity extends AppCompatActivity implements RecyclerInterface {
-
+    ProgressDialog barProgressDialog;
     TextView brand_name, selectType_txt, samplecollectionponit, referedby, sct_txt, sub_source_code, barcode_number, test_names_txt, title;
     EditText name_edt, age_edt;
     Spinner spinyr;
-    Activity mActivity;
     RadioButton male, female;
     Button next_btn_patient;
     ArrayList<BarcodelistModel> barcodelists;
     BarcodelistModel barcodelist;
     public boolean genderId = false;
+    private Edit_Woe.OnFragmentInteractionListener mListener;
+    private RequestQueue POstQue;
+    private String RES_ID;
+    private String barcode_patient_id;
+    private String message;
+    private String status;
     SharedPreferences prefs;
-    private String user, passwrd, access, api_key;
+    private String patientName, patientYearType, user, passwrd, access, api_key;
     private String saveGenderId;
     private String age_type;
     private String getName;
@@ -76,13 +84,13 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
     ImageView back, home;
     ScannedBarcodeDetails scannedBarcodeDetails;
     ArrayList<ScannedBarcodeDetails> setAllTestWithBArcodeList;
+    private String parsableDate;
     private Global globalClass;
     private String versionNameTopass;
     private int versionCode;
     private String TAG = Offline_edt_activity.class.getSimpleName().toString();
     private String getWoeJson;
     private MyPojoWoe myPojoWoe;
-
     private String MY_DEBUG_TAG = Offline_edt_activity.class.getSimpleName().toString();
     private DatabaseHelper myDb;
     LinearLayoutManager linearLayoutManager;
@@ -95,20 +103,56 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.offline_edt_ll);
-        mActivity = Offline_edt_activity.this;
-        initViews();
 
-        initListner();
+        brand_name = (TextView) findViewById(R.id.brand_name);
+        selectType_txt = (TextView) findViewById(R.id.selectType_txt);
+        samplecollectionponit = (TextView) findViewById(R.id.samplecollectionponit);
+        referedby = (TextView) findViewById(R.id.referedby);
+        sct_txt = (TextView) findViewById(R.id.sct_txt);
+//        barcode_number = (TextView) findViewById(R.id.barcode_number);
+        sub_source_code = (TextView) findViewById(R.id.sub_source_code);
+        title = (TextView) findViewById(R.id.title);
+        test_names_txt = (TextView) findViewById(R.id.test_names_txt);
+        name_edt = (EditText) findViewById(R.id.name_edt);
+        age_edt = (EditText) findViewById(R.id.age_edt);
+        spinyr = (Spinner) findViewById(R.id.spinyr);
+        male = (RadioButton) findViewById(R.id.male);
+        female = (RadioButton) findViewById(R.id.female);
+        next_btn_patient = (Button) findViewById(R.id.next_btn_patient);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+        recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
+        myDb = new DatabaseHelper(Offline_edt_activity.this);
+        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientsagespinner,
+                R.layout.spinner_item);
+        spinyr.setAdapter(PatientsagespinnerAdapter);
 
+        prefs = Offline_edt_activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
+
+        title.setText("Offline WOE Edit");
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GlobalClass.goToHome(Offline_edt_activity.this);
+            }
+        });
 
         linearLayoutManager = new LinearLayoutManager(Offline_edt_activity.this);
         recycler_barcode.setLayoutManager(linearLayoutManager);
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
+        if (globalClass.checkForApi21()) {    Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
+            window.setStatusBarColor(getResources().getColor(R.color.limaroon));}
 
 
         PackageInfo pInfo = null;
@@ -121,6 +165,61 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
         //get the app version Code for checking
         versionCode = pInfo.versionCode;
 
+        age_edt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    agesinteger = Integer.parseInt(s.toString());
+                } else {
+
+                }
+
+
+                String enteredString = s.toString();
+
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(Offline_edt_activity.this,
+                            ToastFile.crt_age,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        age_edt.setText(enteredString.substring(1));
+                    } else {
+                        age_edt.setText("");
+                    }
+                }
+                if (age_edt.getText().toString().equals("")) {
+
+                } else {
+                    if (agesinteger < 12) {
+                        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientsagespinner,
+                                R.layout.spinner_item);
+                        spinyr.setAdapter(PatientsagespinnerAdapter);
+                    }
+                    if (agesinteger > 12) {
+                        ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientspinyrday,
+                                R.layout.spinner_item);
+                        spinyr.setAdapter(Patientsagespinner);
+                    }
+                    if (agesinteger > 29) {
+                        ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientspinyr,
+                                R.layout.spinner_item);
+                        spinyr.setAdapter(Patientsagesyr);
+                    }
+                }
+            }
+        });
+
         getWoeJson = getIntent().getStringExtra("WoeJson");
         try {
             Gson gson = new Gson();
@@ -131,43 +230,42 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
             Log.e(MY_DEBUG_TAG, "Error " + e.toString());
         }
 
-
         if (myPojoWoe != null) {
-            GlobalClass.SetText(brand_name, myPojoWoe.getWoe().getBRAND());
-            GlobalClass.SetText(brand_name, myPojoWoe.getWoe().getBRAND());
-            GlobalClass.SetText(selectType_txt, myPojoWoe.getWoe().getTYPE());
-            GlobalClass.SetText(name_edt, myPojoWoe.getWoe().getPATIENT_NAME());
-            GlobalClass.SetText(sub_source_code, myPojoWoe.getWoe().getMAIN_SOURCE());
-
-            GlobalClass.SetEditText(age_edt, myPojoWoe.getWoe().getAGE());
-            GlobalClass.SetText(samplecollectionponit, "Sample collection point : " + myPojoWoe.getWoe().getADDRESS());
-            GlobalClass.SetText(referedby, "Ref By: " + myPojoWoe.getWoe().getREF_DR_NAME());
+            brand_name.setText(myPojoWoe.getWoe().getBRAND());
+            selectType_txt.setText(myPojoWoe.getWoe().getTYPE());
+            name_edt.setText(myPojoWoe.getWoe().getPATIENT_NAME());
+            sub_source_code.setText(myPojoWoe.getWoe().getMAIN_SOURCE());
+            age_edt.setText(myPojoWoe.getWoe().getAGE());
+            samplecollectionponit.setText("Sample collection point : "+myPojoWoe.getWoe().getADDRESS());
+            referedby.setText("Ref By: "+myPojoWoe.getWoe().getREF_DR_NAME());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             SimpleDateFormat sdfOutput = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
             Date date = null;
             String output = null;
-            try {
+            try{
                 //Converting the input String to Date
-                date = sdf.parse(myPojoWoe.getWoe().getSPECIMEN_COLLECTION_TIME());
+                date= sdf.parse(myPojoWoe.getWoe().getSPECIMEN_COLLECTION_TIME());
                 //Changing the format of date and storing it in String
                 output = sdfOutput.format(date);
                 //Displaying the date
-                Log.v("TAG", output);
-                GlobalClass.SetText(sct_txt, output);
-            } catch (ParseException pe) {
+                System.out.println(output);
+                sct_txt.setText(output);
+            }catch(ParseException pe){
                 pe.printStackTrace();
             }
+
 
 
             setAllTestWithBArcodeList = new ArrayList<>();
 
             ArrayList<String> getOnlyBarcodes = new ArrayList<>();
-            if (myPojoWoe.getBarcodelist().size() != 0) {
+            if (myPojoWoe.getBarcodelist().size() != 0){
                 for (int i = 0; i < myPojoWoe.getBarcodelist().size(); i++) {
                     getOnlyBarcodes.add(myPojoWoe.getBarcodelist().get(i).getBARCODE());
                     displayBarcodes = TextUtils.join(",", getOnlyBarcodes);
+//                    barcode_number.setText(displayBarcodes);
                     scannedBarcodeDetails = new ScannedBarcodeDetails();
                     scannedBarcodeDetails.setBarcode(myPojoWoe.getBarcodelist().get(i).getBARCODE());
                     scannedBarcodeDetails.setProducts(myPojoWoe.getBarcodelist().get(i).getTESTS());
@@ -197,7 +295,7 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 for (int i = 0; i < myPojoWoe.getBarcodelist().size(); i++) {
                     getOnlyTestNames.add(myPojoWoe.getBarcodelist().get(i).getTESTS());
                     String displayslectedtest = TextUtils.join(",", getOnlyTestNames);
-                    GlobalClass.SetText(test_names_txt, displayslectedtest);
+                    test_names_txt.setText(displayslectedtest);
                 }
 
             if (myPojoWoe.getWoe().getAGE_TYPE().equals("Y")) {
@@ -230,12 +328,13 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_name, 2);
+                    Toast.makeText(Offline_edt_activity.this,
+                            ToastFile.crt_name,
+                            Toast.LENGTH_SHORT).show();
                     if (enteredString.length() > 0) {
-
-                        GlobalClass.SetEditText(name_edt, enteredString.substring(1));
+                        name_edt.setText(enteredString.substring(1));
                     } else {
-                        GlobalClass.SetEditText(name_edt, "");
+                        name_edt.setText("");
                     }
                 }
             }
@@ -283,14 +382,14 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 getName = getName.replaceAll("\\s+", " ");
                 getAge = age_edt.getText().toString();
                 getAgeType = spinyr.getSelectedItem().toString();
-                if (getName.equals("") || getName.equals(null) || getName.length() <= 1) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_name, 2);
+                if (getName.equals("") || getName.equals(null) ||getName.length()<=1) {
+                    Toast.makeText(Offline_edt_activity.this, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                 } else if (getAge.equals("") || getAge.equals(null)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_age, 2);
+                    Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
                 } else if (getAgeType.equals("") || getAgeType.equals(null)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_age_type, 2);
+                    Toast.makeText(Offline_edt_activity.this, ToastFile.ent_age_type, Toast.LENGTH_SHORT).show();
                 } else if (saveGenderId.equals("") || saveGenderId.equals(null)) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.ent_gender, 2);
+                    Toast.makeText(Offline_edt_activity.this, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                 } else {
                     if (getAgeType.equals("Years")) {
                         age_type = "Y";
@@ -303,108 +402,7 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 }
             }
         });
-    }
-
-    private void initListner() {
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                GlobalClass.goToHome(Offline_edt_activity.this);
-            }
-        });
-
-        age_edt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    agesinteger = Integer.parseInt(s.toString());
-                } else {
-
-                }
-
-
-                String enteredString = s.toString();
-
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.crt_age, 2);
-                    if (enteredString.length() > 0) {
-                        GlobalClass.SetEditText(age_edt, enteredString.substring(1));
-                    } else {
-                        GlobalClass.SetEditText(age_edt, "");
-                    }
-                }
-                if (age_edt.getText().toString().equals("")) {
-
-                } else {
-                    if (agesinteger < 12) {
-                        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientsagespinner,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(PatientsagespinnerAdapter);
-                    }
-                    if (agesinteger > 12) {
-                        ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientspinyrday,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(Patientsagespinner);
-                    }
-                    if (agesinteger > 29) {
-                        ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientspinyr,
-                                R.layout.spinner_item);
-                        spinyr.setAdapter(Patientsagesyr);
-                    }
-                }
-            }
-        });
-
-
-    }
-
-    private void initViews() {
-        brand_name = (TextView) findViewById(R.id.brand_name);
-        selectType_txt = (TextView) findViewById(R.id.selectType_txt);
-        samplecollectionponit = (TextView) findViewById(R.id.samplecollectionponit);
-        referedby = (TextView) findViewById(R.id.referedby);
-        sct_txt = (TextView) findViewById(R.id.sct_txt);
-        sub_source_code = (TextView) findViewById(R.id.sub_source_code);
-        title = (TextView) findViewById(R.id.title);
-        test_names_txt = (TextView) findViewById(R.id.test_names_txt);
-        name_edt = (EditText) findViewById(R.id.name_edt);
-        age_edt = (EditText) findViewById(R.id.age_edt);
-        spinyr = (Spinner) findViewById(R.id.spinyr);
-        male = (RadioButton) findViewById(R.id.male);
-        female = (RadioButton) findViewById(R.id.female);
-        next_btn_patient = (Button) findViewById(R.id.next_btn_patient);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-        recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
-        myDb = new DatabaseHelper(Offline_edt_activity.this);
-        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Offline_edt_activity.this, R.array.Patientsagespinner,
-                R.layout.spinner_item);
-        spinyr.setAdapter(PatientsagespinnerAdapter);
-
-        prefs = Offline_edt_activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
-        GlobalClass.SetText(title, "Offline WOE Edit");
+        // Inflate the layout for this fragment
     }
 
     @Override
@@ -418,7 +416,7 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
                 if (getBarcodeDetails.length() == 8) {
                     passBarcodeData(getBarcodeDetails);
                 } else {
-                    GlobalClass.showTastyToast(mActivity, invalid_brcd, 2);
+                    Toast.makeText(this, invalid_brcd, Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -430,36 +428,32 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
 
     private void passBarcodeData(String s) {
         boolean isbacodeduplicate = false;
-
-        if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-            for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                if (!GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getBarcode())) {
-                    if (!GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getBarcode()) && !GlobalClass.isNull(s) &&
-                            setAllTestWithBArcodeList.get(i).getBarcode().equalsIgnoreCase(s)) {
-                        isbacodeduplicate = true;
-                    }
+        for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
+            if (setAllTestWithBArcodeList.get(i).getBarcode() != null && !setAllTestWithBArcodeList.get(i).getBarcode().isEmpty()) {
+                if (setAllTestWithBArcodeList.get(i).getBarcode().equalsIgnoreCase(s)) {
+                    isbacodeduplicate = true;
                 }
+            } else {
+
             }
         }
-
 
         if (isbacodeduplicate == true) {
-            GlobalClass.showTastyToast(mActivity, ToastFile.duplicate_barcd, 2);
+            Toast.makeText(Offline_edt_activity.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
+            for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
 
-            if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-                for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                    if (!GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getSpecimen_type()) &&
-                            !GlobalClass.isNull(GlobalClass.specimenttype) && setAllTestWithBArcodeList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-                        setAllTestWithBArcodeList.get(i).setBarcode("");
-                        setAllTestWithBArcodeList.get(i).setBarcode(s);
-                        Log.e(TAG, "passBarcodeData: show barcode" + s);
-                    }
+                if (setAllTestWithBArcodeList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
+                    setAllTestWithBArcodeList.get(i).setBarcode("");
+                    setAllTestWithBArcodeList.get(i).setBarcode(s);
+                    Log.e(TAG, "passBarcodeData: show barcode" + s);
                 }
             }
-
         }
+
+
         recycler_barcode.removeAllViews();
+//        adapterBarcode.notifyDataSetChanged();
         AttachBarcodeAdpter attachBarcodeAdpter = new AttachBarcodeAdpter(Offline_edt_activity.this, setAllTestWithBArcodeList);
 
         attachBarcodeAdpter.setOnItemClickListener(new AttachBarcodeAdpter.OnItemClickListener() {
@@ -528,16 +522,13 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
         barcodelists = new ArrayList<>();
 
         ArrayList<String> setBarcodes = new ArrayList<>();
-
-        if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-            for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                barcodelist = new BarcodelistModel();
-                barcodelist.setSAMPLE_TYPE(setAllTestWithBArcodeList.get(i).getSpecimen_type());
-                barcodelist.setBARCODE(setAllTestWithBArcodeList.get(i).getBarcode());
-                setBarcodes.add(setAllTestWithBArcodeList.get(i).getBarcode());
-                barcodelist.setTESTS((setAllTestWithBArcodeList.get(i).getProducts()));
-                barcodelists.add(barcodelist);
-            }
+        for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
+            barcodelist = new BarcodelistModel();
+            barcodelist.setSAMPLE_TYPE(setAllTestWithBArcodeList.get(i).getSpecimen_type());
+            barcodelist.setBARCODE(setAllTestWithBArcodeList.get(i).getBarcode());
+            setBarcodes.add(setAllTestWithBArcodeList.get(i).getBarcode());
+            barcodelist.setTESTS((setAllTestWithBArcodeList.get(i).getProducts()));
+            barcodelists.add(barcodelist);
         }
 
         myPojoWoe.setBarcodelistModel(barcodelists);
@@ -547,8 +538,10 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(myPojoWoe);
 
+        String sendBarcodestoDb = TextUtils.join(",", setBarcodes);
         boolean isUpdated = myDb.updateData(displayBarcodes, json);
-        if (isUpdated) {
+        if (isUpdated == true) {
+
             try {
                 Gson gsonData = new Gson();
                 myPojoWoe = new MyPojoWoe();
@@ -559,22 +552,19 @@ public class Offline_edt_activity extends AppCompatActivity implements RecyclerI
             }
 
             ArrayList<String> setBarcodesinDb = new ArrayList<>();
-
-            if (myPojoWoe != null && GlobalClass.CheckArrayList(myPojoWoe.getBarcodelist())) {
-                for (int i = 0; i < myPojoWoe.getBarcodelist().size(); i++) {
-                    setBarcodesinDb.add(myPojoWoe.getBarcodelist().get(i).getBARCODE());
-                }
+            for (int i = 0; i < myPojoWoe.getBarcodelist().size(); i++) {
+                setBarcodesinDb.add(myPojoWoe.getBarcodelist().get(i).getBARCODE());
             }
-
             String passbrcd = TextUtils.join(",", setBarcodesinDb);
             boolean isUpdatedData = myDb.updateBArcodeColumn(passbrcd, json);
-            if (isUpdatedData) {
-                GlobalClass.showTastyToast(mActivity, ToastFile.woeEdt, 1);
+            if (isUpdatedData == true) {
+                TastyToast.makeText(Offline_edt_activity.this, ToastFile.woeEdt, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                 finish();
             }
 
+
         } else {
-            GlobalClass.showTastyToast(mActivity, ToastFile.woenotEdt, 2);
+            TastyToast.makeText(Offline_edt_activity.this, ToastFile.woenotEdt, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
         }
 
     }

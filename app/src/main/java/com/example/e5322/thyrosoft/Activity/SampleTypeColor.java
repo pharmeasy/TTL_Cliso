@@ -43,54 +43,51 @@ public class SampleTypeColor {
         boolean other = false;
 
         try {
-            if (GlobalClass.CheckArrayList(base_model_rate_calculators)) {
-                if (GlobalClass.checkArray( base_model_rate_calculators.get(position).getBarcodes())){
-                    for (int j = 0; j < base_model_rate_calculators.get(position).getBarcodes().length; j++) {
-                        if (GlobalClass.checkArray(base_model_rate_calculators.get(position).getBarcodes())) {
-                            if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.EDTA)) {
-                                if (!edta) {
-                                    edta = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.edta));
-                                }
-                            } else if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.SERUM)) {
-                                if (!serum) {
-                                    serum = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.serum));
-                                }
-                            } else if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.URINE)) {
-                                if (!urine) {
-                                    urine = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.urine));
-                                }
-
-                            } else if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
-                                if (!fluride) {
-                                    fluride = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.flouride));
-                                }
-
-                            } else if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.LITHIUMHEPARIN)) {
-                                if (!lithium) {
-                                    lithium = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.lithium));
-                                }
-
-                            } else if (!GlobalClass.isNull(base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type()) && base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.SODIUMHEPARIN)) {
-                                if (!sodium) {
-                                    sodium = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.sodium));
-                                }
-                            } else {
-                                if (!other) {
-                                    other = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.other));
-                                }
-
+            if (base_model_rate_calculators != null || base_model_rate_calculators.size() > 0) {
+                for (int j = 0; j < base_model_rate_calculators.get(position).getBarcodes().length; j++) {
+                    if (base_model_rate_calculators.get(position).getBarcodes() != null || base_model_rate_calculators.get(position).getBarcodes().length != 0) {
+                        if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.EDTA)) {
+                            if (edta == false) {
+                                edta = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.edta));
                             }
+                        } else if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.SERUM)) {
+                            if (serum == false) {
+                                serum = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.serum));
+                            }
+                        } else if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.URINE)) {
+                            if (urine == false) {
+                                urine = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.urine));
+                            }
+
+                        } else if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.FLUORIDE)) {
+                            if (fluride == false) {
+                                fluride = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.flouride));
+                            }
+
+                        } else if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.LITHIUMHEPARIN)) {
+                            if (lithium == false) {
+                                lithium = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.lithium));
+                            }
+
+                        } else if (base_model_rate_calculators.get(position).getBarcodes()[j].getSpecimen_type().equalsIgnoreCase(Constants.SODIUMHEPARIN)) {
+                            if (sodium == false) {
+                                sodium = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.sodium));
+                            }
+                        } else {
+                            if (other == false) {
+                                other = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.other));
+                            }
+
                         }
                     }
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,53 +104,51 @@ public class SampleTypeColor {
         boolean sodium = false;
         boolean other = false;
         try {
-            if (GlobalClass.CheckArrayList(outlabdetails_outLabs)) {
-                if (GlobalClass.checkArray(outlabdetails_outLabs.get(position).getSampletype())) {
-                    for (int j = 0; j < outlabdetails_outLabs.get(position).getSampletype().length; j++) {
-                        if (outlabdetails_outLabs.get(position).getSampletype() != null || outlabdetails_outLabs.get(position).getSampletype().length != 0) {
-                            if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.EDTA)) {
-                                if (!edta) {
-                                    edta = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.edta));
-                                }
-                            } else if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.SERUM)) {
+            if (outlabdetails_outLabs != null || outlabdetails_outLabs.size() > 0) {
+                for (int j = 0; j < outlabdetails_outLabs.get(position).getSampletype().length; j++) {
+                    if (outlabdetails_outLabs.get(position).getSampletype() != null || outlabdetails_outLabs.get(position).getSampletype().length != 0) {
+                        if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.EDTA)) {
+                            if (edta == false) {
+                                edta = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.edta));
+                            }
+                        } else if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.SERUM)) {
 
-                                if (!serum) {
-                                    serum = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.serum));
-                                }
+                            if (serum == false) {
+                                serum = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.serum));
+                            }
 
-                            } else if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.URINE)) {
-                                if (!urine) {
-                                    urine = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.urine));
-                                }
-                            } else if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.FLUORIDE)) {
-                                if (!fluride) {
-                                    fluride = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.flouride));
-                                }
+                        } else if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.URINE)) {
+                            if (urine == false) {
+                                urine = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.urine));
+                            }
+                        } else if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.FLUORIDE)) {
+                            if (fluride == false) {
+                                fluride = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.flouride));
+                            }
 
-                            } else if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.LITHIUMHEPARIN)) {
-                                if (!lithium) {
-                                    lithium = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.lithium));
-                                }
+                        } else if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.LITHIUMHEPARIN)) {
+                            if (lithium == false) {
+                                lithium = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.lithium));
+                            }
 
-                            } else if (!GlobalClass.isNull(outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype()) && outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.SODIUMHEPARIN)) {
-                                if (!sodium) {
-                                    sodium = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.sodium));
-                                }
-                            } else {
-                                if (!other) {
-                                    other = true;
-                                    GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.other));
-                                }
+                        } else if (outlabdetails_outLabs.get(position).getSampletype()[j].getOutlabsampletype().equalsIgnoreCase(Constants.SODIUMHEPARIN)) {
+                            if (sodium == false) {
+                                sodium = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.sodium));
+                            }
+                        } else {
+                            if (other == false) {
+                                other = true;
+                                GlobalClass.dynamicolordot(mContext, lin_color, mContext.getResources().getColor(R.color.other));
                             }
                         }
-
                     }
+
                 }
             }
         } catch (Exception e) {

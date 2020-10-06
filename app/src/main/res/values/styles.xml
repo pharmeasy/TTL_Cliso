@@ -11,6 +11,11 @@
 
     </style>
 
+    <style name="TextLabel" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">@dimen/NormalTextSize</item>
+        <item name="android:textColorHint">@color/black</item>
+    </style>
+
 
     <style name="AppThemeDark" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->

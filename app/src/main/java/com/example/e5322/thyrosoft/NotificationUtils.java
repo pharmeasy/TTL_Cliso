@@ -47,7 +47,7 @@ public class NotificationUtils {
 
     public void showNotificationMessage(final String title, final String message, final String timeStamp, Intent intent, String imageUrl,String NotificationID, String onGoing, String autoCancel, String bigText,int Screen_category,String Product_name ) {
         // Check for empty push message
-        if (TextUtils.isEmpty(message))
+        if (GlobalClass.isNull(message))
             return;
 
 

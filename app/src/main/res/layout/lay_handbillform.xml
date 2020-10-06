@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/lay_toolbar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/fill_user"
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/edt_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/grey_curve_border"
+                android:gravity="center|left"
+                android:digits="@string/name_digits"
+                android:hint="@string/bs_name"
+                android:maxLength="35"
+                android:importantForAutofill="no"
+                android:padding="@dimen/mediumPadding"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/watsappSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/edt_mobile"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:digits="0123456789"
+                android:hint="@string/bs_mobile_number"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="10"
+                android:padding="@dimen/mediumPadding"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/watsappSize" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/edittext_boreder_grey"
+                android:gravity="center|left"
+                android:hint="@string/email_id_mand"
+                android:importantForAutofill="no"
+                android:digits="@string/email_digits"
+                android:inputType="textEmailAddress"
+                android:maxLength="30"
+                android:padding="@dimen/mediumPadding"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/watsappSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/edt_address"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/transparent"
+                android:digits="@string/addressvalidationhandbill"
+                android:gravity="top"
+                android:hint="@string/addressnotmand"
+                android:lines="3"
+                android:maxLength="150"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/watsappSize"
+                android:visibility="visible" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            app:hintTextAppearance="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/edt_pincode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center|left"
+                android:hint="@string/pincodenotmand"
+                android:inputType="number"
+                android:maxLength="6"
+                android:padding="@dimen/mediumPadding"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/watsappSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_preview"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/mediumPadding"
+            android:background="@drawable/button_bg"
+            android:gravity="center"
+            android:padding="@dimen/smallPadding"
+            android:text="@string/btn_preview"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+
+
+    </LinearLayout>
+
+</LinearLayout>

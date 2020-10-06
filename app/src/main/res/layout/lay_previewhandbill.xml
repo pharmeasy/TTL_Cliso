@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/lay_toolbar" />
+
+    <RelativeLayout
+        android:id="@+id/lin_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_above="@+id/rel_generate"
+        android:layout_below="@+id/rel_toolbar">
+
+        <com.example.e5322.thyrosoft.CommonItils.VerticalTextView
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/_4sdp"
+            android:gravity="bottom|right"
+            android:textColor="@color/black"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_20sdp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_6sdp">
+
+            <com.github.chrisbanes.photoview.PhotoView
+                android:id="@+id/img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                android:src="@drawable/default_img" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/_24sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txt_avail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center|left"
+                android:text="@string/forservice"
+                android:textColor="@color/DARKGray"
+                android:textSize="@dimen/_12sdp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
+
+            <TextView
+                android:id="@+id/txt_name1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:gravity="center|left"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_10sdp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/txt_mobileno"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:gravity="center|left"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="normal" />
+
+
+            <TextView
+                android:id="@+id/txt_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:gravity="center|left"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="normal" />
+
+
+            <TextView
+                android:id="@+id/txt_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:autoSizeMaxTextSize="@dimen/_10sdp"
+                android:autoSizeMinTextSize="@dimen/_6sdp"
+                android:autoSizeStepGranularity="@dimen/_1sdp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center|left"
+                android:maxLines="3"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_8sdp"
+                android:textStyle="normal" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/rel_generate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_6sdp"
+        android:layout_marginLeft="@dimen/_6sdp"
+        android:layout_marginRight="@dimen/_6sdp"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/btn_generate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_30sdp"
+            android:background="@color/maroon"
+            android:text="@string/generate"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp"
+            android:visibility="visible" />
+
+
+        <Button
+            android:id="@+id/btn_download"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_margin="@dimen/_2sdp"
+            android:layout_weight="1"
+            android:background="@color/maroon"
+            android:text="@string/btn_download"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_share"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_margin="@dimen/_2sdp"
+            android:layout_weight="1"
+            android:background="@color/maroon"
+            android:text="@string/btn_share"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_margin="@dimen/_2sdp"
+            android:layout_weight="1"
+            android:background="@color/maroon"
+            android:text="@string/btn_delete"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_10sdp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</RelativeLayout>

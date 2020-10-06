@@ -2,6 +2,8 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,17 +29,27 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Getcheckulc_Controller;
+import com.example.e5322.thyrosoft.Adapter.ExpandableTestMasterListDisplayAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.ProductListController;
-import com.example.e5322.thyrosoft.Controller.WoeController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -58,6 +70,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,13 +83,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
@@ -92,18 +98,27 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     Button btn_save, btn_clear;
     ArrayList<BaseModel> Selcted_Test = new ArrayList<>();
     ImageView back, home;
+    // ArrayList<BaseModel> selectedTestsList;
     MainModel mainModel;
     ULCResponseModel ulcResponseModel;
     private Global globalClass;
-    SharedPreferences prefe;
+    RequestQueue requestQueuepoptestILS;
+    SharedPreferences preferences, prefe;
     String brandName, typeName;
     String shr_brandname;
     ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
+    MainModel obj;
     ArrayList<BaseModel> filteredFiles;
     String TAG = ProductLisitngActivityNew.class.getSimpleName();
+    private ExpandableTestMasterListDisplayAdapter expAdapter;
     private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
+    private ArrayList<B2B_MASTERSMainModel> finalproductlist;
+    ProgressDialog progressDialog;
     TextView show_selected_tests_list_test_ils1, test_txt;
+    ProgressDialog barProgressDialog;
+    // List<String> showTestNmaes;
     ArrayList<String> showTestNmaes = new ArrayList<>();
+    List<String> getOnlyProducts;
     String user, passwrd, access, api_key, convertDate;
     SharedPreferences prefs, pref_brand;
     SharedPreferences.Editor editor_brand;
@@ -111,13 +126,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     TextView title;
     RadioButton ulc_radiobtn, nonulc_radiobtn;
     TextView companycost_test;
+    private int totalcount;
     boolean testflag = false;
     private ArrayList<BaseModel> tempselectedTests;
     private List<String> tempselectedTests1;
+    private MainModel mainModelRate;
+    private String displayslectedtest;
     Button go_button, ulc_woe_btn;
     RecyclerView recycler_ulc_woe;
     ScannedBarcodeDetails scannedBarcodeDetails;
     ArrayList<ScannedBarcodeDetails> setAllTestWithBArcodeList;
+    ImageView crosstoclose;
+    private static Global globalData;
     LinearLayoutManager linearLayoutManager;
     LinearLayoutManager linearLayoutManagerBarcode;
     private AlertDialog.Builder alertDialogBuilder;
@@ -139,6 +159,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String sampleGivingClient;
     private String refeID;
     private String labAddress;
+    int days = 0;
     private String labID;
     private String labName;
     private String btechID;
@@ -158,11 +179,13 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String message;
     private String status;
     private String barcode_id;
+    private RequestQueue sendGPSDetails;
     private String checkUlcNumber;
     private boolean flagforOnce = false;
     Button verify_ulc;
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
+
 
     @SuppressLint("NewApi")
     @Override
@@ -170,7 +193,39 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poduct_lisitng);
 
-        initViews();
+
+        sv_testsList1 = (EditText) findViewById(R.id.sv_testsList1);
+        ulc_code_edt = (EditText) findViewById(R.id.ulc_code_edt);
+        exp_list = (ExpandableListView) findViewById(R.id.exp_list);
+        recycler_all_test = (RecyclerView) findViewById(R.id.recycler_all_test);
+        btn_save = (Button) findViewById(R.id.btn_save);
+        btn_clear = (Button) findViewById(R.id.btn_clear);
+        title = (TextView) findViewById(R.id.title);
+        back = (ImageView) findViewById(R.id.back);
+        home = (ImageView) findViewById(R.id.home);
+        go_button = (Button) findViewById(R.id.go_button);
+        ulc_woe_btn = (Button) findViewById(R.id.ulc_woe_btn);
+        verify_ulc = (Button) findViewById(R.id.verify_ulc);
+        before_discount_layout2 = (LinearLayout) findViewById(R.id.before_discount_layout2);
+        ulc_nonulc_ll = (LinearLayout) findViewById(R.id.ulc_nonulc_ll);
+        ulc_ll = (LinearLayout) findViewById(R.id.ulc_ll);
+        product_list_ll = (LinearLayout) findViewById(R.id.product_list_ll);
+        ulc_code_edt_ll = (LinearLayout) findViewById(R.id.ulc_code_edt_ll);
+        ulc_woe_ll = (LinearLayout) findViewById(R.id.ulc_woe_ll);
+        ulc_radiobtn = (RadioButton) findViewById(R.id.ulc_radiobtn);
+        nonulc_radiobtn = (RadioButton) findViewById(R.id.nonulc_radiobtn);
+        show_selected_tests_list_test_ils1 = (TextView) findViewById(R.id.show_selected_tests_list_test_ils1);
+        companycost_test = (TextView) findViewById(R.id.companycost_test);
+        test_txt = (TextView) findViewById(R.id.test_txt);
+        recycler_ulc_woe = (RecyclerView) findViewById(R.id.recycler_ulc_woe);
+
+        linearLayoutManager = new LinearLayoutManager(ProductLisitngActivityNew.this);
+        linearLayoutManagerBarcode = new LinearLayoutManager(ProductLisitngActivityNew.this);
+        recycler_all_test.setLayoutManager(linearLayoutManager);
+        recycler_ulc_woe.setLayoutManager(linearLayoutManagerBarcode);
+        recycler_all_test.addItemDecoration(new DividerItemDecoration(ProductLisitngActivityNew.this, DividerItemDecoration.VERTICAL));
+        recycler_all_test.setItemAnimator(new DefaultItemAnimator());
+
 
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
@@ -186,37 +241,49 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             e.printStackTrace();
         }
         version = pInfo.versionName;
+        //get the app version Code for checking
+
+
+        barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+
+        SearchManager searchManager = (SearchManager) mActivity.getSystemService(Context.SEARCH_SERVICE);
+
         before_discount_layout2.setVisibility(View.GONE);
 
 
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        patientName = preferences.getString("name", "");
-        patientYear = preferences.getString("age", "");
-        patientYearType = preferences.getString("ageType", "");
-        patientGender = preferences.getString("gender", "");
-        brandName = preferences.getString("WOEbrand", "");
-        typeName = preferences.getString("woetype", "");
-        sampleCollectionDate = preferences.getString("date", "");
-        sampleCollectionTime = preferences.getString("sct", "");
-        sr_number = preferences.getString("SR_NO", "");
+        patientName = preferences.getString("name", null);
+        patientYear = preferences.getString("age", null);
+        patientYearType = preferences.getString("ageType", null);
+        patientGender = preferences.getString("gender", null);
+        brandName = preferences.getString("WOEbrand", null);
+        typeName = preferences.getString("woetype", null);
+        sampleCollectionDate = preferences.getString("date", null);
+        sampleCollectionTime = preferences.getString("sct", null);
+        sr_number = preferences.getString("SR_NO", null);
         pass_to_api = Integer.parseInt(sr_number);
-        referenceBy = preferences.getString("refBy", "");
+        referenceBy = preferences.getString("refBy", null);
+        ////////////////////////////////////////////////////////////////////////
+        sampleCollectionPoint = preferences.getString("labAddress", null);
+        sampleGivingClient = preferences.getString("labname", null);
+        ////////////////////////////////////////////////////////////////////////
 
-        sampleCollectionPoint = preferences.getString("labAddress", "");
-        sampleGivingClient = preferences.getString("labname", "");
-
-
-        refeID = preferences.getString("refId", "");
-        labAddress = preferences.getString("labAddress", "");
-        labID = preferences.getString("labIDaddress", "");
-        labName = preferences.getString("labname", "");
-        btechID = preferences.getString("btechIDToPass", "");
-        campID = preferences.getString("getcampIDtoPass", "");
-        homeaddress = preferences.getString("patientAddress", "");
-        getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
+        refeID = preferences.getString("refId", null);
+        labAddress = preferences.getString("labAddress", null);
+        labID = preferences.getString("labIDaddress", null);
+        labName = preferences.getString("labname", null);
+        btechID = preferences.getString("btechIDToPass", null);
+        campID = preferences.getString("getcampIDtoPass", null);
+        homeaddress = preferences.getString("patientAddress", null);
+        getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
 
         pref_brand = getSharedPreferences("BRANDPREF", MODE_PRIVATE);
-        if (TextUtils.isEmpty(shr_brandname)) {
+        if (GlobalClass.isNull(shr_brandname)) {
             editor_brand = pref_brand.edit();
             editor_brand.putString("BRANDNAME", brandName);
             editor_brand.apply();
@@ -226,58 +293,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         shr_brandname = pref_brand.getString("BRANDNAME", "");
 
         final SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", "");
+        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
 
 
-        GlobalClass.SetText(title, "Select Test(s)");
-
+        title.setText("Select Test(s)");
         Selcted_Test = new ArrayList<>();
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
+        user = prefs.getString("Username", null);
+        passwrd = prefs.getString("password", null);
+        access = prefs.getString("ACCESS_TYPE", null);
+        api_key = prefs.getString("API_KEY", null);
 
-
-        if (typeName.equalsIgnoreCase("CAMP")) {
-            ulc_nonulc_ll.setVisibility(View.VISIBLE);
-            ulc_ll.setVisibility(View.GONE);
-            product_list_ll.setVisibility(View.GONE);
-        } else {
-            ulc_nonulc_ll.setVisibility(View.GONE);
-            ulc_ll.setVisibility(View.GONE);
-            product_list_ll.setVisibility(View.VISIBLE);
-        }
-
-        initListner();
-
-        if (GlobalClass.Dayscnt(ProductLisitngActivityNew.this) >= Constants.DAYS_CNT) {
-            getAllproduct();
-        } else {
-            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-            Gson gson = new Gson();
-            final String json = appSharedPrefs.getString("MyObject", "");
-            MainModel obj = gson.fromJson(json, MainModel.class);
-
-            if (obj != null) {
-                if (obj.getB2B_MASTERS() != null && !GlobalClass.isNull(obj.getUSER_TYPE())) {
-                    if (!GlobalClass.isNull(shr_brandname) && !GlobalClass.isNull(brandName) && shr_brandname.equalsIgnoreCase(brandName)) {
-                        callAdapter(obj);
-                    } else {
-                        getAllproduct();
-                    }
-
-                } else {
-                    getAllproduct();
-                }
-            } else {
-                getAllproduct();
-            }
-        }
-    }
-
-    private void initListner() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -292,7 +319,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         });
 
-
+        if (typeName.equalsIgnoreCase("CAMP")) {
+            ulc_nonulc_ll.setVisibility(View.VISIBLE);
+            ulc_ll.setVisibility(View.GONE);
+            product_list_ll.setVisibility(View.GONE);
+        } else {
+            ulc_nonulc_ll.setVisibility(View.GONE);
+            ulc_ll.setVisibility(View.GONE);
+            product_list_ll.setVisibility(View.VISIBLE);
+        }
         ulc_radiobtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,17 +376,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 String code = "";
                 String product = "";
 
-                if (GlobalClass.CheckArrayList(testRateMasterModels)) {
+                if (testRateMasterModels.size() != 0) {
                     for (int i = 0; i < testRateMasterModels.size(); i++) {
                         final String text = testRateMasterModels.get(i).getName().toLowerCase();
-
-                        if (!GlobalClass.isNull(testRateMasterModels.get(i).getName())) {
+                        if (testRateMasterModels.get(i).getName() != null || !testRateMasterModels.get(i).getName().equals("")) {
                             name = testRateMasterModels.get(i).getName().toLowerCase();
                         }
-                        if (!GlobalClass.isNull(testRateMasterModels.get(i).getCode())) {
+                        if (testRateMasterModels.get(i).getCode() != null || !testRateMasterModels.get(i).getCode().equals("")) {
                             code = testRateMasterModels.get(i).getCode().toLowerCase();
                         }
-                        if (!GlobalClass.isNull(testRateMasterModels.get(i).getProduct())) {
+                        if (testRateMasterModels.get(i).getProduct() != null || !testRateMasterModels.get(i).getProduct().equals("")) {
                             product = testRateMasterModels.get(i).getProduct().toLowerCase();
                         }
 
@@ -373,16 +407,84 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         verify_ulc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RequestQueue requestQueueULC = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
-                try {
-                    if (ControllersGlobalInitialiser.getcheckulc_controller != null) {
-                        ControllersGlobalInitialiser.getcheckulc_controller = null;
-                    }
-                    ControllersGlobalInitialiser.getcheckulc_controller = new Getcheckulc_Controller(mActivity, ProductLisitngActivityNew.this);
-                    ControllersGlobalInitialiser.getcheckulc_controller.getcheckulc_controller(api_key, checkUlcNumber, user, requestQueueULC);
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                    GlobalClass.showAlertDialog(ProductLisitngActivityNew.this);
                 }
+
+                barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
+                barProgressDialog.setTitle("Kindly wait ...");
+                barProgressDialog.setMessage(ToastFile.processing_request);
+                barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                barProgressDialog.setProgress(0);
+                barProgressDialog.setMax(20);
+                barProgressDialog.show();
+                barProgressDialog.setCanceledOnTouchOutside(false);
+                barProgressDialog.setCancelable(false);
+                checkUlcNumber = ulc_code_edt.getText().toString();
+                RequestQueue requestQueueULC = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
+                JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getData + api_key + "/" + checkUlcNumber + "/" + user + "/getcheckulc", new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e(TAG, "onResponse: RESPONSE" + response);
+
+
+                        GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
+
+                        Gson gson = new Gson();
+                        ulcResponseModel = new ULCResponseModel();
+                        ulcResponseModel = gson.fromJson(response.toString(), ULCResponseModel.class);
+                        ulc_woe_ll.setVisibility(View.VISIBLE);
+                        if (ulcResponseModel.getULC_STATUS().equalsIgnoreCase("VALID")) {
+                            ulc_woe_ll.setVisibility(View.VISIBLE);
+                            test_txt.setText(ulcResponseModel.getTEST());
+                            setAllTestWithBArcodeList = new ArrayList<>();
+
+                            if (ulcResponseModel.getULC_TEST().length != 0) {
+                                for (int i = 0; i < ulcResponseModel.getULC_TEST().length; i++) {
+
+                                    scannedBarcodeDetails = new ScannedBarcodeDetails();
+                                    scannedBarcodeDetails.setProducts(ulcResponseModel.getULC_TEST()[i].getTest());
+                                    scannedBarcodeDetails.setSpecimen_type(ulcResponseModel.getULC_TEST()[i].getSample_type());
+                                    setAllTestWithBArcodeList.add(scannedBarcodeDetails);
+                                }
+                            }
+                            ScanBarcodeAdapter attachBarcodeAdpter = new ScanBarcodeAdapter(ProductLisitngActivityNew.this, setAllTestWithBArcodeList);
+                            recycler_ulc_woe.setAdapter(attachBarcodeAdpter);
+                            attachBarcodeAdpter.setOnItemClickListener(new ScanBarcodeAdapter.OnItemClickListener() {
+                                @Override
+                                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
+                                    scanIntegrator = new IntentIntegrator(activity);
+                                    if (GlobalClass.specimenttype != null) {
+                                        GlobalClass.specimenttype = "";
+                                    }
+                                    GlobalClass.specimenttype = Specimenttype;
+                                    scanIntegrator.initiateScan();
+                                }
+                            });
+
+                        } else {
+                            Toast.makeText(mActivity, "INVALID ULC", Toast.LENGTH_SHORT).show();
+                            ulc_woe_ll.setVisibility(View.GONE);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (error.networkResponse == null) {
+                            if (error.getClass().equals(TimeoutError.class)) {
+                                // Show timeout error message
+                            }
+                        }
+                    }
+                });
+                jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                        300000,
+                        3,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                requestQueueULC.add(jsonObjectRequestPop);
+                Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
             }
         });
 
@@ -390,13 +492,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             @Override
             public void onClick(View v) {
 
-                if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
+                if (setAllTestWithBArcodeList != null) {
                     for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                        if (GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getBarcode())) {
-                            GlobalClass.showTastyToast(mActivity, ToastFile.pls_scn_br + setAllTestWithBArcodeList.get(i).getSpecimen_type(), 2);
+                        if (setAllTestWithBArcodeList.get(i).getBarcode() == null) {
+                            Toast.makeText(ProductLisitngActivityNew.this, ToastFile.pls_scn_br + setAllTestWithBArcodeList.get(i).getSpecimen_type(), Toast.LENGTH_SHORT).show();
                         } else {
                             myDb = new DatabaseHelper(getApplicationContext());
 
+                            String getOnlyTime = sampleCollectionTime.substring(0, sampleCollectionTime.length() - 3);
                             DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                             DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
                             Date date = null;
@@ -406,15 +509,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 e.printStackTrace();
                             }
                             outputDateStr = outputFormat.format(date);
-
+                            //sampleCollectionTime
                             Log.e(TAG, "fetchData: " + outputDateStr);
-                            if (!GlobalClass.isNull(patientYearType) && patientYearType.equalsIgnoreCase("Years")) {
+                            if (patientYearType.equalsIgnoreCase("Years")) {
                                 ageType = "Y";
-                            } else if (!GlobalClass.isNull(patientYearType) && patientYearType.equalsIgnoreCase("Months")) {
+                            } else if (patientYearType.equalsIgnoreCase("Months")) {
                                 ageType = "M";
-                            } else if (!GlobalClass.isNull(patientYearType) && patientYearType.equalsIgnoreCase("Days")) {
+                            } else if (patientYearType.equalsIgnoreCase("Days")) {
                                 ageType = "D";
                             }
+                            String getFulltime = sampleCollectionDate + " " + sampleCollectionTime;
 
                             GlobalClass.Req_Date_Req(sampleCollectionDate + " " + sampleCollectionTime, "hh:mm a", "HH:mm:ss");
 
@@ -467,18 +571,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             myPojoWoe.setWoe(woe);
                             barcodelists = new ArrayList<>();
                             getBarcodeArrList = new ArrayList<>();
-
-                            if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-                                for (int p = 0; p < setAllTestWithBArcodeList.size(); p++) {
-                                    barcodelist = new BarcodelistModel();
-                                    barcodelist.setSAMPLE_TYPE(setAllTestWithBArcodeList.get(p).getSpecimen_type());
-                                    barcodelist.setBARCODE(setAllTestWithBArcodeList.get(p).getBarcode());
-                                    getBarcodeArrList.add(setAllTestWithBArcodeList.get(p).getBarcode());
-                                    barcodelist.setTESTS(setAllTestWithBArcodeList.get(p).getProducts());
-                                    barcodelists.add(barcodelist);
-                                }
+                            for (int p = 0; p < setAllTestWithBArcodeList.size(); p++) {
+                                barcodelist = new BarcodelistModel();
+                                barcodelist.setSAMPLE_TYPE(setAllTestWithBArcodeList.get(p).getSpecimen_type());
+                                barcodelist.setBARCODE(setAllTestWithBArcodeList.get(p).getBarcode());
+                                getBarcodeArrList.add(setAllTestWithBArcodeList.get(p).getBarcode());
+                                barcodelist.setTESTS(setAllTestWithBArcodeList.get(p).getProducts());
+                                barcodelists.add(barcodelist);
                             }
-
                             myPojoWoe.setBarcodelistModel(barcodelists);
                             myPojoWoe.setWoe_type("WOE");
                             myPojoWoe.setApi_key(api_key);//api_key
@@ -492,54 +592,145 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 e.printStackTrace();
                             }
 
-
-                            if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
-                                String barcodes = TextUtils.join(",", getBarcodeArrList);
-                                Gson trfgson = new GsonBuilder().create();
-                                String trfjson = trfgson.toJson(trf_list);
-                                boolean isInserted = myDb.insertData(barcodes, json);
-                                if (isInserted) {
-                                    GlobalClass.showTastyToast(mActivity, ToastFile.woeSaved, 1);
-
-                                    Intent intent = new Intent(ProductLisitngActivityNew.this, SummaryActivity_New.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putString("tetsts", ulcResponseModel.getTEST());
-                                    bundle.putString("passProdcucts", ulcResponseModel.getPRODUCT());
-                                    bundle.putString("TotalAmt", ulcResponseModel.getB2C());
-                                    bundle.putString("CollectedAmt", ulcResponseModel.getB2C());
-                                    bundle.putParcelableArrayList("sendArraylist", setAllTestWithBArcodeList);
-                                    bundle.putString("patientId", "");
-                                    bundle.putString("barcodes", barcodes);
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                } else {
-                                    GlobalClass.showTastyToast(mActivity, ToastFile.woenotSaved, 2);
-                                }
-
+                            if (Global.isoffline) {
+                                StoreWOEOffline(json);
 
                             } else {
-                                if (!flagforOnce) {
-                                    flagforOnce = true;
+                                if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                                    StoreWOEOffline(json);
 
-                                    RequestQueue POstQue = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
 
-                                    try {
-                                        if (ControllersGlobalInitialiser.woeController != null) {
-                                            ControllersGlobalInitialiser.woeController = null;
-                                        }
-                                        ControllersGlobalInitialiser.woeController = new WoeController(mActivity, ProductLisitngActivityNew.this);
-                                        ControllersGlobalInitialiser.woeController.woeDoneController(jsonObj, POstQue);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                } else {
+                                    if (!flagforOnce) {
+                                        flagforOnce = true;
+                                        barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
+                                        barProgressDialog.setTitle("Kindly wait ...");
+                                        barProgressDialog.setMessage(ToastFile.processing_request);
+                                        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                        barProgressDialog.setProgress(0);
+                                        barProgressDialog.setMax(20);
+                                        barProgressDialog.setCanceledOnTouchOutside(false);
+                                        barProgressDialog.setCancelable(false);
+                                        barProgressDialog.show();
+
+                                        RequestQueue POstQue = GlobalClass.setVolleyReq(ProductLisitngActivityNew.this);
+                                        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+
+                                                /*if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                    barProgressDialog.dismiss();
+                                                }*/
+                                              /*  if (ProductLisitngActivityNew.this instanceof Activity) {
+                                                    if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
+                                                        barProgressDialog.dismiss();
+                                                }*/
+
+                                                    GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
+                                                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                                                    String finalJson = response.toString();
+                                                    JSONObject parentObjectOtp = new JSONObject(finalJson);
+                                                    RES_ID = parentObjectOtp.getString("RES_ID");
+                                                    barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
+                                                    message = parentObjectOtp.getString("message");
+                                                    status = parentObjectOtp.getString("status");
+                                                    barcode_id = parentObjectOtp.getString("barcode_id");
+
+                                                    if (status.equalsIgnoreCase("SUCCESS")) {
+
+                                                        //after sending the woe succrssfully
+                                                        TastyToast.makeText(ProductLisitngActivityNew.this, "Your WOE has been saved online !", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                                                        Intent intent = new Intent(ProductLisitngActivityNew.this, SummaryActivity_New.class);
+                                                        Bundle bundle = new Bundle();
+                                                        bundle.putString("tetsts", ulcResponseModel.getTEST());
+                                                        bundle.putString("passProdcucts", ulcResponseModel.getPRODUCT());
+                                                        bundle.putString("TotalAmt", ulcResponseModel.getB2C());
+                                                        bundle.putString("CollectedAmt", ulcResponseModel.getB2C());
+                                                        bundle.putParcelableArrayList("sendArraylist", setAllTestWithBArcodeList);
+                                                        bundle.putString("patientId", barcode_patient_id);
+                                                        bundle.putString("draft", "");
+                                                        intent.putExtras(bundle);
+                                                        startActivity(intent);
+                                                        flagforOnce = false;
+
+                                                    } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
+
+
+                                                        TastyToast.makeText(ProductLisitngActivityNew.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(
+                                                                ProductLisitngActivityNew.this).create();
+
+                                                        // Setting Dialog Title
+                                                        alertDialog.setTitle("Update Ledger !");
+
+                                                        // Setting Dialog Message
+                                                        alertDialog.setMessage(ToastFile.update_ledger);
+                                                        // Setting OK Button
+                                                        alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
+                                                            public void onClick(DialogInterface dialog, int which) {
+
+                                                                Intent i = new Intent(ProductLisitngActivityNew.this, Payment_Activity.class);
+                                                                i.putExtra("COMEFROM", "ProductLisitngActivityNew");
+                                                                startActivity(i);
+                                                            /*Intent httpIntent = new Intent(Intent.ACTION_VIEW);
+                                                            httpIntent.setData(Uri.parse("http://www.charbi.com/dsa/mobile_online_payment.asp?usercode=" + "" + user));
+                                                            startActivity(httpIntent);*/
+                                                                // Write your code here to execute after dialog closed
+                                                            }
+                                                        });
+                                                        alertDialog.show();
+
+                                                    } else {
+
+                                                        TastyToast.makeText(ProductLisitngActivityNew.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                    }
+
+                                                } catch (JSONException e) {
+
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                           /* if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                                barProgressDialog.dismiss();
+                                            }*/
+                                          /*  if (ProductLisitngActivityNew.this instanceof Activity) {
+                                                if (!((Activity) ProductLisitngActivityNew.this).isFinishing())
+                                                    barProgressDialog.dismiss();
+                                            }*/
+                                                GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
+                                                if (error != null) {
+                                                } else {
+
+                                                    System.out.println(error);
+                                                }
+                                            }
+                                        });
+                                        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                                                150000,
+                                                3,
+                                                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                        POstQue.add(jsonObjectRequest1);
+                                        Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
+                                        Log.e(TAG, "fetchData: JSON" + jsonObj);
+                                    } else {
+
                                     }
-
                                 }
+
+
                             }
                         }
                     }
                 } else {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.allw_scan, 2);
+                    Toast.makeText(ProductLisitngActivityNew.this, ToastFile.allw_scan, Toast.LENGTH_SHORT).show();
                 }
+
 
             }
         });
@@ -553,94 +744,88 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             public void onClick(View v) {
                 String getTExtdata = show_selected_tests_list_test_ils1.getText().toString();
                 if (Selcted_Test.size() == 0) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.slt_test, 2);
+                    Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else if (getTExtdata.equalsIgnoreCase("Select Test")) {
-                    GlobalClass.showTastyToast(mActivity, ToastFile.slt_test, 2);
+                    Toast.makeText(mActivity, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     int sum = 0;
                     int b2b = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
                     ArrayList<String> saveLocation = new ArrayList<>();
 
-                    if (GlobalClass.CheckArrayList(Selcted_Test)) {
 
-                        for (int i = 0; i < Selcted_Test.size(); i++) {
-                            if (!GlobalClass.isNull(Selcted_Test.get(i).getIsCPL())) {
-                                if (Selcted_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
-                                    saveLocation.add("CPL");
-                                } else {
-                                    saveLocation.add("RPL");
-                                }
-                            }
-                            if (!GlobalClass.isNull(Selcted_Test.get(i).getType()) && Selcted_Test.get(i).getType().equalsIgnoreCase("TEST")) {
-                                getTestNameLits.add(Selcted_Test.get(i).getCode());
+                    for (int i = 0; i < Selcted_Test.size(); i++) {
+
+                        if (!GlobalClass.isNull(Selcted_Test.get(i).getIsCPL())) {
+                            if (Selcted_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
+                                saveLocation.add("CPL");
                             } else {
-                                getTestNameLits.add(Selcted_Test.get(i).getProduct());
+                                saveLocation.add("RPL");
                             }
+                        }
+                        if (Selcted_Test.get(i).getType().equalsIgnoreCase("TEST")) {
+                            getTestNameLits.add(Selcted_Test.get(i).getCode());
+                        } else {
+                            getTestNameLits.add(Selcted_Test.get(i).getProduct());
+                        }
 
-                            if (!saveLocation.isEmpty()) {
-                                if (!GlobalClass.isNull(typeName) && typeName.equalsIgnoreCase("ILS")) {
-                                    if (saveLocation.contains("CPL")) {
-                                        if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                        } else {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                        }
-
+                        if (!saveLocation.isEmpty()) {
+                            if (typeName.equalsIgnoreCase("ILS")) {
+                                if (saveLocation.contains("CPL")) {
+                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
                                     } else {
-                                        if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
-                                        } else {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                        }
-
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
+
                                 } else {
-                                    if (saveLocation.contains("CPL")) {
-                                        sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
-
-                                        if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                        } else {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                        }
-
+                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {
-                                        sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
-
-                                        if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
-                                        } else {
-                                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                        }
-
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     }
+
+                                }
+                            } else {
+                                if (saveLocation.contains("CPL")) {
+                                    sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
+
+                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+                                    }
+
+                                } else {
+                                    sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
+
+                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
+                                    } else {
+                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+                                    }
+
                                 }
                             }
-
                         }
+
                     }
 
-                    if (GlobalClass.CheckArrayList(getTestNameLits)) {
-                        if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
-                            showTestNmaes.remove("RANDOM BLOOD SUGAR");
-                        }
+                    if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
+                        showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
-
 
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
-
-                    GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
-
+                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
                     getTExtdata = displayslectedtest;
 
+                    String testsCodesPassing = TextUtils.join(",", getTestNameLits);
                     String payment = String.valueOf(sum);
                     String b2b_rate = String.valueOf(b2b);
-                    Log.e(TAG, "b2b_rate--->" + b2b_rate);
 
                     Intent intent = new Intent(ProductLisitngActivityNew.this, Scan_Barcode_ILS_New.class);
                     Bundle bundle = new Bundle();
-                    bundle.putParcelableArrayList("key", Selcted_Test);
+                    bundle.putString("key", new Gson().toJson(Selcted_Test));
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
                     bundle.putString("b2b_rate", b2b_rate);
@@ -651,43 +836,64 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         });
 
+        if (GlobalClass.syncProduct(ProductLisitngActivityNew.this)) {
+            if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+            } else {
+                getAllproduct();
+            }
+        } else {
+            SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+            Gson gson = new Gson();
+            final String json = appSharedPrefs.getString("MyObject", "");
+            MainModel obj = gson.fromJson(json, MainModel.class);
+
+            if (obj != null) {
+                if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
+                    if (shr_brandname.equalsIgnoreCase(brandName)) {
+                        callAdapter(obj);
+                    } else {
+                        getAllproduct();
+                    }
+
+                } else {
+                    if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                        TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        getAllproduct();
+                    }
+                }
+            } else {
+                if (!GlobalClass.isNetworkAvailable(ProductLisitngActivityNew.this)) {
+                    TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
+                } else {
+                    getAllproduct();
+                }
+            }
+        }
     }
 
-    private void initViews() {
-
-        sv_testsList1 = (EditText) findViewById(R.id.sv_testsList1);
-        ulc_code_edt = (EditText) findViewById(R.id.ulc_code_edt);
-        exp_list = (ExpandableListView) findViewById(R.id.exp_list);
-        recycler_all_test = (RecyclerView) findViewById(R.id.recycler_all_test);
-        btn_save = (Button) findViewById(R.id.btn_save);
-        btn_clear = (Button) findViewById(R.id.btn_clear);
-        title = (TextView) findViewById(R.id.title);
-        back = (ImageView) findViewById(R.id.back);
-        home = (ImageView) findViewById(R.id.home);
-        go_button = (Button) findViewById(R.id.go_button);
-        ulc_woe_btn = (Button) findViewById(R.id.ulc_woe_btn);
-        verify_ulc = (Button) findViewById(R.id.verify_ulc);
-        before_discount_layout2 = (LinearLayout) findViewById(R.id.before_discount_layout2);
-        ulc_nonulc_ll = (LinearLayout) findViewById(R.id.ulc_nonulc_ll);
-        ulc_ll = (LinearLayout) findViewById(R.id.ulc_ll);
-        product_list_ll = (LinearLayout) findViewById(R.id.product_list_ll);
-        ulc_code_edt_ll = (LinearLayout) findViewById(R.id.ulc_code_edt_ll);
-        ulc_woe_ll = (LinearLayout) findViewById(R.id.ulc_woe_ll);
-        ulc_radiobtn = (RadioButton) findViewById(R.id.ulc_radiobtn);
-        nonulc_radiobtn = (RadioButton) findViewById(R.id.nonulc_radiobtn);
-        show_selected_tests_list_test_ils1 = (TextView) findViewById(R.id.show_selected_tests_list_test_ils1);
-        companycost_test = (TextView) findViewById(R.id.companycost_test);
-        test_txt = (TextView) findViewById(R.id.test_txt);
-        recycler_ulc_woe = (RecyclerView) findViewById(R.id.recycler_ulc_woe);
-
-        linearLayoutManager = new LinearLayoutManager(ProductLisitngActivityNew.this);
-        linearLayoutManagerBarcode = new LinearLayoutManager(ProductLisitngActivityNew.this);
-        recycler_all_test.setLayoutManager(linearLayoutManager);
-        recycler_ulc_woe.setLayoutManager(linearLayoutManagerBarcode);
-        recycler_all_test.addItemDecoration(new DividerItemDecoration(ProductLisitngActivityNew.this, DividerItemDecoration.VERTICAL));
-        recycler_all_test.setItemAnimator(new DefaultItemAnimator());
-
-
+    private void StoreWOEOffline(String json) {
+        String barcodes = TextUtils.join(",", getBarcodeArrList);
+        Gson trfgson = new GsonBuilder().create();
+        String trfjson = trfgson.toJson(trf_list);
+        boolean isInserted = myDb.insertData(barcodes, json);
+        if (isInserted) {
+            TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.woeSaved, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+            Intent intent = new Intent(ProductLisitngActivityNew.this, SummaryActivity_New.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("tetsts", ulcResponseModel.getTEST());
+            bundle.putString("passProdcucts", ulcResponseModel.getPRODUCT());
+            bundle.putString("TotalAmt", ulcResponseModel.getB2C());
+            bundle.putString("CollectedAmt", ulcResponseModel.getB2C());
+            bundle.putParcelableArrayList("sendArraylist", setAllTestWithBArcodeList);
+            bundle.putString("patientId", "");
+            bundle.putString("barcodes", barcodes);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        } else {
+            TastyToast.makeText(ProductLisitngActivityNew.this, ToastFile.woenotSaved, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+        }
     }
 
     private void callAdapter(ArrayList<BaseModel> filteredFiles) {
@@ -696,21 +902,67 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     }
 
     private void getAllproduct() {
+        barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
 
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
-        String URL = Api.getAllTests + api_key + "/ALL/getproducts";
-        Log.e(TAG, "Product URL --->" + URL);
+        Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproducts");
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.e(TAG, "onResponse: RESPONSE" + response);
 
-        try {
-            if (ControllersGlobalInitialiser.productListController != null) {
-                ControllersGlobalInitialiser.productListController = null;
+                GlobalClass.hideProgress(ProductLisitngActivityNew.this, barProgressDialog);
+
+                String getResponse = response.optString("RESPONSE", "");
+
+                if (GlobalClass.isNull(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
+                    redirectToLogin(ProductLisitngActivityNew.this);
+                } else {
+                    try {
+                        Gson gson = new Gson();
+                        mainModel = new MainModel();
+                        mainModel = gson.fromJson(response.toString(), MainModel.class);
+                        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
+                        SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
+                        Gson gson22 = new Gson();
+                        String json22 = gson22.toJson(mainModel);
+                        prefsEditor1.putString("MyObject", json22);
+                        prefsEditor1.commit();
+
+                        GlobalClass.StoresyncProduct(ProductLisitngActivityNew.this);
+                        callAdapter(mainModel);
+
+                    } catch (JsonSyntaxException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }
-            ControllersGlobalInitialiser.productListController = new ProductListController(mActivity, ProductLisitngActivityNew.this);
-            ControllersGlobalInitialiser.productListController.productListingController(URL, requestQueuepoptestILS);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.networkResponse == null) {
+                    if (error.getClass().equals(TimeoutError.class)) {
+                        // Show timeout error message
+                    }
+                }
+            }
+        });
 
+        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                300000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueuepoptestILS.add(jsonObjectRequestPop);
+        Log.e(TAG, "onCreate: URL" + jsonObjectRequestPop);
     }
 
     private void callAdapter(MainModel mainModel) {
@@ -718,68 +970,43 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         b2bmasterarraylist.add(mainModel.B2B_MASTERS);
 
         String testtype = "";
-        if (mainModel != null && mainModel.B2B_MASTERS != null) {
-            if (!GlobalClass.isNull(brandName) && brandName.equalsIgnoreCase("TTL")) {
-
-                if (GlobalClass.CheckArrayList(b2bmasterarraylist)) {
-                    for (int i = 0; i < b2bmasterarraylist.size(); i++) {
-                        Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
-                        product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
-                        product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
-
-                        if (GlobalClass.CheckArrayList(product_rate_masterModel.getTestRateMasterModels())) {
-                            for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                            }
-                        }
-
-
-                        product_rate_masterModel = new Product_Rate_MasterModel();
-                        product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
-                        product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
-
-                        if (GlobalClass.CheckArrayList(product_rate_masterModel.getTestRateMasterModels())) {
-                            for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
-                            }
-                        }
-
-                        product_rate_masterModel = new Product_Rate_MasterModel();
-                        product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
-                        product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
-
-                        if (GlobalClass.CheckArrayList(product_rate_masterModel.getTestRateMasterModels())) {
-                            for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
-                            }
-                        }
-
-
-                        callAdapter(testRateMasterModels);
-
+        if (mainModel.B2B_MASTERS != null) {
+            if (brandName.equalsIgnoreCase("TTL")) {
+                for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                    Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
+                    for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
                     }
-                }
+                    product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
 
-            } else if (!GlobalClass.isNull(brandName) && brandName.equalsIgnoreCase("SMT")) {
-
-                if (GlobalClass.CheckArrayList(b2bmasterarraylist)) {
-                    for (int i = 0; i < b2bmasterarraylist.size(); i++) {
-                        Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
-                        product_rate_masterModel.setTestType(Constants.SMT_TEST);
-                        product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getSMT());
-
-                        if (GlobalClass.CheckArrayList(product_rate_masterModel.getTestRateMasterModels())) {
-                            for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
-                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
-                            }
-                        }
-
-
-                        callAdapter(testRateMasterModels);
-
+                    for (int k = 0; k < product_rate_masterModel.getTestRateMasterModels().size(); k++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(k));
                     }
-                }
+                    product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+                    for (int l = 0; l < product_rate_masterModel.getTestRateMasterModels().size(); l++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(l));
+                    }
+                    callAdapter(testRateMasterModels);
 
+                }
+            } else if (brandName.equalsIgnoreCase("SMT")) {
+                for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                    Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                    product_rate_masterModel.setTestType(Constants.SMT_TEST);
+                    product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getSMT());
+                    for (int j = 0; j < product_rate_masterModel.getTestRateMasterModels().size(); j++) {
+                        testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                    }
+
+                    callAdapter(testRateMasterModels);
+
+                }
             }
 
         }
@@ -796,7 +1023,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 if (getBarcodeDetails.length() == 8) {
                     passBarcodeData(getBarcodeDetails);
                 } else {
-                    GlobalClass.showTastyToast(mActivity, invalid_brcd, 2);
+                    Toast.makeText(this, invalid_brcd, Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
@@ -807,30 +1034,26 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
     private void passBarcodeData(String s) {
         boolean isbacodeduplicate = false;
-        if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-            for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                if (!GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getBarcode())) {
-                    if (!GlobalClass.isNull(s) && setAllTestWithBArcodeList.get(i).getBarcode().equalsIgnoreCase(s)) {
-                        isbacodeduplicate = true;
-                    }
+        for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
+            if (setAllTestWithBArcodeList.get(i).getBarcode() != null && !setAllTestWithBArcodeList.get(i).getBarcode().isEmpty()) {
+                if (setAllTestWithBArcodeList.get(i).getBarcode().equalsIgnoreCase(s)) {
+                    isbacodeduplicate = true;
                 }
+            } else {
+
             }
         }
 
-
-        if (isbacodeduplicate) {
-            GlobalClass.showTastyToast(mActivity, ToastFile.duplicate_barcd, 2);
+        if (isbacodeduplicate == true) {
+            Toast.makeText(ProductLisitngActivityNew.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
-            if (GlobalClass.CheckArrayList(setAllTestWithBArcodeList)) {
-                for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
-                    if (!GlobalClass.isNull(setAllTestWithBArcodeList.get(i).getSpecimen_type()) && !GlobalClass.isNull(GlobalClass.specimenttype) && setAllTestWithBArcodeList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-                        setAllTestWithBArcodeList.get(i).setBarcode("");
-                        setAllTestWithBArcodeList.get(i).setBarcode(s);
-                        Log.e(TAG, "passBarcodeData: show barcode" + s);
-                    }
+            for (int i = 0; i < setAllTestWithBArcodeList.size(); i++) {
+                if (setAllTestWithBArcodeList.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
+                    setAllTestWithBArcodeList.get(i).setBarcode("");
+                    setAllTestWithBArcodeList.get(i).setBarcode(s);
+                    Log.e(TAG, "passBarcodeData: show barcode" + s);
                 }
             }
-
         }
 
         recycler_ulc_woe.removeAllViews();
@@ -868,131 +1091,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         scanIntegrator.initiateScan();
     }
 
-    public void getULCResponse(JSONObject response) {
-        Gson gson = new Gson();
-        ulcResponseModel = new ULCResponseModel();
-        ulcResponseModel = gson.fromJson(response.toString(), ULCResponseModel.class);
-        ulc_woe_ll.setVisibility(View.VISIBLE);
-
-        if (ulcResponseModel != null && !GlobalClass.isNull(ulcResponseModel.getULC_STATUS()) && ulcResponseModel.getULC_STATUS().equalsIgnoreCase("VALID")) {
-            ulc_woe_ll.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(test_txt, ulcResponseModel.getTEST());
-            setAllTestWithBArcodeList = new ArrayList<>();
-
-            if (GlobalClass.checkArray(ulcResponseModel.getULC_TEST())) {
-                for (int i = 0; i < ulcResponseModel.getULC_TEST().length; i++) {
-                    scannedBarcodeDetails = new ScannedBarcodeDetails();
-                    scannedBarcodeDetails.setProducts(ulcResponseModel.getULC_TEST()[i].getTest());
-                    scannedBarcodeDetails.setSpecimen_type(ulcResponseModel.getULC_TEST()[i].getSample_type());
-                    setAllTestWithBArcodeList.add(scannedBarcodeDetails);
-                }
-            }
-            ScanBarcodeAdapter attachBarcodeAdpter = new ScanBarcodeAdapter(ProductLisitngActivityNew.this, setAllTestWithBArcodeList);
-            recycler_ulc_woe.setAdapter(attachBarcodeAdpter);
-            attachBarcodeAdpter.setOnItemClickListener(new ScanBarcodeAdapter.OnItemClickListener() {
-                @Override
-                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
-                    scanIntegrator = new IntentIntegrator(activity);
-                    if (GlobalClass.specimenttype != null) {
-                        GlobalClass.specimenttype = "";
-                    }
-                    GlobalClass.specimenttype = Specimenttype;
-                    scanIntegrator.initiateScan();
-                }
-            });
-
-        } else {
-            GlobalClass.showTastyToast(mActivity, "INVALID ULC", 2);
-            ulc_woe_ll.setVisibility(View.GONE);
-        }
-    }
-
-    public void getProductListResponse(JSONObject response) {
-
-        Log.e(TAG, "onResponse: RESPONSE" + response);
-        String getResponse = response.optString("RESPONSE", "");
-
-        if (TextUtils.isEmpty(getResponse) && getResponse.equalsIgnoreCase(caps_invalidApikey)) {
-            redirectToLogin(ProductLisitngActivityNew.this);
-        } else {
-            try {
-                Gson gson = new Gson();
-                mainModel = new MainModel();
-                mainModel = gson.fromJson(response.toString(), MainModel.class);
-                SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(ProductLisitngActivityNew.this);
-                SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
-                Gson gson22 = new Gson();
-                String json22 = gson22.toJson(mainModel);
-                prefsEditor1.putString("MyObject", json22);
-                prefsEditor1.commit();
-
-
-                GlobalClass.storeProductsCachingTime(ProductLisitngActivityNew.this);
-                callAdapter(mainModel);
-
-            } catch (JsonSyntaxException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void getWoeResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-            String finalJson = response.toString();
-            JSONObject parentObjectOtp = new JSONObject(finalJson);
-            RES_ID = parentObjectOtp.getString("RES_ID");
-            barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
-            message = parentObjectOtp.getString("message");
-            status = parentObjectOtp.getString("status");
-            barcode_id = parentObjectOtp.getString("barcode_id");
-
-            if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
-
-                GlobalClass.showTastyToast(mActivity, MessageConstants.WOE_DONE, 1);
-                Intent intent = new Intent(ProductLisitngActivityNew.this, SummaryActivity_New.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("tetsts", ulcResponseModel.getTEST());
-                bundle.putString("passProdcucts", ulcResponseModel.getPRODUCT());
-                bundle.putString("TotalAmt", ulcResponseModel.getB2C());
-                bundle.putString("CollectedAmt", ulcResponseModel.getB2C());
-                bundle.putParcelableArrayList("sendArraylist", setAllTestWithBArcodeList);
-                bundle.putString("patientId", barcode_patient_id);
-                bundle.putString("draft", "");
-                intent.putExtras(bundle);
-                startActivity(intent);
-                flagforOnce = false;
-
-            } else if (!GlobalClass.isNull(message) && message.equals(MessageConstants.CRDIT_LIMIT)) {
-                GlobalClass.showTastyToast(mActivity, message, 2);
-
-                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(
-                        ProductLisitngActivityNew.this).create();
-
-                alertDialog.setTitle("Update Ledger !");
-                alertDialog.setMessage(ToastFile.update_ledger);
-                alertDialog.setButton(MessageConstants.YES, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent i = new Intent(ProductLisitngActivityNew.this, Payment_Activity.class);
-                        i.putExtra("COMEFROM", "ProductLisitngActivityNew");
-                        startActivity(i);
-
-                    }
-                });
-                alertDialog.show();
-
-            } else {
-                GlobalClass.showTastyToast(mActivity, message, 2);
-            }
-
-        } catch (JSONException e) {
-
-            e.printStackTrace();
-        }
-    }
-
-
     class ViewAllTestAdapter extends RecyclerView.Adapter<ViewAllTestAdapter.ViewHolder> {
         private final ArrayList<BaseModel> AllProductArrayList;
         Context context;
@@ -1015,9 +1113,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
         @Override
         public void onBindViewHolder(@NonNull final ViewAllTestAdapter.ViewHolder holder, final int position) {
-
-            GlobalClass.SetText(holder.outlab_test, productList.get(position).getName());
-
+            holder.outlab_test.setText(productList.get(position).getName());
             holder.checked.setVisibility(View.GONE);
             holder.gray_check.setVisibility(View.GONE);
             holder.check.setVisibility(View.VISIBLE);
@@ -1029,18 +1125,18 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
             try {
-                if (GlobalClass.CheckArrayList(Selcted_Test)) {
+                if (Selcted_Test != null && Selcted_Test.size() > 0) {
 
                     for (int i = 0; !isChecked && i < Selcted_Test.size(); i++) {
                         BaseModel selectedTestModel = Selcted_Test.get(i);
 
-                        if (!GlobalClass.isNull(selectedTestModel.getCode()) && !GlobalClass.isNull(testRateMasterModel.getCode()) && selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
+                        if (selectedTestModel.getCode().equals(testRateMasterModel.getCode())) {
                             holder.checked.setVisibility(View.VISIBLE);
                             holder.check.setVisibility(View.GONE);
                             holder.isSelectedDueToParent = false;
                             holder.parentTestCode = "";
                             isChecked = true;
-                        } else if (GlobalClass.checkArray(selectedTestModel.getChilds()) && selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
+                        } else if (selectedTestModel.getChilds() != null && testRateMasterModel.getChilds() != null && selectedTestModel.checkIfChildsContained(testRateMasterModel)) {
                             holder.checked.setVisibility(View.GONE);
                             holder.check.setVisibility(View.GONE);
                             holder.gray_check.setVisibility(View.VISIBLE);
@@ -1050,9 +1146,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             isChecked = true;
                         } else {
                             try {
-                                if (GlobalClass.checkArray(selectedTestModel.getChilds())) {
+                                if (selectedTestModel.getChilds() != null && selectedTestModel.getChilds().length > 0) {
                                     for (BaseModel.Childs ctm : selectedTestModel.getChilds()) {
-                                        if (!GlobalClass.isNull(ctm.getCode()) && !GlobalClass.isNull(testRateMasterModel.getCode()) && ctm.getCode().equals(testRateMasterModel.getCode())) {
+                                        if (ctm.getCode().equals(testRateMasterModel.getCode())) {
                                             holder.check.setVisibility(View.GONE);
                                             holder.checked.setVisibility(View.GONE);
                                             holder.gray_check.setVisibility(View.VISIBLE);
@@ -1090,30 +1186,22 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     //on click of blank box
                     if (holder.check.getVisibility() == View.VISIBLE) {
-                        if (!GlobalClass.isNull(productList.get(position).getCode()) && !GlobalClass.isNull(Constants.CATC) && productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
+                        if (productList.get(position).getCode().equalsIgnoreCase(Constants.CATC)) {
                             boolean isCAGCA = false;
-
-                            if (GlobalClass.CheckArrayList(Selcted_Test)) {
-                                for (int i = 0; i < Selcted_Test.size(); i++) {
-                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                                        isCAGCA = true;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                                    isCAGCA = true;
+                                    break;
+                                }
+                            }
+                            if (isCAGCA) {
+                                BaseModel ProfileToSelect = null;
+                                for (int i = 0; i < AllProductArrayList.size(); i++) {
+                                    if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
+                                        ProfileToSelect = AllProductArrayList.get(i);
                                         break;
                                     }
                                 }
-                            }
-
-                            if (isCAGCA) {
-                                BaseModel ProfileToSelect = null;
-
-                                if (GlobalClass.CheckArrayList(AllProductArrayList)) {
-                                    for (int i = 0; i < AllProductArrayList.size(); i++) {
-                                        if (AllProductArrayList.get(i).getCode().equalsIgnoreCase(Constants.P690)) {
-                                            ProfileToSelect = AllProductArrayList.get(i);
-                                            break;
-                                        }
-                                    }
-                                }
-
                                 if (ProfileToSelect != null) {
                                     CallCheckFunction(ProfileToSelect);
                                 } else {
@@ -1123,18 +1211,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 CallCheckFunction(productList.get(position));
                             }
 
-                        } else if (!GlobalClass.isNull(productList.get(position).getCode()) && !GlobalClass.isNull(Constants.CAGCA) && productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
-                            boolean isCATC = false;
-                            if (GlobalClass.CheckArrayList(Selcted_Test)) {
 
-                                for (int i = 0; i < Selcted_Test.size(); i++) {
-                                    if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
-                                        isCATC = true;
-                                        break;
-                                    }
+                        } else if (productList.get(position).getCode().equalsIgnoreCase(Constants.CAGCA)) {
+                            boolean isCATC = false;
+                            for (int i = 0; i < Selcted_Test.size(); i++) {
+                                if (Selcted_Test.get(i).getCode().equalsIgnoreCase(Constants.CATC)) {
+                                    isCATC = true;
+                                    break;
                                 }
                             }
-
                             if (isCATC) {
                                 BaseModel ProfileToSelect = null;
                                 for (int i = 0; i < AllProductArrayList.size(); i++) {
@@ -1167,9 +1252,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             showTestNmaes.remove(testRateMasterModel.getName());
 
                             String displayslectedtest = TextUtils.join(",", showTestNmaes);
-
-                            GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
-
+                            show_selected_tests_list_test_ils1.setText(displayslectedtest);
                             if (displayslectedtest.equals("")) {
                                 before_discount_layout2.setVisibility(View.GONE);
                             }
@@ -1210,34 +1293,29 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             tempselectedTests = new ArrayList<>();
             tempselectedTests1 = new ArrayList<>();
             if (!testflag) {
-                if (GlobalClass.checkArray(testRateMasterModel.getChilds())) {
+                if (testRateMasterModel.getChilds() != null) {
                     for (int i = 0; i < testRateMasterModel.getChilds().length; i++) {
-                        if (GlobalClass.CheckArrayList(Selcted_Test)) {
-                            for (int j = 0; j < Selcted_Test.size(); j++) {
-                                if (!GlobalClass.isNull(testRateMasterModel.getChilds()[i].getCode()) && !GlobalClass.isNull(Selcted_Test.get(j).getCode()) &&
-                                        testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
-                                    Log.v(TAG, "Cart selectedtestlist Description :" + Selcted_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Test.get(j).getCode());
-                                    tempselectedTests1.add(Selcted_Test.get(j).getName());
-                                    tempselectedTests.add(Selcted_Test.get(j));
-                                }
+
+                        //tejas t -----------------------------
+                        for (int j = 0; j < Selcted_Test.size(); j++) {
+                            if (testRateMasterModel.getChilds()[i].getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
+                                System.out.println("Cart selectedtestlist Description :" + Selcted_Test.get(j).getName() + "Cart selectedtestlist Code :" + Selcted_Test.get(j).getCode());
+                                tempselectedTests1.add(Selcted_Test.get(j).getName());
+                                tempselectedTests.add(Selcted_Test.get(j));
                             }
                         }
-
                     }
                 }
 
-                if (GlobalClass.CheckArrayList(Selcted_Test)) {
-                    for (int j = 0; j < Selcted_Test.size(); j++) {
-                        BaseModel selectedTestModel123 = Selcted_Test.get(j);
-                        if (GlobalClass.checkArray(selectedTestModel123.getChilds()) && GlobalClass.checkArray(testRateMasterModel.getChilds()) && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
-                            tempselectedTests1.add(Selcted_Test.get(j).getName());
-                            tempselectedTests.add(selectedTestModel123);
-                        }
+                for (int j = 0; j < Selcted_Test.size(); j++) {
+                    BaseModel selectedTestModel123 = Selcted_Test.get(j);
+                    if (selectedTestModel123.getChilds() != null && testRateMasterModel.getChilds() != null && testRateMasterModel.checkIfChildsContained(selectedTestModel123)) {
+                        tempselectedTests1.add(Selcted_Test.get(j).getName());
+                        tempselectedTests.add(selectedTestModel123);
                     }
                 }
 
-
-                if (GlobalClass.CheckArrayList(tempselectedTests)) {
+                if (tempselectedTests != null && tempselectedTests.size() > 0) {
                     HashSet<String> hashSet = new HashSet<String>();
                     hashSet.addAll(tempselectedTests1);
                     tempselectedTests1.clear();
@@ -1276,10 +1354,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
 
             if (testRateMasterModel.getCode().equalsIgnoreCase(Constants.THYROTEST)) {
-                if (GlobalClass.CheckArrayList(Selcted_Test)) {
+                if (Selcted_Test.size() > 0) {
                     alertDialogBuilder = new AlertDialog.Builder(ProductLisitngActivityNew.this);
                     alertDialogBuilder
-                            .setMessage(Html.fromHtml(Constants.THYRONAME + MessageConstants.TESTREPLACE + Constants.THYRONAME))
+                            .setMessage(Html.fromHtml(Constants.THYRONAME + " can not be selected along with other test,Do you want to replace " + Constants.THYRONAME))
                             .setCancelable(false)
                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
@@ -1287,8 +1365,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     Selcted_Test.remove(testRateMasterModel);
                                     showTestNmaes.remove(testRateMasterModel.getName());
                                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
-
-                                    GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
+                                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
                                     notifyDataSetChanged();
                                     dialog.dismiss();
                                 }
@@ -1305,9 +1382,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     showTestNmaes.clear();
                                     showTestNmaes.add(testRateMasterModel.getName());
 
-                                    if (GlobalClass.CheckArrayList(Selcted_Test)) {
+                                    if (Selcted_Test != null) {
                                         for (int i = 0; i < Selcted_Test.size(); i++) {
-                                            if (!GlobalClass.isNull(Selcted_Test.get(i).getCode()) && Selcted_Test.get(i).getCode().contains("PPBS") &&
+                                            if (Selcted_Test.get(i).getCode().contains("PPBS") &&
                                                     Selcted_Test.get(i).getCode().contains("RBS")) {
                                                 Selcted_Test.remove(Selcted_Test.get(i));
                                                 showTestNmaes.remove(testRateMasterModel.getName());
@@ -1316,7 +1393,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                                     }
                                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                                    GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
+                                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
                                     notifyDataSetChanged();
                                     dialog.dismiss();
                                 }
@@ -1333,7 +1410,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     showTestNmaes.clear();
                     showTestNmaes.add(testRateMasterModel.getName());
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
-                    GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
+                    show_selected_tests_list_test_ils1.setText(displayslectedtest);
                     notifyDataSetChanged();
 
                 }
@@ -1342,40 +1419,105 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
 
 
-            if (GlobalClass.CheckArrayList(tempselectedTests)) {
-                for (int i = 0; i < tempselectedTests.size(); i++) {
-                    for (int j = 0; j < Selcted_Test.size(); j++) {
-                        if (!GlobalClass.isNull(tempselectedTests.get(i).getCode()) && !GlobalClass.isNull(Selcted_Test.get(j).getCode()) && tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
-                            Selcted_Test.remove(j);
-                        }
+            for (int i = 0; i < tempselectedTests.size(); i++) {
+                for (int j = 0; j < Selcted_Test.size(); j++) {
+                    if (tempselectedTests.get(i).getCode().equalsIgnoreCase(Selcted_Test.get(j).getCode())) {
+                        Selcted_Test.remove(j);
                     }
                 }
             }
 
 
+            //tejas t -----------------------------
             if (!testflag) {
                 Selcted_Test.add(testRateMasterModel);
                 notifyDataSetChanged();
             }
-
+            CheckAnandam(testRateMasterModel);
 
             before_discount_layout2.setVisibility(View.VISIBLE);
             showTestNmaes = new ArrayList<>();
 
-            if (GlobalClass.CheckArrayList(Selcted_Test)) {
-                for (int i = 0; i < Selcted_Test.size(); i++) {
-                    showTestNmaes.add(Selcted_Test.get(i).getName());
-                }
+            for (int i = 0; i < Selcted_Test.size(); i++) {
+                showTestNmaes.add(Selcted_Test.get(i).getName());
             }
 
             Set<String> setString = new HashSet<String>(showTestNmaes);
             showTestNmaes.clear();
             showTestNmaes.addAll(setString);
             String displayslectedtest = TextUtils.join(",", showTestNmaes);
-            GlobalClass.SetText(show_selected_tests_list_test_ils1, displayslectedtest);
+            show_selected_tests_list_test_ils1.setText(displayslectedtest);
             if (displayslectedtest.equals("")) {
                 before_discount_layout2.setVisibility(View.GONE);
             }
+
+
+        }
+
+        private void CheckAnandam(BaseModel testRateMasterModel) {
+            try {
+                if (!Global.OTPVERIFIED) {
+                    if (testRateMasterModel.getCode().equalsIgnoreCase("AA-A")) {
+                        ShowDialog("AA-A");
+                        for (int i = 0; i < Selcted_Test.size(); i++) {
+                            if (Selcted_Test.get(i).getCode().equalsIgnoreCase("AA-A")) {
+                                Selcted_Test.remove(i);
+                                for (int j = 0; j < productList.size(); j++) {
+                                    if (productList.get(j).getCode().equalsIgnoreCase("AN-A")) {
+                                        Selcted_Test.add(productList.get(j));
+                                    }
+                                }
+                            }
+                        }
+                    }else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-B")){
+                        ShowDialog("AA-B");
+                        for (int i = 0; i < Selcted_Test.size(); i++) {
+                            if (Selcted_Test.get(i).getCode().equalsIgnoreCase("AA-B")) {
+                                Selcted_Test.remove(i);
+                                for (int j = 0; j < productList.size(); j++) {
+                                    if (productList.get(j).getCode().equalsIgnoreCase("AN-B")) {
+                                        Selcted_Test.add(productList.get(j));
+                                    }
+                                }
+                            }
+                        }
+                    }else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-C")){
+                        ShowDialog("AA-C");
+                        for (int i = 0; i < Selcted_Test.size(); i++) {
+                            if (Selcted_Test.get(i).getCode().equalsIgnoreCase("AA-C")) {
+                                Selcted_Test.remove(i);
+                                for (int j = 0; j < productList.size(); j++) {
+                                    if (productList.get(j).getCode().equalsIgnoreCase("AN-C")) {
+                                        Selcted_Test.add(productList.get(j));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void ShowDialog(String testname) {
+            String test="";
+            if (testname.equalsIgnoreCase("AA-A")) {
+                test="ANANDHAM-A";
+            }else if (testname.equalsIgnoreCase("AA-B")){
+                test="ANANDHAM-B";
+            }else if (testname.equalsIgnoreCase("AA-C")){
+                test="ANANDHAM-C";
+            }
+            new AlertDialog.Builder(context)
+                    .setMessage("Your profile will be replaced with "+test+". As KYC is not Verified.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Continue with delete operation
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
 
         @Override
@@ -1400,4 +1542,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             }
         }
     }
+
+
 }

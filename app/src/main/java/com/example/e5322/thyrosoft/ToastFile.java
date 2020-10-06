@@ -122,6 +122,7 @@ public class ToastFile {
     public static String woeDelete = "Work order entry deleted successfully !";
     public static String woeEdt = "Work order entry edited successfully !";
     public static String woeDeleteUnsuccess = "Work order entry not deleted";
+    public static String confirm_delete = "Confirm delete !";
     public static String delete = "Delete !";
     public static String relogin = "Your session has been expired to proceed please re-login";
     public static String select_sample_type = "Select sample type for all tests.";
@@ -135,7 +136,6 @@ public class ToastFile {
     public static String scp_not_mapped = "SCP is not mapped under this code,Please register SCP then try to do WOE";
     public static String surelogout = "Are you sure you want to Logout?";
     public static String update_ledger = "Please update your ledger balance";
-    public static String updateledger = "Update Ledger !";
     public static String update_ledger1 = "We will get back to you,once payment option integrated";
     public static String slt_smaller_date_than_crnt = "Please select To Date smaller than current Date";
     public static String newer_version = "There is newer version of this application available, click OK to upgrade now?";

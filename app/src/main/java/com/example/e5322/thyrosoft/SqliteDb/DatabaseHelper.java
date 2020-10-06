@@ -19,9 +19,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_3 = "WOEJSON";
     public static final String COL_4 = "ERROR";
 
-    DatabaseHelper databaseHelper;
-    SQLiteDatabase sqLiteDatabase;
-
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 2);
     }

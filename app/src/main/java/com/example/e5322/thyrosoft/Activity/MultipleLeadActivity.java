@@ -31,7 +31,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MultipleLeadActivity extends AppCompatActivity {
-    String leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
+    String user, typeName, passwrd, access, api_key, srnostr, sub_source_code_string, getLeadId, leadAddress, leadAGE, leadAGE_TYPE, leadBCT, leadEDTA, leadEMAIL, leadERROR, leadFLUORIDE, leadGENDER, leadHEPARIN;
     String leadLAB_ID, leadLAB_NAME, leadLEAD_ID, leadMOBILE, leadNAME, leadORDER_NO, leadPACKAGE, leadPINCODE, leadPRODUCT, leadRATE;
     String leadREF_BY, leadRESPONSE, SR_NO, brandtype, leadSAMPLE_TYPE, leadSCT, leadSERUM, leadTESTS, leadTYPE, leadURINE, leadWATER, leadleadData, fromcome;
     ArrayList<ScannedBarcodeDetails> SingleBarcodeDetailsList;
@@ -64,41 +64,41 @@ public class MultipleLeadActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("LeadOrderID", MODE_PRIVATE);
 
-        if (!GlobalClass.isNull(fromcome) && fromcome.equalsIgnoreCase("woepage")) {
-            brandtype = sharedPreferences.getString(" brandtype", "");
-            leadAddress = sharedPreferences.getString("ADDRESS", "");
-            leadAGE = sharedPreferences.getString("AGE", "");
-            leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", "");
-            leadBCT = sharedPreferences.getString("BCT", "");
-            leadEDTA = sharedPreferences.getString("EDTA", "");
-            leadEMAIL = sharedPreferences.getString("EMAIL", "");
-            leadERROR = sharedPreferences.getString("ERROR", "");
-            leadFLUORIDE = sharedPreferences.getString("FLUORIDE", "");
-            leadGENDER = sharedPreferences.getString("GENDER", "");
-            leadHEPARIN = sharedPreferences.getString("HEPARIN", "");
+        if (fromcome.equalsIgnoreCase("woepage")) {
+            brandtype = sharedPreferences.getString(" brandtype", null);
+            leadAddress = sharedPreferences.getString("ADDRESS", null);
+            leadAGE = sharedPreferences.getString("AGE", null);
+            leadAGE_TYPE = sharedPreferences.getString("AGE_TYPE", null);
+            leadBCT = sharedPreferences.getString("BCT", null);
+            leadEDTA = sharedPreferences.getString("EDTA", null);
+            leadEMAIL = sharedPreferences.getString("EMAIL", null);
+            leadERROR = sharedPreferences.getString("ERROR", null);
+            leadFLUORIDE = sharedPreferences.getString("FLUORIDE", null);
+            leadGENDER = sharedPreferences.getString("GENDER", null);
+            leadHEPARIN = sharedPreferences.getString("HEPARIN", null);
 
-            leadLAB_ID = sharedPreferences.getString("LAB_ID", "");
-            leadLAB_NAME = sharedPreferences.getString("LAB_NAME", "");
-            leadLEAD_ID = sharedPreferences.getString("LEAD_ID", "");
-            leadMOBILE = sharedPreferences.getString("MOBILE", "");
-            leadNAME = sharedPreferences.getString("NAME", "");
-            leadORDER_NO = sharedPreferences.getString("ORDER_NO", "");
-            leadPACKAGE = sharedPreferences.getString("PACKAGE", "");
-            leadPINCODE = sharedPreferences.getString("PINCODE", "");
-            leadPRODUCT = sharedPreferences.getString("PRODUCT", "");
-            leadRATE = sharedPreferences.getString("RATE", "");
+            leadLAB_ID = sharedPreferences.getString("LAB_ID", null);
+            leadLAB_NAME = sharedPreferences.getString("LAB_NAME", null);
+            leadLEAD_ID = sharedPreferences.getString("LEAD_ID", null);
+            leadMOBILE = sharedPreferences.getString("MOBILE", null);
+            leadNAME = sharedPreferences.getString("NAME", null);
+            leadORDER_NO = sharedPreferences.getString("ORDER_NO", null);
+            leadPACKAGE = sharedPreferences.getString("PACKAGE", null);
+            leadPINCODE = sharedPreferences.getString("PINCODE", null);
+            leadPRODUCT = sharedPreferences.getString("PRODUCT", null);
+            leadRATE = sharedPreferences.getString("RATE", null);
 
-            leadREF_BY = sharedPreferences.getString("REF_BY", "");
-            leadRESPONSE = sharedPreferences.getString("RESPONSE", "");
-            leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", "");
-            leadSCT = sharedPreferences.getString("SCT", "");
-            leadSERUM = sharedPreferences.getString("SERUM", "");
-            leadTESTS = sharedPreferences.getString("TESTS", "");
-            leadTYPE = sharedPreferences.getString("TYPE", "");
-            leadURINE = sharedPreferences.getString("URINE", "");
-            leadWATER = sharedPreferences.getString("WATER", "");
-            leadleadData = sharedPreferences.getString("leadData", "");
-            SR_NO = sharedPreferences.getString("SR_NO", "");
+            leadREF_BY = sharedPreferences.getString("REF_BY", null);
+            leadRESPONSE = sharedPreferences.getString("RESPONSE", null);
+            leadSAMPLE_TYPE = sharedPreferences.getString("SAMPLE_TYPE", null);
+            leadSCT = sharedPreferences.getString("SCT", null);
+            leadSERUM = sharedPreferences.getString("SERUM", null);
+            leadTESTS = sharedPreferences.getString("TESTS", null);
+            leadTYPE = sharedPreferences.getString("TYPE", null);
+            leadURINE = sharedPreferences.getString("URINE", null);
+            leadWATER = sharedPreferences.getString("WATER", null);
+            leadleadData = sharedPreferences.getString("leadData", null);
+            SR_NO = sharedPreferences.getString("SR_NO", null);
         } else {
             brandtype = getIntent().getStringExtra("brandtype");
             leadSAMPLE_TYPE = getIntent().getStringExtra("SAMPLE_TYPE");
@@ -109,9 +109,34 @@ public class MultipleLeadActivity extends AppCompatActivity {
             leadleadData = getIntent().getStringExtra("leadData");
         }
 
+        rec_sample_type_singal = findViewById(R.id.rec_sample_type_ttl);
+        rec_sample_type_multi = findViewById(R.id.rec_sample_type_ttlothers);
 
-        initviews();
+        linearLayoutManager = new LinearLayoutManager(MultipleLeadActivity.this);
+        rec_sample_type_singal.setLayoutManager(linearLayoutManager);
 
+        linearLayoutManager1 = new LinearLayoutManager(MultipleLeadActivity.this);
+        rec_sample_type_multi.setLayoutManager(linearLayoutManager1);
+
+
+        next = findViewById(R.id.next);
+        show_selected_tests_data = findViewById(R.id.show_selected_tests_data);
+        back = findViewById(R.id.back);
+        home = findViewById(R.id.home);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GlobalClass.goToHome(MultipleLeadActivity.this);
+            }
+        });
 
         //TODO This is LeadData Array
         Gson gson = new Gson();
@@ -121,25 +146,21 @@ public class MultipleLeadActivity extends AppCompatActivity {
         leadSAMPLE_TYPE = "";
 
         leadTESTS = "";
-
-        if (GlobalClass.CheckArrayList(list)){
-            for (int i = 0; i < list.size(); i++) {
-                leadTESTS += list.get(i).getTest() + ",";
-            }
+        for (int i = 0; i < list.size(); i++) {
+            leadTESTS += list.get(i).getTest() + ",";
         }
 
-
         try {
-            if (!GlobalClass.isNull(leadTESTS) && leadTESTS.endsWith(",")) {
+            if (leadTESTS.endsWith(",")) {
                 leadTESTS = leadTESTS.substring(0, leadTESTS.length() - 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        GlobalClass.SetText(show_selected_tests_data, leadTESTS);
+        show_selected_tests_data.setText(leadTESTS);
 
-        if (GlobalClass.CheckArrayList(list)) {
+        if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getSample_type().length == 1) {
                     scannedBarcodeDetails = new ScannedBarcodeDetails();
@@ -155,7 +176,7 @@ public class MultipleLeadActivity extends AppCompatActivity {
         }
 
 
-        if (GlobalClass.CheckArrayList(SingleBarcodeDetailsList)) {
+        if (SingleBarcodeDetailsList != null && SingleBarcodeDetailsList.size() > 0) {
             rec_sample_type_singal.setVisibility(View.VISIBLE);
             singalLeadAdapter = new SingalLeadAdapter(MultipleLeadActivity.this, SingleBarcodeDetailsList);
             rec_sample_type_singal.setAdapter(singalLeadAdapter);
@@ -163,16 +184,14 @@ public class MultipleLeadActivity extends AppCompatActivity {
             rec_sample_type_singal.setVisibility(View.GONE);
         }
 
-        if (GlobalClass.CheckArrayList(MultileBarcodeDetailsList)) {
+        if (MultileBarcodeDetailsList != null && MultileBarcodeDetailsList.size() > 0) {
             rec_sample_type_multi.setVisibility(View.VISIBLE);
-            templist = new ArrayList<>();
+            templist=new ArrayList<>();
 
-            if (GlobalClass.CheckArrayList(list)) {
-                for (int i = 0; i < list.size(); i++) {
-                    for (int j = 0; j < MultileBarcodeDetailsList.size(); j++) {
-                        if (!GlobalClass.isNull(list.get(i).getTest()) &&
-                                !GlobalClass.isNull(MultileBarcodeDetailsList.get(j).getProducts()) &&
-                                list.get(i).getTest().equalsIgnoreCase(MultileBarcodeDetailsList.get(j).getProducts())) {
+            if (list!=null && list.size()>0){
+                for (int i = 0; i <list.size() ; i++) {
+                    for(int j=0;j<MultileBarcodeDetailsList.size();j++){
+                        if (list.get(i).getTest().equalsIgnoreCase(MultileBarcodeDetailsList.get(j).getProducts())){
                             templist.add(list.get(i));
                         }
                     }
@@ -183,16 +202,11 @@ public class MultipleLeadActivity extends AppCompatActivity {
             leadSampleTypeAdapter.setOnItemClickListener(new LeadSampleTypeAdapter.OnItemClickListener() {
                 @Override
                 public void onItemSelected(String product, String sample_type, int position) {
-                    if (GlobalClass.CheckArrayList(MultileBarcodeDetailsList)){
-                        for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
-                            if (!GlobalClass.isNull(MultileBarcodeDetailsList.get(i).getProducts()) &&
-                                    !GlobalClass.isNull(product) &&
-                                    MultileBarcodeDetailsList.get(i).getProducts().equalsIgnoreCase(product)) {
-                                MultileBarcodeDetailsList.get(i).setSpecimen_type(sample_type);
-                            }
+                    for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
+                        if (MultileBarcodeDetailsList.get(i).getProducts().equalsIgnoreCase(product)) {
+                            MultileBarcodeDetailsList.get(i).setSpecimen_type(sample_type);
                         }
                     }
-
                 }
             });
             rec_sample_type_multi.setAdapter(leadSampleTypeAdapter);
@@ -200,37 +214,17 @@ public class MultipleLeadActivity extends AppCompatActivity {
             rec_sample_type_multi.setVisibility(View.GONE);
         }
 
-        initListener();
-    }
-
-    private void initListener() {
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        home.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                GlobalClass.goToHome(MultipleLeadActivity.this);
-            }
-        });
 
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean sampleTypeNULL = false;
 
-                if (GlobalClass.CheckArrayList(MultileBarcodeDetailsList)){
-                    for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
-                        if (GlobalClass.isNull(MultileBarcodeDetailsList.get(i).getSpecimen_type())) {
-                            sampleTypeNULL = true;
-                        }
+                for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
+                    if (MultileBarcodeDetailsList.get(i).getSpecimen_type() == null || MultileBarcodeDetailsList.get(i).getSpecimen_type().isEmpty()) {
+                        sampleTypeNULL = true;
                     }
                 }
-
 
                 if (sampleTypeNULL) {
                     sampleTypeNULL = false;
@@ -246,67 +240,51 @@ public class MultipleLeadActivity extends AppCompatActivity {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 } else {
-                    if (GlobalClass.CheckArrayList(FinalBarcodeDetailsList)) {
+                    if (FinalBarcodeDetailsList != null) {
                         FinalBarcodeDetailsList = null;
                     }
                     FinalBarcodeDetailsList = new ArrayList<>();
-
-
-                    if (GlobalClass.CheckArrayList(SingleBarcodeDetailsList)){
-                        for (int i = 0; i < SingleBarcodeDetailsList.size(); i++) {
-                            if (SingleBarcodeDetailsList.get(i).getProducts().contains("PPBS") || SingleBarcodeDetailsList.get(i).getProducts().contains("RBS") || SingleBarcodeDetailsList.get(i).getProducts().contains("FBS")) {
-                                List<String> fluriodetest = Arrays.asList(SingleBarcodeDetailsList.get(i).getProducts().split(","));
-                                if (fluriodetest.contains("PPBS") && fluriodetest.contains("RBS")) {
-                                    fluriodetest.remove("RBS");
-                                }
-
-                                if (GlobalClass.CheckArrayList(fluriodetest)){
-                                    for (int k = 0; k < fluriodetest.size(); k++) {
-                                        scannedBarcodeDetails = new ScannedBarcodeDetails();
-                                        scannedBarcodeDetails.setLocation(SingleBarcodeDetailsList.get(i).getLocation());
-                                        scannedBarcodeDetails.setProducts(fluriodetest.get(k));
-                                        scannedBarcodeDetails.setSpecimen_type(SingleBarcodeDetailsList.get(i).getSpecimen_type().trim());
-                                        FinalBarcodeDetailsList.add(scannedBarcodeDetails);
-                                    }
-                                }
-
-                            } else {
+                    for (int i = 0; i < SingleBarcodeDetailsList.size(); i++) {
+                        if (SingleBarcodeDetailsList.get(i).getProducts().contains("PPBS") || SingleBarcodeDetailsList.get(i).getProducts().contains("RBS") || SingleBarcodeDetailsList.get(i).getProducts().contains("FBS")) {
+                            List<String> fluriodetest = Arrays.asList(SingleBarcodeDetailsList.get(i).getProducts().split(","));
+                            if (fluriodetest.contains("PPBS") && fluriodetest.contains("RBS")) {
+                                fluriodetest.remove("RBS");
+                            }
+                            for (int k = 0; k < fluriodetest.size(); k++) {
                                 scannedBarcodeDetails = new ScannedBarcodeDetails();
                                 scannedBarcodeDetails.setLocation(SingleBarcodeDetailsList.get(i).getLocation());
-                                scannedBarcodeDetails.setProducts(SingleBarcodeDetailsList.get(i).getProducts());
-                                scannedBarcodeDetails.setSpecimen_type(SingleBarcodeDetailsList.get(i).getSpecimen_type());
-                                scannedBarcodeDetails.setProducts(SingleBarcodeDetailsList.get(i).getProducts());
+                                scannedBarcodeDetails.setProducts(fluriodetest.get(k));
+                                scannedBarcodeDetails.setSpecimen_type(SingleBarcodeDetailsList.get(i).getSpecimen_type().trim());
                                 FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                             }
-
+                        } else {
+                            scannedBarcodeDetails = new ScannedBarcodeDetails();
+                            scannedBarcodeDetails.setLocation(SingleBarcodeDetailsList.get(i).getLocation());
+                            scannedBarcodeDetails.setProducts(SingleBarcodeDetailsList.get(i).getProducts());
+                            scannedBarcodeDetails.setSpecimen_type(SingleBarcodeDetailsList.get(i).getSpecimen_type());
+                            scannedBarcodeDetails.setProducts(SingleBarcodeDetailsList.get(i).getProducts());
+                            FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                         }
+
                     }
 
-
-                    if (GlobalClass.CheckArrayList(MultileBarcodeDetailsList)){
-                        for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
-                            boolean isSameSampleType = false;
-
-                            if (GlobalClass.CheckArrayList(FinalBarcodeDetailsList)){
-                                for (int j = 0; j < FinalBarcodeDetailsList.size(); j++) {
-                                    if (!GlobalClass.isNull(MultileBarcodeDetailsList.get(i).getSpecimen_type()) &&
-                                            !GlobalClass.isNull(FinalBarcodeDetailsList.get(j).getSpecimen_type()) &&
-                                            MultileBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(FinalBarcodeDetailsList.get(j).getSpecimen_type())) {
-                                        FinalBarcodeDetailsList.get(j).setProducts(FinalBarcodeDetailsList.get(j).getProducts() + "," + MultileBarcodeDetailsList.get(i).getProducts());
-                                        isSameSampleType = true;
-                                        break;
-                                    }
-                                }
+                    for (int i = 0; i < MultileBarcodeDetailsList.size(); i++) {
+                        boolean isSameSampleType = false;
+                        for (int j = 0; j < FinalBarcodeDetailsList.size(); j++) {
+                            if (MultileBarcodeDetailsList.get(i).getSpecimen_type().equalsIgnoreCase(FinalBarcodeDetailsList.get(j).getSpecimen_type())) {
+                                FinalBarcodeDetailsList.get(j).setProducts(FinalBarcodeDetailsList.get(j).getProducts() + "," + MultileBarcodeDetailsList.get(i).getProducts());
+                                isSameSampleType = true;
+                                break;
                             }
+                        }
 
-                            if (!isSameSampleType) {
-                                scannedBarcodeDetails = new ScannedBarcodeDetails();
-                                scannedBarcodeDetails.setLocation(MultileBarcodeDetailsList.get(i).getLocation());
-                                scannedBarcodeDetails.setProducts(MultileBarcodeDetailsList.get(i).getProducts());
-                                scannedBarcodeDetails.setSpecimen_type(MultileBarcodeDetailsList.get(i).getSpecimen_type());
-                                scannedBarcodeDetails.setProducts(MultileBarcodeDetailsList.get(i).getProducts());
-                                FinalBarcodeDetailsList.add(scannedBarcodeDetails);
-                            }
+                        if (!isSameSampleType) {
+                            scannedBarcodeDetails = new ScannedBarcodeDetails();
+                            scannedBarcodeDetails.setLocation(MultileBarcodeDetailsList.get(i).getLocation());
+                            scannedBarcodeDetails.setProducts(MultileBarcodeDetailsList.get(i).getProducts());
+                            scannedBarcodeDetails.setSpecimen_type(MultileBarcodeDetailsList.get(i).getSpecimen_type());
+                            scannedBarcodeDetails.setProducts(MultileBarcodeDetailsList.get(i).getProducts());
+                            FinalBarcodeDetailsList.add(scannedBarcodeDetails);
                         }
                     }
 
@@ -326,22 +304,6 @@ public class MultipleLeadActivity extends AppCompatActivity {
         });
     }
 
-    private void initviews() {
-        rec_sample_type_singal = findViewById(R.id.rec_sample_type_ttl);
-        rec_sample_type_multi = findViewById(R.id.rec_sample_type_ttlothers);
 
-        linearLayoutManager = new LinearLayoutManager(MultipleLeadActivity.this);
-        rec_sample_type_singal.setLayoutManager(linearLayoutManager);
-
-        linearLayoutManager1 = new LinearLayoutManager(MultipleLeadActivity.this);
-        rec_sample_type_multi.setLayoutManager(linearLayoutManager1);
-
-
-        next = findViewById(R.id.next);
-        show_selected_tests_data = findViewById(R.id.show_selected_tests_data);
-        back = findViewById(R.id.back);
-        home = findViewById(R.id.home);
-
-    }
 }
 

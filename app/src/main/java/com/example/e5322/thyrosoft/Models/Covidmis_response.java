@@ -71,6 +71,16 @@ public class Covidmis_response {
         private String Amount_Collected;
         private String Remarks;
 
+//        private String PPEBarcode;
+//
+//        public String getPPEBarcode() {
+//            return PPEBarcode;
+//        }
+//
+//        public void setPPEBarcode(String PPEBarcode) {
+//            this.PPEBarcode = PPEBarcode;
+//        }
+
         public String getRemarks() {
             return Remarks;
         }

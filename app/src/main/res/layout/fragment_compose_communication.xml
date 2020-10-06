@@ -96,9 +96,10 @@
                 android:hint="Compose your message"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
+                android:maxLength="500"
                 android:paddingRight="10dp"
                 android:paddingBottom="25dp"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
                 android:textSize="14dp" />
 
             <RadioGroup

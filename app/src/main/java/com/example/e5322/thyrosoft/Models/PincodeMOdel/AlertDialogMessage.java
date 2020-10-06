@@ -134,7 +134,7 @@ public class AlertDialogMessage {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(message);
 		builder.setCancelable(isCancellable);
-		builder.setPositiveButton(MessageConstants.YES, new AlertDialogOkButtonListener());
+		builder.setPositiveButton("Yes", new AlertDialogOkButtonListener());
 		builder.setNegativeButton("No", new AlertDialogCancelButtonListener());
 
 		alertDialog = builder.create();

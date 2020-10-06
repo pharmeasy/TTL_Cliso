@@ -1,8 +1,11 @@
 package com.example.e5322.thyrosoft.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -12,7 +15,6 @@ import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.CommonItils.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.POSTBookLeadController;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -31,9 +33,6 @@ import com.payu.india.Payu.PayuConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import static com.example.e5322.thyrosoft.API.Constants.tab_flag;
 
 public class ConfirmbookDetail extends AppCompatActivity implements View.OnClickListener {
@@ -41,6 +40,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     public String pname, gender, diabetics, dob, mobileno, emailId, city, remarks, sercicetype, availbal, paidamt, amt_coll, header, appoint_dt;
     public LinearLayout lin_email, lin_remarks, lin_age, lin_dob;
     public Button btn_confirm, btn_reset;
+    public ProgressDialog progressDialog;
     public String TAG = getClass().getSimpleName();
     public ConnectionDetector cd;
     public RequestQueue PostQueOtp;
@@ -75,13 +75,13 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         mPaymentParams = new PaymentParams();
 
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
-        name_tsp = getProfileName.getString("name", "");
-        usercode = getProfileName.getString("user_code", "");
-        email_id = getProfileName.getString("email", "");
+        name_tsp = getProfileName.getString("name", null);
+        usercode = getProfileName.getString("user_code", null);
+        email_id = getProfileName.getString("email", null);
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        api_key = prefs.getString("API_KEY", "");
+        user = prefs.getString("Username", null);
+        api_key = prefs.getString("API_KEY", null);
 
         if (bundle != null) {
 
@@ -113,7 +113,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
 
         /*TODO VIES INITILIZATION*/
         tv_toolname = findViewById(R.id.txt_name);
-        GlobalClass.SetText(tv_toolname, "Booking Detail");
+        tv_toolname.setText("Booking Detail");
 
         tv_pname = findViewById(R.id.txt_pname);
         tv_gender = findViewById(R.id.txt_gender);
@@ -146,20 +146,21 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     private void setData() {
 
         try {
-            GlobalClass.SetText(tv_pname, fname + " " + mname + " " + lname);
-            GlobalClass.SetText(tv_gender, gender);
-            GlobalClass.SetText(tv_diabetics, diabetics);
-            GlobalClass.SetText(tv_mobileno, mobileno);
+            tv_pname.setText(fname + " " + mname + " " + lname);
+            tv_gender.setText(gender);
+            tv_diabetics.setText(diabetics);
+
+            tv_mobileno.setText(mobileno);
 
             if (GlobalClass.isNull(dob)) {
                 lin_dob.setVisibility(View.GONE);
             } else {
                 lin_dob.setVisibility(View.VISIBLE);
-                GlobalClass.SetText(tv_dob, dob);
+                tv_dob.setText(dob);
             }
 
 
-            if (TextUtils.isEmpty(calage)) {
+            if (GlobalClass.isNull(calage)) {
                 lin_age.setVisibility(View.GONE);
             } else {
                 lin_age.setVisibility(View.VISIBLE);
@@ -169,7 +170,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
 
             if (!GlobalClass.isNull(emailId)) {
                 lin_email.setVisibility(View.VISIBLE);
-                GlobalClass.SetText(tv_email, emailId);
+                tv_email.setText(emailId);
             } else {
                 lin_email.setVisibility(View.GONE);
             }
@@ -177,14 +178,15 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
 
             if (!GlobalClass.isNull(remarks)) {
                 lin_remarks.setVisibility(View.VISIBLE);
-                GlobalClass.SetText(tv_remarks, remarks);
+                tv_remarks.setText(remarks);
             } else {
                 lin_remarks.setVisibility(View.GONE);
             }
 
-            GlobalClass.SetText(tv_city, city);
-            GlobalClass.SetText(tv_servicetype, sercicetype);
-            GlobalClass.SetText(txt_appoint_dt, appoint_dt);
+            tv_city.setText(city);
+            tv_servicetype.setText(sercicetype);
+            txt_appoint_dt.setText(appoint_dt);
+
 
             GlobalClass.SetText(tv_paidamt, GlobalClass.currencyFormat(paidamt));
             GlobalClass.SetText(tv_avaibal, GlobalClass.currencyFormat(availbal));
@@ -215,7 +217,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
                 if (cd.isConnectingToInternet()) {
                     bookLeadAPICall();
                 } else {
-                    GlobalClass.showTastyToast(ConfirmbookDetail.this, MessageConstants.CHECK_INTERNET_CONN, 2);
+                    GlobalClass.toastyError(ConfirmbookDetail.this, MessageConstants.CHECK_INTERNET_CONN, false);
                 }
                 break;
 
@@ -255,7 +257,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         BookLeadPOSTModel.setLeadSource("NHF");
         BookLeadPOSTModel.setRelation("");
 
-        if (diabetics.equalsIgnoreCase(MessageConstants.YES)) {
+        if (diabetics.equalsIgnoreCase("Yes")) {
             BookLeadPOSTModel.setDiabetes("true");
         } else {
             BookLeadPOSTModel.setDiabetes("false");
@@ -289,15 +291,15 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     public void getPOSTBookLeadResponse(JSONObject response) {
         Gson gson = new Gson();
         LeadBookingResponseModel leadBookingResponseModel = gson.fromJson(response.toString(), LeadBookingResponseModel.class);
-
-        if (!GlobalClass.isNull(leadBookingResponseModel.getRespId()) && leadBookingResponseModel.getRespId().equalsIgnoreCase(Constants.RES0000)) {
-            GlobalClass.showTastyToast(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), 1);
-            startActivity(new Intent(ConfirmbookDetail.this, ManagingTabsActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            tab_flag = "1";
-        } else {
-            GlobalClass.showTastyToast(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), 2);
+        if (leadBookingResponseModel.getRespId() != null) {
+            if (leadBookingResponseModel.getRespId().equalsIgnoreCase(Constants.RES0000)) {
+                GlobalClass.toastySuccess(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), false);
+                startActivity(new Intent(ConfirmbookDetail.this, ManagingTabsActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                tab_flag = "1";
+            } else {
+                GlobalClass.toastyError(ConfirmbookDetail.this, leadBookingResponseModel.getResponseMessage(), false);
+            }
         }
-
     }
 
 
@@ -309,10 +311,11 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         try {
             JSONObject jsonObject = new JSONObject(error);
             String message = jsonObject.optString("Message", "");
-            if (!GlobalClass.isNull(message) && message.contains(MessageConstants.AUTH_FAILED)) {
+            if (message.contains(MessageConstants.AUTH_FAILED)) {
+                //  GlobalClass.logout(ConfirmbookDetail.this);
                 startActivity(new Intent(ConfirmbookDetail.this, Login.class));
             }
-            GlobalClass.showTastyToast(ConfirmbookDetail.this, message, 2);
+            GlobalClass.toastyError(ConfirmbookDetail.this, message, false);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -322,7 +325,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            GlobalClass.showTastyToast(ConfirmbookDetail.this, MessageConstants.BAKTOST, 1);
+            GlobalClass.toastySuccess(ConfirmbookDetail.this, MessageConstants.BAKTOST, false);
         }
         return false;
     }

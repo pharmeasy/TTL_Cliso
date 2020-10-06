@@ -3,6 +3,9 @@ package com.example.e5322.thyrosoft.Adapter;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
@@ -12,15 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RefreshNoticeBoard;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by e5322 on 28-05-2018.
@@ -28,9 +27,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapter.ViewHolder> {
     private ArrayList<NoticeBoard_Model> noticeboard_simple_models_list;
+    private int resource;
+    private LayoutInflater inflater;
     Context mContext;
     SharedPreferences prefs;
-    String ack_code, user, passwrd, access, api_key;
+    String messages, resId, response1, ack_code, user, passwrd, access, api_key;
+ //   public static com.android.volley.RequestQueue PostQueOtp;
     String msgCode;
     String TAG = NoticeBoard_Adapter.class.getSimpleName().toString();
     RefreshNoticeBoard refreshNoticeBoard;
@@ -67,10 +69,10 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
 
             linear = (LinearLayout) v.findViewById(R.id.linear);
             prefs = mContext.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-            user = prefs.getString("Username", "");
-            passwrd = prefs.getString("password", "");
-            access = prefs.getString("ACCESS_TYPE", "");
-            api_key = prefs.getString("API_KEY", "");
+            user = prefs.getString("Username", null);
+            passwrd = prefs.getString("password", null);
+            access = prefs.getString("ACCESS_TYPE", null);
+            api_key = prefs.getString("API_KEY", null);
 
 
         }
@@ -91,15 +93,15 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
 
         if (position % 2 == 1) {
             holder.parent_ll.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFFFF"));
         } else {
             holder.parent_ll.setBackgroundColor(Color.parseColor("#F5D2D9"));
+            //  holder.imageView.setBackgroundColor(Color.parseColor("#FFFAF8FD"));
         }
 
-        if (!GlobalClass.isNull(noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged())
-                && noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equalsIgnoreCase("Y")) {
+        if (noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equals("Y")) {
             holder.ack_id.setVisibility(View.GONE);
-        } else if (!GlobalClass.isNull(noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged())
-                && noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equalsIgnoreCase("N")) {
+        } else if (noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged().equals("N")) {
             holder.ack_id.setVisibility(View.VISIBLE);
         }
 
@@ -114,14 +116,13 @@ public class NoticeBoard_Adapter extends RecyclerView.Adapter<NoticeBoard_Adapte
         });
 
         ack_code = noticeboard_simple_models_list.get(0).getMessages()[position].getIsAcknowledged();
-
-        GlobalClass.SetText(holder.senderId, noticeboard_simple_models_list.get(0).getMessages()[position].getEnterBy());
-        GlobalClass.SetHTML(holder.msgtext, noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeMessage());
-
+        holder.senderId.setText(noticeboard_simple_models_list.get(0).getMessages()[position].getEnterBy());
+        holder.msgtext.setText(Html.fromHtml(noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeMessage()));
 
         Linkify.addLinks(holder.msgtext, Linkify.EMAIL_ADDRESSES);
         holder.msgtext.setMovementMethod(LinkMovementMethod.getInstance());
-        GlobalClass.SetText(holder.notice_date, noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeDate());
+
+        holder.notice_date.setText(noticeboard_simple_models_list.get(0).getMessages()[position].getNoticeDate());
 
     }
 

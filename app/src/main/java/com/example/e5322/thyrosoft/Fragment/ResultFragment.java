@@ -1,12 +1,17 @@
 package com.example.e5322.thyrosoft.Fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.text.Spanned;
+import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,15 +27,17 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.ConnectionDetector;
+import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.TrackDetAdapter;
-import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.ResultLIVE_Controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
@@ -48,11 +55,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -87,9 +89,7 @@ public class ResultFragment extends Fragment {
     Button buttonnow;
     LinearLayout main;
     TextView nodata, nodatatv;
-
-    ConnectionDetector cd;
-    Activity mActivity;
+    ProgressDialog barProgressDialog;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
         @Override
@@ -136,15 +136,10 @@ public class ResultFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mActivity = getActivity();
-        cd = new ConnectionDetector(mActivity);
-
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
         sharedpreferences = getActivity().getSharedPreferences(Constants.MyPREFERENCES, MODE_PRIVATE);
         Calendar cl = Calendar.getInstance();
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -175,18 +170,32 @@ public class ResultFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_result, container, false);
 
+        listviewreport = (ListView) view.findViewById(R.id.listviewreport);
+        setHasOptionsMenu(true);
+        spinnertype = (Spinner) view.findViewById(R.id.spinnertype);
+        buttonnow = (Button) view.findViewById(R.id.buttonnow);
+        search = (SearchView) view.findViewById(R.id.searchView);
+        main = (LinearLayout) view.findViewById(R.id.main);
+        /*
+         */
+        nodata = (TextView) view.findViewById(R.id.nodata);
+        nodatatv = (TextView) view.findViewById(R.id.nodatatv);
 
-        initViews(view);
+        java.util.Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String getcurrentdate = sdf.format(d);
 
-        iniListner();
+        // TextView dateview = getActivity().findViewById(R.id.show_date);
 
-        GetData();
+        // dateview.setVisibility(View.GONE);
 
-        return view;
-    }
 
-    private void iniListner() {
+        String[] spinner = {"All", "Ready", "Downloaded"};
+        ArrayAdapter aa = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinner);
 
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinnertype.setAdapter(aa);
         buttonnow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -213,24 +222,26 @@ public class ResultFragment extends Fragment {
                 } else if (position == 2) {
                     ArrayList<TrackDetModel> DownloadList = new ArrayList<TrackDetModel>();
 
-                    if (GlobalClass.CheckArrayList(trackDetArray)){
-                        for (int i = 0; i < trackDetArray.size(); i++) {
-                            TrackDetModel trackdetails = new TrackDetModel();
-                            trackdetails = trackDetArray.get(i);
+                    for (int i = 0; i < trackDetArray.size(); i++) {
+                        TrackDetModel trackdetails = new TrackDetModel();
+                        trackdetails = trackDetArray.get(i);
 
-                            if (!GlobalClass.isNull(trackDetArray.get(i).getDownloaded())) {
-                                DownloadList.add(trackdetails);
-                                adapter = new TrackDetAdapter(getContext(), DownloadList);
-                                listviewreport.setAdapter(adapter);
-                                notifyAll();
-                            }
+                        if (!trackDetArray.get(i).getDownloaded().equals("null")) {
+
+                            DownloadList.add(trackdetails);
+                            adapter = new TrackDetAdapter(getContext(), DownloadList);
+                            listviewreport.setAdapter(adapter);
+                            notifyAll();
+
                         }
+
                     }
-
-
                     if (DownloadList.size() == 0) {
+
                         ShowAlert();
                         listviewreport.setVisibility(View.GONE);
+
+
                     } else {
                         listviewreport.setVisibility(View.VISIBLE);
                     }
@@ -244,7 +255,6 @@ public class ResultFragment extends Fragment {
 
             }
         });
-
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -262,29 +272,6 @@ public class ResultFragment extends Fragment {
             }
         });
 
-    }
-
-    private void initViews(View view) {
-        listviewreport = (ListView) view.findViewById(R.id.listviewreport);
-        setHasOptionsMenu(true);
-        spinnertype = (Spinner) view.findViewById(R.id.spinnertype);
-        buttonnow = (Button) view.findViewById(R.id.buttonnow);
-        search = (SearchView) view.findViewById(R.id.searchView);
-        main = (LinearLayout) view.findViewById(R.id.main);
-
-        nodata = (TextView) view.findViewById(R.id.nodata);
-        nodatatv = (TextView) view.findViewById(R.id.nodatatv);
-
-        java.util.Date d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-
-        String[] spinner = {"All", "Ready", "Downloaded"};
-        ArrayAdapter aa = new ArrayAdapter(getContext(), android.R.layout.simple_spinner_item, spinner);
-
-        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        spinnertype.setAdapter(aa);
-
         yesterdayDate = GlobalClass.getYesterdaysDate;
         getDateOnly = yesterdayDate.substring(11, yesterdayDate.length());
 
@@ -295,10 +282,12 @@ public class ResultFragment extends Fragment {
             myDate = dateFormat.parse(getDateOnly);
             SimpleDateFormat sdfdata = new SimpleDateFormat("yyyy-MM-dd");
             convertedDate = sdfdata.format(myDate);
+
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+//need to change the date format
 
         DateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");//dd-MM-yyyy
         DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");//yyyy-MM-dd
@@ -311,6 +300,19 @@ public class ResultFragment extends Fragment {
         }
         passToAPI = outputFormat.format(date);
 
+
+        barProgressDialog = new ProgressDialog(getContext());
+        barProgressDialog.setTitle("Kindly wait ...");
+        barProgressDialog.setMessage(ToastFile.processing_request);
+        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+        barProgressDialog.setProgress(0);
+        barProgressDialog.setMax(20);
+        barProgressDialog.show();
+        barProgressDialog.setCanceledOnTouchOutside(false);
+        barProgressDialog.setCancelable(false);
+        GetData();
+        // Inflate the layout for this fragment
+        return view;
     }
 
     private List<TrackDetModel> filter(List<TrackDetModel> models, String query) {
@@ -336,32 +338,115 @@ public class ResultFragment extends Fragment {
 
     private void GetData() {
 
+        PostQue = GlobalClass.setVolleyReq(getContext());
 
         JSONObject jsonObject = new JSONObject();
         try {
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
             user = prefs.getString("Username", null);
+            String passwrd = prefs.getString("password", null);
+            String access = prefs.getString("ACCESS_TYPE", null);
             api_key = prefs.getString("API_KEY", null);
+
             jsonObject.put("API_Key", api_key);
             jsonObject.put("result_type", "Reported");
             jsonObject.put("tsp", user);
             jsonObject.put("date", Date);
             jsonObject.put("key", "");
             jsonObject.put("value", "");
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        RequestQueue queue = GlobalClass.setVolleyReq(getContext());
+        Log.e(TAG, "Get Data for Result--->" + Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET, Api.ResultLIVE + "/" + api_key + "/REPORTED" + "/" + user + "/" + Date + "/key/value", new com.android.volley.Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    Log.e(TAG, "onResponse: RESPONSE" + response);
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
+                    if (response.optString("response").equals(ToastFile.no_sample_found)) {
+                        nodatatv.setVisibility(View.VISIBLE);
+                        nodatatv.setText(response.optString("response"));
+                        listviewreport.setVisibility(View.GONE);
+                    } else {
+                        nodatatv.setVisibility(View.GONE);
+                        listviewreport.setVisibility(View.VISIBLE);
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        try {
-            if (ControllersGlobalInitialiser.resultLIVE_controller != null) {
-                ControllersGlobalInitialiser.resultLIVE_controller = null;
+                        JSONArray jsonArray = response.optJSONArray(Constants.patients);
+                        if (jsonArray != null) {
+
+                            trackDetArray = new ArrayList<TrackDetModel>();
+
+                            for (int j = 0; j < jsonArray.length(); j++) {
+
+                                JSONObject jsonObject = jsonArray.getJSONObject(j);
+                                TrackDetModel trackdetails = new TrackDetModel();
+
+                                trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
+                                trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
+                                trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
+                                trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
+                                // trackdetails.setCancel_tests_with_remark(jsonObject.optString(Constants.cancel_tests_with_remark).toString());
+                                trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
+                                trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
+                                trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
+                                trackdetails.setDate(jsonObject.optString(Constants.date).toString());
+                                trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
+                                trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
+                                trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
+                                trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
+                                trackdetails.setName(jsonObject.optString(Constants.name).toString());
+                                trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
+                                trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
+                                trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
+                                trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
+                                trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
+                                trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
+                                trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
+
+                                trackDetArray.add(trackdetails);
+
+                            }
+                            if (trackDetArray.size() == 0) {
+
+                                yesterday();
+                                nodata.setVisibility(View.VISIBLE);
+
+                            } else {
+                                nodata.setVisibility(View.GONE);
+                                adapter = new TrackDetAdapter(getContext(), trackDetArray);
+                                listviewreport.setAdapter(adapter);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
             }
-            ControllersGlobalInitialiser.resultLIVE_controller = new ResultLIVE_Controller(mActivity, ResultFragment.this);
-            ControllersGlobalInitialiser.resultLIVE_controller.getresultcontroller(api_key, "/REPORTED", user, Date, queue);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                try {
+                    System.out.println("error ala parat " + error);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        queue.add(jsonObjectRequest);
+        Log.e(TAG, "GetData: URL" + jsonObjectRequest);
+        Log.e(TAG, "GetData: json" + jsonObject);
+        RetryPolicy policy = new DefaultRetryPolicy(500000, 3, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        jsonObjectRequest.setRetryPolicy(policy);
 
     }
 
@@ -378,6 +463,8 @@ public class ResultFragment extends Fragment {
                 .create();
 
         alertDialog.show();
+
+// After some action
         alertDialog.dismiss();
     }
 
@@ -393,74 +480,6 @@ public class ResultFragment extends Fragment {
         // TODO Add your menu entries here
         inflater.inflate(R.menu.reportmenu, menu);
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    public void getResponse(JSONObject response) {
-        try {
-            Log.e(TAG, "onResponse: RESPONSE" + response);
-
-            if (!GlobalClass.isNull(response.optString("response")) && response.optString("response").equals(ToastFile.no_sample_found)) {
-                nodatatv.setVisibility(View.VISIBLE);
-                GlobalClass.SetText(nodatatv, response.optString("response"));
-                listviewreport.setVisibility(View.GONE);
-            } else {
-                nodatatv.setVisibility(View.GONE);
-                listviewreport.setVisibility(View.VISIBLE);
-
-                JSONArray jsonArray = response.optJSONArray(Constants.patients);
-                if (jsonArray != null) {
-
-                    trackDetArray = new ArrayList<TrackDetModel>();
-
-                    if (jsonArray.length()!=0){
-                        for (int j = 0; j < jsonArray.length(); j++) {
-
-                            JSONObject jsonObject = jsonArray.getJSONObject(j);
-                            TrackDetModel trackdetails = new TrackDetModel();
-
-                            trackdetails.setDownloaded(jsonObject.optString(Constants.Downloaded).toString());
-                            trackdetails.setRef_By(jsonObject.optString(Constants.Ref_By).toString());
-                            trackdetails.setTests(jsonObject.optString(Constants.Tests).toString());
-                            trackdetails.setBarcode(jsonObject.optString(Constants.barcode).toString());
-                            trackdetails.setChn_pending(jsonObject.optString(Constants.chn_pending).toString());
-                            trackdetails.setChn_test(jsonObject.optString(Constants.chn_test).toString());
-                            trackdetails.setConfirm_status(jsonObject.optString(Constants.confirm_status).toString());
-                            trackdetails.setDate(jsonObject.optString(Constants.date).toString());
-                            trackdetails.setEmail(jsonObject.optString(Constants.email).toString());
-                            trackdetails.setIsOrder(jsonObject.optString(Constants.isOrder).toString());
-                            trackdetails.setLabcode(jsonObject.optString(Constants.labcode).toString());
-                            trackdetails.setLeadId(jsonObject.optString(Constants.leadId).toString());
-                            trackdetails.setName(jsonObject.optString(Constants.name).toString());
-                            trackdetails.setPatient_id(jsonObject.optString(Constants.patient_id).toString());
-                            trackdetails.setPdflink(jsonObject.optString(Constants.pdflink).toString());
-                            trackdetails.setSample_type(jsonObject.optString(Constants.sample_type).toString());
-                            trackdetails.setScp(jsonObject.optString(Constants.scp).toString());
-                            trackdetails.setSct(jsonObject.optString(Constants.sct).toString());
-                            trackdetails.setSu_code2(jsonObject.optString(Constants.su_code2).toString());
-                            trackdetails.setWo_sl_no(jsonObject.optString(Constants.wo_sl_no).toString());
-
-                            trackDetArray.add(trackdetails);
-
-                        }
-                    }
-
-
-                    if (trackDetArray.size() == 0) {
-                        yesterday();
-                        nodata.setVisibility(View.VISIBLE);
-
-                    } else {
-                        nodata.setVisibility(View.GONE);
-                        adapter = new TrackDetAdapter(getContext(), trackDetArray);
-                        listviewreport.setAdapter(adapter);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     public interface OnFragmentInteractionListener {

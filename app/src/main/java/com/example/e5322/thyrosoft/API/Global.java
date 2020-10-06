@@ -15,9 +15,10 @@ import android.widget.Toast;
 
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.StartCheckoutEvent;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,11 +63,17 @@ public class Global {
     public static int mainActivity = 0;
     public static String BASE_URL = MAINURL;
     public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
-    public static String B2B="";
-    public static String B2C="";
+    public static String B2B = "";
+    public static String B2C = "";
     public static String sampletype;
     public static String test;
+    public static ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test_global = new ArrayList<>();
+    public static ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList_global=new ArrayList<>();
+    public static boolean OTPVERIFIED=false;
+
     private Context context;
+    public static String HHHTest = "";
+    public static boolean isoffline = false;
 
 
     public static ArrayList<String> tabname_home = new ArrayList<>();
@@ -103,7 +110,7 @@ public class Global {
     }
 
     public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {
-        Log.v("TAG","Logging Checkout event in Fabrics!!");
+        System.out.println("Logging Checkout event in Fabrics!!");
         try {
             Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
                     .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString("rate"))))
@@ -112,6 +119,19 @@ public class Global {
                     .putCustomAttribute("PayType", Paytype)
                     .putCustomAttribute("Products", jobj.getString("product")));
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void setTextview(TextView textview, String msg) {
+        try {
+            if (GlobalClass.isNull(msg)) {
+                msg = "";
+            }
+            if (textview != null) {
+                textview.setText(msg);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,7 +147,8 @@ public class Global {
             TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
 
             relItem.getBackground().setAlpha(204);
-            GlobalClass.SetText(txtToast,message);
+            txtToast.setText(message);
+
             Toast toast = new Toast(context);
             toast.setView(toastRoot);
             //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
@@ -138,7 +159,7 @@ public class Global {
     }
 
     public void StartCheckout_EVENTLOGGING1(JSONObject jobj, int count, String Paytype, String Gateway) {
-        Log.v("TAG","Logging Checkout event in Fabrics!!");
+        System.out.println("Logging Checkout event in Fabrics!!");
         try {
             Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
                     .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString(PAYUMONEYKEY_AMOUNT))))
@@ -206,7 +227,7 @@ public class Global {
             symbols.setCurrencySymbol("\u20A8"); // Don't use null.
         formatter.setDecimalFormatSymbols(symbols);
         formatter.setMaximumFractionDigits(0);
-        //Log.v("TAG",formatter.format(price));
+        //System.out.println(formatter.format(price));
         s = formatter.format(price);
         return s;
     }

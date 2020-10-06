@@ -28,7 +28,7 @@ import java.util.UUID;
 @SuppressLint("InlinedApi")
 public class DeviceUtils {
 	public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
-    Context context;
+Context context;
 	@SuppressLint("InlinedApi")
 	public static int getDeviceOrientation(Activity activity) {
 

@@ -14,7 +14,12 @@ public class Covidpostdata {
     String TESTCODE;
     String ENTERBY;
     String HOSPITAL;
+    String SPECIMENTYPE;
     String WOEID;
+    String EMAIL;
+    String ADDRESS;
+    String TestCodeId;
+    String CAMPID;
     File PRESCRIPTION ;
     File ADHAR ;
     File ADHAR1;
@@ -25,6 +30,38 @@ public class Covidpostdata {
     File OTHER1;
     File SELFIE;
 
+
+    public String getTestCodeId() {
+        return TestCodeId;
+    }
+
+    public void setTestCodeId(String testCodeId) {
+        TestCodeId = testCodeId;
+    }
+
+    public String getCAMPID() {
+        return CAMPID;
+    }
+
+    public void setCAMPID(String CAMPID) {
+        this.CAMPID = CAMPID;
+    }
+
+    public String getEMAIL() {
+        return EMAIL;
+    }
+
+    public void setEMAIL(String EMAIL) {
+        this.EMAIL = EMAIL;
+    }
+
+    public String getADDRESS() {
+        return ADDRESS;
+    }
+
+    public void setADDRESS(String ADDRESS) {
+        this.ADDRESS = ADDRESS;
+    }
 
     public String getENTERBY() {
         return ENTERBY;
@@ -56,6 +93,15 @@ public class Covidpostdata {
 
     public void setGENDER(String GENDER) {
         this.GENDER = GENDER;
+    }
+
+
+    public String getSPECIMENTYPE() {
+        return SPECIMENTYPE;
+    }
+
+    public void setSPECIMENTYPE(String SPECIMENTYPE) {
+        this.SPECIMENTYPE = SPECIMENTYPE;
     }
 
     public String getBARCODE() {
