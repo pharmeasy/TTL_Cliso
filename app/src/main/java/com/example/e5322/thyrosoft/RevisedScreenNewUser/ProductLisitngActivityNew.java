@@ -173,7 +173,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private ArrayList<String> getBarcodeArrList;
     boolean flagcallonce = false;
     private DatabaseHelper myDb;
-    private String getIMEINUMBER;
     private String RES_ID;
     private String barcode_patient_id;
     private String message;
@@ -291,10 +290,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             shr_brandname = pref_brand.getString("BRANDNAME", "");
         }
         shr_brandname = pref_brand.getString("BRANDNAME", "");
-
-        final SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
-
 
         title.setText("Select Test(s)");
         Selcted_Test = new ArrayList<>();
@@ -772,39 +767,34 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         if (!saveLocation.isEmpty()) {
                             if (typeName.equalsIgnoreCase("ILS")) {
                                 if (saveLocation.contains("CPL")) {
-                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                    //todo commented to hide CPL RPL rates as per the input 09-10-2020
+                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                    } else {
+                                    } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    }
-
+                                    /*}*/
                                 } else {
-                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
-                                    } else {
+                                    } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    }
-
+                                    /*}*/
                                 }
                             } else {
                                 if (saveLocation.contains("CPL")) {
                                     sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
-
-                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                    } else {
+                                    } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    }
-
+                                    /*}*/
                                 } else {
                                     sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
-
-                                    if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
+                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
-                                    } else {
+                                    } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    }
-
+                                    /*}*/
                                 }
                             }
                         }

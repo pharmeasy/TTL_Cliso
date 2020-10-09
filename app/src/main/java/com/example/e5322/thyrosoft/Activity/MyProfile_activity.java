@@ -192,7 +192,6 @@ public class MyProfile_activity extends AppCompatActivity {
 
         queue.add(jsonObjectRequest);
         GlobalClass.volleyRetryPolicy(jsonObjectRequest);
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest);
         Log.e(TAG, "GetData: URL" + jsonObjectRequest);
     }
 

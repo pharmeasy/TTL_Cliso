@@ -75,39 +75,9 @@ public class LogUserActivityTagging {
 
             editorUserActivity.apply();
 
-            String imeiNo = null;
-            try {
-                TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(TELEPHONY_SERVICE);
-                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-                } else {
-                    if (telephonyManager.getDeviceId() != null) {
-                        imeiNo = telephonyManager.getDeviceId();
-                    } else {
-                        imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
-                    }
-                }
-
-                if (GlobalClass.isNull(imeiNo)) {
-                    imeiNo = new Installation().id(activity);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
             AppuserReq requestModel = new AppuserReq();
             requestModel.setAppId(Constants.USER_APPID);
-            requestModel.setIMIENo(imeiNo);
+            requestModel.setIMIENo(GlobalClass.getIMEINo(activity));
             requestModel.setIslogin(sharedPreferencesUserActivity.getString(Constants.SHR_ISLOGIN, ""));
             requestModel.setModType(sharedPreferencesUserActivity.getString(Constants.SHR_MODTYPE, ""));
             requestModel.setOS(sharedPreferencesUserActivity.getString(Constants.SHR_OS, ""));

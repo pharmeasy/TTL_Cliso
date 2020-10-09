@@ -1482,21 +1482,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
         }
 
-//        else if (result != null) {
-//            Log.e(TAG, "onActivityResult: " + result);
-//            if (result.getContents() != null) {
-//                String getBarcodeDetails = result.getContents();
-//                if (getBarcodeDetails.length() == 8) {
-//                    if (!GlobalClass.isNull(getBarcodeDetails) && getBarcodeDetails.startsWith("Q") || getBarcodeDetails.startsWith("q")) {
-//                        passBarcodeData(getBarcodeDetails);
-//                    } else {
-//                        Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
-//                    }
-//                } else {
-//                    Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        }
+
 
     }
 

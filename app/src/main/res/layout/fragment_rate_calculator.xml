@@ -251,14 +251,14 @@
                                 android:padding="2dp">
 
                                 <TextView
-                                    android:id="@+id/b2b_rate_adm"
+                                    android:id="@+id/b2b_rate_label"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:layout_weight="1"
                                     android:background="@color/white"
                                     android:gravity="center"
-                                    android:text="CPL :"
+                                    android:text="B2B :"
                                     android:textColor="@color/DARKGray"
                                     android:textSize="11sp" />
 
@@ -284,7 +284,7 @@
                                 android:padding="2dp">
 
                                 <TextView
-                                    android:id="@+id/rpl_rate_adm"
+                                    android:id="@+id/rpl_rate_label"
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
@@ -301,8 +301,8 @@
                                     android:layout_width="0dp"
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
-                                    android:gravity="start"
                                     android:layout_weight="1"
+                                    android:gravity="start"
                                     android:text="500"
                                     android:textColor="@color/maroon"
                                     android:textSize="11sp"
@@ -482,7 +482,7 @@
                                 android:layout_weight="1"
                                 android:background="@color/white"
                                 android:gravity="center"
-                                android:text="CPL :"
+                                android:text="B2B :"
                                 android:textColor="@color/DARKGray"
                                 android:textSize="11sp"
                                 android:visibility="visible" />

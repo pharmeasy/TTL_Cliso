@@ -35,6 +35,8 @@ public class ToastFile {
     public static String slt_img = "Select Image";
     public static String slt_ned = "Select NED";
     public static String slt_date = "Select date";
+    public static String CHECK_INTERNET_CONN = "Check your internet connection";
+
     public static String ent_pin = "Please enter pincode";
     public static String invalid_brcd = "Invalid barcode";
     public static String allw_scan = "Please allow barcode to scan";

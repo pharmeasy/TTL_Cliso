@@ -27,56 +27,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
-import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
-import com.example.e5322.thyrosoft.Adapter.ExapandableAdpterForB2CRate_Calculator;
-import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
-import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
-import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
-import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
-import com.example.e5322.thyrosoft.Models.MyPojo;
-import com.example.e5322.thyrosoft.Models.RequestModels.CalculateRateRequestModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.CalculateRateResponseModel;
-import com.example.e5322.thyrosoft.R;
-import com.example.e5322.thyrosoft.RateCalculator.Test_Rate_Fragment;
-import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
-import com.example.e5322.thyrosoft.RateCalculatorForModels.GetMainModel;
-import com.example.e5322.thyrosoft.RateCalculatorForModels.Product_Rate_CalculatorModel;
-import com.example.e5322.thyrosoft.RateCalculatorForModels.RateCalB2B_MASTERS_Main_Model;
-import com.example.e5322.thyrosoft.TestListModel.TestModel;
-import com.example.e5322.thyrosoft.ToastFile;
-import com.example.e5322.thyrosoft.WOE.OutLabTestsActivity;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.sdsmdg.tastytoast.TastyToast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -86,6 +41,39 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
+import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Interface.InterfaceRateCAlculator;
+import com.example.e5322.thyrosoft.MainModelForAllTests.OUTLAB_TESTLIST_GETALLTESTS;
+import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
+import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.R;
+import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calculator;
+import com.example.e5322.thyrosoft.RateCalculatorForModels.GetMainModel;
+import com.example.e5322.thyrosoft.RateCalculatorForModels.Product_Rate_CalculatorModel;
+import com.example.e5322.thyrosoft.RateCalculatorForModels.RateCalB2B_MASTERS_Main_Model;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
@@ -93,21 +81,14 @@ import static com.example.e5322.thyrosoft.GlobalClass.redirectToLogin;
 
 public class RateCalculatorFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static ArrayList<String> testListnames;
-    public static ArrayList<String> profileListnames;
-    public static ArrayList<String> popListnames;
     public static RequestQueue POstQue;
     public static InputFilter EMOJI_FILTER = new InputFilter() {
-
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             for (int index = start; index < end; index++) {
-
                 int type = Character.getType(source.charAt(index));
-
                 if (type == Character.SURROGATE) {
                     return "";
                 }
@@ -117,53 +98,30 @@ public class RateCalculatorFragment extends Fragment {
     };
     private static ManagingTabsActivity mContext;
     String isCPL = "1";
-    View viewfab, view;
-    int gertdata;
-    String getValue;
     String displayslectedtestRateCal;
     ArrayList<Base_Model_Rate_Calculator> getAllTests;
     String testToPassToAPI;
-    TextView test_rate, profile_rate, pop_rate;
-    EditText edit_rate;
     ArrayList<Base_Model_Rate_Calculator> finalproductlist;
     RateCAlAdapter rateCAlAdapter;
-    RequestQueue requestQueuetest, requestQueueprofile, requestQueuepop;
-    Button reset;
     RecyclerView outlab_list;
-    int getFinalAmountTopass = 0;
     TextView companycost_test, out_lab_cost, out_lab_cost_b2b;
-    int days = 0;
     ProgressDialog barProgressDialog;
-    ListView testsforrate_calculator;
-    View viewrate_calfrag, feedback_fragment;
-    ArrayList<Base_Model_Rate_Calculator> selectedTests;
+    View viewrate_calfrag;
     GetMainModel mainModelRate;
-    TextView show_selected_tests_list_test_ils1, show_rates, show_b2b_rates, show_rpl_rates, b2b_rate_adm, rpl_rate_adm, b2bratell, poptab, profile_txt, test_txt;
+    TextView show_selected_tests_list_test_ils1, show_rates, show_b2b_rates, show_rpl_rates, b2b_rate_label, rpl_rate_label, b2bratell, profile_txt, test_txt;
     EditText sv_testsList_ttl;
-    Button calculate_button;
     LinearLayout search_option_ttl;
-    RequestQueue requestQueuepoptestILS;
     GetMainModel mainModel;
-    ProgressDialog progressDialog;
     LinearLayout before_discount_layout2;
-    ArrayList<Base_Model_Rate_Calculator> param;
     ArrayList<RateCalB2B_MASTERS_Main_Model> b2bmasterarraylistRate;
-    ExapandableAdpterForB2CRate_Calculator expAdapter;
     ArrayList<Base_Model_Rate_Calculator> selectedTestsListRateCal;
-    Button resetbutton;
     List<String> showTestNmaesRateCal = new ArrayList<>();
     List<String> getOnlyTestCode;
-    List<String> getOnlyTestCode1;
-    List<String> passToApi;
-    Test_Rate_Fragment test_rate_fragment;
     SharedPreferences prefs, preferences;
     String user, passwrd, access, api_key;
     ArrayList<Integer> getvalue;
-    int getFinaldata = 0;
     Button go_button;
-    // TODO: Rename and change types of parameters
     RecyclerView containerlist;
-    int add = 0;
     Spinner brand_name_rt_cal;
     LinearLayoutManager linearLayoutManager;
     LinearLayout pop_profile_test_bar;
@@ -177,46 +135,33 @@ public class RateCalculatorFragment extends Fragment {
     List<String> showTestNmaes = new ArrayList<>();
     LinearLayout lin_color, lin_color2;
     GetMainModel obj;
-    Product_Rate_CalculatorModel product_rate_masterModel;
     boolean viewmoreflag = false;
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
-    private int rate_percent, max_amt, tcp_perc;
-    // TODO: Rename and change types of parameters
+    private int rate_percent, max_amt, tpc_perc;
     private String mParam1;
     private String mParam2;
     private OnFragmentInteractionListener mListener;
     private MyPojo myPojo;
-    private TestModel testModel;
-    private int finalPriceofTest;
-    private int getFinalAmountTopassToTheAPI;
     private int CPL_RATE;
     private String displayslectedtestRateCalToShow;
     private ArrayList<String> getBrandName;
-    private boolean isLoaded = false;
     private EditText outlabtestsearch;
     private TextView show_selected_tests_list_test_ils;
     private LinearLayout lineargetselectedtestforILS;
     private int totalcountForOutlab;
     private int totalcountForOutlabb2b;
     private String getSpinnerSelectedItem;
-    private ArrayList<Base_Model_Rate_Calculator> getProfileList;
-    private ArrayList<Base_Model_Rate_Calculator> gettestsList;
-    private ArrayList<Base_Model_Rate_Calculator> getPopList;
-    private ArrayList<Base_Model_Rate_Calculator> selectedlist;
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
     private String TAG = getClass().getSimpleName();
     private TextView txt_more;
     private ArrayList<String> locationsList;
-    // ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
-    // ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
+    private Activity mActivity;
 
     public RateCalculatorFragment() {
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static RateCalculatorFragment newInstance(String param1, String param2) {
         RateCalculatorFragment fragment = new RateCalculatorFragment();
         Bundle args = new Bundle();
@@ -236,169 +181,50 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        mActivity = getActivity();
         mContext = (ManagingTabsActivity) getActivity();
         viewrate_calfrag = inflater.inflate(R.layout.fragment_rate_calculator, container, false);
         getvalue = new ArrayList<>();
         selectedTestsListRateCal = new ArrayList<>();
 
-        go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
-        companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
+        initUI();
 
-        show_selected_tests_list_test_ils1 = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils1);
         show_selected_tests_list_test_ils1.setMovementMethod(new ScrollingMovementMethod());
-
-
-        location_radio_grp = (RadioGroup) viewrate_calfrag.findViewById(R.id.location_radio_grp);
-        cpl_rdo = (RadioButton) viewrate_calfrag.findViewById(R.id.cpl_rdo);
-        rpl_rdo = (RadioButton) viewrate_calfrag.findViewById(R.id.rpl_rdo);
-
-        show_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rates);
-        b2b_rate_adm = (TextView) viewrate_calfrag.findViewById(R.id.b2b_rate_adm);
-        rpl_rate_adm = (TextView) viewrate_calfrag.findViewById(R.id.rpl_rate_adm);
-        b2bratell = (TextView) viewrate_calfrag.findViewById(R.id.b2bratell);
-        show_b2b_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_b2b_rates);
-        show_rpl_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rpl_rates);
-        //poptab = (TextView) viewrate_calfrag.findViewById(R.id.poptab);
-        profile_txt = (TextView) viewrate_calfrag.findViewById(R.id.profile_txt);
-        sv_testsList_ttl = (EditText) viewrate_calfrag.findViewById(R.id.sv_testsList12);
-        test_txt = (TextView) viewrate_calfrag.findViewById(R.id.test_txt);
-        linear_layout_data = (LinearLayout) viewrate_calfrag.findViewById(R.id.linear_layout_data);
-        offline_img = (LinearLayout) viewrate_calfrag.findViewById(R.id.offline_img);
-        containerlist = (RecyclerView) viewrate_calfrag.findViewById(R.id.containerlist);
-        pop_profile_test_bar = (LinearLayout) viewrate_calfrag.findViewById(R.id.pop_profile_test_bar);
-        search_option_ttl = (LinearLayout) viewrate_calfrag.findViewById(R.id.search_option_ttl);
-        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         containerlist.setLayoutManager(linearLayoutManager);
         containerlist.setItemAnimator(new DefaultItemAnimator());
-        containerlist.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        containerlist.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
 
-        lin_color = viewrate_calfrag.findViewById(R.id.lin_color);
-        lin_color2 = viewrate_calfrag.findViewById(R.id.lin_color2);
-
-        txt_more = viewrate_calfrag.findViewById(R.id.txt_more);
         txt_more.setText("More..");
 
-        txt_more.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (viewmoreflag == false) {
-                    lin_color2.setVisibility(View.VISIBLE);
-                    txt_more.setText("Less");
-                    viewmoreflag = true;
-                } else {
-                    lin_color2.setVisibility(View.GONE);
-                    txt_more.setText("More");
-                    viewmoreflag = false;
-                }
-            }
-        });
-
-
-        brand_name_rt_cal = (Spinner) viewrate_calfrag.findViewById(R.id.brand_name_rt_cal);
-        out_lab_cost = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost);
-        out_lab_cost_b2b = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost_b2b);
-        outlab_list = (RecyclerView) viewrate_calfrag.findViewById(R.id.outlab_list);
+        initListeners();
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         outlab_list.setLayoutManager(linearLayoutManager);
         outlab_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         outlab_list.setItemAnimator(new DefaultItemAnimator());
 
-
-        outlabtestsearch = (EditText) viewrate_calfrag.findViewById(R.id.outlabtestsearch);
-        show_selected_tests_list_test_ils = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils);
         show_selected_tests_list_test_ils.setMovementMethod(new ScrollingMovementMethod());
-
-        lineargetselectedtestforILS = (LinearLayout) viewrate_calfrag.findViewById(R.id.lineargetselectedtestforILS);
         lineargetselectedtestforILS.setVisibility(View.GONE);
-
-        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
         before_discount_layout2.setVisibility(View.GONE);
 
-
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         //todo get rate percent from profile details
         preferences = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
         rate_percent = preferences.getInt(Constants.rate_percent, 0);
-        tcp_perc = preferences.getInt(Constants.tcpPercent, 0);
-
+        tpc_perc = preferences.getInt(Constants.tpcPercent, 0);
         max_amt = preferences.getInt(Constants.max_amt, 0);
+
         System.out.println("<< rate percent >>" + rate_percent);
         System.out.println("<< max amount >>" + max_amt);
-
-        cpl_rdo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isCPL = "1";
-                //  outlabtestsearch.setText("");
-                sv_testsList_ttl.setText("");
-
-//                b2b_rate_adm.setVisibility(View.VISIBLE);
-//                show_b2b_rates.setVisibility(View.VISIBLE);
-                rpl_rate_adm.setVisibility(View.GONE);
-                show_rpl_rates.setVisibility(View.GONE);
-
-
-                if (access.equals("ADMIN")) {
-                    show_b2b_rates.setText(String.valueOf(CPL_RATE));
-                    b2b_rate_adm.setVisibility(View.VISIBLE);
-                    show_b2b_rates.setVisibility(View.VISIBLE);
-                } else {
-                    b2b_rate_adm.setVisibility(View.GONE);
-                    show_b2b_rates.setVisibility(View.GONE);
-                }
-
-                try {
-                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
-                    getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-        rpl_rdo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isCPL = "0";
-                //  outlabtestsearch.setText("");
-                sv_testsList_ttl.setText("");
-                // b2b_rate_adm.setVisibility(View.GONE);
-                // show_b2b_rates.setVisibility(View.GONE);
-                show_rpl_rates.setVisibility(View.VISIBLE);
-                rpl_rate_adm.setVisibility(View.VISIBLE);
-
-                if (access.equals("ADMIN")) {
-                    show_b2b_rates.setText(String.valueOf(CPL_RATE));
-                    b2b_rate_adm.setVisibility(View.VISIBLE);
-                    show_b2b_rates.setVisibility(View.VISIBLE);
-                } else {
-                    b2b_rate_adm.setVisibility(View.GONE);
-                    show_b2b_rates.setVisibility(View.GONE);
-                }
-
-
-                try {
-                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
-                    getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        Log.e(TAG, "onCreateView TYPE : " + access);
+        Log.e(TAG, "Access Type : " + access);
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -407,23 +233,14 @@ public class RateCalculatorFragment extends Fragment {
             offline_img.setVisibility(View.GONE);
             linear_layout_data.setVisibility(View.VISIBLE);
         }
-        //1st
-        // poptab.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
-        // poptab.setTextColor(getResources().getColor(R.color.colorWhite));
         profile_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
         profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
-        //  test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-        // test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
         test_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
         test_txt.setTextColor(getResources().getColor(R.color.colorWhite));
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         Gson gson = new Gson();
         String json = appSharedPrefs.getString("saveAlldata", "");
         myPojo = gson.fromJson(json, MyPojo.class);
-
-
         if (myPojo != null) {
             getBrandName = new ArrayList<>();
             if (myPojo != null) {
@@ -431,9 +248,7 @@ public class RateCalculatorFragment extends Fragment {
                     for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                         getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                     }
-                    brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(),
-                            R.layout.spinnerproperty,
-                            getBrandName));
+                    brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getBrandName));
                 }
             }
         } else {
@@ -451,7 +266,6 @@ public class RateCalculatorFragment extends Fragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
 
@@ -493,19 +307,15 @@ public class RateCalculatorFragment extends Fragment {
             }
         }
 
-
         outlabtestsearch.setFilters(new InputFilter[]{EMOJI_FILTER});
-
         outlabtestsearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
                 // TODO Auto-generated method stub
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
                 // TODO Auto-generated method stub
             }
 
@@ -516,7 +326,6 @@ public class RateCalculatorFragment extends Fragment {
                 String name = "";
                 String code = "";
                 String product = "";
-
 
                 try {
                     if (outlabdetails_outLabs != null) {
@@ -533,10 +342,7 @@ public class RateCalculatorFragment extends Fragment {
                                     product = outlabdetails_outLabs.get(i).getProduct().toLowerCase();
                                 }
 
-                                if (text.contains(s1) || (name != null && name.contains(s1)) ||
-                                        (code != null && code.contains(s1)) ||
-                                        (product != null && product.contains(s1))) {
-                                    String testname = outlabdetails_outLabs.get(i).getName();
+                                if (text.contains(s1) || (name != null && name.contains(s1)) || (code != null && code.contains(s1)) || (product != null && product.contains(s1))) {
                                     filteredFiles.add(outlabdetails_outLabs.get(i));
                                 }
 
@@ -546,11 +352,10 @@ public class RateCalculatorFragment extends Fragment {
                                 search_option_ttl.setVisibility(View.GONE);
                                 OutLabAdapter outLabRecyclerView = new OutLabAdapter(getActivity(), filteredFiles);
                                 outlab_list.setAdapter(outLabRecyclerView);
-
                             }
                         }
                     } else {
-                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                        if (!GlobalClass.isNetworkAvailable(mActivity)) {
                             offline_img.setVisibility(View.VISIBLE);
                             linear_layout_data.setVisibility(View.GONE);
                         } else {
@@ -558,43 +363,32 @@ public class RateCalculatorFragment extends Fragment {
                             linear_layout_data.setVisibility(View.VISIBLE);
                             getAllproduct();
                         }
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
         profile_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     sv_testsList_ttl.setText("");
                     test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                     test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
                     profile_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_right_round));
                     profile_txt.setTextColor(getResources().getColor(R.color.colorWhite));
-
-                    finalproductlist = new ArrayList<Base_Model_Rate_Calculator>();
+                    finalproductlist = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     if (obj != null) {
                         if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
                             b2bmasterarraylistRate = new ArrayList<>();
                             b2bmasterarraylistRate.add(obj.B2B_MASTERS);
                             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-                                    finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
-                                }
-
-                                for (int k = 0; k < b2bmasterarraylistRate.get(i).getPROFILE().size(); k++) {
-                                    finalproductlist.add(b2bmasterarraylistRate.get(i).getPROFILE().get(k));
-                                }
+                                finalproductlist.addAll(b2bmasterarraylistRate.get(i).getPOP());
+                                finalproductlist.addAll(b2bmasterarraylistRate.get(i).getPROFILE());
                             }
-
                             callAdapaterTosetData(finalproductlist, totalproductlist);
                         }
                     } else {
@@ -611,29 +405,19 @@ public class RateCalculatorFragment extends Fragment {
                 } catch (Resources.NotFoundException e) {
                     e.printStackTrace();
                 }
-
-
             }
         });
 
         test_txt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //3rd
-                // test_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_right_round));
-                // test_txt.setTextColor(getResources().getColor(R.color.colorWhite));
-                // poptab.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                // poptab.setTextColor(getResources().getColor(R.color.colorBlack));
-                //  outlabtestsearch.setText("");
                 try {
                     sv_testsList_ttl.setText("");
                     test_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
                     test_txt.setTextColor(getResources().getColor(R.color.colorWhite));
-
                     profile_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                     profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
-                    finalproductlist = new ArrayList<Base_Model_Rate_Calculator>();
+                    finalproductlist = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     if (obj != null) {
                         if (obj.getB2B_MASTERS() != null && obj.getUSER_TYPE() != null) {
@@ -645,8 +429,6 @@ public class RateCalculatorFragment extends Fragment {
                                 }
                             }
                             callAdapaterTosetData(finalproductlist, totalproductlist);
-                        } else {
-                            //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
@@ -656,10 +438,7 @@ public class RateCalculatorFragment extends Fragment {
                                 b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
                                 testRateMasterModels.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                             }
-
-
                         }
-
                         callAdapaterTosetData(finalproductlist, testRateMasterModels);
                     }
                 } catch (Resources.NotFoundException e) {
@@ -682,14 +461,12 @@ public class RateCalculatorFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 String s1 = s.toString().toLowerCase();
-                filteredFilesttl = new ArrayList<Base_Model_Rate_Calculator>();
+                filteredFilesttl = new ArrayList<>();
                 String name = "";
                 String code = "";
                 String product = "";
-
                 if (finalproductlist != null && finalproductlist.size() != 0) {
                     for (int i = 0; i < finalproductlist.size(); i++) {
-                        final String text = finalproductlist.get(i).getName().toLowerCase();
                         if (finalproductlist.get(i).getName() != null || !finalproductlist.get(i).getName().equals("")) {
                             name = finalproductlist.get(i).getName().toLowerCase();
                         }
@@ -699,10 +476,7 @@ public class RateCalculatorFragment extends Fragment {
                         if (finalproductlist.get(i).getProduct() != null || !finalproductlist.get(i).getProduct().equals("")) {
                             product = finalproductlist.get(i).getProduct().toLowerCase();
                         }
-                        if (text.contains(s1) || (name != null && name.contains(s1)) ||
-                                (code != null && code.contains(s1)) ||
-                                (product != null && product.contains(s1))) {
-                            String testname = finalproductlist.get(i).getName();
+                        if ((name != null && name.contains(s1)) || (code != null && code.contains(s1)) || (product != null && product.contains(s1))) {
                             filteredFilesttl.add(finalproductlist.get(i));
                         }
                     }
@@ -715,15 +489,113 @@ public class RateCalculatorFragment extends Fragment {
         return viewrate_calfrag;
     }
 
+    private void initUI() {
+        go_button = (Button) viewrate_calfrag.findViewById(R.id.go_button);
+        companycost_test = (TextView) viewrate_calfrag.findViewById(R.id.companycost_test);
+        show_selected_tests_list_test_ils1 = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils1);
+        location_radio_grp = (RadioGroup) viewrate_calfrag.findViewById(R.id.location_radio_grp);
+        cpl_rdo = (RadioButton) viewrate_calfrag.findViewById(R.id.cpl_rdo);
+        rpl_rdo = (RadioButton) viewrate_calfrag.findViewById(R.id.rpl_rdo);
+        show_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rates);
+        b2b_rate_label = (TextView) viewrate_calfrag.findViewById(R.id.b2b_rate_label);
+        rpl_rate_label = (TextView) viewrate_calfrag.findViewById(R.id.rpl_rate_label);
+        b2bratell = (TextView) viewrate_calfrag.findViewById(R.id.b2bratell);
+        show_b2b_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_b2b_rates);
+        show_rpl_rates = (TextView) viewrate_calfrag.findViewById(R.id.show_rpl_rates);
+        profile_txt = (TextView) viewrate_calfrag.findViewById(R.id.profile_txt);
+        sv_testsList_ttl = (EditText) viewrate_calfrag.findViewById(R.id.sv_testsList12);
+        test_txt = (TextView) viewrate_calfrag.findViewById(R.id.test_txt);
+        linear_layout_data = (LinearLayout) viewrate_calfrag.findViewById(R.id.linear_layout_data);
+        offline_img = (LinearLayout) viewrate_calfrag.findViewById(R.id.offline_img);
+        containerlist = (RecyclerView) viewrate_calfrag.findViewById(R.id.containerlist);
+        pop_profile_test_bar = (LinearLayout) viewrate_calfrag.findViewById(R.id.pop_profile_test_bar);
+        search_option_ttl = (LinearLayout) viewrate_calfrag.findViewById(R.id.search_option_ttl);
+        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
+        lin_color = viewrate_calfrag.findViewById(R.id.lin_color);
+        lin_color2 = viewrate_calfrag.findViewById(R.id.lin_color2);
+        txt_more = viewrate_calfrag.findViewById(R.id.txt_more);
+        brand_name_rt_cal = (Spinner) viewrate_calfrag.findViewById(R.id.brand_name_rt_cal);
+        out_lab_cost = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost);
+        out_lab_cost_b2b = (TextView) viewrate_calfrag.findViewById(R.id.out_lab_cost_b2b);
+        outlab_list = (RecyclerView) viewrate_calfrag.findViewById(R.id.outlab_list);
+        outlabtestsearch = (EditText) viewrate_calfrag.findViewById(R.id.outlabtestsearch);
+        show_selected_tests_list_test_ils = (TextView) viewrate_calfrag.findViewById(R.id.show_selected_tests_list_test_ils);
+        lineargetselectedtestforILS = (LinearLayout) viewrate_calfrag.findViewById(R.id.lineargetselectedtestforILS);
+        before_discount_layout2 = (LinearLayout) viewrate_calfrag.findViewById(R.id.before_discount_layout2);
+    }
+
+    private void initListeners() {
+        txt_more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!viewmoreflag) {
+                    lin_color2.setVisibility(View.VISIBLE);
+                    txt_more.setText("Less");
+                    viewmoreflag = true;
+                } else {
+                    lin_color2.setVisibility(View.GONE);
+                    txt_more.setText("More");
+                    viewmoreflag = false;
+                }
+            }
+        });
+
+        cpl_rdo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isCPL = "1";
+                sv_testsList_ttl.setText("");
+                rpl_rate_label.setVisibility(View.GONE);
+                show_rpl_rates.setVisibility(View.GONE);
+                if (access.equals("ADMIN")) {
+                    show_b2b_rates.setText(String.valueOf(CPL_RATE));
+                    b2b_rate_label.setVisibility(View.VISIBLE);
+                    show_b2b_rates.setVisibility(View.VISIBLE);
+                } else {
+                    b2b_rate_label.setVisibility(View.GONE);
+                    show_b2b_rates.setVisibility(View.GONE);
+                }
+                try {
+                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
+                    getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        rpl_rdo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isCPL = "0";
+                sv_testsList_ttl.setText("");
+                show_rpl_rates.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
+                rpl_rate_label.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
+                if (access.equals("ADMIN")) {
+                    show_b2b_rates.setText(String.valueOf(CPL_RATE));
+                    b2b_rate_label.setVisibility(View.VISIBLE);
+                    show_b2b_rates.setVisibility(View.VISIBLE);
+                } else {
+                    b2b_rate_label.setVisibility(View.GONE);
+                    show_b2b_rates.setVisibility(View.GONE);
+                }
+                try {
+                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
+                    getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     private void getAllproduct() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(mContext);
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 GlobalClass.hideProgress(getActivity(), progressDialog);
-
                 Log.e(TAG, "onResponse for All products :::: " + response);
                 GlobalClass.StoresyncProduct(getActivity());
                 String getResponse = response.optString("RESPONSE", "");
@@ -734,14 +606,12 @@ public class RateCalculatorFragment extends Fragment {
                     mainModel = new GetMainModel();
                     mainModelRate = gson.fromJson(response.toString(), GetMainModel.class);
 
-
                     SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
                     SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                     Gson gson22 = new Gson();
                     String json23 = gson22.toJson(mainModelRate);
                     prefsEditor1.putString("MyObject", json23);
-                    prefsEditor1.commit();
-
+                    prefsEditor1.apply();
 
                     try {
                         getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
@@ -771,18 +641,12 @@ public class RateCalculatorFragment extends Fragment {
                         Log.e(TAG, "ON ERROR MESSAGE -->" + e.getLocalizedMessage());
                     }
 
-
                     b2bmasterarraylistRate = new ArrayList<>();
                     b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
-
-
                     ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
                     ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
-                    ArrayList<Base_Model_Rate_Calculator> tempfinallist = new ArrayList<>();
-
                     try {
                         if (b2bmasterarraylistRate != null) {
-
                             if (getSpinnerSelectedItem.equalsIgnoreCase("TTL")) {
                                 for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
@@ -792,7 +656,6 @@ public class RateCalculatorFragment extends Fragment {
                                         testRateMasterModels.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                                     }
                                 }
-
                             } else {
                                 for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getSMT().size(); j++) {
@@ -803,16 +666,12 @@ public class RateCalculatorFragment extends Fragment {
                                     }
                                 }
                             }
-
                             callAdapaterTosetData(finalproduct_list, testRateMasterModels);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -820,14 +679,9 @@ public class RateCalculatorFragment extends Fragment {
                 GlobalClass.hideProgress(getActivity(), progressDialog);
             }
         });
-
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        GlobalClass.volleyRetryPolicy(jsonObjectRequestPop);
         requestQueuepoptestILS.add(jsonObjectRequestPop);
         Log.e(TAG, "afterTextChanged: url" + jsonObjectRequestPop);
-
     }
 
     private void getDataFromSharedPref() {
@@ -847,27 +701,22 @@ public class RateCalculatorFragment extends Fragment {
                     if (getSpinnerSelectedItem != null) {
                         if (getSpinnerSelectedItem.equalsIgnoreCase("TTL")) {
                             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
-
                                 for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
-    //                            finalproductlist.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                                     b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
                                     b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
                                     getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
                                 }
-
                                 for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
                                     b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
                                     b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
                                     getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
                                 }
-
                                 for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
                                     finalproductlist.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                                     b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
                                     b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
                                     getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                                 }
-
                             }
                         } else {
                             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
@@ -880,13 +729,9 @@ public class RateCalculatorFragment extends Fragment {
                             }
                         }
                     }
-
-
                     totalproductlist = getAllTests;
                     callAdapaterTosetData(finalproductlist, totalproductlist);
-
                 } else {
-                    //Toast.makeText(mContext, ToastFile.no_data_fnd, Toast.LENGTH_SHORT).show();
                     getAllproduct();
                 }
             } else {
@@ -921,55 +766,44 @@ public class RateCalculatorFragment extends Fragment {
         rateCAlAdapter = new RateCAlAdapter(mContext, tempfinalproductlist, totalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
             @Override
             public void onCheckChangeRateCalculator(ArrayList<Base_Model_Rate_Calculator> selectedTests) {
-
                 System.out.println("check changed");
-//                selectedTestsListRateCal = null;
                 selectedTestsListRateCal = selectedTests;
-
                 if (selectedTestsListRateCal.size() != 0) {
                     showTestNmaesRateCal = new ArrayList<>();
                     getOnlyTestCode = new ArrayList<>();
-                    HashSet<String> hashSet = new HashSet<String>();
-                    ArrayList<Integer> Totalcunt = new ArrayList<>();
-
                     for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
-                        showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName().toString());
+                        showTestNmaesRateCal.add(selectedTestsListRateCal.get(i).getName());
                         if (selectedTestsListRateCal.get(i).getBarcodes().length != 0)
                             for (int j = 0; j < selectedTestsListRateCal.get(i).getBarcodes().length; j++) {
                                 getOnlyTestCode.add(selectedTestsListRateCal.get(i).getBarcodes()[j].getCode());
                             }
                     }
-
                     if (selectedTestsListRateCal != null && selectedTestsListRateCal.size() > 0) {
                         ArrayList<String> list = new ArrayList<>();
                         for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                             if (!GlobalClass.isNull(selectedTestsListRateCal.get(i).getIsCPL())) {
                                 list.add(selectedTestsListRateCal.get(i).getIsCPL());
-
                                 if (list.size() > 0) {
                                     if (list.contains("0")) {
-                                        b2b_rate_adm.setVisibility(View.VISIBLE);
+                                        b2b_rate_label.setVisibility(View.VISIBLE);
                                         show_b2b_rates.setVisibility(View.VISIBLE);
                                     } else {
-                                        b2b_rate_adm.setVisibility(View.VISIBLE);
+                                        b2b_rate_label.setVisibility(View.VISIBLE);
                                         show_b2b_rates.setVisibility(View.VISIBLE);
-                                        rpl_rate_adm.setVisibility(View.GONE);
+                                        rpl_rate_label.setVisibility(View.GONE);
                                         show_rpl_rates.setVisibility(View.GONE);
                                     }
                                 }
-
                             }
                         }
 
                     }
 
-
                     if (getOnlyTestCode != null) {
-                        hashSet.addAll(getOnlyTestCode);
+                        HashSet<String> hashSet = new HashSet<String>(getOnlyTestCode);
                         getOnlyTestCode.clear();
                         getOnlyTestCode.addAll(hashSet);
                     }
-
                     CPL_RATE = 0;
                     int B2Crate = 0;
                     int RPL_RATE = 0;
@@ -977,94 +811,71 @@ public class RateCalculatorFragment extends Fragment {
 
                     if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
                         for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
-                            if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
+                            /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
-                            } else {
-                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                            }
-
+                            } else {*/
+                            CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+//                            }
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
                         }
                     } else {
                         locationsList = new ArrayList<>();
                         boolean isCOVIDPresent = false;
-
                         /*for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                             if (Global.checkHardcodeTest(selectedTestsListRateCal.get(i).getCode())) {
                                 isCOVIDPresent = true;
                                 break;
                             }
                         }*/
-
                         for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
                             locationsList.add(selectedTestsListRateCal.get(j).getIsCPL());
                             if (Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
-                                if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getIsCPL()) &&
-                                        selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
-                                    if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
+                                if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getIsCPL()) && selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
+                                    //todo commented to hide CPL RPL rates as per the input 09-10-2020
+                                    /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
                                         HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getRplr());
-                                    } else {
-                                        HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                    }
+                                    } else {*/
+                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                                    /*}*/
                                 } else {
-                                    if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
+                                    /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                         HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
-                                    } else {
-                                        HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                    }
+                                    } else {*/
+                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                                    /*}*/
                                 }
-
-
                             } else {
-                                if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
+                                /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                     CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
-                                } else {
-                                    CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                }
+                                } else {*/
+                                CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                                /*}*/
                             }
-
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
-
                             if (locationsList != null && locationsList.contains("0")) {
                                 if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getIsCPL()) && selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
                                     if (!Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
-                                        if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
+                                        /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
                                             RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getRplr());
-                                        } else {
-                                            RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                        }
+                                        } else {*/
+                                        RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+//                                        }
                                     }
-
                                 }
                             }
-
                         }
-
                         try {
                             System.out.println("CPL_RATE value :" + CPL_RATE);
                             System.out.println("HARDCODE_CPL_RATE value :" + HARDCODE_CPL_RATE);
                             //todo calculate the amount as per rate percent
                             CPL_RATE = calcAmount(CPL_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
-
-//                            if (rpl_rdo.isChecked()) {
                             System.out.println("RPL_RATE value :" + RPL_RATE);
-
                             if (locationsList != null && locationsList.contains("1") && locationsList.contains("0")) {
                                 RPL_RATE = CPL_RATE;
                             } else {
                                 RPL_RATE = calcAmount(RPL_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
                             }
-
-                                /*rpl_rate_adm.setVisibility(View.VISIBLE);
-                                show_rpl_rates.setVisibility(View.VISIBLE);*/
                             show_rpl_rates.setText("" + RPL_RATE);
-//                            }
-                            /*else {
-                                RPL_RATE = 0;
-                                rpl_rate_adm.setVisibility(View.GONE);
-                                show_rpl_rates.setVisibility(View.GONE);
-                            }*/
-
                             System.out.println("Calculated CPL rate with per :" + CPL_RATE);
                             System.out.println("Calculated RPL rate with per :" + RPL_RATE);
                             System.out.println("B2Crate value  :" + B2Crate);
@@ -1072,36 +883,27 @@ public class RateCalculatorFragment extends Fragment {
                             e.printStackTrace();
                         }
                     }
-
                     displayslectedtestRateCal = null;
                     displayslectedtestRateCalToShow = TextUtils.join(", ", showTestNmaesRateCal);
                     testToPassToAPI = TextUtils.join(",", getOnlyTestCode);
-
-                    if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                    if (!GlobalClass.isNetworkAvailable(mActivity)) {
                         offline_img.setVisibility(View.VISIBLE);
                         linear_layout_data.setVisibility(View.GONE);
                     } else {
                         offline_img.setVisibility(View.GONE);
                         linear_layout_data.setVisibility(View.VISIBLE);
-
-
                         before_discount_layout2.setVisibility(View.VISIBLE);
                         Log.e(TAG, "onResponse: " + displayslectedtestRateCalToShow);
                         show_selected_tests_list_test_ils1.setText(displayslectedtestRateCalToShow);
                         show_rates.setText("" + B2Crate);
-
-
                         if (access.equals("ADMIN")) {
                             show_b2b_rates.setText(String.valueOf(CPL_RATE));
-                            b2b_rate_adm.setVisibility(View.VISIBLE);
+                            b2b_rate_label.setVisibility(View.VISIBLE);
                             show_b2b_rates.setVisibility(View.VISIBLE);
                         } else {
-                            b2b_rate_adm.setVisibility(View.GONE);
+                            b2b_rate_label.setVisibility(View.GONE);
                             show_b2b_rates.setVisibility(View.GONE);
                         }
-
-                        //   fetchData();
-
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -1110,12 +912,10 @@ public class RateCalculatorFragment extends Fragment {
                             }
                         });
                     }
-
-
                     before_discount_layout2.invalidate();
                     before_discount_layout2.postInvalidate();
-
-                } else if (selectedTestsListRateCal.size() == 0) {
+                } else {
+                    selectedTestsListRateCal.size();
                     show_selected_tests_list_test_ils1.setText("");
                     show_rates.setText("0");
                     before_discount_layout2.setVisibility(View.GONE);
@@ -1123,9 +923,7 @@ public class RateCalculatorFragment extends Fragment {
                 manageCPLRPLView();
             }
         });
-
         containerlist.setAdapter(rateCAlAdapter);
-
         manageCPLRPLView();
     }
 
@@ -1149,16 +947,13 @@ public class RateCalculatorFragment extends Fragment {
                     RATE = RATE + max_amt;
                 }
             }
-
             RATE = RATE + HARDCODE_CPL_RATE;
-
             //TODO Added logic for TPC client for rates.
-
             aFloat = Float.parseFloat(String.valueOf(RATE));
-            float per_amt = ((aFloat / 100) * tcp_perc);
-            int tcprate = Math.round(per_amt);
-            System.out.println("Calculated TCP Client rate :" + tcprate);
-            RATE = RATE + tcprate;
+            float per_amt = ((aFloat / 100) * tpc_perc);
+            int tpcrate = Math.round(per_amt);
+            System.out.println("Calculated TCP Client rate :" + tpcrate);
+            RATE = RATE + tpcrate;
             //TODO Added logic for TPC client for rates.
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -1168,28 +963,24 @@ public class RateCalculatorFragment extends Fragment {
 
     private void manageCPLRPLView() {
         try {
-            if (!GlobalClass.isNull(access)) {
-                if (access.equalsIgnoreCase("ADMIN")) {
-                    if (GlobalClass.CheckArrayList(locationsList) && locationsList.contains("0")) {
-                        rpl_rate_adm.setVisibility(View.VISIBLE);
-                        show_rpl_rates.setVisibility(View.VISIBLE);
-                    } else {
-                        rpl_rate_adm.setVisibility(View.GONE);
-                        show_rpl_rates.setVisibility(View.GONE);
-                    }
+            if (!GlobalClass.isNull(access) && access.equalsIgnoreCase("ADMIN")) {
+                if (GlobalClass.CheckArrayList(locationsList) && locationsList.contains("0")) {
+                    rpl_rate_label.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
+                    show_rpl_rates.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
                 } else {
-                    rpl_rate_adm.setVisibility(View.GONE);
+                    rpl_rate_label.setVisibility(View.GONE);
                     show_rpl_rates.setVisibility(View.GONE);
                 }
+            } else {
+                rpl_rate_label.setVisibility(View.GONE);
+                show_rpl_rates.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     private void getRatesofB2bandB2C(String getSpinnerSelectedItem, ManagingTabsActivity mContext) {
-
         if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
             if (selectedTestsListRateCal != null) {
                 selectedTestsListRateCal.clear();
@@ -1198,7 +989,6 @@ public class RateCalculatorFragment extends Fragment {
         } else {
             location_radio_grp.setVisibility(View.VISIBLE);
         }
-
         GetMainModel obj = null;
         try {
             SharedPreferences appSharedPrefsdata = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -1209,7 +999,6 @@ public class RateCalculatorFragment extends Fragment {
             e.printStackTrace();
         }
 
-
         if (getSpinnerSelectedItem != null && !getSpinnerSelectedItem.equals("")) {
             if (getSpinnerSelectedItem.equals("TTL") || getSpinnerSelectedItem.equalsIgnoreCase("SMT")) {
                 if (obj != null) {
@@ -1219,37 +1008,24 @@ public class RateCalculatorFragment extends Fragment {
                         } else {
                             pop_profile_test_bar.setVisibility(View.VISIBLE);
                             show_selected_tests_list_test_ils1.scrollTo(0, 0);
-                            //  poptab.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
-                            //  poptab.setTextColor(getResources().getColor(R.color.colorWhite));
                             profile_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
                             profile_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-                            // test_txt.setBackgroundColor(getResources().getColor(R.color.colorWhite));
-                            //test_txt.setTextColor(getResources().getColor(R.color.colorBlack));
-
                             test_txt.setBackground(getResources().getDrawable(R.drawable.maroon_rect_left_round));
                             test_txt.setTextColor(getResources().getColor(R.color.colorWhite));
                         }
-
                         callAdapter(obj);
-
                         outlabtestsearch.setVisibility(View.GONE);
                         lineargetselectedtestforILS.setVisibility(View.GONE);
                         outlab_list.setVisibility(View.GONE);
-//                        if (selectedTestsListRateCal != null) {
-//                            selectedTestsListRateCal.clear();
-//                        }
-
                         if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
                             if (selectedTestsListRateCal != null) {
                                 selectedTestsListRateCal.clear();
                             }
                         }
-
                         getDataFromSharedPref();
                         rateCAlAdapter.notifyDataSetChanged();
                         containerlist.setVisibility(View.VISIBLE);
                         search_option_ttl.setVisibility(View.VISIBLE);
-
                     }
                 } else {
                     if (!GlobalClass.isNetworkAvailable(getActivity())) {
@@ -1260,9 +1036,7 @@ public class RateCalculatorFragment extends Fragment {
                         linear_layout_data.setVisibility(View.VISIBLE);
                         getAllproduct();
                     }
-
                 }
-
             } else {
                 show_selected_tests_list_test_ils.scrollTo(0, 0);
                 outlab_list.setVisibility(View.VISIBLE);
@@ -1302,11 +1076,9 @@ public class RateCalculatorFragment extends Fragment {
     private void requestJsonObject() {
         try {
             RequestQueue requestQueue = GlobalClass.setVolleyReq(getContext());
-            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user +
-                    "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-
                     try {
                         Log.e(TAG, "onResponse: " + response);
                         Gson gson = new Gson();
@@ -1318,11 +1090,8 @@ public class RateCalculatorFragment extends Fragment {
                         Gson gson22 = new Gson();
                         String json22 = gson22.toJson(myPojo);
                         prefsEditor1.putString("saveAlldata", json22);
-                        prefsEditor1.commit();
-
-                        isLoaded = true;
+                        prefsEditor1.apply();
                         getBrandName = new ArrayList<>();
-                        /*spinnerBrandName.add("Select Brand Name");*/
                         if (myPojo.getMASTERS().getBRAND_LIST() != null) {
                             for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                                 getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
@@ -1344,17 +1113,12 @@ public class RateCalculatorFragment extends Fragment {
                     }
                 }
             });
-
-            jsonObjectRequest2.setRetryPolicy(new DefaultRetryPolicy(
-                    300000,
-                    3,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            GlobalClass.volleyRetryPolicy(jsonObjectRequest2);
             requestQueue.add(jsonObjectRequest2);
             Log.e(TAG, "requestJsonObject: url" + jsonObjectRequest2);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void callAdapterforOutlab() {
@@ -1366,103 +1130,10 @@ public class RateCalculatorFragment extends Fragment {
         search_option_ttl.setVisibility(View.GONE);
     }
 
-    private void fetchData() {
-        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
-        POstQue = GlobalClass.setVolleyReq(mContext);
-        JSONObject jsonObject = null;
-        try {
-            CalculateRateRequestModel requestModel = new CalculateRateRequestModel();
-            requestModel.setApikey(api_key);
-            requestModel.setTests(testToPassToAPI);
-            requestModel.setBrand(getSpinnerSelectedItem);
-            String json = new Gson().toJson(requestModel);
-            jsonObject = new JSONObject(json);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Log.e(TAG, "FETCH DATA --->" + jsonObject);
-        Log.e(TAG, "FETCH DATA URL--->" + Api.RateCal);
-
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.RateCal, jsonObject, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    Log.e(TAG, "onResponse: " + response);
-                    GlobalClass.hideProgress(getActivity(), progressDialog);
-                    CalculateRateResponseModel responseModel = new Gson().fromJson(String.valueOf(response), CalculateRateResponseModel.class);
-
-                    if (responseModel != null) {
-                        if (!GlobalClass.isNull(responseModel.getRESID()) && responseModel.getRESID().equalsIgnoreCase(Constants.RES0000)) {
-                            test_rate_fragment = new Test_Rate_Fragment();
-
-                            Bundle args = new Bundle();
-                            args.putString("B2B", responseModel.getB2B());
-                            args.putString("B2C", responseModel.getB2C());
-                            args.putString("CHC", responseModel.getCHC());
-                            args.putString("COMPANY", responseModel.getCOMPANY());
-                            args.putString("PI", responseModel.getPI());
-                            args.putString("RESID", responseModel.getRESID());
-                            args.putString("RESPONSE", responseModel.getRESPONSE());
-                            args.putString("YOURS", responseModel.getYOURS());
-                            args.putParcelableArrayList("send", selectedTestsListRateCal);
-
-                            before_discount_layout2.setVisibility(View.VISIBLE);
-                            Log.e(TAG, "onResponse: " + displayslectedtestRateCalToShow);
-                            show_selected_tests_list_test_ils1.setText(displayslectedtestRateCalToShow);
-                            show_rates.setText(responseModel.getB2C());
-
-
-                            if (access.equals("ADMIN")) {
-                                show_b2b_rates.setText(String.valueOf(CPL_RATE));
-                                b2b_rate_adm.setVisibility(View.VISIBLE);
-                                show_b2b_rates.setVisibility(View.VISIBLE);
-                            } else {
-                                b2b_rate_adm.setVisibility(View.GONE);
-                                show_b2b_rates.setVisibility(View.GONE);
-                            }
-
-                            Bundle bundle = new Bundle();
-                            bundle.putParcelableArrayList("send", selectedTestsListRateCal);
-                        } else if (!GlobalClass.isNull(responseModel.getRESPONSE()) && responseModel.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
-                            GlobalClass.redirectToLogin(mContext);
-                        } else {
-                            TastyToast.makeText(mContext, "" + responseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                            Log.e(TAG, "TOAST MSG ------>" + responseModel.getRESPONSE());
-                        }
-                    } else {
-                        Toast.makeText(mContext, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "TOAST MSG ------>" + responseModel.getRESPONSE());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                GlobalClass.hideProgress(getActivity(), progressDialog);
-                if (error != null) {
-                } else {
-                    System.out.println(error);
-                }
-            }
-        });
-        GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
-        POstQue.add(jsonObjectRequest1);
-        Log.e(TAG, "fetchData: " + jsonObjectRequest1);
-        Log.e(TAG, "fetchData: " + jsonObject);
-    }
-
     private void callAdapter(GetMainModel mainModel) {
-
         b2bmasterarraylistRate = new ArrayList<>();
         b2bmasterarraylistRate.add(mainModel.B2B_MASTERS);
-
         ArrayList<Product_Rate_CalculatorModel> finalproductlist = new ArrayList<Product_Rate_CalculatorModel>();
-        ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<Base_Model_Rate_Calculator>();
-
         if (getSpinnerSelectedItem.equalsIgnoreCase("TTL")) {
             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                 Product_Rate_CalculatorModel product_rate_masterModel = new Product_Rate_CalculatorModel();
@@ -1478,8 +1149,6 @@ public class RateCalculatorFragment extends Fragment {
                 finalproductlist.add(product_rate_masterModel);
             }
         }
-
-
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -1531,7 +1200,6 @@ public class RateCalculatorFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
     }
 
 
@@ -1541,9 +1209,7 @@ public class RateCalculatorFragment extends Fragment {
     }
 
     private class OutLabAdapter extends RecyclerView.Adapter<OutLabAdapter.ViewHolder> {
-        boolean flag = true;
         Context context;
-
         ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs;
 
         public OutLabAdapter(Activity context, ArrayList<Outlabdetails_OutLab> outlabdetails_outLabs) {
@@ -1568,42 +1234,33 @@ public class RateCalculatorFragment extends Fragment {
             holder.checked.setVisibility(View.GONE);
             holder.check.setVisibility(View.VISIBLE);
 
-
             /*TODO Below logic for Outlab Sample type color code*/
             if (outlabdetails_outLabs != null || outlabdetails_outLabs.size() != 0) {
                 SampleTypeColor sampleTypeColor = new SampleTypeColor(mContext, "outlab", outlabdetails_outLabs, position);
                 sampleTypeColor.outLabcolor(holder.lin_color);
             }
-
             if (showTestNmaes != null) {
                 for (int j = 0; j < showTestNmaes.size(); j++) {
                     if (showTestNmaes.get(j).equalsIgnoreCase(outlabdetails_outLabs.get(position).getName())) {
                         holder.checked.setVisibility(View.VISIBLE);
                         holder.check.setVisibility(View.GONE);
-
                     }
                 }
             }
-
 
             holder.check.setOnClickListener(new View.OnClickListener() {
                 @SuppressLint("WrongConstant")
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(View v) {
-
                     Selcted_Outlab_Test.add(outlabdetails_outLabs.get(position));
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);
-
                     holder.checked.setVisibility(View.VISIBLE);
                     holder.check.setVisibility(View.GONE);
-
                     showTestNmaes.add(outlabdetails_outLabs.get(position).getName().toString());
                     lineargetselectedtestforILS.setVisibility(View.VISIBLE);
                     show_selected_tests_list_test_ils.setVisibility(View.VISIBLE);
                     out_lab_cost.setVisibility(View.VISIBLE);
-
-
                     if (access.equalsIgnoreCase("ADMIN")) {
                         out_lab_cost_b2b.setVisibility(View.VISIBLE);
                         b2bratell.setVisibility(View.VISIBLE);
@@ -1611,38 +1268,25 @@ public class RateCalculatorFragment extends Fragment {
                         out_lab_cost_b2b.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
                         out_lab_cost_b2b.setVisibility(View.GONE);
                         b2bratell.setVisibility(View.GONE);
-
                     }
-
                     show_selected_tests_list_test_ils.setText("");
                     out_lab_cost.setText("");
                     out_lab_cost_b2b.setText("");
-
                     totalcountForOutlab = 0;
                     totalcountForOutlabb2b = 0;
-//                    if (Selcted_Outlab_Test != null) {
-//                        for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-//
-//                            totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2b());
-//                        }
-//                    }
-
                     for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
                         if (!GlobalClass.isNull(Selcted_Outlab_Test.get(j).getRate().getCplr())) {
                             totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getCplr());
                         } else {
                             totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2b());
                         }
-
                         totalcountForOutlab = totalcountForOutlab + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2c());
                     }
                     System.out.println("Total value  :" + totalcountForOutlab);
                     System.out.println("Total value  :" + totalcountForOutlabb2b);
-
                     String displayslectedtest = TextUtils.join(", ", showTestNmaes);
                     show_selected_tests_list_test_ils.setText(displayslectedtest);
                     out_lab_cost.setText(String.valueOf(totalcountForOutlab));
-
                     out_lab_cost_b2b.setText(String.valueOf(totalcountForOutlabb2b));
                 }
             });
@@ -1661,41 +1305,29 @@ public class RateCalculatorFragment extends Fragment {
                     out_lab_cost_b2b.setText("");
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
 
-
                     totalcountForOutlab = 0;
                     totalcountForOutlabb2b = 0;
 
-                    if (!displayslectedtest.equals("")) {
-//                        for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
-//                            totalcountForOutlab = totalcountForOutlab + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2c());
-//                            totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2b());
-//                        }
-
-
+                    if (!GlobalClass.isNull(displayslectedtest)) {
                         for (int j = 0; j < Selcted_Outlab_Test.size(); j++) {
                             if (!GlobalClass.isNull(Selcted_Outlab_Test.get(j).getRate().getCplr())) {
                                 totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getCplr());
                             } else {
                                 totalcountForOutlabb2b = totalcountForOutlabb2b + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2b());
                             }
-
                             totalcountForOutlab = totalcountForOutlab + Integer.parseInt(Selcted_Outlab_Test.get(j).getRate().getB2c());
                         }
-
                         show_selected_tests_list_test_ils.setText(displayslectedtest);
                         out_lab_cost.setText(String.valueOf(totalcountForOutlab));
                         out_lab_cost_b2b.setText(String.valueOf(totalcountForOutlabb2b));
-
                     } else {
-                        if (displayslectedtest.equals("")) {
-                            lineargetselectedtestforILS.setVisibility(View.GONE);
-                            show_selected_tests_list_test_ils.setText("");
-                            out_lab_cost.setText("");
-                            out_lab_cost_b2b.setText("");
-                            show_selected_tests_list_test_ils.setVisibility(View.GONE);
-                            out_lab_cost.setVisibility(View.GONE);
-                            out_lab_cost_b2b.setVisibility(View.GONE);
-                        }
+                        lineargetselectedtestforILS.setVisibility(View.GONE);
+                        show_selected_tests_list_test_ils.setText("");
+                        out_lab_cost.setText("");
+                        out_lab_cost_b2b.setText("");
+                        show_selected_tests_list_test_ils.setVisibility(View.GONE);
+                        out_lab_cost.setVisibility(View.GONE);
+                        out_lab_cost_b2b.setVisibility(View.GONE);
                     }
                 }
             });
@@ -1713,9 +1345,6 @@ public class RateCalculatorFragment extends Fragment {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
             TextView outlab_test, outlab_test_rates;
-            // CheckBox check;
-            boolean isSelectedDueToParent;
-            String parentTestCode, parentTestname;
             ImageView check, checked;
             LinearLayout lin_color;
 

@@ -115,8 +115,7 @@ public class Offline_woe extends Fragment {
     ProgressDialog barProgressDialog;
     ArrayList<String> getBarcodeArrList;
     BarcodelistModel barcodelist;
-    String getIMEINUMBER;
-    String mobileModel, RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
+    String  RES_ID, barcode_patient_id, getCityName, getStateName, getCountryName;
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     SharedPreferences prefs;
@@ -213,11 +212,6 @@ public class Offline_woe extends Fragment {
 
         myDb = new DatabaseHelper(mContext);
         progressDialog();
-
-        final SharedPreferences getIMIE = mContext.getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
-        SharedPreferences getModelNumber = mContext.getSharedPreferences("MobileName", MODE_PRIVATE);
-        mobileModel = getModelNumber.getString("mobileName", null);
 
         prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
@@ -664,13 +658,13 @@ public class Offline_woe extends Fragment {
         try {
             GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
             requestModel.setUsername(user);
-            requestModel.setIMEI(getIMEINUMBER);
+            requestModel.setIMEI(GlobalClass.getIMEINo(mActivity));
             requestModel.setCity(getCityName);
             requestModel.setState(getStateName);
             requestModel.setCountry(getCountryName);
             requestModel.setLongitude(longitudePassTOAPI);
             requestModel.setLatitude(latitudePassTOAPI);
-            requestModel.setDeviceName(mobileModel);
+            requestModel.setDeviceName(GlobalClass.getDeviceName());
 
             Gson geoGson = new Gson();
             String json = geoGson.toJson(requestModel);

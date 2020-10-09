@@ -25,6 +25,6 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static GetOTPCreditMISController getOTPCreditMISController;
     public static Viewgenhandbill_Contoller viewgenhandbill_contoller;
     public static Handbilltemplate_Controller handbilltemplate_controller;
-
+    public static UploadDoc_Controller uploadDoc_controller;
 
 }

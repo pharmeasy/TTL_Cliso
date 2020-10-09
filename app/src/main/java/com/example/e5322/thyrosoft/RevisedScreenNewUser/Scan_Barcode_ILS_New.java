@@ -43,6 +43,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
@@ -110,16 +111,14 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private static final int REQUEST_CAMERA = 1;
     private static final int SELECT_FILE = 0;
     public static ArrayList<String> labAlerts;
-    public static com.android.volley.RequestQueue sendGPSDetails;
-    public static com.android.volley.RequestQueue POstQue;
-    private static String stringofconvertedTime;
-    private static String cutString;
+    public static RequestQueue sendGPSDetails;
+    public static RequestQueue POstQue;
     public IntentIntegrator scanIntegrator;
     public String specimenttype1;
     public int position1 = 0;
     public String getFinalPhoneNumberToPost;
     SharedPreferences prefs, profile_pref;
-    String testName, productnames, setLocation = null;
+    String setLocation = null;
     EditText enterAmt;
     TextView title;
     Button next;
@@ -130,25 +129,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     ImageView home;
     File trf_img = null;
     LinearLayout sample_type_linear, amt_collected_and_total_amt_ll;
-    ScannedBarcodeDetails scannedBarcodeDetails;
     ArrayList<BaseModel> selctedTest;
     ArrayList<String> setSpecimenTypeCodes;
-    ArrayList<String> getUniquespecimenttype;
-    ArrayList<ScannedBarcodeDetails> finalspecimenttypewiselist;
     SharedPreferences preferences, prefe;
     String brandName, typeName;
     TextView show_selected_tests_data, setAmt;
     LinearLayoutManager linearLayoutManager;
-    BaseModel.Barcodes[] barcodes;
     RecyclerView recycler_barcode;
     Uri imageUri;
     String getTestSelection, totalamt;
-    TextView pat_type, pat_sct, tests, pat_name, pat_ref, pat_sgc, pat_scp, pat_amt_collected, btech, btechtile;
-    LinearLayout SGCLinearid;
-    TextView saverepeat, saveclose, ref_by_txt, serial_number, serial_number_re;
-    RecyclerView sample_list;
-    String getSelctedTest;
-    int saveSrNumber;
     String getStateName, getCountryName, getCityName;
     Bitmap bitmapimage;
     SharedPreferences savepatientDetails;
@@ -156,21 +145,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     ArrayList<String> getBarcodeArrList;
     ProgressDialog barProgressDialog;
     BarcodelistModel barcodelist;
-    Barcodelist barcodelistData;
-    LinearLayout btech_layout, refbylinear;
-    int convertSrno;
-    Date date;
-    Context context1;
     boolean flagcallonce = false;
-    GoogleApiClient mGoogleApiClient;
-    Location mLocation;
-    LocationManager mLocationManager;
-    LocationRequest mLocationRequest;
     com.google.android.gms.location.LocationListener listener;
-    long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
-    long FASTEST_INTERVAL = 2000; /* 2 sec */
-    String getIMEINUMBER;
-    String mobileModel;
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     ArrayList<String> saveLocation;
@@ -179,11 +155,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
     LinearLayout ll_uploadTRF;
-    boolean fast_flag = false;
     RecyclerView rec_trf;
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
-    private int rate_percent, max_amt, tcp_perc;
+    private int rate_percent, max_amt, tpc_perc;
     private int CPL_RATE, RPL_RATE, HARDCODE_CPL_RATE;
     private MyPojo myPojo;
     private boolean barcodeExistsFlag = false;
@@ -192,7 +167,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String selectedProduct = "";
     private String userChoosenTask;
     private boolean GpsStatus;
-    //    TextView companycost_test;
     private ArrayList<String> temparraylist;
     private ArrayList<ProductWithBarcode> getproductDetailswithBarcodes;
     private AdapterBarcode_New adapterBarcode;
@@ -349,55 +323,50 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             e.printStackTrace();
         }
 
-        final SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
-        SharedPreferences getModelNumber = getSharedPreferences("MobileName", MODE_PRIVATE);
-        mobileModel = getModelNumber.getString("mobileName", null);
-
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         //todo get rate percent from profile details
         profile_pref = getSharedPreferences("profile", MODE_PRIVATE);
         rate_percent = profile_pref.getInt(Constants.rate_percent, 0);
         max_amt = profile_pref.getInt(Constants.max_amt, 0);
-        tcp_perc = profile_pref.getInt(Constants.tcpPercent, 0);
+        tpc_perc = profile_pref.getInt(Constants.tpcPercent, 0);
 
         System.out.println("<< rate percent >>" + rate_percent);
         System.out.println("<< max amount >>" + max_amt);
-        System.out.println("<< tcp_perc amount >>" + tcp_perc);
+        System.out.println("<< tcp_perc amount >>" + tpc_perc);
 
         savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        nameString = savepatientDetails.getString("name", null);
-        getFinalAge = savepatientDetails.getString("age", null);
-        saveGenderId = savepatientDetails.getString("gender", null);
-        getFinalTime = savepatientDetails.getString("sct", null);
-        getageType = savepatientDetails.getString("ageType", null);
-        getFinalDate = savepatientDetails.getString("date", null);
+        nameString = savepatientDetails.getString("name", "");
+        getFinalAge = savepatientDetails.getString("age", "");
+        saveGenderId = savepatientDetails.getString("gender", "");
+        getFinalTime = savepatientDetails.getString("sct", "");
+        getageType = savepatientDetails.getString("ageType", "");
+        getFinalDate = savepatientDetails.getString("date", "");
 
-        labname = savepatientDetails.getString("labname", null);
-        labAddress = savepatientDetails.getString("labAddress", null);
+        labname = savepatientDetails.getString("labname", "");
+        labAddress = savepatientDetails.getString("labAddress", "");
 
-        patientAddress = savepatientDetails.getString("patientAddress", null);
-        referrredBy = savepatientDetails.getString("refBy", null);
-        referenceID = savepatientDetails.getString("refId", null);
-        labIDaddress = savepatientDetails.getString("labIDaddress", null);
-        btechIDToPass = savepatientDetails.getString("btechIDToPass", null);
-        btechNameToPass = savepatientDetails.getString("btechNameToPass", null);
-        getcampIDtoPass = savepatientDetails.getString("getcampIDtoPass", null);
-        kycinfo = savepatientDetails.getString("kycinfo", null);
-        typename = savepatientDetails.getString("woetype", null);
-        sr_number = savepatientDetails.getString("SR_NO", null);
-        getPincode = savepatientDetails.getString("pincode", null);
+        patientAddress = savepatientDetails.getString("patientAddress", "");
+        referrredBy = savepatientDetails.getString("refBy", "");
+        referenceID = savepatientDetails.getString("refId", "");
+        labIDaddress = savepatientDetails.getString("labIDaddress", "");
+        btechIDToPass = savepatientDetails.getString("btechIDToPass", "");
+        btechNameToPass = savepatientDetails.getString("btechNameToPass", "");
+        getcampIDtoPass = savepatientDetails.getString("getcampIDtoPass", "");
+        kycinfo = savepatientDetails.getString("kycinfo", "");
+        typename = savepatientDetails.getString("woetype", "");
+        sr_number = savepatientDetails.getString("SR_NO", "");
+        getPincode = savepatientDetails.getString("pincode", "");
 
         preferences = getSharedPreferences("patientDetails", MODE_PRIVATE);
-        patientName = preferences.getString("name", null);
-        patientYear = preferences.getString("year", null);
-        patientYearType = preferences.getString("yearType", null);
-        patientGender = preferences.getString("gender", null);
+        patientName = preferences.getString("name", "");
+        patientYear = preferences.getString("year", "");
+        patientYearType = preferences.getString("yearType", "");
+        patientGender = preferences.getString("gender", "");
         getFinalAddressToPost = GlobalClass.setHomeAddress;
         getFinalPhoneNumberToPost = GlobalClass.getPhoneNumberTofinalPost;
         getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
@@ -660,39 +629,32 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 for (int i = 0; i < selctedTest.size(); i++) {
                     int getAmtBilledRate = 0;
                     if (!rateWiseLocation.isEmpty()) {
-
                         if (rateWiseLocation.contains("CPL")) {
-                            if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
+                            //todo comented to hide CPL RPL rates as per the input 09-10-2020
+                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                                totalcount = totalcount + getAmtBilledRate;
-                            } else {
+                            } else {*/
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                totalcount = totalcount + getAmtBilledRate;
-                            }
-
+                            /*}*/
                         } else {
-                            if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                            //todo comented to hide CPL RPL rates as per the input 09-10-2020
+                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                totalcount = totalcount + getAmtBilledRate;
-                            } else {
+                            } else {*/
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                totalcount = totalcount + getAmtBilledRate;
-                            }
-
+                            /*}*/
                         }
+                        totalcount = totalcount + getAmtBilledRate;
                     }
-
                     Log.e(TAG, "onCreate: 11 " + totalcount);
                     amt_collected_and_total_amt_ll.setVisibility(View.GONE);
                     setAmt.setText(String.valueOf(totalcount));
                     enterAmt.setText(String.valueOf(totalcount));
                 }
             }
-
         } else {
             amt_collected_and_total_amt_ll.setVisibility(View.VISIBLE);
         }
-
 
         adapterBarcode = new AdapterBarcode_New(Scan_Barcode_ILS_New.this, selctedTest, GlobalClass.finalspecimenttypewiselist, this);
         adapterBarcode.setOnItemClickListener(new AdapterBarcode_New.OnItemClickListener() {
@@ -714,9 +676,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             public void onClick(View v) {
                 totalamt = getAmount;
                 getTestSelection = show_selected_tests_data.getText().toString();
-                final String passProdcucts = testsnames;
-                String ampount = enterAmt.getText().toString();
-
                 String getLab_alert = lab_alert_spin.getText().toString();
 
                 if (getLab_alert.equals("SELECT LAB ALERTS")) {
@@ -736,39 +695,38 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         }
                     }*/
 
-
                     for (int i = 0; i < selctedTest.size(); i++) {
                         if (Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
                             if (!GlobalClass.isNull(selctedTest.get(i).getIsCPL()) && selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                                //todo commented to hide CPL RPL rates as per the input 09-10-2020
+                                /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                } else {
+                                } else {*/
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                }
+                                /*}*/
                             } else {
-                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
+                                /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                                } else {
+                                } else {*/
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                }
+                                /*}*/
                             }
-
                         } else {
-                            if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
+                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                            } else {
+                            } else {*/
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                            }
+                           /*}*/
                         }
 
                         if (rateWiseLocation.contains("RPL")) {
                             if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
                                 if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
-                                    if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                                    /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                    } else {
+                                    } else {*/
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                    }
+                                    /*}*/
                                 }
                             }
                         }
@@ -778,17 +736,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                     if (getCollectedAmt.equals("")) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
-                    } /*else if (Integer.parseInt(getCollectedAmt) < Integer.parseInt(b2b_rate)) {
-                        Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
-                    }*/ else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
+                    } else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than total amount", Toast.LENGTH_SHORT).show();
                     } else if (!checkRateVal(isCOVIDPresent)) {
 
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    } /*else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
-                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
-                    }*/ else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                    }else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else {
@@ -803,9 +757,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    }/* else if (getCollectedAmt.equals("") || getCollectedAmt.equals(null) || getCollectedAmt.isEmpty()) {
-                        Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter the amount", Toast.LENGTH_SHORT).show();
-                    }*/ else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else {
@@ -875,15 +827,14 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     RATE = RATE + max_amt;
                 }
             }
-
             RATE = RATE + HARDCODE_CPL_RATE;
-            //TODO Added logic for TPC client for rates.
 
+            //TODO Added logic for TPC client for rates.
             aFloat = Float.parseFloat(String.valueOf(RATE));
-            float per_amt = ((aFloat / 100) * tcp_perc);
-            int tcprate = Math.round(per_amt);
-            System.out.println("Calculated TCP Client rate :" + tcprate);
-            RATE = RATE + tcprate;
+            float per_amt = ((aFloat / 100) * tpc_perc);
+            int tpcrate = Math.round(per_amt);
+            System.out.println("Calculated TCP Client rate :" + tpcrate);
+            RATE = RATE + tpcrate;
             //TODO Added logic for TPC client for rates.
 
         } catch (NumberFormatException e) {
@@ -951,15 +902,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 }
 
                 savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-                nameString = savepatientDetails.getString("name", null);
-                getFinalAge = savepatientDetails.getString("age", null);
-                saveGenderId = savepatientDetails.getString("gender", null);
-                getFinalTime = savepatientDetails.getString("sct", null);
-                getageType = savepatientDetails.getString("ageType", null);
-                getFinalDate = savepatientDetails.getString("date", null);
+                nameString = savepatientDetails.getString("name", "");
+                getFinalAge = savepatientDetails.getString("age", "");
+                saveGenderId = savepatientDetails.getString("gender", "");
+                getFinalTime = savepatientDetails.getString("sct", "");
+                getageType = savepatientDetails.getString("ageType", "");
+                getFinalDate = savepatientDetails.getString("date", "");
 
-                getBrand_name = savepatientDetails.getString("WOEbrand", null);
-                getPincode = savepatientDetails.getString("pincode", null);
+                getBrand_name = savepatientDetails.getString("WOEbrand", "");
+                getPincode = savepatientDetails.getString("pincode", "");
 
                 if (!GlobalClass.isNull(getFinalDate)) {
                     sampleCollectionDate = getFinalDate;
@@ -1127,13 +1078,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                                 try {
                                                     GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
                                                     requestModel.setUsername(user);
-                                                    requestModel.setIMEI(getIMEINUMBER);
+                                                    requestModel.setIMEI(GlobalClass.getIMEINo(mActivity));
                                                     requestModel.setCity(getCityName);
                                                     requestModel.setState(getStateName);
                                                     requestModel.setCountry(getCountryName);
                                                     requestModel.setLongitude(longitudePassTOAPI);
                                                     requestModel.setLatitude(latitudePassTOAPI);
-                                                    requestModel.setDeviceName(mobileModel);
+                                                    requestModel.setDeviceName(GlobalClass.getDeviceName());
 
                                                     Gson geoGson = new Gson();
                                                     String json = geoGson.toJson(requestModel);
@@ -1326,13 +1277,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     bitmapimage = camera.getCameraBitmap();
                     String imageurl = camera.getCameraBitmapPath();
                     trf_img = new File(imageurl);
-
                     /**Below is local path for store our image in folder*/
-
                     String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
                     trf_img = new File(destFile);
                     GlobalClass.copyFile(new File(imageurl), trf_img);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
                     storeTRFImage(trf_img);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1348,12 +1296,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     }
                     Uri uri = data.getData();
                     bitmapimage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
                     trf_img = GlobalClass.getCompressedFile(mActivity, trf_img);
-                    Log.e(TAG, "" + String.format("CompressedSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
                     storeTRFImage(trf_img);
-
                 } catch (IOException e) {
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();

@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 
 import java.io.File;
@@ -63,12 +64,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
         this.context = pcontext;
         this.mProgressDialog = pProgressDialog;
         this.appnameAPK = appNAMEAPK;
-//        try {
-//            APKSIZE= GlobalClass.getApkSize(context, context.getPackageName());
-//            Log.e(TAG,"APK SIZE ---->"+APKSIZE+" MB");
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
+
     }
 
     @Override
@@ -89,7 +85,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
                 return "Server returned HTTP " + connection.getResponseCode()
                         + " " + connection.getResponseMessage();
             }
-
+            connection.setRequestProperty(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(context));
             // this will be useful to display download percentage
             // might be -1: server did not report the length
             fileLength = connection.getContentLength();

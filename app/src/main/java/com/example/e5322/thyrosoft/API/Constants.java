@@ -313,7 +313,7 @@ public class Constants {
     public static final String unbilledMaterial = "Unbilledmaterial";
     public static final String unbilledWOE = "UnbilledWOE";
     public static final String rate_percent = "rate_percent";
-    public static final String tcpPercent = "TPCPercent";
+    public static final String tpcPercent = "TPCPercent";
     public static final String max_amt = "max_amt";
     //public static String setVideoUrl="VideoURL";
 

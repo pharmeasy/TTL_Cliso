@@ -22,7 +22,7 @@ public class MessageConstants {
     public static String APP_NOT_AVAILABLE = "No App Available";
     public static String FILE_DOWN_SUCCSS = "File download successfully..";
 
-
+    public static String DOC_SUCC="Document uploaded successfully";
     public static String VERIFY = "Verify otp first";
     public static String PLEASEENTERSCANOPINION = "Please enter Scan Opinion";
     public static String PLEASEENTERCLINICALOPINION = "Please enter Clinical Opinion";

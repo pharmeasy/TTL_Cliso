@@ -83,8 +83,6 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
     private RequestQueue POstQue;
     private RequestQueue sendGPSDetails;
     String user, passwrd, access, api_key;
-    private String getIMEINUMBER;
-    private String mobileModel;
     InterfaceSendOfflineWoe interfaceSendOfflineWoe;
     private static ManagingTabsActivity activity;
     ArrayList<String> setResponse;
@@ -131,12 +129,6 @@ public class Offline_Woe_Adapter extends RecyclerView.Adapter<Offline_Woe_Adapte
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
-
-        final SharedPreferences getIMIE = mContext.getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
-        SharedPreferences getModelNumber = mContext.getSharedPreferences("MobileName", MODE_PRIVATE);
-        mobileModel = getModelNumber.getString("mobileName", null);
-
         holder.linear_summary_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

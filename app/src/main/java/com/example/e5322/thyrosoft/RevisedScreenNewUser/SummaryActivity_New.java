@@ -101,8 +101,6 @@ public class SummaryActivity_New extends AppCompatActivity {
     long UPDATE_INTERVAL = 2 * 1000;  /* 10 secs */
     long FASTEST_INTERVAL = 2000; /* 2 sec */
     LocationManager locationManager;
-    String getIMEINUMBER;
-    String mobileModel;
     LinearLayout linamt_collected;
     TextView amtcollected;
     private String totalAmount, amt_collected, patient_id_to_delete_tests;
@@ -221,11 +219,7 @@ public class SummaryActivity_New extends AppCompatActivity {
             window.setStatusBarColor(getResources().getColor(R.color.limaroon));
         }
 
-        SharedPreferences getIMIE = getSharedPreferences("MobilemobileIMEINumber", MODE_PRIVATE);
-        getIMEINUMBER = getIMIE.getString("mobileIMEINumber", null);
         myDb = new DatabaseHelper(this);
-        SharedPreferences getModelNumber = getSharedPreferences("MobileName", MODE_PRIVATE);
-        mobileModel = getModelNumber.getString("mobileName", null);
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);

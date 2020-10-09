@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -32,6 +33,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 
+import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.SpannableString;
@@ -40,9 +42,11 @@ import android.text.Spanned;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.crowdfire.cfalertdialog.BuildConfig;
+import com.example.e5322.thyrosoft.Activity.Installation;
 import com.example.e5322.thyrosoft.Controller.Log;
 
 import android.text.style.UnderlineSpan;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,12 +102,16 @@ import com.example.e5322.thyrosoft.TestListModel.Tests;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -125,6 +133,7 @@ import id.zelory.compressor.Compressor;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.content.Context.MODE_PRIVATE;
+import static android.content.Context.TELEPHONY_SERVICE;
 import static com.example.e5322.thyrosoft.ToastFile.relogin;
 
 /**
@@ -1384,6 +1393,56 @@ public class GlobalClass {
         return false;
     }
 
+    public static String getIMEINo(Activity activity) {
+        String imeiNo = "";
+        try {
+            TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(TELEPHONY_SERVICE);
+            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return "";
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+            } else {
+                if (telephonyManager.getDeviceId() != null) {
+                    imeiNo = telephonyManager.getDeviceId();
+                } else {
+                    imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
+                }
+            }
+            if (isNull(imeiNo)) {
+                imeiNo = Installation.id(activity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return imeiNo;
+    }
+
+    public static String getDeviceName() {
+        return Build.MODEL;
+    }
+
+    public static void setStatusBarcolor(Activity activity) {
+
+        try {
+            if (GlobalClass.checkForApi21()) {
+                Window window = activity.getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.setStatusBarColor( activity.getResources().getColor(R.color.limaroon));
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void showProgressDialog(Activity activity) {
         if (progressDialog != null && !progressDialog.isShowing())
             if (!((Activity) context).isFinishing()) {
@@ -1481,6 +1540,34 @@ public class GlobalClass {
             amount = "0";
         }
         return formatter.format(Double.parseDouble(amount));
+    }
+
+    public static String ConvertBitmapToString(Bitmap bitmap) {
+        String encodedImage = "";
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+
+        try {
+            encodedImage = URLEncoder.encode(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return encodedImage;
+    }
+
+    public static String getBase64Image(Bitmap bitmap) {
+        try {
+            ByteBuffer buffer = ByteBuffer.allocate(bitmap.getRowBytes() *
+                    bitmap.getHeight());
+            bitmap.copyPixelsToBuffer(buffer);
+            byte[] data = buffer.array();
+            return Base64.encodeToString(data, Base64.DEFAULT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
