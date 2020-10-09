@@ -103,10 +103,7 @@ public class Global {
     }
 
     public static boolean checkCovidTest(int flag) {
-        if (flag == 1) {
-            return true;
-        }
-        return false;
+        return flag == 1;
     }
 
     public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {

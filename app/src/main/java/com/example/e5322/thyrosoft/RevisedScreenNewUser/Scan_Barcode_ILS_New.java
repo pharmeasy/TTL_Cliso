@@ -696,38 +696,38 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     }*/
 
                     for (int i = 0; i < selctedTest.size(); i++) {
-                        if (Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
+                        //todo commented to hide CPL RPL rates as per the input 09-10-2020
+                        /*if (Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
                             if (!GlobalClass.isNull(selctedTest.get(i).getIsCPL()) && selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                //todo commented to hide CPL RPL rates as per the input 09-10-2020
-                                /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                } else {*/
+                                } else {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                /*}*/
+                                }
                             } else {
-                                /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
+                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                                } else {*/
+                                } else {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                /*}*/
+                                }
                             }
-                        } else {
+                        } else {*/
                             /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
                             } else {*/
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                           /*}*/
-                        }
+                           /*}
+                        }*/
 
                         if (rateWiseLocation.contains("RPL")) {
                             if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
-                                    /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                                /*if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
+                                    if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
                                     } else {*/
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                    /*}*/
-                                }
+                                    /*}
+                                }*/
                             }
                         }
                     }

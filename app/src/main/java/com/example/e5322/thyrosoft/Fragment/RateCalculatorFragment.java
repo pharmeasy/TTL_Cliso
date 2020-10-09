@@ -203,7 +203,7 @@ public class RateCalculatorFragment extends Fragment {
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         outlab_list.setLayoutManager(linearLayoutManager);
-        outlab_list.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        outlab_list.addItemDecoration(new DividerItemDecoration(mActivity, DividerItemDecoration.VERTICAL));
         outlab_list.setItemAnimator(new DefaultItemAnimator());
 
         show_selected_tests_list_test_ils.setMovementMethod(new ScrollingMovementMethod());
@@ -222,6 +222,7 @@ public class RateCalculatorFragment extends Fragment {
         tpc_perc = preferences.getInt(Constants.tpcPercent, 0);
         max_amt = preferences.getInt(Constants.max_amt, 0);
 
+        System.out.println("<< TPC percent >>" + tpc_perc);
         System.out.println("<< rate percent >>" + rate_percent);
         System.out.println("<< max amount >>" + max_amt);
         Log.e(TAG, "Access Type : " + access);
@@ -258,10 +259,10 @@ public class RateCalculatorFragment extends Fragment {
         brand_name_rt_cal.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
-                sv_testsList_ttl.getText().clear();
-                before_discount_layout2.setVisibility(View.GONE);
                 try {
+                    getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
+                    sv_testsList_ttl.getText().clear();
+                    before_discount_layout2.setVisibility(View.GONE);
                     getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -829,38 +830,38 @@ public class RateCalculatorFragment extends Fragment {
                         }*/
                         for (int j = 0; j < selectedTestsListRateCal.size(); j++) {
                             locationsList.add(selectedTestsListRateCal.get(j).getIsCPL());
-                            if (Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
+                            //todo commented to hide CPL RPL rates as per the input 09-10-2020
+                            /*if (Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
                                 if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getIsCPL()) && selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
-                                    //todo commented to hide CPL RPL rates as per the input 09-10-2020
-                                    /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
+                                    if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
                                         HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getRplr());
-                                    } else {*/
+                                    } else {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                    /*}*/
+                                    }
                                 } else {
-                                    /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
+                                    if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                         HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
-                                    } else {*/
+                                    } else {
                                     HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-                                    /*}*/
+                                    }
                                 }
-                            } else {
+                            } else {*/
                                 /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                     CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
                                 } else {*/
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                                 /*}*/
-                            }
+                            /*}*/
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
                             if (locationsList != null && locationsList.contains("0")) {
                                 if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getIsCPL()) && selectedTestsListRateCal.get(j).getIsCPL().equalsIgnoreCase("0")) {
-                                    if (!Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
-                                        /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
+                                    /*if (!Global.checkCovidTest(selectedTestsListRateCal.get(j).getIsAB())) {
+                                        if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getRplr())) {
                                             RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getRplr());
                                         } else {*/
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
-//                                        }
-                                    }
+                                        /*}
+                                    }*/
                                 }
                             }
                         }
