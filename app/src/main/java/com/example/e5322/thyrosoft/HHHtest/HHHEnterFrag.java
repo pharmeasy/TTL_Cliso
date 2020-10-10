@@ -418,8 +418,8 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
                             if (ControllersGlobalInitialiser.covidmultipart_controller != null) {
                                 ControllersGlobalInitialiser.covidmultipart_controller = null;
                             }
-                            String fname = edt_firstname.getText().toString().trim();
-                            String lname = edt_lastname.getText().toString().trim();
+                            String fname = edt_firstname.getText().toString().trim().toUpperCase();
+                            String lname = edt_lastname.getText().toString().trim().toUpperCase();
                             String fullname = fname + " " + lname;
                             Covidpostdata covidpostdata = new Covidpostdata();
                             covidpostdata.setSOURCECODE(usercode);

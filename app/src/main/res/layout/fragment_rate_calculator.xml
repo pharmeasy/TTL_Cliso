@@ -59,7 +59,7 @@
                     android:background="@color/white"
                     android:gravity="left|center"
                     android:padding="3dp"
-                    android:text="Minimum Billing will be Rs.100/-"
+                    android:text="Minimum Billing will be Rs.30/-"
                     android:textColor="@color/black"
                     android:textSize="@dimen/dp_14" />
 
