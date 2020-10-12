@@ -185,14 +185,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     getclient_name = getclient_name.replaceAll("\\.", "");
                     get_incharge_name = get_incharge_name.replaceAll("\\.", "");
 
-                    String enteredUrl = website_edt.getText().toString();
-
-                    if (!enteredUrl.equals("")) {
-                        if (!Patterns.WEB_URL.matcher(enteredUrl).matches()) {
-                            Toast.makeText(Sgc_Pgc_Entry_Activity.this, "URL is invalid!", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    if (getLatitude.equalsIgnoreCase("")) {
+                    if (!GlobalClass.isNull(get_website) && !Patterns.WEB_URL.matcher(get_website).matches()) {
+                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "URL is invalid!", Toast.LENGTH_LONG).show();
+                    } else if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter latitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getLongitude.equalsIgnoreCase("")) {
@@ -276,7 +271,9 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                     get_Address = get_Address.replaceAll("\\s+", " ");
                     get_dr_name = get_dr_name.replaceAll("\\.", "");
 
-                    if (getLatitude.equalsIgnoreCase("")) {
+                    if (!GlobalClass.isNull(get_website) && !Patterns.WEB_URL.matcher(get_website).matches()) {
+                        Toast.makeText(Sgc_Pgc_Entry_Activity.this, "URL is invalid!", Toast.LENGTH_LONG).show();
+                    } else if (getLatitude.equalsIgnoreCase("")) {
                         lattitude_txt.requestFocus();
                         TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "Enter latitude", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getLongitude.equalsIgnoreCase("")) {

@@ -746,58 +746,56 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     int sum = 0;
                     int b2b = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
-                    ArrayList<String> saveLocation = new ArrayList<>();
-
+//                    ArrayList<String> saveLocation = new ArrayList<>();
 
                     for (int i = 0; i < Selcted_Test.size(); i++) {
-
-                        if (!GlobalClass.isNull(Selcted_Test.get(i).getIsCPL())) {
+                        /*if (!GlobalClass.isNull(Selcted_Test.get(i).getIsCPL())) {
                             if (Selcted_Test.get(i).getIsCPL().equalsIgnoreCase("1")) {
                                 saveLocation.add("CPL");
                             } else {
                                 saveLocation.add("RPL");
                             }
-                        }
+                        }*/
                         if (Selcted_Test.get(i).getType().equalsIgnoreCase("TEST")) {
                             getTestNameLits.add(Selcted_Test.get(i).getCode());
                         } else {
                             getTestNameLits.add(Selcted_Test.get(i).getProduct());
                         }
 
-                        if (!saveLocation.isEmpty()) {
+//                        if (!saveLocation.isEmpty()) {
                             if (typeName.equalsIgnoreCase("ILS")) {
-                                if (saveLocation.contains("CPL")) {
+                                /*if (saveLocation.contains("CPL")) {
                                     //todo commented to hide CPL RPL rates as per the input 09-10-2020
-                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                    *//*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                    } else {*/
+                                    } else {*//*
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    /*}*/
-                                } else {
+                                    *//*}*//*
+                                } else {*/
                                     /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     /*}*/
-                                }
+//                                }
                             } else {
-                                if (saveLocation.contains("CPL")) {
+                                /*if (saveLocation.contains("CPL")) {
                                     sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
-                                    /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
+                                    *//*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getCplr());
-                                    } else {*/
-                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    /*}*/
-                                } else {
+                                    } else {*//*
+                                    b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+                                    *//*}*//*
+                                } else {*/
                                     sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
                                     /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     /*}*/
-                                }
+//                                }
                             }
-                        }
+//                        }
 
                     }
 

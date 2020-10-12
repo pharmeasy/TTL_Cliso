@@ -23,10 +23,7 @@ import com.example.e5322.thyrosoft.R;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     private final Resources resources;
-
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
-
-
 
     public ViewPagerAdapter(final Resources resources, FragmentManager fm) {
         super(fm);

@@ -344,15 +344,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 if (covidacc) {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
-                      navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
-
+                    navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 } else {
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
                     navigationView.getMenu().findItem(R.id.crab_camp).setVisible(false);
-                     navigationView.getMenu().findItem(R.id.HHH).setVisible(false);
-
+                    navigationView.getMenu().findItem(R.id.HHH).setVisible(false);
                 }
-
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);
@@ -364,14 +361,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
                 if (covidacc) {
-                     navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
                 } else {
-                    navigationView.getMenu().findItem(R.id.HHH).setVisible(true);
                     navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
                 }
+                navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);

@@ -15,7 +15,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,12 +67,9 @@ import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
-import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.example.e5322.thyrosoft.WOE.ProductWithBarcode;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -150,7 +146,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     ArrayList<String> saveLocation;
-    ArrayList<String> rateWiseLocation;
+//    ArrayList<String> rateWiseLocation;
     ArrayList<TRFModel> trflist = new ArrayList<>();
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
@@ -159,7 +155,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     LinearLayoutManager linearLayoutManager1;
     Activity mActivity;
     private int rate_percent, max_amt, tpc_perc;
-    private int CPL_RATE, RPL_RATE, HARDCODE_CPL_RATE;
+    private int B2B_RATE, RPL_RATE, HARDCODE_CPL_RATE;
     private MyPojo myPojo;
     private boolean barcodeExistsFlag = false;
     private boolean trfCheckFlag = false;
@@ -278,7 +274,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
         CheckGpsStatus();
 
-        if (GpsStatus == true) {
+        if (GpsStatus) {
             gpsTracker = new GpsTracker(Scan_Barcode_ILS_New.this);
             if (gpsTracker.canGetLocation()) {
                 double latitude = gpsTracker.getLatitude();
@@ -487,7 +483,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
         });
 
-        if (selctedTest.size() != 0 || selctedTest != null) {
+        if (selctedTest != null && selctedTest.size() > 0) {
             for (int i = 0; i < selctedTest.size(); i++) {
                 totalcount = totalcount + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                 Log.e(TAG, "TRF list data --->" + selctedTest.get(i).getTrf());
@@ -609,7 +605,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
 
         }
-        rateWiseLocation = new ArrayList<>();
+
+        //TODO commented to remove CPL RPL as per input 12-10-2020
+        /*rateWiseLocation = new ArrayList<>();
         for (int i = 0; i < selctedTest.size(); i++) {
             if (!GlobalClass.isNull(selctedTest.get(i).getIsCPL())) {
                 if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("1")) {
@@ -620,7 +618,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             } else {
                 rateWiseLocation.add("CPL");
             }
-        }
+        }*/
 
 
         if (typeName.equals("ILS")) {
@@ -628,24 +626,26 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 totalcount = 0;
                 for (int i = 0; i < selctedTest.size(); i++) {
                     int getAmtBilledRate = 0;
-                    if (!rateWiseLocation.isEmpty()) {
+                    /*if (!rateWiseLocation.isEmpty()) {
                         if (rateWiseLocation.contains("CPL")) {
                             //todo comented to hide CPL RPL rates as per the input 09-10-2020
-                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
+                            *//*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                            } else {*/
-                                getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                            /*}*/
+                            } else {*//*
+                            getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                            *//*}*//*
                         } else {
                             //todo comented to hide CPL RPL rates as per the input 09-10-2020
-                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
+                            *//*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                 getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                            } else {*/
-                                getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                            /*}*/
+                            } else {*//*
+                            getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                            *//*}*//*
                         }
-                        totalcount = totalcount + getAmtBilledRate;
-                    }
+
+                    }*/
+                    getAmtBilledRate = Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                    totalcount = totalcount + getAmtBilledRate;
                     Log.e(TAG, "onCreate: 11 " + totalcount);
                     amt_collected_and_total_amt_ll.setVisibility(View.GONE);
                     setAmt.setText(String.valueOf(totalcount));
@@ -684,7 +684,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     lab_alert_pass_toApi = lab_alert_spin.getText().toString();
                 }
                 if (!typeName.equalsIgnoreCase("ILS")) {
-                    CPL_RATE = 0;
+                    B2B_RATE = 0;//TODO renamed from CPL_RATE to B2B_RATE to remove CPL rates
                     RPL_RATE = 0;
                     HARDCODE_CPL_RATE = 0;
                     boolean isCOVIDPresent = false;
@@ -715,21 +715,21 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
                             } else {*/
-                                CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                            /*}
                         }*/
 
-                        if (rateWiseLocation.contains("RPL")) {
+                        /*if (rateWiseLocation.contains("RPL")) {
                             if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                /*if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
+                                *//*if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
                                     if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
                                         RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                    } else {*/
-                                        RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                    /*}
-                                }*/
+                                    } else {*//*
+                                RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                                    *//*}
+                                }*//*
                             }
-                        }
+                        }*/
                     }
 
                     getCollectedAmt = enterAmt.getText().toString();
@@ -742,7 +742,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    }else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else {
@@ -773,9 +773,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     private boolean checkRateVal(boolean isCOVIDPresent) {
-        if (rateWiseLocation != null && rateWiseLocation.size() > 0) {
+        //TODO commented to hide CPL RPL logic as per input 12-10-2020
+        /*if (rateWiseLocation != null && rateWiseLocation.size() > 0) {
             if (rateWiseLocation.contains("CPL") && rateWiseLocation.contains("RPL")) {
-                RPL_RATE = calcAmount(CPL_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
+                RPL_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
                 System.out.println("Calculated RPL rate :" + RPL_RATE);
                 if (Integer.parseInt(getCollectedAmt) < RPL_RATE) {
                     Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
@@ -788,21 +789,21 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + RPL_RATE, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-            } else if (rateWiseLocation.contains("CPL")) {
-                CPL_RATE = calcAmount(CPL_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
-                System.out.println("Calculated CPL rate :" + CPL_RATE);
-                if (Integer.parseInt(getCollectedAmt) < CPL_RATE) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + CPL_RATE, Toast.LENGTH_SHORT).show();
+            } else if (rateWiseLocation.contains("CPL")) {*/
+                B2B_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
+                System.out.println("Calculated CPL rate :" + B2B_RATE);
+                if (Integer.parseInt(getCollectedAmt) < B2B_RATE) {
+                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + B2B_RATE, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-            } else {
+            /*} else {
                 Toast.makeText(Scan_Barcode_ILS_New.this, "Location is blank for selected products", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
             Toast.makeText(Scan_Barcode_ILS_New.this, "Location is blank for selected products", Toast.LENGTH_SHORT).show();
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -836,7 +837,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             System.out.println("Calculated TCP Client rate :" + tpcrate);
             RATE = RATE + tpcrate;
             //TODO Added logic for TPC client for rates.
-
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
