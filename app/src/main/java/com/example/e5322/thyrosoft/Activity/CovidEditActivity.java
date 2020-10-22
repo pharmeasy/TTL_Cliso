@@ -113,7 +113,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             name = bundle.getString("name");
             UniqueId = bundle.getString("UniqueId");
             amtcoll = bundle.getString("amtcoll");
-          //  ppebarcode = bundle.getString("ppebarcode");
+           ppebarcode = bundle.getString("ppebarcode");
            // Log.e(TAG, "uniqueid-->" + UniqueId);
         }
 
@@ -307,7 +307,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setVIAIMAGE(vial_file);
                             covidpostdata.setTESTCODE("COVID-19");
                             covidpostdata.setAMOUNTCOLLECTED(amtcoll);
-                           // covidpostdata.setPPEBARCODE(ppebarcode);
+                            covidpostdata.setPPEBARCODE(ppebarcode);
 
                             if (presc_file != null) {
                                 covidpostdata.setPRESCRIPTION(presc_file);

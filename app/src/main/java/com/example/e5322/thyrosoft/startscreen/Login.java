@@ -719,11 +719,9 @@ public class Login extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        //   WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wInfo = wifi.getConnectionInfo();
         macAddress = wInfo.getMacAddress();
-
 
         barProgressDialog = new ProgressDialog(Login.this);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -753,13 +751,10 @@ public class Login extends Activity implements View.OnClickListener {
                         }
                     }
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
-        // get Internet status
-
-        // check for Internet status
-
         User = username.getText().toString();
         pass = password.getText().toString();
         if (User.length() == 0 & pass.length() == 0) {
@@ -767,19 +762,16 @@ public class Login extends Activity implements View.OnClickListener {
                 barProgressDialog.dismiss();
             }
             Toast.makeText(this, "Please Enter Ecode and Password", Toast.LENGTH_SHORT).show();
-            // Message.message(Login.this, "Please Enter Ecode and Password");
         } else if (User.length() == 0) {
             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                 barProgressDialog.dismiss();
             }
             Toast.makeText(this, "Please enter your Ecode", Toast.LENGTH_SHORT).show();
-            //Message.message(Login.this, "");
         } else if (pass.length() == 0) {
             if (barProgressDialog != null && barProgressDialog.isShowing()) {
                 barProgressDialog.dismiss();
             }
             Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show();
-            //Message.message(Login.this, "");
         } else {
             try {
                 PostQue = GlobalClass.setVolleyReq(Login.this);
@@ -793,8 +785,6 @@ public class Login extends Activity implements View.OnClickListener {
                     Gson gson = new Gson();
                     String postData = gson.toJson(requestModel);
                     jsonObject = new JSONObject(postData);
-
-                    /*Global.Username = username.getText().toString();*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

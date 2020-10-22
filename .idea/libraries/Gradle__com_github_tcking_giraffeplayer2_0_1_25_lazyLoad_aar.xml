@@ -1,9 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.tcking:giraffeplayer2:0.1.25-lazyLoad@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/92f2e14a1d6cd819ce6959886210c3b5/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/92f2e14a1d6cd819ce6959886210c3b5/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/92f2e14a1d6cd819ce6959886210c3b5/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/9644aa07ece25fdec4abff752d7c34cd/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/9644aa07ece25fdec4abff752d7c34cd/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/9644aa07ece25fdec4abff752d7c34cd/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/df544f7a529c7d031918728623abde17/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/df544f7a529c7d031918728623abde17/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/df544f7a529c7d031918728623abde17/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -31,11 +31,6 @@ import androidx.viewpager.widget.ViewPager;
 public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewholder> {
     Context context;
     List<Covidmis_response.OutputBean> covidMISmodelList;
-    List<String> presclist = new ArrayList<>();
-    List<String> aadharlist = new ArrayList<>();
-    List<String> trflist = new ArrayList<>();
-    List<String> viallist = new ArrayList<>();
-    List<String> otherlist = new ArrayList<>();
     Activity activity;
     List<String> doclist = new ArrayList<>();
 
@@ -59,12 +54,12 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
 
-//        if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
-//            viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
-//            GlobalClass.SetText(viewholder.txt_ppebrcd, "PPE Barcode : " + covidMISmodel.getPPEBarcode());
-//        }else {
-//            viewholder.txt_ppebrcd.setVisibility(View.GONE);
-//        }
+        if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
+            viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
+            GlobalClass.SetText(viewholder.txt_ppebrcd, "PPE Barcode : " + covidMISmodel.getPPEBarcode());
+        }else {
+            viewholder.txt_ppebrcd.setVisibility(View.GONE);
+        }
 
 
 
@@ -109,7 +104,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
                 intent.putExtra("name", covidMISmodel.getPatientName());
                 intent.putExtra("UniqueId", covidMISmodel.getUniqueId());
                 intent.putExtra("amtcoll", covidMISmodel.getAmount_Collected());
-               // intent.putExtra("ppebarcode", covidMISmodel.getPPEBarcode());
+               intent.putExtra("ppebarcode", covidMISmodel.getPPEBarcode());
                 context.startActivity(intent);
             }
         });
@@ -200,7 +195,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
             btn_resubmit = itemView.findViewById(R.id.btn_resubmit);
             btn_viewupload = itemView.findViewById(R.id.btn_viewupload);
             txt_name = itemView.findViewById(R.id.patientName);
-          //  txt_ppebrcd=itemView.findViewById(R.id.txt_ppebrcd);
+           txt_ppebrcd=itemView.findViewById(R.id.txt_ppebrcd);
             txt_mob = itemView.findViewById(R.id.txt_mobile);
             txt_amt = itemView.findViewById(R.id.txt_amt);
             txt_ccc = itemView.findViewById(R.id.txt_ccc);

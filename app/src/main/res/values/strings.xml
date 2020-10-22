@@ -35,7 +35,7 @@
     <string name="bs_enter_mobile_number">Mobile number*</string>
     <string name="bs_enter_email_address">Email ID</string>
     <string name="bs_age">Age*</string>
-    <string name="ppe">PPE Barcode*</string>
+    <string name="ppe">PPE Barcode</string>
     <string name="bs_value">Value*</string>
     <string name="upload_trf">*Upload TRF</string>
     <string name="billing">Per Day Billing \n(Last 30 days)</string>

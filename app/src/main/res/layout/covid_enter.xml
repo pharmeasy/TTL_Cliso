@@ -299,34 +299,34 @@
         </LinearLayout>
 
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:weightSum="2">-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
-<!--            <TextView-->
-<!--                android:id="@+id/txt_barcode"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_margin="@dimen/_5sdp"-->
-<!--                android:layout_weight="0.7"-->
-<!--                android:background="@drawable/custom_border_edittext_blue"-->
-<!--                android:drawablePadding="@dimen/_5sdp"-->
-<!--                android:padding="@dimen/_5sdp"-->
-<!--                android:text="@string/ppe"-->
-<!--                android:textSize="@dimen/_12sdp" />-->
+            <TextView
+                android:id="@+id/txt_barcode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/_5sdp"
+                android:layout_weight="0.7"
+                android:background="@drawable/custom_border_edittext_blue"
+                android:drawablePadding="@dimen/_5sdp"
+                android:padding="@dimen/_5sdp"
+                android:text="@string/ppe"
+                android:textSize="@dimen/_12sdp" />
 
-<!--            <ImageView-->
-<!--                android:id="@+id/img_scanbarcode"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="@dimen/_36sdp"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:layout_weight="0.3"-->
-<!--                android:src="@drawable/scan_barcode" />-->
+            <ImageView
+                android:id="@+id/img_scanbarcode"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_36sdp"
+                android:layout_gravity="center"
+                android:layout_weight="0.3"
+                android:src="@drawable/scan_barcode" />
 
-<!--        </LinearLayout>-->
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -20,6 +20,7 @@ public class Covidpostdata {
     String ADDRESS;
     String TestCodeId;
     String CAMPID;
+    String PPEBARCODE;
     File PRESCRIPTION ;
     File ADHAR ;
     File ADHAR1;
@@ -30,6 +31,14 @@ public class Covidpostdata {
     File OTHER1;
     File SELFIE;
 
+
+    public String getPPEBARCODE() {
+        return PPEBARCODE;
+    }
+
+    public void setPPEBARCODE(String PPEBARCODE) {
+        this.PPEBARCODE = PPEBARCODE;
+    }
 
     public String getTestCodeId() {
         return TestCodeId;

@@ -1,11 +1,16 @@
 <component name="libraryTable">
   <library name="Gradle: com.mindorks:paracamera:0.2.2@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/29158d8fe2258c807ad60a8c92de2a71/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/29158d8fe2258c807ad60a8c92de2a71/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/29158d8fe2258c807ad60a8c92de2a71/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/5d0ea6ddf02dc8e8ed86357502551875/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/5d0ea6ddf02dc8e8ed86357502551875/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/5d0ea6ddf02dc8e8ed86357502551875/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/38d80d91796d5693a1244a7ec664c03c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/38d80d91796d5693a1244a7ec664c03c/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-paracamera-0.2.2.aar/38d80d91796d5693a1244a7ec664c03c/res" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mindorks/paracamera/0.2.2/667cbb29e3249011014d298c0850282359b1fff3/paracamera-0.2.2-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.mindorks/paracamera/0.2.2/9615c7b0ce9ef2a1bcaa713752911fd6a252f457/paracamera-0.2.2-sources.jar!/" />
     </SOURCES>

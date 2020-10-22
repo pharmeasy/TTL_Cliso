@@ -17,13 +17,15 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
@@ -54,73 +56,33 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.GsonBuilder;
 import com.scottyab.rootbeer.RootBeer;
 
-import java.io.File;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
-    private static final int MEGABYTE = 1024 * 1024;
     private static final int APPPERMISSTION = 110;
-    public static String str_login_test, profile_test, IMEI;
-    public static SharedPreferences sh, profile;
-    public static SharedPreferences.Editor editor, editor1;
-    SharedPreferences shr_user_log;
-    String androidOS, shr_osversion, shr_versionname;
-    static String path;
+    public static SharedPreferences  profile;
+    public static SharedPreferences.Editor editor;
     String strtoken="";
     private static String TAG = SplashScreen.class.getSimpleName();
-    AlertDialog alert;
-    String strmodtype;
-    String version, islogin;
-    Boolean isInternetPresent = false;  // flag for Internet connection status
+    String version;
     ConnectionDetector cd;
-    SharedPreferences covid_pred;
-    String z = "";
     Animation anim;
-    String version1;
-    String response1;
-    String resId;
     ImageView iv;
     String USER_CODE = "";
-    ProgressDialog barProgressDialog;
-    File ThyrosoftLite;
     Activity activity;
     String newToken, storetoken;
-    String firebasenewToken;
     boolean IsFromNotification;
     String user, passwrd;
     int SCRID;
-    private int versionCode = 0;
-    private boolean isfirsttime = true;
-    private String ApkUrl, username;
-    private GlobalClass globalClass;
-    private boolean firstRunSplash;
     private int WRITE_EXTERNAL_STORAGE = 123;
-    SharedPreferences.Editor editoractivity;
     private boolean covidacc;
     private SharedPreferences prefs_CovidSync;
     boolean isemulator = false;
 
-    public static boolean deleteFile(File file) {
-        boolean deletedAll = true;
-        if (file != null) {
-            if (file.isDirectory()) {
-                String[] children = file.list();
-                for (int i = 0; i < children.length; i++) {
-                    deletedAll = deleteFile(new File(file, children[i])) && deletedAll;
-                }
-            } else {
-                deletedAll = file.delete();
-            }
-        }
-        return deletedAll;
-    }
+
 
 
     @SuppressLint("NewApi")
@@ -135,14 +97,6 @@ public class SplashScreen extends AppCompatActivity {
         iv = (ImageView) findViewById(R.id.logo);
 
         Fabric.with(this, new Crashlytics());
-
-        if (globalClass.checkForApi21()) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
-        }
-
 
         if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
@@ -174,20 +128,18 @@ public class SplashScreen extends AppCompatActivity {
         }
 
         version = GlobalClass.getversion(activity);
-        versionCode = GlobalClass.getversioncode(activity);
+
 
         TextView versionText = (TextView) findViewById(R.id.version);
         versionText.setText(version);
 
         cd = new ConnectionDetector(getApplicationContext());
 
-        androidOS = Build.VERSION.RELEASE;
+
 
         SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", null);
         passwrd = prefs.getString("password", null);
-        String access = prefs.getString("ACCESS_TYPE", null);
-        String api_key = prefs.getString("API_KEY", null);
         USER_CODE = prefs.getString("USER_CODE", "");
 
         SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
@@ -199,19 +151,18 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
-                        ActivityCompat.checkSelfPermission(SplashScreen.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
+                if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED ||
+                        ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
                     ActivityCompat.requestPermissions(SplashScreen.this,
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
@@ -286,7 +237,6 @@ public class SplashScreen extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
                     @Override
                     public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
-                        // Get deep link from result (may be null if no link is found)
                         Uri deepLink = null;
                         if (pendingDynamicLinkData != null) {
 
@@ -302,17 +252,14 @@ public class SplashScreen extends AppCompatActivity {
                             IsFromNotification = true;
                             SCRID = ScreenID;
 
-                            GoAhead();
-                        } else {
-                            GoAhead();
                         }
+                        GoAhead();
                     }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         GoAhead();
-                        //    Log.w(TAG, "getDynamicLink:onFailure", e);
                     }
                 });
 
@@ -331,7 +278,6 @@ public class SplashScreen extends AppCompatActivity {
 
         Call<FirebaseModel> responseCall = apiInterface.pushtoken(firebasepost);
         Log.e("TAG", "PUSH TOKEN --->" + new GsonBuilder().create().toJson(firebasepost));
-        //Log.e("TAG", "PUSH URL" + responseCall.request().url());
         responseCall.enqueue(new Callback<FirebaseModel>() {
             @Override
             public void onResponse(Call<FirebaseModel> call, Response<FirebaseModel> response) {
@@ -390,7 +336,6 @@ public class SplashScreen extends AppCompatActivity {
                                                 Intent intent = getIntent();
                                                 finish();
                                                 startActivity(intent);
-
                                             }
                                         });
 
@@ -420,7 +365,6 @@ public class SplashScreen extends AppCompatActivity {
 
     public void getVersionResponse(final String apiVersion, final String apkUrl, String response) {
         if (apiVersion != null && response.equalsIgnoreCase("Success")) {
-            globalClass.printLog("Error", TAG, "onResponse apiVersion: ", apiVersion);
             iv.startAnimation(anim);
 
             anim.setAnimationListener(new Animation.AnimationListener() {
@@ -624,7 +568,6 @@ public class SplashScreen extends AppCompatActivity {
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(false);
 
-        // execute this when the downloader must be fired
         final DownloadInAppTask downloadInAppTask = new DownloadInAppTask((SplashScreen) activity, activity, mProgressDialog, Constants.APK_NAME + ".apk");
         downloadInAppTask.execute(url);
 
@@ -635,7 +578,6 @@ public class SplashScreen extends AppCompatActivity {
                 downloadInAppTask.cancel(true); //cancel the task
             }
         });
-
     }
 
     @Override
@@ -643,5 +585,4 @@ public class SplashScreen extends AppCompatActivity {
         finish();
         super.onBackPressed();
     }
-
 }

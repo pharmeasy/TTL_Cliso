@@ -44,7 +44,7 @@
                     android:layout_gravity="right"
                     android:layout_marginLeft="@dimen/_2sdp"
                     android:layout_weight="1"
-                    android:textAlignment="viewEnd"
+                    android:textAlignment="textEnd"
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp" />
 
@@ -139,14 +139,14 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/_12sdp" />
 
-<!--                <TextView-->
-<!--                    android:id="@+id/txt_ppebrcd"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_marginLeft="@dimen/_2sdp"-->
-<!--                    android:textColor="@color/black"-->
-<!--                    android:textSize="@dimen/_12sdp" />-->
+                <TextView
+                    android:id="@+id/txt_ppebrcd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_2sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
 
 
             </LinearLayout>

@@ -153,7 +153,7 @@ public class RateCalculatorFragment extends Fragment {
     private ArrayList<Base_Model_Rate_Calculator> totalproductlist;
     private String TAG = getClass().getSimpleName();
     private TextView txt_more;
-//    private ArrayList<String> locationsList;
+    //    private ArrayList<String> locationsList;
     private Activity mActivity;
 
     public RateCalculatorFragment() {
@@ -242,7 +242,7 @@ public class RateCalculatorFragment extends Fragment {
         myPojo = gson.fromJson(json, MyPojo.class);
         if (myPojo != null) {
             getBrandName = new ArrayList<>();
-            if (myPojo != null) {
+            if (myPojo != null && myPojo.getMASTERS()!=null) {
                 if (myPojo.getMASTERS().getBRAND_LIST() != null) {
                     for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                         getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
@@ -962,8 +962,8 @@ public class RateCalculatorFragment extends Fragment {
                     rpl_rate_label.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
                     show_rpl_rates.setVisibility(View.GONE);//todo changed to gone as per input hide RPL rates and show B2B rates
                 } else {*/
-                    rpl_rate_label.setVisibility(View.GONE);
-                    show_rpl_rates.setVisibility(View.GONE);
+                rpl_rate_label.setVisibility(View.GONE);
+                show_rpl_rates.setVisibility(View.GONE);
                 /*}*/
             } else {
                 rpl_rate_label.setVisibility(View.GONE);
@@ -1086,7 +1086,8 @@ public class RateCalculatorFragment extends Fragment {
                         prefsEditor1.putString("saveAlldata", json22);
                         prefsEditor1.apply();
                         getBrandName = new ArrayList<>();
-                        if (myPojo.getMASTERS().getBRAND_LIST() != null) {
+
+                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
                             for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                                 getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
                             }
@@ -1101,9 +1102,7 @@ public class RateCalculatorFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (error.networkResponse == null) {
-                        if (error.getClass().equals(TimeoutError.class)) {
-                            // Show timeout error message
-                        }
+
                     }
                 }
             });

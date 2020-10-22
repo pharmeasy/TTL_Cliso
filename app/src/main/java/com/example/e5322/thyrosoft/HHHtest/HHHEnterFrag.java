@@ -105,11 +105,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HHHEnterFrag#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMultipleItemsSelectedListener {
 
     Button btn_generate, btn_resend, btn_verify, btn_reset, btn_submit, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_other;
@@ -230,16 +226,6 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
             e.printStackTrace();
             GlobalClass.ShowError(activity, "Server Error", "Kindly try after some time.", false);
         }
-
-
-
-
-       /* if (cd.isConnectingToInternet()) {
-            GetTests getTests = new GetTests(this, getContext());
-            getTests.GetTests();
-        } else {
-            Toast.makeText(activity, "Check Internet Connection.", Toast.LENGTH_SHORT).show();
-        }*/
     }
 
 

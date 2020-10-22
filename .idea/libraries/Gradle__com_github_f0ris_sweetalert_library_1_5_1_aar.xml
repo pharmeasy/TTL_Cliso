@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.f0ris.sweetalert:library:1.5.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a337a3392df82ea645a76372a492bca9/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a337a3392df82ea645a76372a492bca9/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a337a3392df82ea645a76372a492bca9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/library-1.5.1.aar/a568cd62fe93c4e0285f2044e6d95768/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

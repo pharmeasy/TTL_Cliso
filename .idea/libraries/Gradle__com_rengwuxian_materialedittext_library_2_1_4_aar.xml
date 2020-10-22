@@ -1,12 +1,16 @@
 <component name="libraryTable">
   <library name="Gradle: com.rengwuxian.materialedittext:library:2.1.4@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/87c170734e3809388fb01095cf5025ca/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/964d87c5cd67bae692f51bada9c9dd42/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/17e0bfeb9f540ecdc6ec158e4b27d9d4/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/87c170734e3809388fb01095cf5025ca/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/87c170734e3809388fb01095cf5025ca/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/87c170734e3809388fb01095cf5025ca/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/964d87c5cd67bae692f51bada9c9dd42/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/964d87c5cd67bae692f51bada9c9dd42/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/964d87c5cd67bae692f51bada9c9dd42/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/17e0bfeb9f540ecdc6ec158e4b27d9d4/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/17e0bfeb9f540ecdc6ec158e4b27d9d4/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-library-2.1.4.aar/17e0bfeb9f540ecdc6ec158e4b27d9d4/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -47,6 +47,7 @@ import com.example.e5322.thyrosoft.Controller.Log;
 
 import android.text.style.UnderlineSpan;
 import android.util.Base64;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -309,7 +310,6 @@ public class GlobalClass {
 
         NumberFormat nf = new DecimalFormat();
         nf.setMaximumFractionDigits(2);
-
         try {
             if (sizeInBytes < SPACE_KB) {
                 return nf.format(sizeInBytes) + " MB";
@@ -1203,7 +1203,7 @@ public class GlobalClass {
             else
                 Global.showCustomToast(activity, "Image not found");
         } else {
-            DisplayImgWithPlaceholderFromURL(activity,url,imgView,R.drawable.img_no_img_aval);
+            DisplayImgWithPlaceholderFromURL(activity, url, imgView, R.drawable.img_no_img_aval);
         }
 
         img_close.setOnClickListener(new View.OnClickListener() {
@@ -1436,7 +1436,7 @@ public class GlobalClass {
                 Window window = activity.getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.setStatusBarColor( activity.getResources().getColor(R.color.limaroon));
+                window.setStatusBarColor(activity.getResources().getColor(R.color.limaroon));
             }
         } catch (Resources.NotFoundException e) {
             e.printStackTrace();
@@ -1487,14 +1487,17 @@ public class GlobalClass {
     public static void DisplayImgWithPlaceholderFromURL(Activity activity, String Url, ImageView imageView, int userprofile) {
         try {
             Glide.get(activity).clearMemory();
-            GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
-                    .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
-                    .build());
-            Glide.with(activity).load(glideUrl)
-                    .asBitmap()
-                    .placeholder(userprofile).dontAnimate()
-                    .error(userprofile)
-                    .into(imageView);
+            if (!isNull(Url)){
+                GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
+                        .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
+                        .build());
+                Glide.with(activity).load(glideUrl)
+                        .asBitmap()
+                        .placeholder(userprofile).dontAnimate()
+                        .error(userprofile)
+                        .into(imageView);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1512,6 +1515,7 @@ public class GlobalClass {
             e.printStackTrace();
         }
     }
+
 
     public void showcenterCustomToast(Activity activity, String message) {
         Context context = activity.getApplicationContext();
@@ -1660,5 +1664,11 @@ public class GlobalClass {
 
     }
 
+    public static boolean isValidURL(String str) {
+        if (Patterns.WEB_URL.matcher(str).matches()) {
+            return str.startsWith("http:") || str.startsWith("https:") || str.startsWith("www.");
+        }
+        return false;
+    }
 
 }
