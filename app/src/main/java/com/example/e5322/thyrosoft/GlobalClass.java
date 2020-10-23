@@ -39,6 +39,7 @@ import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
 import com.crowdfire.cfalertdialog.BuildConfig;
@@ -122,6 +123,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -129,6 +131,7 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
 import static android.Manifest.permission.RECORD_AUDIO;
@@ -786,6 +789,7 @@ public class GlobalClass {
         return false;
     }
 
+
     public static void clearPreference(Activity activity) {
 
 
@@ -1065,7 +1069,6 @@ public class GlobalClass {
     }
 
     public static String formatDate(String currentFormat, String outputFormat, String date) {
-
         SimpleDateFormat curFormater = new SimpleDateFormat(currentFormat);
         SimpleDateFormat postFormater = new SimpleDateFormat(outputFormat);
         Date dateObj = null;
@@ -1388,9 +1391,11 @@ public class GlobalClass {
     }
 
     public static boolean isNull(String val) {
-        if (val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null")
-            return true;
-        return false;
+        return val == null || val.equals(null) || val.trim().equals("") || val.trim().equals("null") || val.trim() == "" || val.trim() == "null";
+    }
+
+    public static boolean isArraylistNotNull(Collection<?> collection) {
+        return collection != null && collection.size() > 0;
     }
 
     public static String getIMEINo(Activity activity) {
@@ -1429,8 +1434,8 @@ public class GlobalClass {
         return Build.MODEL;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public static void setStatusBarcolor(Activity activity) {
-
         try {
             if (GlobalClass.checkForApi21()) {
                 Window window = activity.getWindow();
@@ -1487,7 +1492,7 @@ public class GlobalClass {
     public static void DisplayImgWithPlaceholderFromURL(Activity activity, String Url, ImageView imageView, int userprofile) {
         try {
             Glide.get(activity).clearMemory();
-            if (!isNull(Url)){
+            if (!isNull(Url)) {
                 GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
                         .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
                         .build());
@@ -1516,6 +1521,24 @@ public class GlobalClass {
         }
     }
 
+    public static void DisplayCircularImgWithPlaceholderFromURL(Activity activity, String Url, CircleImageView imageView, int userprofile) {
+        try {
+            Glide.get(activity).clearMemory();
+            if (!isNull(Url)) {
+                GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
+                        .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
+                        .build());
+                Glide.with(activity).load(glideUrl)
+                        .asBitmap()
+                        .placeholder(userprofile).dontAnimate()
+                        .error(userprofile)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(imageView);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public void showcenterCustomToast(Activity activity, String message) {
         Context context = activity.getApplicationContext();

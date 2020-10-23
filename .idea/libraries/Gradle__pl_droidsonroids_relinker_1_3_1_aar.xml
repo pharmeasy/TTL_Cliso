@@ -4,6 +4,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/30ffbcc688fe54e5845bca35a8c1e217/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/30ffbcc688fe54e5845bca35a8c1e217/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/30ffbcc688fe54e5845bca35a8c1e217/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/92cb301079ca890dd68421ea1f740e9a/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/92cb301079ca890dd68421ea1f740e9a/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/relinker-1.3.1.aar/92cb301079ca890dd68421ea1f740e9a/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

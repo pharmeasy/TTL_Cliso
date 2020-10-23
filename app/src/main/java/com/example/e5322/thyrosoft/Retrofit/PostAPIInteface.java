@@ -27,6 +27,9 @@ import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.AckBroadcastMsgRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.AckBroadcastMsgResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetBroadcastsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
@@ -76,7 +79,6 @@ public interface PostAPIInteface {
     @POST("order.svc/Leads_products")
     Call<LeadResponseModel> getLead(@Body LeadRequestModel leadRequestModel);
 
-
     @POST("ORDER.svc/PostorderdataPromo")
     Call<LeadDataResponseModel> PostdataLead(@Body PostLeadDataModel postLeadDataModel);
 
@@ -92,7 +94,6 @@ public interface PostAPIInteface {
     @POST("B2B/WO.svc/postworkorder")
     Call<WOEResponseModel> PostUserLog(@Body WOERequestModel requestModel);
 
-
-
-
+    @POST("PostBroadCastAck")
+    Call<AckBroadcastMsgResponseModel> PostAckBroadcastMsgAPI(@Body AckBroadcastMsgRequestModel requestModel);
 }

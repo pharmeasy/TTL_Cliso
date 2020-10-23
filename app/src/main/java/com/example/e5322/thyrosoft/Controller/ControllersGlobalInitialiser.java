@@ -26,5 +26,7 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static Viewgenhandbill_Contoller viewgenhandbill_contoller;
     public static Handbilltemplate_Controller handbilltemplate_controller;
     public static UploadDoc_Controller uploadDoc_controller;
+    public static GetBroadcastsListController getBroadcastsListController;
+    public static AckBroadcastMsgController ackBroadcastMsgController;
 
 }

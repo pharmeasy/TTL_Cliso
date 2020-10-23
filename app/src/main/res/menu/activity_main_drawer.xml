@@ -215,6 +215,16 @@
     </group>
 
     <group
+        android:id="@+id/group24"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/broadCast"
+            android:icon="@drawable/broadcast"
+            android:title="Broadcast"
+            android:visible="true" />
+    </group>
+
+    <group
         android:id="@+id/group14"
         android:checkableBehavior="single">
         <item
@@ -390,18 +400,6 @@
             android:id="@+id/company_contcat"
             android:icon="@drawable/company_contact"
             android:title="Company Contact" />
-    </group>
-
-
-
-    <group
-        android:id="@+id/group24"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/broadCast"
-            android:icon="@drawable/broadcast"
-            android:title="Broadcast"
-            android:visible="false" />
     </group>
 
     <group

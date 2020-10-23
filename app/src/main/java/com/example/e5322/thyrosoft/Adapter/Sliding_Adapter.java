@@ -3,7 +3,9 @@ package com.example.e5322.thyrosoft.Adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Parcelable;
+
 import androidx.viewpager.widget.PagerAdapter;
+
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
@@ -21,29 +23,29 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.NoticeBoard_Model;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class Sliding_Adapter extends PagerAdapter {
     NoticeBoard_Model[] broadCastArrayList;
-
-    private LayoutInflater inflater;
-    private Context context;
+    private final LayoutInflater inflater;
+    private final Context context;
     TextView tvHeader, tvPostedBy, tvPostedOn, tvAck;
     LinearLayout readBroadcast_ll, remark_ll;
     ImageView ivCheckboxBlank, ivCheckboxTick;
+    CircleImageView iv_enteryImg;
     Button btn_submit;
     EditText etRemarks;
     WebView vwData;
     WebSettings webSettings;
-
-
-    //change in api
     String acknowledged = "n";
 
-    public Sliding_Adapter(Context context,  NoticeBoard_Model[] broadCastArrayList) {
+    public Sliding_Adapter(Context context, NoticeBoard_Model[] broadCastArrayList) {
         this.context = context;
         this.broadCastArrayList = broadCastArrayList;
         inflater = LayoutInflater.from(context);
@@ -65,24 +67,18 @@ public class Sliding_Adapter extends PagerAdapter {
 
         assert imageLayout != null;
 
-        tvHeader = (TextView) imageLayout.findViewById(R.id.tvHeader);
-        tvPostedBy = (TextView) imageLayout.findViewById(R.id.tvPostedBy);
-        tvAck = (TextView) imageLayout.findViewById(R.id.tvAck);
-
-        //remove maxlines in xml
-        tvPostedOn = (TextView) imageLayout.findViewById(R.id.tvPostedOn);
-
-        readBroadcast_ll = (LinearLayout) imageLayout.findViewById(R.id.readBroadcast_ll);
-        remark_ll = (LinearLayout) imageLayout.findViewById(R.id.remark_ll);
-
-        ivCheckboxBlank = (ImageView) imageLayout.findViewById(R.id.ivCheckboxBlank);
-        ivCheckboxTick = (ImageView) imageLayout.findViewById(R.id.ivCheckboxTick);
-
-        btn_submit = (Button) imageLayout.findViewById(R.id.btn_submit);
-
-        etRemarks = (EditText) imageLayout.findViewById(R.id.etRemarks);
-
-        vwData = (WebView) imageLayout.findViewById(R.id.vwData);
+        tvHeader = imageLayout.findViewById(R.id.tvHeader);
+        tvPostedBy = imageLayout.findViewById(R.id.tvPostedBy);
+        tvAck = imageLayout.findViewById(R.id.tvAck);
+        tvPostedOn = imageLayout.findViewById(R.id.tvPostedOn);
+        readBroadcast_ll = imageLayout.findViewById(R.id.readBroadcast_ll);
+        remark_ll = imageLayout.findViewById(R.id.remark_ll);
+        ivCheckboxBlank = imageLayout.findViewById(R.id.ivCheckboxBlank);
+        ivCheckboxTick = imageLayout.findViewById(R.id.ivCheckboxTick);
+        iv_enteryImg = imageLayout.findViewById(R.id.iv_enteryImg);
+        btn_submit = imageLayout.findViewById(R.id.btn_submit);
+        etRemarks = imageLayout.findViewById(R.id.etRemarks);
+        vwData = imageLayout.findViewById(R.id.vwData);
         vwData.setBackgroundColor(Color.TRANSPARENT);
 
         if (acknowledged.equals("y")) {
@@ -92,13 +88,13 @@ public class Sliding_Adapter extends PagerAdapter {
         } else {
             tvAck.setVisibility(View.GONE);
             remark_ll.setVisibility(View.VISIBLE);
-            btn_submit.setVisibility(View.VISIBLE);        }
+            btn_submit.setVisibility(View.VISIBLE);
+        }
 
         etRemarks.setFilters(new InputFilter[]{EMOJI_FILTER});
         etRemarks.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String enteredString = s.toString();
                 if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
@@ -126,25 +122,23 @@ public class Sliding_Adapter extends PagerAdapter {
         });
 
         tvHeader.setText(Html.fromHtml(broadCastArrayList[0].getMessages()[position].getNoticeMessage()));
-        tvPostedBy.setText("Posted by " + broadCastArrayList[0].getMessages()[position].getEnterBy());
-        tvPostedOn.setText("Posted on " + broadCastArrayList[0].getMessages()[position].getNoticeDate());
+        tvPostedBy.setText(broadCastArrayList[0].getMessages()[position].getEnterBy());
+        tvPostedOn.setText(GlobalClass.formatDate("EEEE , MMM dd yyyy HH:mma", "dd MMMM yyyy HH:mm", broadCastArrayList[0].getMessages()[position].getNoticeDate()));
 
-        webSettings=vwData.getSettings();
+        webSettings = vwData.getSettings();
         webSettings.setJavaScriptEnabled(true);
         String htmlText = " %s ";
 
         String justifyTag = broadCastArrayList[0].getMessages()[position].getNoticeMessage();
-        //String dataString = String.format(Locale.US, justifyTag, "");
-        vwData.loadData(String.format(htmlText,justifyTag),"text/html","utf-8");
+        vwData.loadData(String.format(htmlText, justifyTag), "text/html", "utf-8");
 
         readBroadcast_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ivCheckboxBlank.getVisibility()==View.VISIBLE) {
+                if (ivCheckboxBlank.getVisibility() == View.VISIBLE) {
                     ivCheckboxBlank.setVisibility(View.GONE);
                     ivCheckboxTick.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
                     ivCheckboxBlank.setVisibility(View.VISIBLE);
                     ivCheckboxTick.setVisibility(View.GONE);
                 }
@@ -159,18 +153,17 @@ public class Sliding_Adapter extends PagerAdapter {
                     remark_ll.setVisibility(View.GONE);
                     btn_submit.setVisibility(View.GONE);
                 } else {
-                    if(etRemarks.getText().toString().length()!=0 && ivCheckboxTick.getVisibility()==View.VISIBLE){
-                        acknowledged="y";
+                    if (etRemarks.getText().toString().length() != 0 && ivCheckboxTick.getVisibility() == View.VISIBLE) {
+                        acknowledged = "y";
                         tvAck.setVisibility(View.VISIBLE);
                         readBroadcast_ll.setVisibility(View.GONE);
                         remark_ll.setVisibility(View.GONE);
                         btn_submit.setVisibility(View.GONE);
-                    }
-                    else if(ivCheckboxBlank.getVisibility()==View.VISIBLE)
+                    } else if (ivCheckboxBlank.getVisibility() == View.VISIBLE) {
                         TastyToast.makeText(context, "Kindly acknowledge the broadcast!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-
-                    else if(etRemarks.getText().toString().length()==0)
+                    } else if (etRemarks.getText().toString().length() == 0) {
                         TastyToast.makeText(context, "Enter the remarks!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                    }
                 }
             }
         });
@@ -191,13 +184,12 @@ public class Sliding_Adapter extends PagerAdapter {
     public Parcelable saveState() {
         return null;
     }
+
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
             for (int index = start; index < end; index++) {
-
                 int type = Character.getType(source.charAt(index));
-
                 if (type == Character.SURROGATE) {
                     return "";
                 }
@@ -205,6 +197,5 @@ public class Sliding_Adapter extends PagerAdapter {
             return null;
         }
     };
-
 
 }

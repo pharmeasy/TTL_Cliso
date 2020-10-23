@@ -30,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
@@ -97,7 +98,7 @@ public class SplashScreen extends AppCompatActivity {
         iv = (ImageView) findViewById(R.id.logo);
 
         Fabric.with(this, new Crashlytics());
-
+        GlobalClass.setStatusBarcolor(activity);
         if (getIntent().getBooleanExtra("Exit me", false)) {
             finish();
             return;

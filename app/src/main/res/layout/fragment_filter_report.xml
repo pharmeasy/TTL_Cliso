@@ -1,27 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/full_ll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:weightSum="10"
     tools:context=".Fragment.FilterReport">
-
-    <!-- TODO: Update blank fragment layout -->
-
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="15dp"
-        android:layout_weight="2"
         android:background="@drawable/maroon_rect_box"
         android:minHeight="30dp"
         android:orientation="vertical"
+        android:visibility="gone"
         android:weightSum="1">
 
         <TextView
@@ -34,15 +29,14 @@
             android:text="Result for 26-12-2018"
             android:textColor="@color/white"
             android:textSize="15dp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="21dp"
-        android:layout_marginTop="-70dp"
+        android:layout_marginTop="@dimen/_10sdp"
         android:layout_marginRight="21dp"
         android:background="@drawable/gray_corner_rectangle"
         android:orientation="vertical"
@@ -91,64 +85,58 @@
             android:layout_marginTop="5dp" />
     </LinearLayout>
 
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="10dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="21dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="21dp"
-        android:layout_weight="0.7"
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
-            android:background="@drawable/corner_curve_maroon">
+            android:background="@drawable/corner_curve_maroon"
+            android:padding="@dimen/_5sdp">
 
             <Spinner
                 android:id="@+id/spinnerfilter"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginRight="7dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/maroon"
-                android:minHeight="20dp"
-                android:textAlignment="center"/>
+                android:backgroundTint="@color/maroon" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="2dp"
             android:layout_weight="1"
-            android:background="@drawable/corner_curve_maroon">
+            android:background="@drawable/corner_curve_maroon"
+            android:padding="@dimen/_5sdp">
 
             <Spinner
                 android:id="@+id/filterBy"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="@color/maroon"
-                android:minHeight="20dp"
-                android:textAlignment="center"/>
+                android:backgroundTint="@color/maroon" />
         </LinearLayout>
     </LinearLayout>
+
     <Button
         android:id="@+id/btn_submit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/purple_btn_bg"
-        android:text="Submit"
+        android:layout_height="@dimen/_30sdp"
         android:layout_gravity="center"
         android:layout_marginLeft="21dp"
         android:layout_marginTop="4dp"
         android:layout_marginRight="21dp"
+        android:background="@drawable/purple_btn_bg"
+        android:text="Submit"
         android:textColor="@color/white" />
-
 
     <EditText
         android:id="@+id/searchbarcode"
@@ -158,20 +146,19 @@
         android:layout_marginLeft="21dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="21dp"
-        android:visibility="gone"
         android:layout_marginBottom="5dp"
         android:background="@drawable/grey_border"
         android:drawableRight="@drawable/ic_search_black_24dp"
         android:hint="Search Patient Name"
-        android:paddingLeft="5dp" />
+        android:paddingLeft="5dp"
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/ListReportStatus"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="21dp"
         android:layout_marginRight="21dp"
-        android:layout_weight="7.2"
         android:divider="@color/white"
         android:visibility="gone">
 
@@ -181,17 +168,16 @@
         android:id="@+id/nodata"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
         android:gravity="center"
         android:text="NO DATA FOUND "
         android:textColor="@color/maroon"
-        android:layout_marginTop="@dimen/dp_10"
         android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/offline_img"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7.2"
         android:orientation="vertical"
         android:visibility="gone">
 

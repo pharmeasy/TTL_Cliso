@@ -26,6 +26,7 @@ import com.example.e5322.thyrosoft.Models.PaitientDataResponseModel;
 import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
+import com.example.e5322.thyrosoft.Models.ResponseModels.GetBroadcastsResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.HandbillsResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.TemplateResponse;
@@ -145,5 +146,6 @@ public interface APIInteface {
     @POST("OtpLedgermis")
     Call<OTPCreditResponseModel> OTPCreditMIS(@Body OTPCreditMISRequestModel creditMISRequestModel);
 
-
+    @GET("{api_key}/getBroadCast")
+    Call<GetBroadcastsResponseModel> callGetBroadcastAPI(@Path("api_key") String api_key);
 }

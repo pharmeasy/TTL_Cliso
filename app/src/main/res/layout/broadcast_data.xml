@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Activity.BroadcastDataActivity">
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,7 +14,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/light_pink"
             android:orientation="vertical">
 
             <LinearLayout
@@ -28,12 +24,16 @@
                 android:layout_marginRight="8dp"
                 android:orientation="horizontal">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/iv_enteryImg"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="2"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/user_profile" />
+                    android:background="@drawable/circle_crop"
+                    android:src="@drawable/user_profile"
+                    app:civ_border_color="@color/maroon"
+                    app:civ_border_width="1dp" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -47,151 +47,162 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="top"
-
                         android:maxLines="3"
+                        android:textColor="@color/maroon"
+                        android:textSize="18sp"
+                        tools:text="Preventive Care: Focus maxline accepted checking" />
 
-
-                        android:text="Preventive Care: Focus maxline accepted checking for header checking"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="18dp" />
+                    <TextView
+                        android:id="@+id/tvPostedOn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        tools:text="25 Jul 2018 12:00 AM" />
 
                     <TextView
                         android:id="@+id/tvPostedBy"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Posted By DR VELUMANI A"
-                        android:textColor="@color/orange"
-                        android:textSize="17dp"
-                        android:textStyle="italic" />
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        tools:text="DR VELUMANI A" />
+
                 </LinearLayout>
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvPostedOn"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:text="Posted On Wednesday , Jul 25 2018 12:00AM"
-                android:textColor="@color/limaroon"
-                android:textSize="17dp" />
-
-            <WebView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/vwData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:background="@color/light_pink" />
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:background="@color/grey" />
 
             <LinearLayout
-                android:id="@+id/readBroadcast_ll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/ivCheckboxBlank"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.6"
-                    android:gravity="left"
-                    android:src="@drawable/check_ref" />
-
-                <ImageView
-                    android:id="@+id/ivCheckboxTick"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.6"
-                    android:gravity="left"
-                    android:src="@drawable/checkedcheckbox_rate"
-                    android:visibility="gone" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:layout_weight="9"
-                    android:text="Yes I have read this broadcast"
-                    android:textColor="@color/maroon"
-                    android:textSize="17dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/remark_ll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|left"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:background="@drawable/maroon_rect_box"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <WebView
+                    android:id="@+id/vwData"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/_2sdp"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:background="@color/grey" />
+
+                <LinearLayout
+                    android:id="@+id/readBroadcast_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/ivCheckboxBlank"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:gravity="left"
+                        android:src="@drawable/check_ref" />
+
+                    <ImageView
+                        android:id="@+id/ivCheckboxTick"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.6"
+                        android:gravity="left"
+                        android:src="@drawable/checkedcheckbox_rate"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:layout_weight="9"
+                        android:text="Yes I have read this broadcast"
+                        android:textColor="@color/maroon"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/remark_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|left"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:background="@drawable/maroon_rect_box"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="0"
+                        android:text="Remarks"
+                        android:textColor="@color/white"
+                        android:textSize="17dp" />
+
+                    <EditText
+                        android:id="@+id/etRemarks"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="3"
+                        android:background="@color/white"
+                        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
+                        android:gravity="top"
+                        android:hint="Enter remarks *"
+                        android:lines="3"
+                        android:padding="3dp"
+                        android:singleLine="false"
+                        android:textColor="@color/grey"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="-20dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/maroon_rect_box"
+                    android:minHeight="28dp"
+                    android:padding="10dp"
+                    android:text="Acknowledge"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="16dp" />
+
                 <TextView
+                    android:id="@+id/tvAck"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_weight="0"
-                    android:text="Remarks"
-                    android:textColor="@color/white"
-                    android:textSize="17dp" />
-
-                <EditText
-                    android:id="@+id/etRemarks"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_weight="3"
-                    android:background="@color/white"
-                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
-                    android:gravity="top"
-                    android:hint="Enter remarks *"
-                    android:lines="3"
-                    android:padding="3dp"
-                    android:singleLine="false"
-                    android:textColor="@color/grey"
-                    android:textSize="16dp" />
+                    android:gravity="center"
+                    android:text="You have already acknowledged"
+                    android:textColor="@color/maroon"
+                    android:textSize="17dp"
+                    android:textStyle="italic|bold" />
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/btn_submit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="-17dp"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="1"
-                android:background="@drawable/maroon_rect_box"
-                android:minHeight="28dp"
-                android:paddingTop="3dp"
-                android:paddingBottom="10dp"
-                android:text="Submit"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="16dp" />
-
-            <TextView
-                android:id="@+id/tvAck"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="10dp"
-                android:layout_weight="0"
-                android:gravity="center"
-                android:text="You have already acknowledged"
-                android:textColor="@color/maroon"
-                android:textSize="17dp"
-                android:textStyle="italic|bold" />
-
         </LinearLayout>
-
 
     </ScrollView>
 

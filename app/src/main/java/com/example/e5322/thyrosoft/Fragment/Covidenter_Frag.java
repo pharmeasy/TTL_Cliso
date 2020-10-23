@@ -323,6 +323,22 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
         txt_selfie.setText(getResources().getString(R.string.nofilechoosen));
 
+        edt_amt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                buttonval();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         btn_selfie.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -527,11 +543,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 covidpostdata.setTESTCODE("COVID-19");
                                 covidpostdata.setVIAIMAGE(vial_file);
                                 covidpostdata.setSELFIE(selfie_file);
-                                if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
+                           /*     if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
                                     covidpostdata.setPPEBARCODE("");
                                 }else {
                                     covidpostdata.setPPEBARCODE(txt_barcode.getText().toString());
-                                }
+                                }*/
 
 
                                 if (presc_file != null) {
@@ -1493,6 +1509,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
                     if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
                         txt_barcode.setText(getBarcodeDetails.toUpperCase());
+                        buttonval();
                     } else {
                         Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
                         txt_barcode.setText(getString(R.string.ppe));

@@ -4,6 +4,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/3d66b28e27dfdf5f445230ebde41594d/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/3d66b28e27dfdf5f445230ebde41594d/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/3d66b28e27dfdf5f445230ebde41594d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/a5bb4de288c8dc6f9d4fe0aca141f1f7/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/a5bb4de288c8dc6f9d4fe0aca141f1f7/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/a5bb4de288c8dc6f9d4fe0aca141f1f7/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -183,7 +183,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
                 builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
                 builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
-                builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
+             //   builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
 
                 if (covidpostdata.getPRESCRIPTION() != null) {
                     FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());

@@ -4,6 +4,7 @@ public class ToastFile {
     public static String TEXT_OK = "OK";
     //<-------------TODO Toast messages------------------>//
     public static String remark = "Please enter Remark";
+    public static String ack_broadcast = "Kindly acknowledge the broadcast!";
     public static String woe_dlt = "WOE Deleted Successfully";
     public static String wish_woe_dlt = "Do you wish to delete this entry";
     //    public static String no_data_fnd="No data found";

@@ -4,6 +4,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/63bc8c99f8d1b12785f022c3a175438c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/0f674a24be4743eaf9668faf9a45e8ab/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/0f674a24be4743eaf9668faf9a45e8ab/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/0f674a24be4743eaf9668faf9a45e8ab/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -71,18 +71,10 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link com.example.e5322.thyrosoft.Fragment.FilterReport.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link com.example.e5322.thyrosoft.Fragment.FilterReport#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class FilterReport extends Fragment implements CAlendar_Inteface {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -92,19 +84,15 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     public String fromDate = "";
     public String Date = "";
     public String TAG = ManagingTabsActivity.class.getSimpleName().toString();
-    public GregorianCalendar cal_month, cal_month_copy;
     RecyclerView calendarView;
-    TextView txt_date, nodata, month_txt, showDate;
-    ProgressDialog progressDialog;
+    TextView  nodata, month_txt, showDate;
     Context mContext;
     Spinner spinnertype;
     ResultDtlAdapter adapter;
     Spinner filterBy;
     EditText searchbarcode;
     ListView ListReportStatus;
-    Map<Integer, String> myMap;
     ArrayList<TrackDetModel> FilterReport = new ArrayList<TrackDetModel>();
-    String send_Date = "";
     ImageView back_month, next_month;
     LinearLayout offline_img;
     CustomCalendarAdapter customCalendarAdapter;
@@ -113,18 +101,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     String user, passwrd, access, api_key, user_code;
     // TODO: Rename and change types of parameters
     private SimpleDateFormat sdf;
-    private String mParam1;
-    private String mParam2;
-    private OnFragmentInteractionListener mListener;
-    private String showDateTotxt;
-    private String passToAPI;
     private String halfTime;
-    private String responsetoshow;
     private String passToSpinner;
     private ProgressDialog barProgressDialog;
-    //    private CalendarAdapter cal_adapter;
-    private TextView tv_month;
-    private String getonlyMonth;
     private LinearLayoutManager linearLayoutManager;
     private ArrayList<getAllDays> SelectedMonthData;
     private int getPositionToset;
@@ -137,14 +116,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FilterReport.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static com.example.e5322.thyrosoft.Fragment.FilterReport newInstance(String param1, String param2) {
         com.example.e5322.thyrosoft.Fragment.FilterReport fragment = new FilterReport();
@@ -155,22 +127,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
         return fragment;
     }
 
-    public static float dpToPx(Context context, float valueInDp) {
-        DisplayMetrics metrics = null;
-        try {
-            metrics = context.getResources().getDisplayMetrics();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
             mContext = (ManagingTabsActivity) getActivity();
             Calendar cl = Calendar.getInstance();
             sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
@@ -186,7 +148,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
 
         View view = inflater.inflate(R.layout.fragment_filter_report, container, false);
         try {
@@ -217,9 +178,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
             toDate = sdf.format(cl.getTime());
             Date = sdf.format(cl.getTime());
-
-            //GlobalClass.saveDtaeTopass
-            //cl.add(Calendar.DAY_OF_MONTH, -7);
             fromDate = sdf.format(cl.getTime());
 
             Date d = new Date();
@@ -227,13 +185,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
             String getDateTopass = ("Result for " + sdfg.format(d));
             String getDate = getDateTopass;
-            //?<---------------show date to red textbox------>
-
             showDate.setText(getDateTopass);
-            //?<---------------show date to red textbox------>
             halfTime = getDate.substring(11, getDate.length() - 0);
             GlobalClass.saveDtaeTopass = halfTime;
-
             barProgressDialog = new ProgressDialog(getActivity(), R.style.ProgressBarColor);
             barProgressDialog.setTitle("Kindly wait ...");
             barProgressDialog.setMessage(ToastFile.processing_request);
@@ -384,18 +338,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                 } else {
                     searchbarcode.setHint("Search by patient name or barcode");
                 }
-                /*String filterstr = parent.getItemAtPosition(position).toString();
-                searchbarcode.setQueryHint(filterstr);
 
-                if (FilterReport.size() != 0) {
-                    final List<TrackDetModel> filteredModelList = filter(FilterReport, filterstr);
-                    adapter.setFilter(filteredModelList);
-                    ListReportStatus.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-
-                } else {
-
-                }*/
             }
 
             @Override
@@ -404,35 +347,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             }
         });
 
-/*
-        searchbarcode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String s1 = s.toString().toLowerCase();
-                if (s1.length() > 0) {
-                    final List<TrackDetModel> filteredModelList = filter(FilterReport, s1);
-                    adapter.setFilter(filteredModelList);
-                    ListReportStatus.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
-                } else {
-                    adapter = new ResultDtlAdapter(getContext(), FilterReport);
-                    ListReportStatus.setAdapter(adapter);
-                }
-            }
-        });
-*/
 
         if (filterBy.getSelectedItem().equals("All") || filterBy.getSelectedItem().equals("Select Filter By")) {
             searchbarcode.setHint("Search by patient name or barcode");
@@ -555,14 +469,10 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                 filterPatientsArrayList.add(FilterReport.get(i));
 
                             }
-                     /*       adapter = new ResultDtlAdapter(getContext(), filterPatientsArrayList);
-                            ListReportStatus.setAdapter(adapter);*/
-
                             callAdapter(filterPatientsArrayList);
                         }
                     }
-                    // filter your list from your input
-                    //you can use runnable postDelayed like 500 ms to delay search text
+
                 }
             });
 
@@ -612,8 +522,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                             callAdapter(filterPatientsArrayList);
                         }
                     }
-                    // filter your list from your input
-                    //you can use runnable postDelayed like 500 ms to delay search text
+
                 }
             });
 
@@ -698,20 +607,12 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                             callAdapter(filterPatientsArrayList);
                         }
                     }
-                    // filter your list from your input
-                    //you can use runnable postDelayed like 500 ms to delay search text
+
                 }
             });
 
         }
 
-
-        DateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");//dd-MM-yyyy
-        DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");//yyyy-MM-dd
-
-        java.util.Date date = null;
-        date = new Date();
-        showDateTotxt = outputFormat.format(date);
 
         Date currentDate = new Date();
         SimpleDateFormat sdfa = new SimpleDateFormat("yyyy-MM-dd");
@@ -720,9 +621,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
-
         } else {
-         //   GetData();
             offline_img.setVisibility(View.GONE);
         }
 
@@ -762,9 +661,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+
     }
 
     public ArrayList<getAllDays> getAllDaysInMonth(Calendar c) throws ParseException {
@@ -792,25 +689,6 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             arrayList.add(entity);
         }
         return arrayList;
-    }
-
-
-    private List<TrackDetModel> filter(List<TrackDetModel> models, String query) {
-        query = query.toLowerCase();
-        final List<TrackDetModel> filteredModelList = new ArrayList<>();
-        for (TrackDetModel model : models) {
-            final String name = model.getName();
-            final String barcode = model.getBarcode();
-            final String type = model.getSample_type();
-            if (model.getName().toString().contains(query.toUpperCase()) || model.getBarcode().contains(query.toUpperCase())) {
-                filteredModelList.add(model);
-                adapter.notifyDataSetChanged();
-                break;
-            }
-
-
-        }
-        return filteredModelList;
     }
 
     private void GetData() {
@@ -861,7 +739,7 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
                                             nodata.setVisibility(View.VISIBLE);
                                         }
                                     } else {
-                                        TastyToast.makeText(mContext, responsetoshow, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                        TastyToast.makeText(mContext, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                         final AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
                                         alertDialog.setTitle("Update Ledger !");
                                         alertDialog.setMessage(ToastFile.update_ledger);
@@ -920,21 +798,9 @@ public class FilterReport extends Fragment implements CAlendar_Inteface {
             e.printStackTrace();
         }
 
-//        linearLayoutManager.scrollToPositionWithOffset(getPositionToset, 20);
-      //  GetData();
     }
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

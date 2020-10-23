@@ -7,6 +7,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/9ba740f660501658048e7eb1b93f6ccd/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/9ba740f660501658048e7eb1b93f6ccd/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/9ba740f660501658048e7eb1b93f6ccd/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/d9436f75a9fde5544d7c55c2f249b1b4/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/d9436f75a9fde5544d7c55c2f249b1b4/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-android-gif-drawable-1.2.21.aar/d9436f75a9fde5544d7c55c2f249b1b4/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
