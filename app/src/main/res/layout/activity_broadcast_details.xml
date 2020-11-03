@@ -149,18 +149,8 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
-                    android:background="@drawable/maroon_rect_box"
                     android:orientation="vertical"
                     android:visibility="gone">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_weight="0"
-                        android:text="Remarks"
-                        android:textColor="@color/white"
-                        android:textSize="17sp" />
 
                     <EditText
                         android:id="@+id/edt_Remarks"
@@ -169,7 +159,7 @@
                         android:layout_marginLeft="5dp"
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="5dp"
-                        android:background="@color/white"
+                        android:background="@drawable/border"
                         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
                         android:gravity="top"
                         android:hint="Enter remarks*"
@@ -177,27 +167,25 @@
                         android:maxLength="450"
                         android:padding="3dp"
                         android:singleLine="false"
-                        android:textColor="@color/grey"
                         android:textSize="16sp" />
 
-                </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/maroon_rect_box"
+                        android:minHeight="28dp"
+                        android:padding="10dp"
+                        android:text="Acknowledge"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:visibility="visible" />
 
-                <Button
-                    android:id="@+id/btn_submit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="-20dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/maroon_rect_box"
-                    android:minHeight="28dp"
-                    android:padding="10dp"
-                    android:text="Acknowledge"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:visibility="gone" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tvAck"

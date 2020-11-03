@@ -21,6 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
+
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.CommonItils.VerticalTextView;
@@ -39,11 +44,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 public class Previewhandbill_Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -437,7 +437,7 @@ public class Previewhandbill_Activity extends AppCompatActivity implements View.
 
                     str_img = f.toString();
 
-                    GlobalClass.DisplayImgWithPlaceholderFromURL(activity, str_img.replace("\\", "/"), img_template, R.drawable.default_img);
+                    GlobalClass.DisplayImgWithPlaceholder(activity, str_img.replace("\\", "/"), img_template, R.drawable.default_img);
                 }
 
                 if (!GlobalClass.isNull(fromcome) && fromcome.equalsIgnoreCase("adapter")) {

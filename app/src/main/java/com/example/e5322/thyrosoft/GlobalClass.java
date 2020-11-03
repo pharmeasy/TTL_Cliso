@@ -27,25 +27,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.SpannableString;
 import android.text.Spanned;
-
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.LazyHeaders;
-import com.crowdfire.cfalertdialog.BuildConfig;
-import com.example.e5322.thyrosoft.Activity.Installation;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.text.style.UnderlineSpan;
 import android.util.Base64;
 import android.util.Patterns;
@@ -65,6 +51,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -79,12 +70,18 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaders;
+import com.crowdfire.cfalertdialog.BuildConfig;
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.Installation;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MyHurlStack;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
@@ -123,7 +120,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -1473,19 +1469,14 @@ public class GlobalClass {
     }
 
     public void DisplayVideoImage(Activity activity, String Url, ImageView imageView) {
-        GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
-                .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
-                .build());
-        //            Glide.get(mActivity).clearMemory();
-        Glide.with(activity).load(glideUrl)
-                .asBitmap()
-//                .placeholder(R.drawable.thumbnailicon).dontAnimate()
-//                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-//                    .skipMemoryCache(true)
-//                .error(R.drawable.thumbnailicon)
-                .fitCenter()
-                .into(imageView);
-
+        if (!isNull(Url)) {
+            GlideUrl glideUrl = new GlideUrl(Url, new LazyHeaders.Builder()
+                    .addHeader(Constants.HEADER_USER_AGENT, getHeaderValue(activity))
+                    .build());
+            Glide.with(activity).load(glideUrl)
+                    .asBitmap()
+                    .into(imageView);
+        }
     }
 
 
@@ -1510,12 +1501,15 @@ public class GlobalClass {
 
     public static void DisplayImgWithPlaceholder(Activity activity, String Url, ImageView imageView, int userprofile) {
         try {
+
             Glide.get(activity).clearMemory();
             Glide.with(activity).load(Url)
                     .asBitmap()
                     .placeholder(userprofile).dontAnimate()
                     .error(userprofile)
                     .into(imageView);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

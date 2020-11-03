@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,6 +34,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Cliso_BMC.Models.BMC_BaseModel;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
@@ -79,11 +80,11 @@ public class BMC_ScanBarcodeAdapter extends RecyclerView.Adapter<BMC_ScanBarcode
     String TAG = BMC_ScanBarcodeAdapter.class.getSimpleName();
     ArrayList<ScannedBarcodeDetails> distinctspecimentlist;
     private OnItemClickListener onItemClickListener;
+
     View.OnClickListener onScanbarcodeClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String Specimenttype = (String) v.getTag();
-            String code = (String) v.getTag();
             if (onItemClickListener != null) {
                 onItemClickListener.onScanbarcodeClickListener(Specimenttype, context);
             }

@@ -12,17 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +35,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -52,6 +52,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.SampleCollectionAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
@@ -990,24 +991,21 @@ public class BMC_NEW_WOEFragment extends Fragment {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
+                        if (mContext instanceof Activity) {
+                            if (!((Activity) mContext).isFinishing())
+                                barProgressDialog.dismiss();
+                        }
                         String getResponse = response.optString("RESPONSE", "");
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (getResponse.equalsIgnoreCase(caps_invalidApikey)) {
 
-                            if (mContext instanceof Activity) {
-                                if (!((Activity) mContext).isFinishing())
-                                    barProgressDialog.dismiss();
-                            }
+
                             GlobalClass.redirectToLogin(getActivity());
                         } else {
                             Gson gson = new Gson();
                             myPojo = new MyPojo();
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
-                            if (mContext instanceof Activity) {
-                                if (!((Activity) mContext).isFinishing())
-                                    barProgressDialog.dismiss();
-                            }
                             SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                             SharedPreferences.Editor prefsEditor1 = appSharedPrefs.edit();
                             Gson gson22 = new Gson();
@@ -1096,9 +1094,12 @@ public class BMC_NEW_WOEFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (error.networkResponse == null) {
-                        if (error.getClass().equals(TimeoutError.class)) {
-                            // Show timeout error message
+
+                        if (mContext instanceof Activity) {
+                            if (!((Activity) mContext).isFinishing())
+                                barProgressDialog.dismiss();
                         }
+
                     }
                 }
             });

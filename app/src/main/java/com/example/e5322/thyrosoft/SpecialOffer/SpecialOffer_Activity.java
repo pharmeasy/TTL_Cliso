@@ -16,7 +16,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,6 +30,9 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -48,11 +50,9 @@ import com.example.e5322.thyrosoft.Adapter.CustomListAdapter;
 import com.example.e5322.thyrosoft.Adapter.TestListAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetClientDetail_Controller;
-import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.ValidateMob_Controller;
 import com.example.e5322.thyrosoft.Controller.VerifyotpController;
-import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.B2B_MASTERSMainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
@@ -61,7 +61,6 @@ import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
-import com.example.e5322.thyrosoft.Models.RequestModels.GenerateOTPRequestModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
@@ -75,7 +74,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -90,8 +88,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -190,7 +186,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lay_spoffer);
         activity = SpecialOffer_Activity.this;
-        cd=new ConnectionDetector(activity);
+        cd = new ConnectionDetector(activity);
         initView();
 
 
@@ -210,11 +206,11 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
 
         strdate = showDate;
-        if (checktime.equalsIgnoreCase("Default")){
+        if (checktime.equalsIgnoreCase("Default")) {
             String showtime = currsdf.format(minDate);
             strtime = twelvehoursdf.format(minDate);
             txt_ctime.setText(strdate + " " + showtime);
-        }else {
+        } else {
             strtime = currsdf.format(minDate);
             txt_ctime.setText(strdate + " " + strtime);
         }
@@ -773,7 +769,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         getBtechList = new ArrayList<>();
         btechSpinner = new ArrayList<>();
 
-        if (myPojo != null) {
+        if (myPojo != null && myPojo.getMASTERS() != null) {
             if (myPojo.getMASTERS().getBCT_LIST() != null) {
                 for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
@@ -836,7 +832,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         OTPrequest otPrequest = new OTPrequest();
         otPrequest.setAppId(OTPAPPID);
         otPrequest.setPurpose("OTP");
-        otPrequest.setVersion(""+versionCode);
+        otPrequest.setVersion("" + versionCode);
         Call<Tokenresponse> responseCall = apiInterface.getotptoken(otPrequest);
         Log.e(TAG, "TOKEN LIST BODY ---->" + new GsonBuilder().create().toJson(otPrequest));
         Log.e(TAG, "TOKEN LIST URL ---->" + responseCall.request().url());
@@ -1089,7 +1085,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
                 }
 
                 ControllersGlobalInitialiser.validateMob_controller = new ValidateMob_Controller(SpecialOffer_Activity.this);
-                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(),token);
+                ControllersGlobalInitialiser.validateMob_controller.callvalidatemob(user, et_mobno.getText().toString(), token);
             }
 
 

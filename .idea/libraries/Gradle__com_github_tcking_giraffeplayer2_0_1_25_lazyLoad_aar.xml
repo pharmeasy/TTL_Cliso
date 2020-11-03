@@ -10,6 +10,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/a54575f668472dfd5ab2671329f9ea7d/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/a54575f668472dfd5ab2671329f9ea7d/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/a54575f668472dfd5ab2671329f9ea7d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/28e3f3a5bdd13e4bf3a688d933bc30a7/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/28e3f3a5bdd13e4bf3a688d933bc30a7/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-giraffeplayer2-0.1.25-lazyLoad.aar/28e3f3a5bdd13e4bf3a688d933bc30a7/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

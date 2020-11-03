@@ -6,17 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
@@ -44,6 +45,7 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
+
 public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_PatientDetailsWOEAdapter.ViewHolder> {
     public static com.android.volley.RequestQueue deletePatienDetail;
     String user, passwrd, access, api_key, error, pid, response1, barcodes, resID;
@@ -60,6 +62,8 @@ public class BMC_PatientDetailsWOEAdapter extends RecyclerView.Adapter<BMC_Patie
     private String countData;
     private int flagpass = 0;
     private String TAG = BMC_PatientDetailsWOEAdapter.class.getSimpleName();
+
+
 
     public BMC_PatientDetailsWOEAdapter(Context context, ArrayList<Patients> patientsArray) {
         this.patients = patientsArray;

@@ -54,12 +54,12 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
         GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
 
-  /*      if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
+        if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
             viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
             GlobalClass.SetText(viewholder.txt_ppebrcd, "PPE Barcode : " + covidMISmodel.getPPEBarcode());
         }else {
             viewholder.txt_ppebrcd.setVisibility(View.GONE);
-        }*/
+        }
 
 
 

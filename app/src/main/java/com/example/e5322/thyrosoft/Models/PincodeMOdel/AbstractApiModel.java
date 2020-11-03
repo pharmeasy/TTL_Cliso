@@ -59,54 +59,14 @@ public class AbstractApiModel implements AppConstants {
 
     // Version Specific Base URL 51 apis used
 
-    public String TOP10_DEFAULT_SGC = "/ClientEntry/GetDefaultSGC";
-    public String SGC_DATA = "/ClientEntry/GetPincodeSGC";
-    public String TSP_DATA = "/ClientEntry/GetPincodeWiseTSP";
-    public String SPPINER_SGC = "/ClientEntry/GetTspOlcForSGC";
-    public String POSTREGISTER = "/ClientEntry/PostRegister";
-    public String OLCREGISTER = "/ClientEntry/SendJotForm";
-    public String SGCDETAILINFO = "/ClientEntry/GetSGCDetail";
-    public String UPDATESGC = "/ClientEntry/UpdateSGC";
-    public String DEFAULTTSPTAGSC = "/TspTagSc/GetDefaultData";
-    public String TSPDATA = "/TspTagSc/GetTspFilterData";
-    public String SOURCEMASTER = "/TspTagSc/GetSourceMasterData";
-    public String CLIENTDATA = "/TspTagSc/GetClientData";
-    public String DEFAULTCLIENTVERFICATION = "/ClientVerification/GetDefaultVerificationData";
-    public String DEFAULTMKGSGCVERFICATION = "/ClientVerification/GetStateVerificationData";
-    public String DEFAULTPGC = "/ClientVerification/GetDefaultPGCVerificationData";
-    public String DEFAULTMKGPGCVERFICATION = "/ClientVerification/GetPGCVerificationData";
-    public String GETSTATES = "/ClientVerification/GetStates";
-    public String STATEWISE = "/ClientVerification/GetStateVerificationData";
-    public String ALLTSP = "/ClientVerification/GetStateVerificationData";
-    public String SUBCLUSTER = "/ClientVerification/GetClusters";
-    public String FILTER = "/ClientVerification/GetFilterResult";
-    public String GETVERFIEDDATA = "/ClientVerification/GetVerifiedData";
-    public String DEFAULTMERGE = "/ClientMerge/GetSearchedData";
-    public String MISUPLOAD = "/UploadDocument/GetDefaultDataUploadDocumentMIS";
-    public String TSPSPINNER = "/UploadDocument/GetTsp";
+
     public String DOCUMENTSPINNER = "/UploadDocument/GetuploadDoc";
     public String DEFAULTUPLOAD = "/UploadDocument/GetDefaultDataUploadDocument";
-    public String MIS2 = "/UploadDocument/GetDefaultMIS2DOc";
-    public String VERIFIED = "/ClientVerification/GetVerifiedData";
-    public String PGCVERIFIED = "/ClientVerification/GetPGCVerifiedData";
-    public String GETSMS = "/SMS/GetSMS";
-    public String POSTSMS = "/sms/PostSMSDate";
-    public String SENDSMS = "/SMS/SendSMS";
-    public String ADDTOCONTACTS = "/SMS/AddContact";
-    public String GETCONTATCS = "/sms/getcontacts";
-    public String AUTOFILL_VERIFIED = "/ClientVerification/GetClientDetails";
-    public String MERGE_POST = "/ClientMerge/MergeClients";
-    public String VERIFICATIONPOST = "/ClientVerification/UpdateSgcVerification";
-    public String AUTOFILL_VERIFIED_PGC = "/ClientVerification/GetPGCClientDetails";
-    public String VERIFIED_PGC_POST = "/ClientVerification/UpdatePgcVerification";
-    public String POSTREGISTERUPLOADDOCUMENT = "/UploadDocument/PostRegister";
+
     public String GETNED = "/UploadDocument/GetNED/";
     public String GETSGC= "/UploadDocument/GetSGC";
     public String GETPGC= "/UploadDocument/GetPGC";
-    public String GETSTAFF= "/UploadDocument/GetStaff";
-    public String POSTREGISTERR="/UploadDocument/PostRegisterStaff";
-    public String VIEWIMAGE="/UploadDocument/GetImage";
-    public String GETTSP="/UploadDocument/GetMISTSP";
+
 
 
 

@@ -1494,6 +1494,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 @Override
                 public void onResponse(JSONObject response) {
                     try {
+                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
                         Log.e(TAG, "onResponse: RESPONSE" + response);
                         if (response != null) {
                             Gson gson = new Gson();
@@ -1501,7 +1502,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             myPojo = gson.fromJson(response.toString(), MyPojo.class);
 
                             if (myPojo != null && !GlobalClass.isNull(myPojo.getRESPONSE()) && myPojo.getRESPONSE().equalsIgnoreCase(caps_invalidApikey)) {
-                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
                                 GlobalClass.redirectToLogin(getActivity());
                             } else {
                                 GlobalClass.hideProgress(getActivity(), barProgressDialog);
@@ -1654,9 +1655,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     if (error.networkResponse == null) {
-                        if (error.getClass().equals(TimeoutError.class)) {
-                            // Show timeout error message
-                        }
+                        GlobalClass.hideProgress(getActivity(), barProgressDialog);
+
                     }
                 }
             });
@@ -6485,7 +6485,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             prefsEditor1.commit();
 
                             getBtechList = new ArrayList<>();
-                            if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                            if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBCT_LIST() != null) {
                                 for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
                                     getBtechList.add(myPojo.getMASTERS().getBCT_LIST()[j]);
                                 }
@@ -7476,7 +7476,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         leadOrderIdMainModel = gson.fromJson(response.toString(), LeadOrderIdMainModel.class);
 
 
-                                        if (!GlobalClass.isNull(leadOrderIdMainModel.getRESPONSE()) &&leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
+                                        if (!GlobalClass.isNull(leadOrderIdMainModel.getRESPONSE()) && leadOrderIdMainModel.getRESPONSE().equals("SUCCESS")) {
                                             GlobalClass.hideProgress(getActivity(), pd_dialog);
 
                                             for (int i = 0; i < leadOrderIdMainModel.getLeads().length; i++) {

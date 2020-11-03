@@ -37,7 +37,6 @@ public class CustomCalendarAdapter extends RecyclerView.Adapter<CustomCalendarAd
     public CustomCalendarAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.calendar_ll, parent, false);
-        // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
         return vh;
 

@@ -543,11 +543,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 covidpostdata.setTESTCODE("COVID-19");
                                 covidpostdata.setVIAIMAGE(vial_file);
                                 covidpostdata.setSELFIE(selfie_file);
-                           /*     if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
+
+                                if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
                                     covidpostdata.setPPEBARCODE("");
                                 }else {
                                     covidpostdata.setPPEBARCODE(txt_barcode.getText().toString());
-                                }*/
+                                }
 
 
                                 if (presc_file != null) {
@@ -1467,7 +1468,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             if (result.getContents() != null) {
                 String getBarcodeDetails = result.getContents();
                 if (getBarcodeDetails.length() == 8) {
-                    passBarcodeData(getBarcodeDetails);
+                    txt_barcode.setText(""+getBarcodeDetails.toUpperCase());
                 } else {
                     Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
                 }
@@ -1477,69 +1478,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     }
 
-    private void passBarcodeData(final String getBarcodeDetails) {
-        RequestQueue requestQueue = GlobalClass.setVolleyReq(getContext());
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setTitle("Kindly wait...");
-        progressDialog.setMessage(ToastFile.processing_request);
-        progressDialog.setProgressStyle(progressDialog.STYLE_SPINNER);
-        progressDialog.setProgress(0);
-        progressDialog.setMax(20);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
 
-        System.out.println("barcode url  --> " + Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode");
-
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode"
-                , new com.android.volley.Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println("barcode respponse" + response);
-                GlobalClass.hideProgress(getContext(), progressDialog);
-                Log.e(TAG, "onResponse: " + response);
-                String finalJson = response.toString();
-                JSONObject parentObjectOtp = null;
-                try {
-                    parentObjectOtp = new JSONObject(finalJson);
-                    ERROR = parentObjectOtp.getString("ERROR");
-                    RES_ID = parentObjectOtp.getString("RES_ID");
-                    barcode = parentObjectOtp.getString("barcode");
-                    response1 = parentObjectOtp.getString("response");
-
-                    if (!GlobalClass.isNull(response1) && response1.equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                        txt_barcode.setText(getBarcodeDetails.toUpperCase());
-                        buttonval();
-                    } else {
-                        Toast.makeText(getContext(), "" + response1, Toast.LENGTH_SHORT).show();
-                        txt_barcode.setText(getString(R.string.ppe));
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }, new com.android.volley.Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                GlobalClass.hideProgress(getContext(), progressDialog);
-                if (error.networkResponse == null) {
-                    if (error.getClass().equals(TimeoutError.class)) {
-                        // Show timeout error message
-                    }
-                }
-            }
-        });
-
-
-        jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
-                300000,
-                3,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        requestQueue.add(jsonObjectRequestPop);
-        Log.e(TAG, "onBindViewHolder: url" + jsonObjectRequestPop);
-    }
 
 
     @Override
