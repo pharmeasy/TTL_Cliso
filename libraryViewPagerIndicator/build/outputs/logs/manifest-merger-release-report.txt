@@ -1,37 +1,37 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:1-9:12
+ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:1-9:12
 	package
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:4:5-37
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:4:5-37
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:6:5-32
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:6:5-32
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:3:11-69
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:3:11-69
 	android:versionCode
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml:5:5-29
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml:5:5-29
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 uses-sdk
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		ADDED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
-		INJECTED from /home/cplf1040-pc/Desktop/Omkar Backup/ClisoV1.0.1.60/Cliso/libraryViewPagerIndicator/src/main/AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		ADDED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\e5560\AndroidStudioProjects\Cliso\libraryViewPagerIndicator\src\main\AndroidManifest.xml

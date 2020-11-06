@@ -64,7 +64,7 @@
                     android:digits="@string/alphabets"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Enter Name*"
+                    android:hint="Patient name*"
                     android:maxLength="40"
                     android:padding="@dimen/_5sdp" />
 

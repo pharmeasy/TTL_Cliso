@@ -30,6 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -74,15 +83,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -101,7 +101,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     SharedPreferences prefs;
     ArrayList<MyPojoWoe> resultList;
     SharedPreferences.Editor editor;
-    TextView navigationDrawerNameTSP, ecode;
+    TextView navigationDrawerNameTSP, ecode,tv_generateLead;
     ImageView imageViewprofile, home;
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
@@ -237,7 +237,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(getResources().getColor(R.color.limaroon));
+            window.setStatusBarColor(getResources().getColor(R.color.gray));
         }
 
         pref_versioncheck = getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
@@ -289,6 +289,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         api_key = prefs.getString("API_KEY", "");
         USER_CODE = prefs.getString("USER_CODE", "");
         CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+
+        tv_generateLead = (TextView) findViewById(R.id.tv_generateLead);
+
+        tv_generateLead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(ManagingTabsActivity.this, LeadGenerationActivity.class);
+                startActivity(i);
+            }
+        });
 
 
         SharedPreferences profile_pref = getSharedPreferences("profile", MODE_PRIVATE);
@@ -1028,9 +1038,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             } else {
                 Intent i = new Intent(ManagingTabsActivity.this, LeadGenerationActivity.class);
                 startActivity(i);
-
             }
-
         } else if (id == R.id.ledger) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
