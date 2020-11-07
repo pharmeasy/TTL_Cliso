@@ -11,7 +11,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.PowerManager;
 
-import com.example.e5322.thyrosoft.API.Constants;
+import androidx.core.content.FileProvider;
+
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 
 import java.io.File;
@@ -22,10 +23,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-
-import androidx.core.content.FileProvider;
 
 public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
 
@@ -54,6 +51,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
 
                 case DialogInterface.BUTTON_NEGATIVE:
                     //No button clicked
+                    mActivity.finish();
                     break;
             }
         }
@@ -85,7 +83,7 @@ public class DownloadInAppTask extends AsyncTask<String, Integer, String> {
                 return "Server returned HTTP " + connection.getResponseCode()
                         + " " + connection.getResponseMessage();
             }
-            connection.setRequestProperty(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(context));
+//            connection.setRequestProperty(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(context));//todo facing issue while update
             // this will be useful to display download percentage
             // might be -1: server did not report the length
             fileLength = connection.getContentLength();

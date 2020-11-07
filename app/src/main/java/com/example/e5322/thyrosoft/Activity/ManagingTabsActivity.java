@@ -300,7 +300,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
         });
 
-
         SharedPreferences profile_pref = getSharedPreferences("profile", MODE_PRIVATE);
         if (GlobalClass.isNull(profile_pref.getString("name", ""))) {
             getProfileDetails(ManagingTabsActivity.this);
