@@ -145,7 +145,6 @@ public class ToastFile {
     public static String offline_tool = "Would you like to go with Offline Mode ?";
 
 
-
     public static String setTitle_submitall_woe = "Would you like to submit all WOE ?";
     public static String internet_avail = "Yes, Internet is Available !";
     public static String PLAYVIDEO = "Play";
@@ -155,7 +154,7 @@ public class ToastFile {
     public static String scan_barcode_all = "Please scan the barcode for all sample types.";
     public static String MOBILE_10_DIGITS = "Mobile number should be of 10 digits";
     public static String ENTER_MOBILE = "Please enter mobile number";
-    public static String AMTCOLL= "Kindly enter collected amount";
+    public static String AMTCOLL = "Kindly enter collected amount";
     public static String ENTER_VALID_OTP = "Enter valid OTP";
     public static String PLEASE_WAIT = "Please wait..";
     public static String OTP_SENT_SUCCESS = "OTP sent successfully";
@@ -182,4 +181,5 @@ public class ToastFile {
     public static String SELECT_ADHIMAGE = "Upload the Aadhaar/Passport image";
     public static String SELECT_TRFDHIMAGE = "Upload the Trf image";
     public static String SELECT_VIALDHIMAGE = "Upload the Vial image";
+    public static String AGE_SHOULD_BE_BETWEEN_1_TO_120 = "Age should be between 1 to 120";
 }

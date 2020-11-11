@@ -13,18 +13,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -41,11 +35,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.LeadController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.PostLeadResponseController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
@@ -480,8 +479,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 return false;
             }
 
-            if (edt_address.getText().toString().length() < 20) {
-                edt_address.setError("Minimum length should be 20");
+            if (edt_address.getText().toString().length() < 2) {
+                edt_address.setError("Minimum length should be 2");
                 edt_address.requestFocus();
                 return false;
             }
@@ -500,7 +499,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         }
 
 
-        if (!GlobalClass.isNull(edt_address.getText().toString())) {
+        if (!GlobalClass.isNull(edt_pincode.getText().toString())) {
             if (edt_pincode.getText().toString().equals("")) {
                 edt_pincode.setError("Enter Valid Pincode");
                 edt_pincode.requestFocus();
@@ -519,7 +518,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 return false;
             }
 
-            if (edt_pincode.getText().length() != 6) {
+            if (edt_pincode.getText().length() < 6) {
                 edt_pincode.setError("Enter Valid Pincode");
                 edt_pincode.requestFocus();
                 return false;

@@ -36,6 +36,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -87,11 +92,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -586,6 +586,11 @@ public class RATEnterFrag extends Fragment {
 
         if (GlobalClass.isNull(edt_age.getText().toString())) {
             Global.showCustomToast(getActivity(), ToastFile.ENTER_AGE);
+            edt_lastname.requestFocus();
+            return false;
+        }
+        if (Integer.parseInt(edt_age.getText().toString()) > 120) {
+            Global.showCustomToast(getActivity(), ToastFile.AGE_SHOULD_BE_BETWEEN_1_TO_120);
             edt_lastname.requestFocus();
             return false;
         }

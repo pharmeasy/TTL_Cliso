@@ -14,9 +14,9 @@
 
         <ImageView
             android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center"
-            android:src="@drawable/only_thyrocare_logo_trans"
+            android:src="@drawable/thyro_logo_white"
             android:visibility="visible" />
 
     </LinearLayout>

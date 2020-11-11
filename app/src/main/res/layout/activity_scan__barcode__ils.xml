@@ -477,8 +477,6 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/next_button"
                 android:gravity="center"
-                android:paddingLeft="50dp"
-                android:paddingRight="50dp"
                 android:text="DONE"
                 android:textColor="@color/white" />
 
