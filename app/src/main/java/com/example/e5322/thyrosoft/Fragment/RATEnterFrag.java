@@ -416,26 +416,7 @@ public class RATEnterFrag extends Fragment {
 
             }
         });
-        tv_resetno.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                lin_by_missed.setVisibility(View.VISIBLE);
-                lin_generate_verify.setVisibility(View.GONE);
-                edt_missed_mobile.setEnabled(true);
-                btn_generate.setVisibility(View.VISIBLE);
-                btn_generate.setEnabled(true);
-                tv_resetno.setVisibility(View.GONE);
-                edt_verifycc.getText().clear();
-                tv_mobileno.setVisibility(View.GONE);
-                rel_mobno.setVisibility(View.GONE);
 
-                if (countDownTimer != null) {
-                    countDownTimer.cancel();
-                    countDownTimer = null;
-                    tv_timer.setVisibility(View.GONE);
-                }
-            }
-        });
 
         img_scanbarcode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -469,6 +450,27 @@ public class RATEnterFrag extends Fragment {
 
                 IntentIntegrator.forSupportFragment(RATEnterFrag.this).initiateScan();
 
+            }
+        });
+
+        tv_resetno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lin_by_missed.setVisibility(View.VISIBLE);
+                lin_generate_verify.setVisibility(View.GONE);
+                edt_missed_mobile.setEnabled(true);
+                btn_generate.setVisibility(View.VISIBLE);
+                btn_generate.setEnabled(true);
+                tv_resetno.setVisibility(View.GONE);
+                edt_verifycc.getText().clear();
+                tv_mobileno.setVisibility(View.GONE);
+                rel_mobno.setVisibility(View.GONE);
+
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer = null;
+                    tv_timer.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -715,26 +717,25 @@ public class RATEnterFrag extends Fragment {
         btn_generate = root.findViewById(R.id.btn_generate);
         btn_generate.setText(getResources().getString(R.string.enterccc));
         edt_missed_mobile = root.findViewById(R.id.edt_missed_mobile);
-        txt_otherfileupload = root.findViewById(R.id.txt_otherfileupload);
         btn_resend = root.findViewById(R.id.btn_resend);
         tv_timer = root.findViewById(R.id.tv_timer);
         edt_verifycc = root.findViewById(R.id.edt_verifycc);
         tv_resetno = root.findViewById(R.id.tv_resetno);
-        btn_choosefile_other = root.findViewById(R.id.btn_choosefile_other);
         rel_mobno = root.findViewById(R.id.rel_mobno);
         lin_other_images = root.findViewById(R.id.lin_other_images);
         lin_generate_verify = root.findViewById(R.id.lin_generate_verify);
         tv_mobileno = root.findViewById(R.id.tv_mobileno);
-        lin_trf_images = root.findViewById(R.id.lin_trf_images);
         lin_by_missed = root.findViewById(R.id.lin_missed_verify);
         by_missed = root.findViewById(R.id.by_missed);
         by_generate = root.findViewById(R.id.by_generate);
         btn_verify = root.findViewById(R.id.btn_verify);
+
         spr_gender = root.findViewById(R.id.spr_gender);
 
+        btn_choosefile_other = root.findViewById(R.id.btn_choosefile_other);
         spr_hospital = root.findViewById(R.id.spr_hospital);
         spr_hospital.setTitle("");
-
+        txt_otherfileupload = root.findViewById(R.id.txt_otherfileupload);
         txt_nofileadhar = root.findViewById(R.id.txt_nofileadhar);
         txt_adharfileupload = root.findViewById(R.id.txt_adharfileupload);
         lin_adhar_images = root.findViewById(R.id.lin_adhar_images);
@@ -742,7 +743,7 @@ public class RATEnterFrag extends Fragment {
         txt_trffileupload = root.findViewById(R.id.txt_trffileupload);
         txt_nofiletrf = root.findViewById(R.id.txt_nofiletrf);
         txt_nofileother = root.findViewById(R.id.txt_nofileother);
-
+        lin_trf_images = root.findViewById(R.id.lin_trf_images);
         btn_choosefile_adhar = root.findViewById(R.id.btn_choosefile_adhar);
         if (patientsagespinner != null) {
             ArrayAdapter<String> adap = new ArrayAdapter<String>(
@@ -911,10 +912,8 @@ public class RATEnterFrag extends Fragment {
                         tv_resetno.setVisibility(View.VISIBLE);
                         tv_resetno.setText(getResources().getString(R.string.reset_mob));
                         tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     }
+                    Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

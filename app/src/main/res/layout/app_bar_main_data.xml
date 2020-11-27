@@ -27,25 +27,20 @@
         android:layout_height="0dp"
         android:layout_weight="9" />
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/tv_generateLead"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/maroon"
+        android:layout_gravity="center"
         android:layout_weight="0.6"
-        android:orientation="vertical">
+        android:background="@color/maroon"
+        android:gravity="center"
+        android:text="Generate Lead"
+        android:textColor="@color/tabindicatorColor"
+        android:textSize="@dimen/_18sdp"
+        android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/tv_generateLead"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_40"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="Generate Lead"
-            android:textColor="@color/tabindicatorColor"
-            android:textSize="@dimen/_18sdp"
-            android:visibility="visible" />
-
-    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"

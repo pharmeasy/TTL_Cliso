@@ -15,6 +15,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -42,6 +43,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -67,6 +70,7 @@ import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MultipleLeadActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.AdapterRe;
@@ -84,6 +88,12 @@ import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BRAND_LIST;
 import com.example.e5322.thyrosoft.Models.Brand_type;
 import com.example.e5322.thyrosoft.Models.CAMP_LIST;
+import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
+import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
+import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
+import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
+import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
+import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
@@ -187,6 +197,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     EditText name, age, id_for_woe, barcode_woe, pincode_edt;
     REF_DR[] ref_drs;
     Brand_type[] brandType;
+
+
+    Button btn_generate, btn_resend, btn_verify;
+    EditText edt_missed_mobile, edt_verifycc;
+    RadioButton by_missed, by_generate;
+    RelativeLayout rel_verify_mobile;
+    RelativeLayout rel_mobno;
+    LinearLayout lin_generate_verify, lin_by_missed;
+    TextView tv_timer, tv_resetno, tv_mobileno;
+    CountDownTimer countDownTimer;
+
+
     ImageView male, female, male_red, female_red;
     ProgressDialog barProgressDialog;
     Button next_btn, btn_snd_otp, btn_verifyotp;
@@ -231,8 +253,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     EditText pincode, patientAddress, reenterkycinfo, kycinfo, vial_number, et_otp;
     Spinner btechname, deliveymode, camp_spinner_olc;
     ArrayList<BarcodelistModel> barcodelists;
-    TextView radio, tv_timer;
-    LinearLayout refby_linear, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data, ll_mobileno_otp, lin_otp;
+    TextView radio, tv_timer_new;
+    LinearLayout refby_linear, ll_miscallotp, camp_layout_woe, btech_linear_layout, labname_linear, home_layout, mobile_number_kyc, pincode_linear_data, ll_mobileno_otp, lin_otp;
     WOE_Model_Patient_Details woe_model_patient_details;
     String woereferedby;
     boolean isLoaded = false;
@@ -259,7 +281,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     ScrollView scrollView2;
     Button btn_clear_data;
     String getDatefromWOE, halfTime, DateToPass;
-    TextView enetered, enter, tv_mob_note;
+    TextView enetered, enter, tv_mob_note, tv_verifiedmob;
     Date getCurrentDateandTime;
     ImageView enter_arrow_enter, enter_arrow_entered, uncheck_ref, ref_check;
     int flagtoAdjustClisk = 0;
@@ -280,7 +302,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private SharedPreferences prefs;
     private String user;
     private String passwrd;
-    private String access;
+    private String access, usercode;
     private String referenceBy;
     private String checkifChecked;
     private String api_key;
@@ -471,6 +493,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
         leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
         add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
+        tv_verifiedmob = (TextView) viewMain.findViewById(R.id.tv_verifiedmob);
         GlobalClass.setflagToRefreshData = false;
         timehr = (Spinner) viewMain.findViewById(R.id.timehr);
         timesecond = (Spinner) viewMain.findViewById(R.id.timesecond);
@@ -484,12 +507,29 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         radio = (TextView) viewMain.findViewById(R.id.radio);
         tv_timer = viewMain.findViewById(R.id.tv_timer);
         refby_linear = (LinearLayout) viewMain.findViewById(R.id.refby_linear);
+        ll_miscallotp = (LinearLayout) viewMain.findViewById(R.id.ll_miscallotp);
         camp_layout_woe = (LinearLayout) viewMain.findViewById(R.id.camp_layout_woe);
         btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
         labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
         home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
         pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
 
+        btn_generate = viewMain.findViewById(R.id.btn_generate);
+        btn_generate.setText(getResources().getString(R.string.enterccc));
+        edt_missed_mobile = viewMain.findViewById(R.id.edt_missed_mobile);
+        btn_resend = viewMain.findViewById(R.id.btn_resend);
+        tv_timer_new = viewMain.findViewById(R.id.tv_timer);
+        edt_verifycc = viewMain.findViewById(R.id.edt_verifycc);
+        tv_resetno = viewMain.findViewById(R.id.tv_resetno);
+        rel_mobno = viewMain.findViewById(R.id.rel_mobno);
+        rel_verify_mobile = viewMain.findViewById(R.id.rel_verify_mobile);
+
+        lin_generate_verify = viewMain.findViewById(R.id.lin_generate_verify);
+        tv_mobileno = viewMain.findViewById(R.id.tv_mobileno);
+        lin_by_missed = viewMain.findViewById(R.id.lin_missed_verify);
+        by_missed = viewMain.findViewById(R.id.by_missed);
+        by_generate = viewMain.findViewById(R.id.by_generate);
+        btn_verify = viewMain.findViewById(R.id.btn_verify);
         mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
         Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
         ll_mobileno_otp = viewMain.findViewById(R.id.ll_mobileno_otp);
@@ -517,10 +557,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        usercode = prefs.getString("USER_CODE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
@@ -537,6 +578,75 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         myDb = new DatabaseHelper(mContext);
 
         name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+
+        btn_generate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                genrateflow();
+            }
+        });
+
+        btn_resend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                genrateflow();
+            }
+        });
+
+        tv_resetno.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lin_by_missed.setVisibility(View.VISIBLE);
+                lin_generate_verify.setVisibility(View.GONE);
+                edt_missed_mobile.setEnabled(true);
+                btn_generate.setVisibility(View.VISIBLE);
+                btn_generate.setEnabled(true);
+                tv_resetno.setVisibility(View.GONE);
+                edt_verifycc.getText().clear();
+                tv_mobileno.setVisibility(View.GONE);
+                rel_mobno.setVisibility(View.GONE);
+
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                    countDownTimer = null;
+                    tv_timer.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        by_missed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_generate.setText(getResources().getString(R.string.enterccc));
+            }
+        });
+        by_generate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+                btn_generate.setVisibility(View.VISIBLE);
+                btn_resend.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                    if (!GlobalClass.isNull(edt_verifycc.getText().toString())) {
+                        if (cd.isConnectingToInternet()) {
+                            validateotp();
+                        } else {
+                            GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN);
+                        }
+                    } else {
+                        GlobalClass.showCustomToast(getActivity(), "Kindly enter otp");
+                    }
+                } else {
+                    GlobalClass.showCustomToast(getActivity(), "Kindly enter mobile number");
+                }
+            }
+        });
 
         patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
@@ -607,10 +717,17 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             @Override
             public void onClick(View v) {
                 samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
-                Start_New_Woe fragment = new Start_New_Woe();
+
+                Constants.covidwoe_flag = "1";
+                Intent intent = new Intent(getActivity(), ManagingTabsActivity.class);
+                intent.putExtra("passToWoefragment", "frgamnebt");
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+             /*   Start_New_Woe fragment = new Start_New_Woe();
                 getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
-//                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+//                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commitAllowingStateLoss();
+                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();*/
             }
         });
 
@@ -660,11 +777,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+
+                    ll_miscallotp.setVisibility(View.VISIBLE);
                     btn_snd_otp.setVisibility(View.VISIBLE);
                     btn_snd_otp.setText("Send OTP");
+
                     Disablefields();
                 } else {
                     btn_snd_otp.setVisibility(View.GONE);
+                    ll_miscallotp.setVisibility(View.GONE);
                     et_mobno.setEnabled(true);
                     et_mobno.setClickable(true);
 
@@ -1674,7 +1795,309 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private String getOTPFlag() {
-        return getshared.getString("PriOTP", "NO");
+          return getshared.getString("PriOTP", "NO");
+    }
+
+    private void genrateflow() {
+        if (mobilenovalidation()) {
+            if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
+                if (cd.isConnectingToInternet()) {
+                    mobileverify(edt_missed_mobile.getText().toString());
+                } else {
+                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN);
+                }
+            } else {
+                mobileverify(edt_missed_mobile.getText().toString());
+            }
+        }
+    }
+
+
+    private boolean mobilenovalidation() {
+        if (edt_missed_mobile.getText().toString().length() == 0) {
+            Global.showCustomToast(getActivity(), ToastFile.ENTER_MOBILE);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
+        if (edt_missed_mobile.getText().toString().length() < 10) {
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
+        if (edt_missed_mobile.getText().toString().length() > 10) {
+            Global.showCustomToast(getActivity(), ToastFile.MOBILE_10_DIGITS);
+            edt_missed_mobile.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private void mobileverify(String mobileno) {
+
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.LIVEAPI).create(PostAPIInteface.class);
+        CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
+        coVerifyMobReq.setApi_key(api_key);
+        coVerifyMobReq.setMobile(mobileno);
+        coVerifyMobReq.setScode(usercode);
+
+        final Call<COVerifyMobileResponse> covidmis_responseCall = postAPIInteface.covmobileVerification(coVerifyMobReq);
+        Log.e(TAG, "MOB VERIFY URL--->" + covidmis_responseCall.request().url());
+        Log.e(TAG, "MOB VERIFY BODY--->" + new GsonBuilder().create().toJson(coVerifyMobReq));
+        covidmis_responseCall.enqueue(new Callback<COVerifyMobileResponse>() {
+            @Override
+            public void onResponse(Call<COVerifyMobileResponse> call, retrofit2.Response<COVerifyMobileResponse> response) {
+                Log.e(TAG, "on Response-->" + response.body().getResponse());
+                GlobalClass.hideProgress(getActivity(), progressDialog);
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        if (response.body().getResponse().equalsIgnoreCase("NOT VERIFIED")) {
+                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        } else {
+                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+                            timerflag = true;
+                            Global.OTPVERIFIED = true;
+
+
+                            if (yourCountDownTimer != null) {
+                                yourCountDownTimer.cancel();
+                                yourCountDownTimer = null;
+                            }
+
+                            btn_verifyotp.setText("Verified");
+                            btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.green));
+
+
+                            et_otp.getText().clear();
+                            lin_otp.setVisibility(View.GONE);
+
+                            btn_snd_otp.setText("Reset");
+
+                            et_mobno.setEnabled(false);
+                            et_mobno.setClickable(false);
+
+                            imgotp = getContext().getResources().getDrawable(R.drawable.otpverify);
+                            imgotp.setBounds(40, 40, 40, 40);
+                            et_mobno.setCompoundDrawablesWithIntrinsicBounds(null, null, imgotp, null);
+
+                            et_otp.setEnabled(false);
+                            et_otp.setClickable(false);
+
+                            btn_snd_otp.setClickable(true);
+                            btn_snd_otp.setEnabled(true);
+
+                            btn_verifyotp.setClickable(false);
+                            btn_verifyotp.setEnabled(false);
+
+                            tv_timer.setVisibility(View.GONE);
+
+                            lin_ckotp.setVisibility(View.GONE);
+
+                            Enablefields();
+
+                        }
+                        disablefields();
+
+
+                    } else if (response.body().getResId().equalsIgnoreCase(Constants.RES0082)) {
+                        TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                    } else {
+                        if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
+                            generateOtP(edt_missed_mobile.getText().toString());
+                        } else {
+                            TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void disablefields() {
+
+        rel_verify_mobile.setVisibility(View.VISIBLE);
+        tv_verifiedmob.setText(edt_missed_mobile.getText().toString());
+
+        lin_by_missed.setVisibility(View.GONE);
+
+        tv_mobileno.setVisibility(View.GONE);
+
+        edt_missed_mobile.setEnabled(false);
+        // btn_generate.setEnabled(false);
+        btn_resend.setEnabled(false);
+        btn_resend.setVisibility(View.GONE);
+        btn_generate.setVisibility(View.GONE);
+        lin_generate_verify.setVisibility(View.GONE);
+        tv_resetno.setVisibility(View.GONE);
+
+        timerflag = true;
+
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            tv_timer.setVisibility(View.GONE);
+        }
+
+    }
+
+    private void generateOtP(String mobileno) {
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.LIVEAPI).create(PostAPIInteface.class);
+
+        COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
+        coviDgetotp_req.setApi_key(api_key);
+        coviDgetotp_req.setMobile(mobileno);
+        coviDgetotp_req.setScode(usercode);
+
+        Call<Covidotpresponse> covidotpresponseCall = postAPIInteface.generateotp(coviDgetotp_req);
+        covidotpresponseCall.enqueue(new Callback<Covidotpresponse>() {
+            @Override
+            public void onResponse(Call<Covidotpresponse> call, retrofit2.Response<Covidotpresponse> response) {
+                GlobalClass.hideProgress(getActivity(), progressDialog);
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        setCountDownTimernew();
+                        lin_by_missed.setVisibility(View.GONE);
+                        tv_mobileno.setVisibility(View.VISIBLE);
+                        tv_mobileno.setText(edt_missed_mobile.getText().toString());
+                        rel_mobno.setVisibility(View.VISIBLE);
+                        lin_generate_verify.setVisibility(View.VISIBLE);
+                        tv_resetno.setVisibility(View.VISIBLE);
+                        tv_resetno.setText(getResources().getString(R.string.reset_mob));
+                        tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    }
+                    Toast.makeText(getContext(), response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Covidotpresponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void setCountDownTimernew() {
+
+        countDownTimer = new CountDownTimer(60000, 1000) {
+            NumberFormat numberFormat = new DecimalFormat("00");
+
+            public void onTick(long millisUntilFinished) {
+
+                if (timerflag == false) {
+                    btn_resend.setEnabled(false);
+                    btn_resend.setClickable(false);
+                    btn_resend.setVisibility(View.GONE);
+                    tv_timer.setVisibility(View.VISIBLE);
+                } else {
+                    tv_timer.setVisibility(View.GONE);
+                    btn_resend.setVisibility(View.VISIBLE);
+                }
+
+                long time = millisUntilFinished / 1000;
+                tv_timer.setText("Please wait 00:" + numberFormat.format(time));
+            }
+
+            public void onFinish() {
+                tv_timer.setVisibility(View.GONE);
+                btn_resend.setEnabled(true);
+                btn_resend.setClickable(true);
+                btn_resend.setVisibility(View.VISIBLE);
+
+                edt_missed_mobile.setEnabled(true);
+                edt_missed_mobile.setClickable(true);
+
+                edt_verifycc.setEnabled(true);
+                edt_verifycc.setClickable(true);
+
+            }
+        }.start();
+    }
+
+    private void validateotp() {
+
+        final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(getActivity());
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.LIVEAPI).create(PostAPIInteface.class);
+        Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
+        covid_validateotp_req.setApi_key(api_key);
+        covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
+        covid_validateotp_req.setOtp(edt_verifycc.getText().toString());
+        covid_validateotp_req.setScode(usercode);
+
+        Call<Covid_validateotp_res> covidotpresponseCall = postAPIInteface.validateotp(covid_validateotp_req);
+        covidotpresponseCall.enqueue(new Callback<Covid_validateotp_res>() {
+            @Override
+            public void onResponse(Call<Covid_validateotp_res> call, retrofit2.Response<Covid_validateotp_res> response) {
+                GlobalClass.hideProgress(getActivity(), progressDialog);
+                try {
+                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                        disablefields();
+                        timerflag = true;
+                        Global.OTPVERIFIED = true;
+
+
+                        if (yourCountDownTimer != null) {
+                            yourCountDownTimer.cancel();
+                            yourCountDownTimer = null;
+                        }
+
+                        btn_verifyotp.setText("Verified");
+                        btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.green));
+
+
+                        et_otp.getText().clear();
+                        lin_otp.setVisibility(View.GONE);
+
+                        btn_snd_otp.setText("Reset");
+
+                        et_mobno.setEnabled(false);
+                        et_mobno.setClickable(false);
+
+                        imgotp = getContext().getResources().getDrawable(R.drawable.otpverify);
+                        imgotp.setBounds(40, 40, 40, 40);
+                        et_mobno.setCompoundDrawablesWithIntrinsicBounds(null, null, imgotp, null);
+
+                        et_otp.setEnabled(false);
+                        et_otp.setClickable(false);
+
+                        btn_snd_otp.setClickable(true);
+                        btn_snd_otp.setEnabled(true);
+
+                        btn_verifyotp.setClickable(false);
+                        btn_verifyotp.setEnabled(false);
+
+                        tv_timer.setVisibility(View.GONE);
+
+                        lin_ckotp.setVisibility(View.GONE);
+
+                        Enablefields();
+
+                        Toast.makeText(getActivity(), "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        GlobalClass.showCustomToast(getActivity(), response.body().getResponse());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Covid_validateotp_res> call, Throwable t) {
+
+            }
+        });
     }
 
     private void startDataSetting() {
@@ -1712,6 +2135,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     lin_otp.setVisibility(View.GONE);
                                     tv_timer.setVisibility(View.GONE);
+                                    ll_miscallotp.setVisibility(View.GONE);
 
 
                                     leadlayout.setVisibility(View.GONE);
@@ -2025,31 +2449,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 }
 
                             } else if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
-
                                 try {
                                     if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-
-                                        mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
-
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -2067,6 +2476,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     brand_string = brand_spinner.getSelectedItem().toString();
                                     type_string = selectTypeSpinner.getSelectedItem().toString();
                                     next_btn.setVisibility(View.VISIBLE);
+
                                     camp_layout_woe.setVisibility(View.GONE);
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
@@ -2244,8 +2654,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             pincode_pass = pincode_edt.getText().toString();
 
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -2498,28 +2908,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     e.printStackTrace();
                                 }
                             } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
-
                                 try {
                                     if (getOTPFlag().equalsIgnoreCase("NO")) {
                                         Enablefields();
                                         Home_mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-                                        Home_mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -2539,6 +2937,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     camp_layout_woe.setVisibility(View.GONE);
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
+
                                     home_layout.setVisibility(View.VISIBLE);
 
 
@@ -2619,8 +3018,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 btechnameTopass = btechname.getSelectedItem().toString();
 
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = home_kyc_format.getText().toString();
                                             }
@@ -2839,6 +3238,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
                                     pincode_linear_data.setVisibility(View.GONE);
+                                    ll_miscallotp.setVisibility(View.GONE);
                                     leadlayout.setVisibility(View.GONE);
                                     leadbarcodelayout.setVisibility(View.GONE);
                                     brand_string = brand_spinner.getSelectedItem().toString();
@@ -3131,6 +3531,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 id_layout.setVisibility(View.GONE);
                                 pincode_linear_data.setVisibility(View.GONE);
                                 barcode_layout.setVisibility(View.VISIBLE);
+                                ll_miscallotp.setVisibility(View.GONE);
                                 vial_number.setVisibility(View.GONE);
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.GONE);
@@ -3226,6 +3627,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 camp_layout_woe.setVisibility(View.GONE);
                                 btech_linear_layout.setVisibility(View.GONE);
                                 home_layout.setVisibility(View.GONE);
+                                ll_miscallotp.setVisibility(View.GONE);
                                 labname_linear.setVisibility(View.GONE);
                                 patientAddress.setText("");
                                 mobile_number_kyc.setVisibility(View.GONE);
@@ -3317,8 +3719,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         }
                     });
                 }
-
-
                 if (position > 0) {
                     vial_number.getText().clear();
                     id_for_woe.getText().clear();
@@ -3338,25 +3738,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             Enablefields();
                                             mobile_number_kyc.setVisibility(View.VISIBLE);
                                             ll_mobileno_otp.setVisibility(View.GONE);
+                                            ll_miscallotp.setVisibility(View.GONE);
                                             tv_mob_note.setVisibility(View.GONE);
                                         } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                             Disablefields();
-                                            et_mobno.setFocusable(true);
-                                            et_mobno.requestFocus();
-                                            chk_otp.setChecked(true);
-                                            lin_ckotp.setVisibility(View.VISIBLE);
-
-                                            if (chk_otp.isChecked()) {
-                                                btn_snd_otp.setVisibility(View.VISIBLE);
-                                                btn_snd_otp.setText("Send OTP");
-                                            } else {
-                                                btn_snd_otp.setVisibility(View.GONE);
-                                            }
-
-                                            mobile_number_kyc.setVisibility(View.GONE);
-                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                            tv_mob_note.setVisibility(View.VISIBLE);
-
+                                            ll_miscallotp.setVisibility(View.VISIBLE);
                                         } else {
                                             GlobalClass.redirectToLogin(getActivity());
                                         }
@@ -3374,6 +3760,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     type_string = selectTypeSpinner.getSelectedItem().toString();
                                     next_btn.setVisibility(View.VISIBLE);
                                     camp_layout_woe.setVisibility(View.GONE);
+
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
                                     home_layout.setVisibility(View.VISIBLE);
@@ -3550,8 +3937,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             pincode_pass = pincode_edt.getText().toString();
 
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -3801,28 +4188,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         }
                                     });
                                 } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
-
                                     try {
                                         if (getOTPFlag().equalsIgnoreCase("NO")) {
                                             Enablefields();
                                             Home_mobile_number_kyc.setVisibility(View.VISIBLE);
                                             ll_mobileno_otp.setVisibility(View.GONE);
+                                            ll_miscallotp.setVisibility(View.GONE);
                                             tv_mob_note.setVisibility(View.GONE);
                                         } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                             Disablefields();
-                                            et_mobno.setFocusable(true);
-                                            et_mobno.requestFocus();
-                                            chk_otp.setChecked(true);
-                                            lin_ckotp.setVisibility(View.VISIBLE);
-                                            if (chk_otp.isChecked()) {
-                                                btn_snd_otp.setVisibility(View.VISIBLE);
-                                                btn_snd_otp.setText("Send OTP");
-                                            } else {
-                                                btn_snd_otp.setVisibility(View.GONE);
-                                            }
-                                            Home_mobile_number_kyc.setVisibility(View.GONE);
-                                            ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                            tv_mob_note.setVisibility(View.VISIBLE);
+                                            ll_miscallotp.setVisibility(View.VISIBLE);
                                         } else {
                                             GlobalClass.redirectToLogin(getActivity());
                                         }
@@ -3921,8 +4296,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 btechnameTopass = btechname.getSelectedItem().toString();
 
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = home_kyc_format.getText().toString();
                                             }
@@ -4493,24 +4868,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-
-
-                                        mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -4518,6 +4880,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     //mobile_number_kyc.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
+
 
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
@@ -4711,8 +5074,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             pincode_pass = pincode_edt.getText().toString();
                                             btechnameTopass = btechname.getSelectedItem().toString();
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -4923,25 +5286,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-
-
-                                        mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
-                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -5038,8 +5387,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 kycdata = home_kyc_format.getText().toString();
                                             }*/
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -5570,22 +5919,11 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-                                        mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
@@ -5593,6 +5931,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
+
 
                                     leadlayout.setVisibility(View.GONE);
                                     brand_string = brand_spinner.getSelectedItem().toString();
@@ -5780,8 +6119,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             btechnameTopass = btechname.getSelectedItem().toString();
                                             /* kycdata = kyc_format.getText().toString();*/
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -6004,29 +6343,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         Enablefields();
                                         mobile_number_kyc.setVisibility(View.VISIBLE);
                                         ll_mobileno_otp.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
                                         Disablefields();
-                                        et_mobno.setFocusable(true);
-                                        et_mobno.requestFocus();
-                                        chk_otp.setChecked(true);
-                                        lin_ckotp.setVisibility(View.VISIBLE);
-                                        if (chk_otp.isChecked()) {
-                                            btn_snd_otp.setVisibility(View.VISIBLE);
-                                            btn_snd_otp.setText("Send OTP");
-                                        } else {
-                                            btn_snd_otp.setVisibility(View.GONE);
-                                        }
-                                        mobile_number_kyc.setVisibility(View.GONE);
-                                        ll_mobileno_otp.setVisibility(View.VISIBLE);
-                                        tv_mob_note.setVisibility(View.VISIBLE);
-
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
 
 
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
+
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -6039,9 +6367,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
                                     home_layout.setVisibility(View.VISIBLE);
-
                                     vial_number.setVisibility(View.VISIBLE);
-
                                     labname_linear.setVisibility(View.GONE);
                                     patientAddress.setText("");
                                     ref_check.setVisibility(View.GONE);
@@ -6112,8 +6438,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             btechnameTopass = btechname.getSelectedItem().toString();
                                             //kycdata = home_kyc_format.getText().toString();
 
-                                            if (ll_mobileno_otp.getVisibility() == View.VISIBLE) {
-                                                kycdata = et_mobno.getText().toString();
+                                            if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                kycdata = edt_missed_mobile.getText().toString();
                                             } else {
                                                 kycdata = kyc_format.getText().toString();
                                             }
@@ -7253,8 +7579,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         next_btn.setEnabled(false);
         next_btn.setClickable(false);
 
-        btn_clear_data.setEnabled(false);
-        btn_clear_data.setClickable(false);
+//        btn_clear_data.setEnabled(false);
+//        btn_clear_data.setClickable(false);
 
         refby_linear.setVisibility(View.VISIBLE);
         referedbyText.setVisibility(View.VISIBLE);
