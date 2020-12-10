@@ -27,10 +27,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -72,12 +77,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
 import in.galaxyofandroid.spinerdialog.SpinnerDialog;
@@ -780,9 +779,17 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 woe.setCAMP_ID(campID);
                 woe.setCONT_PERSON("");
                 woe.setCONTACT_NO(getFinalPhoneNumberToPost);
-                woe.setCUSTOMER_ID("");
+                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())){
+                    woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
+                }else{
+                    woe.setCUSTOMER_ID("");
+                }
+                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())){
+                    woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
+                }else{
+                    woe.setEMAIL_ID(getFinalEmailIdToPost);
+                }
                 woe.setDELIVERY_MODE(2);
-                woe.setEMAIL_ID(getFinalEmailIdToPost);
                 woe.setENTERED_BY(user);
                 woe.setGENDER(patientGender);
                 woe.setLAB_ADDRESS(labAddress);

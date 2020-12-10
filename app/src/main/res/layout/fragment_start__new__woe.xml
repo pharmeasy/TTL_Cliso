@@ -268,13 +268,12 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-
                     <RadioGroup
                         android:id="@+id/radiogrp2"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/_10sdp"
+                        android:layout_margin="@dimen/_5sdp"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -282,7 +281,7 @@
                             android:id="@+id/by_missed"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/dp_10"
+                            android:layout_marginRight="@dimen/dp_5"
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:checked="true"
@@ -293,7 +292,7 @@
                             android:id="@+id/by_generate"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/dp_10"
+                            android:layout_marginLeft="@dimen/dp_5"
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:text="By using OTP"
@@ -306,9 +305,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-
-
 
                         <EditText
                             android:id="@+id/edt_missed_mobile"
@@ -567,7 +563,7 @@
                     android:layout_margin="5dp"
                     android:background="@drawable/pre_border"
                     android:orientation="horizontal"
-                    android:weightSum="5">
+                    android:weightSum="6">
 
                     <ImageView
                         android:layout_width="0dp"
@@ -577,7 +573,7 @@
                         android:scaleType="fitXY"
                         android:src="@drawable/person" />
 
-                    <EditText
+                    <AutoCompleteTextView
                         android:id="@+id/name"
                         style="@style/medium_text"
                         android:layout_width="0dp"
@@ -586,9 +582,9 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_margin="8dp"
-                        android:layout_weight="4.4"
+                        android:layout_weight="4.8"
                         android:background="@color/white"
-                        android:digits="QWERTYUIOPLKJHGFDSAZXCVBNM1234567890 "
+                        android:digits="@string/Namevalidation"
                         android:ems="10"
                         android:gravity="center|left"
                         android:hint="PATIENT NAME"
@@ -600,6 +596,15 @@
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
                         android:textSize="12sp" />
+
+                    <ImageView
+                        android:id="@+id/img_restPatientData"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.6"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/cross_img"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 
@@ -952,7 +957,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:background="@drawable/background_edt"
-                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ 0123456789-,.\()/"
+                        android:digits="@string/addressvalidation"
                         android:ems="10"
                         android:gravity="center|left"
                         android:hint="ENTER PATIENT ADDRESS"

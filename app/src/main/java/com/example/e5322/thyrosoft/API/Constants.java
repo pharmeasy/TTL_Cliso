@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
+
 import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
 
 /**
@@ -25,6 +27,7 @@ public class Constants {
     public static String setFullScreen;
     public static int timeInterval = 0;
     public static String videoName;
+    public static PatientDetailsAPiResponseModel.PatientInfoBean selectedPatientData = null;
 
     //shared preference Name
 
@@ -94,6 +97,7 @@ public class Constants {
 
 
     //Todo TEST codes
+    public static String WC2020 = "WC2020";
     public static String P690 = "P690";
     public static String CATC = "CATC";
     public static String CAGE = "CAGE";
@@ -116,6 +120,7 @@ public class Constants {
     public static String tab_flag = "0";
     public static String covidwoe_flag = "0";
     public static String covidfrag_flag = "0";
+    public static String SRFcovidWOEfrag_flag = "0";
     public static String ratfrag_flag = "0";
     public static String offline_flag = "0";
 
@@ -356,7 +361,7 @@ public class Constants {
 
 
     //for firebase
-    public static final String CHANNEL_ID = "my_channel_01";
+
     public static final String CHANNEL_NAME = "Simplified Coding Notification";
     public static final String CHANNEL_DESCRIPTION = "www.simplifiedcoding.net";
 
@@ -445,7 +450,6 @@ public class Constants {
     public static String IS_IBM_TOKEN_EXECUTED_FLAG = "IBM_Flag";
 
     public static boolean isEditProfilefragment = false;
-
     public static String CUSTOMER_PHONE_NO_COLUMN_NAME = "Customer Mobile Number";
     public static String CUSTOMER_EMAIL_ID_COLUMN_NAME = "Email";
     public static String CUSTOMER_NAME_COLUMN_NAME = "Customer Name";
@@ -453,10 +457,17 @@ public class Constants {
     //Activity redirection KEY
     public static String COMEFROM = "COMEFROM";
 
-
     //CONSTANTS FOR PAYU------
     public static final String PAYUMONEYKEY_MERCHANTKEY = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "y04wX2" : "xKDXHX";
-    public static final String PAYUMONEYKEY_SALT = MAINURL.equals(BASE_URL_TOCHECK) ? "fLheLI5D" : "V76vIBJq";
+
+//PAYTM
+    public static final String M_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "Thyroc82643304552196" : "Thyroc93414875955122";
+    public static final String M_KEY = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "g4JUavr1R8KtvgAi" : "12DMjkE9XnGX_DcI";
+    public static final String CHANNEL_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "WAP" : "WAP";
+    public static final String INDUSTRY_TYPE_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "Retail92" : "Retail";
+    public static final String WEBSITE = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "APPPROD" : "APP_STAGING";
+    public static final String CALLBACK_URL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" : "https://pguat.paytm.com/paytmchecksum/paytmCallback.jsp";
+
 
 
     public static final String PAYTM_UPDATE_PAYMENT_URL = "PaymentGateway.svc/PaytmResponse";
@@ -573,6 +584,7 @@ public class Constants {
     public static int Imagepadding = 25;
 
     public static int PAYAMOUNT = 5000;
+//    public static int PAYAMOUNT = 1;
 
     public static String THYROTEST = "Thyro";
     public static String THYRONAME = "";

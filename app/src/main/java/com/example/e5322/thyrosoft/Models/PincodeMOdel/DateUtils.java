@@ -895,4 +895,41 @@ public class DateUtils {
         return true;
     }
 
+    public static int getAgeFromDate(String Date, String inputformat) {
+
+        String Age = "";
+
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputformat);
+
+        Date inputDate = null;
+        try {
+            inputDate = inputFormat.parse(Date);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(inputDate == null) return 0;
+
+        Calendar dob = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+
+        dob.setTime(inputDate);
+
+        int year = dob.get(Calendar.YEAR);
+        int month = dob.get(Calendar.MONTH);
+        int day = dob.get(Calendar.DAY_OF_MONTH);
+
+        dob.set(year, month+1, day);
+
+        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)){
+            age--;
+        }
+
+
+
+        return age;
+    }
+
 }

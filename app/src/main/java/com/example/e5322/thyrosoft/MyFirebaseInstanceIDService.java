@@ -1,16 +1,11 @@
 package com.example.e5322.thyrosoft;
 
-import com.example.e5322.thyrosoft.Controller.Log;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
-
-public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
+public class MyFirebaseInstanceIDService  {
 
     private static final String TAG = MyFirebaseInstanceIDService.class.getSimpleName();
 
 
-    @Override
+  /*  @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();
 
@@ -23,7 +18,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
 
 
-    }
+    }*/
 
 
 }

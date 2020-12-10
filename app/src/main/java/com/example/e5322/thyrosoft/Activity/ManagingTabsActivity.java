@@ -1119,6 +1119,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
+        }else if (id == R.id.srf_covid) {
+            if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
+                GlobalClass.showAlertDialog(ManagingTabsActivity.this);
+            } else {
+                Intent i = new Intent(ManagingTabsActivity.this, SRFCovidWOEMainActivity.class);
+                startActivity(i);
+            }
         } else if (id == R.id.covid_reg) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
@@ -1131,9 +1138,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, carouselFragment)
                         .commit();
-
             }
-
         } else if (id == R.id.otp_credit) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);

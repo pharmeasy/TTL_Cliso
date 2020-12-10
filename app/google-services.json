@@ -32,10 +32,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -68,10 +69,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -80,20 +82,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:534320592236:android:980efc894bf74d44816f49",
+        "mobilesdk_app_id": "1:534320592236:android:738a96ac5fdbfe1d816f49",
         "android_client_info": {
           "package_name": "com.example.e5322.thyrosoft"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "534320592236-br1rts5nri9bbikhk99lr406k7oa13ll.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.e5322.thyrosoft",
-            "certificate_hash": "cfee07b6596d089c440bf84b1ef19db6ffb5276c"
-          }
-        },
         {
           "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
           "client_type": 3
@@ -112,10 +106,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -148,10 +143,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -184,10 +180,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -220,10 +217,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -256,10 +254,56 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:626f29b341c8f121816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.TspVisit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-b3dqu59l7bms32qo2jftbc8ase5ftnnf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thyrocare.TspVisit",
+            "certificate_hash": "80623889729b4de135a88d6291f4107387415740"
+          }
+        },
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -292,10 +336,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -328,10 +373,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -364,10 +410,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -408,10 +455,48 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:006ac0a5115b0ff7816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.drtapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -444,10 +529,48 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:8082a7413154bc70816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.hospitalfmeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -480,10 +603,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -516,10 +640,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -552,10 +677,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -588,10 +714,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -624,10 +751,48 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:59f68eb228a8780c816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.thyrocarehospitalleggy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -660,10 +825,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]
@@ -696,10 +862,11 @@
               "client_type": 3
             },
             {
-              "client_id": "534320592236-4rvbsskpcuh7u2644l404ss1b1o17d50.apps.googleusercontent.com",
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.thyrocare.LeggyPickso"
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
               }
             }
           ]

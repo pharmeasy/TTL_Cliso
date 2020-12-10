@@ -129,9 +129,6 @@
     </group>
 
 
-
-
-
     <group
         android:id="@+id/group11"
         android:checkableBehavior="single">
@@ -161,15 +158,25 @@
             android:title="SGC PGC Entry" />
     </group>
 
-     <group
-         android:id="@+id/groupbsbp"
-         android:checkableBehavior="single">
-         <item
-             android:id="@+id/bs_entry"
-             android:icon="@drawable/ic_bsentry"
-             android:visible="true"
-             android:title="@string/bs_bp_entry" />
-     </group>
+    <group
+        android:id="@+id/groupbsbp"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/bs_entry"
+            android:icon="@drawable/ic_bsentry"
+            android:title="@string/bs_bp_entry"
+            android:visible="true" />
+    </group>
+
+    <group
+        android:id="@+id/groupcovidsrf"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/srf_covid"
+            android:icon="@drawable/covid"
+            android:title="@string/srf_covid_woe"
+            android:visible="false" />
+    </group>
 
     <group
         android:id="@+id/groupcovid"
@@ -177,11 +184,9 @@
         <item
             android:id="@+id/covid_reg"
             android:icon="@drawable/covid"
-            android:visible="false"
-            android:title ="@string/covid_reg" />
+            android:title="@string/covid_reg"
+            android:visible="false" />
     </group>
-
-
 
     <group
         android:id="@+id/groupcovid1"
@@ -189,8 +194,8 @@
         <item
             android:id="@+id/crab_camp"
             android:icon="@drawable/covid"
-            android:visible="false"
-            android:title ="Covid Rapid Antibody" />
+            android:title="Covid Rapid Antibody"
+            android:visible="false" />
     </group>
 
 
@@ -200,8 +205,8 @@
         <item
             android:id="@+id/HHH"
             android:icon="@drawable/covid"
-            android:visible="false"
-            android:title ="DPT tests" />
+            android:title="DPT tests"
+            android:visible="false" />
     </group>
     <group
         android:id="@+id/group555"
@@ -209,8 +214,7 @@
         <item
             android:id="@+id/otp_credit"
             android:icon="@drawable/ic_otp_credit_mis"
-            android:title="OTP credit"
-            />
+            android:title="OTP credit" />
 
     </group>
 
@@ -234,15 +238,15 @@
     </group>
 
 
-      <group
-          android:id="@+id/group_video"
-          android:checkableBehavior="single">
-          <item
-              android:id="@+id/vid_leggy"
-              android:icon="@drawable/videoicon"
-              android:title="Video" />
+    <group
+        android:id="@+id/group_video"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/vid_leggy"
+            android:icon="@drawable/videoicon"
+            android:title="Video" />
 
-      </group>
+    </group>
 
 
     <group
@@ -275,7 +279,6 @@
     </group>
 
 
-
     <group
         android:id="@+id/group15"
         android:checkableBehavior="single">
@@ -293,7 +296,6 @@
             android:icon="@drawable/notification"
             android:title="Notification" />
     </group>
-
 
 
     <group

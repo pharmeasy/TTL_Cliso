@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,10 +28,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.crashlytics.android.Crashlytics;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
@@ -57,16 +56,15 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.GsonBuilder;
 import com.scottyab.rootbeer.RootBeer;
 
-import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SplashScreen extends AppCompatActivity {
     private static final int APPPERMISSTION = 110;
-    public static SharedPreferences  profile;
+    public static SharedPreferences profile;
     public static SharedPreferences.Editor editor;
-    String strtoken="";
+    String strtoken = "";
     private static String TAG = SplashScreen.class.getSimpleName();
     String version;
     ConnectionDetector cd;
@@ -84,67 +82,67 @@ public class SplashScreen extends AppCompatActivity {
     boolean isemulator = false;
 
 
-
-
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+
         setContentView(R.layout.splash_screen);
-        activity = SplashScreen.this;
-        prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
-        anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
-        iv = (ImageView) findViewById(R.id.logo);
+        try {
+            activity = SplashScreen.this;
+            prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
+            anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
+            iv = (ImageView) findViewById(R.id.logo);
 
-        Fabric.with(this, new Crashlytics());
-        GlobalClass.setStatusBarcolor(activity);
-        if (getIntent().getBooleanExtra("Exit me", false)) {
-            finish();
-            return;
-        }
+            GlobalClass.setStatusBarcolor(activity);
+            if (getIntent().getBooleanExtra("Exit me", false)) {
+                finish();
+                return;
+            }
 
 
-        if (getIntent().hasExtra("IsFromNotification")) {
-            IsFromNotification = getIntent().getBooleanExtra("IsFromNotification", false);
-            if (IsFromNotification) {
-                if (getIntent().hasExtra("Screen_category")) {
-                    SCRID = getIntent().getIntExtra("Screen_category", 0);
-                    Log.e(TAG, "Screen ID ---->" + SCRID);
+            if (getIntent().hasExtra("IsFromNotification")) {
+                IsFromNotification = getIntent().getBooleanExtra("IsFromNotification", false);
+                if (IsFromNotification) {
+                    if (getIntent().hasExtra("Screen_category")) {
+                        SCRID = getIntent().getIntExtra("Screen_category", 0);
+                        Log.e(TAG, "Screen ID ---->" + SCRID);
+                    }
                 }
             }
-        }
 
-        isemulator = GlobalClass.buildModelContainsEmulatorHints(Build.MODEL);
-        Log.e(TAG, "isemulator -->" + isemulator);
+            isemulator = GlobalClass.buildModelContainsEmulatorHints(Build.MODEL);
+            Log.e(TAG, "isemulator -->" + isemulator);
 
-        RootBeer rootBeer = new RootBeer(activity);
-        if (rootBeer.isRooted()) {
-            Log.e(TAG, "DEVICE ROOTED-->" + rootBeer.isRooted());
-            if (isemulator) {
+            RootBeer rootBeer = new RootBeer(activity);
+            if (rootBeer.isRooted()) {
+                Log.e(TAG, "DEVICE ROOTED-->" + rootBeer.isRooted());
+                if (isemulator) {
+                    getAllpermission();
+                }
+            } else {
                 getAllpermission();
             }
-        } else {
-            getAllpermission();
+
+            version = GlobalClass.getversion(activity);
+
+
+            TextView versionText = (TextView) findViewById(R.id.version);
+            versionText.setText(version);
+
+            cd = new ConnectionDetector(getApplicationContext());
+
+
+            SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
+            user = prefs.getString("Username", null);
+            passwrd = prefs.getString("password", null);
+            USER_CODE = prefs.getString("USER_CODE", "");
+
+            SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
+            storetoken = fire_pref.getString(Constants.F_TOKEN, "");
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
         }
-
-        version = GlobalClass.getversion(activity);
-
-
-        TextView versionText = (TextView) findViewById(R.id.version);
-        versionText.setText(version);
-
-        cd = new ConnectionDetector(getApplicationContext());
-
-
-
-        SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        USER_CODE = prefs.getString("USER_CODE", "");
-
-        SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
-        storetoken = fire_pref.getString(Constants.F_TOKEN, "");
 
     }
 
@@ -290,7 +288,7 @@ public class SplashScreen extends AppCompatActivity {
                         prefe.putExtra(Constants.IsFromNotification, IsFromNotification);
                         activity.startActivity(prefe);
                         ((Activity) activity).finish();
-                        Constants.PUSHNOT_FLAG=false;
+                        Constants.PUSHNOT_FLAG = false;
                     }
 
                 } catch (Exception e) {
@@ -417,9 +415,9 @@ public class SplashScreen extends AppCompatActivity {
                 Log.e(TAG, " Caching :Less than 1 Day");
             }
 
-            Log.e(TAG,"Constants.PUSHNOT_FLAG---->"+Constants.PUSHNOT_FLAG);
+            Log.e(TAG, "Constants.PUSHNOT_FLAG---->" + Constants.PUSHNOT_FLAG);
 
-            if (Constants.PUSHNOT_FLAG){
+            if (Constants.PUSHNOT_FLAG) {
                 FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
                     @Override
                     public void onSuccess(InstanceIdResult instanceIdResult) {
@@ -428,7 +426,7 @@ public class SplashScreen extends AppCompatActivity {
                         pushToken();
                     }
                 });
-            }else {
+            } else {
                 Intent prefe = new Intent(activity, ManagingTabsActivity.class);
                 prefe.putExtra("Screen_category", SCRID);
                 prefe.putExtra(Constants.COMEFROM, true);
@@ -436,7 +434,6 @@ public class SplashScreen extends AppCompatActivity {
                 activity.startActivity(prefe);
                 ((Activity) activity).finish();
             }
-
 
 
         } else {

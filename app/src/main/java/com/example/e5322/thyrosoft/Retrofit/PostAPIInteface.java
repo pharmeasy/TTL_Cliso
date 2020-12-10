@@ -24,25 +24,26 @@ import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
 import com.example.e5322.thyrosoft.Models.LeadRequestModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.AckBroadcastMsgRequestModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetPatientDetailsRequestModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.AckBroadcastMsgResponseModel;
-import com.example.e5322.thyrosoft.Models.ResponseModels.GetBroadcastsResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.Models.WOERequestModel;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 
 public interface PostAPIInteface {
 
@@ -96,4 +97,19 @@ public interface PostAPIInteface {
 
     @POST("PostBroadCastAck")
     Call<AckBroadcastMsgResponseModel> PostAckBroadcastMsgAPI(@Body AckBroadcastMsgRequestModel requestModel);
+
+    @POST("PaymentGateway.svc/PayTMAccess")
+    Call<PayTmChecksumResponseModel> GetPayTmCheckSum(@Body PayTmChecksumRequestModel payTmChecksumRequestModel);
+
+    @POST("PaymentGateway.svc/PayTMStatus")
+    Call<PaytmVerifyChecksumResponseModel> callPaytmVerifyChecksumAPI(@Body PaytmVerifyChecksumRequestModel requestModel);
+
+    @GET("pickso/api/SRFWOE/GetSRFCovidStatus")
+    Call<COVfiltermodel> getSRFCovidWOEStatus();
+
+    @POST("pickso/api/SRFWOE/GetSRFDetails")
+    Call<Covidmis_response> getSRFcovidWOEmis(@Body CovidMIS_req covidMIS_req);
+
+    @POST("FAQ.svc/getPatients")
+    Call<PatientDetailsAPiResponseModel> CallGetPatientDetailsAPI(@Body GetPatientDetailsRequestModel requestModel);
 }

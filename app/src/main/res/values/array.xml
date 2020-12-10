@@ -11,6 +11,11 @@
         <item>Others</item>
     </string-array>
 
+    <string-array name="scp_entries">
+        <item>Select SCP*</item>
+        <item>HOME</item>
+        <item>DPS</item>
+    </string-array>
 
     <string-array name="Patientsagespinner">
         <item>Years</item>
@@ -18,17 +23,14 @@
         <item>Days</item>
     </string-array>
 
-
     <string-array name="Patientspinyrday">
         <item>Years</item>
         <item>Days</item>
     </string-array>
 
-
     <string-array name="Patientspinyr">
         <item>Years</item>
     </string-array>
-
 
     <string-array name="hours">
         <item>01</item>

@@ -44,11 +44,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
@@ -242,7 +242,7 @@ public class RateCalculatorFragment extends Fragment {
         myPojo = gson.fromJson(json, MyPojo.class);
         if (myPojo != null) {
             getBrandName = new ArrayList<>();
-            if (myPojo != null && myPojo.getMASTERS()!=null) {
+            if (myPojo != null && myPojo.getMASTERS() != null) {
                 if (myPojo.getMASTERS().getBRAND_LIST() != null) {
                     for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
                         getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
@@ -814,10 +814,10 @@ public class RateCalculatorFragment extends Fragment {
                         }
                     } else {
 //                        locationsList = new ArrayList<>();
-                        boolean isCOVIDPresent = false;
-                        /*for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
+                        /*boolean isWC2020Present = false;
+                        for (int i = 0; i < selectedTestsListRateCal.size(); i++) {
                             if (Global.checkHardcodeTest(selectedTestsListRateCal.get(i).getCode())) {
-                                isCOVIDPresent = true;
+                                isWC2020Present = true;
                                 break;
                             }
                         }*/
@@ -842,7 +842,11 @@ public class RateCalculatorFragment extends Fragment {
                                 /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                     CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
                                 } else {*/
-                            B2B_RATE = B2B_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                            if (Global.checkHardcodeTest(selectedTestsListRateCal.get(j).getCode())) {
+                                HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                            } else {
+                                B2B_RATE = B2B_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
+                            }
                             /*}*/
                             /*}*/
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
@@ -860,14 +864,14 @@ public class RateCalculatorFragment extends Fragment {
                         }
                         try {
                             System.out.println("B2B_RATE value :" + B2B_RATE);
-                            System.out.println("HARDCODE_CPL_RATE value :" + HARDCODE_CPL_RATE);
+                            System.out.println("HARDCODE value :" + HARDCODE_CPL_RATE);
                             //todo calculate the amount as per rate percent
-                            B2B_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
+                            B2B_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE);
                             System.out.println("RPL_RATE value :" + RPL_RATE);
                             /*if (locationsList != null && locationsList.contains("1") && locationsList.contains("0")) {
                                 RPL_RATE = CPL_RATE;
                             } else {
-                                RPL_RATE = calcAmount(RPL_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
+                                RPL_RATE = calcAmount(RPL_RATE, HARDCODE_CPL_RATE, isWC2020Present);
                             }*/
                             show_rpl_rates.setText("" + RPL_RATE);
                             System.out.println("Calculated B2B rate with per :" + B2B_RATE);
@@ -921,34 +925,24 @@ public class RateCalculatorFragment extends Fragment {
         manageCPLRPLView();
     }
 
-    private int calcAmount(int RATE, int HARDCODE_CPL_RATE, boolean isCOVIDPresent) {
+    private int calcAmount(int RATE, int HARDCODE_CPL_RATE) {
         try {
             float aFloat = Float.parseFloat(String.valueOf(RATE));
-            if (isCOVIDPresent) {
-                if (rate_percent > 0) {
-                    float per_amt = ((aFloat / 100) * 10);
-                    System.out.println("Calculated 10 percent rate :" + per_amt);
-                    int per_amt1 = Math.round(per_amt);
-                    RATE = RATE + per_amt1;
-                }
+            float per_amt = ((aFloat / 100) * rate_percent);
+            System.out.println("Calculated percent rate :" + per_amt);
+            int per_amt1 = Math.round(per_amt);
+            if (per_amt1 < max_amt) {
+                RATE = RATE + per_amt1;
             } else {
-                float per_amt = ((aFloat / 100) * rate_percent);
-                System.out.println("Calculated percent rate :" + per_amt);
-                int per_amt1 = Math.round(per_amt);
-                if (per_amt1 < max_amt) {
-                    RATE = RATE + per_amt1;
-                } else {
-                    RATE = RATE + max_amt;
-                }
+                RATE = RATE + max_amt;
             }
-            RATE = RATE + HARDCODE_CPL_RATE;
             //TODO Added logic for TPC client for rates.
             aFloat = Float.parseFloat(String.valueOf(RATE));
-            float per_amt = ((aFloat / 100) * tpc_perc);
-            int tpcrate = Math.round(per_amt);
+            float per_amt2 = ((aFloat / 100) * tpc_perc);
+            int tpcrate = Math.round(per_amt2);
             System.out.println("Calculated TCP Client rate :" + tpcrate);
             RATE = RATE + tpcrate;
-            //TODO Added logic for TPC client for rates.
+            RATE = RATE + HARDCODE_CPL_RATE;
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }

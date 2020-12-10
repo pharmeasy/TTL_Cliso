@@ -3,7 +3,7 @@ package com.example.e5322.thyrosoft.Models;
 import java.io.File;
 
 public class Covidpostdata {
-    String UNIQUEID ;
+    String UNIQUEID;
     String SOURCECODE;
     String AMOUNTCOLLECTED;
     String MOBILE;
@@ -21,12 +21,21 @@ public class Covidpostdata {
     String TestCodeId;
     String CAMPID;
     String PPEBARCODE;
-    File PRESCRIPTION ;
-    File ADHAR ;
+    String SRFID;
+    String PATIENTADDRESS;
+    String PATIENTPINCODE;
+    String SCP;
+    String COLLECTIONADDRESS;
+    String COLLECTIONPINCODE;
+    String SPECIMENDATE;
+    String SPECIMENTIME;
+    String AGETYPE;
+    File PRESCRIPTION;
+    File ADHAR;
     File ADHAR1;
     File TRF;
     File TRF1;
-    File VIAIMAGE;
+    File VIALIMAGE;
     File OTHER;
     File OTHER1;
     File SELFIE;
@@ -166,7 +175,7 @@ public class Covidpostdata {
     }
 
     public File getVIAIMAGE() {
-        return VIAIMAGE;
+        return VIALIMAGE;
     }
 
     public void setOTHER(File OTHER) {
@@ -174,7 +183,7 @@ public class Covidpostdata {
     }
 
     public void setVIAIMAGE(File VIAIMAGE) {
-        this.VIAIMAGE = VIAIMAGE;
+        this.VIALIMAGE = VIAIMAGE;
     }
 
     public String getUNIQUEID() {
@@ -248,4 +257,77 @@ public class Covidpostdata {
     public void setTRF(File TRF) {
         this.TRF = TRF;
     }
+
+    public String getSRFID() {
+        return SRFID;
+    }
+
+    public void setSRFID(String SRFID) {
+        this.SRFID = SRFID;
+    }
+
+    public String getPATIENTADDRESS() {
+        return PATIENTADDRESS;
+    }
+
+    public void setPATIENTADDRESS(String PATIENTADDRESS) {
+        this.PATIENTADDRESS = PATIENTADDRESS;
+    }
+
+    public String getPATIENTPINCODE() {
+        return PATIENTPINCODE;
+    }
+
+    public void setPATIENTPINCODE(String PATIENTPINCODE) {
+        this.PATIENTPINCODE = PATIENTPINCODE;
+    }
+
+    public String getSCP() {
+        return SCP;
+    }
+
+    public void setSCP(String SCP) {
+        this.SCP = SCP;
+    }
+
+    public String getCOLLECTIONADDRESS() {
+        return COLLECTIONADDRESS;
+    }
+
+    public void setCOLLECTIONADDRESS(String COLLECTIONADDRESS) {
+        this.COLLECTIONADDRESS = COLLECTIONADDRESS;
+    }
+
+    public String getCOLLECTIONPINCODE() {
+        return COLLECTIONPINCODE;
+    }
+
+    public void setCOLLECTIONPINCODE(String COLLECTIONPINCODE) {
+        this.COLLECTIONPINCODE = COLLECTIONPINCODE;
+    }
+
+    public String getSPECIMENDATE() {
+        return SPECIMENDATE;
+    }
+
+    public void setSPECIMENDATE(String SPECIMENDATE) {
+        this.SPECIMENDATE = SPECIMENDATE;
+    }
+
+    public String getSPECIMENTIME() {
+        return SPECIMENTIME;
+    }
+
+    public void setSPECIMENTIME(String SPECIMENTIME) {
+        this.SPECIMENTIME = SPECIMENTIME;
+    }
+
+    public String getAGETYPE() {
+        return AGETYPE;
+    }
+
+    public void setAGETYPE(String AGETYPE) {
+        this.AGETYPE = AGETYPE;
+    }
+
 }

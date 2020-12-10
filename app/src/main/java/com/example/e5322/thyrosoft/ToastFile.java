@@ -69,6 +69,8 @@ public class ToastFile {
     public static String ent_loc = "Please enter your interested location";
     public static String ent_addr = "Enter correct Address";
     public static String crt_pincode = "Enter correct Pincode";
+    public static String patient_crt_pincode = "Enter correct patient pincode";
+    public static String coll_crt_pincode = "Enter correct collection pincode";
     public static String ent_state = "Enter correct state";
     public static String ent_city = "Enter correct city";
     public static String ent_country = "Enter correct country";
@@ -89,6 +91,8 @@ public class ToastFile {
     public static String sct_grt_than_crnt_tm = "SCT should not be greater than current time";
     public static String sct_blank = "SCT should not be blank";
     public static String crt_addr = "Please enter correct address";
+    public static String patient_crt_addr = "Enter correct patient address";
+    public static String coll_crt_addr = "Enter correct collection address";
     public static String addre25long = "Address should be 25 characters long";
     public static String btech_name = "Please select Btech name";
     public static String crt_kyc_num = "Please enter correct KYC number";
@@ -182,4 +186,9 @@ public class ToastFile {
     public static String SELECT_TRFDHIMAGE = "Upload the Trf image";
     public static String SELECT_VIALDHIMAGE = "Upload the Vial image";
     public static String AGE_SHOULD_BE_BETWEEN_1_TO_120 = "Age should be between 1 to 120";
+    public static String PAYTM_REDITECTION = "Redirecting to payment gateway.Please wait..";
+    public static String NETWORK_NOT_AVAILABLE = "Network not available";
+    public static String PAYMENT_TRANSACTION_FAILED = "Payment transaction failed";
+    public static String TRANSACTION_CANCELLED = "Transaction cancelled.";
+    public static String SELECT_VALID_COLL_TIME = "Select valid collection time";
 }

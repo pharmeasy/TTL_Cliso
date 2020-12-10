@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.os.Build;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -13,28 +12,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.StartCheckoutEvent;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Locale;
-
-import static com.example.e5322.thyrosoft.API.Api.BASE_URL_TOCHECK;
-import static com.example.e5322.thyrosoft.API.Constants.MAINURL;
-import static com.example.e5322.thyrosoft.API.Constants.PAYUMONEYKEY_AMOUNT;
-import static com.example.e5322.thyrosoft.API.Constants.PAYUMONEYKEY_PRODUCT;
 
 /**
  * Created by e5426@thyrocare.com on 12/1/18.
@@ -61,8 +48,6 @@ public class Global {
     public static int searchgetcontext = 0;
     public static String UserName_Profile = "";
     public static int mainActivity = 0;
-    public static String BASE_URL = MAINURL;
-    public static String SERVER_BASE_API_URL_PROD = BASE_URL.equals(BASE_URL_TOCHECK) ? "http://techso.thyrocare.cloud/techsoapi" : "http://techsostng.thyrocare.cloud/techsoapi";
     public static String B2B = "";
     public static String B2C = "";
     public static String sampletype;
@@ -96,29 +81,14 @@ public class Global {
     }
 
     public static boolean checkHardcodeTest(String testCode) {
-        if (!GlobalClass.isNull(testCode) && testCode.equalsIgnoreCase(Constants.P690) || testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE) || testCode.equalsIgnoreCase(Constants.CAGCA)) {
-            return true;
-        }
-        return false;
+        /*|| testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE) || testCode.equalsIgnoreCase(Constants.CAGCA)*/
+        return !GlobalClass.isNull(testCode) && testCode.equalsIgnoreCase(Constants.WC2020);
     }
 
     public static boolean checkCovidTest(int flag) {
         return flag == 1;
     }
 
-    public void StartCheckout_EVENTLOGGING(JSONObject jobj, int count, String Paytype) {
-        System.out.println("Logging Checkout event in Fabrics!!");
-        try {
-            Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
-                    .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString("rate"))))
-                    .putCurrency(Currency.getInstance("INR"))
-                    .putItemCount(count)
-                    .putCustomAttribute("PayType", Paytype)
-                    .putCustomAttribute("Products", jobj.getString("product")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void setTextview(TextView textview, String msg) {
         try {
@@ -155,20 +125,7 @@ public class Global {
 
     }
 
-    public void StartCheckout_EVENTLOGGING1(JSONObject jobj, int count, String Paytype, String Gateway) {
-        System.out.println("Logging Checkout event in Fabrics!!");
-        try {
-            Answers.getInstance().logStartCheckout(new StartCheckoutEvent()
-                    .putTotalPrice(BigDecimal.valueOf(Double.parseDouble(jobj.getString(PAYUMONEYKEY_AMOUNT))))
-                    .putCurrency(Currency.getInstance("INR"))
-                    .putItemCount(count)
-                    .putCustomAttribute("PayType", Paytype)
-                    .putCustomAttribute("Gateway", Gateway)
-                    .putCustomAttribute("Products", jobj.getString(PAYUMONEYKEY_PRODUCT)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public void setLoadingGIF(Activity activity) {
 		/*InputStream stream = null;

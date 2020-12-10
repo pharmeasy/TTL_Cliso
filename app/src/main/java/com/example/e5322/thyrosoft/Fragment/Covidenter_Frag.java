@@ -45,12 +45,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
@@ -108,7 +102,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     ConnectionDetector cd;
     LinearLayout mainlinear;
     String b2b, b2c;
-    String ERROR, RES_ID, barcode, response1;
     List<String> presclist = new ArrayList<>();
     List<String> aadharlist = new ArrayList<>();
     List<String> trflist = new ArrayList<>();
@@ -184,7 +177,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         if (cd.isConnectingToInternet()) {
             displayrate();
         }
-
     }
 
 
@@ -1043,7 +1035,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         startActivityForResult(intent, PICK_PHOTO_FROM_GALLERY);
     }
 
-
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         ContentValues values = new ContentValues();
@@ -1478,9 +1469,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     }
 
-
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -1775,7 +1763,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         }
 
     }
-
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);

@@ -50,7 +50,6 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.covidpostdata = covidpostdata;
     }
 
-
     public Covidmultipart_controller(CovidEditActivity covidEditActivity, Activity activity, Covidpostdata covidpostdata) {
         this.covidEditActivity = covidEditActivity;
         this.mActivity = activity;

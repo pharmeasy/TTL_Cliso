@@ -712,12 +712,11 @@ public class GlobalClass {
     }
 
 
-    public static String convertDate(String convDate) {
+    public static String convertDate(String convDate, String format) {
         Date date = null;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy hh:mm aa");
+            SimpleDateFormat sdf = new SimpleDateFormat(format);
             date = sdf.parse(convDate);
-//            sdf = new SimpleDateFormat("yyyy-MM-dd");
             convDate = sdf.format(date);
         } catch (ParseException e) {
             e.printStackTrace();

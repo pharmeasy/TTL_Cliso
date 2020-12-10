@@ -37,7 +37,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
@@ -2106,7 +2105,7 @@ public class Consignment_fragment extends RootFragment {
                             getTimetoPass = hourOfDaytoshow + ":" + minutetoshow + " " + format;
 
                             String total_time = getDateToShow + " " + getTimetoPass;
-                            total_time = GlobalClass.convertDate(total_time);
+                            total_time = GlobalClass.convertDate(total_time, "dd-MM-yyyy hh:mm aa");
 
                             dep_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
 
@@ -2190,7 +2189,7 @@ public class Consignment_fragment extends RootFragment {
                             getTimetoPass = hourOfDaytoshow + ":" + minutetoshow + " " + format;
 
                             String total_time = getDateToShow + " " + getTimetoPass;
-                            total_time = GlobalClass.convertDate(total_time);
+                            total_time = GlobalClass.convertDate(total_time, "dd-MM-yyyy hh:mm aa");
 
                             arr_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
                             if (arr_date_time.after(dispatch_date_time) && arr_date_time.after(dep_date_time) && !arr_date_time.equals(dispatch_date_time) && !arr_date_time.equals(dep_date_time)) {
@@ -2296,7 +2295,7 @@ public class Consignment_fragment extends RootFragment {
 //                                dispatch_time.setError(ToastFile.dispt_tm_condition);
                                 } else {
                                     total_time = getDateToShow + " " + getTimetoPass;
-                                    total_time = GlobalClass.convertDate(total_time);
+                                    total_time = GlobalClass.convertDate(total_time, "dd-MM-yyyy hh:mm aa");
 
                                     dispatch_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
 

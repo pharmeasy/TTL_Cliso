@@ -29,6 +29,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -44,6 +45,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -96,7 +98,10 @@ import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
+import com.example.e5322.thyrosoft.Models.RequestModels.GetPatientDetailsRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
@@ -162,22 +167,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     // TODO: Rename and change types of parameters
     public static RequestQueue PostQueOtp;
     public static ArrayList<BCT_LIST> getBtechList;
-    public static InputFilter EMOJI_FILTER = new InputFilter() {
-        ConnectionDetector cd;
 
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            for (int index = start; index < end; index++) {
-
-                int type = Character.getType(source.charAt(index));
-
-                if (type == Character.SURROGATE) {
-                    return "";
-                }
-            }
-            return null;
-        }
-    };
     public static CAMP_LIST[] camp_lists;
     AlertDialog alertDialog;
     DatePickerDialog datePickerDialog;
@@ -194,7 +184,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     LinearLayout lin_ckotp;
     public static String OTPAPPID = "9";
     CountDownTimer yourCountDownTimer = null;
-    EditText name, age, id_for_woe, barcode_woe, pincode_edt;
+    EditText age, id_for_woe, barcode_woe, pincode_edt;
+    AutoCompleteTextView name;
+    ImageView img_restPatientData;
     REF_DR[] ref_drs;
     Brand_type[] brandType;
 
@@ -207,6 +199,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     LinearLayout lin_generate_verify, lin_by_missed;
     TextView tv_timer, tv_resetno, tv_mobileno;
     CountDownTimer countDownTimer;
+    RadioGroup radiogrp2;
 
 
     ImageView male, female, male_red, female_red;
@@ -320,6 +313,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private String outputDateStr;
     private OnFragmentInteractionListener mListener;
     private LocationManager mLocationManager;
+    private ArrayList<PatientDetailsAPiResponseModel.PatientInfoBean> patientDetailAryList;
 
     private InputFilter filter1 = new InputFilter() {
 
@@ -409,6 +403,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     boolean covidacc = false;
     SharedPreferences getshared;
 
+
     public Start_New_Woe() {
         // Required empty public constructor
     }
@@ -454,7 +449,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
 
-        name = (EditText) viewMain.findViewById(R.id.name);
+        name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);
+        img_restPatientData = (ImageView) viewMain.findViewById(R.id.img_restPatientData);
         age = (EditText) viewMain.findViewById(R.id.age);
         id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
         barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
@@ -523,6 +519,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         tv_resetno = viewMain.findViewById(R.id.tv_resetno);
         rel_mobno = viewMain.findViewById(R.id.rel_mobno);
         rel_verify_mobile = viewMain.findViewById(R.id.rel_verify_mobile);
+        radiogrp2 = viewMain.findViewById(R.id.radiogrp2);
 
         lin_generate_verify = viewMain.findViewById(R.id.lin_generate_verify);
         tv_mobileno = viewMain.findViewById(R.id.tv_mobileno);
@@ -648,7 +645,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
-        patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+//        patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
 
         if (GlobalClass.flagToSendfromnavigation == true) {
             GlobalClass.flagToSendfromnavigation = false;
@@ -1405,19 +1402,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
 
-        name.setFilters(new InputFilter[]{EMOJI_FILTER});
-        patientAddress.setFilters(new InputFilter[]{EMOJI_FILTER});
-
-        int maxLength = 40;
-        InputFilter[] FilterArray = new InputFilter[1];
-        FilterArray[0] = new InputFilter.LengthFilter(maxLength);
-        name.setFilters(FilterArray);
-
-        int maxLength1 = 180;
-        InputFilter[] FilterArray1 = new InputFilter[1];
-        FilterArray1[0] = new InputFilter.LengthFilter(maxLength1);
-        patientAddress.setFilters(FilterArray1);
-
         name.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -1795,7 +1779,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private String getOTPFlag() {
-          return getshared.getString("PriOTP", "NO");
+        return getshared.getString("PriOTP", "NO");
     }
 
     private void genrateflow() {
@@ -1890,9 +1874,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             btn_verifyotp.setEnabled(false);
 
                             tv_timer.setVisibility(View.GONE);
-
                             lin_ckotp.setVisibility(View.GONE);
 
+//                            CallAPIToGetPatientDetails();
                             Enablefields();
 
                         }
@@ -1922,15 +1906,139 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     }
 
+    private void CallAPIToGetPatientDetails() {
+        resetpatientFields();
+        final GetPatientDetailsRequestModel requestModel = new GetPatientDetailsRequestModel();
+        requestModel.setApi_key(prefs.getString("API_KEY", ""));
+        requestModel.setMobile(edt_missed_mobile.getText().toString().trim());
+        requestModel.setScode(user);
+
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.LIVEAPI).create(PostAPIInteface.class);
+        Call<PatientDetailsAPiResponseModel> responseModelCall = apiInterface.CallGetPatientDetailsAPI(requestModel);
+        final ProgressDialog progressDialog1 = GlobalClass.ShowprogressDialog(getActivity());
+        responseModelCall.enqueue(new Callback<PatientDetailsAPiResponseModel>() {
+            @Override
+            public void onResponse(Call<PatientDetailsAPiResponseModel> call, retrofit2.Response<PatientDetailsAPiResponseModel> response) {
+                try {
+                    GlobalClass.hideProgress(getActivity(), progressDialog1);
+                    if (response.body() != null) {
+                        PatientDetailsAPiResponseModel responseModel = response.body();
+                        if (!GlobalClass.isNull(responseModel.getResId()) && responseModel.getResId().equalsIgnoreCase(Constants.RES0000) && responseModel.getPatientInfo() != null && responseModel.getPatientInfo().size() > 0) {
+                            patientDetailAryList = responseModel.getPatientInfo();
+                            SetAutoCompleteViewAdapterToView(true);
+                        }
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PatientDetailsAPiResponseModel> call, Throwable t) {
+                GlobalClass.hideProgress(getActivity(), progressDialog1);
+            }
+        });
+    }
+
+    // TODO Tejas
+    private void SetAutoCompleteViewAdapterToView(boolean applyLogic) {
+        name.setAdapter(null);
+        resetpatientFields();
+        Constants.selectedPatientData = null;
+        if (applyLogic) {
+            if (patientDetailAryList != null && patientDetailAryList.size() > 0) {
+                ArrayAdapter<PatientDetailsAPiResponseModel.PatientInfoBean> adapter = new ArrayAdapter<PatientDetailsAPiResponseModel.PatientInfoBean>(mContext, android.R.layout.simple_dropdown_item_1line, patientDetailAryList);
+                name.setAdapter(adapter);
+                name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                        if (patientDetailAryList != null && patientDetailAryList.size() > position) {
+                            Constants.selectedPatientData = new PatientDetailsAPiResponseModel.PatientInfoBean();
+                            Constants.selectedPatientData = patientDetailAryList.get(position);
+                            AutoFillPatientDetails(Constants.selectedPatientData);
+                        } else {
+                            resetpatientFields();
+                        }
+                    }
+                });
+
+                name.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        name.showDropDown();
+                        return false;
+                    }
+                });
+            }
+        }
+
+    }
+
+    private void AutoFillPatientDetails(PatientDetailsAPiResponseModel.PatientInfoBean selectedPatientData) {
+
+        name.setEnabled(false);
+        img_restPatientData.setVisibility(View.VISIBLE);
+        img_restPatientData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetpatientFields();
+            }
+        });
+
+        int AgeOfPatient = DateUtils.getAgeFromDate(selectedPatientData.getDOB(), "dd/MM/yyyy hh:mm:ss a");
+        if (AgeOfPatient > 0) {
+            GlobalClass.SetText(age, "" + AgeOfPatient);
+        }
+        GlobalClass.SetText(patientAddress, selectedPatientData.getAddress());
+        GlobalClass.SetText(pincode_edt, selectedPatientData.getPincode());
+
+
+        if (!GlobalClass.isNull(selectedPatientData.getGender())) {
+            if (selectedPatientData.getGender().equalsIgnoreCase("M")) {
+                genderId = true;
+                saveGenderId = "M";
+                male_red.setVisibility(View.VISIBLE);
+                female.setVisibility(View.VISIBLE);
+                female_red.setVisibility(View.GONE);
+                male.setVisibility(View.GONE);
+            } else if (selectedPatientData.getGender().equalsIgnoreCase("F")) {
+                genderId = false;
+                saveGenderId = "F";
+                male_red.setVisibility(View.GONE);
+                female.setVisibility(View.GONE);
+                female_red.setVisibility(View.VISIBLE);
+                male.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private void resetpatientFields() {
+        Constants.selectedPatientData = null;
+        img_restPatientData.setVisibility(View.GONE);
+        name.setEnabled(true);
+        name.setText("");
+        GlobalClass.SetText(age, "");
+        GlobalClass.SetText(patientAddress, "");
+        GlobalClass.SetText(pincode_edt, "");
+
+        genderId = false;
+        saveGenderId = "";
+        male_red.setVisibility(View.GONE);
+        female_red.setVisibility(View.GONE);
+
+        male.setVisibility(View.VISIBLE);
+        female.setVisibility(View.VISIBLE);
+    }
+    // TODO Tejas
+
     private void disablefields() {
 
         rel_verify_mobile.setVisibility(View.VISIBLE);
         tv_verifiedmob.setText(edt_missed_mobile.getText().toString());
-
         lin_by_missed.setVisibility(View.GONE);
-
         tv_mobileno.setVisibility(View.GONE);
-
         edt_missed_mobile.setEnabled(false);
         // btn_generate.setEnabled(false);
         btn_resend.setEnabled(false);
@@ -1938,6 +2046,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         btn_generate.setVisibility(View.GONE);
         lin_generate_verify.setVisibility(View.GONE);
         tv_resetno.setVisibility(View.GONE);
+        radiogrp2.setVisibility(View.GONE);
 
         timerflag = true;
 
@@ -1948,6 +2057,41 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             tv_timer.setVisibility(View.GONE);
         }
 
+    }
+
+    private void resetOTPFields() {
+        Global.OTPVERIFIED = false;
+
+        by_missed.setChecked(true);
+        by_generate.setChecked(false);
+        radiogrp2.setVisibility(View.VISIBLE);
+        btn_generate.setText(getResources().getString(R.string.enterccc));
+
+        edt_missed_mobile.setEnabled(true);
+        edt_missed_mobile.setText("");
+        btn_generate.setVisibility(View.VISIBLE);
+        btn_generate.setEnabled(true);
+        btn_resend.setEnabled(true);
+        lin_generate_verify.setVisibility(View.GONE);
+        lin_by_missed.setVisibility(View.VISIBLE);
+
+        edt_verifycc.setEnabled(true);
+        edt_verifycc.setText("");
+
+        tv_mobileno.setVisibility(View.GONE);
+        tv_mobileno.setText("");
+
+        tv_verifiedmob.setText("");
+        rel_verify_mobile.setVisibility(View.GONE);
+
+        ll_miscallotp.setVisibility(View.GONE);
+
+        timerflag = true;
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            tv_timer.setVisibility(View.GONE);
+        }
     }
 
     private void generateOtP(String mobileno) {
@@ -2081,9 +2225,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         tv_timer.setVisibility(View.GONE);
 
                         lin_ckotp.setVisibility(View.GONE);
-
                         Enablefields();
-
+//                        CallAPIToGetPatientDetails();
                         Toast.makeText(getActivity(), "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     } else {
                         GlobalClass.showCustomToast(getActivity(), response.body().getResponse());
@@ -2105,6 +2248,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         brand_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
                 if (position == 0) {
                     ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
                     adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -2113,6 +2257,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                     selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                            resetOTPFields();
+                            SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
+
                             Global.OTPVERIFIED = false;
                             vial_number.getText().clear();
                             id_for_woe.getText().clear();
@@ -2862,7 +3010,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                                     } else {
 
-                                                        if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
                                                             getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                         }
 
@@ -3731,6 +3879,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                resetOTPFields();
+                                SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
 
                                     try {
@@ -4529,6 +4679,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                resetOTPFields();
+                                SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
                                     samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
                                     et_mobno.getText().clear();
@@ -4855,7 +5007,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     saveDetails.commit();
                                                 }
                                             }
-
 
                                         }
                                     });
@@ -5590,6 +5741,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                resetOTPFields();
+                                SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
                                 if (selectTypeSpinner.getSelectedItemPosition() == 0) {
 
                                     Enablefields();
@@ -8055,6 +8208,4 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         });
 
     }
-
-
 }

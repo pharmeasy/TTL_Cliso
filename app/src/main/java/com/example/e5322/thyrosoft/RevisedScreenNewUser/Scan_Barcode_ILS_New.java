@@ -146,7 +146,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     ArrayList<String> saveLocation;
-//    ArrayList<String> rateWiseLocation;
+    //    ArrayList<String> rateWiseLocation;
     ArrayList<TRFModel> trflist = new ArrayList<>();
     RadioGroup location_radio_grp;
     RadioButton cpl_rdo, rpl_rdo;
@@ -715,7 +715,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
                             } else {*/
-                        B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        if (Global.checkHardcodeTest(selctedTest.get(i).getCode())) {
+                            HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        } else {
+                            B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        }
+
                            /*}
                         }*/
 
@@ -738,7 +743,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than total amount", Toast.LENGTH_SHORT).show();
-                    } else if (!checkRateVal(isCOVIDPresent)) {
+                    } else if (!checkRateVal()) {
 
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
@@ -772,7 +777,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         });
     }
 
-    private boolean checkRateVal(boolean isCOVIDPresent) {
+    private boolean checkRateVal() {
         //TODO commented to hide CPL RPL logic as per input 12-10-2020
         /*if (rateWiseLocation != null && rateWiseLocation.size() > 0) {
             if (rateWiseLocation.contains("CPL") && rateWiseLocation.contains("RPL")) {
@@ -790,12 +795,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     return false;
                 }
             } else if (rateWiseLocation.contains("CPL")) {*/
-                B2B_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE, isCOVIDPresent);
-                System.out.println("Calculated CPL rate :" + B2B_RATE);
-                if (Integer.parseInt(getCollectedAmt) < B2B_RATE) {
-                    Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + B2B_RATE, Toast.LENGTH_SHORT).show();
-                    return false;
-                }
+        B2B_RATE = calcAmount(B2B_RATE, HARDCODE_CPL_RATE);
+        System.out.println("Calculated CPL rate :" + B2B_RATE);
+        if (Integer.parseInt(getCollectedAmt) < B2B_RATE) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, getResources().getString(R.string.amtcollval) + " " + B2B_RATE, Toast.LENGTH_SHORT).show();
+            return false;
+        }
             /*} else {
                 Toast.makeText(Scan_Barcode_ILS_New.this, "Location is blank for selected products", Toast.LENGTH_SHORT).show();
                 return false;
@@ -808,35 +813,25 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         return true;
     }
 
-    private int calcAmount(int RATE, int HARDCODE_CPL_RATE, boolean isCOVIDPresent) {
+    private int calcAmount(int RATE, int HARDCODE_CPL_RATE) {
         try {
             float aFloat = Float.parseFloat(String.valueOf(RATE));
-            if (isCOVIDPresent) {
-                if (rate_percent > 0) {
-                    float per_amt = ((aFloat / 100) * 10);
-                    System.out.println("Calculated 10 percent rate :" + per_amt);
-                    int per_amt1 = Math.round(per_amt);
-                    RATE = RATE + per_amt1;
-                }
+            float per_amt = ((aFloat / 100) * rate_percent);
+            System.out.println("Calculated percent rate :" + per_amt);
+            int per_amt1 = Math.round(per_amt);
+            if (per_amt1 < max_amt) {
+                RATE = RATE + per_amt1;
             } else {
-                float per_amt = ((aFloat / 100) * rate_percent);
-                System.out.println("Calculated percent rate :" + per_amt);
-                int per_amt1 = Math.round(per_amt);
-                if (per_amt1 < max_amt) {
-                    RATE = RATE + per_amt1;
-                } else {
-                    RATE = RATE + max_amt;
-                }
+                RATE = RATE + max_amt;
             }
-            RATE = RATE + HARDCODE_CPL_RATE;
-
             //TODO Added logic for TPC client for rates.
             aFloat = Float.parseFloat(String.valueOf(RATE));
-            float per_amt = ((aFloat / 100) * tpc_perc);
-            int tpcrate = Math.round(per_amt);
+            float per_amt2 = ((aFloat / 100) * tpc_perc);
+            int tpcrate = Math.round(per_amt2);
             System.out.println("Calculated TCP Client rate :" + tpcrate);
             RATE = RATE + tpcrate;
             //TODO Added logic for TPC client for rates.
+            RATE = RATE + HARDCODE_CPL_RATE;
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -969,9 +964,17 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 woe.setCAMP_ID(getcampIDtoPass);
                 woe.setCONT_PERSON("");
                 woe.setCONTACT_NO(kycinfo);
-                woe.setCUSTOMER_ID("");
+                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
+                    woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
+                } else {
+                    woe.setCUSTOMER_ID("");
+                }
+                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
+                    woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
+                } else {
+                    woe.setEMAIL_ID("");
+                }
                 woe.setDELIVERY_MODE(2);
-                woe.setEMAIL_ID("");
                 woe.setENTERED_BY(user);
                 woe.setGENDER(saveGenderId);
                 woe.setLAB_ADDRESS(labAddress);

@@ -50,11 +50,5 @@ class KTRetrofitClient {
         return retrofit
     }
 
-    fun retro(): Retrofit? {
-        retrofit = Retrofit.Builder()
-                .baseUrl(Global.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        return retrofit
-    }
+
 }

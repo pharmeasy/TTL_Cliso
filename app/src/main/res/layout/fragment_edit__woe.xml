@@ -164,7 +164,7 @@
                     android:layout_margin="1dp"
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/background_edt"
-                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+                    android:digits="@string/Namevalidation"
                     android:hint="ENTER YOUR NAME"
                     android:inputType="textCapCharacters"
                     android:maxLength="50"

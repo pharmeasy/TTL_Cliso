@@ -7,12 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -31,12 +30,21 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.VerifyPayTmChecksumController;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
+import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
 import com.google.gson.Gson;
-import com.payu.india.Extras.PayUChecksum;
+import com.paytm.pgsdk.PaytmOrder;
+import com.paytm.pgsdk.PaytmPGService;
+import com.paytm.pgsdk.PaytmPaymentTransactionCallback;
 import com.payu.india.Model.PaymentParams;
 import com.payu.india.Model.PayuConfig;
 import com.payu.india.Model.PayuHashes;
@@ -64,6 +72,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -110,46 +119,30 @@ import static com.example.e5322.thyrosoft.API.Constants.UPDATE_PAYMENT_URL;
 
 public class Payment_Activity extends AppCompatActivity {
 
-    private static Activity context;
-    //  private static Global globalData;
-    private static androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder1;
+    private Activity mActivity;
     public String merchantKey = "", userCredentials;
     public String closing_balance_pref;
     TextView txt_minamt, txt_mulamt, txt_tsp_name, title;
     Button btn_payu;
-    ImageView back, home;
+    ImageView back, home, img_add_money_payTm, img_add_money_payU;
     EditText edt_enter_amt, edt_closing_bal, et_avg_bill, et_per_day;
     ConnectionDetector cd;
     String name_tsp, user, passwrd, access, api_key, email_id, email_pref, mobile_pref, address_pref, pincode_pref, usercode, billavg, dayavg;
-    androidx.appcompat.app.AlertDialog.Builder alertDialogBuilder;
-    String strProductsName = "", strProductsPrice = "", strBenCount = "1", strReportCharge = "no", strPayType = "", strReportCode = "", strMaleTest = "";
-    String strCollectCharg = "0", strVisitChrg = "0", strPayAmount = "0";
-    String strOrderNo = "";
-    int ben_count = 0;
     Double CBamount = 0.0;
-    private boolean flag_for_same_orderno = false;
     private int tlog_paymentrequest_status_code = 0;
     private int updatepayment_status_code = 0;
-    private int buttonclickFlag = 0;
-    private boolean isemailvalid = false;
     // These will hold all the payment parameters
     private PaymentParams mPaymentParams;
     // This sets the configuration
     private PayuConfig payuConfig;
     // Used when generating hash from SDK
-    private PayUChecksum checksum;
-    private String _appointmentDate, _displaydate, _displaytime, _pinCode, _strTID, _straddress, _strlandmark, _access_token, _merchantid, _orderid, _curreny, _amount, _redirect_url, _cancel_url, _rsa_key_url, _responsedata;
     private String amountTopass;
     private Global globalClass;
-    private String appointmentDate;
-    private String dataToSave;
     private String TAG = Payment_Activity.class.getSimpleName().toString();
-    private String randomTid;
     private RequestQueue PostQueOtp;
     private Double Today_bill;
     private String RESPONSE;
     private String ordno;
-    private boolean flagForOnce = false;
     private String COME_FROM_SCREEN = "";
     private String unbillwoe, unbillmt, crd_amt;
 
@@ -158,6 +151,9 @@ public class Payment_Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_);
+
+        mActivity = Payment_Activity.this;
+        globalClass = new Global(mActivity);
 
         title = (TextView) findViewById(R.id.title);
         txt_minamt = (TextView) findViewById(R.id.txt_minamt);
@@ -171,6 +167,8 @@ public class Payment_Activity extends AppCompatActivity {
 
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
+        img_add_money_payTm = (ImageView) findViewById(R.id.img_add_money_payTm);
+        img_add_money_payU = (ImageView) findViewById(R.id.img_add_money_payU);
 
         Payu.setInstance(this);
         int environment = PayuConstants.STAGING_ENV;
@@ -210,7 +208,6 @@ public class Payment_Activity extends AppCompatActivity {
 
         getProfileDetails();
 
-        //globalData = new Global(Payment_Activity.this);
         title.setText("Online Payment");
         txt_minamt.setText("\u2022 " + Html.fromHtml("Minimum amount to be paid 5000"));
         txt_mulamt.setText("\u2022 " + Html.fromHtml("Amount needs to be paid in multiples of 5000"));
@@ -249,7 +246,6 @@ public class Payment_Activity extends AppCompatActivity {
             }
         });
 
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -265,155 +261,69 @@ public class Payment_Activity extends AppCompatActivity {
             }
         });
 
-
-      /*  btn_payu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                amountTopass = edt_enter_amt.getText().toString();
-                if (amountTopass.equals("")) {
-                    Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
-                } else {
-                    int getAmt = Integer.parseInt(edt_enter_amt.getText().toString());
-                    int modulus = getAmt % 5000;
-                    System.out.println("getAmount ::" + modulus);
-
-                    if (getAmt < 5000) {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText(getString(R.string.amt_str))
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    } else if (modulus != 0) {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText(getString(R.string.multiple_amt))
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    } else {
-                        if (cd.isConnectingToInternet()) {
-                            globalData.showProgressDialog();
-                            try {
-                                PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
-                                JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.GET, Api.GenerateId + api_key + "/TSP/Generatedordnum", new com.android.volley.Response.Listener<JSONObject>() {
-                                    public String RES_ID;
-
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        globalData.hideProgressDialog();
-                                        try {
-                                            Log.e(TAG, "onResponse: " + response);
-                                            String finalJson = response.toString();
-                                            JSONObject parentObjectOtp = new JSONObject(finalJson);
-                                            RESPONSE = parentObjectOtp.getString("RESPONSE");
-                                            RES_ID = parentObjectOtp.getString("RES_ID");
-                                            ordno = parentObjectOtp.getString("ordno");
-
-                                            if (RESPONSE.equals("SUCCESS")) {
-                                                startPayUTransaction(name_tsp, "", amountTopass, ordno);
-                                            } else {
-
-                                            }
-
-                                        } catch (JSONException e) {
-
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, new com.android.volley.Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        globalData.hideProgressDialog();
-                                        if (error != null) {
-                                        } else {
-                                            globalData.hideProgressDialog();
-                                            System.out.println(error);
-                                        }
-                                    }
-                                });
-                                PostQueOtp.add(jsonObjectRequest1);
-                                Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }
-
-
-                }
-
-            }
-        });*/
-
-
         btn_payu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                amountTopass = edt_enter_amt.getText().toString();
-
-                Log.e(TAG, "Entered Amount ----->" + amountTopass);
-
-                Log.e(TAG, "CB Amount ----->" + CBamount);
-
-                if (amountTopass.equals("")) {
-                    Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
-                } else if (CBamount < Constants.PAYAMOUNT) {
-
-                    if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
-                        gotopayGatway();
-                    } else {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText(getString(R.string.amt_str))
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    }
-
-                } else if (Constants.PAYAMOUNT <= CBamount) {
-                    if (Integer.parseInt(amountTopass) >= CBamount) {
-                        gotopayGatway();
-                    } else {
-                        new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
-                                .setContentText("Enter Minimum Amount of Rs " + CBamount + " to Proceed")
-                                .setConfirmText("Ok")
-                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                    @Override
-                                    public void onClick(SweetAlertDialog sDialog) {
-                                        sDialog.dismissWithAnimation();
-                                    }
-                                })
-                                .show();
-                    }
-
-                }
-
+                proceedWithPayment("");
             }
-
         });
 
+        img_add_money_payU.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                proceedWithPayment("payU");
+            }
+        });
+
+        img_add_money_payTm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                proceedWithPayment("payTm");
+            }
+        });
     }
 
-    private void gotopayGatway() {
+    private void proceedWithPayment(String gateway) {
+        amountTopass = edt_enter_amt.getText().toString();
+        Log.e(TAG, "Entered Amount ----->" + amountTopass);
+        Log.e(TAG, "CB Amount ----->" + CBamount);
+        if (amountTopass.equals("")) {
+            Toast.makeText(Payment_Activity.this, "Please enter amount", Toast.LENGTH_SHORT).show();
+        } else if (CBamount < Constants.PAYAMOUNT) {
+            if (Integer.parseInt(amountTopass) >= Constants.PAYAMOUNT) {
+                gotopayGatway(gateway);
+            } else {
+                new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
+                        .setContentText(getString(R.string.amt_str))
+                        .setConfirmText("Ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+        } else if (Constants.PAYAMOUNT <= CBamount) {
+            if (Integer.parseInt(amountTopass) >= CBamount) {
+                gotopayGatway(gateway);
+            } else {
+                new SweetAlertDialog(Payment_Activity.this, SweetAlertDialog.WARNING_TYPE)
+                        .setContentText("Enter Minimum Amount of Rs " + CBamount + " to Proceed")
+                        .setConfirmText("Ok")
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
+    private void gotopayGatway(final String gateway) {
         if (cd.isConnectingToInternet()) {
-            //globalData.showProgressDialog();
             final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
             try {
                 PostQueOtp = GlobalClass.setVolleyReq(Payment_Activity.this);
@@ -423,7 +333,6 @@ public class Payment_Activity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        // globalData.hideProgressDialog();
                         GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
                         try {
                             Log.e(TAG, "onResponse: " + response);
@@ -432,11 +341,13 @@ public class Payment_Activity extends AppCompatActivity {
                             RESPONSE = parentObjectOtp.getString("RESPONSE");
                             RES_ID = parentObjectOtp.getString("RES_ID");
                             ordno = parentObjectOtp.getString("ordno");
-
-                            if (RESPONSE.equals("SUCCESS")) {
-                                startPayUTransaction(name_tsp, "", amountTopass, ordno);
+                            if (!GlobalClass.isNull(RESPONSE) && RESPONSE.equals("SUCCESS")) {
+                                if (gateway.equalsIgnoreCase("payU")) {
+                                    startPayUTransaction(name_tsp, "", amountTopass, ordno);
+                                } else if (gateway.equalsIgnoreCase("payTm")) {
+                                    generatePayTmChecksum(amountTopass, ordno);
+                                }
                             }
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -444,28 +355,21 @@ public class Payment_Activity extends AppCompatActivity {
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        //globalData.hideProgressDialog();
                         GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
-                        if (error != null) {
-                        } else {
-                            //   globalData.hideProgressDialog();
-                            GlobalClass.hideProgress(Payment_Activity.this, progressDialog);
-                            System.out.println(error);
-                        }
                     }
                 });
                 PostQueOtp.add(jsonObjectRequest1);
+                GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
                 Log.e(TAG, "SendFeedbackToAPI: url" + jsonObjectRequest1);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PayuConstants.PAYU_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -893,8 +797,10 @@ public class Payment_Activity extends AppCompatActivity {
                                 postdata.put(GATEWAY, PAYUMONEY_REQUEST);
 
                                 new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            } else
+                            } else {
                                 GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            }
+
                             launchSdkUI(payuHashes);// Start PayU transaction request.
 
                         } else {
@@ -1068,9 +974,8 @@ public class Payment_Activity extends AppCompatActivity {
                 strJson = jobj.toString();
                 System.out.println("Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
-               // httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
                 httpPost.setEntity(se);
-                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT, Constants.APPNAME + "/" + GlobalClass.getversioncode(mActivity) + "(" + GlobalClass.getversioncode(mActivity) + ")" + GlobalClass.getSerialnum(mActivity));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -1116,36 +1021,17 @@ public class Payment_Activity extends AppCompatActivity {
                         if (mPayU_response.getString("status").equalsIgnoreCase("SUCCESS")) {
                             postdata.put(CLIENT_STATUS, SUCCESS);
                             postdata.put(PAYMENTSTATUS, SUCCESS);
-                            if (cd.isConnectingToInternet()) {
-                                flag_for_same_orderno = false;// this flag is to use same order no if transaction fails
-                                new AsyncTaskupdatepaymentstatus(postdata, SUCCESS).execute();
-                            } else {
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
-                            }
+                            callResponseLogAPI(postdata, SUCCESS);
                         } else {
                             postdata.put(CLIENT_STATUS, FAILURE);
                             postdata.put(PAYMENTSTATUS, FAILURE);
-                            if (cd.isConnectingToInternet()) {
-                                flag_for_same_orderno = true; // this flag is to use same order no transaction fails
-                                new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
-                            } else {
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
-                            }
+                            callResponseLogAPI(postdata, FAILURE);
                         }
-
-
                     } else {
                         postdata.put(CLIENT_STATUS, FAILURE);
                         postdata.put(PAYMENTSTATUS, FAILURE);
-                        if (cd.isConnectingToInternet()) {
-                            flag_for_same_orderno = true; // this flag is to use same order no transaction fails
-                            new AsyncTaskupdatepaymentstatus(postdata, FAILURE).execute();
-                        } else {
-                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
-                        }
-
+                        callResponseLogAPI(postdata, FAILURE);
                     }
-
                 }
 
             } catch (Exception e) {
@@ -1194,7 +1080,7 @@ public class Payment_Activity extends AppCompatActivity {
                 System.out.println("Sending data: " + strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
-                httpPost.setHeader(Constants.HEADER_USER_AGENT+"/", Constants.APPNAME + "/" + GlobalClass.getversioncode(context) + "(" + GlobalClass.getversioncode(context) + ")" + GlobalClass.getSerialnum(context));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT, Constants.APPNAME + "/" + GlobalClass.getversioncode(mActivity) + "(" + GlobalClass.getversioncode(mActivity) + ")" + GlobalClass.getSerialnum(mActivity));
                 httpPost.setHeader("Accept", "application/json");
                 httpPost.setHeader("Content-type", "application/json");
                 HttpResponse httpResponse = httpclient.execute(httpPost);
@@ -1245,12 +1131,9 @@ public class Payment_Activity extends AppCompatActivity {
                             if (paymentstatus.equalsIgnoreCase(SUCCESS)) {
                                 Toast.makeText(Payment_Activity.this, "Transaction successful...", Toast.LENGTH_SHORT).show();
                                 edt_enter_amt.setText("");
-                                System.out.println("Success " + result.toString());
                             } else {
-                                Toast.makeText(context, "Transaction failed.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mActivity, "Transaction failed.", Toast.LENGTH_SHORT).show();
                             }
-
-
                         } else {
                             System.out.println("Dictionary_Array is null ");
                             Toast.makeText(Payment_Activity.this, "UNSUCCESSFUL ", Toast.LENGTH_SHORT).show();
@@ -1266,6 +1149,225 @@ public class Payment_Activity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void generatePayTmChecksum(String amountTopass, String ordno) {
+        try {
+            PayTmChecksumRequestModel payTmChecksumRequestModel = new PayTmChecksumRequestModel();
+            payTmChecksumRequestModel.setApi_key(APIKEYFORPAYMENTGATEWAY_PAYU);
+            payTmChecksumRequestModel.setTxtAmount(amountTopass);
+            payTmChecksumRequestModel.setTxtORDID(ordno);
+            payTmChecksumRequestModel.setType("GENCHECKSUM");
+            payTmChecksumRequestModel.setTxtMobile(mobile_pref);
+            payTmChecksumRequestModel.setTxtCustID(mobile_pref);
+            payTmChecksumRequestModel.setTxtEmail(email_id);
+            if (Api.THYROCARE.contains("APIs")) {
+                payTmChecksumRequestModel.setTxtCallBack(Constants.CALLBACK_URL + ordno);
+            } else {
+                payTmChecksumRequestModel.setTxtCallBack(Constants.CALLBACK_URL);
+            }
+            payTmChecksumRequestModel.setTxtWebsite(Constants.WEBSITE);
+            payTmChecksumRequestModel.setTxtINDID(Constants.INDUSTRY_TYPE_ID);
+
+            if (cd.isConnectingToInternet()) {
+                GeneratePayTMchecksum generatePayTMchecksum = new GeneratePayTMchecksum(this);
+                generatePayTMchecksum.CallAPI(payTmChecksumRequestModel);
+            } else {
+                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getChecksumResponse(PayTmChecksumResponseModel responseModel, String txtAmount, String txtORDID) {
+        if (!GlobalClass.isNull(responseModel.getRES_ID()) && responseModel.getRES_ID().equalsIgnoreCase(Constants.RES0001)) {
+            if (!GlobalClass.isNull(responseModel.getEncCheckSum())) {
+                start_paytm_transaction(responseModel.getEncCheckSum(), txtAmount, txtORDID, responseModel.getRESPONSE());
+            } else {
+                GlobalClass.showCustomToast(Payment_Activity.this, "Checksum generation failed");
+            }
+        } else {
+            GlobalClass.printLog(Constants.ERROR, TAG, "PayTm Checksum", responseModel.getRESPONSE());
+        }
+    }
+
+    private void start_paytm_transaction(String Checksum, String orderamount, String orderno, String response) {
+        PaytmPGService Service;
+        if (Api.THYROCARE.contains("APIs")) {
+            Service = PaytmPGService.getProductionService();//live ---
+        } else {
+            Service = PaytmPGService.getStagingService();//Staging-----
+        }
+
+        //Kindly create complete Map and checksum on your server side and then put it here in paramMap.
+
+        final Map<String, String> paramMap = new HashMap<String, String>();
+        paramMap.put("MID", Constants.M_ID);
+        paramMap.put("ORDER_ID", orderno);
+        paramMap.put("CUST_ID", mobile_pref);
+        paramMap.put("INDUSTRY_TYPE_ID", Constants.INDUSTRY_TYPE_ID);
+        paramMap.put("CHANNEL_ID", Constants.CHANNEL_ID);
+        paramMap.put("TXN_AMOUNT", orderamount);
+        paramMap.put("WEBSITE", Constants.WEBSITE);
+        if (Api.THYROCARE.contains("APIs")) {
+            paramMap.put("CALLBACK_URL", Constants.CALLBACK_URL + orderno);//live ---
+        } else {
+            paramMap.put("CALLBACK_URL", Constants.CALLBACK_URL);//Staging-----
+        }
+        paramMap.put("EMAIL", email_id);
+        paramMap.put("MOBILE_NO", mobile_pref);
+        paramMap.put("CHECKSUMHASH", Checksum);
+        PaytmOrder Order = new PaytmOrder(paramMap);
+        try {
+            if (cd.isConnectingToInternet()) {
+                JSONObject jobj1 = new JSONObject();
+                jobj1.put(PAYUMONEYKEY_APIKEY, api_key);
+                jobj1.put(PAYUMONEYKEY_REQUEST_CHECKSUM, Checksum);
+                JSONObject postdata = new JSONObject();
+                postdata.put(DICTIONARY, jobj1.toString());
+                postdata.put(ORDER_NO, orderno);
+                postdata.put(PAYMENTSTATUS, response);
+                postdata.put(ORDER_TYPE, "TSP");
+                postdata.put(DOMAIN, "CLISOAPP");
+                postdata.put(AMOUNT, orderamount);
+                postdata.put(MOBILE, user);
+                postdata.put(NAME, name_tsp);
+                postdata.put(GATEWAY, Constants.PAYTM_REQUEST);
+                new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            Service.initialize(Order, null);
+            GlobalClass.showCustomToast(mActivity, ToastFile.PAYTM_REDITECTION);
+
+            Service.startPaymentTransaction(mActivity, true, true,
+                    new PaytmPaymentTransactionCallback() {
+
+                        @Override
+                        public void someUIErrorOccurred(String inErrorMessage) {
+                            // Some UI Error Occurred in Payment Gateway Activity.
+                            // // This may be due to initialization of views in
+                            // Payment Gateway Activity or may be due to //
+                            // initialization of webview. // Error Message details
+                            // the error occurred.
+                            GlobalClass.showCustomToast(mActivity, inErrorMessage);
+                        }
+
+                        @Override
+                        public void onTransactionResponse(Bundle inResponse) {
+                            String STATUS, CHECKSUMHASH, BANKNAME, ORDERID, TXNAMOUNT, TXNDATE, MID, TXNID, RESPCODE, PAYMENTMODE, BANKTXNID, CURRENCY, GATEWAYNAME, RESPMSG;
+                            STATUS = inResponse.getString("STATUS");
+                            CHECKSUMHASH = inResponse.getString("CHECKSUMHASH");
+                            BANKNAME = inResponse.getString("BANKNAME");
+                            ORDERID = inResponse.getString("ORDERID");
+                            TXNAMOUNT = inResponse.getString("TXNAMOUNT");
+                            TXNDATE = inResponse.getString("TXNDATE");
+                            MID = inResponse.getString("MID");
+                            TXNID = inResponse.getString("TXNID");
+                            RESPCODE = inResponse.getString("RESPCODE");
+                            PAYMENTMODE = inResponse.getString("PAYMENTMODE");
+                            BANKTXNID = inResponse.getString("BANKTXNID");
+                            CURRENCY = inResponse.getString("CURRENCY");
+                            GATEWAYNAME = inResponse.getString("GATEWAYNAME");
+                            RESPMSG = inResponse.getString("RESPMSG");
+
+                            callVerifyPayTmChecksum(MID, ORDERID);
+                        }
+
+                        @Override
+                        public void networkNotAvailable() {
+                            // If network is not
+                            // available, then this
+                            // method gets called.
+                            GlobalClass.showCustomToast(mActivity, ToastFile.NETWORK_NOT_AVAILABLE);
+                        }
+
+                        @Override
+                        public void clientAuthenticationFailed(String inErrorMessage) {
+                            // This method gets called if client authentication
+                            // failed. // Failure may be due to following reasons //
+                            // 1. Server error or downtime. // 2. Server unable to
+                            // generate checksum or checksum response is not in
+                            // proper format. // 3. Server failed to authenticate
+                            // that client. That is value of payt_STATUS is 2. //
+                            // Error Message describes the reason for failure.
+                            GlobalClass.showCustomToast(mActivity, "clientAuthenticationFailed : " + inErrorMessage);
+                        }
+
+                        @Override
+                        public void onErrorLoadingWebPage(int iniErrorCode, String inErrorMessage, String inFailingUrl) {
+                            GlobalClass.showCustomToast(mActivity, "onErrorLoadingWebPage : " + inErrorMessage);
+                        }
+
+                        // had to be added: NOTE
+                        @Override
+                        public void onBackPressedCancelTransaction() {
+                            // TODO Auto-generated method stub
+                            Global.showCustomToast(mActivity, ToastFile.TRANSACTION_CANCELLED);
+                        }
+
+                        @Override
+                        public void onTransactionCancel(String inErrorMessage, Bundle inResponse) {
+                            Global.showCustomToast(mActivity, ToastFile.PAYMENT_TRANSACTION_FAILED);
+                        }
+
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callVerifyPayTmChecksum(String MID, String ORDERID) {
+        try {
+            PaytmVerifyChecksumRequestModel requestModel = new PaytmVerifyChecksumRequestModel();
+            requestModel.setApi_key(APIKEYFORPAYMENTGATEWAY_PAYU);
+            requestModel.setMID(MID);
+            requestModel.setORDERID(ORDERID);
+
+            if (cd.isConnectingToInternet()) {
+                VerifyPayTmChecksumController verifyPayTmChecksumController = new VerifyPayTmChecksumController(Payment_Activity.this);
+                verifyPayTmChecksumController.verifyChecksum(requestModel);
+            } else {
+                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getVerifyPayTmChecksum(PaytmVerifyChecksumResponseModel responseModel, String orderid) {
+        try {
+            JSONObject postdata = new JSONObject();
+            postdata.put(DICTIONARY, new Gson().toJson(responseModel));
+            postdata.put(GATEWAY, Constants.PAYTM_RESPONSE);
+            postdata.put(ORDERID, orderid);
+            postdata.put(MOBILE, user);
+            postdata.put(CLIENT_TYPE, "TSP");
+            if (!GlobalClass.isNull(responseModel.getSTATUS()) && responseModel.getSTATUS().equalsIgnoreCase("TXN_SUCCESS") && !GlobalClass.isNull(responseModel.getRESPCODE()) && responseModel.getRESPCODE().equalsIgnoreCase("01")) {
+                postdata.put(CLIENT_STATUS, SUCCESS);
+                postdata.put(PAYMENTSTATUS, SUCCESS);
+                callResponseLogAPI(postdata, SUCCESS);
+            } else {
+                postdata.put(CLIENT_STATUS, FAILURE);
+                postdata.put(PAYMENTSTATUS, FAILURE);
+                callResponseLogAPI(postdata, FAILURE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void callResponseLogAPI(JSONObject postdata, String status) {
+        if (cd.isConnectingToInternet()) {
+            new AsyncTaskupdatepaymentstatus(postdata, status).execute();
+        } else {
+            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
         }
     }
 }

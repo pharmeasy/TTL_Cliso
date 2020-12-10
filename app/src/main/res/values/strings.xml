@@ -218,6 +218,7 @@
     <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
     <string name="bs_bp_entry">BS &amp; BP entry</string>
     <string name="covid_reg">Covid Registration</string>
+    <string name="srf_covid_woe">SRF Covid WOE</string>
     <string name="send_otp">Send OTP</string>
     <string name="reset">Reset</string>
     <string name="receipt">Receipt</string>
@@ -254,7 +255,7 @@
     <string name="update" translatable="false">Update</string>
     <string name="addressvalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./-</string>
     <string name="emailIDandMobilenumberValidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!#$%&amp;\'*+-/=?^_`{|}~.@</string>
-    <string name="Namevalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="Namevalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</string>
 
     <string name="Name_and_number_validation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890</string>
     <string name="CouponCodeValidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_-</string>
