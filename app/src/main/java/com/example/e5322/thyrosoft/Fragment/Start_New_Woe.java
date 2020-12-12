@@ -1876,7 +1876,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             tv_timer.setVisibility(View.GONE);
                             lin_ckotp.setVisibility(View.GONE);
 
-//                            CallAPIToGetPatientDetails();
+                            CallAPIToGetPatientDetails();
                             Enablefields();
 
                         }
@@ -2226,7 +2226,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                         lin_ckotp.setVisibility(View.GONE);
                         Enablefields();
-//                        CallAPIToGetPatientDetails();
+                        CallAPIToGetPatientDetails();
                         Toast.makeText(getActivity(), "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     } else {
                         GlobalClass.showCustomToast(getActivity(), response.body().getResponse());

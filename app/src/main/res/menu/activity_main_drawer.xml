@@ -175,7 +175,7 @@
             android:id="@+id/srf_covid"
             android:icon="@drawable/covid"
             android:title="@string/srf_covid_woe"
-            android:visible="false" />
+            android:visible="true" />
     </group>
 
     <group

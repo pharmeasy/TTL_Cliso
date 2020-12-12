@@ -1686,6 +1686,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                 Global.showCustomToast(activity, RESPONSE);
                 Intent i = new Intent(activity, SRFCovidWOEMainActivity.class);
                 startActivity(i);
+                finish();
                 Constants.SRFcovidWOEfrag_flag = "1";
             } else {
                 Global.showCustomToast(activity, RESPONSE);
