@@ -48,7 +48,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.SampleTypeColor;
 import com.example.e5322.thyrosoft.Adapter.RateCAlAdapter;
@@ -842,11 +841,18 @@ public class RateCalculatorFragment extends Fragment {
                                 /*if (!GlobalClass.isNull(selectedTestsListRateCal.get(j).getRate().getCplr())) {
                                     CPL_RATE = CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getCplr());
                                 } else {*/
-                            if (Global.checkHardcodeTest(selectedTestsListRateCal.get(j).getCode())) {
+
+                            if (selectedTestsListRateCal.get(j).getIsAB() == 1) {
                                 HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                             } else {
                                 B2B_RATE = B2B_RATE + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2b());
                             }
+
+                         /*   if (Global.checkHardcodeTest(selectedTestsListRateCal.get(j).getCode())) {
+
+                            } else {
+
+                            }*/
                             /*}*/
                             /*}*/
                             B2Crate = B2Crate + Integer.parseInt(selectedTestsListRateCal.get(j).getRate().getB2c());
@@ -942,6 +948,7 @@ public class RateCalculatorFragment extends Fragment {
             int tpcrate = Math.round(per_amt2);
             System.out.println("Calculated TCP Client rate :" + tpcrate);
             RATE = RATE + tpcrate;
+            //TODO Added logic for TPC client for rates.
             RATE = RATE + HARDCODE_CPL_RATE;
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -1064,7 +1071,7 @@ public class RateCalculatorFragment extends Fragment {
     private void requestJsonObject() {
         try {
             RequestQueue requestQueue = GlobalClass.setVolleyReq(getContext());
-            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.getData + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "" + api_key + "/" + "" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     try {

@@ -163,7 +163,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     };
     private long minDate;
     private LinearLayout lin_otp, refby_linear, ref_check_linear, lin_changesct, time_layout;
-    private Button btn_sendotp, btn_verifyotp, btn_next;
+    private Button btn_sendotp, btn_verifyotp, btn_next /*,btn_clear_data*/;
     private EditText et_mobno, et_otp, et_name, et_age;
     private String sctHr, sctMin, sctSEc, getFinalDate;
     private ArrayList<String> btechSpinner;
@@ -180,6 +180,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
     private String selecttest_name, btechIDToPass;
     private MyPojo myPojo;
     private String referredID;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -394,7 +395,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproductsOffer");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproductsOffer", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.LIVEAPI +"Master.svc/" + api_key + "/ALL/getproductsOffer", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: RESPONSE" + response);
@@ -559,6 +560,8 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         btn_verifyotp.setOnClickListener(this);
 
         ref_check_linear.setOnClickListener(this);
+
+  //      btn_clear_data.setOnClickListener(this);
     }
 
     private void initView() {
@@ -587,6 +590,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
 
         /**Button*/
         btn_next = findViewById(R.id.next_btn_patient);
+
         findViewById(R.id.back).setOnClickListener(this);
         findViewById(R.id.home).setOnClickListener(this);
 
@@ -721,6 +725,7 @@ public class SpecialOffer_Activity extends AppCompatActivity implements View.OnC
         /**Initilize Button */
         btn_sendotp = findViewById(R.id.btn_sendotp);
         btn_verifyotp = findViewById(R.id.btn_verifyotp);
+    //    btn_clear_data = findViewById(R.id.btn_clear_data);
 
 
         /** Linear Layout*/

@@ -295,7 +295,7 @@
                 android:background="@drawable/round_rect_shape"
                 android:padding="@dimen/_3sdp"
                 android:src="@drawable/image_payu"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/img_add_money_payTm"
@@ -304,7 +304,7 @@
                 android:background="@drawable/round_rect_shape"
                 android:padding="@dimen/_3sdp"
                 android:src="@drawable/ic_paytm"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </LinearLayout>
 

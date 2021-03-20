@@ -4,11 +4,20 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/2677e03de1327c90a4616d4312011f56/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/2677e03de1327c90a4616d4312011f56/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/2677e03de1327c90a4616d4312011f56/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/d9bd2fb6ccf7268d45d8a8ff0cd7036e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/d9bd2fb6ccf7268d45d8a8ff0cd7036e/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/d9bd2fb6ccf7268d45d8a8ff0cd7036e/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/ca0e62527dd29f38e206ab62057f11f6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/ca0e62527dd29f38e206ab62057f11f6/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/ca0e62527dd29f38e206ab62057f11f6/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/dbfbe478026daf582f7add50457cb9cb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/dbfbe478026daf582f7add50457cb9cb/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/dbfbe478026daf582f7add50457cb9cb/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/3dddc06ac7bcf46393ef1415a46d8672/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/3dddc06ac7bcf46393ef1415a46d8672/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/viewquery-1.6.aar/3dddc06ac7bcf46393ef1415a46d8672/AndroidManifest.xml" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/viewquery/1.6/1f182f437ce40ed36bd361ec122659c4fa2658f5/viewquery-1.6-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tcking/viewquery/1.6/bfbed4accc999ef4d80efa16bc210565050df760/viewquery-1.6-sources.jar!/" />
     </SOURCES>

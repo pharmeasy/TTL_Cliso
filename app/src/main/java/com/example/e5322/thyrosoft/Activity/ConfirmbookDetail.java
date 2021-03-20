@@ -4,21 +4,22 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.RequestQueue;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
+import com.example.e5322.thyrosoft.Controller.GetLeadgerDetailsController;
 import com.example.e5322.thyrosoft.Controller.POSTBookLeadController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BookLeadPOSTModel;
+import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
 import com.example.e5322.thyrosoft.Models.LeadBookingResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.startscreen.ConnectionDetector;
@@ -60,6 +61,14 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.lay_confbook);
         initView();
         setData();
+        GetLeadgerbal();
+
+    }
+
+    private void GetLeadgerbal() {
+
+        GetLeadgerDetailsController getLeadgerDetailsController = new GetLeadgerDetailsController(this, ConfirmbookDetail.this);
+        getLeadgerDetailsController.getLeadgerBal();
 
     }
 
@@ -189,7 +198,7 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
 
 
             GlobalClass.SetText(tv_paidamt, GlobalClass.currencyFormat(paidamt));
-            GlobalClass.SetText(tv_avaibal, GlobalClass.currencyFormat(availbal));
+            //  GlobalClass.SetText(tv_avaibal, GlobalClass.currencyFormat(availbal));
 
 
             if (Integer.parseInt(availbal) >= Integer.parseInt(paidamt)) {
@@ -322,12 +331,12 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
     }
 
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            GlobalClass.toastySuccess(ConfirmbookDetail.this, MessageConstants.BAKTOST, false);
-        }
-        return false;
-    }
 
+
+    public void getLeaderDetails(GetLeadgerBalnce body) {
+
+        tv_avaibal.setText("" + body.getBalance());
+
+
+    }
 }

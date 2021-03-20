@@ -4,14 +4,17 @@ import com.example.e5322.thyrosoft.HHHtest.Model.CampDetailsResponseModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.PatientDetailRequestModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.PatientResponseModel;
-import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledeResponse;
-import com.example.e5322.thyrosoft.Kotlin.KTModels.KTAcknowledmentreq;
 import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
 import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
+import com.example.e5322.thyrosoft.Models.ConvertBTBNRequestModel;
+import com.example.e5322.thyrosoft.Models.ConvertBTBNResponseModel;
+import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
+import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
+import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
 import com.example.e5322.thyrosoft.Models.GetScanReq;
 import com.example.e5322.thyrosoft.Models.GetScanResponse;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
@@ -21,6 +24,10 @@ import com.example.e5322.thyrosoft.Models.InsertReasonsReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailReq;
 import com.example.e5322.thyrosoft.Models.InsertScandetailRes;
 import com.example.e5322.thyrosoft.Models.InsertreasonResponse;
+import com.example.e5322.thyrosoft.Models.LeadChannelRespModel;
+import com.example.e5322.thyrosoft.Models.LeadPurposeResponseModel;
+import com.example.e5322.thyrosoft.Models.LeadReqModel;
+import com.example.e5322.thyrosoft.Models.LeadRespModel;
 import com.example.e5322.thyrosoft.Models.OTPCreditMISRequestModel;
 import com.example.e5322.thyrosoft.Models.PaitientDataResponseModel;
 import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
@@ -68,9 +75,22 @@ public interface APIInteface {
     @GET("{passSpinner_value}/{Contact_Details}")
     Call<Cmpdt_Model.ContactArrayListBean> getemployeedt(@Path("passSpinner_value") String passSpinner_value, @Path("Contact_Details") String Contact_Details);
 
+    @POST("commonservices/LeadPurpose")
+    Call<LeadPurposeResponseModel> getLeadPurpose();
 
     @GET("Common.svc/GetTestList")
     Call<GetTestResponseModel> gettestdata();
+
+    @POST("bookingmaster/lead")
+    Call<LeadRespModel> PostLead(@Body LeadReqModel leadRequestModel);
+
+    @POST("ORDER.svc/GetResPaymentMode")
+    Call<DynamicPaymentResponseModel> GetDynamicPayment(@Body DyanamicPaymentReqModel dyanamicPaymentReqModel);
+
+
+    @GET("LedgerDetails/{SourceCode}")
+    Call<GetLeadgerBalnce> getLedgerDetails(@Path("SourceCode") String SourceCode);
+
 
 /*    @GET("Showlang")
     Call<Language_Model> getlanguage();*/
@@ -90,7 +110,6 @@ public interface APIInteface {
     Call<List<ScansummaryModel>> getsummarydetail(@Header("Authorization") String header, @Path("fromDate") String fromDate, @Path("toDate") String toDate, @Path("ReferenceId") String ReferenceId);
 
 
-
     @GET("MasterData/GetServiceMaster/{centerID}/{user}")
     Call<List<ServiceModel>> getservicelist(@Header("Authorization") String header, @Path("centerID") String centerID, @Path("user") String user);
 
@@ -107,7 +126,7 @@ public interface APIInteface {
     Call<CampIdResponseModel> GetCampID(@Body CampIdRequestModel campIdRequestModel);
 
 
-    @POST("WO.svc/postworkorder")
+    @POST("postworkorder")
     Call<WOEResponseModel> GetResponse(@Body WOERequestModel woeRequestModel);
 
     @POST("Common.svc/PostPatientData")
@@ -148,4 +167,11 @@ public interface APIInteface {
 
     @GET("{api_key}/getBroadCast")
     Call<GetBroadcastsResponseModel> callGetBroadcastAPI(@Path("api_key") String api_key);
+
+    @POST("commonservices/LeadChannel")
+    Call<LeadChannelRespModel> getLeadChannel();
+
+    @POST("SubmitNHLdata")
+    Call<ConvertBTBNResponseModel> ConvertBttoBn(@Body ConvertBTBNRequestModel convertBTBNRequestModel);
+
 }

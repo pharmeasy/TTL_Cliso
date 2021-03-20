@@ -181,7 +181,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
 
     private void displayrate() {
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates();
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
@@ -337,15 +337,18 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             public void onClick(View v) {
                 if (verifyotp) {
                     if (selfie_flag == 0) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        boolean result = Utility.checkPermission(activity);
+                        if (result)
+                            openCamera();
+                        /*Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-                        startActivityForResult(intent, CAMERA_PHOTO_REQUEST_CODE);
+                        startActivityForResult(intent, CAMERA_PHOTO_REQUEST_CODE);*/
                     } else {
 
                         Toast.makeText(activity, "Only 1 selfie can be Uploaded", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
 
 
@@ -589,13 +592,13 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         if (cd.isConnectingToInternet()) {
                             validateotp();
                         } else {
-                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number", 0);
                 }
 
                 break;
@@ -644,7 +647,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     if (checkPermission()) {
 
                         if (presc_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one image");
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
                         } else {
                             ispresciption = true;
                             isadhar = false;
@@ -657,7 +660,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -665,7 +668,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = true;
@@ -680,7 +683,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     }
 
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
 
                 break;
@@ -688,7 +691,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (trf_file != null && trf_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -701,7 +704,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -709,7 +712,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (vial_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one images");
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -722,7 +725,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -730,7 +733,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -743,7 +746,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -910,6 +913,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         if (GlobalClass.isNull(edt_amt.getText().toString())) {
             //    Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
             //  edt_amt.requestFocus();
+
             return false;
         }
 
@@ -935,7 +939,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
@@ -986,7 +990,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 if (cd.isConnectingToInternet()) {
                     mobileverify(edt_missed_mobile.getText().toString());
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
@@ -1243,6 +1247,23 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     }
                     lin_other_images.setVisibility(View.VISIBLE);
                 }
+                else {
+
+                    String imageurl = camera.getCameraBitmapPath();
+                    selfie_file = new File(imageurl);
+                    txt_selfie.setVisibility(View.GONE);
+                    lin_selfie.setVisibility(View.VISIBLE);
+                    selfie_flag = 1;
+                    txt_selfiefileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_selfiefileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                    btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                    btn_selfie.setTextColor(getResources().getColor(R.color.black));
+                    btn_selfie.setEnabled(false);
+
+                    // selfie_file = GlobalClass.getCompressedFile(activity, selfie_file);
+                    selfielist.add(selfie_file.toString());
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1437,24 +1458,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 Toast.makeText(activity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-        } else if (requestCode == CAMERA_PHOTO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri tempUri = getImageUri(getActivity(), photo);
-            selfie_file = new File(getRealPathFromURI(tempUri));
-            txt_selfie.setVisibility(View.GONE);
-            lin_selfie.setVisibility(View.VISIBLE);
-            selfie_flag = 1;
-            txt_selfiefileupload.setText("1 " + getResources().getString(R.string.imgupload));
-            txt_selfiefileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-            btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
-            btn_selfie.setTextColor(getResources().getColor(R.color.black));
-            btn_selfie.setEnabled(false);
-
-            // selfie_file = GlobalClass.getCompressedFile(activity, selfie_file);
-            selfielist.add(selfie_file.toString());
-
-
         }else if (result != null) {
             if (result.getContents() != null) {
                 String getBarcodeDetails = result.getContents();
@@ -1766,7 +1769,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
@@ -1808,7 +1811,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -1824,7 +1827,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         disablefields();
                     } else {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

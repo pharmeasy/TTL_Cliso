@@ -149,7 +149,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
     RadioGroup rg_view;
     CheckBox cb_disclaimer;
     List<String> Occupation = Arrays.asList("Service", "Private Job", "Business", "Student", "Housewife", "Others");
-    List<String> arrayList = Arrays.asList("Select", "Fever", "Shortness of Breath", "Cough", "Sore Throat", "NA");
+    List<String> arrayList = Arrays.asList(/*"Select", */"Fever", "Shortness of Breath", "Cough", "Sore Throat", "NA");
     LinearLayout lin_adhar_images, lin_trf_images, ll_camp_id, lin_other_images, ll_last30, ll_occupation_view, ll_pincode_view, ll_spinnerlayout;
     TextView txt_adharfileupload, txt_nofileadhar, txt_trffileupload, txt_nofiletrf, txt_otherfileupload, txt_nofileother, txt_other;
     List<String> aadharlist = new ArrayList<>();
@@ -550,13 +550,13 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
                         if (cd.isConnectingToInternet()) {
                             validateotp();
                         } else {
-                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number", 0);
                 }
             }
         });
@@ -620,7 +620,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
             public void onClick(View v) {
                 if (checkPermission()) {
                     if (aadhar_file != null && aadhar_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                     } else {
 
                         isadhar = true;
@@ -640,7 +640,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
             public void onClick(View v) {
                 if (checkPermission()) {
                     if (trf_file != null && trf_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                     } else {
                         isadhar = false;
                         isother = false;
@@ -658,7 +658,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
             public void onClick(View v) {
                 if (checkPermission()) {
                     if (other_file != null && other_file1 != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                     } else {
                         isadhar = false;
                         istrf = false;
@@ -1789,7 +1789,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
         }
         spn_symptoms.setItems(arrayList);
         spn_symptoms.hasNoneOption(true, naPos);
-        spn_symptoms.setSelection(new int[]{0});
+        spn_symptoms.setSelection(new int[]{naPos});
         spn_symptoms.setListener(this);
     }
 
@@ -1846,7 +1846,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -1864,7 +1864,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
                             disablefields();
                             Toast.makeText(activity, "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
                         } else {
-                            GlobalClass.showCustomToast(activity, response.body().getResponse());
+                            GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                         }
                     }
 
@@ -1911,7 +1911,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
                 if (cd.isConnectingToInternet()) {
                     mobileverify(edt_missed_mobile.getText().toString());
                 } else {
-                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
@@ -1941,7 +1941,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
@@ -1985,7 +1985,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
@@ -2027,7 +2027,7 @@ public class HHHEnterFrag extends Fragment implements MultiSelectSpinner.OnMulti
         hospital_req.setApiKey(apikey);
         hospital_req.setUserCode(usercode);
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<Hospital_model> covidratemodelCall = postAPIInteface.GetWOEHospital(hospital_req);
 
         covidratemodelCall.enqueue(new Callback<Hospital_model>() {

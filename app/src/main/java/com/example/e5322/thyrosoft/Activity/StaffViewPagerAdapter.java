@@ -2,11 +2,12 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
 import android.os.Parcelable;
+import android.util.SparseArray;
+import android.view.ViewGroup;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
@@ -154,7 +155,6 @@ public class StaffViewPagerAdapter extends FragmentPagerAdapter {
         registeredFragments.remove(position);
         super.destroyItem(container, position, object);
     }
-
 
     /**
      * Get the Fragment by position

@@ -6,6 +6,8 @@ import com.example.e5322.thyrosoft.Models.AppuserResponse;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
 import com.example.e5322.thyrosoft.Models.COVfiltermodel;
+import com.example.e5322.thyrosoft.Models.CertificateRequestModel;
+import com.example.e5322.thyrosoft.Models.CertificateResponseModel;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
@@ -53,28 +55,32 @@ public interface PostAPIInteface {
     @POST("COMMON.svc/Token")
     Call<Tokenresponse> getotptoken(@Body OTPrequest otPrequest);
 
-    @POST("Common.svc/GetWOEHospital")
+    @POST("GetWOEHospital")
     Call<Hospital_model> GetWOEHospital(@Body Hospital_req hospital_req);
 
-    @POST("Common.svc/CovidRates")
+    @POST("CovidRates")
     Call<Covidratemodel> displayrates();
 
-    @POST("Common.svc/PatientDetails")
+    @POST("COMMON.svc/CertificateDetails")
+    Call<CertificateResponseModel> getCertificates(@Body CertificateRequestModel certificateRequestModel);
+
+
+    @POST("PatientDetails")
     Call<Covidmis_response> getcovidmis(@Body CovidMIS_req covidMIS_req);
 
-    @POST("COMMON.svc/VerifyMobile")
+    @POST("VerifyMobile")
     Call<COVerifyMobileResponse> covmobileVerification(@Body CoVerifyMobReq coVerifyMobReq);
 
-    @POST("Common.svc/CovidAccess")
+    @POST("CovidAccess")
     Call<CovidaccessRes> checkcovidaccess(@Body CovidAccessReq covidaccessRes);
 
-    @POST("Common.svc/GeneratedOtp")
+    @POST("GeneratedOtp")
     Call<Covidotpresponse> generateotp(@Body COVIDgetotp_req coviDgetotp_req);
 
-    @GET("Common.svc/GetCovidStatus")
+    @GET("GetCovidStatus")
     Call<COVfiltermodel>getfilter();
 
-    @POST("Common.svc/Verifyotp")
+    @POST("Verifyotp")
     Call<Covid_validateotp_res> validateotp(@Body Covid_validateotp_req covid_validateotp_req);
 
     @POST("order.svc/Leads_products")
@@ -83,10 +89,10 @@ public interface PostAPIInteface {
     @POST("ORDER.svc/PostorderdataPromo")
     Call<LeadDataResponseModel> PostdataLead(@Body PostLeadDataModel postLeadDataModel);
 
-    @POST("B2B/COMMON.svc/GetWOEPatientImagedetails")
+    @POST("GetWOEPatientImagedetails")
     Call<RATEnteredResponseModel> GetEnteredResponse(@Body RATEnteredRequestModel enteredRequestModel);
 
-    @POST("order.svc/Appuser")
+    @POST("Appuser")
     Call<AppuserResponse> PostUserLog(@Body AppuserReq appuserReq);
 
     @POST("MASTER.svc/Emailvalidate")
@@ -104,12 +110,12 @@ public interface PostAPIInteface {
     @POST("PaymentGateway.svc/PayTMStatus")
     Call<PaytmVerifyChecksumResponseModel> callPaytmVerifyChecksumAPI(@Body PaytmVerifyChecksumRequestModel requestModel);
 
-    @GET("pickso/api/SRFWOE/GetSRFCovidStatus")
+    @GET("GetSRFCovidStatus")
     Call<COVfiltermodel> getSRFCovidWOEStatus();
 
-    @POST("pickso/api/SRFWOE/GetSRFDetails")
+    @POST("GetSRFDetails")
     Call<Covidmis_response> getSRFcovidWOEmis(@Body CovidMIS_req covidMIS_req);
 
-    @POST("FAQ.svc/getPatients")
+    @POST("getPatients")
     Call<PatientDetailsAPiResponseModel> CallGetPatientDetailsAPI(@Body GetPatientDetailsRequestModel requestModel);
 }

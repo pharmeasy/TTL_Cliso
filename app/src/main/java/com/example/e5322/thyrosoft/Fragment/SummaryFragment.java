@@ -261,7 +261,7 @@ public class SummaryFragment extends Fragment {
     private void getDataFromServer() {
         RequestQueue requestQueue = GlobalClass.setVolleyReq(getContext());
 
-        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.getBCTforSummary + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: response"+response );

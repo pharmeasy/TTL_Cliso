@@ -258,7 +258,7 @@
                                     android:layout_weight="1"
                                     android:background="@color/white"
                                     android:gravity="center"
-                                    android:text="B2B :"
+                                    android:text="Your Rate :"
                                     android:textColor="@color/DARKGray"
                                     android:textSize="11sp" />
 
@@ -482,7 +482,7 @@
                                 android:layout_weight="1"
                                 android:background="@color/white"
                                 android:gravity="center"
-                                android:text="B2B :"
+                                android:text="Your Rate :"
                                 android:textColor="@color/DARKGray"
                                 android:textSize="11sp"
                                 android:visibility="visible" />

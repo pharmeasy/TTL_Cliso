@@ -53,8 +53,8 @@ public class Global {
     public static String sampletype;
     public static String test;
     public static ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test_global = new ArrayList<>();
-    public static ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList_global=new ArrayList<>();
-    public static boolean OTPVERIFIED=false;
+    public static ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList_global = new ArrayList<>();
+    public static boolean OTPVERIFIED = false;
 
     private Context context;
     public static String HHHTest = "";
@@ -82,7 +82,8 @@ public class Global {
 
     public static boolean checkHardcodeTest(String testCode) {
         /*|| testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE) || testCode.equalsIgnoreCase(Constants.CAGCA)*/
-        return !GlobalClass.isNull(testCode) && testCode.equalsIgnoreCase(Constants.WC2020);
+        return !GlobalClass.isNull(testCode) && testCode.equalsIgnoreCase(Constants.WC2020) || testCode.equalsIgnoreCase(Constants.CAGCA)
+                || testCode.equalsIgnoreCase(Constants.CATC) || testCode.equalsIgnoreCase(Constants.CAGE) || testCode.equalsIgnoreCase(Constants.AA_C);
     }
 
     public static boolean checkCovidTest(int flag) {
@@ -124,7 +125,6 @@ public class Global {
         }
 
     }
-
 
 
     public void setLoadingGIF(Activity activity) {

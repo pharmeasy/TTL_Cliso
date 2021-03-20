@@ -5,8 +5,15 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/0134b4f2f0a71538eed26357ff53ced5/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/0134b4f2f0a71538eed26357ff53ced5/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/3cc1cde3623e25e26669ffbab85d55e2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/3cc1cde3623e25e26669ffbab85d55e2/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/3cc1cde3623e25e26669ffbab85d55e2/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/c5ce6042a74ab1b22f5c81f4e2b75b1e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/c5ce6042a74ab1b22f5c81f4e2b75b1e/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/c5ce6042a74ab1b22f5c81f4e2b75b1e/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/368457563ad70066e9ee7a56f3d09f8a/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/368457563ad70066e9ee7a56f3d09f8a/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/368457563ad70066e9ee7a56f3d09f8a/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/dcfa2061d5bd1e43fb3d9db6de42f0eb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/dcfa2061d5bd1e43fb3d9db6de42f0eb/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-core-18.0.0.aar/dcfa2061d5bd1e43fb3d9db6de42f0eb/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-core/18.0.0/6a8b08d2a93001c8d089863beda57683994fb63d/firebase-core-18.0.0-javadoc.jar!/" />

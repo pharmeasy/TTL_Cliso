@@ -332,8 +332,8 @@ public class Woe_activity extends AppCompatActivity {
         }
         passToAPI = outputFormat.format(date);
         requestQueue = GlobalClass.setVolleyReq(Woe_activity.this);
-        com.example.e5322.thyrosoft.Controller.Log.e(TAG,Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
+        com.example.e5322.thyrosoft.Controller.Log.e(TAG,Api.Cloud_base + "getresults/" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "getresults/" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 com.example.e5322.thyrosoft.Controller.Log.e(TAG, "onResponse: " + response);

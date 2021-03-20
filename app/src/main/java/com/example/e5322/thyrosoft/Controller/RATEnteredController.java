@@ -5,12 +5,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.Activity.LeadGenerationActivity;
 import com.example.e5322.thyrosoft.Activity.frags.AnitbodyEnteredFrag;
 import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
-import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
@@ -48,7 +45,7 @@ public class RATEnteredController {
 
     public void CallAPI() {
         progress.show();
-        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity) context, Api.IMAGE_UPLOAD).create(PostAPIInteface.class);
+        PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient((Activity) context, Api.Cloud_base).create(PostAPIInteface.class);
         Call<RATEnteredResponseModel> responseCall = apiInterface.GetEnteredResponse(ratEnteredRequestModel);
 
         responseCall.enqueue(new Callback<RATEnteredResponseModel>() {

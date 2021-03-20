@@ -14,12 +14,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -41,6 +35,11 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -159,7 +158,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     RadioGroup radiogrp2;
 
 
-    List<String> arrayList = Arrays.asList("Select", "Fever", "Shortness of Breath", "Cough", "Sore Throat", "NA");
+    List<String> arrayList = Arrays.asList(/*"Select",*/ "Fever", "Shortness of Breath", "Cough", "Sore Throat", "NA");
     private String refbyname, campid;
     private String Patientid="";
 
@@ -231,7 +230,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
             public void onClick(View v) {
                 if (checkPermission()) {
                     if (other_file != null) {
-                        GlobalClass.showCustomToast(activity, "You can upload only two images");
+                        GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                     } else {
                         selectImage();
                     }
@@ -323,13 +322,13 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                         if (cd.isConnectingToInternet()) {
                             validateotp();
                         } else {
-                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number", 0);
                 }
             }
         });
@@ -423,7 +422,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         woe.setTOTAL_AMOUNT(edt_amtcollected.getText().toString());
         woe.setTYPE("CAMP");
         woe.setWATER_SOURCE("");
-        woe.setWO_MODE("THYROSOFTLITE APP");
+        woe.setWO_MODE("CLISO APP COVID");
         woe.setWO_STAGE(3);
 
         ArrayList<WOERequestModel.BarcodelistBean> barcodelistBeans = new ArrayList<>();
@@ -446,7 +445,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
 
         progressDialog = GlobalClass.ShowprogressDialog(getContext());
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.LIVEAPI).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(getActivity(), Api.Cloud_base).create(APIInteface.class);
         CampIdRequestModel campIdRequestModel = new CampIdRequestModel();
         campIdRequestModel.setSourceCode(usercode);
         campIdRequestModel.setTestCode("");
@@ -596,7 +595,6 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
             return false;
         }
 
-
         if (edt_lastname.getText().toString().length() == 0) {
             Global.showCustomToast(getActivity(), ToastFile.ENTER_LNAME);
             edt_lastname.requestFocus();
@@ -613,6 +611,19 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
             edt_lastname.requestFocus();
             return false;
         }
+
+        if(edt_age.getText().toString().equals("0")){
+            GlobalClass.showCustomToast(getActivity(),ToastFile.ENTER_CORRECT_AGE, 0);
+            edt_lastname.requestFocus();
+            return false;
+        }
+
+        if (Integer.parseInt(edt_age.getText().toString()) > 120) {
+            Global.showCustomToast(getActivity(), ToastFile.AGE_SHOULD_BE_BETWEEN_1_TO_120);
+            edt_lastname.requestFocus();
+            return false;
+        }
+
         if (spr_gender.getSelectedItem().toString().equalsIgnoreCase("Gender*")) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_GENDER);
             return false;
@@ -720,7 +731,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         }
         spn_symptoms.setItems(arrayList);
         spn_symptoms.hasNoneOption(true, naPos);
-        spn_symptoms.setSelection(new int[]{0});
+        spn_symptoms.setSelection(new int[]{naPos});
         spn_symptoms.setListener(this);
 
     }
@@ -731,7 +742,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                 if (cd.isConnectingToInternet()) {
                     mobileverify(edt_missed_mobile.getText().toString());
                 } else {
-                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(getActivity(), MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
@@ -761,7 +772,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private void mobileverify(String mobileno) {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
@@ -808,7 +819,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
@@ -915,7 +926,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -933,7 +944,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
                         Toast.makeText(activity, "" + response.body().getResponse(), Toast.LENGTH_SHORT).show();
                     } else {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1080,9 +1091,8 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         progressDialog.show();
 
         // final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-
-        System.out.println("barcode url  --> " + Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.checkBarcode + apikey + "/" + getBarcodeDetails + "/getcheckbarcode"
+        System.out.println("barcode url  --> " + Api.Cloud_base + apikey + "/" + getBarcodeDetails + "/getcheckbarcode");
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + apikey + "/" + getBarcodeDetails + "/getcheckbarcode"
                 , new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

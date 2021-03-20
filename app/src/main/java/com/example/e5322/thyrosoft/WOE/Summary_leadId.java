@@ -575,7 +575,7 @@ public class Summary_leadId extends AppCompatActivity {
         woe.setTOTAL_AMOUNT("");
         woe.setTYPE(leadTYPE);
         woe.setWATER_SOURCE("");
-        woe.setWO_MODE("THYROSOFTLITE APP");
+        woe.setWO_MODE("CLISO APP");
         woe.setWO_STAGE(3);
         woe.setULCcode("");
         myPojoWoe.setWoe(woe);

@@ -840,8 +840,8 @@ public class GlobalClass {
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa",Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
 
         Date date = null;
         stringofconvertedTime = null;
@@ -864,8 +864,8 @@ public class GlobalClass {
                 time = time + "p.m.";
             }
 
-            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
-            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm aa",Locale.US);
+            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
             stringofconvertedTime = null;
 
             date = new Date();
@@ -883,8 +883,6 @@ public class GlobalClass {
             stringofconvertedTime = outputFormat1.format(date);
             cutString = stringofconvertedTime.substring(11, stringofconvertedTime.length() - 0);
             //Format of the date defined in the input String
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -933,9 +931,9 @@ public class GlobalClass {
 
     public static String changetimeformate(String time) {
         //Date/time pattern of input date
-        DateFormat df = new SimpleDateFormat("hh:mm a");
+        DateFormat df = new SimpleDateFormat("hh:mm a",Locale.US);
         //Date/time pattern of desired output date
-        DateFormat outputformat = new SimpleDateFormat("HH:mm");
+        DateFormat outputformat = new SimpleDateFormat("HH:mm",Locale.US);
         Date date = null;
         String output = null;
         try {
@@ -1311,10 +1309,8 @@ public class GlobalClass {
 
 
     public static boolean syncProduct(Context context) {
-
         AppPreferenceManager appPreferenceManager = new AppPreferenceManager(context);
         return appPreferenceManager.getVersionResponseModel() != null && appPreferenceManager.getVersionResponseModel().getSyncproduct() != appPreferenceManager.getSynProductCount();
-
     }
 
 
@@ -1658,24 +1654,16 @@ public class GlobalClass {
         }
     }
 
-    public static void showCustomToast(Activity activity, String message) {
+    public static void showCustomToast(Activity activity, String message, int i) {
+
 
         if (activity != null) {
-            Context context = activity.getApplicationContext();
-            LayoutInflater inflater = activity.getLayoutInflater();
+            if (i == 0) {
+                Toast.makeText(activity, "" + message, Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(activity, "" + message, Toast.LENGTH_LONG).show();
+            }
 
-            View toastRoot = inflater.inflate(R.layout.custom_toast, null);
-            RelativeLayout relItem = (RelativeLayout) toastRoot.findViewById(R.id.relItem);
-            TextView txtToast = (TextView) toastRoot.findViewById(R.id.txtToast);
-
-            relItem.getBackground().setAlpha(204);
-            txtToast.setText(message);
-
-            Toast toast = new Toast(context);
-            toast.setView(toastRoot);
-            //toast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL, 0, 0);
-            toast.setDuration(Toast.LENGTH_LONG);
-            toast.show();
         }
 
     }

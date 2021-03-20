@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.LocationManager;
@@ -28,10 +30,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +44,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
@@ -50,6 +55,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
+import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -58,8 +64,10 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.GpsTracker;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
+import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.GeoLocationRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
@@ -76,6 +84,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
+import com.rd.PageIndicatorView;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -166,7 +175,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private ArrayList<String> temparraylist;
     private ArrayList<ProductWithBarcode> getproductDetailswithBarcodes;
     private AdapterBarcode_New adapterBarcode;
-    private String getAmount, b2b_rate;
+    private String getAmount, b2b_rate, nhl_rate;
     private AlertDialog.Builder alertDialog;
     private String getCollectedAmt;
     private String testsnames;
@@ -216,6 +225,22 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String barcode_id;
     private String getRemark;
     private String getPincode;
+    private File vialimg_file;
+    Button btn_choosefile;
+    LinearLayout lin_preview;
+    private boolean isvial = false;
+    TextView txt_fileupload;
+    Bitmap vialbitmap;
+    List<String> imagelist = new ArrayList<>();
+    MainModel mainModel;
+    Spinner spr_leterhead;
+    LinearLayout ll_letterhead;
+    TextView tv_viewsample;
+    private int isNhlAvailable;
+    private String LetterheadURL;
+    RadioGroup rg_brand;
+    private String brabdurl;
+
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -245,6 +270,35 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefe.getString("WOEbrand", null);
         typeName = prefe.getString("woetype", null);
+
+        btn_choosefile = findViewById(R.id.btn_choosefile);
+        txt_fileupload = findViewById(R.id.txt_fileupload);
+        lin_preview = findViewById(R.id.lin_preview);
+        rg_brand = findViewById(R.id.rg_brand);
+
+        spr_leterhead = findViewById(R.id.spr_leterhead);
+        ll_letterhead = findViewById(R.id.ll_letterhead);
+        tv_viewsample = findViewById(R.id.tv_viewsample);
+
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        Gson gson = new Gson();
+        final String json = appSharedPrefs.getString("MyObject", "");
+        mainModel = gson.fromJson(json, MainModel.class);
+
+
+        btn_choosefile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCamera();
+                isvial = true;
+            }
+        });
+        txt_fileupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(imagelist);
+            }
+        });
 
 
         if (globalClass.checkForApi21()) {
@@ -431,10 +485,22 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         ArrayList<String> getTestNameToPAss = new ArrayList<>();
         getAmount = bundle.getString("payment");
         b2b_rate = bundle.getString("b2b_rate");
+        nhl_rate = bundle.getString("NHL_rate");
+        isNhlAvailable = bundle.getInt("isNhlAvailable");
         testsnames = bundle.getString("writeTestName");
+
+
+        SetBrandLetterValues();
 
         Log.e(TAG, "b2b_rate--->" + b2b_rate);
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
+
+
+        if (isNhlAvailable == 1) {
+            ll_letterhead.setVisibility(View.VISIBLE);
+        } else {
+            ll_letterhead.setVisibility(View.GONE);
+        }
 
 
         for (int i = 0; i < selctedTest.size(); i++) {
@@ -595,7 +661,14 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         }
 
         for (int j = 0; j < getproductDetailswithBarcodes.size(); j++) {
-            if (getproductDetailswithBarcodes.get(j).getBarcode().equalsIgnoreCase("FLUORIDE")) {
+            if (getproductDetailswithBarcodes.get(j).getBarcode().equalsIgnoreCase("FLUORIDE") && getproductDetailswithBarcodes.get(j).getFasting().equalsIgnoreCase("FASTING")) {
+                ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
+                scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(j).getFasting());
+                scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(j).getProduct());
+                scannedBarcodeDetails.setSpecimen_type("(F)" + getproductDetailswithBarcodes.get(j).getBarcode());
+                scannedBarcodeDetails.setType(getproductDetailswithBarcodes.get(j).getType());
+                GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
+            } else if (getproductDetailswithBarcodes.get(j).getBarcode().equalsIgnoreCase("FLUORIDE") && getproductDetailswithBarcodes.get(j).getFasting().equalsIgnoreCase("NON FASTING")) {
                 ScannedBarcodeDetails scannedBarcodeDetails = new ScannedBarcodeDetails();
                 scannedBarcodeDetails.setFasting(getproductDetailswithBarcodes.get(j).getFasting());
                 scannedBarcodeDetails.setProducts(getproductDetailswithBarcodes.get(j).getProduct());
@@ -603,7 +676,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 scannedBarcodeDetails.setType(getproductDetailswithBarcodes.get(j).getType());
                 GlobalClass.finalspecimenttypewiselist.add(scannedBarcodeDetails);
             }
-
         }
 
         //TODO commented to remove CPL RPL as per input 12-10-2020
@@ -715,11 +787,17 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
                                 CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
                             } else {*/
-                        if (Global.checkHardcodeTest(selctedTest.get(i).getCode())) {
+                       /* if (Global.checkHardcodeTest(selctedTest.get(i).getCode())) {
+                            HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        } else {
+                            B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
+                        }*/
+                        if (selctedTest.get(i).getIsAB() == 1) {
                             HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                         } else {
                             B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                         }
+
 
                            /*}
                         }*/
@@ -750,9 +828,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else if (vialimg_file == null || !vialimg_file.exists()) {
+                            Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                         } else {
                             checklistData();
                         }
+                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                        Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
                         checklistData();
                     }
@@ -765,9 +847,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
                         if (setLocation == null) {
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else if (vialimg_file == null || !vialimg_file.exists()) {
+                            Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                         } else {
                             checklistData();
                         }
+                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                        Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
                         checklistData();
                     }
@@ -775,6 +861,160 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
             }
         });
+    }
+
+    private void SetBrandLetterValues() {
+
+        final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
+
+        boolean viewsample = false;
+        for (int i = 0; i < getBrandList.size(); i++) {
+            final RadioButton rb_type = new RadioButton(mActivity);
+
+            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
+                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + b2b_rate);
+            } else if (getBrandList.get(i).getName().equalsIgnoreCase("NHL")) {
+                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + nhl_rate);
+            } else {
+                rb_type.setText(getBrandList.get(i).getName());
+            }
+
+            rg_brand.addView(rb_type);
+            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
+                rb_type.setChecked(true);
+            }
+            if (!viewsample) {
+                if (rb_type.isSelected() || rb_type.isChecked()) {
+                    if (!GlobalClass.isNull(getBrandList.get(i).getUrl())) {
+                        tv_viewsample.setVisibility(View.VISIBLE);
+                        brabdurl = getBrandList.get(i).getUrl();
+                        viewsample = true;
+                    } else {
+                        tv_viewsample.setVisibility(View.GONE);
+                    }
+                } else {
+                    tv_viewsample.setVisibility(View.GONE);
+                }
+            }
+
+
+        }
+
+        rg_brand.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked) {
+                    viewsampleURL("" + checkedRadioButton.getText(), getBrandList);
+                }
+            }
+        });
+
+        tv_viewsample.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!GlobalClass.isNull(brabdurl)) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(brabdurl));
+                    startActivity(browserIntent);
+                } else {
+                    Global.showCustomToast(Scan_Barcode_ILS_New.this, "URL not found");
+
+                }
+            }
+        });
+
+
+    }
+
+    private void viewsampleURL(String s, ArrayList<IsnhlmasterDTO> getBrandList) {
+
+        if (GlobalClass.CheckArrayList(getBrandList)) {
+            for (int i = 0; i < getBrandList.size(); i++) {
+                if (s.contains(getBrandList.get(i).getName())) {
+                    getBrand_name = getBrandList.get(i).getName();
+                    brabdurl = getBrandList.get(i).getUrl();
+                    break;
+                }
+
+            }
+        }
+    }
+
+    private ArrayList<IsnhlmasterDTO> GenerateBrandList() {
+        ArrayList<IsnhlmasterDTO> entity = new ArrayList<>();
+
+        if (mainModel != null) {
+            if (GlobalClass.CheckArrayList(mainModel.getIsnhlmaster())) {
+                for (int i = 0; i < mainModel.getIsnhlmaster().size(); i++) {
+                    IsnhlmasterDTO isnhlmasterDTO = new IsnhlmasterDTO();
+                    isnhlmasterDTO.setName("" + mainModel.getIsnhlmaster().get(i).getName());
+                    isnhlmasterDTO.setUrl("" + mainModel.getIsnhlmaster().get(i).getUrl());
+                    isnhlmasterDTO.setIsShowpopup(mainModel.getIsnhlmaster().get(i).isIsShowpopup());
+                    entity.add(isnhlmasterDTO);
+                }
+            }
+        }
+
+        return entity;
+    }
+
+
+    public void setviewpager(List<String> imagelist) {
+        final Dialog maindialog = new Dialog(mActivity);
+        maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        maindialog.setContentView(R.layout.preview_dialog);
+        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
+        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(mActivity, imagelist, 0);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.notifyDataSetChanged();
+
+        final PageIndicatorView pageIndicatorView = maindialog.findViewById(R.id.pageIndicatorView);
+        if (imagelist != null && imagelist.size() > 1) {
+            pageIndicatorView.setVisibility(View.VISIBLE);
+            pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
+            pageIndicatorView.setSelection(0);
+            pageIndicatorView.setSelectedColor(mActivity.getResources().getColor(R.color.maroon));
+        } else {
+            pageIndicatorView.setVisibility(View.GONE);
+        }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {/*empty*/}
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+                pageIndicatorView.setSelectedColor(getResources().getColor(R.color.maroon));
+                pageIndicatorView.setUnselectedColor(getResources().getColor(R.color.grey));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        final Button btn_delete = maindialog.findViewById(R.id.btn_delete);
+        btn_delete.setVisibility(View.GONE);
+
+
+        ImageView ic_close = (ImageView) maindialog.findViewById(R.id.img_close);
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maindialog.dismiss();
+            }
+        });
+
+
+        maindialog.setCancelable(true);
+        maindialog.show();
     }
 
     private boolean checkRateVal() {
@@ -904,9 +1144,16 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 getageType = savepatientDetails.getString("ageType", "");
                 getFinalDate = savepatientDetails.getString("date", "");
 
-                getBrand_name = savepatientDetails.getString("WOEbrand", "");
-                getPincode = savepatientDetails.getString("pincode", "");
+                if (!GlobalClass.isNull(getBrand_name)){
+                    if (getBrand_name.equalsIgnoreCase("TTL")) {
+                        getBrand_name = savepatientDetails.getString("WOEbrand", "");
+                    }
+                }else {
+                    getBrand_name = savepatientDetails.getString("WOEbrand", "");
+                }
 
+
+                getPincode = savepatientDetails.getString("pincode", "");
                 if (!GlobalClass.isNull(getFinalDate)) {
                     sampleCollectionDate = getFinalDate;
                 }
@@ -960,7 +1207,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 woe.setADDITIONAL1(setLocation);
                 woe.setAPP_ID(version);
                 woe.setBCT_ID(btechIDToPass);
+
                 woe.setBRAND(getBrand_name);
+
                 woe.setCAMP_ID(getcampIDtoPass);
                 woe.setCONT_PERSON("");
                 woe.setCONTACT_NO(kycinfo);
@@ -999,7 +1248,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 woe.setTOTAL_AMOUNT(totalamt);
                 woe.setTYPE(typename);
                 woe.setWATER_SOURCE("");
-                woe.setWO_MODE("THYROSOFTLITE APP");
+                woe.setWO_MODE("CLISO APP");
                 woe.setWO_STAGE(3);
                 woe.setULCcode("");
                 myPojoWoe.setWoe(woe);
@@ -1009,7 +1258,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                 for (int p = 0; p < GlobalClass.finalspecimenttypewiselist.size(); p++) {
                     barcodelist = new BarcodelistModel();
-                    barcodelist.setSAMPLE_TYPE(GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type());
+                    barcodelist.setSAMPLE_TYPE(GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type().equalsIgnoreCase("(F)FLUORIDE") ? "FLUORIDE" : GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type());
                     barcodelist.setBARCODE(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
                     getBarcodeArrList.add(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
                     barcodelist.setTESTS(GlobalClass.finalspecimenttypewiselist.get(p).getProducts());
@@ -1020,10 +1269,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 myPojoWoe.setWoe_type("WOE");
                 myPojoWoe.setApi_key(api_key);//api_key
 
+                if (Global.isoffline || !GlobalClass.isNetworkAvailable(Scan_Barcode_ILS_New.this)) {
+                    Gson trfgson = new GsonBuilder().create();
+                    String trfjson = trfgson.toJson(trflist);
+                    myPojoWoe.setTrfjson(trfjson);
 
-                Gson trfgson = new GsonBuilder().create();
-                String trfjson = trfgson.toJson(trflist);
-                myPojoWoe.setTrfjson(trfjson);
+                    myPojoWoe.setVialimage(vialimg_file);
+                }
 
                 Gson gson = new GsonBuilder().create();
                 String json = gson.toJson(myPojoWoe);
@@ -1076,6 +1328,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                                 editor.remove("testsSElected");
                                                 editor.remove("getProductNames");
                                                 editor.apply();
+                                                Global.OTPVERIFIED = false;
                                                 sendGPSDetails = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
                                                 JSONObject jsonObject = null;
                                                 try {
@@ -1111,11 +1364,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                                             } else {
                                                                 TastyToast.makeText(Scan_Barcode_ILS_New.this, "" + Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                             }
-                                                            if (trflist.size() > 0)
-                                                                new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                                                            else {
-                                                                getUploadFileResponse();
-                                                            }
+                                                            //   if (trflist.size() > 0)
+                                                            new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+//                                                            else {
+//                                                                getUploadFileResponse();
+//                                                            }
                                                         } catch (JSONException e) {
                                                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                                             e.printStackTrace();
@@ -1184,11 +1437,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                             Log.e(TAG, "fetchData: JSON" + jsonObj);
                         } else {
-                            if (trflist.size() > 0)
-                                new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                            else {
-                                getUploadFileResponse();
-                            }
+//                            if (trflist.size() > 0)
+                            new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+//                            else {
+//                                getUploadFileResponse();
+//                            }
                         }
                     }
                 }
@@ -1277,14 +1530,29 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
                 try {
-                    bitmapimage = camera.getCameraBitmap();
-                    String imageurl = camera.getCameraBitmapPath();
-                    trf_img = new File(imageurl);
-                    /**Below is local path for store our image in folder*/
-                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
-                    trf_img = new File(destFile);
-                    GlobalClass.copyFile(new File(imageurl), trf_img);
-                    storeTRFImage(trf_img);
+                    if (isvial) {
+                        imagelist.clear();
+                        vialbitmap = camera.getCameraBitmap();
+                        String imageurlvial = camera.getCameraBitmapPath();
+                        vialimg_file = new File(imageurlvial);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurlvial), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    } else {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        trf_img = new File(imageurl);
+                        /**Below is local path for store our image in folder*/
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
+                        trf_img = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), trf_img);
+                        storeTRFImage(trf_img);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1309,7 +1577,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         }
     }
 
-
     private void passBarcodeData(String s) {
         boolean isbacodeduplicate = false;
         for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
@@ -1324,7 +1591,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
         } else {
             for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-
                 if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
                     GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(s);
                     GlobalClass.finalspecimenttypewiselist.get(i).setRemark("Scan");
@@ -1334,7 +1600,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 }
             }
         }
-
 
         recycler_barcode.removeAllViews();
 //        adapterBarcode.notifyDataSetChanged();
@@ -1461,7 +1726,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

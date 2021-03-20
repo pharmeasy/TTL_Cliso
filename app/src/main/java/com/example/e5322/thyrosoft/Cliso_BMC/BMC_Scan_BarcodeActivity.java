@@ -792,7 +792,7 @@ public class BMC_Scan_BarcodeActivity extends AppCompatActivity implements Recyc
                 woe.setTOTAL_AMOUNT(totalamt);
                 woe.setTYPE(typename);
                 woe.setWATER_SOURCE("");
-                woe.setWO_MODE("THYROSOFTLITE APP");
+                woe.setWO_MODE("CLISO APP");
                 woe.setWO_STAGE(3);
                 woe.setULCcode("");
                 myPojoWoe.setWoe(woe);

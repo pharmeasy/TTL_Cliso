@@ -601,7 +601,7 @@ public class HHHEnteredFrag extends Fragment {
                 builder.addPart("TESTCODE", new StringBody("" + testcode));
 
                 builder.addPart("VALUE", new StringBody("" + Value));
-                builder.addPart("MODE", new StringBody("THYROSOFTLITE APP"));
+                builder.addPart("MODE", new StringBody("CLISO APP"));
                 if (sll_file != null) {
                     builder.addBinaryBody("SII", sll_file);
                 }
@@ -614,7 +614,7 @@ public class HHHEnteredFrag extends Fragment {
                         + "TYPE :" + value + "\n"
                         + "VALUE :" + Value + "\n"
                         + "TESTCODE :" + testcode + "\n"
-                        + "MODE:THYROSOFTLITE APP" + "\n"
+                        + "MODE:CLISO APP" + "\n"
                         + "SII" + ":\"" + "" + sll_file + "\"");
 
                 httpPost.setEntity(builder.build());

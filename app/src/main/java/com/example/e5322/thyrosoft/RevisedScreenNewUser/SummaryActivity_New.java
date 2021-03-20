@@ -1,6 +1,5 @@
 package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -10,12 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.View;
 import android.view.Window;
@@ -23,6 +18,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -43,29 +42,16 @@ import com.example.e5322.thyrosoft.SpecialOffer.SpecialOffer_Activity;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class SummaryActivity_New extends AppCompatActivity {
     public static com.android.volley.RequestQueue sendGPSDetails;
@@ -451,6 +437,7 @@ public class SummaryActivity_New extends AppCompatActivity {
                 alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                       dialog.dismiss();
 
                     }
                 });
@@ -554,7 +541,6 @@ public class SummaryActivity_New extends AppCompatActivity {
         }
     }
 
-
     private void fetchData() {
 
         SharedPreferences.Editor editor = getSharedPreferences("savePatientDetails", 0).edit();
@@ -592,8 +578,6 @@ public class SummaryActivity_New extends AppCompatActivity {
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
-
-
     }
 
     @Override
@@ -603,7 +587,6 @@ public class SummaryActivity_New extends AppCompatActivity {
         return true;
     }
 
-
     @Override
     public void onBackPressed() {
         finish();
@@ -612,6 +595,4 @@ public class SummaryActivity_New extends AppCompatActivity {
         startActivity(i);
         super.onBackPressed();
     }
-
-
 }

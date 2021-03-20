@@ -12,14 +12,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import android.text.Editable;
-import android.text.TextUtils;
+import android.text.Html;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,11 +33,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
@@ -51,6 +50,7 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GenerateTokenController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BookTypesModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
@@ -60,7 +60,6 @@ import com.example.e5322.thyrosoft.Models.TokenModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
-import com.example.e5322.thyrosoft.RevisedScreenNewUser.Payment_Activity;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -207,7 +206,7 @@ public class PETCT_Frag extends Fragment {
     private void getAPIKeyDetails() {
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         api_key = prefs.getString("API_KEY", null);
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
     }
 
 
@@ -233,10 +232,10 @@ public class PETCT_Frag extends Fragment {
 
         RequestQueue queue = GlobalClass.setVolleyReq(context);
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(context);
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+        Log.e(TAG, "Get my Profile ---->" + Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile");
 
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new com.android.volley.Response.Listener<JSONObject>() {
                     public String tsp_img;
 
@@ -859,10 +858,19 @@ public class PETCT_Frag extends Fragment {
             }
         }
 
+        int conertage = Integer.parseInt(edt_age.getText().toString());
+        if (conertage > 120) {
+            Toast.makeText(getActivity(), ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+            edt_age.requestFocus();
+            return false;
+
+        }
+
         if (txt_appdate.getText().toString().equalsIgnoreCase("")) {
             GlobalClass.toastyError(getActivity(), getString(R.string.str_appdt_val), false);
             return false;
         }
+
 
         if (str_slot.equalsIgnoreCase("Select Slot*")) {
             GlobalClass.toastyError(getActivity(), getString(R.string.str_slot), false);
@@ -1011,6 +1019,17 @@ public class PETCT_Frag extends Fragment {
             LayoutInflater inflater = getLayoutInflater();
             View alertLayout = inflater.inflate(R.layout.lay_dialog, null);
 
+            TextView txt_ledgerbal = (TextView) alertLayout.findViewById(R.id.txt_ledgerbal);
+
+            if (!GlobalClass.isNull(closingbal)) {
+                txt_ledgerbal.setText(Html.fromHtml("Your ledger balance is Rs " + GlobalClass.currencyFormat(closingbal) + ". Kindly make payment to proceed with booking. For queries write to " + "<font color='#05128c'><u>" + "accounts@nueclear.com" + "</u></font>"));
+
+                //  GlobalClass.SetText(txt_ledgerbal, "Your ledger balance is Rs " + GlobalClass.currencyFormat(closingbal) + ". Kindly make payment to proceed with booking. For queries write to " + Html.fromHtml("<u>" + "accounts@nueclear.com" + "</u>"));
+            } else {
+                txt_ledgerbal.setText(Html.fromHtml("Your ledger balance is Rs " + 0 + ". Kindly make payment to proceed with booking.  For queries write to " + "<font color='#05128c'><u>" + "accounts@nueclear.com" + "</u></font>"));
+
+            }
+
 
             AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
             alert.setView(alertLayout);
@@ -1029,14 +1048,14 @@ public class PETCT_Frag extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setMessage(ToastFile.update_ledger);
             builder.setCancelable(false);
-            builder.setPositiveButton("UPDATE LEDGER",
+            /*builder.setPositiveButton("UPDATE LEDGER",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog,
                                             int id) {
                             startActivityForResult(new Intent(context, Payment_Activity.class), 1);
                             dialog.dismiss();
                         }
-                    });
+                    });*/
 
             builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
                 @Override
@@ -1162,7 +1181,7 @@ public class PETCT_Frag extends Fragment {
     public void onResume() {
         super.onResume();
         try {
-            if (GlobalClass.checkSync(getActivity(),"Profile")) {
+            if (GlobalClass.checkSync(getActivity(), "Profile")) {
                 if (GlobalClass.isNetworkAvailable(getActivity())) {
                     ((ManagingTabsActivity) getActivity()).getProfileDetails(getContext());
                 }

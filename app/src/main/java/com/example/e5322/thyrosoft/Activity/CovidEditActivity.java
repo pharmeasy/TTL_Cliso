@@ -32,7 +32,6 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
-import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
@@ -358,7 +357,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     if (checkPermission()) {
 
                         if (presc_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one image");
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
                         } else {
                             ispresciption = true;
                             isadhar = false;
@@ -371,7 +370,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -379,7 +378,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = true;
@@ -394,7 +393,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     }
 
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
 
                 break;
@@ -402,7 +401,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (trf_file != null && trf_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -415,7 +414,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -424,7 +423,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (vial_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one images");
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -437,7 +436,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 
@@ -445,7 +444,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -458,7 +457,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 

@@ -2,7 +2,9 @@ package com.example.e5322.thyrosoft.Models;
 
 import java.io.File;
 
-public class Covidpostdata {
+public class
+
+Covidpostdata {
     String UNIQUEID;
     String SOURCECODE;
     String AMOUNTCOLLECTED;
@@ -329,5 +331,4 @@ public class Covidpostdata {
     public void setAGETYPE(String AGETYPE) {
         this.AGETYPE = AGETYPE;
     }
-
 }

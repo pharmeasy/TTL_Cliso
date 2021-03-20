@@ -43,14 +43,19 @@ import com.crowdfire.cfalertdialog.CFAlertDialog;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.LeadController;
+import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.LeadChannelController;
+import com.example.e5322.thyrosoft.Controller.LeadPurposeController;
 import com.example.e5322.thyrosoft.Controller.Log;
-import com.example.e5322.thyrosoft.Controller.PostLeadResponseController;
+import com.example.e5322.thyrosoft.Controller.PostLeadsController;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.LeadChannelRespModel;
 import com.example.e5322.thyrosoft.Models.LeadDataResponseModel;
-import com.example.e5322.thyrosoft.Models.LeadRequestModel;
+import com.example.e5322.thyrosoft.Models.LeadPurposeResponseModel;
+import com.example.e5322.thyrosoft.Models.LeadReqModel;
+import com.example.e5322.thyrosoft.Models.LeadRespModel;
 import com.example.e5322.thyrosoft.Models.LeadResponseModel;
-import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.TestBookingResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
@@ -85,11 +90,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
     Spinner spr_package;
     Button btn_submit;
     private ArrayList<LeadResponseModel.ProductlistBean> leadResponseModel;
-    LeadController leadController;
-    LeadRequestModel leadRequestModel;
+    private ArrayList<String> leadpurpsearay = new ArrayList<>();
     TextView tv_reset;
-    PostLeadResponseController postLeadResponseController;
-    PostLeadDataModel postLeadDataModel;
     LeadDataResponseModel leadDataResponseModel;
     private MediaRecorder mediaRecorder;
     String TAG = getClass().getSimpleName();
@@ -121,7 +123,14 @@ public class LeadGenerationActivity extends AppCompatActivity {
     private int width, height;
     boolean mediarecorderflag = false;
     String nameWithProperSpacing;
+    private int PICK_PHOTO_FROM_GALLERY = 202;
+    Spinner spr_leadpurpose;
+    LinearLayout ll_upload, ll_purpose;
 
+    LinearLayout ll_channel;
+    Spinner spr_channel, spr_from;
+    TextView tv_spr_purpose;
+    private LeadPurposeResponseModel leadmodel;
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
 
@@ -139,6 +148,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +161,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
         prefs_user = mActivity.getSharedPreferences("Userdetails", 0);
 
         init();
+        GetLeadPurpose();
+        //  GetLeadChannel();
         initlistner();
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -163,6 +175,24 @@ public class LeadGenerationActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void GetLeadPurpose() {
+        if (cd.isConnectingToInternet()) {
+            LeadPurposeController leadPurposeController = new LeadPurposeController(LeadGenerationActivity.this);
+            leadPurposeController.GetLeadPurpose();
+        } else {
+            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+        }
+    }
+
+    private void GetLeadChannel() {
+        if (cd.isConnectingToInternet()) {
+            LeadChannelController leadChannelController = new LeadChannelController(LeadGenerationActivity.this);
+            leadChannelController.GetLeadChannel();
+        } else {
+            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
         }
     }
 
@@ -183,6 +213,64 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 } else {
                     requestCameraPermission();
                 }
+            }
+        });
+
+        spr_leadpurpose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (leadmodel != null) {
+                    if (GlobalClass.CheckArrayList(leadmodel.getPurposeList())) {
+                        if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Select*")) {
+                            tv_spr_purpose.setVisibility(View.GONE);
+                            edt_name.setVisibility(View.GONE);
+                            edt_mobile.setVisibility(View.GONE);
+                            edt_remarks.setVisibility(View.GONE);
+                            ll_upload.setVisibility(View.GONE);
+                            btn_submit.setVisibility(View.GONE);
+                            tv_reset.setVisibility(View.GONE);
+                        } else {
+                            btn_submit.setVisibility(View.VISIBLE);
+                            tv_reset.setVisibility(View.VISIBLE);
+
+                            for (int i = 0; i < leadmodel.getPurposeList().size(); i++) {
+                                if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase(leadmodel.getPurposeList().get(i).getData())) {
+                                    if (!GlobalClass.isNull(leadmodel.getPurposeList().get(i).getRemarks())) {
+                                        tv_spr_purpose.setVisibility(View.VISIBLE);
+                                        tv_spr_purpose.setText("" + leadmodel.getPurposeList().get(i).getRemarks());
+                                    } else {
+                                        tv_spr_purpose.setVisibility(View.GONE);
+                                    }
+
+                                }
+                            }
+
+
+                            if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Order") || spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Orders")) {
+                                ll_upload.setVisibility(View.VISIBLE);
+                                edt_name.setVisibility(View.VISIBLE);
+                                edt_mobile.setVisibility(View.VISIBLE);
+                                edt_remarks.setVisibility(View.VISIBLE);
+                                ll_channel.setVisibility(View.GONE);
+                                edt_remarks.setHint("Remarks");
+                            } else {
+                                ll_upload.setVisibility(View.GONE);
+                                edt_remarks.setHint("Remarks");
+                                edt_name.setVisibility(View.VISIBLE);
+                                edt_mobile.setVisibility(View.VISIBLE);
+                                edt_remarks.setVisibility(View.VISIBLE);
+                                // ll_channel.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -253,45 +341,63 @@ public class LeadGenerationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                nameWithProperSpacing = edt_name.getText().toString().toUpperCase().trim();
+                name = nameWithProperSpacing.replaceAll("\\s+", " ");
+                mobile = edt_mobile.getText().toString();
+                email = edt_mail.getText().toString();
+                address = edt_address.getText().toString();
+                remarks = edt_remarks.getText().toString().trim();
+
+                LeadReqModel leadReqModel = new LeadReqModel();
+                try {
+                    if (ll_purpose.getVisibility() == View.VISIBLE) {
+                        leadReqModel.setName(name);
+                        leadReqModel.setMobile(mobile);
+                        leadReqModel.setAddress(address);
+                        leadReqModel.setPincode(edt_pincode.getText().toString());
+                        leadReqModel.setRemarks(remarks + " ~CLISO");
+                        leadReqModel.setEmail(email);
+                        leadReqModel.setPurpose(spr_leadpurpose.getSelectedItem().toString());
+                        leadReqModel.setAppName("CLISO");
+                        leadReqModel.setEntryBy(prefs_user.getString("Username", ""));
+//                        leadReqModel.setChannel(spr_channel.getSelectedItem().toString());
+//                        leadReqModel.setFrom(spr_from.getSelectedItem().toString());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 if (cd.isConnectingToInternet()) {
                     if (Validate()) {
                         if (edt_mail.getText().toString().length() > 0) {
                             if (emailValidation()) {
-                                nameWithProperSpacing = edt_name.getText().toString().toUpperCase().trim();
-                                name = nameWithProperSpacing.replaceAll("\\s+", " ");
-
-                                mobile = edt_mobile.getText().toString();
-                                email = edt_mail.getText().toString();
-                                address = edt_address.getText().toString();
-                                remarks = edt_remarks.getText().toString().trim();
-
                                 if (checkRemarksValidation()) {
                                     if (cd.isConnectingToInternet()) {
-                                        new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                        if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Order") || spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Orders")) {
+                                            new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                                        } else {
+                                            PostLeadsController postLeadsController = new PostLeadsController(LeadGenerationActivity.this);
+                                            postLeadsController.CallAPI(leadReqModel);
+                                        }
                                     } else {
-                                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 0);
                                     }
                                 }
                             }
                         } else {
                             if (checkRemarksValidation()) {
-                                if (cd.isConnectingToInternet()) {
-                                    nameWithProperSpacing = edt_name.getText().toString().toUpperCase().trim();
-                                    name = nameWithProperSpacing.replaceAll("\\s+", " ");
-
-                                    mobile = edt_mobile.getText().toString();
-                                    email = edt_mail.getText().toString();
-                                    address = edt_address.getText().toString();
-                                    remarks = edt_remarks.getText().toString().trim();
+                                if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Order") || spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Orders")) {
                                     new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                                 } else {
-                                    GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                                    PostLeadsController postLeadsController = new PostLeadsController(LeadGenerationActivity.this);
+                                    postLeadsController.CallAPI(leadReqModel);
                                 }
                             }
                         }
                     }
                 } else {
-                    GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
 
 
@@ -301,22 +407,22 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private boolean checkRemarksValidation() {
         if (edt_remarks.getText().toString().startsWith(",")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 0);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(".")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 0);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith("-")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR);
+            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPECIAL_CHAR, 0);
             edt_remarks.requestFocus();
             return false;
         }
         if (edt_remarks.getText().toString().startsWith(" ")) {
-            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPACE);
+            GlobalClass.showCustomToast(mActivity, MessageConstants.REMARKS_SHOULD_NOT_START_SPACE, 0);
             edt_remarks.requestFocus();
             return false;
         }
@@ -325,7 +431,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     private boolean emailValidation() {
         if (edt_mail.getText().toString().startsWith(" ")) {
-            GlobalClass.showCustomToast(mActivity, "Email ID should not start with space");
+            GlobalClass.showCustomToast(mActivity, "Email ID should not start with space", 0);
             edt_mail.requestFocus();
             return false;
         }
@@ -333,30 +439,40 @@ public class LeadGenerationActivity extends AppCompatActivity {
     }
 
     private void clearfileds() {
-        edt_name.requestFocus();
-        edt_name.setText("");
-        edt_mobile.setText("");
-        edt_mail.setText("");
-        edt_address.setText("");
-        edt_pincode.setText("");
-        edt_remarks.setText("");
-        //  spr_package.setSelection(0);
+        try {
+            edt_name.requestFocus();
+            edt_name.setText("");
+            edt_mobile.setText("");
+            edt_mail.setText("");
+            edt_address.setText("");
+            edt_pincode.setText("");
+            edt_remarks.setText("");
 
-        img_tick.setVisibility(View.INVISIBLE);
-        img_tick2.setVisibility(View.INVISIBLE);
+            //  spr_package.setSelection(0);
 
-        if (imagefile != null) {
-            if (imagefile.exists()) {
-                imagefile.delete();
+            img_tick.setVisibility(View.INVISIBLE);
+            img_tick2.setVisibility(View.INVISIBLE);
+
+            if (imagefile != null) {
+                if (imagefile.exists()) {
+                    imagefile.delete();
+                }
+                imagefile = null;
             }
-            imagefile = null;
-        }
 
-        if (f_AudioSavePathInDevice != null) {
-            if (f_AudioSavePathInDevice.exists()) {
-                f_AudioSavePathInDevice.delete();
+            if (f_AudioSavePathInDevice != null) {
+                if (f_AudioSavePathInDevice.exists()) {
+                    f_AudioSavePathInDevice.delete();
+                }
+                f_AudioSavePathInDevice = null;
             }
-            f_AudioSavePathInDevice = null;
+            spr_leadpurpose.setSelection(0);
+            tv_spr_purpose.setText("");
+            tv_spr_purpose.setVisibility(View.GONE);
+            spr_channel.setSelection(0);
+            spr_from.setSelection(0);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -364,10 +480,10 @@ public class LeadGenerationActivity extends AppCompatActivity {
         CharSequence[] items = new CharSequence[0];
         if (imagefile != null) {
             if (imagefile.exists()) {
-                items = new CharSequence[]{"Discard Previous Image", "Take Photo", "Cancel"};
+                items = new CharSequence[]{"Discard Previous Image", "Take Photo", "Choose from gallery", "Cancel"};
             }
         } else {
-            items = new CharSequence[]{"Take Photo", "Cancel"};
+            items = new CharSequence[]{"Take Photo", "Choose from gallery", "Cancel"};
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(LeadGenerationActivity.this);
         builder.setTitle("Upload Prescription !");
@@ -387,6 +503,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 } else if (finalItems[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";
                     cameraIntent();
+                } else if (finalItems[item].equals("Choose from gallery")) {
+                    chooseFromGallery();
                 } else if (finalItems[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -395,6 +513,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+
+    private void chooseFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, PICK_PHOTO_FROM_GALLERY);
     }
 
 
@@ -533,6 +657,23 @@ public class LeadGenerationActivity extends AppCompatActivity {
             }
         }
 
+       /* try {
+            if (!spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Order") || spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Orders")) {
+                if (spr_channel.getSelectedItem().toString().equalsIgnoreCase("Select Channel*")) {
+                    Toast.makeText(mActivity, "Select Channel", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+                if (spr_from.getSelectedItem().toString().equalsIgnoreCase("Select From*")) {
+                    Toast.makeText(mActivity, "Select From", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true;
+        }*/
 
        /* if (spr_package.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Select Package Name", Toast.LENGTH_SHORT).show();
@@ -571,7 +712,12 @@ public class LeadGenerationActivity extends AppCompatActivity {
         tv_reset.setText(Html.fromHtml("<u>" + "Reset" + "</u>"));
         spr_package = findViewById(R.id.spr_package);
         btn_submit = findViewById(R.id.btn_submit);
-
+        ll_upload = findViewById(R.id.ll_upload);
+        ll_purpose = findViewById(R.id.ll_purpose);
+        spr_leadpurpose = findViewById(R.id.spr_leadpurpose);
+        ll_channel = findViewById(R.id.ll_channel);
+        spr_channel = findViewById(R.id.spr_channel);
+        spr_from = findViewById(R.id.spr_from);
         img_tick = (ImageView) findViewById(R.id.img_tick);
         img_tick2 = (ImageView) findViewById(R.id.img_tick2);
 
@@ -579,6 +725,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
         rel_upload_img = (RelativeLayout) findViewById(R.id.rel_upload_img);
         rel_upload_voice = (RelativeLayout) findViewById(R.id.rel_upload_voice);
 
+        tv_spr_purpose = findViewById(R.id.tv_spr_purpose);
 
         // edt_address.setFilters(new InputFilter[]{EMOJI_FILTER});
 
@@ -708,6 +855,85 @@ public class LeadGenerationActivity extends AppCompatActivity {
         }
     }
 
+    public void getLeadPurpose(LeadPurposeResponseModel leadPurposeResponseModel) {
+        if (leadPurposeResponseModel == null) {
+            ll_purpose.setVisibility(View.GONE);
+        } else {
+            leadmodel = leadPurposeResponseModel;
+            ll_purpose.setVisibility(View.VISIBLE);
+            if (!GlobalClass.isNull(leadPurposeResponseModel.getRespId()) && leadPurposeResponseModel.getRespId().equalsIgnoreCase("RES00001")) {
+                if (GlobalClass.CheckArrayList(leadPurposeResponseModel.getPurposeList())) {
+                    leadpurpsearay.add(0,"Select*");
+                    for (int i = 0; i < leadPurposeResponseModel.getPurposeList().size(); i++) {
+                        if (!GlobalClass.isNull(leadPurposeResponseModel.getPurposeList().get(i).getData())) {
+                            leadpurpsearay.add(leadPurposeResponseModel.getPurposeList().get(i).getData());
+                        }
+                    }
+                }
+
+                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mActivity, R.layout.spinner_layout, leadpurpsearay);
+                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                spr_leadpurpose.setAdapter(adapter2);
+
+            } else {
+                GlobalClass.showShortToast(mActivity, leadPurposeResponseModel.getResponse());
+            }
+
+
+        }
+    }
+
+    public void getpostresponse(LeadRespModel leadResponseModel) {
+        if (!GlobalClass.isNull(leadResponseModel.getRespId()) && leadResponseModel.getRespId().equalsIgnoreCase("RES02024")) {
+            clearfileds();
+        }
+        Global.showCustomToast(mActivity, leadResponseModel.getResponse());
+    }
+
+    public void getLeadChannel(LeadChannelRespModel leadChannelRespModel) {
+
+        ArrayList<String> channelList = new ArrayList<>();
+        ArrayList<String> fromList = new ArrayList<>();
+
+
+        channelList.add("Select Channel*");
+        fromList.add("Select From*");
+        if (leadChannelRespModel != null) {
+            if (!GlobalClass.isNull(leadChannelRespModel.getRespId()) && leadChannelRespModel.getRespId().equalsIgnoreCase("RES00001")) {
+
+                if (GlobalClass.CheckArrayList(leadChannelRespModel.getChannelList())) {
+                    for (int i = 0; i < leadChannelRespModel.getChannelList().size(); i++) {
+                        if (!GlobalClass.isNull(leadChannelRespModel.getChannelList().get(i).getData())) {
+                            channelList.add(leadChannelRespModel.getChannelList().get(i).getData());
+                        }
+                    }
+                }
+
+                if (GlobalClass.CheckArrayList(leadChannelRespModel.getFromList())) {
+                    for (int i = 0; i < leadChannelRespModel.getFromList().size(); i++) {
+                        if (!GlobalClass.isNull(leadChannelRespModel.getFromList().get(i).getData())) {
+                            fromList.add(leadChannelRespModel.getFromList().get(i).getData());
+                        }
+                    }
+                }
+
+                ArrayAdapter<String> chanel = new ArrayAdapter<String>(mActivity, R.layout.spinner_layout, channelList);
+                chanel.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spr_channel.setAdapter(chanel);
+
+                ArrayAdapter<String> from = new ArrayAdapter<String>(mActivity, R.layout.spinner_layout, fromList);
+                from.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spr_from.setAdapter(from);
+            }
+        } else {
+            ll_channel.setVisibility(View.GONE);
+        }
+
+
+    }
+
+
     public class CustomDialogClass extends Dialog {
 
         public Activity activity;
@@ -832,7 +1058,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             btn_save.setBackgroundResource(R.drawable.btn_disabled_bg);
                             btn_discard.setEnabled(false);
                             btn_discard.setBackgroundResource(R.drawable.btn_disabled_bg);
-                            GlobalClass.showCustomToast(mActivity, "Recording started");
+                            GlobalClass.showCustomToast(mActivity, "Recording started", 0);
                         } else {
                             GlobalClass.requestAudioPermission(mActivity, RequestPermissionCode);
                         }
@@ -857,7 +1083,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         btn_save.setBackgroundResource(R.drawable.bg_bg1);
                         btn_discard.setEnabled(true);
                         btn_discard.setBackgroundResource(R.drawable.bg_bg1);
-                        GlobalClass.showCustomToast(mActivity, "Recording completed");
+                        GlobalClass.showCustomToast(mActivity, "Recording completed", 0);
                     }
                 }
             });
@@ -875,13 +1101,25 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-            img_tick.setVisibility(View.VISIBLE);
 
+            img_tick.setVisibility(View.VISIBLE);
             String imageurl = camera.getCameraBitmapPath();
             imagefile = new File(imageurl);
 
+        } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
+            if (data == null) {
+                Toast.makeText(mActivity, ToastFile.failed_to_open, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try {
+                imagefile = FileUtil.from(this, data.getData());
+                imagefile = GlobalClass.getCompressedFile(mActivity, imagefile);
+                img_tick.setVisibility(View.VISIBLE);
+            } catch (IOException e) {
+                Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
         }
     }
 
@@ -938,7 +1176,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 builder.addPart("product", new StringBody(""));
                 builder.addPart("rate", new StringBody("0"));
                 builder.addPart("reports", new StringBody(""));
-                builder.addPart("ref_code", new StringBody("" + prefs_user.getString("mobile_user", "")));
+                builder.addPart("ref_code", new StringBody("" + prefs_user.getString("Username", "")));
                 builder.addPart("service_type", new StringBody("H"));
                 builder.addPart("api_key", new StringBody("" + api_key));
                 builder.addPart("bendataxml", new StringBody("<NewDataSet><Ben_details><Name>" + name + "</Name><Age>" + "" + "</Age><Gender>" + "" + "</Gender></Ben_details></NewDataSet>"));
@@ -966,7 +1204,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         + "\"file_img\"" + ":\"" + imagefile + "\"," + "\"file_aud\"" + ":\"" + f_AudioSavePathInDevice + "\"}");
 
                 httpPost.setEntity(builder.build());
-                httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));
+                httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(mActivity));
                 HttpResponse httpResponse = httpclient.execute(httpPost);
                 inputStream = httpResponse.getEntity().getContent();
                 GlobalClass.printLog(Constants.ERROR, TAG, "Status Line: ", "" + httpResponse.getStatusLine());
@@ -1072,7 +1310,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(whatsappUrl(name, mobile, testBookingResponseModel.getREF_ORDERID(), type)));
                                     startActivity(intent);
                                 } else {
-                                    GlobalClass.showCustomToast(mActivity, "WhatsApp not Installed");
+                                    GlobalClass.showCustomToast(mActivity, "WhatsApp not Installed", 0);
                                 }
                             }
                         });
@@ -1093,7 +1331,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                     startActivity(Intent.createChooser(emailintent, "Choose an Email client to which you want to share details:"));
                                 } catch (Exception e) {
                                     e.printStackTrace();
-                                    GlobalClass.showCustomToast(mActivity, "There is no email client installed");
+                                    GlobalClass.showCustomToast(mActivity, "There is no email client installed", 0);
                                 }
                             }
                         });
@@ -1155,7 +1393,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 0);
             }
         }
     }
@@ -1226,7 +1464,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 HttpPost httpPost = new HttpPost(strUrl);
                 String strJson = "";
                 strJson = jobj.toString();
-                Log.v("Sending data: " , strJson);
+                Log.v("Sending data: ", strJson);
                 StringEntity se = new StringEntity(strJson);
                 httpPost.setEntity(se);
                 httpPost.setHeader("Accept", "application/json");
@@ -1235,7 +1473,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 inputStream = httpResponse.getEntity().getContent();
                 if (inputStream != null) {
                     result = convertInputStreamToString(inputStream);
-                    Log.v("Response : " , result);
+                    Log.v("Response : ", result);
                 }
 
             } catch (Exception e) {
@@ -1272,7 +1510,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
             if (checkRemarksValidation()) {
                 if (!isemailvalid) {
-                    GlobalClass.showCustomToast(mActivity, MessageConstants.INVALID_EMAIL);
+                    GlobalClass.showCustomToast(mActivity, MessageConstants.INVALID_EMAIL, 0);
                     edt_mail.requestFocus();
                 } else {
                     name = edt_name.getText().toString().toUpperCase().trim();
@@ -1284,7 +1522,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     if (cd.isConnectingToInternet()) {
                         new AsyncTaskPost_uploadfile(name, mobile, email, address, remarks, type, imagefile, f_AudioSavePathInDevice).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     } else {
-                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN);
+                        GlobalClass.showCustomToast(mActivity, MessageConstants.CHECK_INTERNET_CONN, 0);
                     }
                 }
             }
@@ -1293,3 +1531,4 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
 
 }
+

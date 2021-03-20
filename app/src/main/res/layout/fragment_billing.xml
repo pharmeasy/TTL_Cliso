@@ -26,36 +26,32 @@
             <TextView
                 android:id="@+id/txt_from_date"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginRight="5dp"
                 android:layout_weight="1"
                 android:background="@color/cement_light"
                 android:drawableRight="@drawable/calender_color_billing"
                 android:gravity="center"
+                android:drawablePadding="5dp"
                 android:hint="20-01-2019"
-                android:paddingBottom="5dp"
-                android:paddingRight="15dp"
-                android:paddingTop="5dp"
                 android:textColor="@color/DARKGray"
-                android:textSize="12dp" />
+                android:textSize="15dp" />
 
             <TextView
-                android:paddingBottom="5dp"
-                android:paddingRight="15dp"
-                android:paddingTop="5dp"
+
                 android:id="@+id/txt_to_date"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginLeft="20dp"
                 android:layout_weight="1"
                 android:background="@color/cement_light"
                 android:drawableRight="@drawable/calender_color_billing"
                 android:gravity="center"
+                android:drawablePadding="5dp"
                 android:hint="30-01-2019"
                 android:textColor="@color/DARKGray"
-                android:textSize="12dp" />
+                android:textSize="15dp" />
         </LinearLayout>
 
         <LinearLayout

@@ -82,7 +82,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-        String strUrl = Api.COVID + "pickso/api/DataSheetUpload/PatientDetails";
+        String strUrl = Api.Cloud_base + "PatientDetail";
         Log.e(TAG, "COVID POST API " + strUrl);
 
         InputStream inputStream = null;

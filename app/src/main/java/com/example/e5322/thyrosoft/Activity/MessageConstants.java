@@ -46,4 +46,6 @@ public class MessageConstants {
     public static String ENTER_AMOUNT = "Please enter amount to add in your account";
     public static String REMARKS_SHOULD_NOT_START_SPACE = "Remarks should not start with space";
     public static String INVALID_EMAIL = "Invalid email ID";
+
+
 }

@@ -345,7 +345,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showCustomToast(getActivity(), ToastFile.patient_crt_addr);
+                    GlobalClass.showCustomToast(getActivity(), ToastFile.patient_crt_addr, 0);
                     if (enteredString.length() > 0) {
                         edt_patient_address.setText(enteredString.substring(1));
                     } else {
@@ -375,7 +375,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0")) {
-                    GlobalClass.showCustomToast(getActivity(), ToastFile.patient_crt_pincode);
+                    GlobalClass.showCustomToast(getActivity(), ToastFile.patient_crt_pincode, 0);
                     if (enteredString.length() > 0) {
                         edt_patient_pincode.setText(enteredString.substring(1));
                     } else {
@@ -405,7 +405,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showCustomToast(getActivity(), ToastFile.coll_crt_addr);
+                    GlobalClass.showCustomToast(getActivity(), ToastFile.coll_crt_addr, 0);
                     if (enteredString.length() > 0) {
                         edt_coll_address.setText(enteredString.substring(1));
                     } else {
@@ -435,7 +435,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
                         || enteredString.startsWith("0")) {
-                    GlobalClass.showCustomToast(getActivity(), ToastFile.coll_crt_pincode);
+                    GlobalClass.showCustomToast(getActivity(), ToastFile.coll_crt_pincode, 0);
                     if (enteredString.length() > 0) {
                         edt_coll_pincode.setText(enteredString.substring(1));
                     } else {
@@ -464,7 +464,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showCustomToast(activity, ToastFile.entr_brcd);
+                    GlobalClass.showCustomToast(activity, ToastFile.entr_brcd, 0);
                     if (enteredString.length() > 0) {
                         edt_barcode.setText(enteredString.substring(1));
                     } else {
@@ -485,7 +485,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 }
                 if (s.length() > 8) {
                     edt_barcode.setText(enteredString.substring(1));
-                    GlobalClass.showCustomToast(activity, ToastFile.crt_brcd);
+                    GlobalClass.showCustomToast(activity, ToastFile.crt_brcd, 0);
                 }
                 if (s.length() == 8) {
                     if (flag) {
@@ -510,7 +510,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         enteredString.startsWith("#") || enteredString.startsWith("$") ||
                         enteredString.startsWith("%") || enteredString.startsWith("^") ||
                         enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    GlobalClass.showCustomToast(activity, ToastFile.entr_brcd);
+                    GlobalClass.showCustomToast(activity, ToastFile.entr_brcd, 0);
                     if (enteredString.length() > 0) {
                         edt_re_enter_barcode.setText(enteredString.substring(1));
                     } else {
@@ -531,10 +531,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                     String getPreviouseText = edt_barcode.getText().toString();
                     currentText = edt_re_enter_barcode.getText().toString();
                     if (getPreviouseText.equals(currentText)) {
-                        GlobalClass.showCustomToast(activity, ToastFile.mtch_brcd);
+                        GlobalClass.showCustomToast(activity, ToastFile.mtch_brcd, 0);
                     } else {
                         edt_re_enter_barcode.setText("");
-                        GlobalClass.showCustomToast(activity, ToastFile.crt_brcd);
+                        GlobalClass.showCustomToast(activity, ToastFile.crt_brcd, 0);
                     }
                 }
                 buttonval();
@@ -565,7 +565,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (presc_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one image");
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
                         } else {
                             ispresciption = true;
                             isadhar = false;
@@ -577,7 +577,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY,0);
                 }
             }
         });
@@ -588,7 +588,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (aadhar_file != null && aadhar_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = true;
@@ -600,7 +600,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
             }
         });
@@ -611,7 +611,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (vial_file != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only one images");
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -623,7 +623,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
             }
         });
@@ -634,7 +634,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
-                            GlobalClass.showCustomToast(activity, "You can upload only two images");
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
                         } else {
                             ispresciption = false;
                             isadhar = false;
@@ -646,7 +646,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
             }
         });
@@ -660,10 +660,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         if (result)
                             openCamera();
                     } else {
-                        GlobalClass.showCustomToast(activity, "Only 1 selfie can be Uploaded");
+                        GlobalClass.showCustomToast(activity, "Only 1 selfie can be Uploaded", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
             }
         });
@@ -690,13 +690,13 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         if (cd.isConnectingToInternet()) {
                             validateotp();
                         } else {
-                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                            GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(activity, "Kindly enter otp");
+                        GlobalClass.showCustomToast(activity, "Kindly enter otp", 0);
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number");
+                    GlobalClass.showCustomToast(activity, "Kindly enter mobile number", 0);
                 }
             }
         });
@@ -877,7 +877,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
                         || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
                 ) {
-                    GlobalClass.showCustomToast(activity, ToastFile.crt_mob_num);
+                    GlobalClass.showCustomToast(activity, ToastFile.crt_mob_num, 0);
                     if (enteredString.length() > 0) {
                         edt_missed_mobile.setText(enteredString.substring(1));
                     } else {
@@ -1020,13 +1020,13 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         Date date = GlobalClass.dateFromString(selDateTime, simpleDateFormat);
         if (date.after(new Date())) {
-            GlobalClass.showCustomToast(activity, ToastFile.SELECT_VALID_COLL_TIME);
+            GlobalClass.showCustomToast(activity, ToastFile.SELECT_VALID_COLL_TIME, 0);
             tv_coll_time.setText("");
         }
     }
 
     private void displayrate() {
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates();
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
@@ -1058,7 +1058,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private void verifyBarcode(Editable s) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -1072,10 +1072,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             GlobalClass.redirectToLogin(activity);
                         } else {
                             edt_barcode.setText("");
-                            GlobalClass.showCustomToast(activity, "" + responseModel.getResponse());
+                            GlobalClass.showCustomToast(activity, "" + responseModel.getResponse(), 0);
                         }
                     } else {
-                        GlobalClass.showCustomToast(activity, ToastFile.something_went_wrong);
+                        GlobalClass.showCustomToast(activity, ToastFile.something_went_wrong, 0);
                     }
                 } catch (JsonSyntaxException e) {
                     e.printStackTrace();
@@ -1250,10 +1250,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 return false;
             }
             if (!GlobalClass.isNull(b2c) && Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
-                GlobalClass.showCustomToast(activity, "You cannot enter collected amount more than " + b2c);
+                GlobalClass.showCustomToast(activity, "You cannot enter collected amount more than " + b2c, 0);
                 return false;
             } else if (!GlobalClass.isNull(b2b) && Integer.parseInt(edt_amt.getText().toString()) < Integer.parseInt(b2b)) {
-                GlobalClass.showCustomToast(activity, "You cannot enter collected amount less than " + b2b);
+                GlobalClass.showCustomToast(activity, "You cannot enter collected amount less than " + b2b, 0);
                 return false;
             }
         } catch (NumberFormatException e) {
@@ -1264,7 +1264,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void mobileverify(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
@@ -1276,15 +1276,15 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 GlobalClass.hideProgress(activity, progressDialog);
                 try {
                     if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                         disablefields();
                     } else if (response.body().getResId().equalsIgnoreCase(Constants.RES0082)) {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                     } else {
                         if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
                             generateOtP(edt_missed_mobile.getText().toString());
                         } else {
-                            GlobalClass.showCustomToast(activity, response.body().getResponse());
+                            GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                         }
 
                     }
@@ -1307,7 +1307,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 if (cd.isConnectingToInternet()) {
                     mobileverify(edt_missed_mobile.getText().toString());
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(activity, MessageConstants.CHECK_INTERNET_CONN, 0);
                 }
             } else {
                 mobileverify(edt_missed_mobile.getText().toString());
@@ -1365,7 +1365,6 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void openCamera() {
         buildCamera();
-
         try {
             camera.takePicture();
         } catch (Exception e) {
@@ -1406,7 +1405,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             }
         } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
             if (data == null) {
-                GlobalClass.showCustomToast(activity, "Failed to load image!");
+                GlobalClass.showCustomToast(activity, "Failed to load image!", 0);
                 return;
             }
             try {
@@ -1527,7 +1526,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 }
 
             } catch (IOException e) {
-                GlobalClass.showCustomToast(activity, "Failed to read image data!");
+                GlobalClass.showCustomToast(activity, "Failed to read image data!", 0);
                 e.printStackTrace();
             }
         }
@@ -1815,7 +1814,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void generateOtP(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         COVIDgetotp_req coviDgetotp_req = new COVIDgetotp_req();
         coviDgetotp_req.setApi_key(apikey);
@@ -1839,7 +1838,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         tv_resetno.setText(getResources().getString(R.string.reset_mob));
                         tv_resetno.setPaintFlags(tv_resetno.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                     }
-                    GlobalClass.showCustomToast(activity, response.body().getResponse());
+                    GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1854,7 +1853,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void validateotp() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -1870,7 +1869,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                     if (response.body() != null && !GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         disablefields();
                     } else {
-                        GlobalClass.showCustomToast(activity, response.body().getResponse());
+                        GlobalClass.showCustomToast(activity, response.body().getResponse(), 0);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1911,10 +1910,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             String RESPONSEID = jsonObject.optString("ResId");
             if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
+                Constants.SRFcovidWOEfrag_flag = "1";
+                clearonreset();
                 Intent i = new Intent(getActivity(), SRFCovidWOEMainActivity.class);
                 startActivity(i);
-                Constants.SRFcovidWOEfrag_flag = "1";
-                clearfields("3");
             } else {
                 Global.showCustomToast(activity, RESPONSE);
             }

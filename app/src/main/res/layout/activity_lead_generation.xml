@@ -55,6 +55,34 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:orientation="vertical">
 
+
+                <LinearLayout
+                    android:id="@+id/ll_purpose"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/custom_border_edittext_blue"
+                    android:orientation="horizontal">
+
+
+                    <Spinner
+                        android:id="@+id/spr_leadpurpose"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:background="@color/transparent" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:id="@+id/tv_spr_purpose"/>
+
                 <EditText
                     android:id="@+id/edt_name"
                     android:layout_width="match_parent"
@@ -64,7 +92,7 @@
                     android:digits="@string/alphabets"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Patient name*"
+                    android:hint="Name*"
                     android:maxLength="40"
                     android:padding="@dimen/_5sdp" />
 
@@ -79,13 +107,13 @@
                     android:hint="Mobile*"
                     android:inputType="number"
                     android:maxLength="10"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
                 <EditText
                     android:id="@+id/edt_mail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/custom_border_edittext_blue"
                     android:digits="@string/email_id"
@@ -93,28 +121,28 @@
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="Email"
                     android:maxLength="60"
-                    android:padding="@dimen/_5sdp"
-                   />
+                    android:padding="@dimen/_5sdp" />
 
                 <EditText
                     android:id="@+id/edt_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
                     android:background="@drawable/custom_border_edittext_blue"
+                    android:digits="@string/addressvalidation"
                     android:drawableLeft="@drawable/address"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:digits="@string/addressvalidation"
                     android:hint="Address"
                     android:maxLength="200"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
 
                 <EditText
                     android:id="@+id/edt_pincode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
                     android:background="@drawable/custom_border_edittext_blue"
                     android:drawableLeft="@drawable/pincode24"
                     android:drawablePadding="@dimen/_5sdp"
@@ -128,17 +156,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:visibility="gone"
                     android:background="@drawable/grey_curve_border"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone" />
 
 
                 <LinearLayout
+                    android:id="@+id/ll_upload"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/dp_5"
-                    android:padding="@dimen/_5sdp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="@dimen/_5sdp">
 
                     <RelativeLayout
                         android:id="@+id/rel_upload_img"
@@ -219,16 +249,67 @@
                 <EditText
                     android:id="@+id/edt_remarks"
                     android:layout_width="match_parent"
+                    android:visibility="visible"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/custom_border_edittext_blue"
+                    android:digits="@string/addressvalidation"
                     android:drawableLeft="@drawable/remark24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Test/Profiles/Scans"
-                    android:digits="@string/addressvalidation"
+                    android:hint="Remarks"
                     android:maxLength="200"
-                    android:padding="@dimen/_5sdp"
-                    />
+                    android:padding="@dimen/_5sdp" />
+
+
+                <LinearLayout
+                    android:id="@+id/ll_channel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_border_edittext_blue"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="@dimen/dp_3"
+                        android:layout_weight="1">
+
+                        <Spinner
+                            android:id="@+id/spr_channel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:background="@color/transparent" />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/custom_border_edittext_blue"
+                        android:orientation="horizontal"
+                        android:layout_weight="1">
+
+
+                        <Spinner
+                            android:id="@+id/spr_from"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/_5sdp"
+                            android:background="@color/transparent" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
 
             </LinearLayout>
 

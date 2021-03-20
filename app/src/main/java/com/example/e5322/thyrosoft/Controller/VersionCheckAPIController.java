@@ -1,16 +1,13 @@
 package com.example.e5322.thyrosoft.Controller;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -19,10 +16,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.VersionResponseModel;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import static android.content.Context.MODE_PRIVATE;
 
 public class VersionCheckAPIController {
 
@@ -34,10 +28,12 @@ public class VersionCheckAPIController {
     private RequestQueue requestQueue;
     AppPreferenceManager appPreferenceManager;
     Gson gson;
+    String sourcecode;
 
-    public VersionCheckAPIController(SplashScreen splashScreenActivity, Activity activity) {
+    public VersionCheckAPIController(SplashScreen splashScreenActivity, Activity activity, String sourcecode) {
         this.splashScreenActivity = splashScreenActivity;
         this.mactivity = activity;
+        this.sourcecode = sourcecode;
         flag = 0;
         globalClass = new GlobalClass(mactivity);
         appPreferenceManager=new AppPreferenceManager(mactivity);
@@ -51,7 +47,8 @@ public class VersionCheckAPIController {
             }
             if (requestQueue == null)
                 requestQueue = GlobalClass.setVolleyReq(mactivity);
-            String url = Api.checkVersion;
+            String url = Api.checkVersion + "/" + sourcecode;
+            System.out.println(url);
             globalClass.printLog("Error", TAG, "VersionCheckAPI", url);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, new JSONObject(), new Response.Listener<JSONObject>() {
@@ -81,7 +78,7 @@ public class VersionCheckAPIController {
                         } else {
                             GlobalClass.showShortToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG);
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

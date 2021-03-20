@@ -375,12 +375,13 @@
 
     <group
         android:id="@+id/group_offer"
+        android:visible="false"
         android:checkableBehavior="single">
         <item
             android:id="@+id/offer_data"
             android:icon="@drawable/offer"
             android:title="Special Offers"
-            android:visible="true" />
+            android:visible="false" />
 
     </group>
 
@@ -413,6 +414,19 @@
             android:title="Camp Intimation"
             android:visible="false" />
     </group>
+
+
+    <group
+        android:id="@+id/grp_certificate"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_certificate"
+            android:icon="@drawable/billing_d"
+            android:title="Certificate"
+            android:visible="false" />
+
+    </group>
+
 
 
     <group

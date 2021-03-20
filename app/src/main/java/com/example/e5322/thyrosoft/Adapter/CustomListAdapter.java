@@ -2,13 +2,14 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.SourceILSModel.REF_DR;
@@ -92,7 +93,7 @@ public class CustomListAdapter extends ArrayAdapter {
                 ArrayList<String> matchValues = new ArrayList<String>();
 
                 for (String dataItem : dataListAllItems) {
-                    if (dataItem.toLowerCase().startsWith(searchStrLowerCase)) {
+                    if (dataItem.toLowerCase().contains(searchStrLowerCase)) {
                         matchValues.add(dataItem);
                     }
                 }

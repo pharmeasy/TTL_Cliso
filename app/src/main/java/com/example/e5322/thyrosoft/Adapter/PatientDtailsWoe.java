@@ -6,22 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -31,7 +26,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.RevisedScreenNewUser.Summary_Activity_WOE;
@@ -100,7 +97,6 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             linear_summary_open = (LinearLayout) v.findViewById(R.id.linear_summary_open);
             deleteWoe = (ImageView) v.findViewById(R.id.deleteWoe);
             searchBarcode = new ArrayList<>();
-
         }
     }
 
@@ -323,27 +319,29 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
 
     private void getPatientDetails() {
         requestQueuePatientDetails = GlobalClass.setVolleyReq(context1);//2c=/TAM03/TAM03136166236000078/geteditdata
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getPartientDetailsList + "" + api_key + "/" + "" + user + "/" + "" + patientId + "/" + "geteditdata", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "" + api_key + "/" + "" + user + "/" + "" + patientId + "/" + "geteditdata", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: response" + response);
                 Gson gson = new Gson();
                 summary_model = gson.fromJson(response.toString(), Summary_model.class);
                 GlobalClass.summary_models.add(summary_model);
-                String getResponse = summary_model.getResponse();
-
 
                 try {
-                    if (!GlobalClass.isNull(getResponse) && getResponse.equals("FAILURE") ) {
-                        System.out.println(TAG + "error in geteditdata");
-                    } else {
-                        if (flagpass == 1) {
-                            Intent intent = new Intent(context1, Summary_Activity_WOE.class);
-                            context1.startActivity(intent);
-                        } else if (flagpass == 2) {
-                            Intent i = new Intent(context1, Woe_Edt_Activity.class);
-                            context1.startActivity(i);
+                    if (!GlobalClass.isNull(summary_model.getRES_ID())) {
+                        if (summary_model.getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
+                            if (flagpass == 1) {
+                                Intent intent = new Intent(context1, Summary_Activity_WOE.class);
+                                context1.startActivity(intent);
+                            } else if (flagpass == 2) {
+                                Intent i = new Intent(context1, Woe_Edt_Activity.class);
+                                context1.startActivity(i);
+                            }
+                        } else {
+                            TastyToast.makeText(context1,"" +summary_model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
+                    } else {
+                        TastyToast.makeText(context1, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -2,15 +2,15 @@ package com.example.e5322.thyrosoft;
 
 import android.content.res.Resources;
 import android.os.Parcelable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+
 import com.example.e5322.thyrosoft.Activity.CovidReg_Activity;
 import com.example.e5322.thyrosoft.Activity.RATWOEActivity;
-import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;

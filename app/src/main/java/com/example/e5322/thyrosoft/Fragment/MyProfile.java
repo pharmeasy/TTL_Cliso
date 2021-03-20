@@ -236,7 +236,7 @@ public class MyProfile extends Fragment {
 
         RequestQueue queue = GlobalClass.setVolleyReq(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile", jsonObject,
+                Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile", jsonObject,
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

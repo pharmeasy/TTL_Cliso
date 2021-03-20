@@ -144,7 +144,7 @@ public class MyProfile_activity extends AppCompatActivity {
 
         RequestQueue queue = GlobalClass.setVolleyReq(MyProfile_activity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new com.android.volley.Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

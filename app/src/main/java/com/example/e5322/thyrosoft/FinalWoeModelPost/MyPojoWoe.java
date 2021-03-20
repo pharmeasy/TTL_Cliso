@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.FinalWoeModelPost;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MyPojoWoe implements Parcelable
@@ -16,7 +17,7 @@ public class MyPojoWoe implements Parcelable
 
     private String api_key;
     private String trfjson;
-
+    private File vialimage;
 
     ArrayList<BarcodelistModel> barcodelist;
 //    private Barcodelist[] barcodelist;
@@ -56,6 +57,14 @@ public class MyPojoWoe implements Parcelable
         }
     };
 
+
+    public File getVialimage() {
+        return vialimage;
+    }
+
+    public void setVialimage(File vialimage) {
+        this.vialimage = vialimage;
+    }
     public Woe getWoe ()
     {
         return woe;

@@ -706,8 +706,8 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         passToAPI = outputFormat.format(date);
 
         requestQueue = GlobalClass.setVolleyReq(mContext);
-        Log.e(TAG, "TAG: WORKoRDEReNTRYfIRSTpAGE-->" + Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
+        Log.e(TAG, "TAG: WORKoRDEReNTRYfIRSTpAGE-->" + Api.Cloud_base + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value");
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "getresults/" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 

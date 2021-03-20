@@ -235,7 +235,7 @@ public class SRFCovidWOEEnteredFragment extends Fragment {
 
     private void getfilterapilist() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.COVID).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getSRFCovidWOEStatus();
         coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
             @Override
@@ -273,7 +273,7 @@ public class SRFCovidWOEEnteredFragment extends Fragment {
         CovidMIS_req covidMIS_req = new CovidMIS_req();
         covidMIS_req.setSdate(from_formateDate);
         covidMIS_req.setSourceCode(usercode);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.COVID).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         final Call<Covidmis_response> covidmis_responseCall = postAPIInteface.getSRFcovidWOEmis(covidMIS_req);
         covidmis_responseCall.enqueue(new Callback<Covidmis_response>() {
             @Override

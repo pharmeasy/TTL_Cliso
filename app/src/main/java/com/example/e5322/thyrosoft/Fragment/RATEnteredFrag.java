@@ -436,7 +436,8 @@ public class RATEnteredFrag extends Fragment {
 
         @Override
         protected String doInBackground(Void... voids) {
-            String strUrl = Api.IMAGE_UPLOAD + "PICKSO/api/TRFUpload/RATTRFUpload";
+
+            String strUrl = Api.Cloud_base + "RATTRFUpload";
             Log.v("URL", strUrl);
 
             InputStream inputStream = null;
@@ -461,11 +462,12 @@ public class RATEnteredFrag extends Fragment {
                     builder.addPart("VALUE", new StringBody(Value));
                 }
 
-                builder.addPart("MODE", new StringBody("THYROSOFTLITE APP"));
+
+                builder.addPart("MODE", new StringBody("CLISO APP COVID"));
                 builder.addBinaryBody("SLL", sll_file);
 
 
-                Log.e(TAG, "Post params:- " + "KEY" + ":" + apikey + "\n" + "SOURCECODE" + ":" + usercode + "\n" + "PATIENTID" + ":" + patientid + "\n" + "TYPE:SII" + "\n" + "MODE:THYROSOFTLITE APP" + "\n"
+                Log.e(TAG, "Post params:- " + "KEY" + ":" + apikey + "\n" + "SOURCECODE" + ":" + usercode + "\n" + "PATIENTID" + ":" + patientid + "\n" + "TYPE:SII" + "\n" + "MODE:CLISO COVID APP" + "\n"
                         + "\"TRF_UPLOAD_SIZE\"" + ":\"" + sll_file + "\"");
 
                 httpPost.setEntity(builder.build());

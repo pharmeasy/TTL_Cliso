@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/maroon"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <ImageView
@@ -39,7 +40,7 @@
         android:text="Generate Lead"
         android:textColor="@color/tabindicatorColor"
         android:textSize="@dimen/_18sdp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

@@ -195,7 +195,7 @@ public class Covidentered_frag extends Fragment {
 
     private void getfilterapilist() {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<COVfiltermodel> coVfiltermodelCall = postAPIInteface.getfilter();
         coVfiltermodelCall.enqueue(new Callback<COVfiltermodel>() {
             @Override
@@ -258,7 +258,7 @@ public class Covidentered_frag extends Fragment {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         String usercode = preferences.getString("USER_CODE", null);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         CovidMIS_req covidMIS_req = new CovidMIS_req();
         covidMIS_req.setSdate(from_formateDate);
         covidMIS_req.setSourceCode(usercode);

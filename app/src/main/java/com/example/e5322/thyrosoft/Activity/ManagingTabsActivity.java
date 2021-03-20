@@ -101,7 +101,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     SharedPreferences prefs;
     ArrayList<MyPojoWoe> resultList;
     SharedPreferences.Editor editor;
-    TextView navigationDrawerNameTSP, ecode,tv_generateLead;
+    TextView navigationDrawerNameTSP, ecode, tv_generateLead;
     ImageView imageViewprofile, home;
     NavigationView navigationView;
     BottomNavigationView bottomNavigationView;
@@ -226,6 +226,13 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         setContentView(R.layout.activity_main_ll);
         activity = this;
 
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        USER_CODE = prefs.getString("USER_CODE", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
 
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -244,9 +251,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         if (pref_versioncheck != null) {
             int versionCode = BuildConfig.VERSION_CODE;
             int prefversioncode = pref_versioncheck.getInt("versioncode", 0);
-
             Log.e(TAG, "prefversioncode --->" + prefversioncode + "  versionCode-->" + versionCode);
-
             if (prefversioncode != versionCode) {
                 logout();
                 startActivity(new Intent(ManagingTabsActivity.this, Login.class));
@@ -254,10 +259,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             }
 
         }
-
-
-        covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
-        covidacc = covid_pref.getBoolean("covidacc", false);
 
         if (savedInstanceState == null) {
             initScreen();
@@ -280,15 +281,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
 
+
+
         covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
         covidacc = covid_pref.getBoolean("covidacc", false);
-        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
-        USER_CODE = prefs.getString("USER_CODE", "");
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
 
         tv_generateLead = (TextView) findViewById(R.id.tv_generateLead);
 
@@ -336,8 +332,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.sgc_pgc_entry_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.communication).setVisible(false);
             navigationView.getMenu().findItem(R.id.vid_leggy).setVisible(false);
+            navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
             navigationView.getMenu().findItem(R.id.notice).setVisible(false);
             navigationView.getMenu().findItem(R.id.notification).setVisible(false);
+            navigationView.getMenu().findItem(R.id.srf_covid).setVisible(false);
             navigationView.getMenu().findItem(R.id.synchronization).setVisible(false);
             navigationView.getMenu().findItem(R.id.faq_data).setVisible(false);
             navigationView.getMenu().findItem(R.id.accr_data).setVisible(false);
@@ -365,6 +363,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.phone).setVisible(true);
+                navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
                 navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
@@ -383,6 +382,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.logout).setVisible(true);
                 navigationView.getMenu().findItem(R.id.phone).setVisible(true);
                 navigationView.getMenu().findItem(R.id.whatsapp).setVisible(true);
+                navigationView.getMenu().findItem(R.id.item_certificate).setVisible(true);
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             }
@@ -1119,7 +1119,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(i);
             }
 
-        }else if (id == R.id.srf_covid) {
+        } else if (id == R.id.srf_covid) {
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
@@ -1132,6 +1132,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             } else {
                 Bundle bundle = new Bundle();
                 bundle.putInt("position", 0);
+                Constants.covid_redirection = 1;
                 carouselFragment = new CarouselFragment();
                 carouselFragment.setArguments(bundle);
                 final FragmentManager fragmentManager = getSupportFragmentManager();
@@ -1146,6 +1147,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 Intent i = new Intent(ManagingTabsActivity.this, OTPCreditMISActivity.class);
                 startActivity(i);
             }
+        } else if (id == R.id.item_certificate) {
+            Intent i = new Intent(ManagingTabsActivity.this, Certificate_activity.class);
+            startActivity(i);
+
         } else if (id == R.id.logout) {
             new AlertDialog.Builder(this)
                     .setMessage(ToastFile.surelogout)
@@ -1351,8 +1356,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
     public void getProfileDetails(final Context context) {
         RequestQueue queue = GlobalClass.setVolleyReq(context);
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+        Log.e(TAG, "Get my Profile ---->" + Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -1556,8 +1561,5 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     @Override
     protected void onPause() {
         super.onPause();
-
-
     }
-
 }

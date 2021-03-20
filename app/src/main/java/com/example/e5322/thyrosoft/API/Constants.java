@@ -26,6 +26,7 @@ public class Constants {
     public static String setVideoUrl = "VideoURL";
     public static String setFullScreen;
     public static int timeInterval = 0;
+    public static int covid_redirection = 0;
     public static String videoName;
     public static PatientDetailsAPiResponseModel.PatientInfoBean selectedPatientData = null;
 
@@ -48,7 +49,7 @@ public class Constants {
     public static String caps_invalidApikey = "INVALID API KEY";
     public static String small_invalidApikey = "Invalid API Key";
 
-    public static String APK_NAME = "ThyrosoftLite.apk";
+    public static String APK_NAME = "CliSo.apk";
     public static String availcoupon = "Avail Coupon";
     public static String APKTYPE = "application/vnd.android.package-archive";
 
@@ -102,6 +103,8 @@ public class Constants {
     public static String CATC = "CATC";
     public static String CAGE = "CAGE";
     public static String CAGCA = "CAGCA";
+    public static String AA_C = "AA-C";
+
     //NHF Login
 
     public static final String NHF_EMAIL = "COMM_NHF";
@@ -119,6 +122,7 @@ public class Constants {
 
     public static String tab_flag = "0";
     public static String covidwoe_flag = "0";
+    public static String woe_flag = "0";
     public static String covidfrag_flag = "0";
     public static String SRFcovidWOEfrag_flag = "0";
     public static String ratfrag_flag = "0";
@@ -621,6 +625,7 @@ public class Constants {
     // public static String GENRATE_OTP_API_KEY = "sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
     public static String GENRATE_OTP_API_KEY = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
 
+ //   public static String RES000 = "RES0000";
     public static String RES0000 = "RES0000";
     public static String RES0001 = "RES0001";
     public static String RES0082 = "RES0082";

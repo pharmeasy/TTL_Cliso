@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +22,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,9 +31,9 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.Scan_Barcode_Outlabs_Activity;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
@@ -177,12 +177,40 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
         if (distinctspecimentlist.get(position).getBarcode() != null && !distinctspecimentlist.get(position).getBarcode().isEmpty()) {
 
             if (!GlobalClass.isNetworkAvailable(context)) {
-                Toast.makeText(context, ToastFile.intConnection, Toast.LENGTH_SHORT).show();
+
+                holder.scanBarcode.setText(distinctspecimentlist.get(position).getBarcode());
+
+                SetBarcodeDetails setBarcodeDetails = new SetBarcodeDetails();
+                searchBarcode = distinctspecimentlist.get(position).getBarcode();
+                setBarcodeDetails.setSpecimenType(distinctspecimentlist.get(position).getSpecimen_type());
+                setBarcodeDetails.setBarcode_number(searchBarcode);
+                GlobalClass.setScannedBarcodes.add(setBarcodeDetails);
+
+                Set<SetBarcodeDetails> hs = new HashSet<>();
+                hs.addAll(GlobalClass.setScannedBarcodes);
+                GlobalClass.setScannedBarcodes.clear();
+                GlobalClass.setScannedBarcodes.addAll(hs);
+
+              /*  Log.e(TAG, "onBindViewHolder: unique barcodes" + GlobalClass.setScannedBarcodes.size());
+                for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
+                    Log.e(TAG, "onBindViewHolder: specimen type & barcode" + GlobalClass.setScannedBarcodes.get(i).getBarcode_number() + GlobalClass.setScannedBarcodes.get(i).getSpecimenType());
+                }*/
+
+              /*  System.out.println("length of barcodes" + GlobalClass.setScannedBarcodes.size());
+                Log.e(TAG, "onBindViewHolder: size of array" + GlobalClass.setScannedBarcodes.size());
+
+                for (int i = 0; i < GlobalClass.setScannedBarcodes.size(); i++) {
+                    String getbarcodeType = GlobalClass.setScannedBarcodes.get(i).getSpecimenType();
+                    String barcode_number = GlobalClass.setScannedBarcodes.get(i).getBarcode_number();
+                    String products = GlobalClass.setScannedBarcodes.get(i).getProductType();
+                }*/
+
+
             } else {
                 searchBarcode = distinctspecimentlist.get(position).getBarcode();
 
                 if (!GlobalClass.isNetworkAvailable(context)) {
-                    Toast.makeText(context, ToastFile.intConnection, Toast.LENGTH_SHORT).show();
+                    holder.scanBarcode.setText(distinctspecimentlist.get(position).getSpecimen_type());
                 } else {
                     barcodeDetails = GlobalClass.setVolleyReq(context);//2c=/TAM03/TAM03136166236000078/geteditdata
                     progressDialog = new ProgressDialog(context);
@@ -345,7 +373,6 @@ public class CLISO_ScanBarcodeAdapter extends RecyclerView.Adapter<CLISO_ScanBar
                         holder.reenter.setText("");
                         Toast.makeText(context, ToastFile.ent_crt_brcd, Toast.LENGTH_SHORT).show();
                     }
-                } else {
                 }
             }
         });

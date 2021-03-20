@@ -354,7 +354,15 @@ public class SplashScreen extends AppCompatActivity {
                 ControllersGlobalInitialiser.versionCheckAPIController = null;
             }
 
-            ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity);
+
+            String sourcecode = "";
+            if (!GlobalClass.isNull(user)) {
+                sourcecode = user;
+            } else {
+                sourcecode = "";
+            }
+
+            ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity,sourcecode);
             ControllersGlobalInitialiser.versionCheckAPIController.checkVersion(true);
 
         } catch (Exception e) {
@@ -410,7 +418,7 @@ public class SplashScreen extends AppCompatActivity {
                 if (GlobalClass.isNetworkAvailable(activity)) {
                     checkcovidaccess();
                 } else
-                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN);
+                    GlobalClass.showCustomToast(SplashScreen.this, MessageConstants.CHECK_INTERNET_CONN, 0);
             } else {
                 Log.e(TAG, " Caching :Less than 1 Day");
             }
@@ -445,7 +453,7 @@ public class SplashScreen extends AppCompatActivity {
 
     private void checkcovidaccess() {
 
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(user);
@@ -458,21 +466,19 @@ public class SplashScreen extends AppCompatActivity {
             public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
 
                 SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                editor.clear();
                 editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
                 editor.commit();
 
                 try {
                     if (response.body().getResponse().equalsIgnoreCase("True")) {
                         covidacc = true;
-                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                        editor.putBoolean("covidacc", covidacc);
-                        editor.commit();
                     } else {
                         covidacc = false;
-                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                        editor.putBoolean("covidacc", covidacc);
-                        editor.commit();
                     }
+                    editor = getSharedPreferences("COVIDETAIL", 0).edit();
+                    editor.putBoolean("covidacc", covidacc);
+                    editor.commit();
 
                     Log.e(TAG, "COVID ACCESS FLAG --->" + covidacc);
 

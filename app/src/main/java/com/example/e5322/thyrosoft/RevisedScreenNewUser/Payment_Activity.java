@@ -30,10 +30,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.DynamicPaymentController;
 import com.example.e5322.thyrosoft.Controller.GeneratePayTMchecksum;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.VerifyPayTmChecksumController;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
+import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumRequestModel;
@@ -177,7 +180,7 @@ public class Payment_Activity extends AppCompatActivity {
         mPaymentParams = new PaymentParams();
 
         cd = new ConnectionDetector(Payment_Activity.this);
-
+        GetDynamicPayment();
 
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
         name_tsp = getProfileName.getString("name", null);
@@ -282,6 +285,18 @@ public class Payment_Activity extends AppCompatActivity {
             }
         });
     }
+
+    private void GetDynamicPayment() {
+        if (cd.isConnectingToInternet()) {
+            DyanamicPaymentReqModel dyanamicPaymentReqModel = new DyanamicPaymentReqModel();
+            dyanamicPaymentReqModel.setAppId("" + Constants.USER_APPID);
+            DynamicPaymentController dynamicPaymentController = new DynamicPaymentController(Payment_Activity.this);
+            dynamicPaymentController.CallAPI(dyanamicPaymentReqModel);
+        } else {
+            Global.showCustomToast(mActivity, ToastFile.intConnection);
+        }
+    }
+
 
     private void proceedWithPayment(String gateway) {
         amountTopass = edt_enter_amt.getText().toString();
@@ -389,7 +404,7 @@ public class Payment_Activity extends AppCompatActivity {
 
                             new AsyncTaskVerifypayUmoneyTransaction(Payu_response).execute();
                         else
-                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -449,7 +464,7 @@ public class Payment_Activity extends AppCompatActivity {
         if (cd.isConnectingToInternet())
             new AsyncTaskstartpayUmoneyTransaction(mPaymentParams).execute();
         else
-            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
 
         //TODO It is recommended to generate hash from server only. Keep your key and salt in server side hash generation code.
         // generateHashFromServer(mPaymentParams);
@@ -557,10 +572,10 @@ public class Payment_Activity extends AppCompatActivity {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(Payment_Activity.this);
         RequestQueue queue = GlobalClass.setVolleyReq(Payment_Activity.this);
 
-        Log.e(TAG, "Get my Profile ---->" + Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile");
+        Log.e(TAG, "Get my Profile ---->" + Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile");
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, Api.SOURCEils + api_key + "/" + user + "/" + "getmyprofile",
+                Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/" + "getmyprofile",
                 new Response.Listener<JSONObject>() {
                     public String tsp_img;
 
@@ -798,7 +813,7 @@ public class Payment_Activity extends AppCompatActivity {
 
                                 new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                             } else {
-                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
                             }
 
                             launchSdkUI(payuHashes);// Start PayU transaction request.
@@ -891,7 +906,7 @@ public class Payment_Activity extends AppCompatActivity {
                         System.out.println("Response from server: " + value);
                         if (value.equalsIgnoreCase("SUCCESS")) {
 
-                            GlobalClass.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..");
+                            GlobalClass.showCustomToast(Payment_Activity.this, "Redirecting to Payment gateway..", 0);
                             System.out.println("Successful");
 
                         } else {
@@ -909,6 +924,36 @@ public class Payment_Activity extends AppCompatActivity {
 
         }
     }
+
+    public void getpostresponse(DynamicPaymentResponseModel dynamicPaymentResponseModel) {
+
+        if (dynamicPaymentResponseModel != null) {
+            if (!GlobalClass.isNull(dynamicPaymentResponseModel.getRespId()) && dynamicPaymentResponseModel.getRespId().equalsIgnoreCase("RES0000")) {
+                if (GlobalClass.CheckArrayList(dynamicPaymentResponseModel.getPayModeLists())) {
+                    for (int i = 0; i < dynamicPaymentResponseModel.getPayModeLists().size(); i++) {
+                        if (!GlobalClass.isNull(dynamicPaymentResponseModel.getPayModeLists().get(i).getPaymentGatway())) {
+                            if (dynamicPaymentResponseModel.getPayModeLists().get(i).getPaymentGatway().equalsIgnoreCase("PayTM")) {
+                                img_add_money_payTm.setVisibility(View.VISIBLE);
+                            }
+                            if (dynamicPaymentResponseModel.getPayModeLists().get(i).getPaymentGatway().equalsIgnoreCase("PayU")) {
+                                img_add_money_payU.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                } else {
+                    img_add_money_payTm.setVisibility(View.VISIBLE);
+                }
+            } else {
+                img_add_money_payTm.setVisibility(View.VISIBLE);
+                Global.showCustomToast(mActivity, dynamicPaymentResponseModel.getResponse());
+            }
+        } else {
+            img_add_money_payTm.setVisibility(View.VISIBLE);
+        }
+
+
+    }
+
 
     class AsyncTaskVerifypayUmoneyTransaction extends AsyncTask<Void, Void, JSONObject> {
 
@@ -1174,7 +1219,7 @@ public class Payment_Activity extends AppCompatActivity {
                 GeneratePayTMchecksum generatePayTMchecksum = new GeneratePayTMchecksum(this);
                 generatePayTMchecksum.CallAPI(payTmChecksumRequestModel);
             } else {
-                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+                GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1186,7 +1231,7 @@ public class Payment_Activity extends AppCompatActivity {
             if (!GlobalClass.isNull(responseModel.getEncCheckSum())) {
                 start_paytm_transaction(responseModel.getEncCheckSum(), txtAmount, txtORDID, responseModel.getRESPONSE());
             } else {
-                GlobalClass.showCustomToast(Payment_Activity.this, "Checksum generation failed");
+                GlobalClass.showCustomToast(Payment_Activity.this, "Checksum generation failed", 0);
             }
         } else {
             GlobalClass.printLog(Constants.ERROR, TAG, "PayTm Checksum", responseModel.getRESPONSE());
@@ -1237,14 +1282,14 @@ public class Payment_Activity extends AppCompatActivity {
                 postdata.put(GATEWAY, Constants.PAYTM_REQUEST);
                 new AsyncTask_Log_Payment_Request(postdata).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             } else {
-                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet));
+                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet), 0);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
             Service.initialize(Order, null);
-            GlobalClass.showCustomToast(mActivity, ToastFile.PAYTM_REDITECTION);
+            GlobalClass.showCustomToast(mActivity, ToastFile.PAYTM_REDITECTION, 0);
 
             Service.startPaymentTransaction(mActivity, true, true,
                     new PaytmPaymentTransactionCallback() {
@@ -1256,7 +1301,7 @@ public class Payment_Activity extends AppCompatActivity {
                             // Payment Gateway Activity or may be due to //
                             // initialization of webview. // Error Message details
                             // the error occurred.
-                            GlobalClass.showCustomToast(mActivity, inErrorMessage);
+                            GlobalClass.showCustomToast(mActivity, inErrorMessage, 0);
                         }
 
                         @Override
@@ -1285,7 +1330,7 @@ public class Payment_Activity extends AppCompatActivity {
                             // If network is not
                             // available, then this
                             // method gets called.
-                            GlobalClass.showCustomToast(mActivity, ToastFile.NETWORK_NOT_AVAILABLE);
+                            GlobalClass.showCustomToast(mActivity, ToastFile.NETWORK_NOT_AVAILABLE, 0);
                         }
 
                         @Override
@@ -1297,12 +1342,12 @@ public class Payment_Activity extends AppCompatActivity {
                             // proper format. // 3. Server failed to authenticate
                             // that client. That is value of payt_STATUS is 2. //
                             // Error Message describes the reason for failure.
-                            GlobalClass.showCustomToast(mActivity, "clientAuthenticationFailed : " + inErrorMessage);
+                            GlobalClass.showCustomToast(mActivity, "clientAuthenticationFailed : " + inErrorMessage, 0);
                         }
 
                         @Override
                         public void onErrorLoadingWebPage(int iniErrorCode, String inErrorMessage, String inFailingUrl) {
-                            GlobalClass.showCustomToast(mActivity, "onErrorLoadingWebPage : " + inErrorMessage);
+                            GlobalClass.showCustomToast(mActivity, "onErrorLoadingWebPage : " + inErrorMessage, 0);
                         }
 
                         // had to be added: NOTE
@@ -1334,7 +1379,7 @@ public class Payment_Activity extends AppCompatActivity {
                 VerifyPayTmChecksumController verifyPayTmChecksumController = new VerifyPayTmChecksumController(Payment_Activity.this);
                 verifyPayTmChecksumController.verifyChecksum(requestModel);
             } else {
-                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet));
+                GlobalClass.showCustomToast(mActivity, getResources().getString(R.string.plz_chk_internet), 0);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1367,7 +1412,7 @@ public class Payment_Activity extends AppCompatActivity {
         if (cd.isConnectingToInternet()) {
             new AsyncTaskupdatepaymentstatus(postdata, status).execute();
         } else {
-            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet));
+            GlobalClass.showCustomToast(Payment_Activity.this, getResources().getString(R.string.plz_chk_internet), 0);
         }
     }
 }

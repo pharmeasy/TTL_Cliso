@@ -3,6 +3,10 @@ package com.example.e5322.thyrosoft.MainModelForAllTests;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
+
+import java.util.ArrayList;
+
 /**
  * Created by E5322 on 07-06-2018.
  */
@@ -11,6 +15,8 @@ public class MainModel implements Parcelable {
 
     public  B2B_MASTERSMainModel  B2B_MASTERS;
     String MASTERS,RESPONSE,RES_ID,USER_TYPE;
+    private ArrayList<IsnhlmasterDTO> isnhlmaster;
+
 
     protected MainModel(Parcel in) {
         MASTERS = in.readString();
@@ -86,4 +92,15 @@ public class MainModel implements Parcelable {
     public void setUSER_TYPE(String USER_TYPE) {
         this.USER_TYPE = USER_TYPE;
     }
+
+    public ArrayList<IsnhlmasterDTO> getIsnhlmaster() {
+        return isnhlmaster;
+    }
+
+    public void setIsnhlmaster(ArrayList<IsnhlmasterDTO> isnhlmaster) {
+        this.isnhlmaster = isnhlmaster;
+    }
+
+
+
 }

@@ -62,7 +62,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
 
     @Override
     protected String doInBackground(Void... voids) {
-        String strUrl = Api.COVID + "pickso/api/SRFWOE/PatientDetails";
+        String strUrl = Api.Cloud_base + "SRFPatientDetails";
         Log.e(TAG, "SRF COVID POST API " + strUrl);
 
         InputStream inputStream = null;
@@ -93,6 +93,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
             builder.addPart("SPECIMENDATE", new StringBody("" + covidpostdata.getSPECIMENDATE()));
             builder.addPart("SPECIMENTIME", new StringBody("" + covidpostdata.getSPECIMENTIME()));
             builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
+            builder.addPart("WOEMODE",new StringBody("CLISO APP SRF"));
 
             if (covidpostdata.getPRESCRIPTION() != null) {
                 FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
@@ -134,7 +135,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
                     + "\nPATIENTPINCODE:" + covidpostdata.getPATIENTPINCODE() + "\nSCP:" + covidpostdata.getSCP() + "\nCOLLECTIONADDRESS:" + covidpostdata.getCOLLECTIONADDRESS() + "\nCOLLECTIONPINCODE:" + covidpostdata.getCOLLECTIONPINCODE() + "\nSPECIMENDATE:" + covidpostdata.getSPECIMENDATE()
                     + "\nSPECIMENTIME:" + covidpostdata.getSPECIMENTIME() + "\nBARCODE:" + covidpostdata.getBARCODE()
                     + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1()
-                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1() + "\nSELFIE:" + covidpostdata.getSELFIE());
+                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1() + "\nSELFIE:" + covidpostdata.getSELFIE() +"\nWOEMODE:CLISO APP SRF");
             httpPost.setEntity(builder.build());
             httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);

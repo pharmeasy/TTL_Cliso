@@ -1,7 +1,5 @@
 package com.example.e5322.thyrosoft.Controller;
 
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
@@ -30,7 +28,7 @@ public class GetClientDetail_Controller {
 
     public void CallgetClient(String user, String api_key) {
 
-        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(specialOffer_activity, Api.SOURCEils).create(APIInteface.class);
+        APIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(specialOffer_activity, Api.Cloud_base).create(APIInteface.class);
         Call<SourceILSMainModel> responseCall = apiInterface.getClient(api_key, user, "/B2BAPP/getclients");
        // Log.e("TAG", "Client URL --->" + responseCall.request().url());
 

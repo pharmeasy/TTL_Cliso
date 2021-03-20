@@ -1,12 +1,12 @@
 <resources>
-    <string name="app_name">Thyrosoft Lite</string>
+    <string name="app_name">CliSo</string>
     <string name="title_activity_main2">Dashboard</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="Success">You have successfully Logout</string>
     <string name="Login">You have successfully Login</string>
-    <string name="close_app">Do you want to close Thyrosoft Lite App ?</string>
+    <string name="close_app">Do you want to close CliSo App ?</string>
     <string name="windup">Are you want to wind up all test</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
@@ -117,7 +117,7 @@
     <string name="amt_str">Enter Minimum Amount of,\n Rs 5,000 to Proceed</string>
     <string name="multiple_amt">You have to enter amount in multiples of 5000</string>
     <string name="covid">Covid Registration</string>
-    <string name="page_1">Woe</string>
+    <string name="page_1">Novid Woe</string>
     <string name="page_2">Offline Wind - Up</string>
     <string name="page_3">Receipt</string>
     <string name="page_4">Results</string>
@@ -179,6 +179,9 @@
         <item>Select Service Type*</item>
     </string-array>
 
+
+
+
     <string-array name="arr_gender">
         <item>Gender</item>
         <item>Male</item>
@@ -209,6 +212,7 @@
     <string name="str_appdt_val">Please Select Appointment Date</string>
     <string name="str_slc">Please Select DOB or Age</string>
     <string name="str_age">Please enter Age</string>
+    <string name="email_id_value"><font color='#ffffff'>accounts@nueclear.com</font></string>
 
 
     <string name="img_upload">Upload image</string>
@@ -250,7 +254,7 @@
     <string name="misscallccc">By using missed call CCC</string>
     <string name="generateccc">By using Generate CCC</string>
 
-    <string name="updateText" translatable="false">Newer version of ThyrosoftLite is available. Click UPDATE to upgrade now !</string>
+    <string name="updateText" translatable="false">Newer version of CliSo is available. Click UPDATE to upgrade now !</string>
     <string name="cancel" translatable="false">Cancel</string>
     <string name="update" translatable="false">Update</string>
     <string name="addressvalidation">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./-</string>

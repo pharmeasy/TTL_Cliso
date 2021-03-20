@@ -5,24 +5,25 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -35,6 +36,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.frags.RootFragment;
 import com.example.e5322.thyrosoft.Adapter.PatientDtailsWoe;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
@@ -103,7 +105,7 @@ public class Woe_fragment extends RootFragment {
     public static com.android.volley.RequestQueue PostQueOtp;
     String putDate, getFormatDate, convertedDate;
     SharedPreferences prefs;
-
+FrameLayout fragment_mainLayout;
     TextView enetered, enter;
     String user, passwrd, access, api_key;
     String blockCharacterSet = "~#^|$%&*!+:`";
@@ -187,13 +189,14 @@ public class Woe_fragment extends RootFragment {
 
 
         unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
-        offline_img =  viewMain.findViewById(R.id.offline_img);
+        offline_img = viewMain.findViewById(R.id.offline_img);
         wind_up_ll = (LinearLayout) viewMain.findViewById(R.id.wind_up_ll);
         enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
         enetered = (TextView) viewMain.findViewById(R.id.enetered);
         enter = (TextView) viewMain.findViewById(R.id.enter);
         enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
         enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
+        fragment_mainLayout = (FrameLayout) viewMain.findViewById(R.id.fragment_mainLayout);
 
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -240,6 +243,12 @@ public class Woe_fragment extends RootFragment {
                 enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_entered.setVisibility(View.GONE);
                 enterNextFragment();
+            }
+        });
+
+        fragment_mainLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
             }
         });
@@ -247,12 +256,15 @@ public class Woe_fragment extends RootFragment {
         woe_cal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), R.style.DialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+                datePickerDialog.show();
+
 
             }
         });
-
 
         if (!GlobalClass.isNetworkAvailable(getActivity())) {
             offline_img.setVisibility(View.VISIBLE);
@@ -370,10 +382,13 @@ public class Woe_fragment extends RootFragment {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear,
                               int dayOfMonth) {
+            view.setMaxDate(System.currentTimeMillis());
             // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
             myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
             updateLabel();
         }
 
@@ -430,7 +445,7 @@ public class Woe_fragment extends RootFragment {
 
 
         requestQueue = GlobalClass.setVolleyReq(mContext);
-        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.WORKoRDEReNTRYfIRSTpAGE + "" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + "getresults/" + api_key + "/WORK_ORDERS/" + "" + user + "/" + passToAPI + "/key/value", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: " + response);

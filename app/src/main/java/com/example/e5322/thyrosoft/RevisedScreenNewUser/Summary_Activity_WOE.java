@@ -8,19 +8,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
-
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -30,9 +28,11 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Fragment.SummaryFragment;
 import com.example.e5322.thyrosoft.Fragment.Woe_fragment;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -94,6 +94,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         delete_patient_test = (LinearLayout) findViewById(R.id.delete_patient_test);
         delete_patient_test_water = (LinearLayout) findViewById(R.id.delete_patient_test_water);
         back = (ImageView) findViewById(R.id.back);
+        back.setVisibility(View.VISIBLE);
         home = (ImageView) findViewById(R.id.home);
         SGCLinearid = (LinearLayout) findViewById(R.id.SGCLinearid);
         refbylinear = (LinearLayout) findViewById(R.id.refbylinear);
@@ -222,44 +223,48 @@ public class Summary_Activity_WOE extends AppCompatActivity {
         }
 
 
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equals(null) || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equalsIgnoreCase("")) {
-            pat_ref.setVisibility(View.GONE);
-            refbylinear.setVisibility(View.GONE);
-        } else {
-            pat_ref.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
-        }
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() == "" || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals(null)) {
-            SGCLinearid.setVisibility(View.GONE);
-        } else {
-            pat_sgc.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
-        }
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equalsIgnoreCase("")) {
-            pat_scp.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS());
-        }
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equals("(),,,")) {
-            pat_scp.setVisibility(View.GONE);
-            linear_scp.setVisibility(View.GONE);
-        } else {
-            pat_scp.setVisibility(View.GONE);
-            linear_scp.setVisibility(View.GONE);
-        }
-        if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equalsIgnoreCase("") || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equals("null")) {
-            pat_amt_collected.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED());
-        } else {
-            pat_amt_collected.setVisibility(View.GONE);
-        }
-        if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0) {
-            for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
-                getNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
-                GlobalClass.barcodelists.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i]);
-                for (int j = 0; j < getNames.size(); j++) {
-                    commaSepValueBuilder.append(getNames.get(j));
-                    if (i != getNames.size()) {
-                        String setSelectedTest = TextUtils.join(",", getNames);
-                        tests.setText(setSelectedTest);
+        try {
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equals(null) || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME().equalsIgnoreCase("")) {
+                pat_ref.setVisibility(View.GONE);
+                refbylinear.setVisibility(View.GONE);
+            } else {
+                pat_ref.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getREF_DR_NAME());
+            }
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME() == "" || GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME().equals(null)) {
+                SGCLinearid.setVisibility(View.GONE);
+            } else {
+                pat_sgc.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_NAME());
+            }
+            if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equalsIgnoreCase("")) {
+                pat_scp.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS());
+            }
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getLAB_ADDRESS().equals("(),,,")) {
+                pat_scp.setVisibility(View.GONE);
+                linear_scp.setVisibility(View.GONE);
+            } else {
+                pat_scp.setVisibility(View.GONE);
+                linear_scp.setVisibility(View.GONE);
+            }
+            if (!GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equals(null) || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equalsIgnoreCase("") || !GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED().equals("null")) {
+                pat_amt_collected.setText(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getAMOUNT_COLLECTED());
+            } else {
+                pat_amt_collected.setVisibility(View.GONE);
+            }
+            if (GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length != 0) {
+                for (int i = 0; i < GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist().length; i++) {
+                    getNames.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i].getTESTS());
+                    GlobalClass.barcodelists.add(GlobalClass.summary_models.get(0).getWoeditlist().getBarcodelist()[i]);
+                    for (int j = 0; j < getNames.size(); j++) {
+                        commaSepValueBuilder.append(getNames.get(j));
+                        if (i != getNames.size()) {
+                            String setSelectedTest = TextUtils.join(",", getNames);
+                            tests.setText(setSelectedTest);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         GetPatientSampleDetails getPatientSampleDetails = new GetPatientSampleDetails(mContext, GlobalClass.barcodelists, passvalue);
         sample_list.setAdapter(getPatientSampleDetails);
@@ -276,9 +281,13 @@ public class Summary_Activity_WOE extends AppCompatActivity {
                         deletePatientDetailsandTest();
                     }
                 });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 builder.show();
-
-
             }
         });
 
@@ -335,7 +344,7 @@ public class Summary_Activity_WOE extends AppCompatActivity {
     private void getDataFromServer() {
         RequestQueue requestQueue = GlobalClass.setVolleyReq(Summary_Activity_WOE.this);
 
-        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.getBCTforSummary + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequestfetchData = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + api_key + "/" + user + "/B2BAPP/getwomaster", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.e(TAG, "onResponse: response" + response);

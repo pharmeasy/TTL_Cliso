@@ -23,8 +23,7 @@ public class LogUserActivityController {
 
     public void updateUserActivity(AppuserReq requestModel) {
         try {
-
-            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.BASE_URL_TOCHECK).create(PostAPIInteface.class);
+            PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mActivity, Api.Cloud_base).create(PostAPIInteface.class);
             Call<AppuserResponse> responseModelCall = apiInterface.PostUserLog(requestModel);
             Log.e("TAG", "API REQ--->" + responseModelCall.request().url());
             Log.e("TAG", "API BODY--->" + new GsonBuilder().create().toJson(requestModel));

@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +21,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -31,6 +31,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.Interface.SendScanBarcodeDetails;
@@ -341,7 +342,7 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
 
         } else {
             if (GlobalClass.finalspecimenttypewiselist != null) {
-                if (GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
+                /*if (GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type().equalsIgnoreCase("FLUORIDE")) {
                     if (GlobalClass.finalspecimenttypewiselist.get(position).getFasting().equalsIgnoreCase("FASTING")) {
                         if (fromcome == 0) {
                             holder.scanBarcode.setText(" (F) " + GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
@@ -352,9 +353,9 @@ public class AdapterBarcode_New extends RecyclerView.Adapter<AdapterBarcode_New.
                     } else {
                         holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
                     }
-                } else {
+                } else {*/
                     holder.scanBarcode.setText(GlobalClass.finalspecimenttypewiselist.get(position).getSpecimen_type());
-                }
+//                }
             }
 
         }

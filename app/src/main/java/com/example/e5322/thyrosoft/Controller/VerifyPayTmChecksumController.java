@@ -40,20 +40,20 @@ public class VerifyPayTmChecksumController {
                     if (response.isSuccessful() && responseModel != null) {
                         payment_activity.getVerifyPayTmChecksum(responseModel, requestModel.getORDERID());
                     } else {
-                        GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong);
+                        GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong, 0);
                     }
                 }
 
                 @Override
                 public void onFailure(Call<PaytmVerifyChecksumResponseModel> call, Throwable t) {
                     GlobalClass.hideProgress(mActivity, progress);
-                    GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong);
+                    GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong, 0);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
             GlobalClass.hideProgress(mActivity, progress);
-            GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong);
+            GlobalClass.showCustomToast(mActivity, ToastFile.something_went_wrong, 0);
         }
     }
 }

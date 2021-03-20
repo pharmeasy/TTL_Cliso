@@ -13,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
@@ -30,17 +34,12 @@ import com.example.e5322.thyrosoft.RateCalculatorForModels.Base_Model_Rate_Calcu
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHolder> {
@@ -132,7 +131,7 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
                         String json = gson.toJson(requestModel);
                         jsonObject = new JSONObject(json);
 
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     POstQueSendEstimation = GlobalClass.setVolleyReq(mContext);
@@ -356,7 +355,6 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         String str = "";
         str = str + getSelected_test.getCode() + ",";
         String slectedpackage = "";
-
         slectedpackage = getSelected_test.getName();
         tempselectedTests = new ArrayList<>();
         tempselectedTests1 = new ArrayList<>();
@@ -364,13 +362,12 @@ public class RateCAlAdapter extends RecyclerView.Adapter<RateCAlAdapter.ViewHold
         try {
             if (getSelected_test.getChilds() != null) {
                 for (int i = 0; i < getSelected_test.getChilds().length; i++) {
-                    //tejas t -----------------------------
                     for (int j = 0; j < selectedTests.size(); j++) {
                         if (getSelected_test.getChilds()[i].getCode().equalsIgnoreCase(selectedTests.get(j).getCode())) {
                             System.out.println("Cart selectedtestlist Description :" + selectedTests.get(j).getName() + "Cart selectedtestlist Code :" + selectedTests.get(j).getCode());
                             tempselectedTests1.add(selectedTests.get(j).getName());
                             tempselectedTests.add(selectedTests.get(j));
-                        } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") && getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
+                        } else if (selectedTests.get(j).getCode().equalsIgnoreCase("HEMOGRAM - 6 PART (DIFF)") || getSelected_test.getChilds()[j].getCode().equalsIgnoreCase("H6")) {
                             tempselectedTests1.add(selectedTests.get(j).getName());
                             tempselectedTests.add(selectedTests.get(j));
                         }

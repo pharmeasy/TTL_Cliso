@@ -1,7 +1,15 @@
 package com.example.e5322.thyrosoft.Models.ResponseModels;
 
 public class LoginResponseModel {
-    private String ACCESS_TYPE,API_KEY,CLIENT_TYPE,Category,EMAIL,EXISTS,MOBILE,NAME,RESPONSE,RES_ID,URL,USER_CODE,USER_TYPE,VERSION_NO;
+    private String ACCESS_TYPE,API_KEY,CLIENT_TYPE,Category,EMAIL,EXISTS,MOBILE,NAME,RESPONSE,RES_ID,URL,USER_CODE,USER_TYPE,VERSION_NO,SOURCE_TYPE;
+
+    public String getSOURCE_TYPE() {
+        return SOURCE_TYPE;
+    }
+
+    public void setSOURCE_TYPE(String SOURCE_TYPE) {
+        this.SOURCE_TYPE = SOURCE_TYPE;
+    }
 
     public String getACCESS_TYPE() {
         return ACCESS_TYPE;

@@ -8,6 +8,7 @@ public class Api {
 
     //TODO live
     public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
+    public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";
     public static String URL_with_http = "https://www.thyrocare.com/API/B2B/";
     public static String SGC = "https://www.thyrocare.com/API/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API/B2B/";
@@ -19,10 +20,13 @@ public class Api {
     public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API/";
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
+    public static String Velso= "https://velso.thyrocare.cloud/api/";
+
 
     //TODO staging
-    /*public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+/*    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
+    public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";
     public static String SGC = "https://www.thyrocare.com/API_BETA/BDN/api/";
     public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String THYROCARE = "https://www.thyrocare.com/API_BETA/";
@@ -32,8 +36,8 @@ public class Api {
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
     public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
+    public static String Velso= "https://velso.thyrocare.cloud/api/";
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";*/
-
 
 
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
@@ -53,9 +57,9 @@ public class Api {
     public static String video_url = LIVEAPI + "COMMON.svc/Cliso/Showvideo";
     public static String StockAvailability = LIVEAPI + "COMMON.svc/StockAvailability";
     public static String Materialupdate = LIVEAPI + "COMMON.svc/Materialupdate";
-    public static String LOGIN = LIVEAPI + "COMMON.svc/litelogin";
+    public static String LOGIN = Cloud_base + "litelogin";
     public static String OTP = LIVEAPI + "common.svc/OTP";
-    public static String deleteWOE = LIVEAPI + "WO.svc/wodelete";
+    public static String deleteWOE = Cloud_base + "wodelete";
     public static String ForgotPass = LIVEAPI + "common.svc/PasswordMaster";
     public static String EmailPhoneOtp = LIVEAPI + "COMMON.svc/generateOTP";
     public static String getSource = LIVEAPI + "COMMON.svc/registerMasters";
@@ -63,11 +67,11 @@ public class Api {
     public static String multiple_windup = LIVEAPI + "WO.svc/postwindup";
     public static String sendGeoLocation = LIVEAPI + "COMMON.svc/litelog";
     public static String getData = LIVEAPI + "wo.svc/";
-    public static String getAllTests = LIVEAPI + "MASTER.svc/";
+    public static String getAllTests = Cloud_base ;
     public static String addrecheckWOE = LIVEAPI + "WO.svc/postaddrecheck";
-    public static String scanBarcodeWithValidation = LIVEAPI + "WO.svc/";
-    public static String finalWorkOrderEntry = LIVEAPI + "WO.svc/postworkorder";
-    public static String finalWorkOrderEntryNew = LIVEAPI + "WO.svc/postworkorder";
+    public static String scanBarcodeWithValidation = Cloud_base ;
+    public static String finalWorkOrderEntry = Cloud_base + "postworkorder";
+    public static String finalWorkOrderEntryNew = Cloud_base + "postworkorder";
     public static String uploadDocument = SGC + "UploadDocument/PostRegister";
     public static String NoticeBoardData = LIVEAPI + "COMMON.svc/";
     public static String PushToken = LIVEAPI + "COMMON.svc/";
@@ -84,20 +88,19 @@ public class Api {
     public static String sendEstimation = LIVEAPI + "COMMON.svc/sendest";
     public static String RateCal = LIVEAPI + "COMMON.svc/ratecal";
     public static String testDetails = LIVEAPI + "MASTER.svc/TestDetails";
-    public static String ValidateWorkOrderLeadId = LIVEAPI + "ORDER.svc/";//validate OTP url
-    public static String WORKoRDEReNTRYfIRSTpAGE = LIVEAPI + "REPORT.svc/getresults/";//validate OTP url
+    public static String ValidateWorkOrderLeadId = Cloud_base;//validate OTP url
+    public static String WORKoRDEReNTRYfIRSTpAGE = Cloud_base + "REPORT.svc/getresults/";//validate OTP url
     public static String getPartientDetailsList = LIVEAPI + "WO.svc/";//validate OTP url
     public static String windupApi = LIVEAPI + "WO.svc/";//lead id
-    public static String addTestsUsingBarcode = LIVEAPI + "WO.svc/";//lead id
-    public static String checkBarcode = LIVEAPI + "WO.svc/";//lead id
+    public static String addTestsUsingBarcode = Cloud_base;//lead id
+    public static String checkBarcode = Cloud_base ;//lead id
     public static String getBCTforSummary = LIVEAPI + "WO.svc/";//lead id
-    public static String checkVersion = LIVEAPI + "COMMON.svc/getliteversion";//lead id
-    public static String ThyrosoftLiteVersion = LIVEAPI + "COMMON.svc/getliteversion";//lead id
-    public static String checkNumber = LIVEAPI + "WO.svc/ValidateMob/";//lead id
+    public static String checkVersion = Cloud_base + "getVersion";//lead id
+    public static String checkNumber = Cloud_base + "ValidateMob/";//lead id
     public static String static_pages_link = Static_API + "FAQ.svc/";
     public static String GenerateId = THYROCARE + "ORDER.svc/";
     public static String uploaddocumnet = SGC + "UploadDocument/PostRegister";
-    public static String UPLOAD_TRF_RECEIPT = IMAGE_UPLOAD + "PICKSO/api/Datasheetupload/B2BDatasheet";
+    public static String UPLOAD_TRF_RECEIPT = Cloud_base + "B2BDatasheet";
     public static String POST_GENERATE_OTP = "common.svc/otp";
     public static String VERIFY_OTP_BS = "BloodSugarEntry/VerifyMobileRes/";
     public static String MULTIPART_UPLOAD = "BloodSugarEntry/EntryCliso";
@@ -105,7 +108,7 @@ public class Api {
     public static String POST_COMM_MULTIPART = SGC + "Common/PostCommunication";
 
 
-    //Tejas
+    //Tejasap
     public static String billingDetLIVE = LIVEAPI + "MASTER.svc/billingDetail";
     public static String billingSUMLIVE = LIVEAPI + "MASTER.svc/billingSummary";
     public static String ResultLIVE = LIVEAPI + "REPORT.svc/getresults";

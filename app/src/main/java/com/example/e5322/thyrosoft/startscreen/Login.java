@@ -32,7 +32,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
@@ -74,8 +73,7 @@ public class Login extends Activity implements View.OnClickListener {
     public static com.android.volley.RequestQueue PostQue;
     public static com.android.volley.RequestQueue generateOTP, POstQueValidateOTP, POstQueValidateOTPForgotPassword;
     public static com.android.volley.RequestQueue PostQueEmailPhoneOtp;
-    EditText username, password, otpmobile,
-            otpemail;
+    EditText username, password, otpmobile, otpemail;
     TextView forgotpassword, registration;
     Button login, generateotp;
     Context context;
@@ -132,7 +130,6 @@ public class Login extends Activity implements View.OnClickListener {
 
         version = pInfo.versionName;
         androidOS = Build.VERSION.RELEASE;
-
 
 
         username.setOnTouchListener(new View.OnTouchListener() {
@@ -729,10 +726,9 @@ public class Login extends Activity implements View.OnClickListener {
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
         barProgressDialog.setProgress(0);
         barProgressDialog.setMax(20);
-        barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-        new Thread(new Runnable() {
+    /*    new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -754,26 +750,18 @@ public class Login extends Activity implements View.OnClickListener {
                     e.printStackTrace();
                 }
             }
-        }).start();
+        }).start();*/
         User = username.getText().toString();
         pass = password.getText().toString();
         if (User.length() == 0 & pass.length() == 0) {
-            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                barProgressDialog.dismiss();
-            }
-            Toast.makeText(this, "Please Enter Ecode and Password", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please Enter Username and Password", Toast.LENGTH_SHORT).show();
         } else if (User.length() == 0) {
-            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                barProgressDialog.dismiss();
-            }
-            Toast.makeText(this, "Please enter your Ecode", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please enter your Username", Toast.LENGTH_SHORT).show();
         } else if (pass.length() == 0) {
-            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                barProgressDialog.dismiss();
-            }
             Toast.makeText(this, "Please enter your Password", Toast.LENGTH_SHORT).show();
         } else {
             try {
+                barProgressDialog.show();
                 PostQue = GlobalClass.setVolleyReq(Login.this);
                 JSONObject jsonObject = null;
                 try {
@@ -817,9 +805,20 @@ public class Login extends Activity implements View.OnClickListener {
                                         editor.putString("USER_CODE", loginResponseModel.getUSER_CODE());
                                         editor.putString("USER_TYPE", loginResponseModel.getUSER_TYPE());
                                         editor.putString("VERSION_NO", loginResponseModel.getVERSION_NO());
+                                        editor.putString("SOURCE_TYPE", loginResponseModel.getSOURCE_TYPE());
                                         editor.apply();
 
+                                        SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
+                                        SharedPreferences.Editor editorversioncode = pref_versioncheck.edit();
+                                        editorversioncode.putInt("versioncode", BuildConfig.VERSION_CODE);
+                                        editorversioncode.apply();
+
+
                                         checkcovidaccess();
+
+
+                                        new LogUserActivityTagging(activity, Constants.SHLOGIN);
+
 
                                         USER_CODE11 = loginResponseModel.getUSER_CODE();
 
@@ -834,9 +833,6 @@ public class Login extends Activity implements View.OnClickListener {
                                                 pushToken();
                                             }
                                         });
-
-                                        new LogUserActivityTagging(activity, Constants.SHLOGIN);
-
                                     } else {
                                         TastyToast.makeText(getApplicationContext(), loginResponseModel.getRESPONSE(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     }
@@ -851,6 +847,9 @@ public class Login extends Activity implements View.OnClickListener {
                 }, new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                            barProgressDialog.dismiss();
+                        }
                         if (error != null) {
                             // Toast.makeText(Evening.this, item + " Booking not done successfully", Toast.LENGTH_SHORT).show();
                         } else {
@@ -863,30 +862,31 @@ public class Login extends Activity implements View.OnClickListener {
                 Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest);
                 Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
             } catch (Exception ex) {
-                Toast.makeText(this, "URL not found", Toast.LENGTH_SHORT).show();
-                // Message.message(Login.this, "");
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
+                }
             }
         }
     }
 
     private void checkcovidaccess() {
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.LIVEAPI).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
 
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(User);
 
         Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
-
-
         covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
             @Override
             public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
                 SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                editor.clear();
                 editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
                 editor.commit();
                 try {
                     if (response.body().getResponse().equalsIgnoreCase("True")) {
                         editor = getSharedPreferences("COVIDETAIL", 0).edit();
+
                         editor.putBoolean("covidacc", true);
                         editor.commit();
                     } else {
@@ -894,27 +894,25 @@ public class Login extends Activity implements View.OnClickListener {
                         editor.putBoolean("covidacc", false);
                         editor.commit();
                     }
-                    int versionCode = BuildConfig.VERSION_CODE;
-                    SharedPreferences pref_versioncheck = activity.getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
-                    SharedPreferences.Editor editorversioncode = pref_versioncheck.edit();
-                    editorversioncode.putInt("versioncode", versionCode);
-                    editorversioncode.apply();
-
-                    Intent a = new Intent(Login.this, ManagingTabsActivity.class);
-                    a.putExtra(Constants.COMEFROM, true);
-                    startActivity(a);
-                    TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                gotoHome();
             }
 
             @Override
             public void onFailure(Call<CovidaccessRes> call, Throwable t) {
-
+                gotoHome();
             }
         });
+    }
+
+    private void gotoHome() {
+        Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+        a.putExtra(Constants.COMEFROM, true);
+        startActivity(a);
+        TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
     }
 
     private void storeRegIdInPref(String token) {
@@ -944,7 +942,7 @@ public class Login extends Activity implements View.OnClickListener {
                 try {
                     if (response.body().getResponseId().equalsIgnoreCase(Constants.RES0000)) {
                         // Log.e(TAG, "o n R e s p o n s e : " + response.body().getResponse());
-                        Constants.PUSHNOT_FLAG=false;
+                        Constants.PUSHNOT_FLAG = false;
                     }
 
                 } catch (Exception e) {
@@ -956,6 +954,7 @@ public class Login extends Activity implements View.OnClickListener {
             @Override
             public void onFailure(Call<FirebaseModel> call, Throwable t) {
                 Log.e(TAG, "o n E r r o r ---->" + t.getLocalizedMessage());
+
             }
         });
     }

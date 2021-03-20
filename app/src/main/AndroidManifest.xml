@@ -50,11 +50,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:appComponentFactory,android:allowBackup">
-        <activity android:name=".Activity.SRFCovidWOEEditActivity"></activity>
+        <activity android:name=".Activity.SRFCovidWOEEditActivity"/>
         <activity android:name=".Activity.SRFCovidWOEMainActivity" />
         <activity
             android:name=".Activity.LeadGenerationActivity"
             android:screenOrientation="portrait" />
+
+
+        <activity
+            android:name=".Activity.ViewCertificate"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            />
+
+        <activity android:name=".Activity.Certificate_activity"
+            android:screenOrientation="portrait"/>
+
 
         <uses-library
             android:name="org.apache.http.legacy"

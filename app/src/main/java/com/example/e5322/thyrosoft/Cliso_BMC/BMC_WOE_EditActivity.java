@@ -446,7 +446,7 @@ public class BMC_WOE_EditActivity extends AppCompatActivity {
         woe.setTOTAL_AMOUNT(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTOTAL_AMOUNT());
         woe.setTYPE(type_to_send);
         woe.setWATER_SOURCE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWATER_SOURCE());
-        woe.setWO_MODE("THYROSOFTLITE APP");
+        woe.setWO_MODE("CLISO APP");
         woe.setWO_STAGE(Woe_mode);
         myPojoWoe.setWoe(woe);
 

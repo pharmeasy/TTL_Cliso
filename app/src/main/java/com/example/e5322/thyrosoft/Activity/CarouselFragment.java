@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.BMCViewPagerAdapter;
 import com.example.e5322.thyrosoft.AdminCovidAdapter;
@@ -16,9 +19,6 @@ import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.StaffCovidadapter;
 import com.google.android.material.tabs.TabLayout;
-
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -133,7 +133,6 @@ public class CarouselFragment extends Fragment {
             }
         }
 
-
         tabLayout.setupWithViewPager(pager);
         tabLayout.setTabTextColors(Color.parseColor("#ffffff"), mContext.getResources().getColor(R.color.tabindicatorColor));
 
@@ -162,9 +161,17 @@ public class CarouselFragment extends Fragment {
             Log.e(TAG, "ratfrag_flag --->" + Constants.ratfrag_flag);
 
             if (covidacc) {
+                if (Constants.covid_redirection == 1) {
+                    pager.setCurrentItem(0);
+                    Constants.covid_redirection = 0;
+                } else if(Constants.covidfrag_flag.equalsIgnoreCase("1")) {
+                    pager.setCurrentItem(0);
+                    Constants.covidfrag_flag ="0";
+                }else {
+                    pager.setCurrentItem(2);
+                }
 
                 if (Constants.covidwoe_flag.equalsIgnoreCase("1")) {
-                    pager.setCurrentItem(2);
                     Constants.covidwoe_flag = "0";
                 }
 
@@ -173,15 +180,13 @@ public class CarouselFragment extends Fragment {
                     Constants.offline_flag = "0";
                 }
 
-
-
                 if (Constants.universal == 1) {
                     if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
                         pager.setCurrentItem(1);
                         Constants.ratfrag_flag = "1";
                         Constants.universal = 0;
                     }
-                }else {
+                } else {
                     if (Constants.pushrat_flag == 1) {
                         if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
                             pager.setCurrentItem(1);
@@ -193,19 +198,16 @@ public class CarouselFragment extends Fragment {
 
             } else {
 
-
                 if (pager != null && pager.getCurrentItem() != positionInt) {
                     pager.setCurrentItem(positionInt);
                 } else {
                     pager.setCurrentItem(0);
                 }
 
-
                 if (Constants.offline_flag.equalsIgnoreCase("1")) {
                     pager.setCurrentItem(1);
                     Constants.offline_flag = "0";
                 }
-
             }
         }
     }

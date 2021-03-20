@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.Controller;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import com.example.e5322.thyrosoft.Controller.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -10,7 +9,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ConfirmbookDetail;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
@@ -35,6 +33,7 @@ public class POSTBookLeadController {
         this.confirmbookDetail = confirmbookDetail;
         globalClass = new GlobalClass(mActivity);
         this.header = header;
+        requestQueue = GlobalClass.setVolleyReq(mActivity);
     }
 
     public void postBookLead(boolean b, JSONObject jsonObject) {
@@ -42,11 +41,13 @@ public class POSTBookLeadController {
             if (b) {
                 progressDialog = GlobalClass.ShowprogressDialog(mActivity);
             }
-            if (requestQueue == null)
-                requestQueue = GlobalClass.setVolleyReq(mActivity);
+            System.out.println(jsonObject);
+
+
             String url = Api.LEAD_BOOKING;
-            globalClass.printLog("Error", TAG, "postBookLeadAPI", url);
-            globalClass.printLog("Error", TAG, "postBookLeadAPI post data", "" + jsonObject);
+            System.out.println("postBookLeadAPI"+ url);
+            System.out.println("postBookLeadAPI post data " + jsonObject);
+
 
             JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                 @Override

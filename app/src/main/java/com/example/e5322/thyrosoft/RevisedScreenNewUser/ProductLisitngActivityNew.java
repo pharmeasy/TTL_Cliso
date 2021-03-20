@@ -107,7 +107,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     String brandName, typeName;
     String shr_brandname;
     ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
-    MainModel obj;
     ArrayList<BaseModel> filteredFiles;
     String TAG = ProductLisitngActivityNew.class.getSimpleName();
     private ExpandableTestMasterListDisplayAdapter expAdapter;
@@ -184,6 +183,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     Button verify_ulc;
     private String version;
     ArrayList<TRFModel> trf_list = new ArrayList<>();
+    private String source_type;
 
 
     @SuppressLint("NewApi")
@@ -299,6 +299,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         passwrd = prefs.getString("password", null);
         access = prefs.getString("ACCESS_TYPE", null);
         api_key = prefs.getString("API_KEY", null);
+        source_type = prefs.getString("SOURCE_TYPE", "");
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -560,7 +561,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             woe.setTOTAL_AMOUNT(ulcResponseModel.getB2C());
                             woe.setTYPE(typeName);
                             woe.setWATER_SOURCE("");
-                            woe.setWO_MODE("THYROSOFTLITE APP");
+                            woe.setWO_MODE("CLISO APP");
                             woe.setWO_STAGE(3);
                             woe.setULCcode(checkUlcNumber);
                             myPojoWoe.setWoe(woe);
@@ -713,12 +714,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                         POstQue.add(jsonObjectRequest1);
                                         Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
                                         Log.e(TAG, "fetchData: JSON" + jsonObj);
-                                    } else {
-
                                     }
                                 }
-
-
                             }
                         }
                     }
@@ -745,6 +742,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 } else {
                     int sum = 0;
                     int b2b = 0;
+                    int nhlrate = 0;
                     ArrayList<String> getTestNameLits = new ArrayList<>();
 //                    ArrayList<String> saveLocation = new ArrayList<>();
 
@@ -762,8 +760,9 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                             getTestNameLits.add(Selcted_Test.get(i).getProduct());
                         }
 
+
 //                        if (!saveLocation.isEmpty()) {
-                            if (typeName.equalsIgnoreCase("ILS")) {
+                        if (typeName.equalsIgnoreCase("ILS")) {
                                 /*if (saveLocation.contains("CPL")) {
                                     //todo commented to hide CPL RPL rates as per the input 09-10-2020
                                     *//*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
@@ -775,10 +774,11 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
-                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    /*}*/
+                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+                            nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
+                            /*}*/
 //                                }
-                            } else {
+                        } else {
                                 /*if (saveLocation.contains("CPL")) {
                                     sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
                                     *//*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getCplr())) {
@@ -787,14 +787,15 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                     b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
                                     *//*}*//*
                                 } else {*/
-                                    sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
+                            sum = sum + Integer.parseInt(Selcted_Test.get(i).getRate().getB2c());
                                     /*if (!GlobalClass.isNull(Selcted_Test.get(i).getRate().getRplr())) {
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
-                                        b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                                    /*}*/
+                            b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
+                            nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
+                            /*}*/
 //                                }
-                            }
+                        }
 //                        }
 
                     }
@@ -803,6 +804,20 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                         showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
 
+                    int isNhlAvailable;
+
+                    if (!source_type.equalsIgnoreCase("OLC")){
+                        if (Global.OTPVERIFIED) {
+                            isNhlAvailable = 0;
+                        } else {
+                            isNhlAvailable = getValueFromSelectedList(Selcted_Test);
+                        }
+                    }else {
+                        isNhlAvailable = getValueFromSelectedList(Selcted_Test);
+                    }
+
+
+
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
                     show_selected_tests_list_test_ils1.setText(displayslectedtest);
                     getTExtdata = displayslectedtest;
@@ -810,6 +825,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     String testsCodesPassing = TextUtils.join(",", getTestNameLits);
                     String payment = String.valueOf(sum);
                     String b2b_rate = String.valueOf(b2b);
+                    String nhl_rate = String.valueOf(nhlrate);
 
                     Intent intent = new Intent(ProductLisitngActivityNew.this, Scan_Barcode_ILS_New.class);
                     Bundle bundle = new Bundle();
@@ -817,6 +833,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
                     bundle.putString("b2b_rate", b2b_rate);
+                    bundle.putString("NHL_rate", nhl_rate);
+                    bundle.putInt("isNhlAvailable", isNhlAvailable);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -858,6 +876,35 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     getAllproduct();
                 }
             }
+        }
+    }
+
+    private int getValueFromSelectedList(ArrayList<BaseModel> selcted_test) {
+        int value = 1;
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        if (selcted_test != null) {
+            for (int i = 0; i < selcted_test.size(); i++) {
+                arrayList.add(selcted_test.get(i).getIsNHL());
+                if (arrayList.contains(0)) {
+                    value = 0;
+                }
+                /*if (selcted_test.get(i).getIsNHL() == 1) {
+                    value = 1;
+                }*/
+            }
+        }
+        return value;
+    }
+
+    private int getNHLRateorB2b(BaseModel.Rate rate) {
+        if (rate.getNHLRate() != null) {
+            if (Integer.parseInt(rate.getNHLRate()) > 0) {
+                return Integer.parseInt(rate.getNHLRate());
+            } else {
+                return Integer.parseInt(rate.getB2b());
+            }
+        } else {
+            return Integer.parseInt(rate.getB2b());
         }
     }
 
@@ -1027,8 +1074,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 if (setAllTestWithBArcodeList.get(i).getBarcode().equalsIgnoreCase(s)) {
                     isbacodeduplicate = true;
                 }
-            } else {
-
             }
         }
 
@@ -1421,7 +1466,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 Selcted_Test.add(testRateMasterModel);
                 notifyDataSetChanged();
             }
-            CheckAnandam(testRateMasterModel);
+            //  CheckAnandam(testRateMasterModel);
 
             before_discount_layout2.setVisibility(View.VISIBLE);
             showTestNmaes = new ArrayList<>();
@@ -1457,7 +1502,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 }
                             }
                         }
-                    }else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-B")){
+                    } else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-B")) {
                         ShowDialog("AA-B");
                         for (int i = 0; i < Selcted_Test.size(); i++) {
                             if (Selcted_Test.get(i).getCode().equalsIgnoreCase("AA-B")) {
@@ -1469,7 +1514,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                 }
                             }
                         }
-                    }else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-C")){
+                    } else if (testRateMasterModel.getCode().equalsIgnoreCase("AA-C")) {
                         ShowDialog("AA-C");
                         for (int i = 0; i < Selcted_Test.size(); i++) {
                             if (Selcted_Test.get(i).getCode().equalsIgnoreCase("AA-C")) {
@@ -1489,16 +1534,16 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         }
 
         private void ShowDialog(String testname) {
-            String test="";
+            String test = "";
             if (testname.equalsIgnoreCase("AA-A")) {
-                test="ANANDHAM-A";
-            }else if (testname.equalsIgnoreCase("AA-B")){
-                test="ANANDHAM-B";
-            }else if (testname.equalsIgnoreCase("AA-C")){
-                test="ANANDHAM-C";
+                test = "ANANDHAM-A";
+            } else if (testname.equalsIgnoreCase("AA-B")) {
+                test = "ANANDHAM-B";
+            } else if (testname.equalsIgnoreCase("AA-C")) {
+                test = "ANANDHAM-C";
             }
             new AlertDialog.Builder(context)
-                    .setMessage("Your profile will be replaced with "+test+". As KYC is not Verified.")
+                    .setMessage("Your profile will be replaced with " + test + ". As KYC is not Verified.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // Continue with delete operation

@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.Activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -41,6 +45,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
+import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -64,6 +69,7 @@ import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
+import com.rd.PageIndicatorView;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -76,6 +82,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
@@ -169,7 +176,13 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private String getRemark;
     private boolean barcodeExistsFlag = false;
     int b2b_rate = 0;
-
+    private File vialimg_file;
+    Button btn_choosefile;
+    LinearLayout lin_preview;
+    private boolean isvial = false;
+    TextView txt_fileupload;
+    Bitmap vialbitmap;
+    List<String> imagelist = new ArrayList<>();
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -287,6 +300,23 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
         title.setText("Scan Barcode");
 
+        btn_choosefile = findViewById(R.id.btn_choosefile);
+        txt_fileupload = findViewById(R.id.txt_fileupload);
+        lin_preview = findViewById(R.id.lin_preview);
+        btn_choosefile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCamera();
+                isvial = true;
+            }
+        });
+        txt_fileupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(imagelist);
+            }
+        });
+
         scanIntegrator = new IntentIntegrator(Scan_Barcode_Outlabs_Activity.this);
         linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs_Activity.this);
         recycler_barcode.setLayoutManager(linearLayoutManager);
@@ -395,6 +425,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         GlobalClass.showShortToast(mActivity, "Please enter the amount");
                     } else if (Integer.parseInt(getCollectedAmt) < b2b_rate) {
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                        Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
                         checklistData();
                     }
@@ -462,14 +494,31 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
                 try {
-                    bitmapimage = camera.getCameraBitmap();
-                    String imageurl = camera.getCameraBitmapPath();
-                    trf_img = new File(imageurl);
-                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
-                    trf_img = new File(destFile);
-                    GlobalClass.copyFile(new File(imageurl), trf_img);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
-                    storeTRFImage(trf_img);
+                    if (isvial) {
+                        imagelist.clear();
+                        vialbitmap = camera.getCameraBitmap();
+                        String imageurlvial = camera.getCameraBitmapPath();
+                        vialimg_file = new File(imageurlvial);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurlvial), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    } else {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        trf_img = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
+                        trf_img = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), trf_img);
+                        Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
+                        storeTRFImage(trf_img);
+                    }
+
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -495,7 +544,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             }
         }
     }
-
     private void passBarcodeData(final String s) {
         boolean isbacodeduplicate = false;
         for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
@@ -628,6 +676,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 trflist.get(i).setTrf_image(trf_img);
             }
         }
+
         rec_trf.removeAllViews();
         callTRFAdapter(trflist);
     }
@@ -692,6 +741,60 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             doFinalWoe();
     }
 
+    public void setviewpager(List<String> imagelist) {
+        final Dialog maindialog = new Dialog(mActivity);
+        maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        maindialog.setContentView(R.layout.preview_dialog);
+        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
+        final com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(mActivity, imagelist, 0);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.notifyDataSetChanged();
+
+        final PageIndicatorView pageIndicatorView = maindialog.findViewById(R.id.pageIndicatorView);
+        if (imagelist != null && imagelist.size() > 1) {
+            pageIndicatorView.setVisibility(View.VISIBLE);
+            pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
+            pageIndicatorView.setSelection(0);
+            pageIndicatorView.setSelectedColor(mActivity.getResources().getColor(R.color.maroon));
+        } else {
+            pageIndicatorView.setVisibility(View.GONE);
+        }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {/*empty*/}
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+                pageIndicatorView.setSelectedColor(getResources().getColor(R.color.maroon));
+                pageIndicatorView.setUnselectedColor(getResources().getColor(R.color.grey));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        final Button btn_delete = maindialog.findViewById(R.id.btn_delete);
+        btn_delete.setVisibility(View.GONE);
+
+        ImageView ic_close = (ImageView) maindialog.findViewById(R.id.img_close);
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maindialog.dismiss();
+            }
+        });
+
+        maindialog.setCancelable(true);
+        maindialog.show();
+    }
     private void doFinalWoe() {
         if (FinalBarcodeDetailsList != null) {
             for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
@@ -814,7 +917,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 woe.setTOTAL_AMOUNT(getAmount);
                 woe.setTYPE(typeName);
                 woe.setWATER_SOURCE("");
-                woe.setWO_MODE("THYROSOFTLITE APP");
+                woe.setWO_MODE("CLISO APP");
                 woe.setWO_STAGE(3);
                 woe.setULCcode("");
 
@@ -839,7 +942,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     Gson trfgson1 = new GsonBuilder().create();
                     String trfjson1 = trfgson1.toJson(trflist);
                     myPojoWoe.setTrfjson(trfjson1);
+                    myPojoWoe.setVialimage(vialimg_file);
                 }
+
 
                 Gson gson = new GsonBuilder().create();
                 String json = gson.toJson(myPojoWoe);
@@ -885,11 +990,11 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                             if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
 
                                                 Log.e(TAG, "onResponse message --->: " + message);
-                                                if (trflist.size() > 0)
-                                                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                                                else {
-                                                    getUploadFileResponse();
-                                                }
+                                                //                                                if (trflist.size() > 0)
+                                                new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+//                                                else {
+//                                                    getUploadFileResponse();
+//                                                }
                                             } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
                                                 GlobalClass.redirectToLogin(Scan_Barcode_Outlabs_Activity.this);
                                             } else {
@@ -919,11 +1024,11 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                             Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                             Log.e(TAG, "saveandClose: json" + jsonObj);
                         } else {
-                            if (trflist.size() > 0)
-                                new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                            else {
-                                getUploadFileResponse();
-                            }
+//                            if (trflist.size() > 0)
+                            new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+//                            else {
+//                                getUploadFileResponse();
+//                            }
                         }
                     }
                 }

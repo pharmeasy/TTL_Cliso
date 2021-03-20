@@ -6,11 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-
-import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Activity.MessageConstants;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -52,21 +48,21 @@ public class MultiSelectSpinner extends androidx.appcompat.widget.AppCompatSpinn
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
         if (mSelection != null && which < mSelection.length) {
             if (hasNone) {
-                if (which == 0 && isChecked && mSelection.length > 1) {
+                /*if (which == 0 && isChecked && mSelection.length > 1) {
                     for (int i = 1; i < mSelection.length; i++) {
                         mSelection[i] = false;
                         ((AlertDialog) dialog).getListView().setItemChecked(i, false);
                     }
-                } else if (which == naPos && isChecked && mSelection.length > 1) {
+                } else*/ if (which == naPos && isChecked && mSelection.length > 1) {
                     for (int i = 0; i < mSelection.length; i++) {
                         mSelection[i] = false;
                         ((AlertDialog) dialog).getListView().setItemChecked(i, false);
                     }
                 } else {
-                    if (which > 0 && mSelection[0] && isChecked) {
+                    /*if (which > 0 && mSelection[0] && isChecked) {
                         mSelection[0] = false;
                         ((AlertDialog) dialog).getListView().setItemChecked(0, false);
-                    }
+                    }*/
                     if (which != naPos && mSelection[naPos] && isChecked) {
                         mSelection[naPos] = false;
                         try {

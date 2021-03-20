@@ -37,7 +37,8 @@ public class ToastFile {
     public static String slt_ned = "Select NED";
     public static String slt_date = "Select date";
     public static String CHECK_INTERNET_CONN = "Check your internet connection";
-
+    public static String OpenImageInGallery = "Image Downloaded Successfully.\nOpen in gallery ?";
+    public static String vialimage = "Upload Vial image";
     public static String ent_pin = "Please enter pincode";
     public static String invalid_brcd = "Invalid barcode";
     public static String allw_scan = "Please allow barcode to scan";
@@ -82,6 +83,7 @@ public class ToastFile {
     public static String vial_no = "Please enter vial number";
     public static String crt_name_woe = "Please enter correct name";
     public static String invalidage = "Invalid age";
+    public static String kyc_no = "Please enter No.";
     public static String crt_scp = "Please select SCP";
     public static String crt_ref_by = "Please select Ref By";
     public static String slt_hr = "Please select Hour";
@@ -165,6 +167,7 @@ public class ToastFile {
     public static String LOCATION_NOT_FOUND = "Location not found";
     public static String MOB_NOT_VERIFIED = "Entered mobile number not verified !";
     public static String ENTER_AGE = "Please enter age";
+    public static String ENTER_CORRECT_AGE = "Please enter correct age";
     public static String ENTER_NAME = "Please enter name";
     public static String SELECT_GENDER = "Please select gender";
     public static String SELECT_TEST_TYPE = "Select test type";

@@ -15,15 +15,10 @@ import android.location.Geocoder;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,15 +27,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Offline_Woe_Adapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -454,7 +453,7 @@ public class Offline_woe extends Fragment {
                                     woe.setTOTAL_AMOUNT(resultList.get(i).getWoe().getTOTAL_AMOUNT());
                                     woe.setTYPE(resultList.get(i).getWoe().getTYPE());
                                     woe.setWATER_SOURCE("");
-                                    woe.setWO_MODE("THYROSOFTLITE APP");
+                                    woe.setWO_MODE("CLISO APP");
                                     woe.setWO_STAGE(3);
                                     woe.setULCcode("");
                                     myPojoWoe.setWoe(woe);
@@ -583,9 +582,9 @@ public class Offline_woe extends Fragment {
         return viewMain;
     }
 
-    private void uploadTRf(ArrayList<TRFModel> trflist) {
-        if (trflist.size() > 0)
-            new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist).execute();
+    private void uploadTRf(ArrayList<TRFModel> trflist, File vialimage) {
+        //    if (trflist.size() > 0)
+        new AsyncTaskPost_uploadfile(Offline_woe.this, activity, api_key, user, barcode_patient_id, trflist,vialimage).execute();
 
     }
 
@@ -736,7 +735,7 @@ public class Offline_woe extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        uploadTRf(trflist);
+        uploadTRf(trflist, resultList.get(finalI).getVialimage());
     }
 
     // TODO: Rename method, update argument and hook method into UI event

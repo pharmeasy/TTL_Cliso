@@ -18,6 +18,7 @@ public class BaseModel implements Parcelable {
     private String type;
     private String trf;
     private String isCPL;
+    private int isNHL;
     private String subtypes;
     Childs[] childs;
     Barcodes[] barcodes;
@@ -39,6 +40,7 @@ public class BaseModel implements Parcelable {
         barcodes = in.createTypedArray(Barcodes.CREATOR);
         rate = in.readParcelable(Rate.class.getClassLoader());
         isAB = in.readInt();
+        isNHL = in.readInt();
     }
 
     @Override
@@ -57,6 +59,7 @@ public class BaseModel implements Parcelable {
         dest.writeTypedArray(barcodes, flags);
         dest.writeParcelable(rate, flags);
         dest.writeInt(isAB);
+        dest.writeInt(isNHL);
     }
 
     @Override
@@ -75,6 +78,15 @@ public class BaseModel implements Parcelable {
             return new BaseModel[size];
         }
     };
+
+
+    public int getIsNHL() {
+        return isNHL;
+    }
+
+    public void setIsNHL(int isNHL) {
+        this.isNHL = isNHL;
+    }
 
     public int getIsAB() {
         return isAB;
@@ -308,6 +320,7 @@ public class BaseModel implements Parcelable {
         String b2b;
         String cplr;
         String rplr;
+        String NHLRate;
 
         public Rate() {
         }
@@ -318,6 +331,7 @@ public class BaseModel implements Parcelable {
             b2b = in.readString();
             cplr = in.readString();
             rplr = in.readString();
+            NHLRate = in.readString();
         }
 
         @Override
@@ -326,6 +340,7 @@ public class BaseModel implements Parcelable {
             dest.writeString(b2b);
             dest.writeString(cplr);
             dest.writeString(rplr);
+            dest.writeString(NHLRate);
         }
 
         @Override
@@ -344,6 +359,14 @@ public class BaseModel implements Parcelable {
                 return new Rate[size];
             }
         };
+
+        public String getNHLRate() {
+            return NHLRate;
+        }
+
+        public void setNHLRate(String NHLRate) {
+            this.NHLRate = NHLRate;
+        }
 
         public String getRplr() {
             return rplr;

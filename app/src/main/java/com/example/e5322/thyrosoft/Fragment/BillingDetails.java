@@ -3,7 +3,6 @@ package com.example.e5322.thyrosoft.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +10,8 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.e5322.thyrosoft.Adapter.ExpandablenameListAdapter;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -176,7 +177,6 @@ public class BillingDetails extends RootFragment {
             sheet.setColumnView(1, 16);
             sheet.setColumnView(2, 16);
 
-
             sheet.addCell(labe1);
             sheet.addCell(labe2);
             sheet.addCell(labe3);
@@ -185,9 +185,7 @@ public class BillingDetails extends RootFragment {
             sheet.addCell(labe6);
             sheet.addCell(labe7);
 
-
             for (int i = 0; i < GlobalClass.billingDETArray.size(); i++) {
-
 
                 sheet.setColumnView(0, 10);
                 sheet.setColumnView(1, 20);
@@ -197,9 +195,7 @@ public class BillingDetails extends RootFragment {
                 sheet.setColumnView(5, 15);
                 sheet.setColumnView(6, 15);
 
-
                 sheet.addCell(new Label(0, i + 1, GlobalClass.billingDETArray.get(i).getBarcode()));
-
 
                 sheet.addCell( new Label(1, i + 1, GlobalClass.billingDETArray.get(i).getBilledAmount()));
                 sheet.addCell(new Label(2, i + 1, GlobalClass.billingDETArray.get(i).getCollectedAmount()));
@@ -209,8 +205,6 @@ public class BillingDetails extends RootFragment {
                 sheet.addCell(new Label(6, i + 1, GlobalClass.billingDETArray.get(i).getRefId()));
 
             }       //String title = cursor.getString(cursor.getColumnIndex(DatabaseHelper.TODO_SUBJECT));
-
-
 
             workbook.write();
             TastyToast.makeText(getContext(), ToastFile.xl_dtl, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);

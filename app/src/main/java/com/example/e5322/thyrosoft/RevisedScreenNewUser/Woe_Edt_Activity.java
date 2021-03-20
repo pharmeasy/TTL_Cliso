@@ -12,14 +12,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,18 +27,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.ConvertBTtoBNController;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.ConvertBTBNRequestModel;
+import com.example.e5322.thyrosoft.Models.ConvertBTBNResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.google.gson.Gson;
@@ -53,8 +58,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 public class Woe_Edt_Activity extends AppCompatActivity {
     public boolean genderId = false;
@@ -90,6 +93,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
     private String versionNameTopass;
     private int versionCode;
     private String TAG = Woe_Edt_Activity.class.getSimpleName().toString();
+    CheckBox cb_convert;
+    private boolean isconvert = false;
 
     @SuppressLint("NewApi")
     @Override
@@ -114,6 +119,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         next_btn_patient = (Button) findViewById(R.id.next_btn_patient);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
+        cb_convert = (CheckBox) findViewById(R.id.cb_convert);
         labname_linear = (LinearLayout) findViewById(R.id.labname_linear);
 
         try {
@@ -133,10 +139,10 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
 
         prefs = Woe_Edt_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         System.out.println(TAG + prefs + " " + user + " " + api_key);
 
@@ -165,6 +171,24 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         versionCode = pInfo.versionCode;
 
 
+        if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getBRAND().equalsIgnoreCase("NHL")) {
+            cb_convert.setVisibility(View.VISIBLE);
+        } else {
+            cb_convert.setVisibility(View.GONE);
+        }
+
+
+        cb_convert.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isconvert = true;
+                } else {
+                    isconvert = false;
+                }
+            }
+        });
+
         age_edt.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
@@ -181,10 +205,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
                     agesinteger = Integer.parseInt(s.toString());
-                } else {
-
                 }
-
 
                 String enteredString = s.toString();
 
@@ -432,14 +453,6 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         barProgressDialog.show();
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-
-        if (barProgressDialog.isShowing()) {
-            if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                barProgressDialog.dismiss();
-            }
-        }
-
-
         String brand_type_to_send = null;
         String type_to_send = null;
         try {
@@ -472,7 +485,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE() != null) {
             deliveryMode = Integer.valueOf(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getDELIVERY_MODE());
         } else {
-            Woe_mode = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE());
+            Woe_mode = Integer.parseInt(!GlobalClass.isNull(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE()) ? GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_STAGE() : "0");
         }
         if (GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWO_MODE() != null) {
             sr_no = Integer.parseInt(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getSR_NO());
@@ -520,7 +533,7 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         woe.setTOTAL_AMOUNT(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getTOTAL_AMOUNT());
         woe.setTYPE(type_to_send);
         woe.setWATER_SOURCE(GlobalClass.summary_models.get(0).getWoeditlist().getWoe().getWATER_SOURCE());
-        woe.setWO_MODE("THYROSOFTLITE APP");
+        woe.setWO_MODE("CLISO APP");
         woe.setWO_STAGE(Woe_mode);
         myPojoWoe.setWoe(woe);
 
@@ -560,23 +573,25 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                     barcode_patient_id = parentObjectOtp.getString("barcode_patient_id");
                     message = parentObjectOtp.getString("message");
                     status = parentObjectOtp.getString("status");
-
+                    if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                        barProgressDialog.dismiss();
+                    }
                     if (status.equalsIgnoreCase("SUCCESS")) {
+                        if (isconvert) {
+                            Convert();
+                        } else {
+                            GlobalClass.setFlag_back_toWOE = true;
+                            Constants.covidwoe_flag = "1";
+                            Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-                        GlobalClass.setFlag_back_toWOE = true;
-                        Constants.covidwoe_flag = "1";
-                        Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
-                        startActivity(i);
-                        finish();
 
                     } else if (message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
 
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
+
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-
-
                         final AlertDialog alertDialog = new AlertDialog.Builder(
                                 Woe_Edt_Activity.this).create();
 
@@ -600,9 +615,6 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         alertDialog.show();
 
                     } else {
-                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                            barProgressDialog.dismiss();
-                        }
                         TastyToast.makeText(Woe_Edt_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     }
 
@@ -632,4 +644,27 @@ public class Woe_Edt_Activity extends AppCompatActivity {
 
     }
 
+    private void Convert() {
+
+        ConvertBTBNRequestModel convertBTBNRequestModel = new ConvertBTBNRequestModel();
+        convertBTBNRequestModel.setBarcode(barcode_number.getText().toString());
+        convertBTBNRequestModel.setEntryBy(user);
+        convertBTBNRequestModel.setSession("TTL");
+        ConvertBTtoBNController convertBTtoBNController = new ConvertBTtoBNController(Woe_Edt_Activity.this);
+        convertBTtoBNController.CallAPI(convertBTBNRequestModel);
+    }
+
+    public void getCovertResponse(ConvertBTBNResponseModel convertBTBNResponseModel) {
+        if (!GlobalClass.isNull(convertBTBNResponseModel.getResponseId()) && convertBTBNResponseModel.getResponseId().equalsIgnoreCase("RES0000")) {
+            Toast.makeText(this, ""+convertBTBNResponseModel.getResponse(), Toast.LENGTH_SHORT).show();
+            GlobalClass.setFlag_back_toWOE = true;
+            Constants.covidwoe_flag = "1";
+            Intent i = new Intent(Woe_Edt_Activity.this, ManagingTabsActivity.class);
+            startActivity(i);
+            finish();
+        } else {
+            Toast.makeText(this, ""+convertBTBNResponseModel.getResponse(), Toast.LENGTH_SHORT).show();
+        }
+
+    }
 }

@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.WOE;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -12,6 +13,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -38,6 +41,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -52,6 +56,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcodeOutlabs;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
+import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -76,6 +81,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
+import com.rd.PageIndicatorView;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import org.json.JSONException;
@@ -89,6 +95,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import in.galaxyofandroid.spinerdialog.OnSpinerItemClick;
@@ -204,6 +211,13 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private DatabaseHelper myDb;
     private String barcode_id;
     private Global globalClass;
+    File vialimg_file;
+    Button btn_choosefile;
+    LinearLayout lin_preview;
+    private boolean isvial = false;
+    TextView txt_fileupload;
+    Bitmap vialbitmap;
+    List<String> imagelist = new ArrayList<>();
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -284,10 +298,26 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         sample_type_linear.setVisibility(View.VISIBLE);
         barcodescanninglist.setVisibility(View.GONE);
         recycler_barcode.setVisibility(View.GONE);
-
         ll_uploadTRF = (LinearLayout) findViewById(R.id.ll_uploadTRF);
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
         enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+        btn_choosefile = findViewById(R.id.btn_choosefile);
+        txt_fileupload = findViewById(R.id.txt_fileupload);
+        lin_preview = findViewById(R.id.lin_preview);
+        btn_choosefile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCamera();
+                isvial = true;
+            }
+        });
+        txt_fileupload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(imagelist);
+            }
+        });
 
 
         if (globalClass.checkForApi21()) {
@@ -513,7 +543,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 try {
                     GlobalClass.finalspecimenttypewiselist = new ArrayList<>();
                     getSampleType = sample_type_spinner.getSelectedItem().toString();
@@ -526,13 +555,22 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 }
 
                 if (getSampleType.equalsIgnoreCase("Select sample type")) {
-                    TastyToast.makeText(mActivity, "Kindly select sample type", TastyToast.LENGTH_SHORT, TastyToast.ERROR).show();
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(mActivity);
+                    alertDialogBuilder
+                            .setMessage("Kindly select sample type")
+                            .setCancelable(true)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+
                 } else {
                     if (barcodeDetailsToStore.length() == 7) {
                         Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
                     } else {
-
-
                         try {
                             if (!GlobalClass.isNull(barcodeDetailsToStore)) {
                                 getOnlyBrcode = barcodeDetailsToStore.substring(8);
@@ -560,12 +598,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         }
 
                         try {
-                            if (getOnlyBrcode.equals(null) || getOnlyBrcode.equals("")) {
+                            if (GlobalClass.isNull(getOnlyBrcode)) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.scan_brcd, Toast.LENGTH_SHORT).show();
-                            } else if (getWrittenAmt.equals("")) {
+                            } else if (GlobalClass.isNull(getWrittenAmt)) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                             } else if (Integer.parseInt(getWrittenAmt) < b2b_rate) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                            } else if (vialimg_file == null || !vialimg_file.exists()) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.vialimage, Toast.LENGTH_SHORT).show();
                             } else {
                                 checklistData();
                             }
@@ -575,7 +615,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
                     }
                 }
-
             }
         });
 
@@ -826,14 +865,29 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
                 try {
-                    bitmapimage = camera.getCameraBitmap();
-                    String imageurl = camera.getCameraBitmapPath();
-                    trf_img = new File(imageurl);
-                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
-                    trf_img = new File(destFile);
-                    GlobalClass.copyFile(new File(imageurl), trf_img);
-                    Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
-                    storeTRFImage(trf_img);
+                    if (isvial) {
+                        imagelist.clear();
+                        vialbitmap = camera.getCameraBitmap();
+                        String imageurlvial = camera.getCameraBitmapPath();
+                        vialimg_file = new File(imageurlvial);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurlvial), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    } else {
+                        bitmapimage = camera.getCameraBitmap();
+                        String imageurl = camera.getCameraBitmapPath();
+                        trf_img = new File(imageurl);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_img;
+                        trf_img = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurl), trf_img);
+                        Log.e(TAG, "" + String.format("ActualSize : %s", GlobalClass.getReadableFileSize(trf_img.length())));
+                        storeTRFImage(trf_img);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -863,13 +917,70 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         }
     }
 
+    public void setviewpager(List<String> imagelist) {
+        final Dialog maindialog = new Dialog(mActivity);
+        maindialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        maindialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        maindialog.setContentView(R.layout.preview_dialog);
+        //maindialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
+        final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
+        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(mActivity, imagelist, 0);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPagerAdapter.notifyDataSetChanged();
+
+        final PageIndicatorView pageIndicatorView = maindialog.findViewById(R.id.pageIndicatorView);
+        if (imagelist != null && imagelist.size() > 1) {
+            pageIndicatorView.setVisibility(View.VISIBLE);
+            pageIndicatorView.setCount(imagelist.size()); // specify total count of indicators
+            pageIndicatorView.setSelection(0);
+            pageIndicatorView.setSelectedColor(mActivity.getResources().getColor(R.color.maroon));
+        } else {
+            pageIndicatorView.setVisibility(View.GONE);
+        }
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {/*empty*/}
+
+            @Override
+            public void onPageSelected(int position) {
+                pageIndicatorView.setSelection(position);
+                pageIndicatorView.setSelectedColor(getResources().getColor(R.color.maroon));
+                pageIndicatorView.setUnselectedColor(getResources().getColor(R.color.grey));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        final Button btn_delete = maindialog.findViewById(R.id.btn_delete);
+        btn_delete.setVisibility(View.GONE);
+
+
+        ImageView ic_close = (ImageView) maindialog.findViewById(R.id.img_close);
+        ic_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maindialog.dismiss();
+            }
+        });
+
+
+        maindialog.setCancelable(true);
+        maindialog.show();
+    }
+
     private void passBarcodeData(final String barcodeDetails) {
 
         Log.e(TAG, "passBarcodeData: getBarcode details" + barcodeDetails);
         //   checkBarcode(barcodeDetails);
 
         if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
-            enter_barcode.setText(barcodeDetails);
+            outlab_barcode.setText("Barcode:" + barcodeDetails);
         } else {
             barcodeDetailsdata = GlobalClass.setVolleyReq(Scan_Barcode_Outlabs.this);
             JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.scanBarcodeWithValidation + api_key + "/" + barcodeDetails + "/getcheckbarcode"
@@ -1253,7 +1364,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         woe.setTOTAL_AMOUNT(getAmount);
         woe.setTYPE(typeName);
         woe.setWATER_SOURCE("");
-        woe.setWO_MODE("THYROSOFTLITE APP");
+        woe.setWO_MODE("CLISO APP");
         woe.setWO_STAGE(3);
         woe.setULCcode("");
 
@@ -1274,6 +1385,15 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         myPojoWoe.setBarcodelistModel(barcodelists);
         myPojoWoe.setWoe_type("WOE");
         myPojoWoe.setApi_key(api_key);//api_key
+
+
+        if (Global.isoffline || !GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs.this)) {
+            Gson trfgson = new GsonBuilder().create();
+            String trfjson = trfgson.toJson(trflist);
+            myPojoWoe.setTrfjson(trfjson);
+
+            myPojoWoe.setVialimage(vialimg_file);
+        }
 
         Gson trfgson1 = new GsonBuilder().create();
         String trfjson1 = trfgson1.toJson(trflist);
@@ -1320,11 +1440,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 message = woeResponseModel.getMessage();
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
-                                        if (trflist.size() > 0)
-                                            new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                                        else {
+                                        // if (trflist.size() > 0)
+                                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                                        /*else {
                                             getUploadFileResponse();
-                                        }
+                                        }*/
                                     } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
                                         GlobalClass.redirectToLogin(Scan_Barcode_Outlabs.this);
                                     } else {
@@ -1354,11 +1474,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                     Log.e(TAG, "saveandClose: json" + jsonObj);
                 } else {
-                    if (trflist.size() > 0)
-                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist).execute();
-                    else {
-                        getUploadFileResponse();
-                    }
+                    //  if (trflist.size() > 0)
+                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+//                    else {
+//                        getUploadFileResponse();
+//                    }
                 }
             }
         }
