@@ -132,10 +132,10 @@ public class OTPCreditMISActivity extends AppCompatActivity {
         cd = new ConnectionDetector(mActivity);
 
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         from_cal = Calendar.getInstance();
         to_cal = Calendar.getInstance();

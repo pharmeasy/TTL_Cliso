@@ -7,23 +7,23 @@
 
     <VideoView
         android:id="@+id/videoView"
-        android:layout_alignParentBottom="true"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
+        android:layout_alignParentBottom="true" />
 
     <TextView
         android:id="@+id/videoName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#646464"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:background="#90000000"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:padding="5dp"/>
+        android:padding="5dp"
+        android:textColor="#646464"
+        android:textSize="@dimen/header"
+        android:textStyle="bold" />
 
 
     <ImageView
@@ -36,14 +36,15 @@
         android:layout_alignBottom="@+id/videoView"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
         android:scaleType="center"
-        android:src="@drawable/volumemute"/>
+        android:src="@drawable/volumemute"
+        android:visibility="gone" />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
 </RelativeLayout>

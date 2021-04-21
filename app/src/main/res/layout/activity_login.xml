@@ -56,11 +56,12 @@
                         android:layout_height="wrap_content"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZqwertyuiopasdfghjklzxcvbnm1234567890"
                         android:drawableLeft="@drawable/login_username"
-                        android:hint="  User name"
+                        android:hint="  USER NAME"
                         android:inputType="textCapCharacters"
                         android:maxLength="5"
                         android:maxLines="1"
-                        android:textColorHint="@color/userloginColor"/>
+                        android:textColorHint="@color/userloginColor"
+                        android:textSize="@dimen/label" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,15 +80,12 @@
                         android:layout_height="wrap_content"
                         android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM/*-.!@#$%"
                         android:drawableLeft="@drawable/lock_img"
-                        android:hint="  Password"
+                        android:hint="  PASSWORD"
                         android:inputType="textPersonName|textPassword"
                         android:maxLines="1"
-                        android:textColorHint="@color/userloginColor" />
+                        android:textColorHint="@color/userloginColor"
+                        android:textSize="@dimen/label" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
 
 
                 <Button
@@ -101,9 +99,9 @@
                     android:layout_weight="0.6"
                     android:background="@drawable/login_button_bg"
                     android:text="Login"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/header"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -138,12 +136,13 @@
                     android:layout_weight="1"
                     android:text="Forgot Password"
                     android:textAlignment="textEnd"
-                    android:textColor="@color/colorPrimary" />
+                    android:textColor="@color/colorPrimary"
+                    tools:ignore="RtlCompat" />
 
 
             </LinearLayout>
 
-
+            PC kon band karega
 
 
         </androidx.cardview.widget.CardView>

@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -109,7 +110,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     List<String> otherlist = new ArrayList<>();
     List<String> selfielist = new ArrayList<>();
     CountDownTimer countDownTimer;
-    public RadioButton by_missed, by_generate;
+    public RadioButton by_missed, by_generate, by_sendsms;
     LinearLayout lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_trf_images, lin_vial_images, lin_other_images;
     RelativeLayout rel_mobno;
     Button btn_choosefile_presc, btn_selfie, btn_choosefile_adhar, btn_choosefile_trf, btn_choosefile_vial, btn_choosefile_other;
@@ -144,6 +145,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     RelativeLayout rel_verify_mobile;
     private int CAMERA_PHOTO_REQUEST_CODE = 1001;
     private int selfie_flag = 0;
+    RadioGroup radiogrp2;
+    EditText edt_email;
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
@@ -162,7 +165,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         View viewMain = (View) inflater.inflate(R.layout.covid_enter, container, false);
         activity = getActivity();
         cd = new ConnectionDetector(activity);
@@ -188,7 +190,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
                 try {
-                    if (response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
+                    if (!GlobalClass.isNull(response.body().getResId()) && response.body().getResId().equalsIgnoreCase(Constants.RES0000)) {
                         if (!GlobalClass.isNull(response.body().getB2B())) {
                             b2b = response.body().getB2B();
                             Global.B2B = b2b;
@@ -247,6 +249,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         btn_reset = view.findViewById(R.id.btn_reset);
         btn_submit = view.findViewById(R.id.btn_submit);
         txt_selfie = view.findViewById(R.id.txt_selfie);
+
         lin_selfie = view.findViewById(R.id.lin_selfie);
         btn_generate.setText(getResources().getString(R.string.enterccc));
         rel_verify_mobile = view.findViewById(R.id.rel_verify_mobile);
@@ -264,6 +267,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
         //TODO Relativelayout
         rel_mobno = view.findViewById(R.id.rel_mobno);
+        radiogrp2 = view.findViewById(R.id.radiogrp2);
 
 
         //TODO Textviews
@@ -284,8 +288,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         tv_mobileno = view.findViewById(R.id.tv_mobileno);
         by_missed = (RadioButton) view.findViewById(R.id.by_missed);
         by_generate = (RadioButton) view.findViewById(R.id.by_generate);
-
+        by_sendsms = (RadioButton) view.findViewById(R.id.by_sendsms);
+        edt_email = view.findViewById(R.id.edt_email);
         by_missed.setOnClickListener(this);
+        by_sendsms.setOnClickListener(this);
         by_generate.setOnClickListener(this);
         btn_choosefile_presc.setOnClickListener(this);
         btn_choosefile_adhar.setOnClickListener(this);
@@ -431,13 +437,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
-                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
-                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")
-                ) {
+                if (enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
                     TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
 
                     if (enteredString.length() > 0) {
@@ -445,6 +446,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     } else {
                         edt_missed_mobile.setText("");
                     }
+                }
+
+                if (enteredString.length() == 10) {
+                    mobileverify(edt_missed_mobile.getText().toString());
                 }
             }
 
@@ -489,8 +494,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     private void buttonval() {
         if (Validation()) {
-            btn_submit.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-            btn_submit.setTextColor(getResources().getColor(R.color.maroon));
+            btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+            btn_submit.setTextColor(getResources().getColor(R.color.white));
             btn_submit.setEnabled(true);
             btn_submit.setClickable(true);
         } else {
@@ -538,13 +543,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 covidpostdata.setTESTCODE("COVID-19");
                                 covidpostdata.setVIAIMAGE(vial_file);
                                 covidpostdata.setSELFIE(selfie_file);
-
-                                if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
-                                    covidpostdata.setPPEBARCODE("");
-                                }else {
-                                    covidpostdata.setPPEBARCODE(txt_barcode.getText().toString());
-                                }
-
+                                covidpostdata.setPPEBARCODE(txt_barcode.getText().toString().trim());
+                                covidpostdata.setEMAIL(edt_email.getText().toString());
 
                                 if (presc_file != null) {
                                     covidpostdata.setPRESCRIPTION(presc_file);
@@ -608,6 +608,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.by_missed:
+                btn_generate.setText(getResources().getString(R.string.enterccc));
+                clearfields("1");
+                break;
+
+            case R.id.by_sendsms:
                 btn_generate.setText(getResources().getString(R.string.enterccc));
                 clearfields("1");
                 break;
@@ -791,6 +796,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         edt_fname.setCursorVisible(true);
         edt_fname.getText().clear();
         edt_lname.getText().clear();
+        edt_email.getText().clear();
         edt_amt.getText().clear();
         edt_missed_mobile.getText().clear();
         edt_verifycc.getText().clear();
@@ -807,8 +813,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         tv_mobileno.setVisibility(View.GONE);
         rel_mobno.setVisibility(View.GONE);
         lin_by_missed.setVisibility(View.VISIBLE);
+        radiogrp2.setVisibility(View.VISIBLE);
 
-        if (by_missed.isChecked()) {
+        if (by_missed.isChecked() || by_sendsms.isChecked()) {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
@@ -833,6 +840,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         tv_resetno.setVisibility(View.GONE);
 
         txt_barcode.setText(getString(R.string.ppe));
+        txt_barcode.setTextColor(getResources().getColor(R.color.default_text_color));
 
         lin_pres_preview.setVisibility(View.GONE);
         lin_adhar_images.setVisibility(View.GONE);
@@ -874,23 +882,23 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_nofileother.setPaintFlags(0);
 
 
-        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
 
-        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_selfie.setTextColor(getResources().getColor(R.color.white));
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -911,16 +919,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     private boolean amtvalidation() {
         if (GlobalClass.isNull(edt_amt.getText().toString())) {
-            //    Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
-            //  edt_amt.requestFocus();
-
+            Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
+            edt_amt.requestFocus();
             return false;
         }
-
-        if (GlobalClass.isNull(edt_amt.getText().toString())) {
-            return false;
-        }
-
         try {
             if (!GlobalClass.isNull(b2c) && Integer.parseInt(edt_amt.getText().toString()) > Integer.parseInt(b2c)) {
                 TastyToast.makeText(getActivity(), "You cannot enter collected amount more than " + b2c, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -933,6 +935,20 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+
+
+        if (GlobalClass.isNull(edt_email.getText().toString())){
+            Global.showCustomToast(getActivity(), "Enter Email-ID");
+            edt_email.requestFocus();
+            return false;
+        }
+
+        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+            Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+            edt_email.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
@@ -967,6 +983,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         if (btn_generate.getText().toString().equalsIgnoreCase("Generate CCC")) {
                             generateOtP(edt_missed_mobile.getText().toString());
                         } else {
+                            radiogrp2.setVisibility(View.VISIBLE);
+                            btn_generate.setVisibility(View.VISIBLE);
                             TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
 
@@ -978,7 +996,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
 
@@ -1009,8 +1027,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Choose from Library",
-                "Cancel"};
+        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -1246,8 +1263,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         buttonval();
                     }
                     lin_other_images.setVisibility(View.VISIBLE);
-                }
-                else {
+                } else {
 
                     String imageurl = camera.getCameraBitmapPath();
                     selfie_file = new File(imageurl);
@@ -1458,11 +1474,13 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 Toast.makeText(activity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
-        }else if (result != null) {
+        } else if (result != null) {
             if (result.getContents() != null) {
                 String getBarcodeDetails = result.getContents();
                 if (getBarcodeDetails.length() == 8) {
-                    txt_barcode.setText(""+getBarcodeDetails.toUpperCase());
+                    txt_barcode.setText("" + getBarcodeDetails.toUpperCase());
+                    txt_barcode.setTextColor(getResources().getColor(android.R.color.black));
+                    buttonval();
                 } else {
                     Toast.makeText(getContext(), invalid_brcd, Toast.LENGTH_SHORT).show();
                 }
@@ -1553,6 +1571,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             return false;
         }
 
+        if (txt_barcode.getText().toString().equalsIgnoreCase(getResources().getString(R.string.ppe))) {
+            return false;
+        }
 
         if (aadhar_file == null && aadhar_file1 == null) {
             //     Global.showCustomToast(getActivity(), ToastFile.SELECT_ADHIMAGE);
@@ -1619,6 +1640,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             edt_missed_mobile.getText().clear();
         }
         txt_barcode.setText(getString(R.string.ppe));
+        txt_barcode.setTextColor(getResources().getColor(R.color.default_text_color));
         edt_verifycc.getText().clear();
         edt_missed_mobile.setEnabled(true);
         edt_missed_mobile.setClickable(true);
@@ -1635,7 +1657,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         tv_mobileno.setVisibility(View.GONE);
         rel_mobno.setVisibility(View.GONE);
 
-        if (by_missed.isChecked()) {
+        if (by_missed.isChecked() || by_sendsms.isChecked()) {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
@@ -1696,23 +1718,23 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_selfie.setTextColor(getResources().getColor(R.color.black));
         txt_selfie.setPaintFlags(0);
 
-        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
 
-        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_selfie.setTextColor(getResources().getColor(R.color.white));
 
 
         if (countDownTimer != null) {
@@ -1732,7 +1754,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     }
 
     private void disablefields() {
-
+        radiogrp2.setVisibility(View.GONE);
         rel_verify_mobile.setVisibility(View.VISIBLE);
         tv_verifiedmob.setText(edt_missed_mobile.getText().toString());
         lin_by_missed.setVisibility(View.GONE);
@@ -1811,7 +1833,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());
@@ -1944,8 +1966,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             txt_nofilepresc.setVisibility(View.VISIBLE);
                             txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
                             lin_pres_preview.setVisibility(View.GONE);
-                            btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
                             txt_nofilepresc.setVisibility(View.VISIBLE);
                             buttonval();
                         } else if (type.equalsIgnoreCase("adhar")) {
@@ -1971,8 +1993,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
                                 if (aadharlist.size() == 1) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
@@ -1982,8 +2004,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                     txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileadhar.setVisibility(View.VISIBLE);
                                     txt_adharfileupload.setVisibility(View.GONE);
 
@@ -2013,8 +2035,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 }
 
                                 if (trflist.size() == 1) {
-                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
@@ -2027,8 +2049,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                     txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofiletrf.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.GONE);
                                 }
@@ -2044,8 +2066,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             txt_nofilevial.setVisibility(View.VISIBLE);
                             txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
                             lin_vial_images.setVisibility(View.GONE);
-                            btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
                             txt_nofilevial.setVisibility(View.VISIBLE);
                             buttonval();
                         } else if (type.equalsIgnoreCase("other")) {
@@ -2068,22 +2090,22 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 }
 
                                 if (otherlist.size() == 1) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (otherlist.size() == 2) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileother.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.GONE);
                                 }
@@ -2101,8 +2123,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             lin_selfie.setVisibility(View.GONE);
                             txt_selfie.setVisibility(View.VISIBLE);
                             btn_selfie.setEnabled(true);
-                            btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_selfie.setTextColor(getResources().getColor(R.color.white));
 
                         }
 

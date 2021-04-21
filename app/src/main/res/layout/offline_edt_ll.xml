@@ -29,7 +29,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/title"
@@ -38,7 +38,9 @@
             android:layout_height="match_parent"
             android:layout_weight="4"
             android:gravity="center"
-            android:textColor="@color/maroon"/>
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/header" />
 
         <ImageView
             android:id="@+id/home"
@@ -48,7 +50,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack" />
     </LinearLayout>
 
 
@@ -84,8 +86,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -105,8 +108,9 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -126,8 +130,9 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:text="Sub Source Code"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/sub_source_code"
@@ -137,8 +142,9 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -163,7 +169,8 @@
                     android:inputType="textCapCharacters"
                     android:maxLength="50"
                     android:maxLines="1"
-                    android:textSize="12sp"/>
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
 
                 <requestFocus />
             </LinearLayout>
@@ -189,7 +196,7 @@
                     android:hint="ENTER YOUR AGE"
                     android:inputType="number"
                     android:maxLength="3"
-                    android:textSize="12sp"></EditText>
+                    android:textSize="@dimen/value" />
 
                 <Spinner
                     android:id="@+id/spinyr"
@@ -235,7 +242,7 @@
                                 android:layout_weight="1"
                                 android:buttonTint="@color/maroon"
                                 android:text="MALE"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
 
                             <RadioButton
                                 android:id="@+id/female"
@@ -244,7 +251,7 @@
                                 android:layout_weight="1"
                                 android:buttonTint="@color/maroon"
                                 android:text="FEMALE"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -277,7 +284,9 @@
                     <TextView
                         android:id="@+id/sct_txt"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -299,9 +308,10 @@
                     android:layout_gravity="center"
                     android:background="@drawable/background_edt"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -325,9 +335,10 @@
                     android:background="@drawable/background_edt"
                     android:ems="10"
                     android:gravity="center|left"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -365,9 +376,10 @@
                     android:layout_weight="1"
                     android:background="@drawable/background_edt"
                     android:text="Test :"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/test_names_txt"
@@ -379,9 +391,10 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="@drawable/background_edt"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <Button
@@ -394,7 +407,8 @@
                 android:background="@drawable/next_button"
                 android:padding="5dp"
                 android:text="Done"
-                android:textColor="@color/colorWhite" />
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/label" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

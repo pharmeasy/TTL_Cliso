@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/maroon"
-        android:visibility="gone"
         android:orientation="vertical">
 
         <ImageView
@@ -18,7 +17,7 @@
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center"
             android:src="@drawable/thyro_logo_white"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -38,8 +37,9 @@
         android:background="@color/maroon"
         android:gravity="center"
         android:text="Generate Lead"
+        android:textAllCaps="true"
         android:textColor="@color/tabindicatorColor"
-        android:textSize="@dimen/_18sdp"
+        android:textSize="@dimen/header"
         android:visibility="gone" />
 
 

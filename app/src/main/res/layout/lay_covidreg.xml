@@ -8,6 +8,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/ll_mainCovidReg"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cement_light"
         android:orientation="horizontal"
@@ -28,7 +34,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="COVID Registration"
-            android:textSize="18sp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <ImageView
@@ -65,6 +71,7 @@
                 android:gravity="center"
                 android:text="ENTER"
                 android:textAllCaps="true"
+                android:textSize="@dimen/label"
                 android:textColor="@color/colorBlack" />
 
             <ImageView
@@ -97,6 +104,7 @@
                 android:background="@color/lightgray"
                 android:gravity="center"
                 android:text="Entered"
+                android:textSize="@dimen/label"
                 android:textAllCaps="true"
                 android:textColor="@color/colorBlack" />
 
@@ -117,5 +125,26 @@
         android:id="@+id/fragment_mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_noauth"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/_14sdp"
+            android:textStyle="bold"
+            android:textColor="@color/maroon"
+            android:text="@string/notauth"
+            />
+
+    </LinearLayout>
 </LinearLayout>
 

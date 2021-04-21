@@ -9,7 +9,6 @@
     android:weightSum="10"
     tools:context="com.example.e5322.thyrosoft.Fragment.ResultFragment">
 
-
     <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
@@ -25,7 +24,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:layout_weight="2"
-            android:background="@drawable/maroon_rect_box"
+            android:visibility="gone"
             android:orientation="vertical"
             android:weightSum="5">
 
@@ -38,8 +37,9 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="Result for 26-12-2018"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="15dp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold"
                 android:visibility="gone" />
         </LinearLayout>
@@ -48,9 +48,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="21dp"
-            android:layout_marginTop="-50dp"
-            android:layout_marginRight="21dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/gray_corner_rectangle"
             android:orientation="vertical"
             android:weightSum="5">
@@ -78,6 +78,8 @@
                     android:layout_gravity="center"
                     android:layout_weight="2"
                     android:gravity="center"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -99,13 +101,15 @@
 
             <Button
                 android:id="@+id/btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/purple_btn_bg"
-                android:text="Submit"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_24sdp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:textColor="@color/white" />
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/button_bg"
+                android:text="SUBMIT"
+                android:textColor="@color/white"
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 
@@ -124,14 +128,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="click me" />
+                android:text="click me"
+                android:textAllCaps="true"
+                android:textSize="@dimen/label" />
 
             <Spinner
                 android:id="@+id/spinnertype"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:minHeight="20dp"
-                android:textAlignment="center">
+                android:textAlignment="center"
+                android:textSize="@dimen/label">
 
             </Spinner>
 
@@ -147,24 +154,24 @@
             android:layout_marginLeft="21dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="21dp"
-            android:visibility="gone"
             android:layout_marginBottom="5dp"
             android:background="@drawable/grey_border"
             android:drawableRight="@drawable/ic_search_black_24dp"
-            android:hint="Enter Barcode here"
+            android:hint="ENTER BARCODE HERE"
             android:inputType="textCapCharacters"
-            android:paddingLeft="5dp" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
+            android:paddingLeft="5dp"
+            android:visibility="gone" />
 
         <ListView
             android:id="@+id/listviewreport"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_marginLeft="21dp"
             android:layout_marginRight="21dp"
-            android:layout_marginBottom="50dp"
-            android:layout_weight="8.9"
             android:divider="@color/white"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/searchbarcodelistlinear"
@@ -190,6 +197,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Patient"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -199,7 +208,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -213,6 +222,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="Bill Status "
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -221,8 +232,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -236,6 +248,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Ref. By"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -244,8 +258,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -259,6 +274,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="WO Done"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold"
 
@@ -269,8 +286,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -284,6 +302,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="SCT"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -293,7 +313,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -307,6 +328,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="BVT"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -315,8 +338,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -330,7 +354,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="RRT"
-
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -339,8 +364,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -354,7 +380,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Collected"
-
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -364,7 +391,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -378,7 +405,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Billed"
-
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -388,7 +416,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -402,7 +430,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Tested At"
-
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -412,7 +441,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -426,6 +455,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Collected At"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -435,7 +466,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -450,6 +481,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:text="Receipt"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/cb_dark_grey"
                     android:textStyle="bold" />
 
@@ -482,6 +515,8 @@
             android:layout_gravity="top"
             android:gravity="center"
             android:text="NO DATA FOUND "
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"
             android:textColor="@color/red"
             android:visibility="gone" />
 
@@ -507,9 +542,9 @@
                 android:gravity="top|center"
                 android:text="  Sorry ! You are offline..."
                 android:textColor="@color/maroon"
-                android:textSize="18sp" />
+                android:textAllCaps="true"
+                android:textSize="@dimen/label" />
         </LinearLayout>
-
 
     </LinearLayout>
 </LinearLayout>

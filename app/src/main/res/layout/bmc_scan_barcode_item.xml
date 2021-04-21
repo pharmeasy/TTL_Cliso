@@ -2,15 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
     android:background="@drawable/background_edt"
     android:orientation="vertical"
-    android:layout_marginTop="5dp"
     android:weightSum="4">
 
     <LinearLayout
+        android:id="@+id/barcode_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/barcode_linear"
         android:background="@drawable/corner_curve_maroon"
         android:orientation="vertical">
 
@@ -36,16 +36,16 @@
                 android:id="@+id/serum"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_margin="1dp"
                 android:layout_weight="3"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textColor="@color/black"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textAllCaps="true"
                 android:background="@color/white"
-                android:text="serum" />
+                android:gravity="center"
+                android:text="serum"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textSize="@dimen/label"
+                android:textStyle="bold" />
 
 
         </LinearLayout>
@@ -53,13 +53,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
             android:layout_marginLeft="3dp"
             android:layout_marginTop="-6dp"
+            android:layout_marginBottom="2dp"
             android:background="@color/white"
             android:text="*Click to scan barcode"
+            android:textAllCaps="true"
             android:textColor="@color/red"
-            android:textSize="8dp" />
+            android:textSize="@dimen/note" />
 
     </LinearLayout>
 
@@ -72,14 +73,15 @@
         <EditText
             android:id="@+id/enter_barcode"
             android:layout_width="match_parent"
-            android:gravity="center|left"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/barcode_button"
             android:digits="ABCDEFGHIJKLM000NOPQRSTUVWXYZ1234567890"
-            android:hint="Enter barcode"
+            android:gravity="center|left"
+            android:hint="ENTER BARCODE"
             android:inputType="textCapCharacters"
-            android:maxLength="8" />
+            android:maxLength="8"
+            android:textSize="@dimen/value" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,9 +97,10 @@
                 android:layout_weight="4"
                 android:background="@drawable/barcode_button"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                android:hint="Re-enter barcode"
+                android:hint="RE-ENTER BARCODE"
                 android:inputType="textCapCharacters"
-                android:maxLength="8" />
+                android:maxLength="8"
+                android:textSize="@dimen/value" />
 
             <ImageView
                 android:id="@+id/setback"

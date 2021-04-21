@@ -51,9 +51,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
+import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
@@ -67,7 +69,6 @@ import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.GeoLocationRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
@@ -124,7 +125,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     public String getFinalPhoneNumberToPost;
     SharedPreferences prefs, profile_pref;
     String setLocation = null;
-    EditText enterAmt;
+    EditText enterAmt, edt_bsValue, edt_bpValue;
     TextView title;
     Button next;
     ImageView back;
@@ -133,7 +134,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     TextView lab_alert_spin;
     ImageView home;
     File trf_img = null;
-    LinearLayout sample_type_linear, amt_collected_and_total_amt_ll;
+    LinearLayout sample_type_linear, amt_collected_and_total_amt_ll, ll_bs, ll_bp;
     ArrayList<BaseModel> selctedTest;
     ArrayList<String> setSpecimenTypeCodes;
     SharedPreferences preferences, prefe;
@@ -151,7 +152,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     ProgressDialog barProgressDialog;
     BarcodelistModel barcodelist;
     boolean flagcallonce = false;
-    com.google.android.gms.location.LocationListener listener;
     String latitudePassTOAPI;
     String longitudePassTOAPI;
     ArrayList<String> saveLocation;
@@ -175,7 +175,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private ArrayList<String> temparraylist;
     private ArrayList<ProductWithBarcode> getproductDetailswithBarcodes;
     private AdapterBarcode_New adapterBarcode;
-    private String getAmount, b2b_rate, nhl_rate;
+    private String getAmount, b2b_rate;
     private AlertDialog.Builder alertDialog;
     private String getCollectedAmt;
     private String testsnames;
@@ -228,19 +228,20 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private File vialimg_file;
     Button btn_choosefile;
     LinearLayout lin_preview;
-    private boolean isvial = false;
+    private boolean isvial = false, isPOCTTest = false;
     TextView txt_fileupload;
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
     MainModel mainModel;
     Spinner spr_leterhead;
-    LinearLayout ll_letterhead;
-    TextView tv_viewsample;
-    private int isNhlAvailable;
     private String LetterheadURL;
+    LinearLayout ll_letterhead;
     RadioGroup rg_brand;
     private String brabdurl;
-
+    TextView tv_viewsample;
+    private int nhl_rate;
+    ConnectionDetector connectionDetector;
+    RecyclerView recy_brand;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -249,6 +250,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         setContentView(R.layout.activity_scan__barcode__ils);
 
         mActivity = Scan_Barcode_ILS_New.this;
+        connectionDetector = new ConnectionDetector(mActivity);
         recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
         show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
         setAmt = (TextView) findViewById(R.id.setAmt);
@@ -275,10 +277,16 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         txt_fileupload = findViewById(R.id.txt_fileupload);
         lin_preview = findViewById(R.id.lin_preview);
         rg_brand = findViewById(R.id.rg_brand);
+        recy_brand = findViewById(R.id.recy_brand);
 
         spr_leterhead = findViewById(R.id.spr_leterhead);
         ll_letterhead = findViewById(R.id.ll_letterhead);
         tv_viewsample = findViewById(R.id.tv_viewsample);
+
+        ll_bs = findViewById(R.id.ll_bs);
+        ll_bp = findViewById(R.id.ll_bp);
+        edt_bsValue = findViewById(R.id.edt_bsValue);
+        edt_bpValue = findViewById(R.id.edt_bpValue);
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         Gson gson = new Gson();
@@ -323,10 +331,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         myDb = new DatabaseHelper(getApplicationContext());
-
         CheckGpsStatus();
+
+        SetBrandLetterValues();
 
         if (GpsStatus) {
             gpsTracker = new GpsTracker(Scan_Barcode_ILS_New.this);
@@ -421,13 +429,6 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         getFinalPhoneNumberToPost = GlobalClass.getPhoneNumberTofinalPost;
         getFinalEmailIdToPost = GlobalClass.getFinalEmailAddressToPOst;
 
-/*        barProgressDialog = new ProgressDialog(Scan_Barcode_ILS_New.this);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);*/
-
         pass_to_api = Integer.parseInt(sr_number);
 
         PackageInfo pInfo = null;
@@ -485,22 +486,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         ArrayList<String> getTestNameToPAss = new ArrayList<>();
         getAmount = bundle.getString("payment");
         b2b_rate = bundle.getString("b2b_rate");
-        nhl_rate = bundle.getString("NHL_rate");
-        isNhlAvailable = bundle.getInt("isNhlAvailable");
         testsnames = bundle.getString("writeTestName");
 
 
-        SetBrandLetterValues();
-
         Log.e(TAG, "b2b_rate--->" + b2b_rate);
         getTestNameToPAss = bundle.getStringArrayList("TestCodesPass");
-
-
-        if (isNhlAvailable == 1) {
-            ll_letterhead.setVisibility(View.VISIBLE);
-        } else {
-            ll_letterhead.setVisibility(View.GONE);
-        }
 
 
         for (int i = 0; i < selctedTest.size(); i++) {
@@ -567,6 +557,22 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
         }
 
+        if (selctedTest != null && selctedTest.size() > 0) {
+            for (int i = 0; i < selctedTest.size(); i++) {
+                if (selctedTest.get(i).isPOCT()) {
+                    isPOCTTest = true;
+                    break;
+                }
+            }
+        }
+
+        if (isPOCTTest) {
+            ll_bs.setVisibility(View.VISIBLE);
+            ll_bp.setVisibility(View.VISIBLE);
+        } else {
+            ll_bs.setVisibility(View.GONE);
+            ll_bp.setVisibility(View.GONE);
+        }
 
         List<String> productlist = new ArrayList<>();
         if (selctedTest != null) {
@@ -821,19 +827,29 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than total amount", Toast.LENGTH_SHORT).show();
+                    } else if (!checkBSBPValidation()) {
+
                     } else if (!checkRateVal()) {
 
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
-                        if (setLocation == null) {
-                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                        } else if (vialimg_file == null || !vialimg_file.exists()) {
+                    } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
+                        if (GlobalClass.isNull(getBrand_name)) {
+                            Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
+                        } else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                         } else {
                             checklistData();
                         }
-                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                        if (setLocation == null) {
+                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else if (vialimg_file == null) {
+                            Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                        } else {
+                            checklistData();
+                        }
+                    } else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
                         checklistData();
@@ -844,15 +860,25 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } else if (GlobalClass.isNull(getTestSelection)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Select test", Toast.LENGTH_SHORT).show();
-                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
-                        if (setLocation == null) {
-                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
-                        } else if (vialimg_file == null || !vialimg_file.exists()) {
+                    } else if (!checkBSBPValidation()) {
+
+                    } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
+                        if (GlobalClass.isNull(getBrand_name)) {
+                            Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
+                        } else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                         } else {
                             checklistData();
                         }
-                    } else if (vialimg_file == null || !vialimg_file.exists()) {
+                    } else if (location_radio_grp.getVisibility() == View.VISIBLE) {
+                        if (setLocation == null) {
+                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
+                        } else if (vialimg_file == null) {
+                            Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                        } else {
+                            checklistData();
+                        }
+                    } else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
                         checklistData();
@@ -863,95 +889,90 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         });
     }
 
+    boolean checkBSBPValidation() {
+        if (edt_bsValue.isShown() && edt_bsValue.getText().toString().length() > 0 && Integer.parseInt(edt_bsValue.getText().toString()) < GlobalClass.getBSBPMinMaxValue(mActivity, Constants.BS_MIN)) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, GlobalClass.getBSBPValidationMsg(mActivity, Constants.BS_MSG), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (edt_bsValue.isShown() && edt_bsValue.getText().toString().length() > 0 && Integer.parseInt(edt_bsValue.getText().toString()) > GlobalClass.getBSBPMinMaxValue(mActivity, Constants.BS_MAX)) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, GlobalClass.getBSBPValidationMsg(mActivity, Constants.BS_MSG), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (edt_bpValue.isShown() && edt_bpValue.getText().toString().length() > 0 && Integer.parseInt(edt_bpValue.getText().toString()) < GlobalClass.getBSBPMinMaxValue(mActivity, Constants.BP_MIN)) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, GlobalClass.getBSBPValidationMsg(mActivity, Constants.BP_MSG), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (edt_bpValue.isShown() && edt_bpValue.getText().toString().length() > 0 && Integer.parseInt(edt_bpValue.getText().toString()) > GlobalClass.getBSBPMinMaxValue(mActivity, Constants.BP_MAX)) {
+            Toast.makeText(Scan_Barcode_ILS_New.this, GlobalClass.getBSBPValidationMsg(mActivity, Constants.BP_MSG), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     private void SetBrandLetterValues() {
-
-        final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
-
-        boolean viewsample = false;
-        for (int i = 0; i < getBrandList.size(); i++) {
-            final RadioButton rb_type = new RadioButton(mActivity);
-
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + b2b_rate);
-            } else if (getBrandList.get(i).getName().equalsIgnoreCase("NHL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + nhl_rate);
-            } else {
-                rb_type.setText(getBrandList.get(i).getName());
-            }
-
-            rg_brand.addView(rb_type);
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setChecked(true);
-            }
-            if (!viewsample) {
-                if (rb_type.isSelected() || rb_type.isChecked()) {
-                    if (!GlobalClass.isNull(getBrandList.get(i).getUrl())) {
-                        tv_viewsample.setVisibility(View.VISIBLE);
-                        brabdurl = getBrandList.get(i).getUrl();
-                        viewsample = true;
-                    } else {
-                        tv_viewsample.setVisibility(View.GONE);
-                    }
-                } else {
-                    tv_viewsample.setVisibility(View.GONE);
-                }
-            }
-
-
-        }
-
-        rg_brand.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-                boolean isChecked = checkedRadioButton.isChecked();
-                if (isChecked) {
-                    viewsampleURL("" + checkedRadioButton.getText(), getBrandList);
-                }
-            }
-        });
-
-        tv_viewsample.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!GlobalClass.isNull(brabdurl)) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(brabdurl));
-                    startActivity(browserIntent);
-                } else {
-                    Global.showCustomToast(Scan_Barcode_ILS_New.this, "URL not found");
-
-                }
-            }
-        });
-
-
-    }
-
-    private void viewsampleURL(String s, ArrayList<IsnhlmasterDTO> getBrandList) {
-
-        if (GlobalClass.CheckArrayList(getBrandList)) {
+        if (Global.OTPVERIFIED) {
+            ll_letterhead.setVisibility(View.GONE);
+        } else {
+            final ArrayList<BaseModel.BrandDtlsDTO> getBrandList = GenerateBrandList();
+            final ArrayList<String> brandName = new ArrayList<>();
+            final ArrayList<String> newbrandName = new ArrayList<>();
             for (int i = 0; i < getBrandList.size(); i++) {
-                if (s.contains(getBrandList.get(i).getName())) {
-                    getBrand_name = getBrandList.get(i).getName();
-                    brabdurl = getBrandList.get(i).getUrl();
-                    break;
+                if (!GlobalClass.isNull(getBrandList.get(i).getAlias())) {
+                    brandName.add(getBrandList.get(i).getAlias());
                 }
-
             }
+            HashSet<String> duplicateremove = new HashSet<>(brandName);
+            newbrandName.clear();
+            newbrandName.addAll(duplicateremove);
+
+            ArrayList<String> finallist = new ArrayList<>();
+            if (GlobalClass.CheckArrayList(newbrandName)) {
+                for (int i = 0; i < newbrandName.size(); i++) {
+                    int cnt = 0;
+                    for (int j = 0; j < selctedTest.size(); j++) {
+                        for (int k = 0; k < selctedTest.get(j).getBrandDtls().size(); k++) {
+                            if (newbrandName.get(i).equalsIgnoreCase(selctedTest.get(j).getBrandDtls().get(k).getAlias())) {
+                                cnt++;
+                            }
+                        }
+                    }
+
+                    if (cnt == selctedTest.size()) {
+                        finallist.add(newbrandName.get(i));
+                    }
+                }
+            }
+
+            if (finallist.size() == 0) {
+                ll_letterhead.setVisibility(View.GONE);
+            } else {
+                ll_letterhead.setVisibility(View.VISIBLE);
+            }
+
+            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList);
+            brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
+                @Override
+                public void onchecked(String brand, String rate) {
+                    getBrand_name = brand;
+                }
+            });
+            recy_brand.setAdapter(brandAdapter);
+            brandAdapter.notifyDataSetChanged();
         }
     }
 
-    private ArrayList<IsnhlmasterDTO> GenerateBrandList() {
-        ArrayList<IsnhlmasterDTO> entity = new ArrayList<>();
 
-        if (mainModel != null) {
-            if (GlobalClass.CheckArrayList(mainModel.getIsnhlmaster())) {
-                for (int i = 0; i < mainModel.getIsnhlmaster().size(); i++) {
-                    IsnhlmasterDTO isnhlmasterDTO = new IsnhlmasterDTO();
-                    isnhlmasterDTO.setName("" + mainModel.getIsnhlmaster().get(i).getName());
-                    isnhlmasterDTO.setUrl("" + mainModel.getIsnhlmaster().get(i).getUrl());
-                    isnhlmasterDTO.setIsShowpopup(mainModel.getIsnhlmaster().get(i).isIsShowpopup());
-                    entity.add(isnhlmasterDTO);
+    private ArrayList<BaseModel.BrandDtlsDTO> GenerateBrandList() {
+        ArrayList<BaseModel.BrandDtlsDTO> entity = new ArrayList<>();
+        if (GlobalClass.CheckArrayList(selctedTest)) {
+            for (int i = 0; i < selctedTest.size(); i++) {
+                if (GlobalClass.CheckArrayList(selctedTest.get(i).getBrandDtls())) {
+                    for (int j = 0; j < selctedTest.get(i).getBrandDtls().size(); j++) {
+                        BaseModel.BrandDtlsDTO brandDtlsDTO = new BaseModel.BrandDtlsDTO();
+                        brandDtlsDTO.setAlias("" + selctedTest.get(i).getBrandDtls().get(j).getAlias());
+                        brandDtlsDTO.setBrandName("" + selctedTest.get(i).getBrandDtls().get(j).getBrandName());
+                        brandDtlsDTO.setBrandRate("" + selctedTest.get(i).getBrandDtls().get(j).getBrandRate());
+                        brandDtlsDTO.setRPTFile("" + selctedTest.get(i).getBrandDtls().get(j).getRPTFile());
+                        entity.add(brandDtlsDTO);
+
+                    }
                 }
             }
         }
@@ -1079,20 +1100,29 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     public void checklistData() {
+        if (connectionDetector.isConnectingToInternet()) {
+            if (trflist.size() > 0) {
+                for (int i = 0; i < trflist.size(); i++) {
+                    if (trflist.get(i).getTrf_image() == null)
+                        trfCheckFlag = true;
+                }
 
-        if (trflist.size() > 0) {
-            for (int i = 0; i < trflist.size(); i++) {
-                if (trflist.get(i).getTrf_image() == null)
-                    trfCheckFlag = true;
-            }
+                if (trfCheckFlag) {
+                    trfCheckFlag = false;
+                    Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
+                } else {
 
-            if (trfCheckFlag) {
-                trfCheckFlag = false;
-                Toast.makeText(mActivity, ToastFile.TRF_UPLOAD_CHECK, Toast.LENGTH_SHORT).show();
-            } else
+                    doFinalWoe();
+                }
+
+            } else {
                 doFinalWoe();
-        } else
-            doFinalWoe();
+            }
+        } else {
+            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+        }
+
+
     }
 
     public void callTRFAdapter(ArrayList<TRFModel> trflist) {
@@ -1144,20 +1174,15 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 getageType = savepatientDetails.getString("ageType", "");
                 getFinalDate = savepatientDetails.getString("date", "");
 
-                if (!GlobalClass.isNull(getBrand_name)){
-                    if (getBrand_name.equalsIgnoreCase("TTL")) {
-                        getBrand_name = savepatientDetails.getString("WOEbrand", "");
-                    }
-                }else {
+
+                if (GlobalClass.isNull(getBrand_name)) {
                     getBrand_name = savepatientDetails.getString("WOEbrand", "");
                 }
-
 
                 getPincode = savepatientDetails.getString("pincode", "");
                 if (!GlobalClass.isNull(getFinalDate)) {
                     sampleCollectionDate = getFinalDate;
                 }
-
 
                 DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
                 DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -1251,6 +1276,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 woe.setWO_MODE("CLISO APP");
                 woe.setWO_STAGE(3);
                 woe.setULCcode("");
+                woe.setBS_VALUE(edt_bsValue.isShown() ? edt_bsValue.getText().toString().trim() : "");
+                woe.setBP_VALUE(edt_bpValue.isShown() ? edt_bpValue.getText().toString().trim() : "");
                 myPojoWoe.setWoe(woe);
 
                 barcodelists = new ArrayList<>();
@@ -1578,44 +1605,51 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     private void passBarcodeData(String s) {
-        boolean isbacodeduplicate = false;
-        for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-            if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
-                if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(s)) {
-                    isbacodeduplicate = true;
-                }
-            }
-        }
-
-        if (isbacodeduplicate) {
-            Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
-        } else {
+        if (connectionDetector.isConnectingToInternet()) {
+            boolean isbacodeduplicate = false;
             for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
-                if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
-                    GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(s);
-                    GlobalClass.finalspecimenttypewiselist.get(i).setRemark("Scan");
-                    getRemark = "";
-                    getRemark = GlobalClass.finalspecimenttypewiselist.get(i).getRemark();
-                    Log.e(TAG, "passBarcodeData: show barcode" + s);
+                if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode() != null && !GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().isEmpty()) {
+                    if (GlobalClass.finalspecimenttypewiselist.get(i).getBarcode().equalsIgnoreCase(s)) {
+                        isbacodeduplicate = true;
+                    }
                 }
             }
+
+            if (isbacodeduplicate) {
+                Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.duplicate_barcd, Toast.LENGTH_SHORT).show();
+            } else {
+                for (int i = 0; i < GlobalClass.finalspecimenttypewiselist.size(); i++) {
+                    if (GlobalClass.finalspecimenttypewiselist.get(i).getSpecimen_type().equalsIgnoreCase(GlobalClass.specimenttype)) {
+                        GlobalClass.finalspecimenttypewiselist.get(i).setBarcode(s);
+                        GlobalClass.finalspecimenttypewiselist.get(i).setRemark("Scan");
+                        getRemark = "";
+                        getRemark = GlobalClass.finalspecimenttypewiselist.get(i).getRemark();
+                        Log.e(TAG, "passBarcodeData: show barcode" + s);
+                    }
+                }
+            }
+
+            recycler_barcode.removeAllViews();
+//        adapterBarcode.notifyDataSetChanged();
+            adapterBarcode = new AdapterBarcode_New(Scan_Barcode_ILS_New.this, selctedTest, GlobalClass.finalspecimenttypewiselist, this);
+            adapterBarcode.setOnItemClickListener(new AdapterBarcode_New.OnItemClickListener() {
+                @Override
+                public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
+                    scanIntegrator = new IntentIntegrator(activity);
+                    if (GlobalClass.specimenttype != null) {
+                        GlobalClass.specimenttype = "";
+                    }
+                    GlobalClass.specimenttype = Specimenttype;
+                    scanIntegrator.initiateScan();
+                }
+            });
+            recycler_barcode.setAdapter(adapterBarcode);
+        } else {
+            GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
+
         }
 
-        recycler_barcode.removeAllViews();
-//        adapterBarcode.notifyDataSetChanged();
-        adapterBarcode = new AdapterBarcode_New(Scan_Barcode_ILS_New.this, selctedTest, GlobalClass.finalspecimenttypewiselist, this);
-        adapterBarcode.setOnItemClickListener(new AdapterBarcode_New.OnItemClickListener() {
-            @Override
-            public void onScanbarcodeClickListener(String Specimenttype, Activity activity) {
-                scanIntegrator = new IntentIntegrator(activity);
-                if (GlobalClass.specimenttype != null) {
-                    GlobalClass.specimenttype = "";
-                }
-                GlobalClass.specimenttype = Specimenttype;
-                scanIntegrator.initiateScan();
-            }
-        });
-        recycler_barcode.setAdapter(adapterBarcode);
+
     }
 
     @Override

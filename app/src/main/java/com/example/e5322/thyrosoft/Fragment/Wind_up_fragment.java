@@ -8,19 +8,10 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +23,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,11 +35,11 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Adapter.Windup_adapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CountInterface;
@@ -259,11 +255,11 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
         SimpleDateFormat sdfToday = new SimpleDateFormat("dd-MM-yyyy");
         DateToPass = sdfToday.format(dateNew);
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        client_type = prefs.getString("CLIENT_TYPE", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        client_type = prefs.getString("CLIENT_TYPE", "");
 
         logistic_ll.setVisibility(View.GONE);//--TODO if client type is OLC then make logistic_ll visible(Logistic charges)
 
@@ -286,9 +282,9 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
             @Override
             public void onClick(View v) {
                 //TODO blocked consignment entry if it is done for the day
-                checkConsgnmentFortheDay();
+//                checkConsgnmentFortheDay();
                 //TODO check consignment entry multiple times
-                //enterNextFragment();
+                enterNextFragment();
             }
         });
 

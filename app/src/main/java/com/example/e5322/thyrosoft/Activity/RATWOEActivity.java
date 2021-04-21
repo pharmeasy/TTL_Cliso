@@ -2,13 +2,6 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +10,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Fragment.RATEnterFrag;
 import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 
 /**
@@ -39,6 +39,9 @@ public class RATWOEActivity extends Fragment {
     private String mParam1;
     private String mParam2;
     private RATWOEActivity.OnFragmentInteractionListener mListener;
+    LinearLayout ll_mainCrat,ll_noauth;
+    AppPreferenceManager appPreferenceManager;
+
 
     public RATWOEActivity() {
         // Required empty public constructor
@@ -69,64 +72,76 @@ public class RATWOEActivity extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        appPreferenceManager = new AppPreferenceManager(getActivity());
+        ll_mainCrat = (LinearLayout) view.findViewById(R.id.ll_mainCrat);
+        ll_noauth = (LinearLayout) view.findViewById(R.id.ll_noauth);
 
-        enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
-        unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
+        if (appPreferenceManager.getCovidAccessResponseModel().isRat()) {
+            ll_mainCrat.setVisibility(View.VISIBLE);
+            ll_noauth.setVisibility(View.GONE);
 
-        back = (ImageView) view.findViewById(R.id.back);
-        home = (ImageView) view.findViewById(R.id.home);
-        enter_arrow_enter = (ImageView) view.findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) view.findViewById(R.id.enter_arrow_entered);
-        enter = (TextView) view.findViewById(R.id.enter);
-        enetered = (TextView) view.findViewById(R.id.enetered);
-        fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
+            enter_ll_unselected = (LinearLayout) view.findViewById(R.id.enter_ll_unselected);
+            unchecked_entered_ll = (LinearLayout) view.findViewById(R.id.unchecked_entered_ll);
+
+            back = (ImageView) view.findViewById(R.id.back);
+            home = (ImageView) view.findViewById(R.id.home);
+            enter_arrow_enter = (ImageView) view.findViewById(R.id.enter_arrow_enter);
+            enter_arrow_entered = (ImageView) view.findViewById(R.id.enter_arrow_entered);
+            enter = (TextView) view.findViewById(R.id.enter);
+            enetered = (TextView) view.findViewById(R.id.enetered);
+            fragment_main = (FrameLayout) view.findViewById(R.id.fragment_mainLayout);
 
 
-
-        if (Constants.ratfrag_flag.equalsIgnoreCase("1")){
-            Constants.universal=0;
-            enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
-            enter_arrow_entered.setVisibility(View.VISIBLE);
-            enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
-            enter_arrow_enter.setVisibility(View.GONE);
-            RATEnteredFrag covidentered_frag = new RATEnteredFrag();
-            replaceFragment(covidentered_frag);
-        }else {
-            enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-            enter_arrow_enter.setVisibility(View.VISIBLE);
-            enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-            enter_arrow_entered.setVisibility(View.GONE);
-            final RATEnterFrag covidenter_frag = new RATEnterFrag();
-            replaceFragment(covidenter_frag);
-        }
-
-        enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Constants.ratfrag_flag="0";
-                Constants.universal=0;
-                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-                enter_arrow_enter.setVisibility(View.VISIBLE);
-                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
-                enter_arrow_entered.setVisibility(View.GONE);
-                RATEnterFrag covidenter_frag = new RATEnterFrag();
-                replaceFragment(covidenter_frag);
-            }
-        });
-
-        unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Constants.ratfrag_flag="0";
-                Constants.universal=0;
+            if (Constants.ratfrag_flag.equalsIgnoreCase("1")) {
+                Constants.universal = 0;
                 enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
                 enter_arrow_entered.setVisibility(View.VISIBLE);
                 enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
                 enter_arrow_enter.setVisibility(View.GONE);
                 RATEnteredFrag covidentered_frag = new RATEnteredFrag();
                 replaceFragment(covidentered_frag);
+            } else {
+                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                enter_arrow_enter.setVisibility(View.VISIBLE);
+                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                enter_arrow_entered.setVisibility(View.GONE);
+                final RATEnterFrag covidenter_frag = new RATEnterFrag();
+                replaceFragment(covidenter_frag);
             }
-        });
+
+            enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Constants.ratfrag_flag = "0";
+                    Constants.universal = 0;
+                    enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                    enter_arrow_enter.setVisibility(View.VISIBLE);
+                    enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                    enter_arrow_entered.setVisibility(View.GONE);
+                    RATEnterFrag covidenter_frag = new RATEnterFrag();
+                    replaceFragment(covidenter_frag);
+                }
+            });
+
+            unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Constants.ratfrag_flag = "0";
+                    Constants.universal = 0;
+                    enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                    enter_arrow_entered.setVisibility(View.VISIBLE);
+                    enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                    enter_arrow_enter.setVisibility(View.GONE);
+                    RATEnteredFrag covidentered_frag = new RATEnteredFrag();
+                    replaceFragment(covidentered_frag);
+                }
+            });
+
+        } else {
+            ll_mainCrat.setVisibility(View.GONE);
+            ll_noauth.setVisibility(View.VISIBLE);
+
+        }
     }
 
 

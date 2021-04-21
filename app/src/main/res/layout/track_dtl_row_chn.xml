@@ -12,15 +12,15 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:background="@drawable/maroon_border_white_bg"
-            android:padding="5dp"
             android:id="@+id/cancelled_Layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="0dp"
             android:layout_marginRight="0dp"
-            android:orientation="vertical">
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/maroon_border_white_bg"
+            android:orientation="vertical"
+            android:padding="5dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,115 +28,121 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textColor="@color/cb_dark_grey"
-                    android:text="Mrs B Usha Nandhini (19Y/F)"
-                    android:textSize="12dp" />
-
-                <TextView
-                    android:textSize="11dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="Mrs B Usha Nandhini (19Y/F)"
+                    android:textAllCaps="true"
+                    android:textColor="@color/cb_dark_grey"
+                    android:textSize="@dimen/label" />
+
+                <TextView
                     android:id="@+id/Refby"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:visibility="gone"
-                    android:textColor="@color/maroon"
-                    android:text="Ref by Dr. N Suganthi" />
-
-                <TextView
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="Ref by Dr. N Suganthi"
+                    android:textColor="@color/maroon"
+                    android:textSize="11dp"
+                    android:visibility="gone" />
+
+                <TextView
                     android:id="@+id/barcode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="barcode"
-                    android:textSize="10dp" />
-
-                <TextView
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:text="barcode"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
+
+                <TextView
                     android:id="@+id/tests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:text="test"
-                    android:textSize="10dp" />
-                <LinearLayout
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:id="@+id/test_name"
-                        android:text="test name "
-                        android:textSize="10dp"
-                        />
-                    <TextView
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:visibility="gone"
-                        android:id="@+id/test_value"
-                        android:text="Value"
-                        android:textSize="10dp"
-                        />
-                </LinearLayout>
-                <Button
-                    android:layout_marginTop="3dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_width="80dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/next_button"
-                    android:text="Enter CHN"
-                    android:id="@+id/enter_chn_btn"
-                    android:textSize="@dimen/NormalTextSize1"
-                    android:textColor="@color/colorWhite"
-                    />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/test_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="test name "
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/note" />
+
+                    <TextView
+                        android:id="@+id/test_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="5dp"
+                        android:text="Value"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/value"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/enter_chn_btn"
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginTop="3dp"
+                    android:background="@drawable/next_button"
+                    android:text="Enter CHN"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
                     android:id="@+id/chn_remark_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="5dp"
                     android:layout_weight="2"
-                    >
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <EditText
-                        android:padding="5dp"
+                        android:id="@+id/enter_remark"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:hint="Enter Remark"
-                        android:id="@+id/enter_remark"
-                        android:textSize="12dp"
                         android:background="@drawable/maroon_border_white_bg"
-                        /><requestFocus></requestFocus>
+                        android:hint="ENTER REMARK"
+                        android:padding="5dp"
+                        android:textSize="@dimen/value" />
+
+                    <requestFocus></requestFocus>
+
                     <Button
-                        android:layout_marginTop="2dp"
+                        android:id="@+id/submit_chn"
                         android:layout_width="80dp"
                         android:layout_height="25dp"
-                        android:text="Submit"
-                        android:id="@+id/submit_chn"
-                        android:textColor="@color/white"
                         android:layout_gravity="center"
-                        android:textSize="@dimen/NormalTextSize1"
+                        android:layout_marginTop="2dp"
                         android:background="@drawable/next_button"
-                        />
+                        android:text="Submit"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/label" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -147,10 +153,10 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="3">
 
                         <ImageView

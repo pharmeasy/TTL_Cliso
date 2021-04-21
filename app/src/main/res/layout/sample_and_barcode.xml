@@ -15,8 +15,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Barcode"
+            android:textAllCaps="true"
             android:textColor="@color/red"
-            android:textSize="9sp"
+            android:textSize="@dimen/note"
             android:textStyle="italic" />
 
         <TextView
@@ -26,7 +27,8 @@
             android:layout_marginLeft="3dp"
             android:layout_weight="1"
             android:text="Android Version"
-            android:textSize="9sp" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/note" />
     </LinearLayout>
 
 </LinearLayout>

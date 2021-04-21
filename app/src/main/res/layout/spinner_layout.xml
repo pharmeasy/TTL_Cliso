@@ -5,5 +5,6 @@
     android:drawableRight="@drawable/down_arrow"
     android:drawablePadding="@dimen/_8sdp"
     android:gravity="center"
-
+    android:textAllCaps="true"
+    android:textSize="@dimen/value"
     android:textColor="#000000" />

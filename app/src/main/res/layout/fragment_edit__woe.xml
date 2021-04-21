@@ -36,13 +36,14 @@
             style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
             android:layout_weight="4"
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="WOE Edit "
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="18sp"
+            android:textSize="@dimen/header"
+            android:layout_gravity="center"
             android:textStyle="bold" />
 
         <ImageView
@@ -62,9 +63,9 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/view"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true">
+        android:layout_below="@+id/view">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,7 +78,7 @@
                 android:id="@+id/brand_name_ll"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -90,15 +91,16 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/type_name"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -111,15 +113,16 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:ems="10"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/source_code_ll"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal">
@@ -132,8 +135,9 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:text="Sub Source Code"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/sub_source_code"
@@ -144,14 +148,14 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/namePatients"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -169,7 +173,8 @@
                     android:inputType="textCapCharacters"
                     android:maxLength="50"
                     android:maxLines="1"
-                    android:textSize="12sp" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"/>
 
                 <requestFocus />
             </LinearLayout>
@@ -179,7 +184,7 @@
                 android:id="@+id/AGE_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -194,7 +199,7 @@
                     android:hint="ENTER YOUR AGE"
                     android:inputType="number"
                     android:maxLength="3"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
 
                 <Spinner
                     android:id="@+id/spinyr"
@@ -210,7 +215,7 @@
                 android:id="@+id/gender_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="vertical"
@@ -240,7 +245,7 @@
                                 android:layout_weight="1"
                                 android:buttonTint="@color/maroon"
                                 android:text="MALE"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
 
                             <RadioButton
                                 android:id="@+id/female"
@@ -249,7 +254,7 @@
                                 android:layout_weight="1"
                                 android:buttonTint="@color/maroon"
                                 android:text="FEMALE"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
                         </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
@@ -261,7 +266,7 @@
                 android:id="@+id/time_layout"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal">
@@ -271,7 +276,9 @@
                     style="@style/medium_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:drawableRight="@drawable/red_small_cal" />
+                    android:layout_marginLeft="5dp"
+                    android:drawableRight="@drawable/red_small_cal"
+                    android:gravity="right" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -281,7 +288,8 @@
                     <TextView
                         android:id="@+id/sct_txt"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/value"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -290,7 +298,7 @@
                 android:id="@+id/labname_linear"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -305,15 +313,16 @@
                     android:background="@drawable/background_edt"
                     android:ems="10"
                     android:textColor="@color/DARKGray"
+                    android:textAllCaps="true"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/refby_linear"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal"
@@ -324,53 +333,55 @@
                     style="@style/medium_text"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/textView"
                     android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView"
                     android:layout_gravity="center"
                     android:layout_weight="5"
                     android:background="@drawable/background_edt"
                     android:ems="10"
                     android:gravity="center|left"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/barcode_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal">
 
                 <TextView
+                    android:textColorHint="@color/black"
                     style="@style/medium_text"
+                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/textView"
-                    android:layout_alignParentLeft="true"
-                    android:layout_gravity="center|left"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_edt"
-                    android:gravity="center|left"
                     android:text="Barcode"
+                    android:textAllCaps="true"
+                    android:layout_gravity="center|left"
+                    android:gravity="center|left"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView"
+                    android:background="@drawable/background_edt"
                     android:textColor="@color/DARKGray"
-                    android:textColorHint="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
 
                 <TextView
                     android:id="@+id/barcode_number"
+                    android:textColorHint="@color/black"
                     style="@style/medium_text"
+                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textView"
                     android:layout_alignParentLeft="true"
-                    android:layout_weight="1"
+                    android:layout_below="@+id/textView"
                     android:background="@drawable/background_edt"
                     android:textColor="@color/DARKGray"
-                    android:textColorHint="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
 
             </LinearLayout>
 
@@ -378,7 +389,7 @@
                 android:id="@+id/test_names_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="2dp"
+                android:layout_margin="3dp"
                 android:background="@drawable/border_background_maroon"
                 android:orientation="horizontal">
 
@@ -387,14 +398,15 @@
                     style="@style/medium_text"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/textView"
                     android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/textView"
                     android:layout_gravity="center"
                     android:layout_weight="1.7"
+                    android:textAllCaps="true"
                     android:background="@drawable/background_edt"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
             </LinearLayout>
 
 
@@ -403,21 +415,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="2dp"
+                android:textStyle="bold"
+                android:textColor="@color/red"
                 android:text="Convert BN to BT"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/next_btn_patient"
-                style="@style/hint_text"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/_100sdp"
                 android:layout_height="0dp"
-                android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:layout_gravity="center"
                 android:background="@drawable/next_button"
-                android:gravity="center"
                 android:padding="5dp"
                 android:text="Done"
+                android:textSize="@dimen/label"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
     </ScrollView>

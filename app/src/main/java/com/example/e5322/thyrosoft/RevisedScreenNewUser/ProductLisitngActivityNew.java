@@ -295,10 +295,10 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         Selcted_Test = new ArrayList<>();
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
         source_type = prefs.getString("SOURCE_TYPE", "");
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -775,7 +775,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
                             b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                            nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
+                            //  nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
                             /*}*/
 //                                }
                         } else {
@@ -792,7 +792,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                                         b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getRplr());
                                     } else {*/
                             b2b = b2b + Integer.parseInt(Selcted_Test.get(i).getRate().getB2b());
-                            nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
+                            // nhlrate = nhlrate + getNHLRateorB2b(Selcted_Test.get(i).getRate());
                             /*}*/
 //                                }
                         }
@@ -800,11 +800,14 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
                     }
 
+
+
+
                     if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
                         showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
 
-                    int isNhlAvailable;
+                   /* int isNhlAvailable;
 
                     if (!source_type.equalsIgnoreCase("OLC")){
                         if (Global.OTPVERIFIED) {
@@ -815,7 +818,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     }else {
                         isNhlAvailable = getValueFromSelectedList(Selcted_Test);
                     }
-
+*/
 
 
                     String displayslectedtest = TextUtils.join(",", showTestNmaes);
@@ -833,8 +836,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     bundle.putString("payment", payment);
                     bundle.putString("writeTestName", getTExtdata);
                     bundle.putString("b2b_rate", b2b_rate);
-                    bundle.putString("NHL_rate", nhl_rate);
-                    bundle.putInt("isNhlAvailable", isNhlAvailable);
+//                    bundle.putString("NHL_rate", nhl_rate);
+//                    bundle.putInt("isNhlAvailable", isNhlAvailable);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -877,6 +880,21 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                 }
             }
         }
+    }
+
+    private int getNhlrate(ArrayList<BaseModel> selcted_test) {
+        int nhl = 0;
+        if (selcted_test != null && selcted_test.size() > 0) {
+            for (int i = 0; i < selcted_test.size(); i++) {
+                if (selcted_test.get(i).getBrandDtls() != null && selcted_test.get(i).getBrandDtls().size() > 0) {
+
+                }
+            }
+
+        }
+
+
+        return nhl;
     }
 
     private int getValueFromSelectedList(ArrayList<BaseModel> selcted_test) {

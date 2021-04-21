@@ -34,9 +34,10 @@
             android:layout_height="match_parent"
             android:layout_weight="4"
             android:gravity="center"
+            android:textAllCaps="true"
             android:text="STOCK AVAILABILITY"
             android:textColor="@color/maroon"
-            android:textSize="15sp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -74,9 +75,10 @@
                 android:gravity="center"
                 android:padding="@dimen/dp_3"
                 android:singleLine="true"
-                android:text="Sr"
+                android:text="Sr."
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_15"
+                android:textSize="@dimen/value"
                 android:visibility="visible" />
 
             <TextView
@@ -89,8 +91,9 @@
                 android:padding="@dimen/dp_3"
                 android:singleLine="true"
                 android:text="Material"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:layout_width="0dp"
@@ -103,7 +106,7 @@
                 android:singleLine="true"
                 android:text="OS"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:layout_width="0dp"
@@ -115,8 +118,9 @@
                 android:padding="@dimen/dp_3"
                 android:singleLine="true"
                 android:text="CS"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_15" />
+                android:textSize="@dimen/value" />
 
         </TableRow>
 
@@ -139,8 +143,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
+        android:textAllCaps="true"
         android:text="Records not found"
-        android:textSize="20sp"
+        android:textSize="@dimen/value"
         android:textStyle="bold"
         android:visibility="gone" />
 
@@ -152,7 +157,7 @@
         android:layout_marginBottom="@dimen/dp_5"
         android:text="OS - Opening stock    CS - Closing stock"
         android:textColor="@color/maroon"
-        android:textSize="@dimen/NormalTextSize"
+        android:textSize="@dimen/value"
         android:textStyle="bold" />
 
 </RelativeLayout>

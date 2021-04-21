@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
@@ -23,10 +27,6 @@ import com.rd.PageIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewholder> {
     Context context;
@@ -56,7 +56,7 @@ public class CovidMISAdapter extends RecyclerView.Adapter<CovidMISAdapter.Viewho
 
         if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())){
             viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
-            GlobalClass.SetText(viewholder.txt_ppebrcd, "PPE Barcode : " + covidMISmodel.getPPEBarcode());
+            GlobalClass.SetText(viewholder.txt_ppebrcd, "Barcode : " + covidMISmodel.getPPEBarcode());
         }else {
             viewholder.txt_ppebrcd.setVisibility(View.GONE);
         }

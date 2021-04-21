@@ -54,10 +54,11 @@
                     android:layout_height="wrap_content"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZqwertyuiopasdfghjklzxcvbnm1234567890"
                     android:drawableLeft="@drawable/profile"
-                    android:hint="  Mobile number"
+                    android:hint="  MOBILE NUMBER"
                     android:inputType="number|phone"
                     android:maxLength="5"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textSize="@dimen/value" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -68,10 +69,11 @@
                 android:digits="0123456789qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM/*-.!@#$%"
                 android:drawableLeft="@drawable/key"
                 android:hint="  OTP"
+                android:inputType="number|phone"
+                android:maxLines="1"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:inputType="number|phone"
-                android:maxLines="1" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -89,7 +91,9 @@
             android:layout_weight="1"
             android:background="@drawable/btn_bg"
             android:text="Login"
-            android:textColor="@color/colorWhite" />
+            android:textAllCaps="true"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/label" />
 
         <View
             android:layout_width="match_parent"
@@ -102,6 +106,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="cjeckolj"
+            android:textAllCaps="true"
+            android:textSize="@dimen/label"
             android:visibility="gone" />
 
 

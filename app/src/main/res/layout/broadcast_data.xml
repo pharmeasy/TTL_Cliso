@@ -49,7 +49,8 @@
                         android:gravity="top"
                         android:maxLines="3"
                         android:textColor="@color/maroon"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/label"
+                        android:textAllCaps="true"
                         tools:text="Preventive Care: Focus maxline accepted checking" />
 
                     <TextView
@@ -57,7 +58,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/value"
+                        android:textAllCaps="true"
                         tools:text="25 Jul 2018 12:00 AM" />
 
                     <TextView
@@ -65,7 +67,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/value"
+                        android:textAllCaps="true"
                         tools:text="DR VELUMANI A" />
 
                 </LinearLayout>
@@ -129,7 +132,8 @@
                         android:layout_weight="9"
                         android:text="Yes I have read this broadcast"
                         android:textColor="@color/maroon"
-                        android:textSize="17sp" />
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -148,8 +152,9 @@
                         android:layout_marginLeft="5dp"
                         android:layout_weight="0"
                         android:text="Remarks"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="17dp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/etRemarks"
@@ -162,12 +167,13 @@
                         android:background="@color/white"
                         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
                         android:gravity="top"
-                        android:hint="Enter remarks *"
+                        android:textAllCaps="true"
+                        android:hint="ENTER REMARKS *"
                         android:lines="3"
                         android:padding="3dp"
                         android:singleLine="false"
                         android:textColor="@color/grey"
-                        android:textSize="16dp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
 
@@ -182,10 +188,10 @@
                     android:background="@drawable/maroon_rect_box"
                     android:minHeight="28dp"
                     android:padding="10dp"
-                    android:text="Acknowledge"
+                    android:text="ACKNOWLEDGE"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/tvAck"
@@ -197,7 +203,7 @@
                     android:gravity="center"
                     android:text="You have already acknowledged"
                     android:textColor="@color/maroon"
-                    android:textSize="17dp"
+                    android:textSize="@dimen/value"
                     android:textStyle="italic|bold" />
 
             </LinearLayout>

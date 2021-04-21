@@ -24,11 +24,12 @@
             android:weightSum="5">
 
             <ImageView
+                android:id="@+id/back"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:src="@drawable/color_back"
-                android:id="@+id/back"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.5"
+                android:src="@drawable/color_back" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -36,14 +37,16 @@
                 android:layout_weight="4"
                 android:gravity="center"
                 android:text="Ledger Details"
-                android:textSize="18sp"
+                android:textAllCaps="true"
+                android:textSize="@dimen/header"
                 android:textStyle="bold" />
+
             <ImageView
+                android:id="@+id/home"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:id="@+id/home"
-                android:src="@drawable/color_homr"
-                android:layout_weight="0.5"/>
+                android:layout_weight="0.5"
+                android:src="@drawable/color_homr" />
         </LinearLayout>
 
         <LinearLayout
@@ -112,8 +115,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="All"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="15dp" />
+                    android:textSize="@dimen/value" />
                 <!--android:textColor="@color/grey"-->
 
                 <View
@@ -131,8 +135,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Credit"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="15dp"></TextView>
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="1dp"
@@ -149,8 +154,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Debit"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="15dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -191,8 +197,9 @@
                     android:layout_weight="2"
                     android:gravity="top|center"
                     android:text="  Sorry ! You are offline..."
+                    android:textAllCaps="true"
                     android:textColor="@color/maroon"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/header" />
 
             </LinearLayout>
 

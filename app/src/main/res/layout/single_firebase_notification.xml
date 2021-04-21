@@ -7,33 +7,40 @@
     android:layout_marginBottom="1dp"
     card_view:cardElevation="2dp"
     card_view:cardUseCompatPadding="true">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="2dp">
+
         <LinearLayout
-            android:layout_weight="4"
             android:layout_width="0dp"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="product_name"
+                android:textAllCaps="true"
                 android:textColor="@color/colorBlack"
-                android:textSize="20sp"
+                android:textSize="@dimen/label"
                 android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/product_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="product_name"
+                android:textAllCaps="true"
                 android:textColor="@color/gray"
-                android:textSize="15sp"
+                android:textSize="@dimen/label"
                 android:textStyle="bold|italic" />
         </LinearLayout>
+
         <ImageView
             android:id="@+id/delete_product"
             android:layout_width="0dp"

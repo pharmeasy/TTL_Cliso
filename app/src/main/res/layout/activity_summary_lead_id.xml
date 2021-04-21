@@ -34,12 +34,14 @@
             style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:layout_weight="4"
             android:background="@color/cement_light"
             android:gravity="center"
-            android:textColor="@color/maroon"
-            android:layout_gravity="center"
             android:text="Summary"
+            android:textSize="@dimen/header"
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
             android:textStyle="bold" />
 
         <ImageView
@@ -76,8 +78,9 @@
             android:background="@drawable/underline_grey"
             android:gravity="center"
             android:text="Patient info"
+            android:textAllCaps="true"
             android:textColor="@color/Graytoolbar"
-            android:textSize="14dp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -86,6 +89,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -100,8 +104,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Type "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -118,7 +123,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -128,6 +133,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -142,8 +148,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Id :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -160,7 +167,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -170,6 +177,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -184,8 +192,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="SCT :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -202,7 +211,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -212,6 +221,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -226,8 +236,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Name :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -244,17 +255,18 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ll_patient_age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
+            android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/ll_patient_age"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -269,8 +281,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Age : "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -287,17 +300,18 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/ll_patient_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
-            android:id="@+id/ll_patient_gender"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -312,8 +326,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Gender : "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -330,10 +345,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -341,6 +355,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -355,8 +370,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Ref By :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -373,7 +389,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -383,6 +399,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -397,8 +414,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="BTECH :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -415,7 +433,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -425,6 +443,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -439,8 +458,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="SCP :"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -457,7 +477,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -471,17 +491,19 @@
 
             <TextView
                 android:layout_width="0dp"
-
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:text="SGC :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:textColor="@color/red"
                 android:textStyle="italic" />
 
             <TextView
                 android:id="@+id/pat_sgc"
-
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -533,8 +555,9 @@
                 android:background="@drawable/underline_white"
                 android:gravity="center"
                 android:text="Sample Info"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:textSize="@dimen/label"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -542,9 +565,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="-1dp"
-                android:gravity="center"
                 android:layout_marginRight="10dp"
                 android:background="@drawable/corner_grey_bg"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:weightSum="5">
 
@@ -553,13 +576,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-
                     android:layout_weight="1.4"
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
                     android:text="Test "
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -577,7 +600,7 @@
                         android:layout_marginRight="5dp"
                         android:layout_marginBottom="6dp"
                         android:textColor="@color/grey"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -600,25 +623,26 @@
         android:id="@+id/delete_patient_test"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="10dp"
         android:background="@drawable/next_button"
         android:minHeight="40dp">
 
         <TextView
-            android:textSize="18dp"
-            android:textColor="@color/white"
             android:id="@+id/saveclose"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_weight="1"
             android:drawableLeft="@drawable/save_close"
             android:gravity="center"
-            android:text="   Save and close" />
+            android:text="   Save and close"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/label" />
     </LinearLayout>
 
 </RelativeLayout>

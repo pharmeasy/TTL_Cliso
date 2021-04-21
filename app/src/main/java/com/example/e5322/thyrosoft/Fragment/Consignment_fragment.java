@@ -1,6 +1,7 @@
 package com.example.e5322.thyrosoft.Fragment;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -9,18 +10,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -28,6 +31,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -38,11 +44,27 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
+import com.example.e5322.thyrosoft.Adapter.BarcodeAdapter;
+import com.example.e5322.thyrosoft.Adapter.ScannedBarcodeAdapter;
+import com.example.e5322.thyrosoft.Controller.GetBarcodeListController;
+import com.example.e5322.thyrosoft.Controller.GetScannedBarcodeList;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.PostBarcodeController;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.BarcodeResponseModel;
+import com.example.e5322.thyrosoft.Models.ConsignmentRequestModel;
+import com.example.e5322.thyrosoft.Models.PostBarcodeModel;
+import com.example.e5322.thyrosoft.Models.PostBarcodeResponseModel;
+import com.example.e5322.thyrosoft.Models.ScanBarcodeResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -56,7 +78,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import androidx.fragment.app.FragmentTransaction;
 import cn.pedant.SweetAlert.SweetAlertDialog;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -130,6 +151,17 @@ public class Consignment_fragment extends RootFragment {
     private RequestQueue PostQueueForConsignment;
     private Date dep_date_time, arr_date_time, dispatch_date_time;
 
+    TextView tv_addpouch;
+    RecyclerView recy_barcode;
+    private Dialog pocuh_dialog;
+    ConnectionDetector connectionDetector;
+    RecyclerView recy_scannedbarcode;
+    LinearLayout ll_pouch;
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> setGlobalListBarcode;
+    private ArrayList<ScanBarcodeResponseModel.PouchCodeDTO> setBarcodePouch;
+    private Button btn_pouch_barcd;
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> barcodelist=new ArrayList<>();
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> totalbarcodelist=new ArrayList<>();
 
     public Consignment_fragment() {
         // Required empty public constructor
@@ -168,7 +200,7 @@ public class Consignment_fragment extends RootFragment {
 
 
         viewMain = (View) inflater.inflate(R.layout.tm, container, false);
-
+        connectionDetector = new ConnectionDetector(getActivity());
         barProgressDialog = new ProgressDialog(mContext);
         barProgressDialog.setTitle("Kindly wait ...");
         barProgressDialog.setMessage(ToastFile.processing_request);
@@ -235,10 +267,23 @@ public class Consignment_fragment extends RootFragment {
         img_scan_consignment_barcode = (ImageView) viewMain.findViewById(R.id.img_scan_consignment_barcode);
         img_scan_bsv_barcode = (ImageView) viewMain.findViewById(R.id.img_scan_bsv_barcode);
 
+        img_scan_consignment_barcode = (ImageView) viewMain.findViewById(R.id.img_scan_consignment_barcode);
+        img_scan_bsv_barcode = (ImageView) viewMain.findViewById(R.id.img_scan_bsv_barcode);
+        tv_addpouch = viewMain.findViewById(R.id.tv_addpouch);
+        recy_scannedbarcode = viewMain.findViewById(R.id.recy_scannedbarcode);
+
 
         consignment_barcd_btn = (Button) viewMain.findViewById(R.id.consignment_barcd_btn);
         bsv_barcode_scanning = (Button) viewMain.findViewById(R.id.bsv_barcode_scanning);
         Submit_consignment = (Button) viewMain.findViewById(R.id.Submit_consignment);
+        ll_pouch = viewMain.findViewById(R.id.ll_pouch);
+
+        tv_addpouch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OpenDialog();
+            }
+        });
 
 
         flight_name.addTextChangedListener(new TextWatcher() {
@@ -466,7 +511,10 @@ public class Consignment_fragment extends RootFragment {
 
                 GlobalClass.flagToSend = true;
                 GlobalClass.flagToSendfromnavigation = false;
-                checkConsgnmentFortheDay();
+                Consignment_fragment fragment = new Consignment_fragment();
+                mContext.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_mainLayout, fragment, fragment.getClass().getSimpleName()).addToBackStack(null).commit();
+             //   checkConsgnmentFortheDay();
 
             }
         });
@@ -628,9 +676,7 @@ public class Consignment_fragment extends RootFragment {
             public void onClick(View v) {
                 routing_code = "direct";
                 source_code_to_pass.setVisibility(View.GONE);
-                direct.setText("Direct");
                 flagtsp = 1;
-                through_tsp.setText("Through another TSP");
             }
         });
         through_tsp.setOnClickListener(new View.OnClickListener() {
@@ -638,8 +684,6 @@ public class Consignment_fragment extends RootFragment {
             public void onClick(View v) {
                 routing_code = "through_tsp";
                 source_code_to_pass.setVisibility(View.VISIBLE);
-                direct.setText("Direct to Mumbai");
-                through_tsp.setText("Through");
                 flagtsp = 2;
                 source_code_pass.setText(user);
             }
@@ -752,7 +796,7 @@ public class Consignment_fragment extends RootFragment {
             @Override
             public void onClick(View v) {
                 lineareditbarcodebsv.setVisibility(View.GONE);
-                bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                bsv_barcode_scanning_ll.setVisibility(View.GONE);
             }
         });
 
@@ -778,7 +822,7 @@ public class Consignment_fragment extends RootFragment {
                             , new com.android.volley.Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.v(TAG,"barcode respponse" + response);
+                            Log.v(TAG, "barcode respponse" + response);
 
                             Log.e(TAG, "onResponse: " + response);
                             if (response.equals("\"Valid\"")) {
@@ -873,7 +917,7 @@ public class Consignment_fragment extends RootFragment {
                     if (getPreviouseText.equals(currentText)) {
                         currentText = reenterbsv.getText().toString();
                         lineareditbarcodebsv.setVisibility(View.GONE);
-                        bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                        bsv_barcode_scanning_ll.setVisibility(View.GONE);
                         bsv_barcode_scanning.setText(currentText);
                     } else {
 
@@ -992,7 +1036,7 @@ public class Consignment_fragment extends RootFragment {
                     expected_arrival_time_layout.setVisibility(View.GONE);
                     dispatch_time_layout.setVisibility(View.GONE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.GONE);
                     total_sample_layout.setVisibility(View.GONE);
                     consignment_name_layout.setVisibility(View.GONE);
                     bsv_barcode_scanning_ll.setVisibility(View.GONE);
@@ -1019,7 +1063,7 @@ public class Consignment_fragment extends RootFragment {
                     expected_arrival_time_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.GONE);
                     total_sample_layout.setVisibility(View.GONE);
                     consignment_name_layout.setVisibility(View.GONE);
                     bsv_barcode_scanning_ll.setVisibility(View.GONE);
@@ -1046,7 +1090,7 @@ public class Consignment_fragment extends RootFragment {
                     expected_arrival_time_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.GONE);
                     flight_name_layout.setVisibility(View.GONE);
                     flight_number_layout.setVisibility(View.GONE);
                     bus_name_layout.setVisibility(View.GONE);
@@ -1094,16 +1138,16 @@ public class Consignment_fragment extends RootFragment {
 
                 } else if (mode_value_compare.equals("Courier")) {
                     name_edt_txt.setHint("Enter courier name");
-
+                    GetScannerBarcode();
                     courier_spinner_name_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
 
                     total_sample_layout.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.VISIBLE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
                     total_sample_layout.setVisibility(View.VISIBLE);
                     consignment_name_layout.setVisibility(View.VISIBLE);
-                    bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                    bsv_barcode_scanning_ll.setVisibility(View.GONE);
 
                     flight_name_layout.setVisibility(View.GONE);
                     flight_number_layout.setVisibility(View.GONE);
@@ -1142,11 +1186,11 @@ public class Consignment_fragment extends RootFragment {
 
                                 total_sample_layout.setVisibility(View.VISIBLE);
 
-                                bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                                bsv_barcode_scanning_ll.setVisibility(View.GONE);
 
                             } else {
                                 consignment_name_layout.setVisibility(View.VISIBLE);
-                                bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                                bsv_barcode_scanning_ll.setVisibility(View.GONE);
                                 total_sample_layout.setVisibility(View.VISIBLE);
 
                                 flight_name_layout.setVisibility(View.GONE);
@@ -1174,16 +1218,16 @@ public class Consignment_fragment extends RootFragment {
 
                 } else if (mode_value_compare.equals("Hand Delivery")) {
                     name_edt_txt.setHint("Enter name of person");
-
+                    GetScannerBarcode();
                     hand_del_name_layout.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.VISIBLE);
 
                     total_sample_layout.setVisibility(View.VISIBLE);
                     consignment_name_layout.setVisibility(View.VISIBLE);
-                    bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                    bsv_barcode_scanning_ll.setVisibility(View.GONE);
                     submit_ll.setVisibility(View.VISIBLE);
                     btn_to_next_ll.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.VISIBLE);
                     courier_name_layout.setVisibility(View.GONE);
                     flight_name_layout.setVisibility(View.GONE);
                     flight_number_layout.setVisibility(View.GONE);
@@ -1200,14 +1244,15 @@ public class Consignment_fragment extends RootFragment {
 
                     total_sample_layout.setVisibility(View.VISIBLE);
                     consignment_name_layout.setVisibility(View.VISIBLE);
-                    bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+
 
                 } else if (mode_value_compare.equals("LME")) {
+                    GetScannerBarcode();
                     total_sample_layout.setVisibility(View.VISIBLE);
                     consignment_name_layout.setVisibility(View.VISIBLE);
-                    bsv_barcode_scanning_ll.setVisibility(View.VISIBLE);
+                    bsv_barcode_scanning_ll.setVisibility(View.GONE);
                     submit_ll.setVisibility(View.VISIBLE);
-
+                    ll_pouch.setVisibility(View.VISIBLE);
                     dispatch_time_layout.setVisibility(View.GONE);
                     bus_spinner_name_layout.setVisibility(View.GONE);
                     bus_name_layout.setVisibility(View.GONE);
@@ -1374,7 +1419,7 @@ public class Consignment_fragment extends RootFragment {
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
                         TastyToast.makeText(mContext, ToastFile.dispt_tm, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else  if (d_convert.equals(compare)) {
+                    } else if (d_convert.equals(compare)) {
                         dispatch_time.requestFocus();
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (d_convert.after(compare)) {
@@ -1541,7 +1586,7 @@ public class Consignment_fragment extends RootFragment {
                     }
                     if (flagtsp == 0) {
                         TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else  if (courier_name.equals("Select Courier Name")) {
+                    } else if (courier_name.equals("Select Courier Name")) {
                         TastyToast.makeText(mContext, ToastFile.pls_slt_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (getDispatchtime.equals("")) {
                         dispatch_time.requestFocus();
@@ -1554,9 +1599,9 @@ public class Consignment_fragment extends RootFragment {
                         TastyToast.makeText(mContext, ToastFile.dispt_tm_condition, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                     } else if (consignment_barcode.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.scan_consignment_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (bsv_edt_txt.equals("")) {
+                    }/* else if (bsv_edt_txt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (courier_name.equals("OTHERS")) {
+                    }*/ else if (courier_name.equals("OTHERS")) {
                         courier_name_to_pass = name_edt_txt.getText().toString();
                         if (courier_name_to_pass.equals("")) {
                             TastyToast.makeText(mContext, ToastFile.ent_courier_name, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
@@ -1708,9 +1753,9 @@ public class Consignment_fragment extends RootFragment {
                         Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
                     } else if (consignment_barcode.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.consign_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else if (bsv_edt_txt.equals("")) {
+                    }/* else if (bsv_edt_txt.equals("")) {
                         TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                    } else {
+                    }*/ else {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
                         Date myDate = null;
                         try {
@@ -1787,9 +1832,9 @@ public class Consignment_fragment extends RootFragment {
                     TastyToast.makeText(mContext, ToastFile.routine_cd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                 } else if (consignment_barcode.equals("")) {
                     TastyToast.makeText(mContext, ToastFile.scan_consignment_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                } else if (bsv_edt_txt.equals("")) {
+                } /*else if (bsv_edt_txt.equals("")) {
                     TastyToast.makeText(mContext, ToastFile.bsv_brcd, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                } else {
+                }*/ else {
                     doTheConsignmentforLME();
                 }
             }
@@ -1868,7 +1913,7 @@ public class Consignment_fragment extends RootFragment {
 
 
         PostQueAirCargo = GlobalClass.setVolleyReq(mContext);
-        JSONObject jsonObjectOtp = new JSONObject();
+       /* JSONObject jsonObjectOtp = new JSONObject();
         try {
             jsonObjectOtp.put("API_KEY", api_key);
             jsonObjectOtp.put("Consignmen_Barcode", consignment_barcode);
@@ -1892,8 +1937,39 @@ public class Consignment_fragment extends RootFragment {
 
         } catch (JSONException e) {
             e.printStackTrace();
+        }*/
+
+        ConsignmentRequestModel consignmentRequestModel = new ConsignmentRequestModel();
+        consignmentRequestModel.setAPI_KEY(api_key);
+        consignmentRequestModel.setConsignmen_Barcode(consignment_barcode);
+        consignmentRequestModel.setThroughTSPCode(tsp_su_code);
+        consignmentRequestModel.setDispatchTime("");
+        consignmentRequestModel.setConsignmentNo("");
+        consignmentRequestModel.setTransitTime("");
+        consignmentRequestModel.setMode(mode_value_compare);
+        consignmentRequestModel.setSampleFromCPL(cpl_count);
+        consignmentRequestModel.setSampleFromRPL(rpl_count);
+        consignmentRequestModel.setPackagingDetails("");
+        consignmentRequestModel.setFlightName("");
+        consignmentRequestModel.setFlightNo("");
+        consignmentRequestModel.setDepTime("");
+        consignmentRequestModel.setArrTime("");
+        consignmentRequestModel.setBSVBarcode("");
+        consignmentRequestModel.setRemarks("");
+        consignmentRequestModel.setTotalSamples(total_count);
+        consignmentRequestModel.setConsignmentTemperature("");
+        consignmentRequestModel.setCourierName("");
+        consignmentRequestModel.setPouchCodeDtlLists(getArrayList());
+
+
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = geneRateReqSSLkeyObject(consignmentRequestModel);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.consignmentEntry, jsonObjectOtp, new com.android.volley.Response.Listener<JSONObject>() {
+
+        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.consignmentEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (barProgressDialog != null && barProgressDialog.isShowing()) {
@@ -1925,21 +2001,318 @@ public class Consignment_fragment extends RootFragment {
         }, new com.android.volley.Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null) {
-                } else {
-
-                    // Log.v(TAG,error);
+                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                    barProgressDialog.dismiss();
                 }
             }
         });
+        jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                150000,
+                3,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         PostQueAirCargo.add(jsonObjectRequest1);
         Log.e(TAG, "doTheConsignmentforLME: URL" + jsonObjectRequest1);
-        Log.e(TAG, "doTheConsignmentforLME: object" + jsonObjectOtp);
+        Log.e(TAG, "doTheConsignmentforLME: object" + jsonObj);
     }
+
+    private JSONObject geneRateReqSSLkeyObject(ConsignmentRequestModel consignmentRequestModel) throws JSONException {
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(consignmentRequestModel);
+        JSONObject jsonObj = new JSONObject(json);
+        return jsonObj;
+    }
+
+    private ArrayList<ConsignmentRequestModel.PouchReqsDTO> getArrayList() {
+        ArrayList<ConsignmentRequestModel.PouchReqsDTO> ent = new ArrayList<>();
+        ConsignmentRequestModel.PouchReqsDTO ewfnw = null;
+        if (setBarcodePouch != null) {
+            for (int i = 0; i < setBarcodePouch.size(); i++) {
+                ewfnw = new ConsignmentRequestModel.PouchReqsDTO();
+                ewfnw.setBarcode(setBarcodePouch.get(i).getBarcode());
+                ent.add(ewfnw);
+            }
+        }
+
+        return ent;
+    }
+
+    private ArrayList<BarcodeResponseModel.BarcodeDTO> SelectUnselect(boolean b) {
+        for (int i = 0; i < barcodelist.size(); i++) {
+            barcodelist.get(i).setSelected(b);
+        }
+        return barcodelist;
+    }
+
+    private void OpenDialog() {
+        pocuh_dialog = new Dialog(getActivity());
+        pocuh_dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        pocuh_dialog.setCancelable(false);
+        pocuh_dialog.setContentView(R.layout.add_pounch_dialog);
+
+        LinearLayout enter_ll_unselected = pocuh_dialog.findViewById(R.id.enter_ll_unselected);
+        LinearLayout unchecked_entered_ll = pocuh_dialog.findViewById(R.id.unchecked_entered_ll);
+        final LinearLayout lineareditbarcode = pocuh_dialog.findViewById(R.id.lineareditbarcode);
+        final LinearLayout consignment_name_layout = pocuh_dialog.findViewById(R.id.consignment_name_layout);
+        final TextView enter = pocuh_dialog.findViewById(R.id.enter);
+        final EditText edt_search = pocuh_dialog.findViewById(R.id.edt_search);
+        final TextView enetered = pocuh_dialog.findViewById(R.id.enetered);
+        final ImageView enter_arrow_enter = pocuh_dialog.findViewById(R.id.enter_arrow_enter);
+        final ImageView enter_arrow_entered = pocuh_dialog.findViewById(R.id.enter_arrow_entered);
+        final ImageView iv_cancel = pocuh_dialog.findViewById(R.id.iv_cancel);
+        final ImageView setback = pocuh_dialog.findViewById(R.id.setback);
+        final ImageView img_scan_pouch_barcode = pocuh_dialog.findViewById(R.id.img_scan_pouch_barcode);
+        final Button btn_submit = pocuh_dialog.findViewById(R.id.btn_submit);
+        btn_pouch_barcd = pocuh_dialog.findViewById(R.id.btn_pouch_barcd);
+        final EditText enter_barcode = pocuh_dialog.findViewById(R.id.enter_barcode);
+        final EditText reenter = pocuh_dialog.findViewById(R.id.reenter);
+        recy_barcode = pocuh_dialog.findViewById(R.id.recycler_all_test);
+        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+        enter_arrow_enter.setVisibility(View.VISIBLE);
+
+        final Button btn_selectall = pocuh_dialog.findViewById(R.id.btn_selectall);
+        btn_selectall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (btn_selectall.getText().toString().equalsIgnoreCase(getActivity().getResources().getString(R.string.select_all))) {
+                    btn_selectall.setText(getActivity().getResources().getString(R.string.remove_all));
+                    SetAdapter(SelectUnselect(true));
+                } else {
+                    btn_selectall.setText(getActivity().getResources().getString(R.string.select_all));
+                    SetAdapter(SelectUnselect(false));
+                }
+            }
+        });
+
+        edt_search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String filter = s.toString().toLowerCase();
+                if (filter.length() > 0) {
+                    ArrayList<BarcodeResponseModel.BarcodeDTO> filterlist = new ArrayList<>();
+                    if (GlobalClass.CheckArrayList(barcodelist)) {
+                        for (int i = 0; i < barcodelist.size(); i++) {
+                            if (barcodelist.get(i).getBarcode().toLowerCase().contains(filter)) {
+                                filterlist.add(barcodelist.get(i));
+                            }
+                        }
+                    }
+                    SetAdapter(filterlist);
+                } else {
+                    SetAdapter(totalbarcodelist);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+
+            }
+        });
+
+
+        GetBarcodeListController getBarcodeListController = new GetBarcodeListController(this);
+        getBarcodeListController.getBarcodedetails();
+
+
+        enter_barcode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(mContext,
+                            ToastFile.entr_brcd,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        enter_barcode.setText(enteredString.substring(1));
+                    } else {
+                        enter_barcode.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        reenter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(mContext,
+                            ToastFile.entr_brcd,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        reenter.setText(enteredString.substring(1));
+                    } else {
+                        reenter.setText("");
+                    }
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String enteredString = s.toString();
+                int gelength = enter_barcode.getText().length();
+                if (enteredString.length() == gelength) {
+                    String getPreviouseText = enter_barcode.getText().toString();
+                    String currentText_nxt = reenter.getText().toString();
+                    if (getPreviouseText.equals(currentText_nxt)) {
+                        currentText_nxt = reenter.getText().toString();
+
+                        lineareditbarcode.setVisibility(View.GONE);
+                        consignment_name_layout.setVisibility(View.VISIBLE);
+                        btn_pouch_barcd.setText(currentText_nxt);
+
+                    } else {
+                        reenter.setText("");
+                        Toast.makeText(mContext, ToastFile.crt_brcd, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+            }
+        });
+
+
+        iv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pocuh_dialog.dismiss();
+            }
+        });
+
+        btn_pouch_barcd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lineareditbarcode.setVisibility(View.VISIBLE);
+                consignment_name_layout.setVisibility(View.GONE);
+            }
+        });
+
+
+        img_scan_pouch_barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mode = 3;
+                scanIntegrator.initiateScan();
+            }
+        });
+
+        setback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lineareditbarcode.setVisibility(View.GONE);
+                consignment_name_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btn_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean selectnone = false;
+                for (int i = 0; i < totalbarcodelist.size(); i++) {
+                    if (totalbarcodelist.get(i).isSelected()) {
+                        selectnone = true;
+                        break;
+                    }
+                }
+                if (!selectnone) {
+                    Toast.makeText(getActivity(), "No Barcodes Selected", Toast.LENGTH_SHORT).show();
+                } else if (btn_pouch_barcd.getText().toString().equalsIgnoreCase(getActivity().getString(R.string.ssp_barcode))) {
+                    Toast.makeText(getActivity(), "Scan SSP Barcode", Toast.LENGTH_SHORT).show();
+                } else {
+                    PostBarcodeModel postBarcodeModel = new PostBarcodeModel();
+                    postBarcodeModel.setDacCode(user);
+                    postBarcodeModel.setPouchCode(btn_pouch_barcd.getText().toString().trim());
+                    ArrayList<PostBarcodeModel.ConsignmentBarcodesDTO> consignmentBarcodesDTOS = new ArrayList<>();
+                    for (int i = 0; i < totalbarcodelist.size(); i++) {
+                        if (totalbarcodelist.get(i).isSelected()) {
+                            PostBarcodeModel.ConsignmentBarcodesDTO consignmentBarcodesDTO = new PostBarcodeModel.ConsignmentBarcodesDTO();
+                            consignmentBarcodesDTO.setBarcode("" + totalbarcodelist.get(i).getBarcode());
+                            consignmentBarcodesDTOS.add(consignmentBarcodesDTO);
+                        }
+
+                    }
+                    postBarcodeModel.setConsignmentBarcodes(consignmentBarcodesDTOS);
+                    PostBarcodeController postBarcodeController = new PostBarcodeController(Consignment_fragment.this);
+                    postBarcodeController.CallAPI(postBarcodeModel);
+                }
+            }
+        });
+
+        enter_ll_unselected.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                enter_arrow_enter.setVisibility(View.VISIBLE);
+                enetered.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                enter_arrow_entered.setVisibility(View.GONE);
+
+            }
+        });
+
+
+        unchecked_entered_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
+                enter_arrow_entered.setVisibility(View.VISIBLE);
+                enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
+                enter_arrow_enter.setVisibility(View.GONE);
+            }
+        });
+
+
+        int width = (int) (getActivity().getResources().getDisplayMetrics().widthPixels * 0.99);
+        pocuh_dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        pocuh_dialog.getWindow().setLayout(width, FrameLayout.LayoutParams.WRAP_CONTENT);
+        pocuh_dialog.show();
+
+
+    }
+
+    private void SetAdapter(ArrayList<BarcodeResponseModel.BarcodeDTO> barcode) {
+        BarcodeAdapter barcodeAdapter = new BarcodeAdapter(getActivity(), barcode);
+        barcodeAdapter.setOnItemClickListener(new BarcodeAdapter.OnClickListener() {
+            @Override
+            public void onchecked(ArrayList<BarcodeResponseModel.BarcodeDTO> barcodeDTOS) {
+                barcodelist = barcodeDTOS;
+            }
+        });
+        recy_barcode.setAdapter(barcodeAdapter);
+        barcodeAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e(TAG, "123: ");
+
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             Log.e(TAG, "onActivityResult: " + result);
@@ -1951,6 +2324,8 @@ public class Consignment_fragment extends RootFragment {
                     bsv_barcode_scanning.setText(getBarcodeDetails);
                     enter_barcodebsv.setText(getBarcodeDetails);
                     reenterbsv.setText(getBarcodeDetails);
+                } else if (mode == 3) {
+                    btn_pouch_barcd.setText(getBarcodeDetails);
                 }
             }
         } else {
@@ -1966,7 +2341,7 @@ public class Consignment_fragment extends RootFragment {
             @Override
             public void onResponse(String response) {
                 Log.e(TAG, "onResponse: " + response);
-                Log.v(TAG,"barcode respponse" + response);
+                Log.v(TAG, "barcode respponse" + response);
 
                 if (response.equals("\"Valid\"")) {
                     consignment_barcd_btn.setText(getBarcodeDetails);
@@ -2115,7 +2490,7 @@ public class Consignment_fragment extends RootFragment {
                                 expected_arrival_time.setText("");
                                 TastyToast.makeText(getActivity(), "Arrival time should be greater than dispatch time and departure time!", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                             } else {
-                                getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
+                                getTimetoPass = GlobalClass.changetimeformate(getTimetoPass);
                                 expected_departure_time.setText(getDateToShow + " " + getTimetoPass);
                                 expected_departure_time.setError(null);
                             }
@@ -2193,7 +2568,7 @@ public class Consignment_fragment extends RootFragment {
 
                             arr_date_time = GlobalClass.dateFromString(total_time, new SimpleDateFormat("dd-MM-yyyy hh:mm aa"));
                             if (arr_date_time.after(dispatch_date_time) && arr_date_time.after(dep_date_time) && !arr_date_time.equals(dispatch_date_time) && !arr_date_time.equals(dep_date_time)) {
-                                getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
+                                getTimetoPass = GlobalClass.changetimeformate(getTimetoPass);
                                 expected_arrival_time.setText(getDateToShow + " " + getTimetoPass);
                             } else {
                                 expected_arrival_time.setHint("Expected Time Arrival");
@@ -2283,8 +2658,7 @@ public class Consignment_fragment extends RootFragment {
                             }
 
 
-
-                            if (d_convert!=null && compare!=null){
+                            if (d_convert != null && compare != null) {
                                 if (d_convert.equals(compare) && compare != null) {
                                     dispatch_time.setText("");
                                     Toast.makeText(mContext, ToastFile.dispt_tm_condition, Toast.LENGTH_SHORT).show();
@@ -2301,14 +2675,14 @@ public class Consignment_fragment extends RootFragment {
 
                                     if (arr_date_time != null) {
                                         if (arr_date_time.after(dispatch_date_time) && !arr_date_time.equals(dispatch_date_time)) {
-                                            getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
+                                            getTimetoPass = GlobalClass.changetimeformate(getTimetoPass);
                                             dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                                         } else {
                                             expected_arrival_time.setText("");
                                             TastyToast.makeText(getActivity(), "Dispatch time should be greater than arrival time !", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                         }
                                     } else {
-                                        getTimetoPass=GlobalClass.changetimeformate(getTimetoPass);
+                                        getTimetoPass = GlobalClass.changetimeformate(getTimetoPass);
                                         dispatch_time.setText(getDateToShow + " " + getTimetoPass);
                                         dispatch_time.setError(null);
                                     }
@@ -2325,6 +2699,78 @@ public class Consignment_fragment extends RootFragment {
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
+        }
+    }
+
+
+    public void getBarcodeDetails(BarcodeResponseModel body) {
+        try {
+            if (!GlobalClass.isNull(body.getRespID()) && body.getRespID().equalsIgnoreCase("RES0000")) {
+                if (GlobalClass.CheckArrayList(body.getBarcode())) {
+                    barcodelist = body.getBarcode();
+                    totalbarcodelist=body.getBarcode();
+                    SetAdapter(body.getBarcode());
+                } else {
+                    Global.showCustomToast(getActivity(), "No Records Found..");
+                }
+            } else {
+                Global.showCustomToast(getActivity(), "" + body.getResponse());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getBarcodeResponse(PostBarcodeResponseModel responseModel) {
+        try {
+            if (!GlobalClass.isNull(responseModel.getRespID()) && responseModel.getRespID().equalsIgnoreCase("RES0000")) {
+                Global.showCustomToast(getActivity(), "" + responseModel.getResponse());
+                if (pocuh_dialog != null && pocuh_dialog.isShowing()) {
+                    pocuh_dialog.dismiss();
+                    GetScannerBarcode();
+                }
+            } else {
+                Global.showCustomToast(getActivity(), "" + responseModel.getResponse());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void GetScannerBarcode() {
+        try {
+            setBarcodePouch = null;
+            if (connectionDetector.isConnectingToInternet()) {
+                GetScannedBarcodeList getScannedBarcodeList = new GetScannedBarcodeList(this);
+                getScannedBarcodeList.getScanneddetails();
+            } else {
+                GlobalClass.toastyError(getActivity(), MessageConstants.CHECK_INTERNET_CONN, false);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void getScanBarcodeDetails(ScanBarcodeResponseModel body) {
+        try {
+            if (!GlobalClass.isNull(body.getRespID()) && body.getRespID().equalsIgnoreCase("RES0000")) {
+                Global.showCustomToast(getActivity(), "" + body.getResponse());
+                if (GlobalClass.CheckArrayList(body.getBarcode())) {
+                    setBarcodePouch = body.getBarcode();
+                    ScannedBarcodeAdapter scannedBarcodeAdapter = new ScannedBarcodeAdapter(getActivity(), body.getBarcode());
+                    recy_scannedbarcode.setAdapter(scannedBarcodeAdapter);
+                    scannedBarcodeAdapter.notifyDataSetChanged();
+                }
+
+            } else {
+                Global.showCustomToast(getActivity(), "" + body.getResponse());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

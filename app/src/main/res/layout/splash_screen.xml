@@ -31,6 +31,8 @@
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="0dp"
         android:gravity="bottom"
+        android:textAllCaps="true"
+        android:textSize="@dimen/value"
         android:text="version update"
         android:textColor="@color/white" />
 </LinearLayout>

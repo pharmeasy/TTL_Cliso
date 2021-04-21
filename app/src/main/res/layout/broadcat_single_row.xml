@@ -16,8 +16,9 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:padding="@dimen/_3sdp"
+        android:textAllCaps="true"
         android:textColor="@color/maroon"
-        android:textSize="17sp"
+        android:textSize="@dimen/label"
         tools:text="Dear Network" />
 
     <LinearLayout
@@ -32,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="15sp"
+            android:textSize="@dimen/value"
+            android:textAllCaps="true"
             tools:text="25 Jun 2018 12:00" />
 
         <TextView
@@ -41,8 +43,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/black"
-            android:textSize="15sp"
-            tools:text="DR VELUMANI A" />
+            android:textSize="@dimen/value"
+            tools:text="DR VELUMANI A"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 

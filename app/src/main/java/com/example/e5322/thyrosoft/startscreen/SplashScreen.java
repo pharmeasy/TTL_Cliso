@@ -39,9 +39,10 @@ import com.example.e5322.thyrosoft.Controller.VersionCheckAPIController;
 import com.example.e5322.thyrosoft.DownloadInAppTask;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
-import com.example.e5322.thyrosoft.Models.CovidaccessRes;
+import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.APIInteface;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
@@ -75,9 +76,9 @@ public class SplashScreen extends AppCompatActivity {
     String newToken, storetoken;
     boolean IsFromNotification;
     String user, passwrd;
+    AppPreferenceManager appPreferenceManager;
     int SCRID;
     private int WRITE_EXTERNAL_STORAGE = 123;
-    private boolean covidacc;
     private SharedPreferences prefs_CovidSync;
     boolean isemulator = false;
 
@@ -93,7 +94,7 @@ public class SplashScreen extends AppCompatActivity {
             prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
             anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
             iv = (ImageView) findViewById(R.id.logo);
-
+            appPreferenceManager = new AppPreferenceManager(activity);
             GlobalClass.setStatusBarcolor(activity);
             if (getIntent().getBooleanExtra("Exit me", false)) {
                 finish();
@@ -134,8 +135,8 @@ public class SplashScreen extends AppCompatActivity {
 
 
             SharedPreferences prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-            user = prefs.getString("Username", null);
-            passwrd = prefs.getString("password", null);
+            user = prefs.getString("Username", "");
+            passwrd = prefs.getString("password", "");
             USER_CODE = prefs.getString("USER_CODE", "");
 
             SharedPreferences fire_pref = getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);
@@ -309,41 +310,7 @@ public class SplashScreen extends AppCompatActivity {
         if (cd.isConnectingToInternet()) {
             callAPICheckVersion();
         } else {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(SplashScreen.this, new OnSuccessListener<InstanceIdResult>() {
-                @Override
-                public void onSuccess(InstanceIdResult instanceIdResult) {
-                    newToken = instanceIdResult.getToken();
-                    Log.e("NewToken----->", newToken);
-
-                    if (user != null && passwrd != null) {
-
-                        Intent intent = new Intent(SplashScreen.this, ManagingTabsActivity.class);
-                        intent.putExtra("Screen_category", SCRID);
-                        intent.putExtra(Constants.COMEFROM, true);
-                        intent.putExtra(Constants.IsFromNotification, IsFromNotification);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SplashScreen.this);
-                        builder.setMessage(ToastFile.intConnection)
-                                .setCancelable(false)
-                                .setPositiveButton("Retry",
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(DialogInterface dialog,
-                                                                int id) {
-
-                                                Intent intent = getIntent();
-                                                finish();
-                                                startActivity(intent);
-                                            }
-                                        });
-
-                        AlertDialog alert = builder.create();
-                        alert.show();
-
-                    }
-                }
-            });
+            GlobalClass.showCustomToast(activity, ToastFile.intConnection, 1);
         }
     }
 
@@ -362,7 +329,7 @@ public class SplashScreen extends AppCompatActivity {
                 sourcecode = "";
             }
 
-            ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity,sourcecode);
+            ControllersGlobalInitialiser.versionCheckAPIController = new VersionCheckAPIController(SplashScreen.this, activity, sourcecode);
             ControllersGlobalInitialiser.versionCheckAPIController.checkVersion(true);
 
         } catch (Exception e) {
@@ -454,33 +421,22 @@ public class SplashScreen extends AppCompatActivity {
     private void checkcovidaccess() {
 
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(user);
-
-        Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
-
-
-        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+        covidaccessResCall.enqueue(new Callback<CovidAccessResponseModel>() {
             @Override
-            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
-
-                SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
-                editor.clear();
-                editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
-                editor.commit();
-
+            public void onResponse(Call<CovidAccessResponseModel> call, retrofit2.Response<CovidAccessResponseModel> response) {
                 try {
-                    if (response.body().getResponse().equalsIgnoreCase("True")) {
-                        covidacc = true;
-                    } else {
-                        covidacc = false;
-                    }
-                    editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                    editor.putBoolean("covidacc", covidacc);
+                    SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                    editor.clear();
+                    editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
                     editor.commit();
 
-                    Log.e(TAG, "COVID ACCESS FLAG --->" + covidacc);
+                    if (response != null && response.body() != null) {
+                        appPreferenceManager.setCovidAccessResponseModel(response.body());
+                    }
+
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -488,7 +444,7 @@ public class SplashScreen extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+            public void onFailure(Call<CovidAccessResponseModel> call, Throwable t) {
 
             }
         });

@@ -103,7 +103,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
     private File presc_file = null, aadhar_file = null, aadhar_file1 = null, vial_file = null, other_file = null, other_file1 = null, selfie_file = null;
     private TextView txt_presfileupload, txt_selfiefileupload, txt_adharfileupload, txt_vialrfileupload, txt_otherfileupload, tv_coll_date, tv_coll_time;
     private boolean ispresciption, isadhar, isvial, isother, genderId = false, flag = true, verifyBarcodeFlag = false, editDetailsFlag = false;
-    private EditText edt_fname, edt_amt, edt_lname, edt_srfid, edt_age, edt_patient_address, edt_patient_pincode, edt_coll_address, edt_coll_pincode, edt_barcode, edt_re_enter_barcode;
+    private EditText edt_fname, edt_email, edt_amt, edt_lname, edt_srfid, edt_age, edt_patient_address, edt_patient_pincode, edt_coll_address, edt_coll_pincode, edt_barcode, edt_re_enter_barcode;
     private String usercode, apikey, gender = "", currentText, b2b, b2c, userChoosenTask, selDate = "", selTime = "", ageFlag;
     private RelativeLayout rel_verify_mobile;
     private Spinner spn_age, spn_scp;
@@ -204,6 +204,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         txt_nofilevial = findViewById(R.id.txt_nofilevial);
         txt_nofileother = findViewById(R.id.txt_nofileother);
         btn_selfie = findViewById(R.id.btn_selfie);
+        edt_email = findViewById(R.id.edt_email);
     }
 
     private void initListeners() {
@@ -831,6 +832,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         edt_fname.setEnabled(b);
         edt_lname.setEnabled(b);
         edt_amt.setEnabled(b);
+        edt_email.setEnabled(b);
         edt_srfid.setEnabled(b);
         edt_age.setEnabled(b);
         spn_age.setEnabled(b);
@@ -890,6 +892,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         GlobalClass.EditSetText(edt_amt, woeDetailsModel.getAmount_Collected());
         GlobalClass.EditSetText(edt_srfid, woeDetailsModel.getSRFID());
         GlobalClass.EditSetText(edt_age, woeDetailsModel.getAge());
+        GlobalClass.EditSetText(edt_email, woeDetailsModel.getEMAIL());
         if (!GlobalClass.isNull(ageFlag)) {
             if (ageFlag.equals("3")) {
                 switch (woeDetailsModel.getAgeType()) {
@@ -1101,6 +1104,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                 covidpostdata.setSPECIMENTIME(selTime);
                 covidpostdata.setBARCODE(edt_barcode.getText().toString().trim());
                 covidpostdata.setVIAIMAGE(vial_file);
+                covidpostdata.setEMAIL(edt_email.getText().toString());
                 if (selfie_file != null) {
                     covidpostdata.setSELFIE(selfie_file);
                 }
@@ -1174,7 +1178,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
     private void verifyBarcode(Editable s) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base+ apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -1345,6 +1349,20 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+
+
+        if (GlobalClass.isNull(edt_email.getText().toString())) {
+            Global.showCustomToast(activity, "Enter Email-ID");
+            edt_email.requestFocus();
+            return false;
+        }
+
+        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+            Global.showCustomToast(activity, "Enter valid Email-ID");
+            edt_email.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
@@ -1604,6 +1622,12 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         if (GlobalClass.isNull(edt_srfid.getText().toString())) {
             return false;
         }
+
+        if (edt_srfid.getText().length() < 10) {
+            Global.showCustomToast(activity, "SRF-ID should be minimum of 10 digits");
+            return false;
+        }
+
         if (GlobalClass.isNull(edt_age.getText().toString())) {
             return false;
         }

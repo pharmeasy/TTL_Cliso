@@ -464,14 +464,13 @@ public class Constants {
     //CONSTANTS FOR PAYU------
     public static final String PAYUMONEYKEY_MERCHANTKEY = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "y04wX2" : "xKDXHX";
 
-//PAYTM
+    //PAYTM
     public static final String M_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "Thyroc82643304552196" : "Thyroc93414875955122";
     public static final String M_KEY = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "g4JUavr1R8KtvgAi" : "12DMjkE9XnGX_DcI";
     public static final String CHANNEL_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "WAP" : "WAP";
     public static final String INDUSTRY_TYPE_ID = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "Retail92" : "Retail";
     public static final String WEBSITE = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "APPPROD" : "APP_STAGING";
     public static final String CALLBACK_URL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" : "https://pguat.paytm.com/paytmchecksum/paytmCallback.jsp";
-
 
 
     public static final String PAYTM_UPDATE_PAYMENT_URL = "PaymentGateway.svc/PaytmResponse";
@@ -625,19 +624,25 @@ public class Constants {
     // public static String GENRATE_OTP_API_KEY = "sNhdlQjqvoD7zCbzf56sxppBJX3MmdWSAomi@RBhXRrVcGyko7hIzQ==";
     public static String GENRATE_OTP_API_KEY = "yLZ4cKcEgPsnZn1s9b9FHhR9cUbO4AdM0z3fvmKQjiw=";
 
- //   public static String RES000 = "RES0000";
+    //   public static String RES000 = "RES0000";
     public static String RES0000 = "RES0000";
     public static String RES0001 = "RES0001";
     public static String RES0082 = "RES0082";
     public static int universal = 0;
     public static int pushrat_flag = 0;
 
-    public static int setcompression = 50;
+    public static int setcompression = 80;
     public static int setheight = 480;
     public static String Ratecal = "RateCal";
     public static String TTLPrductList = "TTLProductlist";
     public static String OutlabProductlist = "OutlabProductlist";
     public static String THYROMART_APP_LINK = "https://play.google.com/store/apps/details?id=com.thyrocare.thyromart";
+    public static String BS_MIN = "BS_MIN";
+    public static String BS_MAX = "BS_MAX";
+    public static String BP_MIN = "BP_MIN";
+    public static String BP_MAX = "BP_MAX";
+    public static String BS_MSG = "BS_MSG";
+    public static String BP_MSG = "BP_MSG";
 
     public static String returnToken(Activity mContext) {
         String str = "";

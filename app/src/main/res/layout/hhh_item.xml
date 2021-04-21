@@ -8,7 +8,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         card_view:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -25,8 +24,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 android:text=""
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -42,8 +42,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/tv_barcode"
@@ -51,8 +52,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/tv_view"
@@ -60,8 +62,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text=""
+                    android:textAllCaps="true"
                     android:textColor="@color/cb_blue_button"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -80,16 +83,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:text="Upload time : "
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/tv_result"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
+                    android:textAllCaps="true"
                     android:layout_marginBottom="@dimen/_3sdp"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
 
@@ -99,8 +104,8 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:visibility="gone" />
 
             <TextView
@@ -109,8 +114,7 @@
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="@color/black"
-
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/value"
                 android:visibility="gone" />
 
 
@@ -126,6 +130,8 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text=""
+                android:textAllCaps="true"
+                android:textSize="@dimen/label"
                 android:textColor="@color/white" />
 
 

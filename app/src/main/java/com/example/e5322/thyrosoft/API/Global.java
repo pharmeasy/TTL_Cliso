@@ -55,6 +55,7 @@ public class Global {
     public static ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test_global = new ArrayList<>();
     public static ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList_global = new ArrayList<>();
     public static boolean OTPVERIFIED = false;
+    public static boolean showratedialog=false;
 
     private Context context;
     public static String HHHTest = "";

@@ -7,7 +7,6 @@
     android:weightSum="2.6">
 
 
-
     <Button
         style="@style/heading_text"
         android:layout_width="match_parent"
@@ -17,8 +16,8 @@
         android:layout_marginRight="5dp"
         android:layout_weight="0.5"
         android:background="@color/colorWhite"
-        android:textColor="@color/colorBlack"
-        android:text="Please enter OTP" />
+        android:text="Please enter OTP"
+        android:textColor="@color/colorBlack" />
 
     <EditText
         android:id="@+id/edt_reg_otp"
@@ -28,10 +27,11 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
-        android:inputType="phone"
-        android:digits="0123456789"
         android:background="@drawable/edt_bg"
+        android:digits="0123456789"
         android:gravity="center"
+        android:inputType="phone"
+        android:textSize="@dimen/label"
         android:maxLength="4" />
 
 
@@ -50,6 +50,7 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             android:layout_weight="1"
+            android:textSize="@dimen/label"
             android:background="@drawable/btn_bg"
             android:text="ok" />
     </LinearLayout>

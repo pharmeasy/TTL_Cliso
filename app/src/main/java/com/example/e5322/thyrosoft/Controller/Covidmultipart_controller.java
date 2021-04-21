@@ -104,7 +104,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
                 builder.addPart("GENDER", new StringBody("" + covidpostdata.getGENDER()));
                 builder.addPart("ENTERBY", new StringBody("" + covidpostdata.getENTERBY()));
-
+                builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
                 if (covidpostdata.getHOSPITAL() != null) {
                     builder.addPart("HOSPITAL", new StringBody("" + covidpostdata.getHOSPITAL()));
                 }
@@ -126,13 +126,16 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 if (covidpostdata.getTRF1() != null) {
                     FileInputStream trffilestream1 = new FileInputStream(covidpostdata.getTRF1());
                     builder.addPart("TRF1", new InputStreamBody(trffilestream1, "image/jpeg", "file_name.jpg"));
+                }
 
+                if (covidpostdata.getOTHER() != null) {
+                    FileInputStream otherfilestream = new FileInputStream(covidpostdata.getOTHER());
+                    builder.addPart("OTHER", new InputStreamBody(otherfilestream, "image/jpeg", "file_name.jpg"));
                 }
 
                 if (covidpostdata.getOTHER1() != null) {
                     FileInputStream otherfilestream2 = new FileInputStream(covidpostdata.getOTHER1());
                     builder.addPart("OTHER1", new InputStreamBody(otherfilestream2, "image/jpeg", "file_name.jpg"));
-
                 }
 
                 System.out.println("\"Post params:- " + "" + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
@@ -149,7 +152,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                         + "\nTRF:" + covidpostdata.getTRF()
                         + "\nTRF1:" + covidpostdata.getTRF1()
                         + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()
-                        + "\nOTHER1:" + covidpostdata.getOTHER1());
+                        + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1());
 
             } else if (flag == 4) {
                 builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
@@ -183,6 +186,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("AMOUNTCOLLECTED", new StringBody("" + covidpostdata.getAMOUNTCOLLECTED()));
                 builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
                 builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
+                builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
 
                 if (covidpostdata.getPRESCRIPTION() != null) {
                     FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
@@ -230,10 +234,22 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
             }
 
 
-            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID() + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
+            Log.e(TAG, "\"Post params:- " + ""
+                    + "\nUNIQUEID:" + covidpostdata.getUNIQUEID()
+                    + "\nSOURCECODE:" + covidpostdata.getSOURCECODE()
+                    + "\nMOBILE:" + covidpostdata.getMOBILE()
+                    + "\nNAME:" + covidpostdata.getNAME()
                     + "\nPPEBARCODE:" + covidpostdata.getPPEBARCODE()
-                    + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1() + "\nTRF:" + covidpostdata.getTRF() + "\nTRF1:" + covidpostdata.getTRF1()
-                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1());
+                    + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED()
+                    + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION()
+                    + "\nADHAR:" + covidpostdata.getADHAR()
+                    + "\nADHAR1:" + covidpostdata.getADHAR1()
+                    + "\nTRF:" + covidpostdata.getTRF()
+                    + "\nTRF1:" + covidpostdata.getTRF1()
+                    + "\nEMAIL:" + covidpostdata.getEMAIL()
+                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE()
+                    + "\nOTHER:" + covidpostdata.getOTHER()
+                    + "\nOTHER1:" + covidpostdata.getOTHER1());
             httpPost.setEntity(builder.build());
             httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);

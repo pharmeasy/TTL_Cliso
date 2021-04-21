@@ -6,10 +6,11 @@
     android:layout_height="wrap_content"
     android:minHeight="30dp"
     android:drawableRight="@drawable/spin_sgc_pgc"
-    android:textSize="12sp"
+    android:textSize="@dimen/value"
     android:paddingLeft="5dp"
     android:layout_marginLeft="5dp"
     android:gravity="center|left"
     android:text="Spinner"
+    android:textAllCaps="true"
     app:theme="@style/SpinnerStyle"
     android:textColor="@color/white" />

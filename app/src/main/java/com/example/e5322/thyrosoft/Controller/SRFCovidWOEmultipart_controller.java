@@ -93,6 +93,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
             builder.addPart("SPECIMENDATE", new StringBody("" + covidpostdata.getSPECIMENDATE()));
             builder.addPart("SPECIMENTIME", new StringBody("" + covidpostdata.getSPECIMENTIME()));
             builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
+            builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
             builder.addPart("WOEMODE",new StringBody("CLISO APP SRF"));
 
             if (covidpostdata.getPRESCRIPTION() != null) {

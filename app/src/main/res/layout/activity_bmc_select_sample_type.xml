@@ -34,8 +34,9 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Select sample types"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="15dp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -97,9 +98,9 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="6dp"
                 android:gravity="center|left"
-                android:text="Selected Test"
+                android:text="SELECTED TEST"
                 android:textColor="@color/grey"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
     </LinearLayout>
 
@@ -110,7 +111,7 @@
         android:layout_margin="5dp"
         android:text="TTL"
         android:textColor="@color/black"
-        android:textSize="@dimen/NormalTextSize"
+        android:textSize="@dimen/label"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -125,7 +126,7 @@
         android:layout_margin="5dp"
         android:text="TTL-OTHERS"
         android:textColor="@color/black"
-        android:textSize="@dimen/NormalTextSize"
+        android:textSize="@dimen/label"
         android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -145,6 +146,7 @@
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:text="NEXT"
-        android:textColor="@color/white" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/label" />
 
 </LinearLayout>

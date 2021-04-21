@@ -23,7 +23,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/title"
@@ -32,10 +32,10 @@
             android:layout_height="match_parent"
             android:layout_weight="4"
             android:gravity="center"
-            android:text="Select Tests(s)"
+            android:text="SELECT TESTS(S)"
             android:textColor="@color/maroon"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/header"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/home"
@@ -46,7 +46,7 @@
             android:layout_weight="0.5"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,7 +70,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/maroon"
-                android:text="ULC" />
+                android:text="ULC"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/nonulc_radiobtn"
@@ -78,7 +80,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:backgroundTint="@color/maroon"
-                android:text="NON-ULC" />
+                android:text="NON-ULC"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
         </RadioGroup>
     </LinearLayout>
 
@@ -116,7 +120,7 @@
                 android:maxLength="20"
                 android:maxLines="1"
                 android:textColor="@color/DARKGray"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/verify_ulc"
@@ -127,7 +131,7 @@
                 android:background="@drawable/purple_btn_bg"
                 android:text="Verify ULC"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -159,14 +163,14 @@
                     android:gravity="center|left"
                     android:hint="PRODUCTS"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp"/>
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_ulc_woe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp" />
 
             <Button
                 android:id="@+id/ulc_woe_btn"
@@ -174,7 +178,9 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/purple_btn_bg"
                 android:text="Submit"
-                android:textColor="@color/white" />
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/label" />
         </LinearLayout>
 
     </LinearLayout>
@@ -203,7 +209,7 @@
                 android:layout_weight="1"
                 android:text="TEST"
                 android:textColor="@color/white"
-                android:textSize="13sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -219,7 +225,7 @@
                     android:layout_marginTop="5dp"
                     android:text="Selected Test"
                     android:textColor="@color/grey"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -239,15 +245,16 @@
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center"
                 android:layout_weight="4"
-                android:singleLine="true"
-                android:maxLines="1"
-                android:lines="1"
-                android:inputType="text"
                 android:background="@color/white"
                 android:drawableRight="@drawable/search_red"
-                android:hint="Search Test Name"
+                android:hint="SEARCH TEST NAME"
                 android:iconifiedByDefault="false"
-                android:textSize="14sp"/>
+                android:inputType="text"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -258,7 +265,7 @@
             android:layout_margin="3dp"
             android:layout_weight="5"
             android:background="@drawable/border_background"
-            android:padding="5dp"/>
+            android:padding="5dp" />
 
         <LinearLayout
             android:id="@+id/ll_btn"
@@ -267,6 +274,7 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
             android:gravity="center"
+            android:weightSum="2"
             android:orientation="horizontal">
 
             <Button
@@ -275,21 +283,21 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@drawable/clear_button"
-                android:minEms="8"
+                android:layout_weight="1"
                 android:text="Reset"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/btn_save"
+                android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:background="@drawable/next_button"
-                android:minEms="8"
                 android:text="Next"
                 android:textColor="@android:color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
     </LinearLayout>

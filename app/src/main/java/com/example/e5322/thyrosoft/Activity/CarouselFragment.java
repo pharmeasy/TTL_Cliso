@@ -13,9 +13,9 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Adapter.BMCViewPagerAdapter;
 import com.example.e5322.thyrosoft.AdminCovidAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.StaffCovidadapter;
 import com.google.android.material.tabs.TabLayout;
@@ -38,19 +38,21 @@ public class CarouselFragment extends Fragment {
     protected ViewPager pager;
     String TAG = ManagingTabsActivity.class.getSimpleName();
     String user, passwrd, access, api_key, user_code, CLIENT_TYPE;
+
+
     private ViewPagerAdapter adapter;
     private StaffViewPagerAdapter adapterStafff;
     private StaffCovidadapter covidadapter;
     private AdminCovidAdapter adminCovidAdapter;
-    private BMCViewPagerAdapter bmcViewPagerAdapter;
+
+
     NHF_pageradapter nhf_pageradapter;
     private int positionInt = 0;
     private SharedPreferences prefs;
-    private boolean covidacc = false;
-    SharedPreferences covid_pref;
+    AppPreferenceManager appPreferenceManager;
+    private boolean covidacc;
 
     public CarouselFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -63,19 +65,15 @@ public class CarouselFragment extends Fragment {
         pager = rootView.findViewById(R.id.vp_pages);
 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        user_code = prefs.getString("USER_CODE", null);
+        user = prefs.getString("Username", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        user_code = prefs.getString("USER_CODE", "");
+        appPreferenceManager = new AppPreferenceManager(getActivity());
 
-
-        covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
-        covidacc = covid_pref.getBoolean("covidacc", false);
-
-        Log.e("TAG", "THIS IS COVID ACCESS-->" + covidacc);
-        Log.e("TAG", "THIS IS  ACCESS-->" + access);
+        covidacc = getOfModulesAccess();
 
         if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
@@ -104,6 +102,20 @@ public class CarouselFragment extends Fragment {
         return rootView;
     }
 
+    private boolean getOfModulesAccess() {
+        try {
+            if (appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration() || appPreferenceManager.getCovidAccessResponseModel().isRat()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -113,6 +125,7 @@ public class CarouselFragment extends Fragment {
             pager.setAdapter(nhf_pageradapter);
         } else {
             if (access.equalsIgnoreCase(Constants.STAFF)) {
+
                 if (covidacc) {
                     covidadapter = new StaffCovidadapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(covidadapter);
@@ -120,8 +133,8 @@ public class CarouselFragment extends Fragment {
                     adapterStafff = new StaffViewPagerAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adapterStafff);
                 }
-
             } else {
+
                 if (covidacc) {
                     adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adminCovidAdapter);
@@ -129,7 +142,6 @@ public class CarouselFragment extends Fragment {
                     adapter = new ViewPagerAdapter(getResources(), getChildFragmentManager());
                     pager.setAdapter(adapter);
                 }
-
             }
         }
 
@@ -156,18 +168,15 @@ public class CarouselFragment extends Fragment {
         } else {
             Constants.tab_flag = "0";
 
-            Log.e(TAG, "covidwoe_flag --->" + Constants.covidwoe_flag);
-            Log.e(TAG, "universal --->" + Constants.universal);
-            Log.e(TAG, "ratfrag_flag --->" + Constants.ratfrag_flag);
 
             if (covidacc) {
                 if (Constants.covid_redirection == 1) {
                     pager.setCurrentItem(0);
                     Constants.covid_redirection = 0;
-                } else if(Constants.covidfrag_flag.equalsIgnoreCase("1")) {
+                } else if (Constants.covidfrag_flag.equalsIgnoreCase("1")) {
                     pager.setCurrentItem(0);
-                    Constants.covidfrag_flag ="0";
-                }else {
+                    Constants.covidfrag_flag = "0";
+                } else {
                     pager.setCurrentItem(2);
                 }
 
@@ -226,6 +235,7 @@ public class CarouselFragment extends Fragment {
                     currentFragment = (OnBackPressListener) nhf_pageradapter.getRegisteredFragment(pager.getCurrentItem());
                 } else {
                     if (access.equalsIgnoreCase(Constants.STAFF)) {
+
                         if (covidacc) {
                             currentFragment = (OnBackPressListener) covidadapter.getRegisteredFragment(pager.getCurrentItem());
                         } else {
@@ -233,6 +243,7 @@ public class CarouselFragment extends Fragment {
                         }
 
                     } else {
+
                         if (covidacc) {
                             currentFragment = (OnBackPressListener) adminCovidAdapter.getRegisteredFragment(pager.getCurrentItem());
                         } else {

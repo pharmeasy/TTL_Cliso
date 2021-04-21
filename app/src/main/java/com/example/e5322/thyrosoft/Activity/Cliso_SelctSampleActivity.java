@@ -53,6 +53,9 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
     private ArrayList<String> temparraylist;
     private AlertDialog.Builder alertDialogBuilder;
     ScannedBarcodeDetails scannedBarcodeDetails;
+    private int isNhlAvailable;
+    private String nhl_rate;
+
 
     @SuppressLint("NewApi")
     @Override
@@ -73,14 +76,16 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
         BMC_FinalBarcodeDetailsList = new ArrayList<>();
 
         prefe = getSharedPreferences(Constants.PREF_SAVEPATIENTDETAILS, MODE_PRIVATE);
-        brandName = prefe.getString("WOEbrand", null);
-        typeName = prefe.getString("woetype", null);
+        brandName = prefe.getString("WOEbrand", "");
+        typeName = prefe.getString("woetype", "");
         title.setText("Select sample types");
 
         Bundle bundle = getIntent().getExtras();
         Selcted_Outlab_Test = Global.Selcted_Outlab_Test_global;
         testsnames = bundle.getString("selectedTest");
-        Log.e("TAG", "test names ::: " + testsnames);
+        isNhlAvailable = bundle.getInt("isNhlAvailable");
+        nhl_rate = bundle.getString("NHL_rate");
+        Log.e("TAG", "test names :" + testsnames);
         show_selected_tests_data.setText(testsnames);
 
         linearLayoutManager = new LinearLayoutManager(Cliso_SelctSampleActivity.this);
@@ -92,12 +97,9 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
 
         locationlist = new ArrayList<>();
         TTLOthersSelectedList = new ArrayList<>();
-
-
         if (BMC_TTLOthersBarcodeDetailsList != null) {
             BMC_TTLOthersBarcodeDetailsList = null;
         }
-
         BMC_TTLOthersBarcodeDetailsList = new ArrayList<>();
 
         for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
@@ -192,11 +194,13 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                     Intent intent = new Intent(Cliso_SelctSampleActivity.this, Scan_Barcode_Outlabs_Activity.class);
                     Bundle bundle = new Bundle();
 
-                    Global.Selcted_Outlab_Test_global= Selcted_Outlab_Test;
+                    Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
                     // bundle.putString("payment", getAmount);
                     bundle.putString("writeTestName", selectedTestNames);
+                    bundle.putInt("isNhlAvailable", isNhlAvailable);
+                    bundle.putString("NHL_rate", nhl_rate);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
-                    Global.FinalBarcodeDetailsList_global=BMC_FinalBarcodeDetailsList;
+                    Global.FinalBarcodeDetailsList_global = BMC_FinalBarcodeDetailsList;
 //                    bundle.putParcelableArrayList("FinalBarcodeList", BMC_FinalBarcodeDetailsList);
                     bundle.putString("come_from", "SelectSampleType");
                     intent.putExtras(bundle);

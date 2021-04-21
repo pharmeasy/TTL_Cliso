@@ -23,6 +23,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_txt"
                 android:visibility="gone"
+                android:textSize="@dimen/value"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -31,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_2sdp"
                 android:text=""
-                android:textSize="@dimen/_13sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold"
                 android:textColor="@color/black" />
 
@@ -48,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
-                    android:textSize="@dimen/_13sdp"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -57,7 +58,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text=""
-                    android:textSize="@dimen/_13sdp"
+                    android:textSize="@dimen/value"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -67,7 +68,7 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/cb_blue_button"
-                    android:textSize="@dimen/_13sdp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -81,7 +82,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Result : "
-                    android:textSize="@dimen/_13sdp"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:textColor="@color/black" />
 
@@ -90,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:textSize="@dimen/_13sdp"
+                    android:textSize="@dimen/value"
                     android:layout_marginBottom="@dimen/_3sdp" />
             </LinearLayout>
 
@@ -103,8 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="@dimen/_13sdp"
-
+                android:textSize="@dimen/value"
                 android:textColor="@color/black"
                 android:visibility="gone" />
 
@@ -113,8 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="@dimen/_13sdp"
-
+                android:textSize="@dimen/value"
                 android:textColor="@color/black"
                 android:visibility="gone" />
 
@@ -131,6 +131,8 @@
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
                 android:text=""
+                android:textAllCaps="true"
+                android:textSize="@dimen/label"
                 android:textColor="@color/white" />
 
 

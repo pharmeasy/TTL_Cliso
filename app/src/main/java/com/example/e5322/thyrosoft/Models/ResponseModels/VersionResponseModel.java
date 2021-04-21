@@ -18,6 +18,24 @@ public class VersionResponseModel {
     private String response;
     private int syncproduct;
     private String url;
+    private String isShow;
+    private String FlashText;
+
+    public String getIsShow() {
+        return isShow;
+    }
+
+    public void setIsShow(String isShow) {
+        this.isShow = isShow;
+    }
+
+    public String getFlashText() {
+        return FlashText;
+    }
+
+    public void setFlashText(String flashText) {
+        FlashText = flashText;
+    }
 
     public String getVersion() {
         return Version;

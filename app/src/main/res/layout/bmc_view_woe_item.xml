@@ -18,8 +18,8 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imageView"
@@ -49,8 +49,9 @@
             android:layout_marginLeft="15dp"
             android:layout_weight="1"
             android:text="Android Name"
+            android:textAllCaps="true"
             android:textColor="@color/DARKGray"
-            android:textSize="13dp" />
+            android:textSize="@dimen/value" />
 
 
         <LinearLayout
@@ -70,7 +71,7 @@
                 android:gravity="top"
                 android:text="TESTS: "
                 android:textColor="@color/red"
-                android:textSize="9sp" />
+                android:textSize="@dimen/note" />
 
             <TextView
                 android:id="@+id/puttestName"
@@ -82,7 +83,7 @@
                 android:maxLines="2"
                 android:text="Android Version sijhdjkhsjkhfjkhdjkhjkdfjkhdfjdfjksdjdjdhjkdhjksdhjkhjksdfjdfjkdjksd"
                 android:textColor="@color/grey"
-                android:textSize="9sp" />
+                android:textSize="@dimen/note" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView

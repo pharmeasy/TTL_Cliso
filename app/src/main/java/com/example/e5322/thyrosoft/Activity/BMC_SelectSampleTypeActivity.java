@@ -93,10 +93,10 @@ public class BMC_SelectSampleTypeActivity extends AppCompatActivity {
         selctedTest = bundle.getParcelableArrayList("getOutlablist");
 
         prefs = getSharedPreferences(Constants.PREF_USER_DETAILS, MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         getTestNameToPAss = new ArrayList<>();
         getAmount = bundle.getString("payment");

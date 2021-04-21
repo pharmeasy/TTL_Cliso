@@ -384,10 +384,10 @@ public class Ledger_details extends RootFragment {
 
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
 
-            String user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            String api_key = prefs.getString("API_KEY", null);
+            String user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            String api_key = prefs.getString("API_KEY", "");
 
             GlobalClass.MONTH = String.valueOf(monthSEND);
             GlobalClass.YEAR = String.valueOf(year.getSelectedItem());

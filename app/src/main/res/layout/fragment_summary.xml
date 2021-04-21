@@ -34,6 +34,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Summary"
+            android:textSize="@dimen/header"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
             android:textStyle="bold" />
 
@@ -66,8 +68,9 @@
             android:background="@drawable/underline_grey"
             android:gravity="center"
             android:text="Patient Info"
+            android:textAllCaps="true"
             android:textColor="@color/Graytoolbar"
-            android:textSize="14dp"
+            android:textSize="@dimen/value"
             android:textStyle="bold" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -91,8 +94,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Type "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -109,8 +113,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="TTL/ILS"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -135,8 +140,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="SCT "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -153,8 +159,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="05-12-2018  09:35 am"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -180,8 +187,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Ref By "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -198,8 +206,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Self"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -224,8 +233,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Patient Name "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -242,7 +252,8 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -267,8 +278,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Age "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -311,8 +323,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Gender "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -329,8 +342,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -579,8 +593,9 @@
                 android:background="@drawable/underline_white"
                 android:gravity="center"
                 android:text="Sample Info"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14dp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -604,8 +619,9 @@
                     android:paddingTop="3dp"
                     android:paddingBottom="3dp"
                     android:text="Test "
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -691,6 +707,8 @@
             android:drawableLeft="@drawable/edt_woe_img"
             android:gravity="right|center"
             android:text="Edit "
+            android:textAllCaps="true"
+            android:textSize="@dimen/label"
             android:textColor="@color/maroon" />
 
         <TextView
@@ -701,6 +719,8 @@
             android:drawableRight="@drawable/gray_delete"
             android:gravity="left|center"
             android:text="/ Delete"
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"
             android:textColor="@color/maroon" />
     </LinearLayout>
 

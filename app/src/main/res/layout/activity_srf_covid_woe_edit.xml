@@ -29,7 +29,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Edit details"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -64,15 +65,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/alphabets1"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="First name*"
+                    android:hint="FIRST NAME*"
+                    android:textAllCaps="true"
                     android:inputType="textCapCharacters"
                     android:maxLength="16"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_lastname"
@@ -80,15 +82,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:textAllCaps="true"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/alphabets1"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Last name*"
+                    android:hint="LAST NAME*"
                     android:inputType="textCapCharacters"
                     android:maxLength="16"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -109,7 +112,7 @@
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:textAllCaps="false"
                     android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -136,15 +139,15 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/digits"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Amount collected*"
+                    android:hint="AMOUNT COLLECTED*"
                     android:inputType="number"
                     android:maxLength="5"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_srfid"
@@ -152,7 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/number_digits"
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="SRF ID*"
@@ -160,7 +163,7 @@
                     android:maxLength="13"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:visibility="visible" />
 
             </LinearLayout>
@@ -178,22 +181,22 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/number_digits"
-                    android:hint="Age*"
+                    android:hint="AGE*"
                     android:inputType="number"
                     android:maxLength="3"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue">
+                    android:background="@drawable/corner_curve_maroon">
 
                     <Spinner
                         android:id="@+id/spn_age"
@@ -211,6 +214,14 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:weightSum="2.1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAllCaps="true"
+                        android:text="gender"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="@dimen/value"/>
 
                     <ImageView
                         android:id="@+id/male"
@@ -261,16 +272,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
-                android:background="@drawable/custom_border_edittext_blue"
+                android:background="@drawable/corner_curve_maroon"
                 android:digits="@string/addressvalidation"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="Patient address*"
+                android:hint="PATIENT ADDRESS*"
                 android:inputType="textPostalAddress"
                 android:maxLength="200"
                 android:maxLines="3"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -283,22 +294,22 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Patient pincode*"
+                    android:hint="PATIENT PINCODE*"
                     android:inputType="number"
                     android:maxLength="6"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue">
+                    android:background="@drawable/corner_curve_maroon">
 
                     <Spinner
                         android:id="@+id/spn_scp"
@@ -311,21 +322,36 @@
 
             </LinearLayout>
 
+
+
+            <EditText
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/corner_curve_maroon"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="EMAIL ID*"
+                android:maxLength="50"
+                android:textColor="@color/black"
+                android:padding="@dimen/_5sdp"
+                android:textSize="@dimen/value" />
+
             <EditText
                 android:id="@+id/edt_coll_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_5sdp"
-                android:background="@drawable/custom_border_edittext_blue"
+                android:background="@drawable/corner_curve_maroon"
                 android:digits="@string/addressvalidation"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="Collection address*"
+                android:hint="COLLECTION ADDRESS*"
                 android:inputType="textPostalAddress"
                 android:maxLines="3"
                 android:maxLength="200"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -338,15 +364,15 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Collection pincode*"
+                    android:hint="COLLECTION PINCODE*"
                     android:inputType="number"
                     android:maxLength="6"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/tv_coll_date"
@@ -354,13 +380,13 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Collection date*"
+                    android:hint="COLLECTION DATE*"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -375,13 +401,13 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Collection time*"
+                    android:hint="COLLECTION TIME*"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_barcode"
@@ -389,16 +415,16 @@
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Barcode*"
+                    android:hint="BARCODE*"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -417,16 +443,16 @@
                     android:layout_marginRight="@dimen/_15sdp"
                     android:layout_marginBottom="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Re-enter barcode*"
+                    android:hint="RE-ENTER BARCODE*"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -443,11 +469,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="@string/pescription"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -456,12 +483,13 @@
                     android:layout_height="@dimen/_26sdp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:background="@drawable/covidbtn"
-                    android:text="Upload"
+                    android:text="UPLOAD"
+                    android:backgroundTint="@color/maroon"
+                    android:textColor="@color/white"
                     android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_nofilepresc"
@@ -469,11 +497,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.2"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -492,7 +520,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/_3sdp"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -511,11 +539,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="Aadhaar/Passport"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -524,12 +553,13 @@
                     android:layout_height="@dimen/_26sdp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:background="@drawable/covidbtn"
-                    android:text="Upload"
+                    android:text="UPLOAD"
                     android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:backgroundTint="@color/maroon"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_nofileadhar"
@@ -537,11 +567,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.2"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:id="@+id/lin_adhar_images"
@@ -560,7 +590,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -580,11 +610,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="@string/vialimg"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -593,12 +624,13 @@
                     android:layout_height="@dimen/_26sdp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:background="@drawable/covidbtn"
                     android:text="@string/uploadfile"
-                    android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textAllCaps="true"
+                    android:backgroundTint="@color/maroon"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_nofilevial"
@@ -606,11 +638,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.2"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -629,7 +661,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/_3sdp"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                 </LinearLayout>
@@ -649,11 +681,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="@string/other"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -662,12 +695,13 @@
                     android:layout_height="@dimen/_26sdp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:background="@drawable/covidbtn"
-                    android:text="Upload"
-                    android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:text="UPLOAD"
+                    android:textAllCaps="true"
+                    android:backgroundTint="@color/maroon"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_nofileother"
@@ -675,11 +709,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.2"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -698,7 +732,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/_3sdp"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
 
@@ -721,11 +755,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="Selfie"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -734,12 +769,13 @@
                     android:layout_height="@dimen/_26sdp"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
+                    android:layout_weight="0.9"
                     android:background="@drawable/covidbtn"
-                    android:text="Upload"
-                    android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:text="UPLOAD"
+                    android:textAllCaps="true"
+                    android:backgroundTint="@color/maroon"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_selfie"
@@ -747,11 +783,11 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
+                    android:layout_weight="1.2"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -770,7 +806,7 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/_3sdp"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
 
@@ -794,7 +830,7 @@
                     android:layout_marginRight="@dimen/_3sdp"
                     android:text="@string/allfields"
                     android:textColor="@color/maroon"
-                    android:textSize="@dimen/_11sdp"
+                    android:textSize="@dimen/note"
                     android:textStyle="bold" />
 
                 <RelativeLayout
@@ -815,9 +851,9 @@
                         android:clickable="false"
                         android:enabled="false"
                         android:text="@string/submit"
-                        android:textAllCaps="false"
+                        android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/label" />
 
                     <Button
                         android:id="@+id/btn_reset"
@@ -832,7 +868,7 @@
                         android:text="@string/btnreset"
                         android:textAllCaps="false"
                         android:textColor="@color/maroon"
-                        android:textSize="@dimen/_12sdp" />
+                        android:textSize="@dimen/label" />
 
                 </RelativeLayout>
 

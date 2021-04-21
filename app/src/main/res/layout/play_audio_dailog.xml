@@ -27,7 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/play_recorded_audio"
-            android:textSize="@dimen/dp_18" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/label" />
 
         <ImageView
             android:layout_width="@dimen/dp_60"
@@ -49,7 +50,7 @@
                 android:background="@drawable/maroon_rect_box"
                 android:text="@string/play"
                 android:textColor="@color/white"
-                android:textSize="@dimen/dp_20" />
+                android:textSize="@dimen/label" />
 
             <Button
                 android:id="@+id/btn_stop"
@@ -59,7 +60,7 @@
                 android:background="@drawable/maroon_rect_box"
                 android:text="@string/stop"
                 android:textColor="@color/white"
-                android:textSize="@dimen/dp_20" />
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 

@@ -26,6 +26,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:gravity="center"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:textColor="@color/DARKGray"
                 android:text="CREDIT TYPE :"/>
             <Spinner
@@ -37,6 +39,7 @@
                 android:gravity="center_vertical"
                 android:backgroundTint="@color/maroon"
                 android:layout_weight="1"
+                android:textSize="@dimen/value"
                 android:layout_marginBottom="5dp"
                 android:id="@+id/typespinner">
 

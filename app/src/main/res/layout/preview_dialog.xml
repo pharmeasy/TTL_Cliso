@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/tools"
+    xmlns:attrs="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="500dp"
-    xmlns:attrs="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/tools"
-    android:padding="@dimen/_4sdp"
-    android:gravity="center">
+    android:gravity="center"
+    android:padding="@dimen/_4sdp">
 
     <LinearLayout
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="1dp"
         android:layout_below="@+id/title"
+        android:layout_marginTop="1dp"
         android:orientation="vertical">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
-            android:layout_weight="0.92"
-            android:layout_height="0dp">
+            android:layout_height="0dp"
+            android:layout_weight="0.92">
 
         </androidx.viewpager.widget.ViewPager>
 
@@ -27,34 +27,34 @@
             android:id="@+id/pageIndicatorView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:piv_animationType="scale"
             android:layout_gravity="center"
+            android:layout_marginTop="-20dp"
+            app:piv_animationType="scale"
+            app:piv_dynamicCount="true"
             app:piv_interactiveAnimation="true"
             app:piv_selectedColor="@color/maroon"
             app:piv_unselectedColor="@color/grey"
             app:piv_viewPager="@id/viewPager"
             attrs:piv_padding="12dp"
-            android:layout_marginTop="-20dp"
-            app:piv_dynamicCount="true"
             attrs:piv_radius="8dp" />
 
         <Button
             android:id="@+id/btn_delete"
-            android:layout_below="@+id/imageview"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="0dp"
-            android:layout_weight="0.08"
-            android:layout_gravity="center"
+            android:layout_below="@+id/imageview"
             android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_8sdp"
+            android:layout_marginBottom="@dimen/_4sdp"
+            android:layout_weight="0.08"
             android:background="@drawable/covidbtn"
             android:text="Delete"
-            android:visibility="gone"
-            android:textAllCaps="false"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:layout_marginBottom="@dimen/_4sdp"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/label"
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -71,7 +71,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_cancel_maron_24dp"/>
+            android:src="@drawable/ic_cancel_maron_24dp" />
 
     </LinearLayout>
 

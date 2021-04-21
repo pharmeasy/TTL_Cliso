@@ -23,8 +23,9 @@
             android:layout_weight="0.8"
             android:gravity="center"
             android:text="Lead generated successfully"
+            android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="@dimen/subHeadSize"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <ImageView
@@ -65,8 +66,9 @@
                     android:layout_marginLeft="@dimen/dp_5"
                     android:gravity="center"
                     android:text="@string/booking_id"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/watsappSize"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -80,7 +82,7 @@
                 android:singleLine="true"
                 android:text="A22S04"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -104,8 +106,9 @@
                     android:gravity="center"
                     android:text="Patient name"
                     android:textAlignment="viewStart"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_10sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -116,8 +119,9 @@
                 android:layout_weight="3.3"
                 android:padding="@dimen/dp_5"
                 android:text="Test Entry"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -138,8 +142,9 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/dp_5"
                     android:text="@string/tv_mob_no"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_10sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -152,7 +157,7 @@
                 android:padding="@dimen/dp_5"
                 android:text="9137985277"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -176,8 +181,9 @@
                     android:layout_marginLeft="@dimen/dp_5"
                     android:gravity="center"
                     android:text="@string/tv_email"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/watsappSize"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -189,7 +195,7 @@
                 android:padding="@dimen/dp_5"
                 android:text="kalpesh.borane@thyrocare.com"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -213,8 +219,9 @@
                     android:layout_marginLeft="@dimen/dp_5"
                     android:gravity="center"
                     android:text="@string/tv_addr"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/watsappSize"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -225,8 +232,9 @@
                 android:layout_weight="3.3"
                 android:padding="@dimen/dp_5"
                 android:text="Navi Mumbai"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -250,8 +258,9 @@
                     android:layout_marginLeft="@dimen/dp_5"
                     android:gravity="center"
                     android:text="@string/remarks"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/watsappSize"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -262,8 +271,9 @@
                 android:layout_weight="3.3"
                 android:padding="@dimen/dp_5"
                 android:text="Entered Remarks"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
     </LinearLayout>
 
@@ -278,8 +288,9 @@
             android:layout_marginLeft="@dimen/smallPadding11"
             android:layout_marginTop="@dimen/smallPadding11"
             android:text="Note : "
+            android:textAllCaps="true"
             android:textColor="@color/black"
-            android:textSize="@dimen/watsappSize" />
+            android:textSize="@dimen/note" />
 
         <TextView
             android:id="@+id/note"
@@ -287,8 +298,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/smallPadding11"
             android:text="kalpesh Borane will be contacted for availing service"
+            android:textAllCaps="true"
             android:textColor="@color/black"
-            android:textSize="@dimen/watsappSize" />
+            android:textSize="@dimen/note" />
     </LinearLayout>
 
     <LinearLayout

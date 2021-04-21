@@ -89,11 +89,11 @@ public class Faq_activity extends AppCompatActivity {
         });
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        client_type = prefs.getString("CLIENT_TYPE", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        client_type = prefs.getString("CLIENT_TYPE", "");
 
         if (Global.checkForApi21()) {
             Window window = getWindow();

@@ -71,7 +71,7 @@
             android:clickable="true"
             android:textColor="@color/cb_errorRed"
             android:textSize="10sp"
-            android:text="hellosdfsadfasdfasdfasdfasdfsfasdfasdf"
+            android:text=""
             android:gravity="center"/>
 
     </LinearLayout>

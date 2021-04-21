@@ -23,9 +23,10 @@
             android:paddingLeft="15dp"
             android:paddingTop="7dp"
             android:paddingBottom="7dp"
+            android:textAllCaps="true"
             android:text="Dr. Leena H LAlan (50Y/F)"
             android:textColor="@color/DARKGray"
-            android:textSize="13dp" />
+            android:textSize="@dimen/value" />
 
         <ImageView
             android:id="@+id/expand_img"

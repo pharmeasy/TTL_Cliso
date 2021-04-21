@@ -28,7 +28,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Camp Intimation"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -40,10 +41,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="43dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/enter_entered_border_curve"
         android:orientation="horizontal">
@@ -64,7 +65,9 @@
                 android:layout_weight="3"
                 android:gravity="center"
                 android:text="ENTER"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_enter"
@@ -96,7 +99,9 @@
                 android:background="@color/lightgray"
                 android:gravity="center"
                 android:text="MIS"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_entered"

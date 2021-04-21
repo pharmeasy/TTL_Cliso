@@ -30,8 +30,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Pending"
-                android:textSize="@dimen/_12sdp" />
+                android:text="PENDING"
+                android:textSize="@dimen/value" />
 
 
             <RadioButton
@@ -41,8 +41,8 @@
 
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Resulted"
-                android:textSize="@dimen/_12sdp" />
+                android:text="RESULTED"
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/rd_expired"
@@ -51,8 +51,8 @@
 
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Expired"
-                android:textSize="@dimen/_12sdp" />
+                android:text="EXPIRED"
+                android:textSize="@dimen/value" />
         </RadioGroup>
 
         <LinearLayout
@@ -79,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start|center"
                     android:layout_marginLeft="@dimen/dp_5"
+                    android:textSize="@dimen/value"
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:textColor="@color/black"

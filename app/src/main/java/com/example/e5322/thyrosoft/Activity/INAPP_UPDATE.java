@@ -181,10 +181,10 @@ public class INAPP_UPDATE implements ActivityCompat.OnRequestPermissionsResultCa
                     if (intPkgversion >= intApiVersion) {
                         Log.e(TAG, "intPkgversion -->" + intPkgversion + " intApiVersion--->" + intApiVersion);
                         SharedPreferences prefs = context.getSharedPreferences("Userdetails", MODE_PRIVATE);
-                        final String user = prefs.getString("Username", null);
-                        final String passwrd = prefs.getString("password", null);
-                        String access = prefs.getString("ACCESS_TYPE", null);
-                        String api_key = prefs.getString("API_KEY", null);
+                        final String user = prefs.getString("Username", "");
+                        final String passwrd = prefs.getString("password", "");
+                        String access = prefs.getString("ACCESS_TYPE", "");
+                        String api_key = prefs.getString("API_KEY", "");
                         USER_CODE = prefs.getString("USER_CODE", "");
 
                         SharedPreferences fire_pref = context.getSharedPreferences(Constants.SH_FIRE, MODE_PRIVATE);

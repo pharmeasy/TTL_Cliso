@@ -81,7 +81,8 @@
                     android:layout_alignParentTop="true"
                     android:layout_marginTop="5dp"
                     android:iconifiedByDefault="false"
-                    android:queryHint="Search Here" />
+                    android:queryHint="SEARCH HERE"
+                    android:textSize="@dimen/value"/>
                 <!--
                         <SearchView
                             android:layout_marginTop="5dp"
@@ -108,7 +109,9 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:textColor="@color/colorBlack"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value"/>
 
                 <ListView
                     android:id="@+id/listviewreport"

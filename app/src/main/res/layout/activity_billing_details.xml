@@ -36,8 +36,9 @@
                 android:layout_gravity="center"
                 android:layout_weight="4"
                 android:gravity="center"
+                android:textAllCaps="true"
                 android:text="Billing Details"
-                android:textSize="18sp"
+                android:textSize="@dimen/header"
                 android:textStyle="bold" />
 
             <ImageView
@@ -69,16 +70,19 @@
 
         <TextView
             android:id="@+id/download"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_weight="0.5"
             android:background="@drawable/border_curve_background"
             android:gravity="center"
             android:text="Download Billing Details"
+            android:textAllCaps="true"
+            android:textSize="@dimen/label"
             android:textColor="@color/maroon"
             android:textStyle="bold" />
     </LinearLayout>

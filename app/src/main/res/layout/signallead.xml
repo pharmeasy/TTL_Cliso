@@ -22,8 +22,9 @@
             android:gravity="center|left"
             android:padding="3dp"
             android:text="Lipid profile"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="14sp" />
+            android:textSize="@dimen/value" />
 
         <TextView
             android:id="@+id/tv_sample_type"
@@ -34,8 +35,9 @@
             android:gravity="center"
             android:padding="3dp"
             android:text="SERUM"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="14sp" />
+            android:textSize="@dimen/value" />
 
     </LinearLayout>
 

@@ -130,7 +130,7 @@ public class RATEnterFrag extends Fragment {
     SearchableSpinner spr_hospital;
     private String userChoosenTask;
     private int PICK_PHOTO_FROM_GALLERY = 202;
-    EditText edt_firstname, edt_lastname, edt_age, edt_amtcollected;
+    EditText edt_firstname, edt_lastname, edt_age, edt_amtcollected, edt_email;
     RadioButton rd_home, rd_dps;
     File aadhar_file = null;
     Bitmap bitmapimage;
@@ -150,6 +150,7 @@ public class RATEnterFrag extends Fragment {
     List<Hospital_model.HospitalDETAILSBean> hospitalDETAILSBeanList = new ArrayList<>();
     List<String> hospitalname = new ArrayList<>();
     private int agesinteger;
+
 
     public RATEnterFrag() {
         // Required empty public constructor
@@ -358,7 +359,7 @@ public class RATEnterFrag extends Fragment {
                             covidpostdata.setTESTCODE("CRAT");
                             covidpostdata.setAGE(edt_age.getText().toString());
                             covidpostdata.setBARCODE(txt_barcode.getText().toString());
-
+                            covidpostdata.setEMAIL(edt_email.getText().toString());
 
                             if (!GlobalClass.isNull(hospt_ID)) {
                                 covidpostdata.setHOSPITAL(hospt_ID);
@@ -413,7 +414,6 @@ public class RATEnterFrag extends Fragment {
             @Override
             public void onClick(View v) {
                 ClearFields();
-
             }
         });
 
@@ -531,7 +531,7 @@ public class RATEnterFrag extends Fragment {
     private void ClearFields() {
         edt_firstname.setText("");
         edt_lastname.setText("");
-
+        edt_email.setText("");
         edt_age.setText("");
         edt_amtcollected.setText("");
 
@@ -609,6 +609,19 @@ public class RATEnterFrag extends Fragment {
         if (GlobalClass.isNull(edt_amtcollected.getText().toString())) {
             Global.showCustomToast(getActivity(), ToastFile.AMTCOLL);
             edt_lastname.requestFocus();
+            return false;
+        }
+
+
+        if (GlobalClass.isNull(edt_email.getText().toString())) {
+            Global.showCustomToast(getActivity(), "Enter Email-ID");
+            edt_email.requestFocus();
+            return false;
+        }
+
+        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+            Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+            edt_email.requestFocus();
             return false;
         }
 
@@ -729,6 +742,7 @@ public class RATEnterFrag extends Fragment {
         by_missed = root.findViewById(R.id.by_missed);
         by_generate = root.findViewById(R.id.by_generate);
         btn_verify = root.findViewById(R.id.btn_verify);
+        edt_email = root.findViewById(R.id.edt_email);
 
         spr_gender = root.findViewById(R.id.spr_gender);
 
@@ -762,18 +776,14 @@ public class RATEnterFrag extends Fragment {
         edt_lastname = root.findViewById(R.id.edt_lastname);
         edt_age = root.findViewById(R.id.edt_age);
         edt_amtcollected = root.findViewById(R.id.edt_amtcollected);
-
-
         txt_barcode = root.findViewById(R.id.txt_barcode);
         rd_home = root.findViewById(R.id.rd_home);
         rd_dps = root.findViewById(R.id.rd_dps);
-
 
         edt_age.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
-
             }
 
             @Override
@@ -881,7 +891,7 @@ public class RATEnterFrag extends Fragment {
 
             @Override
             public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
 
@@ -966,7 +976,7 @@ public class RATEnterFrag extends Fragment {
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());

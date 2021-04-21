@@ -4,9 +4,7 @@ public class Patients
     public boolean flag=true;
     private String scp;
     private String B2B;
-
     private String pdflink;
-
     private String sct;
 
     private String chn_test;
@@ -52,6 +50,16 @@ public class Patients
     private String confirm_status;
 
     private String Ref_By;
+
+    private String Category;
+
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String category) {
+        Category = category;
+    }
 
     public String getScp ()
 {

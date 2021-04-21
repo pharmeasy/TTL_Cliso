@@ -3,13 +3,10 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -28,6 +28,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
@@ -94,10 +95,10 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
     @Override
     public void onBindViewHolder(@NonNull final AttachBarcodeAdpter.ViewHolder holder, final int position) {
         prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
 
         holder.enter_barcode.setTag(position);
         holder.setback.setOnClickListener(new View.OnClickListener() {
@@ -369,11 +370,8 @@ class AttachBarcodeAdpter extends RecyclerView.Adapter<AttachBarcodeAdpter.ViewH
                         }
                     }
 
-                } else {
-
                 }
 
-            } else {
             }
 
         }

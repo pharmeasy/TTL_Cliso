@@ -29,7 +29,7 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="SGC/PGC Entry"
-            android:textSize="18sp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -55,7 +55,7 @@
                 android:layout_marginLeft="9dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="9dp"
-                android:layout_weight="3.7">
+                android:layout_weight="4.9">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -76,7 +76,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:ems="10"
@@ -89,17 +89,18 @@
                             android:src="@drawable/placepicker" />
 
                         <TextView
+
                             android:id="@+id/lattitude_txt"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_marginRight="2dp"
                             android:layout_weight="1"
                             android:gravity="center|left"
-                            android:hint="Latitude*"
+                            android:hint="LATITUDE*"
                             android:maxLength="14"
                             android:paddingLeft="5dp"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <TextView
                             android:id="@+id/longitude_txt"
@@ -108,11 +109,11 @@
                             android:layout_marginLeft="2dp"
                             android:layout_weight="1"
                             android:gravity="center|left"
-                            android:hint="Longitude*"
+                            android:hint="LONGITUDE*"
                             android:maxLength="15"
                             android:paddingLeft="5dp"
                             android:textColor="@color/black"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <EditText
@@ -121,15 +122,17 @@
                         android:layout_height="0dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="0123456789"
-                        android:hint="Enter Pincode*"
+                        android:hint="ENTER PINCODE*"
                         android:inputType="number"
                         android:maxLength="6"
                         android:maxLines="1"
                         android:paddingLeft="6dp"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
+
 
                     <EditText
                         android:id="@+id/mobile_edt"
@@ -137,19 +140,19 @@
                         android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="0123456789"
-                        android:importantForAutofill="no"
                         android:ems="10"
-                        android:hint="Enter Mobile Number*"
+                        android:hint="ENTER MOBILE NUMBER*"
+                        android:importantForAutofill="no"
                         android:inputType="number"
                         android:maxLength="10"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/email_edt"
@@ -158,17 +161,17 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:ems="10"
                         android:gravity="center|left"
-                        android:hint="Enter Email Id*"
+                        android:hint="ENTER EMAIL ID*"
                         android:inputType="textEmailAddress"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/client_name_edt"
@@ -178,20 +181,19 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
                         android:ems="10"
                         android:gravity="center|left"
-                        android:hint="Enter Client Name*"
+                        android:hint="ENTER CLIENT NAME*"
                         android:inputType="textCapCharacters"
                         android:maxLength="25"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:id="@+id/dr_name_layout"
@@ -220,7 +222,7 @@
                             android:inputType="textEmailAddress"
                             android:text="DR"
                             android:textColor="@color/DARKGray"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <EditText
                             android:id="@+id/dr_name_edt"
@@ -231,16 +233,16 @@
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="center"
                             android:layout_weight="4"
-                            android:background="@drawable/background_edt"
                             android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
                             android:ems="10"
+                            android:background="@color/transparent"
                             android:gravity="center|left"
                             android:hint="Enter Name"
                             android:inputType="textCapCharacters"
                             android:maxLength="25"
                             android:paddingLeft="6dp"
                             android:textColor="@color/DARKGray"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <EditText
@@ -264,20 +266,20 @@
                         android:maxLines="4"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp"
-                        android:visibility="gone"/>
+                        android:textSize="@dimen/value"
+                        android:visibility="gone" />
                 </LinearLayout>
 
-        <!--        <Spinner
-                    android:id="@+id/sgc_pgc_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="34dp"
-                    android:layout_marginLeft="25dp"
-                    android:layout_marginRight="25dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/corner_curve_maroon"
-                    android:backgroundTint="@color/maroon"
-                    android:popupBackground="@color/maroon"/>-->
+                <!--        <Spinner
+                            android:id="@+id/sgc_pgc_spinner"
+                            android:layout_width="match_parent"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="25dp"
+                            android:layout_marginRight="25dp"
+                            android:layout_weight="2"
+                            android:background="@drawable/corner_curve_maroon"
+                            android:backgroundTint="@color/maroon"
+                            android:popupBackground="@color/maroon"/>-->
 
 
                 <Spinner
@@ -322,18 +324,18 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_ "
                         android:ems="10"
                         android:gravity="center|left"
-                        android:hint="Incharge Name*"
+                        android:hint="INCHARGE NAME*"
                         android:inputType="textCapCharacters"
                         android:maxLength="25"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/address"
@@ -345,17 +347,18 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.,:/@0123456789 "
                         android:ems="10"
                         android:gravity="center|left"
-                        android:hint="Enter Address*"
+                        android:hint="ENTER ADDRESS*"
                         android:inputType="textEmailAddress"
                         android:maxLines="4"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/phone_number"
@@ -366,20 +369,20 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="0123456789"
                         android:ems="10"
-                        android:importantForAutofill="no"
                         android:gravity="center|left"
                         android:hint="@string/enter_phone_number_ex_022_7878787"
+                        android:importantForAutofill="no"
                         android:inputType="number"
                         android:maxLength="11"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/website_edt"
@@ -390,9 +393,8 @@
                         android:layout_alignParentLeft="true"
                         android:layout_gravity="center"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="5dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:digits="QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuiopasdfghjklzxcvbnm.@_"
@@ -402,7 +404,7 @@
                         android:inputType="textWebEmailAddress"
                         android:paddingLeft="6dp"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:id="@+id/visiting_card_layout"
@@ -410,7 +412,7 @@
                         android:layout_height="0dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_marginBottom="8dp"
                         android:layout_weight="1"
                         android:background="@drawable/grey_curve_border"
                         android:orientation="horizontal"
@@ -423,14 +425,13 @@
                             android:layout_alignParentLeft="true"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:background="@drawable/background_edt"
                             android:ems="10"
                             android:gravity="center|left"
-                            android:hint="Visiting Card*"
+                            android:hint="VISITING CARD*"
                             android:inputType="textEmailAddress"
                             android:padding="5dp"
                             android:textColor="@color/DARKGray"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/correct_img"
@@ -444,7 +445,7 @@
                             android:padding="5dp"
                             android:src="@drawable/right_data"
                             android:textColor="@color/colorWhite"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
 
                         <ImageView
@@ -459,7 +460,7 @@
                             android:padding="5dp"
                             android:src="@drawable/cross_img"
                             android:textColor="@color/colorWhite"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
 
                         <Button
@@ -470,15 +471,16 @@
                             android:layout_marginRight="3dp"
                             android:layout_marginBottom="3dp"
                             android:layout_weight="1.5"
-                            android:background="@drawable/maroon_rect_box"
+                            android:background="@drawable/corner_curve_maroon"
+                            android:backgroundTint="@color/maroon"
                             android:ems="10"
                             android:gravity="center"
-                            android:hint="Choose File*"
+                            android:hint="CHOOSE FILE"
                             android:inputType="textEmailAddress"
                             android:padding="5dp"
                             android:textColor="@color/colorWhite"
                             android:textColorHint="@color/white"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
 
@@ -510,18 +512,20 @@
 
             <Button
                 android:id="@+id/next_btn_sgc_pgc"
-                style="@style/hint_text"
-                android:layout_width="match_parent"
+                android:layout_width="@dimen/_150sdp"
                 android:layout_height="0dp"
                 android:layout_marginLeft="9dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="9dp"
                 android:layout_marginBottom="10dp"
+                android:layout_gravity="center"
                 android:layout_weight="0.7"
                 android:background="@drawable/next_button"
                 android:padding="5dp"
                 android:text="Next"
-                android:textColor="@color/colorWhite" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorWhite"
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 

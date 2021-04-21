@@ -27,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_20sdp"
                 android:background="@color/transparent"
-                android:gravity="center|left" />
+                android:gravity="center|left"
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
 
@@ -46,29 +47,27 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Pending"
-                android:textSize="@dimen/_12sdp" />
+                android:text="PENDING"
+                android:textSize="@dimen/value" />
 
 
             <RadioButton
                 android:id="@+id/rd_done"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Resulted"
-                android:textSize="@dimen/_12sdp" />
+                android:text="RESULTED"
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/rd_expired"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:text="Expired"
-                android:textSize="@dimen/_12sdp" />
+                android:text="EXPIRED"
+                android:textSize="@dimen/value" />
         </RadioGroup>
 
         <LinearLayout
@@ -98,6 +97,7 @@
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:textColor="@color/black"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -126,13 +126,14 @@
             android:id="@+id/tv_norecords"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="No Records Found.."
             android:layout_gravity="center"
             android:gravity="center"
+            android:text="No Records Found.."
+            android:textAllCaps="true"
+            android:textColor="@color/black"
+            android:textSize="@dimen/label"
             android:textStyle="bold"
-            android:visibility="gone"
-            android:textSize="@dimen/_18sdp"
-            android:textColor="@color/black"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 

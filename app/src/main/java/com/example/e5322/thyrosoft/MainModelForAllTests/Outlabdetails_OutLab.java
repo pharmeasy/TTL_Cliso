@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 public class Outlabdetails_OutLab implements Parcelable {
     String code, name,isCPL, product, type, trf;
+    int isNHL;
 
     Rate_OutLab rate;
     Sampletype_OutLab[] sampletype;
@@ -27,6 +28,7 @@ public class Outlabdetails_OutLab implements Parcelable {
         product = in.readString();
         type = in.readString();
         trf = in.readString();
+        isNHL = in.readInt();
         rate = in.readParcelable(Rate_OutLab.class.getClassLoader());
         sampletype = in.createTypedArray(Sampletype_OutLab.CREATOR);
     }
@@ -39,6 +41,7 @@ public class Outlabdetails_OutLab implements Parcelable {
         dest.writeString(product);
         dest.writeString(type);
         dest.writeString(trf);
+        dest.writeInt(isNHL);
         dest.writeParcelable(rate, flags);
         dest.writeTypedArray(sampletype, flags);
     }
@@ -59,6 +62,14 @@ public class Outlabdetails_OutLab implements Parcelable {
             return new Outlabdetails_OutLab[size];
         }
     };
+
+    public int getIsNHL() {
+        return isNHL;
+    }
+
+    public void setIsNHL(int isNHL) {
+        this.isNHL = isNHL;
+    }
 
     public String getIsCPL() {
         return isCPL;
@@ -128,7 +139,7 @@ public class Outlabdetails_OutLab implements Parcelable {
 
 
     public static class Rate_OutLab implements Parcelable {
-        String b2b, b2c,cplr,rplr;
+        String b2b, b2c,cplr,rplr,NHLRate;
 
         public Rate_OutLab() {
         }
@@ -139,6 +150,7 @@ public class Outlabdetails_OutLab implements Parcelable {
             b2c = in.readString();
             cplr = in.readString();
             rplr = in.readString();
+            NHLRate = in.readString();
         }
 
         @Override
@@ -147,6 +159,7 @@ public class Outlabdetails_OutLab implements Parcelable {
             dest.writeString(b2c);
             dest.writeString(cplr);
             dest.writeString(rplr);
+            dest.writeString(NHLRate);
         }
 
         @Override
@@ -165,6 +178,14 @@ public class Outlabdetails_OutLab implements Parcelable {
                 return new Rate_OutLab[size];
             }
         };
+
+        public String getNHLRate() {
+            return NHLRate;
+        }
+
+        public void setNHLRate(String NHLRate) {
+            this.NHLRate = NHLRate;
+        }
 
         public String getCplr() {
             return cplr;

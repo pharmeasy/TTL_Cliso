@@ -35,7 +35,6 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.Cliso_SelctSampleActivity;
@@ -78,7 +77,6 @@ public class OutLabTestsActivity extends AppCompatActivity {
     RecyclerView outlab_list;
     EditText outlabtestsearch;
     List<String> showTestNmaes = new ArrayList<>();
-    GlobalClass globalClass;
     MainModel mainModel;
     RequestQueue requestQueuepoptestILS;
     String user, passwrd, access, api_key, brandName, typeName;
@@ -97,6 +95,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
     private String getTypeName;
     private ImageView back;
     private ImageView home;
+    private String source_type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,15 +114,16 @@ public class OutLabTestsActivity extends AppCompatActivity {
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        source_type = prefs.getString("SOURCE_TYPE", "");
 
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        brandName = prefs.getString("WOEbrand", null);
-        typeName = prefs.getString("woetype", null);
+        brandName = prefs.getString("WOEbrand", "");
+        typeName = prefs.getString("woetype", "");
 
         if (typeName == null) {
             title.setText("Outlab Tests");
@@ -158,6 +158,23 @@ public class OutLabTestsActivity extends AppCompatActivity {
                     Toast.makeText(OutLabTestsActivity.this, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     if (Selcted_Outlab_Test != null) {
+                        int isNhlAvailable = 0;
+                        int nhlrate = 0;
+                        if (brandName.equalsIgnoreCase("TTL-OTHERS")) {
+                            if (!source_type.equalsIgnoreCase("OLC")) {
+                                if (Global.OTPVERIFIED) {
+                                    isNhlAvailable = 0;
+                                } else {
+                                    isNhlAvailable = getValueFromSelectedList(Selcted_Outlab_Test);
+                                }
+                            } else {
+                                isNhlAvailable = getValueFromSelectedList(Selcted_Outlab_Test);
+                            }
+                        }
+
+                        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
+                            nhlrate = nhlrate + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getNHLRate());
+                        }
                         String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
                         if (Selcted_Outlab_Test.size() == 1) {
                             intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
@@ -166,10 +183,12 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         }
                         Bundle bundle = new Bundle();
                         Log.e(TAG, "onClick: " + Selcted_Outlab_Test.size());
-                        Global.Selcted_Outlab_Test_global=Selcted_Outlab_Test;
-                       // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
+                        Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
+                        // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
                         bundle.putString("selectedTest", sendTestNames);
                         bundle.putString("getTypeName", getTypeName);
+                        bundle.putString("NHL_rate", String.valueOf(nhlrate));
+                        bundle.putInt("isNhlAvailable", isNhlAvailable);
                         GlobalClass.selectedTestnamesOutlab = sendTestNames;
                         intent.putExtras(bundle);
                         startActivity(intent);
@@ -233,7 +252,7 @@ public class OutLabTestsActivity extends AppCompatActivity {
         });
 
 
-        if (GlobalClass.syncProduct(OutLabTestsActivity.this)){
+        if (GlobalClass.syncProduct(OutLabTestsActivity.this)) {
             if (!GlobalClass.isNetworkAvailable(OutLabTestsActivity.this)) {
                 TastyToast.makeText(OutLabTestsActivity.this, ToastFile.intConnection, Toast.LENGTH_SHORT, TastyToast.ERROR);
             } else {
@@ -282,6 +301,24 @@ public class OutLabTestsActivity extends AppCompatActivity {
         }
 
 
+    }
+
+
+    private int getValueFromSelectedList(ArrayList<Outlabdetails_OutLab> selcted_Outlab_Test) {
+        int value = 1;
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        if (selcted_Outlab_Test != null) {
+            for (int i = 0; i < selcted_Outlab_Test.size(); i++) {
+                arrayList.add(selcted_Outlab_Test.get(i).getIsNHL());
+                if (arrayList.contains(0)) {
+                    value = 0;
+                }
+                /*if (selcted_test.get(i).getIsNHL() == 1) {
+                    value = 1;
+                }*/
+            }
+        }
+        return value;
     }
 
     private void getAlltTestData() {

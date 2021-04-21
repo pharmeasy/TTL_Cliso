@@ -122,11 +122,11 @@ public class FAQ_Fragment extends Fragment {
         expandable_list_faq = (ExpandableListView) viewMain.findViewById(R.id.faq_list_expandable);
         category_spinner = (Spinner) viewMain.findViewById(R.id.category_spinner);
         prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        client_type = prefs.getString("CLIENT_TYPE", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        client_type = prefs.getString("CLIENT_TYPE", "");
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         Gson gson = new Gson();

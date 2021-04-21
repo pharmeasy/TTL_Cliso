@@ -20,52 +20,62 @@
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="Email ID."
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
-                android:hint="Enter email*"
+                android:hint="ENTER EMAIL*"
                 android:minHeight="30dp"
-                android:textColor="@color/colorBlack" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="Mobile Number"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/mob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
-                android:hint="Enter No. "
-                android:minHeight="30dp"
                 android:digits="0123456789"
+                android:hint="ENTER NO. "
                 android:inputType="phone"
                 android:maxLength="10"
-                android:textColor="@color/colorBlack" />
+                android:minHeight="30dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="30dp"
                 android:text="Name"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/colorWhite"
-                android:hint="Enter name"
-                android:minHeight="30dp"
                 android:digits="QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm "
-                android:textColor="@color/colorBlack" />
+                android:hint="ENTER NAME"
+                android:minHeight="30dp"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -79,20 +89,21 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginRight="10dp"
-                    android:textColor="@color/white"
                     android:background="@drawable/clear_button"
-                    android:text="cancel" />
+                    android:text="cancel"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/label" />
 
                 <Button
                     android:id="@+id/ok"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-
                     android:layout_marginLeft="10dp"
                     android:background="@drawable/next_button"
                     android:text="Send"
-                    android:textColor="@color/colorWhite" />
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/label" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

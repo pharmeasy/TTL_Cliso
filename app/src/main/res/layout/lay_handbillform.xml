@@ -23,7 +23,7 @@
             android:text="@string/fill_user"
             android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="16sp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -43,10 +43,11 @@
                 android:digits="@string/name_digits"
                 android:hint="@string/bs_name"
                 android:maxLength="35"
+                android:textAllCaps="true"
                 android:importantForAutofill="no"
                 android:padding="@dimen/mediumPadding"
                 android:textColor="@color/DARKGray"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,7 +70,7 @@
                 android:maxLength="10"
                 android:padding="@dimen/mediumPadding"
                 android:textColor="@color/DARKGray"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -93,7 +94,7 @@
                 android:maxLength="30"
                 android:padding="@dimen/mediumPadding"
                 android:textColor="@color/DARKGray"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -116,8 +117,9 @@
                 android:hint="@string/addressnotmand"
                 android:lines="3"
                 android:maxLength="150"
+                android:textAllCaps="true"
                 android:textColor="@color/DARKGray"
-                android:textSize="@dimen/watsappSize"
+                android:textSize="@dimen/value"
                 android:visibility="visible" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -141,7 +143,7 @@
                 android:maxLength="6"
                 android:padding="@dimen/mediumPadding"
                 android:textColor="@color/DARKGray"
-                android:textSize="@dimen/watsappSize" />
+                android:textSize="@dimen/value" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -158,7 +160,7 @@
             android:text="@string/btn_preview"
             android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label" />
 
 
     </LinearLayout>

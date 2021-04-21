@@ -23,8 +23,9 @@
             android:gravity="center|left"
             android:padding="3dp"
             android:text="Sample type"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="14sp" />
+            android:textSize="@dimen/value" />
 
         <Spinner
             android:id="@+id/sample_type_spinner"

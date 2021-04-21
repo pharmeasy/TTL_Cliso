@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,11 +52,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.ViewHolder> {
     private ArrayList<Patients> patients;
     private ArrayList<Patients> searchBarcode;
-    AlertDialog.Builder builder;
     String user, passwrd, genderId, access, api_key, error, pid, response1, barcodes, resID, saveAgeType, getBtechName;
-    GridLayoutManager gridLayoutManager;
-
-    LinearLayout linear_summary_open;
     Context context1;
     ProgressDialog barProgressDialog;
     public static com.android.volley.RequestQueue deletePatienDetail;
@@ -72,7 +69,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView patientName;
+        public TextView patientName, tv_brandlabel, tv_brand;
         public TextView testName;
         public TextView put_testName;
         public ImageView image_tag;
@@ -88,6 +85,8 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             patientName = (TextView) v.findViewById(R.id.patientName);
             testName = (TextView) v.findViewById(R.id.testName);
             put_testName = (TextView) v.findViewById(R.id.puttestName);
+            tv_brandlabel = (TextView) v.findViewById(R.id.tv_brandlabel);
+            tv_brand = (TextView) v.findViewById(R.id.tv_brand);
             image_tag = (ImageView) v.findViewById(R.id.imageView);
             linear = (LinearLayout) v.findViewById(R.id.linear);
             linearLayoutManager = new LinearLayoutManager(context1);
@@ -151,10 +150,28 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
         GlobalClass.windupCountDataToShow = countData;
 
         prefs = context1.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+
+
+        if (!GlobalClass.isNull(patients.get(position).getCategory())) {
+            holder.tv_brandlabel.setVisibility(View.VISIBLE);
+            holder.tv_brand.setVisibility(View.VISIBLE);
+            holder.tv_brand.setText(patients.get(position).getCategory());
+            if (patients.get(position).getCategory().equalsIgnoreCase("BN")){
+                holder.tv_brand.setTextColor(Color.RED);
+                holder.tv_brand.setTypeface(Typeface.DEFAULT_BOLD);
+            }else {
+                holder.tv_brand.setTextColor(Color.BLACK);
+                holder.tv_brand.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
+            }
+
+        } else {
+            holder.tv_brandlabel.setVisibility(View.GONE);
+            holder.tv_brand.setVisibility(View.GONE);
+        }
 
         holder.patientName.setText(patients.get(position).getName());
         holder.put_testName.setText(patients.get(position).getTests());
@@ -338,7 +355,7 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
                                 context1.startActivity(i);
                             }
                         } else {
-                            TastyToast.makeText(context1,"" +summary_model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                            TastyToast.makeText(context1, "" + summary_model.getResponse(), TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                         }
                     } else {
                         TastyToast.makeText(context1, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);

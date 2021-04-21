@@ -26,7 +26,6 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -54,7 +53,6 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -98,6 +96,7 @@ import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.RequestModels.GetPatientDetailsRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBarcodeDetailsResponseModel;
@@ -148,26 +147,10 @@ import retrofit2.Callback;
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link Start_New_Woe#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class Start_New_Woe extends RootFragment implements View.OnClickListener {
-    static final int DATE_DIALOG_ID = 0;
-    static final int TIME_DIALOG_ID = 1111;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    // private static final String TAG = "LocationActivity";
-    // TODO: Rename and change types of parameters
     public static RequestQueue PostQueOtp;
     public static ArrayList<BCT_LIST> getBtechList;
-
     public static CAMP_LIST[] camp_lists;
     AlertDialog alertDialog;
     DatePickerDialog datePickerDialog;
@@ -189,8 +172,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     ImageView img_restPatientData;
     REF_DR[] ref_drs;
     Brand_type[] brandType;
-
-
     Button btn_generate, btn_resend, btn_verify;
     EditText edt_missed_mobile, edt_verifycc;
     RadioButton by_missed, by_generate;
@@ -200,8 +181,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     TextView tv_timer, tv_resetno, tv_mobileno;
     CountDownTimer countDownTimer;
     RadioGroup radiogrp2;
-
-
     ImageView male, female, male_red, female_red;
     ProgressDialog barProgressDialog;
     Button next_btn, btn_snd_otp, btn_verifyotp;
@@ -316,30 +295,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private LocationManager mLocationManager;
     private ArrayList<PatientDetailsAPiResponseModel.PatientInfoBean> patientDetailAryList;
 
-    private InputFilter filter1 = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-
-            if (source != null && blockCharacterSetdata.contains(("" + source))) {
-                return "";
-            }
-            return null;
-        }
-    };
-    private InputFilter filter = new InputFilter() {
-
-        @Override
-        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-
-            if (source != null && blockCharacterSet.contains(("" + source))) {
-                return "";
-            }
-            return null;
-        }
-    };
-    private String mm11;
-    private String dd11;
     private String putDate;
     private String getFormatDate;
 
@@ -400,31 +355,20 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private int numberOfLines = 10;
     private Dialog CustomLeaddialog;
     ConnectionDetector cd;
-    SharedPreferences covid_pref;
-    boolean covidacc = false;
+    AppPreferenceManager appPreferenceManager;
+
     SharedPreferences getshared;
+    private boolean covidacc;
 
 
     public Start_New_Woe() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Start_New_Woe.
-     */
-
-
     // TODO: Rename and change types and number of parameters
     public static Start_New_Woe newInstance(String param1, String param2) {
         Start_New_Woe fragment = new Start_New_Woe();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -433,8 +377,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -447,8 +389,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         mContext = getContext();
         cd = new ConnectionDetector(getActivity());
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
-        covid_pref = getActivity().getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
-        covidacc = covid_pref.getBoolean("covidacc", false);
+        appPreferenceManager = new AppPreferenceManager(getActivity());
+
+        covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
 
         name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);
         img_restPatientData = (ImageView) viewMain.findViewById(R.id.img_restPatientData);
@@ -1905,7 +1848,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
             @Override
             public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(getActivity(), progressDialog);
             }
         });
 
@@ -2204,31 +2147,21 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                         btn_verifyotp.setText("Verified");
                         btn_verifyotp.setBackgroundColor(getResources().getColor(R.color.green));
-
-
                         et_otp.getText().clear();
                         lin_otp.setVisibility(View.GONE);
-
                         btn_snd_otp.setText("Reset");
-
                         et_mobno.setEnabled(false);
                         et_mobno.setClickable(false);
-
                         imgotp = getContext().getResources().getDrawable(R.drawable.otpverify);
                         imgotp.setBounds(40, 40, 40, 40);
                         et_mobno.setCompoundDrawablesWithIntrinsicBounds(null, null, imgotp, null);
-
                         et_otp.setEnabled(false);
                         et_otp.setClickable(false);
-
                         btn_snd_otp.setClickable(true);
                         btn_snd_otp.setEnabled(true);
-
                         btn_verifyotp.setClickable(false);
                         btn_verifyotp.setEnabled(false);
-
                         tv_timer.setVisibility(View.GONE);
-
                         lin_ckotp.setVisibility(View.GONE);
                         Enablefields();
                         CallAPIToGetPatientDetails();
@@ -5802,7 +5735,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                                     lin_otp.setVisibility(View.GONE);
                                     tv_timer.setVisibility(View.GONE);
-
+                                    ll_miscallotp.setVisibility(View.VISIBLE);
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);

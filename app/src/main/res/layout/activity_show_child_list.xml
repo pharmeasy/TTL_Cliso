@@ -2,9 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:layout_margin="50dp"
-    android:background="@color/white"
-    android:layout_height="wrap_content">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,11 +22,11 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:layout_margin="10dp"
             android:background="@color/maroon"
             android:text="Test Details"
-            android:layout_margin="10dp"
             android:textColor="@color/colorWhite"
-            android:textSize="18sp" />
+            android:textSize="@dimen/label" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 android:id="@+id/testdetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"></androidx.recyclerview.widget.RecyclerView>
+                android:layout_margin="10dp" />
 
 
         </RelativeLayout>

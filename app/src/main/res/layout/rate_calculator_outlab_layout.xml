@@ -19,8 +19,9 @@
             android:layout_gravity="left"
             android:gravity="left"
             android:text="test"
+            android:textAllCaps="true"
             android:textColor="@color/black"
-            android:textSize="12sp" />
+            android:textSize="@dimen/value" />
         <TextView
             android:id="@+id/outlab_test_rates"
             android:layout_width="wrap_content"
@@ -28,8 +29,9 @@
             android:layout_gravity="left"
             android:gravity="left"
             android:text="test"
+            android:textAllCaps="true"
             android:textColor="@color/black"
-            android:textSize="12sp" />
+            android:textSize="@dimen/value" />
 
         <LinearLayout
             android:id="@+id/lin_color"

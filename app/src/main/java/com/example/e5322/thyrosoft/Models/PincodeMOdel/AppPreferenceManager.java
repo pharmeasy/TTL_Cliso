@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
+import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VersionResponseModel;
 import com.google.gson.Gson;
 
@@ -16,6 +17,7 @@ public class AppPreferenceManager {
     private String versionresponse = "versionresponse";
     private String pocttest = "pocttest";
     private String synProductCount="synProductCount";
+    private String CovidAcess="CovidAccess";
 
 
     public AppPreferenceManager(Activity activity) {
@@ -25,6 +27,17 @@ public class AppPreferenceManager {
 
     public AppPreferenceManager(Context context) {
         appPreference = AppPreference.getAppPreferences(context);
+    }
+
+
+    public CovidAccessResponseModel getCovidAccessResponseModel() {
+        String value = appPreference.getString(this.CovidAcess, "");
+        return new Gson().fromJson(value, CovidAccessResponseModel.class);
+    }
+
+
+    public void setCovidAccessResponseModel(CovidAccessResponseModel responseModel) {
+        appPreference.putString(this.CovidAcess, new Gson().toJson(responseModel));
     }
 
 
@@ -76,6 +89,9 @@ public class AppPreferenceManager {
         appPreference.putBoolean(this.isAppInBackground, isAppInBackground);
     }
 
+    public void clearAllPreferences() {
+        appPreference.clearPreferences();
+    }
 
 
 

@@ -12,18 +12,10 @@ import android.media.MediaRecorder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextWatcher;
-
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -41,7 +33,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.MultipartComposeCommController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.ComposeCommPOSTModel;
@@ -413,10 +413,10 @@ public class ComposeCommunication_activity extends AppCompatActivity {
     private void PostData() {
         try {
             SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-            String user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            String api_key = prefs.getString("API_KEY", null);
+            String user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            String api_key = prefs.getString("API_KEY", "");
 
             ComposeCommPOSTModel composeCommPOSTModel = new ComposeCommPOSTModel();
             composeCommPOSTModel.setApiKey(api_key);

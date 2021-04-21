@@ -16,15 +16,15 @@
             android:id="@+id/tv_productName"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginLeft="5dp"
+            android:layout_marginRight="@dimen/dp_8"
             android:layout_weight="2"
-            android:maxLines="2"
-            android:lines="2"
-            android:textColor="@android:color/black"
             android:gravity="center|left"
+            android:lines="2"
+            android:maxLines="2"
             android:text="QUADRUPLE MARKER - SECOND TRIMESTER"
-            android:textSize="14sp" />
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/value" />
 
         <ImageView
             android:id="@+id/img_preview"

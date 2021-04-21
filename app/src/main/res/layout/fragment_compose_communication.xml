@@ -30,7 +30,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Compose Communication"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -61,7 +62,9 @@
                 android:layout_weight="1"
                 android:gravity="left|center"
                 android:text="Related to"
+                android:textAllCaps="true"
                 android:textColor="@color/DARKGray"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <Spinner
@@ -71,7 +74,8 @@
                 android:layout_weight="1.5"
                 android:backgroundTint="@color/maroon"
                 android:overlapAnchor="false"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -93,14 +97,14 @@
                 android:background="@drawable/maroon_border_white_bg"
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
                 android:gravity="top"
-                android:hint="Compose your message"
+                android:hint="COMPOSE YOUR MESSAGE"
+                android:maxLength="500"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"
-                android:maxLength="500"
                 android:paddingRight="10dp"
                 android:paddingBottom="25dp"
                 android:textAlignment="textStart"
-                android:textSize="14dp" />
+                android:textSize="@dimen/value" />
 
             <RadioGroup
                 android:layout_width="match_parent"
@@ -114,12 +118,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/smallPadding"
-                    android:text="Audio" />
+                    android:text="Audio"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true" />
 
                 <RadioButton
                     android:id="@+id/rd_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:text="Image" />
 
             </RadioGroup>
@@ -148,7 +156,7 @@
                     android:padding="5dp"
                     android:text="@string/upload_voice_message"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -212,7 +220,7 @@
                     android:padding="5dp"
                     android:text="@string/upload_image"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -270,7 +278,7 @@
                     android:background="@drawable/maroon_rect_box"
                     android:text="RESET"
                     android:textColor="@color/colorWhite"
-                    android:textSize="14dp" />
+                    android:textSize="@dimen/value" />
 
                 <Button
                     android:id="@+id/sendcomm"
@@ -282,7 +290,7 @@
                     android:background="@drawable/maroon_rect_box"
                     android:text="SEND"
                     android:textColor="@color/colorWhite"
-                    android:textSize="14dp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -310,8 +318,9 @@
             android:layout_weight="2"
             android:gravity="top|center"
             android:text="  Sorry ! You are offline..."
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="18sp" />
+            android:textSize="@dimen/label" />
 
     </LinearLayout>
 

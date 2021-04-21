@@ -17,7 +17,8 @@
             android:layout_weight="1"
             android:background="@color/colorWhite"
             android:padding="5dp"
-            android:text="Select Date"
+            android:textSize="@dimen/value"
+            android:text="SELECT DATE"
             android:textColor="@color/colorBlack" />
 
         <TextView
@@ -29,6 +30,7 @@
             android:textColor="@color/black"
             android:drawableRight="@drawable/small_cal"
             android:padding="5dp"
+            android:textSize="@dimen/value"
             android:text="22-09-2018" />
     </LinearLayout>
     <View

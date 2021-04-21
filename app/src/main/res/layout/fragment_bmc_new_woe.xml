@@ -19,8 +19,9 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="PATIENT DETAILS"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="15sp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -47,6 +48,7 @@
                     android:layout_weight="3"
                     android:gravity="center"
                     android:text="ENTER"
+                    android:textSize="@dimen/label"
                     android:textColor="@color/colorBlack" />
 
                 <ImageView
@@ -79,6 +81,7 @@
                     android:background="@color/lightgray"
                     android:gravity="center"
                     android:text="ENTERED"
+                    android:textSize="@dimen/label"
                     android:textColor="@color/colorBlack" />
 
                 <ImageView
@@ -122,20 +125,20 @@
                     android:layout_margin="5dp"
                     android:layout_weight="2"
                     android:orientation="horizontal"
-                    android:weightSum="5">
+                    android:weightSum="3">
 
                     <LinearLayout
-                        android:layout_width="10dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon">
 
                         <Spinner
                             android:id="@+id/brand_spinner"
                             style="@style/medium_text"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:layout_weight="2"
@@ -144,11 +147,11 @@
                             android:ems="10"
                             android:hint="TTL"
                             android:textColor="@color/DARKGray"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="10dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
@@ -165,26 +168,26 @@
                             android:layout_weight="2"
                             android:background="@color/transparent"
                             android:hint="ILS"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/vial_number"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
                         android:digits="0123456789"
                         android:gravity="center|left"
-                        android:hint="Vial No."
+                        android:hint="VIAL NO."
                         android:inputType="number"
                         android:maxLength="6"
                         android:nextFocusForward="@+id/name"
                         android:padding="5dp"
                         android:singleLine="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="13sp">
+                        android:textSize="@dimen/value">
 
                     </EditText>
 
@@ -196,7 +199,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="@drawable/pre_border"
+                    android:background="@drawable/corner_curve_maroon"
                     android:orientation="horizontal"
                     android:weightSum="5">
 
@@ -205,7 +208,10 @@
                         android:layout_height="35dp"
                         android:layout_weight="0.6"
                         android:background="@color/maroon"
+                        android:backgroundTint="@color/white"
                         android:scaleType="fitXY"
+                        android:layout_margin="3dp"
+                        android:padding="5dp"
                         android:src="@drawable/person" />
 
                     <EditText
@@ -220,6 +226,7 @@
                         android:layout_weight="4.4"
                         android:background="@color/white"
                         android:digits="QWERTYUIOPLKJHGFDSAZXCVBNM1234567890 "
+                        android:textAllCaps="true"
                         android:ems="10"
                         android:gravity="center|left"
                         android:hint="PATIENT NAME"
@@ -230,7 +237,7 @@
                         android:nextFocusForward="@+id/age"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
 
@@ -239,9 +246,10 @@
                     android:id="@+id/AGE_layout"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_weight="2"
                     android:orientation="horizontal"
+                    android:layout_gravity="center"
                     android:padding="5dp">
 
                     <EditText
@@ -251,18 +259,22 @@
                         android:layout_weight="0"
                         android:background="@drawable/corner_curve_maroon"
                         android:hint="PATIENT AGE"
+                        android:layout_gravity="center"
                         android:inputType="number"
                         android:maxLength="3"
+                        android:gravity="center"
                         android:nextFocusForward="@+id/referedby"
                         android:padding="5dp"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginLeft="3dp"
                         android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:background="@drawable/corner_curve_maroon">
 
                         <Spinner
@@ -271,7 +283,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
-                            android:gravity="center|left" />
+                            android:gravity="center|left"
+                            android:textSize="@dimen/value"/>
                     </LinearLayout>
 
 
@@ -280,16 +293,26 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2.2"
+                        android:layout_marginLeft="4dp"
                         android:orientation="horizontal"
                         android:weightSum="2.1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gender"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/value"
+                            android:layout_gravity="center"/>
 
                         <ImageView
                             android:id="@+id/male"
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="match_parent"
+                            android:padding="3dp"
                             android:layout_weight="1"
                             android:src="@drawable/male_white"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/male_red"
@@ -297,7 +320,7 @@
                             android:layout_height="30dp"
                             android:layout_weight="1"
                             android:src="@drawable/red_male"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
 
                         <View
@@ -309,11 +332,12 @@
                         <ImageView
                             android:id="@+id/female"
                             android:layout_width="0dp"
-                            android:layout_height="30dp"
+                            android:layout_height="match_parent"
+                            android:padding="3dp"
                             android:layout_weight="1"
                             android:src="@drawable/female_white"
                             android:text="FEMALE"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/female_red"
@@ -322,7 +346,7 @@
                             android:layout_weight="1"
                             android:src="@drawable/red_female"
                             android:text="FEMALE"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
@@ -331,10 +355,11 @@
                     android:id="@+id/lin_changesct"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="2dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="2"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:background="@drawable/corner_curve_maroon"
+                    >
 
                     <CheckBox
                         android:id="@+id/chk_changeSCT"
@@ -342,8 +367,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:text="Change SCT"
-                        android:textSize="12sp" />
+                        android:text="CHANGE SCT"
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/txt_sctdefault"
@@ -355,7 +380,7 @@
                         android:nextFocusForward="@+id/kyc_format"
                         android:text="SCT :"
                         android:textColor="@color/maroon"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <TextView
@@ -369,7 +394,7 @@
                         android:nextFocusForward="@+id/kyc_format"
                         android:text=""
                         android:textColor="@color/maroon"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
 
@@ -394,7 +419,7 @@
                         android:drawableRight="@drawable/red_small_cal"
                         android:gravity="right|center"
                         android:nextFocusForward="@+id/timehr"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -473,7 +498,7 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="10"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/value">
 
                         <requestFocus />
                     </EditText>
@@ -503,7 +528,7 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="8"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/value">
 
                         <requestFocus />
                     </EditText>
@@ -526,7 +551,7 @@
                         android:gravity="center|left"
                         android:text="Patient info"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcodename"
@@ -535,7 +560,7 @@
                         android:gravity="center|left"
                         android:text="Name"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadidbarcodetest"
@@ -544,7 +569,7 @@
                         android:gravity="center|left"
                         android:text="test"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcoderefdr"
@@ -553,7 +578,7 @@
                         android:gravity="center|left"
                         android:text="refdr"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcodesct"
@@ -562,7 +587,7 @@
                         android:gravity="center|left"
                         android:text="SCT"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -586,7 +611,7 @@
                         android:backgroundTint="@color/maroon"
                         android:ems="10"
                         android:textColor="@color/DARKGray"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -609,10 +634,11 @@
                         android:drawableRight="@drawable/down_arrow_woe"
                         android:ems="10"
                         android:gravity="center|left"
+                        android:textAllCaps="true"
                         android:hint="SEARCH SAMPLE COLLECTION POINT"
                         android:textColor="@color/DARKGray"
                         android:textColorHint="@color/black"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -637,12 +663,13 @@
                         android:ems="10"
                         android:gravity="center|left"
                         android:hint="TYPE/SEARCH REF BY"
+                        android:textAllCaps="true"
                         android:inputType="textCapCharacters"
                         android:maxLength="50"
                         android:nextFocusForward="@+id/uncheck_ref"
                         android:singleLine="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value"/>
 
                     <ImageView
                         android:id="@+id/add_ref"
@@ -677,7 +704,7 @@
                         android:maxLines="1"
                         android:nextFocusForward="@+id/next_btn_patient"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -695,9 +722,9 @@
                         android:layout_weight="1"
                         android:background="@drawable/clear_button"
                         android:text="Clear"
-                        android:textAllCaps="false"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/value" />
 
                     <Button
                         android:id="@+id/next_btn_patient"
@@ -709,9 +736,9 @@
                         android:background="@drawable/next_button"
                         android:padding="5dp"
                         android:text="Next"
-                        android:textAllCaps="false"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorWhite"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
             </LinearLayout>

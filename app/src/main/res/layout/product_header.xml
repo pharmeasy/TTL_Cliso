@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ll_layout_title_select_tests"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/maroon">
+        android:background="@color/maroon"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/txt_header"
@@ -19,8 +20,9 @@
             android:gravity="start|center_vertical"
             android:padding="5dp"
             android:singleLine="true"
+            android:textAllCaps="true"
             android:text="POP"
             android:textColor="@android:color/white"
-            android:textSize="18sp" />
+            android:textSize="@dimen/label" />
     </LinearLayout>
 </LinearLayout>

@@ -28,24 +28,25 @@
 
             <TextView
                 android:id="@+id/tv_title"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Videos"
                 android:layout_gravity="center"
+                android:layout_weight="3"
                 android:gravity="center"
-                android:textSize="@dimen/dp_20"
+                android:text="Videos"
+                android:textAllCaps="true"
+                android:textSize="@dimen/header"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_languageSelected"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.5"
                 android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:layout_weight="1.5"
                 android:gravity="center"
-                android:layout_marginRight="-10dp"
-                android:textSize="@dimen/dp_16"
+                android:textSize="@dimen/label"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -53,25 +54,27 @@
 
     <tcking.github.com.giraffeplayer2.VideoView
         android:id="@+id/video_view1"
-        android:layout_below="@+id/toolbarVideo"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_below="@+id/toolbarVideo"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recView"
-        android:layout_below="@+id/video_view1"
-        android:layout_marginTop="@dimen/dp_5"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/video_view1"
+        android:layout_marginTop="@dimen/dp_5" />
 
     <TextView
         android:id="@+id/tv_noDatafound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
         android:layout_margin="@dimen/dp_20"
-        android:visibility="gone"
-        android:text="Currently, there are no Videos available, Please come back later to see new videos" />
+        android:gravity="center"
+        android:text="Currently, there are no Videos available, Please come back later to see new videos"
+        android:textAllCaps="true"
+        android:textSize="@dimen/label"
+        android:visibility="gone" />
 </RelativeLayout>

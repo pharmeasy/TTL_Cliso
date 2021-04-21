@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:id="@+id/parent_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -38,7 +37,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/maroon"
-                    android:overlapAnchor="false" />
+                    android:overlapAnchor="false"
+                    android:textSize="@dimen/value"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -53,7 +54,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:backgroundTint="@color/maroon"
-                    android:overlapAnchor="false" />
+                    android:overlapAnchor="false"
+                    android:textSize="@dimen/value"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -66,8 +68,9 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="Credit Limit :"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="16dp"
+            android:textSize="@dimen/label"
             android:textStyle="italic|bold" />
 
         <RelativeLayout
@@ -125,8 +128,9 @@
                                     android:layout_weight="1"
                                     android:gravity="center"
                                     android:text="Opening Balance"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/open_bal"
@@ -137,7 +141,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -175,8 +179,9 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:text="Closing Balance"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/closing__bal"
@@ -187,7 +192,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -236,8 +241,9 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:text="Credit"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/credit"
@@ -248,7 +254,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -287,8 +293,9 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:text="Debit"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/debit"
@@ -299,7 +306,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -347,7 +354,8 @@
                                     android:gravity="center"
                                     android:text="Billed Amount"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textAllCaps="true"
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/billed_amt"
@@ -358,7 +366,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -395,8 +403,9 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:text="Cash/ Check"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/cash_cheque"
@@ -407,7 +416,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -420,8 +429,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="3"
                         android:layout_marginBottom="@dimen/dp_7"
+                        android:layout_weight="3"
                         android:orientation="horizontal"
                         android:weightSum="10">
 
@@ -457,8 +466,9 @@
                                     android:layout_weight="2"
                                     android:gravity="center"
                                     android:text=""
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/unbilled_woe"
@@ -469,7 +479,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -506,7 +516,8 @@
                                     android:gravity="center"
                                     android:text="Unbilled Materials"
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp" />
+                                    android:textAllCaps="true"
+                                    android:textSize="@dimen/value" />
 
                                 <TextView
                                     android:id="@+id/unbilled_material"
@@ -517,7 +528,7 @@
                                     android:gravity="center"
                                     android:text=""
                                     android:textColor="@color/maroon"
-                                    android:textSize="15dp"
+                                    android:textSize="@dimen/value"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -544,8 +555,9 @@
                     android:layout_marginRight="20dp"
                     android:background="@color/maroon"
                     android:text="LEDGER DETAILS"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="16dp" />
+                    android:textSize="@dimen/label" />
 
             </LinearLayout>
 
@@ -574,8 +586,9 @@
             android:layout_weight="2"
             android:gravity="top|center"
             android:text="  Sorry ! You are offline..."
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="18sp" />
+            android:textSize="@dimen/label" />
 
     </LinearLayout>
 

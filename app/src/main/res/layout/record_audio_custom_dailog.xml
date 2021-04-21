@@ -27,8 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/start_record"
+            android:textAllCaps="true"
             android:fontFamily="sans-serif-medium"
-            android:textSize="@dimen/dp_18" />
+            android:textSize="@dimen/label" />
 
         <ImageView
             android:id="@+id/img_record"
@@ -62,7 +63,7 @@
                 android:background="@drawable/maroon_rect_box"
                 android:text="@string/upload"
                 android:textColor="@color/white"
-                android:textSize="@dimen/dp_20" />
+                android:textSize="@dimen/header" />
 
         </LinearLayout>
 

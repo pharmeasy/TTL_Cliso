@@ -3,17 +3,17 @@ package com.example.e5322.thyrosoft.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -23,6 +23,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.CountInterface;
 import com.example.e5322.thyrosoft.R;
@@ -86,8 +87,8 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
             checkbox = (ImageView) v.findViewById(R.id.iv_checked);
             iv_checked_img = (ImageView) v.findViewById(R.id.iv_checked_img);
             searchBarcode = new ArrayList<>();
-            iv_checked_img.setVisibility(View.GONE);
-            checkbox.setVisibility(View.VISIBLE);
+            //iv_checked_img.setVisibility(View.GONE);
+            //checkbox.setVisibility(View.VISIBLE);
         }
     }
 
@@ -109,11 +110,8 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
         summary_model = new Summary_model();
         holder.linear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +127,8 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         holder.image_tag.setVisibility(View.GONE);
 
         if (patients.get(position).getConfirm_status().equals("NO")) {
-            holder.checkbox.setVisibility(View.VISIBLE);
-            holder.iv_checked_img.setVisibility(View.GONE);
+         //   holder.checkbox.setVisibility(View.VISIBLE);
+            //holder.iv_checked_img.setVisibility(View.GONE);
             holder.linear.setBackgroundResource(R.color.light_pink);
             getNoStatus.add(patients.get(position).getName());
         } else {
@@ -256,10 +254,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         notifyDataSetChanged();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
+
 
 
     private class SampleTypeAdpaterWithBarcode extends RecyclerView.Adapter<SampleTypeAdpaterWithBarcode.ViewHolder> {
@@ -307,6 +302,15 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
                 barcodeName = (TextView) itemView.findViewById(R.id.barcodeName);
             }
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

@@ -35,7 +35,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textColorHint="@color/red"
-                android:hint="Not yet responded !"
+                android:hint="NOT YET RESPONDED !"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:textColor="@color/DARKGray" />
 
             <LinearLayout
@@ -49,8 +51,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="data"
+                    android:textAllCaps="true"
                     android:textColor="@color/darkgreen"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold"
                     android:visibility="gone" />
 
@@ -61,8 +64,9 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="data"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <TextView
@@ -72,8 +76,9 @@
                     android:layout_weight="1"
                     android:gravity="left"
                     android:text="data"
+                    android:textAllCaps="true"
                     android:textColor="@color/maroon"
-                    android:textSize="10sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -98,11 +103,12 @@
                 android:background="@drawable/maroon_border_white_bg"
                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
                 android:gravity="top"
-                android:hint="Compose your message"
+                android:hint="COMPOSE YOUR MESSAGE"
                 android:lines="5"
                 android:padding="10dp"
+                android:textAllCaps="true"
                 android:textAlignment="center"
-                android:textSize="14dp" />
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/sendcomm"
@@ -114,10 +120,10 @@
                 android:background="@drawable/next_button"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text="Send"
-                android:textAllCaps="false"
+                android:text="SEND"
+                android:textAllCaps="true"
                 android:textColor="@color/colorWhite"
-                android:textSize="14dp" />
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 

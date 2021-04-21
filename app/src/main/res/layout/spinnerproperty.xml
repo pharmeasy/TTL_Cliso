@@ -5,9 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="30dp"
-    android:textSize="12sp"
+    android:textSize="@dimen/value"
     android:paddingLeft="5dp"
     android:gravity="center|left"
     android:text="Spinner"
+    android:textAllCaps="true"
     app:theme="@style/SpinnerStyle"
     android:textColor="@color/colorBlack" />

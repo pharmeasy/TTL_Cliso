@@ -20,38 +20,41 @@
             android:background="@color/colorWhite"
             android:padding="5dp"
             android:text="Select Date"
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
             android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/selectDate"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:textColor="@color/black"
             android:layout_weight="1"
             android:background="@color/colorWhite"
             android:drawableRight="@drawable/small_cal"
             android:padding="5dp"
-            android:text="" />
+            android:text=""
+            android:textColor="@color/black" />
     </LinearLayout>
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/red"
-        />
+        android:background="@color/red" />
+
     <LinearLayout
+        android:id="@+id/parent_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
-        android:id="@+id/parent_ll"
         android:orientation="vertical">
 
         <ExpandableListView
             android:id="@+id/ListReportStatus"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:groupIndicator="@null"
             android:divider="@color/Gray"
-            android:dividerHeight="1dp"/>
+            android:dividerHeight="1dp"
+            android:groupIndicator="@null" />
 
         <TextView
             android:id="@+id/no_view"
@@ -62,35 +65,38 @@
             android:dividerHeight="1dp"
             android:gravity="center"
             android:text="No data found"
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
             android:textColor="@color/colorBlack"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
 
     </LinearLayout>
+
     <LinearLayout
+        android:id="@+id/offline_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/offline_img"
         android:orientation="vertical"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
+
         <pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
-            android:layout_marginTop="100dp"
             android:layout_height="0dp"
+            android:layout_marginTop="100dp"
             android:layout_weight="4"
-            android:src="@drawable/offline_gifimg"
-            />
+            android:src="@drawable/offline_gifimg" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="top|center"
+            android:textAllCaps="true"
             android:text="  Sorry ! You are offline..."
             android:textColor="@color/maroon"
-            android:layout_gravity="center"
-            android:gravity="top|center"
-            android:textSize="18sp"
-            android:layout_weight="2"
-            />
+            android:textSize="@dimen/label" />
 
     </LinearLayout>
 

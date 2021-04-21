@@ -4,6 +4,7 @@ import com.example.e5322.thyrosoft.HHHtest.Model.CampDetailsResponseModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.GetTestResponseModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.PatientDetailRequestModel;
 import com.example.e5322.thyrosoft.HHHtest.Model.PatientResponseModel;
+import com.example.e5322.thyrosoft.Models.BarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
 import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
@@ -38,6 +39,7 @@ import com.example.e5322.thyrosoft.Models.ResponseModels.HandbillsResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.OTPCreditResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.TemplateResponse;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
+import com.example.e5322.thyrosoft.Models.ScanBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
@@ -90,6 +92,14 @@ public interface APIInteface {
 
     @GET("LedgerDetails/{SourceCode}")
     Call<GetLeadgerBalnce> getLedgerDetails(@Path("SourceCode") String SourceCode);
+
+
+
+    @GET("ORDER.svc/{SourceCode}/CovidBarcodeDetails")
+    Call<BarcodeResponseModel> getBarcodeDetails(@Path("SourceCode") String SourceCode);
+
+    @GET("ORDER.svc/{SourceCode}/PouchCodeDetails")
+    Call<ScanBarcodeResponseModel> getScannedBarcode(@Path("SourceCode") String SourceCode);
 
 
 /*    @GET("Showlang")

@@ -67,12 +67,22 @@ public class Covidmis_response implements Serializable {
         private String UniqueId;
         private String VialImage;
         private String Other;
+        private String EMAIL;
         private String Other1;
         private String EntryDate;
         private String Amount_Collected;
         private String Remarks;
         private String PPEBarcode;
         private String SRFID, Age, AgeType, Barcode, PatientAddress, PatientPincode, Gender, CollectionAddress, CollectionPincode, SCT, SCP,Selfie;
+
+
+        public String getEMAIL() {
+            return EMAIL;
+        }
+
+        public void setEMAIL(String EMAIL) {
+            this.EMAIL = EMAIL;
+        }
 
         public String getPPEBarcode() {
             return PPEBarcode;
@@ -97,6 +107,8 @@ public class Covidmis_response implements Serializable {
         public void setAmount_Collected(String amount_Collected) {
             Amount_Collected = amount_Collected;
         }
+
+
 
         public String getOther1() {
             return Other1;

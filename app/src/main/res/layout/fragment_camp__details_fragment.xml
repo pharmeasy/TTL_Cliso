@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".Fragment.CampIntimation.Camp_Details_fragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -26,8 +26,9 @@
             android:background="@drawable/underline_maroon"
             android:gravity="center"
             android:text="Camp Summary"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="14dp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -36,6 +37,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -51,8 +53,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Camp Date "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -69,8 +72,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="TTL/ILS"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -80,6 +84,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -95,8 +100,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Camp Profile "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -113,8 +119,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="05-12-2018  09:35 am"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -125,6 +132,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -140,8 +148,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Camp Rate "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -158,8 +167,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Self"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -169,6 +179,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -184,8 +195,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Sample/Days "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -202,8 +214,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -213,6 +226,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -227,8 +241,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Venue Address "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -245,8 +260,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -257,6 +273,7 @@
             android:layout_marginLeft="7dp"
             android:layout_marginTop="3dp"
             android:layout_marginRight="5dp"
+            android:layout_marginBottom="3dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -271,8 +288,9 @@
                 android:paddingTop="3dp"
                 android:paddingBottom="3dp"
                 android:text="Camp Duration "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -289,11 +307,11 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
-
 
 
     </LinearLayout>

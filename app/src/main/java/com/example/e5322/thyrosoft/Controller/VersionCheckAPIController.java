@@ -36,7 +36,7 @@ public class VersionCheckAPIController {
         this.sourcecode = sourcecode;
         flag = 0;
         globalClass = new GlobalClass(mactivity);
-        appPreferenceManager=new AppPreferenceManager(mactivity);
+        appPreferenceManager = new AppPreferenceManager(mactivity);
 
     }
 
@@ -60,6 +60,7 @@ public class VersionCheckAPIController {
                         e.printStackTrace();
                     }
                     try {
+                        Global.showratedialog = true;
                         appPreferenceManager.setVersionResponseModel(new Gson().fromJson(String.valueOf(response), VersionResponseModel.class));
 
                         globalClass.printLog("Error", TAG, "VersionCheckAPIResponse", String.valueOf(response));
@@ -69,6 +70,8 @@ public class VersionCheckAPIController {
                         String ApkUrl = response.getString("url");
                         String RESPONSE = response.getString("response");
                         String resId = response.getString("resId");
+                        String isShow = response.getString("isShow");
+                        String FlashText = response.getString("FlashText");
                         int syncproduct = response.getInt("syncproduct");
                         Boolean isoff = (response.optBoolean("isoffline", false));
                         Global.isoffline = isoff;
@@ -79,17 +82,15 @@ public class VersionCheckAPIController {
                             GlobalClass.showShortToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG);
                         }
                     } catch (Exception e) {
+                        globalClass.hideProgressDialog1();
+                        GlobalClass.showShortToast(mactivity, MessageConstants.SOMETHING_WENT_WRONG);
                         e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    try {
-                        globalClass.hideProgressDialog1();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    globalClass.hideProgressDialog1();
                     GlobalClass.showVolleyError(error, mactivity);
                     mactivity.finish();
                 }

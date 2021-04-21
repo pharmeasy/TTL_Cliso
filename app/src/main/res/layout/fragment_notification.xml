@@ -27,7 +27,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Notification"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
         <ImageView
             android:layout_width="0dp"
@@ -42,6 +43,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="You don't have notifications - yet!"
+        android:textAllCaps="true"
+        android:textSize="@dimen/label"
         android:textStyle="italic|bold"
         android:gravity="center"
         android:visibility="gone"

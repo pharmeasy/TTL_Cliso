@@ -19,8 +19,9 @@
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
         android:text="Serum "
+        android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="14sp"
+        android:textSize="@dimen/value"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -38,7 +39,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="6dp"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/value" />
 
         <TextView
             android:id="@+id/serial_number"
@@ -49,6 +51,6 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="6dp"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/value" />
     </LinearLayout>
 </LinearLayout>

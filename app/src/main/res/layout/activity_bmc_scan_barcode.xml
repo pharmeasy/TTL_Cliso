@@ -35,8 +35,9 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Scan Barcode"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="15dp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -115,8 +116,9 @@
                         android:layout_weight="1.5"
                         android:gravity="center|left"
                         android:text="TEST"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -137,9 +139,9 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="6dp"
                         android:gravity="center|left"
-                        android:text="Selected Test"
+                        android:text="SELECTED TEST"
                         android:textColor="@color/grey"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -214,6 +216,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/next_button"
+                    android:layout_marginBottom="5dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -224,7 +227,7 @@
                         android:padding="5dp"
                         android:text="TOTAL AMOUNT"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/setAmt"
@@ -236,7 +239,7 @@
                         android:background="@drawable/corner_curve_white"
                         android:gravity="center|left"
                         android:paddingLeft="5dp"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -244,7 +247,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_3"
                     android:background="@drawable/next_button"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="5dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -254,7 +258,7 @@
                         android:padding="5dp"
                         android:text="COLLECTED"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/enterAmt"
@@ -267,7 +271,7 @@
                         android:inputType="phone"
                         android:maxLength="8"
                         android:paddingLeft="5dp"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -275,6 +279,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/next_button"
                 android:orientation="horizontal">
 
@@ -286,7 +291,7 @@
                     android:padding="5dp"
                     android:text="TRF NUMBER"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_trfNumber"
@@ -298,13 +303,14 @@
                     android:digits="@string/alphanumeric_digits"
                     android:maxLength="6"
                     android:paddingLeft="5dp"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_3"
+                android:layout_marginBottom="5dp"
                 android:background="@drawable/next_button"
                 android:orientation="horizontal">
 
@@ -316,7 +322,7 @@
                     android:padding="5dp"
                     android:text="RECEIPT NUMBER"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_receiptNumber"
@@ -328,7 +334,7 @@
                     android:digits="@string/alphanumeric_digits"
                     android:maxLength="10"
                     android:paddingLeft="5dp"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout
@@ -348,15 +354,18 @@
                         android:id="@+id/btn_upload_trf"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:background="@drawable/next_button"
+                        android:background="@drawable/border_curve_background"
+                        android:backgroundTint="@color/maroon"
                         android:drawableRight="@drawable/ic_camera"
                         android:drawablePadding="@dimen/dp_10"
                         android:gravity="center"
-                        android:padding="10dp"
+                        android:padding="5dp"
                         android:text="UPLOAD TRF"
+                        android:textSize="@dimen/value"
                         android:textColor="@color/white" />
 
                     <FrameLayout
+                        android:layout_marginTop="3dp"
                         android:id="@+id/frame_layout_trf"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -396,18 +405,21 @@
                         android:id="@+id/btn_upload_receipt"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:background="@drawable/next_button"
+                        android:background="@drawable/border_curve_background"
+                        android:backgroundTint="@color/maroon"
                         android:drawableRight="@drawable/ic_camera"
-                        android:gravity="center"
-                        android:padding="10dp"
-                        android:lines="2"
                         android:drawablePadding="@dimen/dp_10"
+                        android:gravity="center"
+                        android:lines="2"
+                        android:padding="5dp"
                         android:text="UPLOAD RECEIPT"
+                        android:textSize="@dimen/value"
                         android:textColor="@color/white" />
 
                     <FrameLayout
                         android:id="@+id/frame_layout_receipt"
                         android:layout_width="wrap_content"
+                        android:layout_marginTop="3dp"
                         android:layout_height="match_parent"
                         android:visibility="gone">
 
@@ -443,11 +455,13 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
-                android:background="@drawable/next_button"
+                android:background="@drawable/border_curve_background"
                 android:gravity="center"
                 android:paddingLeft="50dp"
                 android:paddingRight="50dp"
                 android:text="DONE"
+                android:backgroundTint="@color/maroon"
+                android:textSize="@dimen/label"
                 android:textColor="@color/white" />
 
 

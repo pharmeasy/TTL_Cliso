@@ -48,6 +48,7 @@
         android:layout_toRightOf="@+id/test_ll"
         android:gravity="center_vertical|center|left|top"
         android:text="test"
-        android:textSize="14sp" />
+        android:textAllCaps="true"
+        android:textSize="@dimen/value" />
 
 </RelativeLayout>

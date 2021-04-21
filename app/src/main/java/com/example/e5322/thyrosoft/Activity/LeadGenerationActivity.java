@@ -696,9 +696,9 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     public void init() {
         SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
+        user = prefs.getString("Username", "");
         api_key = "DAuWZtKHyVb8OhjhHSuAwCB6uAyzVzASVTxXcCT8@0fkrvZ5fG9lw533tKKmxVnu";
-        mobile = prefs.getString("mobile_user", null);
+        mobile = prefs.getString("mobile_user", "");
 
         back = findViewById(R.id.back);
         home = findViewById(R.id.home);

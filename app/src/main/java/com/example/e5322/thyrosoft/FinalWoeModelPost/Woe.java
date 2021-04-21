@@ -3,8 +3,7 @@ package com.example.e5322.thyrosoft.FinalWoeModelPost;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Woe implements Parcelable
-{
+public class Woe implements Parcelable {
     private String REF_DR_NAME;
 
     private String SPECIMEN_COLLECTION_TIME;
@@ -56,6 +55,8 @@ public class Woe implements Parcelable
         MAIN_SOURCE = in.readString();
         BRAND = in.readString();
         AMOUNT_DUE = in.readString();
+        BS_VALUE = in.readString();
+        BP_VALUE = in.readString();
     }
 
     @Override
@@ -104,6 +105,8 @@ public class Woe implements Parcelable
         dest.writeString(MAIN_SOURCE);
         dest.writeString(BRAND);
         dest.writeString(AMOUNT_DUE);
+        dest.writeString(BS_VALUE);
+        dest.writeString(BP_VALUE);
     }
 
     @Override
@@ -223,433 +226,364 @@ public class Woe implements Parcelable
     private String BRAND;
 
     private String AMOUNT_DUE;
+    private String BS_VALUE;
+    private String BP_VALUE;
 
+    public String getBS_VALUE() {
+        return BS_VALUE;
+    }
 
+    public void setBS_VALUE(String BS_VALUE) {
+        this.BS_VALUE = BS_VALUE;
+    }
 
-    public String getREF_DR_NAME ()
-    {
+    public String getBP_VALUE() {
+        return BP_VALUE;
+    }
+
+    public void setBP_VALUE(String BP_VALUE) {
+        this.BP_VALUE = BP_VALUE;
+    }
+
+    public String getREF_DR_NAME() {
         return REF_DR_NAME;
     }
 
-    public void setREF_DR_NAME (String REF_DR_NAME)
-    {
+    public void setREF_DR_NAME(String REF_DR_NAME) {
         this.REF_DR_NAME = REF_DR_NAME;
     }
 
-    public String getSPECIMEN_COLLECTION_TIME ()
-    {
+    public String getSPECIMEN_COLLECTION_TIME() {
         return SPECIMEN_COLLECTION_TIME;
     }
 
-    public void setSPECIMEN_COLLECTION_TIME (String SPECIMEN_COLLECTION_TIME)
-    {
+    public void setSPECIMEN_COLLECTION_TIME(String SPECIMEN_COLLECTION_TIME) {
         this.SPECIMEN_COLLECTION_TIME = SPECIMEN_COLLECTION_TIME;
     }
 
-    public String getWATER_SOURCE ()
-    {
+    public String getWATER_SOURCE() {
         return WATER_SOURCE;
     }
 
-    public void setWATER_SOURCE (String WATER_SOURCE)
-    {
+    public void setWATER_SOURCE(String WATER_SOURCE) {
         this.WATER_SOURCE = WATER_SOURCE;
     }
 
-    public String getREMARKS ()
-    {
+    public String getREMARKS() {
         return REMARKS;
     }
 
-    public void setREMARKS (String REMARKS)
-    {
+    public void setREMARKS(String REMARKS) {
         this.REMARKS = REMARKS;
     }
 
-    public String getLEAD_ID ()
-    {
+    public String getLEAD_ID() {
         return LEAD_ID;
     }
 
-    public void setLEAD_ID (String LEAD_ID)
-    {
+    public void setLEAD_ID(String LEAD_ID) {
         this.LEAD_ID = LEAD_ID;
     }
 
-    public String getREF_DR_ID ()
-    {
+    public String getREF_DR_ID() {
         return REF_DR_ID;
     }
 
-    public void setREF_DR_ID (String REF_DR_ID)
-    {
+    public void setREF_DR_ID(String REF_DR_ID) {
         this.REF_DR_ID = REF_DR_ID;
     }
 
-    public String getSUB_SOURCE_CODE ()
-    {
+    public String getSUB_SOURCE_CODE() {
         return SUB_SOURCE_CODE;
     }
 
-    public void setSUB_SOURCE_CODE (String SUB_SOURCE_CODE)
-    {
+    public void setSUB_SOURCE_CODE(String SUB_SOURCE_CODE) {
         this.SUB_SOURCE_CODE = SUB_SOURCE_CODE;
     }
 
-    public String getCUSTOMER_ID ()
-    {
+    public String getCUSTOMER_ID() {
         return CUSTOMER_ID;
     }
 
-    public void setCUSTOMER_ID (String CUSTOMER_ID)
-    {
+    public void setCUSTOMER_ID(String CUSTOMER_ID) {
         this.CUSTOMER_ID = CUSTOMER_ID;
     }
 
-    public int getDELIVERY_MODE ()
-    {
+    public int getDELIVERY_MODE() {
         return DELIVERY_MODE;
     }
 
-    public void setDELIVERY_MODE (int DELIVERY_MODE)
-    {
+    public void setDELIVERY_MODE(int DELIVERY_MODE) {
         this.DELIVERY_MODE = DELIVERY_MODE;
     }
 
-    public String getPurpose ()
-    {
+    public String getPurpose() {
         return purpose;
     }
 
-    public void setPurpose (String purpose)
-    {
+    public void setPurpose(String purpose) {
         this.purpose = purpose;
     }
 
-    public String getALERT_MESSAGE ()
-    {
+    public String getALERT_MESSAGE() {
         return ALERT_MESSAGE;
     }
 
-    public void setALERT_MESSAGE (String ALERT_MESSAGE)
-    {
+    public void setALERT_MESSAGE(String ALERT_MESSAGE) {
         this.ALERT_MESSAGE = ALERT_MESSAGE;
     }
 
-    public String getSTATUS ()
-    {
+    public String getSTATUS() {
         return STATUS;
     }
 
-    public void setSTATUS (String STATUS)
-    {
+    public void setSTATUS(String STATUS) {
         this.STATUS = STATUS;
     }
 
-    public String getAPP_ID ()
-    {
+    public String getAPP_ID() {
         return APP_ID;
     }
 
-    public void setAPP_ID (String APP_ID)
-    {
+    public void setAPP_ID(String APP_ID) {
         this.APP_ID = APP_ID;
     }
 
-    public String getAGE_TYPE ()
-    {
+    public String getAGE_TYPE() {
         return AGE_TYPE;
     }
 
-    public void setAGE_TYPE (String AGE_TYPE)
-    {
+    public void setAGE_TYPE(String AGE_TYPE) {
         this.AGE_TYPE = AGE_TYPE;
     }
 
-    public String getLAB_NAME ()
-    {
+    public String getLAB_NAME() {
         return LAB_NAME;
     }
 
-    public void setLAB_NAME (String LAB_NAME)
-    {
+    public void setLAB_NAME(String LAB_NAME) {
         this.LAB_NAME = LAB_NAME;
     }
 
-    public String getAADHAR_NO ()
-    {
+    public String getAADHAR_NO() {
         return AADHAR_NO;
     }
 
-    public void setAADHAR_NO (String AADHAR_NO)
-    {
+    public void setAADHAR_NO(String AADHAR_NO) {
         this.AADHAR_NO = AADHAR_NO;
     }
 
-    public String getSPECIMEN_SOURCE ()
-    {
+    public String getSPECIMEN_SOURCE() {
         return SPECIMEN_SOURCE;
     }
 
-    public void setSPECIMEN_SOURCE (String SPECIMEN_SOURCE)
-    {
+    public void setSPECIMEN_SOURCE(String SPECIMEN_SOURCE) {
         this.SPECIMEN_SOURCE = SPECIMEN_SOURCE;
     }
 
-    public String getENTERED_BY ()
-    {
+    public String getENTERED_BY() {
         return ENTERED_BY;
     }
 
-    public void setENTERED_BY (String ENTERED_BY)
-    {
+    public void setENTERED_BY(String ENTERED_BY) {
         this.ENTERED_BY = ENTERED_BY;
     }
 
-    public int getSR_NO ()
-    {
+    public int getSR_NO() {
         return SR_NO;
     }
 
-    public void setSR_NO (int SR_NO)
-    {
+    public void setSR_NO(int SR_NO) {
         this.SR_NO = SR_NO;
     }
 
-    public String getPINCODE ()
-    {
+    public String getPINCODE() {
         return PINCODE;
     }
 
-    public void setPINCODE (String PINCODE)
-    {
+    public void setPINCODE(String PINCODE) {
         this.PINCODE = PINCODE;
     }
 
-    public String getTYPE ()
-    {
+    public String getTYPE() {
         return TYPE;
     }
 
-    public void setTYPE (String TYPE)
-    {
+    public void setTYPE(String TYPE) {
         this.TYPE = TYPE;
     }
 
-    public String getEMAIL_ID ()
-    {
+    public String getEMAIL_ID() {
         return EMAIL_ID;
     }
 
-    public void setEMAIL_ID (String EMAIL_ID)
-    {
+    public void setEMAIL_ID(String EMAIL_ID) {
         this.EMAIL_ID = EMAIL_ID;
     }
 
-    public String getCONT_PERSON ()
-    {
+    public String getCONT_PERSON() {
         return CONT_PERSON;
     }
 
-    public void setCONT_PERSON (String CONT_PERSON)
-    {
+    public void setCONT_PERSON(String CONT_PERSON) {
         this.CONT_PERSON = CONT_PERSON;
     }
 
-    public String getLAB_ID ()
-    {
+    public String getLAB_ID() {
         return LAB_ID;
     }
 
-    public void setLAB_ID (String LAB_ID)
-    {
+    public void setLAB_ID(String LAB_ID) {
         this.LAB_ID = LAB_ID;
     }
 
-    public String getAMOUNT_COLLECTED ()
-    {
+    public String getAMOUNT_COLLECTED() {
         return AMOUNT_COLLECTED;
     }
 
-    public void setAMOUNT_COLLECTED (String AMOUNT_COLLECTED)
-    {
+    public void setAMOUNT_COLLECTED(String AMOUNT_COLLECTED) {
         this.AMOUNT_COLLECTED = AMOUNT_COLLECTED;
     }
 
-    public String getAGE ()
-    {
+    public String getAGE() {
         return AGE;
     }
 
-    public void setAGE (String AGE)
-    {
+    public void setAGE(String AGE) {
         this.AGE = AGE;
     }
 
-    public String getWO_MODE ()
-    {
+    public String getWO_MODE() {
         return WO_MODE;
     }
 
-    public void setWO_MODE (String WO_MODE)
-    {
+    public void setWO_MODE(String WO_MODE) {
         this.WO_MODE = WO_MODE;
     }
 
-    public String getADDRESS ()
-    {
+    public String getADDRESS() {
         return ADDRESS;
     }
 
-    public void setADDRESS (String ADDRESS)
-    {
+    public void setADDRESS(String ADDRESS) {
         this.ADDRESS = ADDRESS;
     }
 
-    public String getORDER_NO ()
-    {
+    public String getORDER_NO() {
         return ORDER_NO;
     }
 
-    public void setORDER_NO (String ORDER_NO)
-    {
+    public void setORDER_NO(String ORDER_NO) {
         this.ORDER_NO = ORDER_NO;
     }
 
-    public String getOS ()
-    {
+    public String getOS() {
         return OS;
     }
 
-    public void setOS (String OS)
-    {
+    public void setOS(String OS) {
         this.OS = OS;
     }
 
-    public String getBCT_ID ()
-    {
+    public String getBCT_ID() {
         return BCT_ID;
     }
 
-    public void setBCT_ID (String BCT_ID)
-    {
+    public void setBCT_ID(String BCT_ID) {
         this.BCT_ID = BCT_ID;
     }
 
-    public String getPRODUCT ()
-    {
+    public String getPRODUCT() {
         return PRODUCT;
     }
 
-    public void setPRODUCT (String PRODUCT)
-    {
+    public void setPRODUCT(String PRODUCT) {
         this.PRODUCT = PRODUCT;
     }
 
-    public String getCONTACT_NO ()
-    {
+    public String getCONTACT_NO() {
         return CONTACT_NO;
     }
 
-    public void setCONTACT_NO (String CONTACT_NO)
-    {
+    public void setCONTACT_NO(String CONTACT_NO) {
         this.CONTACT_NO = CONTACT_NO;
     }
 
-    public String getCAMP_ID ()
-    {
+    public String getCAMP_ID() {
         return CAMP_ID;
     }
 
-    public void setCAMP_ID (String CAMP_ID)
-    {
+    public void setCAMP_ID(String CAMP_ID) {
         this.CAMP_ID = CAMP_ID;
     }
 
-    public String getLAB_ADDRESS ()
-    {
+    public String getLAB_ADDRESS() {
         return LAB_ADDRESS;
     }
 
-    public void setLAB_ADDRESS (String LAB_ADDRESS)
-    {
+    public void setLAB_ADDRESS(String LAB_ADDRESS) {
         this.LAB_ADDRESS = LAB_ADDRESS;
     }
 
-    public String getPATIENT_NAME ()
-    {
+    public String getPATIENT_NAME() {
         return PATIENT_NAME;
     }
 
-    public void setPATIENT_NAME (String PATIENT_NAME)
-    {
+    public void setPATIENT_NAME(String PATIENT_NAME) {
         this.PATIENT_NAME = PATIENT_NAME;
     }
 
-    public String getGENDER ()
-    {
+    public String getGENDER() {
         return GENDER;
     }
 
-    public void setGENDER (String GENDER)
-    {
+    public void setGENDER(String GENDER) {
         this.GENDER = GENDER;
     }
 
-    public int getWO_STAGE ()
-    {
+    public int getWO_STAGE() {
         return WO_STAGE;
     }
 
-    public void setWO_STAGE (int WO_STAGE)
-    {
+    public void setWO_STAGE(int WO_STAGE) {
         this.WO_STAGE = WO_STAGE;
     }
 
-    public String getTOTAL_AMOUNT ()
-    {
+    public String getTOTAL_AMOUNT() {
         return TOTAL_AMOUNT;
     }
 
-    public void setTOTAL_AMOUNT (String TOTAL_AMOUNT)
-    {
+    public void setTOTAL_AMOUNT(String TOTAL_AMOUNT) {
         this.TOTAL_AMOUNT = TOTAL_AMOUNT;
     }
 
-    public String getMAIN_SOURCE ()
-    {
+    public String getMAIN_SOURCE() {
         return MAIN_SOURCE;
     }
 
-    public void setMAIN_SOURCE (String MAIN_SOURCE)
-    {
+    public void setMAIN_SOURCE(String MAIN_SOURCE) {
         this.MAIN_SOURCE = MAIN_SOURCE;
     }
 
-    public String getBRAND ()
-    {
+    public String getBRAND() {
         return BRAND;
     }
 
-    public void setBRAND (String BRAND)
-    {
+    public void setBRAND(String BRAND) {
         this.BRAND = BRAND;
     }
 
-    public String getAMOUNT_DUE ()
-    {
+    public String getAMOUNT_DUE() {
         return AMOUNT_DUE;
     }
 
-    public void setAMOUNT_DUE (String AMOUNT_DUE)
-    {
+    public void setAMOUNT_DUE(String AMOUNT_DUE) {
         this.AMOUNT_DUE = AMOUNT_DUE;
     }
 
     @Override
-    public String toString()
-    {
-        return "ClassPojo [REF_DR_NAME = "+REF_DR_NAME+", SPECIMEN_COLLECTION_TIME = "+SPECIMEN_COLLECTION_TIME+", WATER_SOURCE = "+WATER_SOURCE+", REMARKS = "+REMARKS+", ULCcode = "+ULCcode+", LEAD_ID = "+LEAD_ID+", REF_DR_ID = "+REF_DR_ID+", SUB_SOURCE_CODE = "+SUB_SOURCE_CODE+", CUSTOMER_ID = "+CUSTOMER_ID+", DELIVERY_MODE = "+DELIVERY_MODE+", purpose = "+purpose+", ALERT_MESSAGE = "+ALERT_MESSAGE+", STATUS = "+STATUS+", APP_ID = "+APP_ID+", AGE_TYPE = "+AGE_TYPE+", LAB_NAME = "+LAB_NAME+", AADHAR_NO = "+AADHAR_NO+", SPECIMEN_SOURCE = "+SPECIMEN_SOURCE+", ENTERED_BY = "+ENTERED_BY+", SR_NO = "+SR_NO+", PINCODE = "+PINCODE+", TYPE = "+TYPE+", EMAIL_ID = "+EMAIL_ID+", CONT_PERSON = "+CONT_PERSON+", LAB_ID = "+LAB_ID+", AMOUNT_COLLECTED = "+AMOUNT_COLLECTED+", AGE = "+AGE+", WO_MODE = "+WO_MODE+", ADDRESS = "+ADDRESS+", ORDER_NO = "+ORDER_NO+", OS = "+OS+", BCT_ID = "+BCT_ID+", PRODUCT = "+PRODUCT+", CONTACT_NO = "+CONTACT_NO+", CAMP_ID = "+CAMP_ID+", LAB_ADDRESS = "+LAB_ADDRESS+", PATIENT_NAME = "+PATIENT_NAME+", GENDER = "+GENDER+", WO_STAGE = "+WO_STAGE+", TOTAL_AMOUNT = "+TOTAL_AMOUNT+", MAIN_SOURCE = "+MAIN_SOURCE+", BRAND = "+BRAND+", AMOUNT_DUE = "+AMOUNT_DUE+"]";
+    public String toString() {
+        return "ClassPojo [REF_DR_NAME = " + REF_DR_NAME + ", SPECIMEN_COLLECTION_TIME = " + SPECIMEN_COLLECTION_TIME + ", WATER_SOURCE = " + WATER_SOURCE + ", REMARKS = " + REMARKS + ", ULCcode = " + ULCcode + ", LEAD_ID = " + LEAD_ID + ", REF_DR_ID = " + REF_DR_ID + ", SUB_SOURCE_CODE = " + SUB_SOURCE_CODE + ", CUSTOMER_ID = " + CUSTOMER_ID + ", DELIVERY_MODE = " + DELIVERY_MODE + ", purpose = " + purpose + ", ALERT_MESSAGE = " + ALERT_MESSAGE + ", STATUS = " + STATUS + ", APP_ID = " + APP_ID + ", AGE_TYPE = " + AGE_TYPE + ", LAB_NAME = " + LAB_NAME + ", AADHAR_NO = " + AADHAR_NO + ", SPECIMEN_SOURCE = " + SPECIMEN_SOURCE + ", ENTERED_BY = " + ENTERED_BY + ", SR_NO = " + SR_NO + ", PINCODE = " + PINCODE + ", TYPE = " + TYPE + ", EMAIL_ID = " + EMAIL_ID + ", CONT_PERSON = " + CONT_PERSON + ", LAB_ID = " + LAB_ID + ", AMOUNT_COLLECTED = " + AMOUNT_COLLECTED + ", AGE = " + AGE + ", WO_MODE = " + WO_MODE + ", ADDRESS = " + ADDRESS + ", ORDER_NO = " + ORDER_NO + ", OS = " + OS + ", BCT_ID = " + BCT_ID + ", PRODUCT = " + PRODUCT + ", CONTACT_NO = " + CONTACT_NO + ", CAMP_ID = " + CAMP_ID + ", LAB_ADDRESS = " + LAB_ADDRESS + ", PATIENT_NAME = " + PATIENT_NAME + ", GENDER = " + GENDER + ", WO_STAGE = " + WO_STAGE + ", TOTAL_AMOUNT = " + TOTAL_AMOUNT + ", MAIN_SOURCE = " + MAIN_SOURCE + ", BRAND = " + BRAND + ", AMOUNT_DUE = " + AMOUNT_DUE + "]";
     }
 }
 

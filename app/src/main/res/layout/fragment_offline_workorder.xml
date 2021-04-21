@@ -32,10 +32,10 @@
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz "
                 android:drawableRight="@drawable/ic_search_black_36dp"
                 android:ems="10"
-                android:hint=" Search by patient name or barcode"
+                android:hint=" SEARCH BY PATIENT NAME OR BARCODE"
                 android:imeOptions="actionSearch"
                 android:textColorHint="@color/gray"
-                android:textSize="@dimen/NormalTextSize" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -49,10 +49,11 @@
             android:id="@+id/tv_total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_13sdp"
+            android:textSize="@dimen/value"
             android:text="Total Count"
             android:gravity="center"
             android:visibility="gone"
+            android:textAllCaps="true"
             android:layout_gravity="center"
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -90,9 +91,10 @@
             android:layout_weight="2"
             android:gravity="center|center_horizontal|center_vertical"
             android:text="Send WOE"
+            android:textAllCaps="true"
             android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="@dimen/label"
             tools:ignore="RtlCompat" />
 
         <ImageView
@@ -117,8 +119,9 @@
         android:background="@color/white"
         android:gravity="center|top"
         android:text="No record found"
+        android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="@dimen/label"
         android:visibility="gone" />
 
 </LinearLayout>

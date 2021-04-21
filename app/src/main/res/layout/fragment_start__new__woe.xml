@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -17,8 +18,9 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="PATIENT DETAILS"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="15sp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -45,7 +47,9 @@
                     android:layout_weight="3"
                     android:gravity="center"
                     android:text="ENTER"
-                    android:textColor="@color/colorBlack" />
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/label" />
 
                 <ImageView
                     android:id="@+id/enter_arrow_enter"
@@ -77,7 +81,9 @@
                     android:background="@color/lightgray"
                     android:gravity="center"
                     android:text="ENTERED"
-                    android:textColor="@color/colorBlack" />
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/label" />
 
                 <ImageView
                     android:id="@+id/enter_arrow_entered"
@@ -104,30 +110,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginBottom="5dp"
-                android:layout_weight="75"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
 
 
                 <LinearLayout
                     android:id="@+id/brand_name"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:layout_weight="2"
-                    android:orientation="horizontal"
-                    android:weightSum="5">
+                    android:padding="5dp"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="10dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon">
 
                         <Spinner
@@ -136,53 +141,56 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:layout_weight="2"
+                            android:padding="5dp"
                             android:background="@color/transparent"
                             android:backgroundTint="@color/maroon"
                             android:ems="10"
                             android:hint="TTL"
                             android:textColor="@color/DARKGray"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="10dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_marginRight="5dp"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon">
 
                         <Spinner
                             android:id="@+id/selectTypeSpinner"
                             style="@style/medium_text"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:padding="5dp"
                             android:layout_gravity="center"
                             android:layout_marginRight="5dp"
-                            android:layout_weight="2"
+                            android:paddingLeft="5dp"
                             android:background="@color/transparent"
                             android:hint="ILS"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <EditText
                         android:id="@+id/vial_number"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center|left"
                         android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
                         android:digits="0123456789"
+                        android:layout_gravity="center"
                         android:gravity="center|left"
-                        android:hint="Vial No."
+                        android:hint="VIAL NO."
                         android:inputType="number"
                         android:maxLength="6"
                         android:nextFocusForward="@+id/name"
-                        android:padding="5dp"
+                        android:paddingLeft="8dp"
                         android:singleLine="true"
+                        android:textAlignment="textStart"
                         android:textColor="@color/colorBlack"
-                        android:textSize="13sp">
+                        android:textSize="@dimen/value"
+                        tools:ignore="RtlCompat">
 
                     </EditText>
 
@@ -201,6 +209,7 @@
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="35dp"
+                        android:layout_marginRight="2dp"
                         android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
                         android:orientation="horizontal"
@@ -219,15 +228,19 @@
                             android:maxLength="10"
                             android:maxLines="1"
                             android:singleLine="true"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/lin_ckotp"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
                         android:layout_weight="0.6"
-                        android:orientation="horizontal">
+                        android:background="@drawable/corner_curve_maroon"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
 
                         <androidx.appcompat.widget.AppCompatCheckBox
                             android:id="@+id/chk_otp"
@@ -238,7 +251,9 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="OTP" />
+                            android:text="OTP"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -250,12 +265,15 @@
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/dp_4"
                         android:layout_weight="0.4"
-                        android:background="@color/maroon"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:backgroundTint="@color/maroon"
+                        android:gravity="center"
+                        android:padding="5dp"
                         android:text="Send OTP"
                         android:textAlignment="center"
-                        android:textAllCaps="false"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="normal" />
 
                 </LinearLayout>
@@ -274,29 +292,30 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/_5sdp"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
                         <RadioButton
                             android:id="@+id/by_missed"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginRight="@dimen/dp_5"
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:checked="true"
-                            android:text="By using Missed Call"
-                            android:textSize="@dimen/_12sdp" />
+                            android:text="Missed Call"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/value" />
 
                         <RadioButton
                             android:id="@+id/by_generate"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/dp_5"
+                            android:layout_marginStart="@dimen/dp_5"
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
-                            android:text="By using OTP"
-                            android:textSize="@dimen/_12sdp" />
+                            android:text="OTP"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/value" />
                     </RadioGroup>
 
 
@@ -304,35 +323,37 @@
                         android:id="@+id/lin_missed_verify"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:orientation="horizontal">
 
                         <EditText
                             android:id="@+id/edt_missed_mobile"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/_5sdp"
-                            android:layout_weight="1.5"
-                            android:background="@drawable/custom_border_edittext_blue"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/_4sdp"
+                            android:layout_weight="0.7"
+                            android:background="@drawable/corner_curve_maroon"
                             android:drawablePadding="@dimen/_2sdp"
-                            android:hint="Mobile Number"
+                            android:hint="MOBILE NUMBER*"
                             android:inputType="number"
                             android:maxLength="10"
-                            android:padding="@dimen/_5sdp"
-                            android:textSize="@dimen/_12sdp" />
+                            android:paddingLeft="@dimen/_5sdp"
+                            android:textSize="@dimen/value" />
 
 
                         <Button
                             android:id="@+id/btn_generate"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_26sdp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/_25sdp"
                             android:layout_gravity="center"
-                            android:layout_margin="@dimen/_5sdp"
-                            android:layout_weight="1.5"
-                            android:background="@drawable/covidbtn"
+                            android:layout_margin="@dimen/_4sdp"
+                            android:layout_weight="0.3"
+                            android:background="@drawable/button_bg"
                             android:gravity="center"
-                            android:textAllCaps="false"
-                            android:textColor="@color/maroon"
-                            android:textSize="@dimen/_10sdp" />
+                            android:textAllCaps="true"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -350,7 +371,7 @@
                             android:layout_marginStart="@dimen/dp_5"
                             android:textAllCaps="false"
                             android:textColor="@color/maroon"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -361,9 +382,9 @@
                             android:layout_marginStart="@dimen/dp_10"
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_toRightOf="@+id/tv_mobileno"
-                            android:textAllCaps="false"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="14sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                     </RelativeLayout>
@@ -387,11 +408,11 @@
                             android:layout_weight="1"
                             android:background="@drawable/custom_border_edittext_blue"
                             android:drawablePadding="@dimen/_2sdp"
-                            android:hint="Verify CCC*"
+                            android:hint="VERIFY CCC*"
                             android:inputType="number"
                             android:maxLength="6"
                             android:padding="@dimen/_5sdp"
-                            android:textSize="@dimen/_12sdp" />
+                            android:textSize="@dimen/value" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -410,11 +431,11 @@
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/_3sdp"
                                 android:layout_weight="0.5"
-                                android:background="@drawable/covidbtn"
+                                android:background="@drawable/button_bg"
                                 android:gravity="center"
-                                android:text="Verify"
-                                android:textColor="@color/maroon"
-                                android:textSize="@dimen/_10sdp" />
+                                android:text="VERIFY"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/value" />
 
                             <Button
                                 android:id="@+id/btn_resend"
@@ -423,11 +444,11 @@
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="@dimen/_3sdp"
                                 android:layout_weight="0.5"
-                                android:background="@drawable/covidbtn"
+                                android:background="@drawable/button_bg"
                                 android:gravity="center"
-                                android:text="Resend"
-                                android:textColor="@color/maroon"
-                                android:textSize="@dimen/_10sdp" />
+                                android:text="RESEND"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/value" />
 
                         </LinearLayout>
 
@@ -461,9 +482,9 @@
                             android:layout_marginStart="@dimen/dp_8"
                             android:layout_marginTop="@dimen/dp_2"
                             android:layout_marginBottom="@dimen/_3sdp"
-                            android:textAllCaps="false"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="@dimen/_12sdp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -526,7 +547,7 @@
                             android:maxLines="1"
                             android:nextFocusForward="@+id/home_kyc_format"
                             android:singleLine="true"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <Button
@@ -537,11 +558,12 @@
                         android:layout_marginLeft="@dimen/dp_4"
                         android:layout_weight="0.4"
                         android:background="@color/maroon"
-                        android:text="Verify OTP"
+                        android:padding="4dp"
+                        android:text="VERIFY"
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="normal" />
 
                 </LinearLayout>
@@ -552,8 +574,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dp_5"
                     android:text="@string/str_mob_credit"
+                    android:textAllCaps="true"
                     android:textColor="@color/maroon"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/value"
                     android:visibility="gone" />
 
                 <LinearLayout
@@ -561,16 +584,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:background="@drawable/pre_border"
+                    android:background="@drawable/corner_curve_maroon"
                     android:orientation="horizontal"
                     android:weightSum="6">
 
                     <ImageView
                         android:layout_width="0dp"
-                        android:layout_height="35dp"
+                        android:layout_height="match_parent"
+                        android:padding="4dp"
+                        android:layout_margin="1dp"
                         android:layout_weight="0.6"
                         android:background="@color/maroon"
-                        android:scaleType="fitXY"
+                        android:backgroundTint="@color/white"
                         android:src="@drawable/person" />
 
                     <AutoCompleteTextView
@@ -587,25 +612,25 @@
                         android:digits="@string/Namevalidation"
                         android:ems="10"
                         android:gravity="center|left"
-                        android:hint="PATIENT NAME"
+                        android:hint="NAME"
                         android:imeOptions="actionDone"
                         android:inputType="textCapCharacters"
-                        android:textAllCaps="true"
                         android:maxLength="40"
                         android:maxLines="1"
                         android:nextFocusForward="@+id/age"
                         android:singleLine="true"
+                        android:textAllCaps="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <ImageView
                         android:id="@+id/img_restPatientData"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="0.6"
                         android:layout_gravity="center_vertical"
+                        android:layout_weight="0.6"
                         android:src="@drawable/cross_img"
-                        android:visibility="gone"/>
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -613,25 +638,27 @@
                 <LinearLayout
                     android:id="@+id/AGE_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="3dp"
-                    android:layout_weight="2"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:orientation="horizontal"
                     android:padding="5dp">
 
                     <EditText
                         android:id="@+id/age"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="0"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="1dp"
+                        android:layout_weight="1"
                         android:background="@drawable/corner_curve_maroon"
-                        android:hint="PATIENT AGE"
+                        android:hint="AGE"
                         android:inputType="number"
                         android:maxLength="3"
+                        android:paddingLeft="8dp"
                         android:nextFocusForward="@+id/referedby"
-                        android:padding="5dp"
+                        android:gravity="center|left"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -645,8 +672,11 @@
                             style="@style/medium_text"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
                             android:background="@color/transparent"
-                            android:gravity="center|left" />
+                            android:gravity="center|left"
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
 
@@ -654,25 +684,40 @@
                         android:id="@+id/radiogrp"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_marginLeft="3dp"
                         android:layout_weight="2.2"
                         android:orientation="horizontal"
+                        android:paddingLeft="3dp"
                         android:weightSum="2.1">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="Gender"
+                            android:textAllCaps="true"
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/male"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:padding="4dp"
                             android:src="@drawable/male_white"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/male_red"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
                             android:layout_weight="1"
+                            android:padding="4dp"
                             android:src="@drawable/red_male"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
 
                         <View
@@ -685,19 +730,23 @@
                             android:id="@+id/female"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:padding="4dp"
                             android:src="@drawable/female_white"
                             android:text="FEMALE"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                         <ImageView
                             android:id="@+id/female_red"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
+                            android:layout_gravity="center"
                             android:layout_weight="1"
+                            android:padding="4dp"
                             android:src="@drawable/red_female"
                             android:text="FEMALE"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:visibility="gone" />
                     </LinearLayout>
                 </LinearLayout>
@@ -706,7 +755,8 @@
                 <LinearLayout
                     android:id="@+id/time_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:layout_marginTop="5dp"
                     android:layout_weight="2"
@@ -715,67 +765,73 @@
                     <TextView
                         android:id="@+id/date"
                         style="@style/medium_text"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center|left"
-                        android:layout_margin="3dp"
-                        android:layout_marginLeft="20dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1.8"
+                        android:paddingLeft="2dp"
+                        android:text="31/12/2022"
+                        android:background="@drawable/corner_curve_maroon"
                         android:drawableRight="@drawable/red_small_cal"
-                        android:gravity="right|center"
+                        android:gravity="center"
                         android:nextFocusForward="@+id/timehr"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/value" />
 
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="5.5">
+                    <!-- <ImageView
+                         android:layout_width="0dp"
+                         android:layout_height="22dp"
+                         android:layout_gravity="center"
+                         android:layout_weight="1"
+                         android:src="@drawable/clock_color" />-->
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="22dp"
-                            android:layout_gravity="center"
-                            android:layout_weight="1"
-                            android:src="@drawable/clock_color" />
 
-                        <Spinner
-                            android:id="@+id/timehr"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1.5"
-                            android:background="@color/transparent"
-                            android:gravity="center" />
+                    <Spinner
+                        android:id="@+id/timehr"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1.06"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:gravity="center"
+                        android:textSize="@dimen/value" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@color/grey" />
+                    <!--<View
+                        android:layout_width="1dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:background="@color/grey" />-->
 
-                        <Spinner
-                            android:id="@+id/timesecond"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
-                            android:background="@color/transparent"
-                            android:gravity="center" />
+                    <Spinner
+                        android:id="@+id/timesecond"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1.06"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:gravity="center"
+                        android:textSize="@dimen/value" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="30dp"
-                            android:layout_gravity="center"
-                            android:background="@color/grey" />
+                    <!--     <View
+                             android:layout_width="1dp"
+                             android:layout_height="30dp"
+                             android:layout_gravity="center"
+                             android:background="@color/grey" />
+ -->
+                    <Spinner
+                        android:id="@+id/timeampm"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="1.06"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:gravity="center"
+                        android:textSize="@dimen/value" />
 
-                        <Spinner
-                            android:id="@+id/timeampm"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_weight="1.5"
-                            android:background="@color/transparent"
-                            android:gravity="center" />
-                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -804,7 +860,7 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="10"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/value">
 
                         <requestFocus />
                     </EditText>
@@ -834,7 +890,7 @@
                         android:inputType="textCapCharacters"
                         android:maxLength="8"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/value">
 
                         <requestFocus />
                     </EditText>
@@ -855,8 +911,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="Patient info"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcodename"
@@ -864,8 +921,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="Name"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadidbarcodetest"
@@ -873,8 +931,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="test"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcoderefdr"
@@ -882,8 +941,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="refdr"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadbarcodesct"
@@ -891,8 +951,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="SCT"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/value"
 
                         />
                 </LinearLayout>
@@ -913,8 +974,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="Name"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadidtest"
@@ -922,8 +984,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="test"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/leadrefdr"
@@ -931,10 +994,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="center|left"
                         android:text="refdr"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="12sp"
-
-                        />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -966,7 +1028,7 @@
                         android:maxLength="180"
                         android:maxLines="5"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -998,7 +1060,7 @@
                         android:maxLength="6"
                         android:maxLines="1"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -1022,14 +1084,14 @@
                         android:backgroundTint="@color/maroon"
                         android:ems="10"
                         android:textColor="@color/DARKGray"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
                 <LinearLayout
                     android:id="@+id/btech_linear_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="2"
                     android:background="@drawable/corner_curve_maroon"
@@ -1047,13 +1109,13 @@
                         android:backgroundTint="@color/maroon"
                         android:ems="10"
                         android:textColor="@color/DARKGray"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/labname_linear"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:layout_weight="1.8"
                     android:background="@drawable/corner_curve_maroon"
@@ -1065,15 +1127,17 @@
                         android:id="@+id/samplecollectionponit"
                         style="@style/medium_text"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:"
                         android:drawableRight="@drawable/down_arrow_woe"
                         android:ems="10"
+                        android:padding="3dp"
                         android:gravity="center|left"
                         android:hint="SEARCH SAMPLE COLLECTION POINT"
+                        android:textAllCaps="true"
                         android:textColor="@color/DARKGray"
                         android:textColorHint="@color/black"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -1100,10 +1164,12 @@
                         android:hint="TYPE/SEARCH REF BY"
                         android:inputType="textCapCharacters"
                         android:maxLength="50"
+                        android:paddingLeft="5dp"
                         android:nextFocusForward="@+id/uncheck_ref"
                         android:singleLine="true"
+                        android:textAllCaps="true"
                         android:textColor="@color/DARKGray"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
 
                     <ImageView
                         android:id="@+id/add_ref"
@@ -1117,7 +1183,7 @@
                 <LinearLayout
                     android:id="@+id/ref_check_linear"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_weight="2"
                     android:orientation="horizontal"
@@ -1129,6 +1195,7 @@
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_gravity="center"
+                        android:backgroundTint="@color/maroon"
                         android:nextFocusForward="@+id/kyc_format"
                         android:src="@drawable/check_ref" />
 
@@ -1152,7 +1219,8 @@
                         android:gravity="center|left"
                         android:nextFocusForward="@+id/kyc_format"
                         android:text="REF BY SELF"
-                        android:textSize="12sp" />
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -1171,6 +1239,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="1dp"
+                        android:paddingLeft="5dp"
                         android:layout_marginLeft="10dp"
                         android:background="@drawable/background_edt"
                         android:digits="0123456789"
@@ -1181,7 +1250,7 @@
                         android:maxLines="1"
                         android:nextFocusForward="@+id/home_kyc_format"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -1217,36 +1286,35 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:orientation="horizontal">
 
                     <Button
                         android:id="@+id/btn_clear_data"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_26sdp"
                         android:layout_margin="2dp"
                         android:layout_weight="1"
                         android:background="@drawable/clear_button"
-                        android:text="Clear"
-                        android:textAllCaps="false"
+                        android:text="CLEAR"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/label" />
 
                     <Button
                         android:id="@+id/next_btn_patient"
-                        style="@style/hint_text"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_26sdp"
                         android:layout_margin="2dp"
                         android:layout_weight="1"
                         android:background="@drawable/next_button"
                         android:padding="5dp"
-                        android:text="Next"
-                        android:textAllCaps="false"
+                        android:text="NEXT"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorWhite"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/label" />
                 </LinearLayout>
 
             </LinearLayout>

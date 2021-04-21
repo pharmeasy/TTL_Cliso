@@ -82,9 +82,11 @@ import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.MyHurlStack;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.TESTS_GETALLTESTS;
 import com.example.e5322.thyrosoft.Models.BCT_LIST;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
+import com.example.e5322.thyrosoft.Models.BarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.CAMP_LIST;
 import com.example.e5322.thyrosoft.Models.Camp_Intimatgion_List_Model;
@@ -99,6 +101,7 @@ import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
 import com.example.e5322.thyrosoft.TestListModel.Tests;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
+import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.io.ByteArrayOutputStream;
@@ -224,8 +227,8 @@ public class GlobalClass {
     public static ArrayList<String> selctedPopNames = new ArrayList<>();
     public static ArrayList<String> selctedPopNamesILS = new ArrayList<>();
     public static ArrayList<String> selctedoutLabTestNames = new ArrayList<>();
-    public static ArrayList<Integer> getPosition = new ArrayList<>();///for checkbox for employees in Employee adapetr
-    public static ArrayList<Integer> getPositionOutlab = new ArrayList<>();///for checkbox for employees in Employee adapetr
+    public static ArrayList<Integer> getPosition = new ArrayList<>();
+    public static ArrayList<Integer> getPositionOutlab = new ArrayList<>();
     public static ArrayList<billingDetailsModel> billingDETArray = new ArrayList<billingDetailsModel>();
     public static ArrayList<String> billingDETheaderArray = new ArrayList<>();
     public static ArrayList<String> empList = new ArrayList<>();//new arralist for employee
@@ -246,6 +249,7 @@ public class GlobalClass {
     public static ArrayList<String> debitlist = new ArrayList<String>();
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
+    public static ArrayList<BarcodeResponseModel.BarcodeDTO> barcodeArrayList = new ArrayList<>();
     private static Dialog dialog;
     private static String stringofconvertedTime;
     private final Context context;
@@ -787,6 +791,8 @@ public class GlobalClass {
 
     public static void clearPreference(Activity activity) {
 
+        AppPreferenceManager appPreferenceManager = new AppPreferenceManager(activity);
+        appPreferenceManager.clearAllPreferences();
 
         SharedPreferences.Editor getProfileName = activity.getSharedPreferences("profilename", 0).edit();
         getProfileName.clear();
@@ -806,11 +812,6 @@ public class GlobalClass {
         SharedPreferences.Editor getprodutcs = activity.getSharedPreferences("MyObject", MODE_PRIVATE).edit();
         getprodutcs.clear();
         getprodutcs.commit();
-
-
-        SharedPreferences.Editor covidprefeditor = activity.getSharedPreferences("COVIDETAIL", MODE_PRIVATE).edit();
-        covidprefeditor.clear();
-        covidprefeditor.apply();
 
 
         SharedPreferences appSharedPrefsDtaa = PreferenceManager.getDefaultSharedPreferences(activity);
@@ -840,8 +841,8 @@ public class GlobalClass {
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
 
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa",Locale.US);
-        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm aa", Locale.US);
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
         Date date = null;
         stringofconvertedTime = null;
@@ -864,8 +865,8 @@ public class GlobalClass {
                 time = time + "p.m.";
             }
 
-            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm aa",Locale.US);
-            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.US);
+            SimpleDateFormat inputFormat1 = new SimpleDateFormat("yyyy-MM-dd hh:mm aa", Locale.US);
+            SimpleDateFormat outputFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             stringofconvertedTime = null;
 
             date = new Date();
@@ -931,9 +932,9 @@ public class GlobalClass {
 
     public static String changetimeformate(String time) {
         //Date/time pattern of input date
-        DateFormat df = new SimpleDateFormat("hh:mm a",Locale.US);
+        DateFormat df = new SimpleDateFormat("hh:mm a", Locale.US);
         //Date/time pattern of desired output date
-        DateFormat outputformat = new SimpleDateFormat("HH:mm",Locale.US);
+        DateFormat outputformat = new SimpleDateFormat("HH:mm", Locale.US);
         Date date = null;
         String output = null;
         try {
@@ -1675,4 +1676,37 @@ public class GlobalClass {
         return false;
     }
 
+    public static boolean CheckEqualIgnoreCase(String str1, String str2) {
+        return !isNull(str1) && !isNull(str2) && str1.equalsIgnoreCase(str2);
+    }
+
+    public static int getBSBPMinMaxValue(Activity activity, String valueType) {
+        int returnFlag = 0;
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        String json = appSharedPrefs.getString("MyObject", "");
+        MainModel obj = new Gson().fromJson(json, MainModel.class);
+        if (CheckEqualIgnoreCase(valueType, Constants.BS_MIN)) {
+            returnFlag = obj != null ? obj.getBsmin() : 0;
+        } else if (CheckEqualIgnoreCase(valueType, Constants.BS_MAX)) {
+            returnFlag = obj != null ? obj.getBsmax() : 0;
+        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MIN)) {
+            returnFlag = obj != null ? obj.getBpmin() : 0;
+        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MAX)) {
+            returnFlag = obj != null ? obj.getBpmax() : 0;
+        }
+        return returnFlag;
+    }
+
+    public static String getBSBPValidationMsg(Activity activity, String valueType) {
+        String returnFlag = "";
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+        String json = appSharedPrefs.getString("MyObject", "");
+        MainModel obj = new Gson().fromJson(json, MainModel.class);
+        if (CheckEqualIgnoreCase(valueType, Constants.BS_MSG)) {
+            returnFlag = obj != null && !isNull(obj.getBsmsg()) ? obj.getBsmsg() : MessageConstants.ABSURD_VALUE;
+        } else if (CheckEqualIgnoreCase(valueType, Constants.BP_MSG)) {
+            returnFlag = obj != null && !isNull(obj.getBpmsg()) ? obj.getBpmsg() : MessageConstants.ABSURD_VALUE;
+        }
+        return returnFlag;
+    }
 }

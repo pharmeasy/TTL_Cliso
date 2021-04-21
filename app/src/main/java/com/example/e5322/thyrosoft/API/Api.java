@@ -5,7 +5,6 @@ package com.example.e5322.thyrosoft.API;
  */
 
 public class Api {
-
     //TODO live
     public static String LIVEAPI = "https://www.thyrocare.com/API/B2B/";
     public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";

@@ -146,11 +146,11 @@ public class BS_EntryFragment extends Fragment {
         cd = new ConnectionDetector(activity);
 
         prefs = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        USER_CODE = prefs.getString("USER_CODE", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        USER_CODE = prefs.getString("USER_CODE", "");
 
         initUI(viewMain);
 

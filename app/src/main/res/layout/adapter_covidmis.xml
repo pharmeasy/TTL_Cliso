@@ -36,7 +36,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
                 <TextView
@@ -47,7 +47,7 @@
                     android:layout_weight="1"
                     android:textAlignment="textEnd"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -65,7 +65,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="1dp"
@@ -79,7 +79,7 @@
                     android:layout_weight="1"
                     android:layout_marginLeft="@dimen/_6sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -97,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.98"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="1dp"
@@ -107,20 +107,23 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center"
                     android:orientation="horizontal"
                     android:layout_height="wrap_content">
 
                     <Button
                         android:id="@+id/btn_viewupload"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/_20sdp"
+                        android:layout_height="@dimen/_25sdp"
                         android:layout_gravity="center"
+                        android:padding="5dp"
+                        android:gravity="center"
                         android:layout_marginLeft="@dimen/_6sdp"
-                        android:background="@drawable/covidbtn"
+                        android:background="@drawable/button_bg"
                         android:text="@string/viewupload"
-                        android:textAllCaps="false"
-                        android:textColor="@color/maroon"
-                        android:textSize="@dimen/_10sdp" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -138,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
                 <TextView
                     android:id="@+id/txt_ppebrcd"
@@ -147,7 +150,7 @@
                     android:layout_weight="1"
                     android:layout_marginLeft="@dimen/_2sdp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -166,26 +169,25 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
 
             <Button
                 android:id="@+id/btn_resubmit"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_20sdp"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_25sdp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/_3sdp"
+                android:gravity="center"
                 android:layout_marginTop="@dimen/_3sdp"
-                android:layout_toRightOf="@+id/btn_reset"
-                android:background="@drawable/covidbtn"
+
+                android:background="@drawable/button_bg"
                 android:text="@string/resubmit"
                 android:visibility="gone"
-                android:textAllCaps="false"
-                android:textColor="@color/maroon"
+                android:textColor="@color/white"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/label" />
         </LinearLayout>
 
 

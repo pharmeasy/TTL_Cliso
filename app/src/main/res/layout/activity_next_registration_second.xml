@@ -1,202 +1,228 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:weightSum="100"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/colorGray"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:weightSum="100">
 
     <LinearLayout
-        android:layout_margin="5dp"
-        android:orientation="vertical"
-        android:layout_weight="50"
         android:layout_width="match_parent"
-        android:weightSum="70"
-        android:background="@drawable/layout_background"
         android:layout_height="wrap_content"
-        >
+        android:layout_margin="5dp"
+        android:layout_weight="50"
+        android:background="@drawable/layout_background"
+        android:orientation="vertical"
+        android:weightSum="70">
+
         <Button
-            android:layout_margin="3dp"
-            android:background="@color/button_color"
+            style="@style/heading_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="3dp"
             android:layout_weight="8"
-            style="@style/heading_text"
-            android:text="Registration"
-            />
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
+            android:background="@color/button_color"
+            android:text="Registration" />
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="10"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Country :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="Country :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
+
             <EditText
                 android:id="@+id/reg_country"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:maxLines="1"
-                android:hint="Enter country name"
-                android:maxLength="50"
+                android:hint="ENTER COUNTRY NAME"
                 android:inputType="textPersonName"
-                />
+                android:maxLength="50"
+                android:maxLines="1"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
         </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBlack"/>
+            android:background="@color/colorBlack" />
+
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="10"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="State :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="State :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
+
             <EditText
                 android:id="@+id/reg_state"
                 android:layout_width="0dp"
-                android:hint="Enter state"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:maxLength="20"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                />
+                android:hint="ENTER STATE"
+                android:textSize="@dimen/value"
+                android:maxLength="20"
+                android:textAllCaps="true" />
         </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBlack"/>
+            android:background="@color/colorBlack" />
+
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="10"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="City :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="City :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
+
             <EditText
                 android:id="@+id/reg_city"
                 android:layout_width="0dp"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:hint="Enter city name "
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-                />
+                android:hint="ENTER CITY NAME "
+                android:maxLength="50"
+                android:maxLines="1"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
         </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBlack"/>
+            android:background="@color/colorBlack" />
+
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="10"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Address :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="Address :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
+
             <EditText
                 android:id="@+id/reg_Addr"
                 android:layout_width="0dp"
-                android:maxLength="50"
-                android:maxLines="3"
-                android:hint="Enter your address"
-                android:inputType="text"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-               />
+                android:hint="ENTER YOUR ADDRESS"
+                android:inputType="text"
+                android:maxLength="50"
+                android:textSize="@dimen/value"
+                android:maxLines="3"
+                android:textAllCaps="true" />
         </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBlack"/>
+            android:background="@color/colorBlack" />
+
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="10"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Pin code :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="Pin code :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
+
             <EditText
-                android:maxLength="6"
-                android:maxLines="1"
                 android:id="@+id/reg_pincode"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:hint="Enter Pincode"
-                android:inputType="phone"
                 android:digits="0123456789"
-                />
+                android:hint="ENTER PINCODE"
+                android:inputType="phone"
+                android:maxLength="6"
+                android:maxLines="1"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true" />
         </LinearLayout>
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="1dp"
-            android:background="@color/colorBlack"/>
+            android:background="@color/colorBlack" />
+
         <LinearLayout
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="5dp"
             android:layout_weight="8"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <Button
-                android:background="@drawable/btn_bg"
                 android:id="@+id/reg_next"
+                style="@style/white_simple_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Next"
-                style="@style/white_simple_text"
-                />
+                android:background="@drawable/btn_bg"
+                android:textSize="@dimen/label"
+                android:textAllCaps="true"
+                android:text="Next" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

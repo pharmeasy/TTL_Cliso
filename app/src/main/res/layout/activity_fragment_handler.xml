@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar_actionbar"
@@ -12,23 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="0dp"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
         android:layout_marginTop="0dp" />
 
 
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:clickable="true"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar_actionbar" />
+        android:layout_below="@+id/toolbar_actionbar"
+        android:clickable="true" />
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_5"
-        android:background="@drawable/toolbar_dropshadow"
-        android:layout_below="@+id/toolbar_actionbar" />
+        android:layout_below="@+id/toolbar_actionbar"
+        android:background="@drawable/toolbar_dropshadow" />
 
 </RelativeLayout>

@@ -68,7 +68,8 @@
             android:paddingBottom="3dp"
             android:text="Opening stock"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
         <EditText
             android:id="@+id/edt_opStock"
@@ -83,7 +84,8 @@
             android:maxLength="20"
             android:padding="@dimen/dp_8"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 
@@ -105,7 +107,8 @@
             android:paddingBottom="3dp"
             android:text="Used stock"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true" />
 
         <EditText
             android:id="@+id/edt_usedStock"
@@ -118,7 +121,8 @@
             android:maxLength="10"
             android:padding="@dimen/dp_8"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 
@@ -140,7 +144,8 @@
             android:paddingBottom="3dp"
             android:text="Wastage stock"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true" />
 
         <EditText
             android:id="@+id/edt_wastageStock"
@@ -153,7 +158,8 @@
             android:maxLength="10"
             android:padding="@dimen/dp_8"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 
@@ -175,7 +181,8 @@
             android:paddingBottom="3dp"
             android:text="Defective stock"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true" />
 
         <EditText
             android:id="@+id/edt_defStock"
@@ -188,7 +195,8 @@
             android:maxLength="10"
             android:padding="@dimen/dp_8"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 
@@ -210,7 +218,8 @@
             android:paddingBottom="3dp"
             android:text="Closing stock"
             android:textColor="@color/black"
-            android:textSize="15sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true" />
 
         <EditText
             android:id="@+id/edt_clStock"
@@ -225,7 +234,8 @@
             android:maxLength="20"
             android:padding="@dimen/dp_8"
             android:textColor="@color/grey"
-            android:textSize="14sp" />
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"/>
 
     </LinearLayout>
 

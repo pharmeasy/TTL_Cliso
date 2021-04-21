@@ -225,11 +225,11 @@ public class ResultDtlAdapter extends BaseAdapter {
 
             SharedPreferences prefs = mContext.getSharedPreferences("Userdetails", MODE_PRIVATE);
 
-            jsonObject.put("api_key", prefs.getString("API_KEY", null));
+            jsonObject.put("api_key", prefs.getString("API_KEY", ""));
             jsonObject.put("Patient_id", patient_ID);
             jsonObject.put("barcodes", barcode);
             jsonObject.put("tomailid", email);
-            jsonObject.put("tsp", prefs.getString("Username", null));
+            jsonObject.put("tsp", prefs.getString("Username", ""));
             jsonObject.put(Constants.date, date);
 
 

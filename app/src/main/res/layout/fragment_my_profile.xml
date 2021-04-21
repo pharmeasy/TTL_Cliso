@@ -9,48 +9,50 @@
     tools:context=".Fragment.MyProfile">
 
     <LinearLayout
+        android:id="@+id/linear_layout"
+        style="@style/heading_text"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/linear_layout"
+        android:background="@color/white"
+        android:gravity="center"
         android:orientation="horizontal"
         android:textColor="@color/colorBlack"
-        style="@style/heading_text"
-        android:background="@color/white"
-        android:weightSum="5"
-        android:gravity="center">
+        android:weightSum="5">
 
         <ImageView
-            android:src="@drawable/color_back"
-            android:layout_weight="0.5"
+            android:id="@+id/back"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/back"
-            android:background="@color/colorWhite"
             android:layout_margin="3dp"
-            android:gravity="center" />
+            android:layout_weight="0.5"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:src="@drawable/color_back" />
 
         <TextView
-            android:layout_weight="4"
+            android:id="@+id/title"
+            style="@style/heading_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/title"
-            android:text="Profile"
+            android:layout_gravity="center"
+            android:layout_weight="4"
             android:background="@color/colorWhite"
-            android:textColor="@color/maroon"
-            style="@style/heading_text"
-            android:textStyle="bold"
             android:gravity="center"
-            android:layout_gravity="center" />
+            android:text="Profile"
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/header"
+            android:textStyle="bold" />
 
         <ImageView
-            android:src="@drawable/color_homr"
-            android:layout_weight="0.5"
+            android:id="@+id/home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/home"
             android:layout_margin="3dp"
+            android:layout_weight="0.5"
             android:background="@color/colorWhite"
-            android:gravity="center" />
+            android:gravity="center"
+            android:src="@drawable/color_homr" />
     </LinearLayout>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -80,9 +82,9 @@
 
         <LinearLayout
             android:id="@+id/data"
-            android:layout_below="@+id/imageLL"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/imageLL"
             android:layout_margin="5dp"
             android:background="@drawable/maroon_rect_box"
             android:orientation="vertical"
@@ -110,15 +112,16 @@
                         android:id="@+id/name_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1.5"
-                        android:paddingBottom="3dp"
                         android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:text="Name "
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -131,20 +134,21 @@
                             android:id="@+id/name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
                             android:layout_marginLeft="25dp"
-                            android:layout_marginRight="5dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
                             android:text=""
+                            android:textAllCaps="true"
                             android:textColor="@color/cb_dark_grey"
-                            android:textSize="10sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/white_border_marron_bg_corner"
                     android:orientation="horizontal"
                     android:weightSum="5">
@@ -153,15 +157,16 @@
                         android:id="@+id/doj_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1.5"
-                        android:paddingBottom="3dp"
                         android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:text="DOJ "
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -174,13 +179,14 @@
                             android:id="@+id/doj"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
                             android:layout_marginLeft="25dp"
-                            android:layout_marginRight="5dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
                             android:text=""
+                            android:textAllCaps="true"
                             android:textColor="@color/cb_dark_grey"
-                            android:textSize="10sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -188,7 +194,7 @@
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/white_border_marron_bg_corner"
                     android:orientation="horizontal"
                     android:weightSum="5">
@@ -197,15 +203,16 @@
                         android:id="@+id/source_code_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1.5"
-                        android:paddingBottom="3dp"
                         android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:text="Source Code "
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -218,20 +225,21 @@
                             android:id="@+id/source_code"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
                             android:layout_marginLeft="25dp"
-                            android:layout_marginRight="5dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
                             android:text=""
+                            android:textAllCaps="true"
                             android:textColor="@color/cb_dark_grey"
-                            android:textSize="10sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/white_border_marron_bg_corner"
                     android:orientation="horizontal"
                     android:weightSum="5">
@@ -240,15 +248,16 @@
                         android:id="@+id/closing_bal_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1.5"
-                        android:paddingBottom="3dp"
                         android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:text="Closing Balance "
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -258,23 +267,24 @@
                         android:background="@drawable/corner_curve_white">
 
                         <TextView
+                            android:layout_gravity="center"
                             android:id="@+id/closing_bal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
                             android:layout_marginLeft="25dp"
-                            android:layout_marginRight="5dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
                             android:text=""
                             android:textColor="@color/cb_dark_grey"
-                            android:textSize="10sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="5dp"
                     android:background="@drawable/white_border_marron_bg_corner"
                     android:orientation="horizontal"
                     android:weightSum="5">
@@ -283,15 +293,16 @@
                         android:id="@+id/type_tv"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="2dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1.5"
-                        android:paddingBottom="3dp"
                         android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
                         android:text="Credit Limit "
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="10sp"
+                        android:textSize="@dimen/value"
                         android:textStyle="bold" />
 
                     <LinearLayout
@@ -304,13 +315,14 @@
                             android:id="@+id/credit_lim"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="6dp"
                             android:layout_marginLeft="25dp"
-                            android:layout_marginRight="5dp"
                             android:layout_marginTop="6dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="6dp"
                             android:text=""
+                            android:textAllCaps="true"
                             android:textColor="@color/cb_dark_grey"
-                            android:textSize="10sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -323,10 +335,10 @@
             android:id="@+id/profimg"
             android:layout_width="145dp"
             android:layout_height="145dp"
-            android:layout_marginTop="-75dp"
             android:layout_below="@+id/imageLL"
-            android:background="@drawable/circle_crop"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="-75dp"
+            android:background="@drawable/circle_crop"
             android:src="@drawable/user_profile"
             app:civ_border_color="@color/colorWhite"
             app:civ_border_width="5dp" />

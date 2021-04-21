@@ -321,10 +321,10 @@ public class LedgerDetailsActivity extends AppCompatActivity {
 
             SharedPreferences prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
 
-            String user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            String api_key = prefs.getString("API_KEY", null);
+            String user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            String api_key = prefs.getString("API_KEY", "");
 
            /* {
                 "apiKey":"qpa6@YJ9XY@LP8Hzxn4PFz3M5WU4NaGo)bsELEn8lFY=",

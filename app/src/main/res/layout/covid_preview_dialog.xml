@@ -38,11 +38,11 @@
             android:layout_marginLeft="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_5sdp"
             android:background="@color/maroon"
-            android:text="Delete"
+            android:text="DELETE"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:layout_marginBottom="@dimen/_8sdp"
-            android:textSize="@dimen/_12sdp" />
+            android:textSize="@dimen/label" />
 
     </LinearLayout>
 

@@ -41,9 +41,10 @@ import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.SmsListener;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
-import com.example.e5322.thyrosoft.Models.CovidaccessRes;
+import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.RequestModels.LoginRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.LoginResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -96,6 +97,7 @@ public class Login extends Activity implements View.OnClickListener {
     /*SharedPreferences.Editor editorUserActivity;
     SharedPreferences shr_user_log;*/
     private String androidOS;
+    AppPreferenceManager appPreferenceManager;
     Activity activity;
     SharedPreferences pref_versioncheck;
 
@@ -110,7 +112,7 @@ public class Login extends Activity implements View.OnClickListener {
         forgotpassword = (TextView) findViewById(R.id.forgotpass);
         registration = (TextView) findViewById(R.id.registration);
         login = (Button) findViewById(R.id.login);
-
+        appPreferenceManager = new AppPreferenceManager(activity);
         login.setOnClickListener(Login.this);
 
         if (globalClass.checkForApi21()) {
@@ -875,24 +877,19 @@ public class Login extends Activity implements View.OnClickListener {
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(User);
 
-        Call<CovidaccessRes> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
-        covidaccessResCall.enqueue(new Callback<CovidaccessRes>() {
+        Call<CovidAccessResponseModel> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
+        covidaccessResCall.enqueue(new Callback<CovidAccessResponseModel>() {
             @Override
-            public void onResponse(Call<CovidaccessRes> call, retrofit2.Response<CovidaccessRes> response) {
-                SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
-                editor.clear();
-                editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
-                editor.commit();
-                try {
-                    if (response.body().getResponse().equalsIgnoreCase("True")) {
-                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
+            public void onResponse(Call<CovidAccessResponseModel> call, retrofit2.Response<CovidAccessResponseModel> response) {
 
-                        editor.putBoolean("covidacc", true);
-                        editor.commit();
-                    } else {
-                        editor = getSharedPreferences("COVIDETAIL", 0).edit();
-                        editor.putBoolean("covidacc", false);
-                        editor.commit();
+                try {
+                    SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
+                    editor.clear();
+                    editor.putLong("PreivousTimeOfSync", System.currentTimeMillis()); // add this line and comment below line for cache
+                    editor.commit();
+
+                    if (response != null && response.body() != null) {
+                        appPreferenceManager.setCovidAccessResponseModel(response.body());
                     }
 
                 } catch (Exception e) {
@@ -902,7 +899,7 @@ public class Login extends Activity implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(Call<CovidaccessRes> call, Throwable t) {
+            public void onFailure(Call<CovidAccessResponseModel> call, Throwable t) {
                 gotoHome();
             }
         });

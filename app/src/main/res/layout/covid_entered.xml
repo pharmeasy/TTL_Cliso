@@ -21,7 +21,7 @@
             <LinearLayout
                 android:id="@+id/ll_fromDate"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_weight="1"
                 android:layout_gravity="center"
                 android:background="@drawable/border"
@@ -37,6 +37,7 @@
                     android:layout_marginTop="@dimen/dp_10"
                     android:layout_marginBottom="@dimen/dp_10"
                     android:textStyle="bold"
+                    android:textSize="@dimen/value"
                     android:layout_weight="3" />
 
                 <ImageView
@@ -51,7 +52,7 @@
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_30sdp"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_weight="1"
                 android:layout_margin="@dimen/_5sdp"
                 android:background="@drawable/border"
@@ -59,12 +60,12 @@
 
                 <Spinner
                     android:id="@+id/mode_filter"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
         </LinearLayout>
@@ -84,14 +85,14 @@
                 android:layout_height="@dimen/dp_40"
                 android:background="@drawable/border"
                 android:drawablePadding="@dimen/dp_3"
-                android:hint="Search"
+                android:hint="SEARCH"
                 android:maxLength="15"
                 android:digits="0123456789qwertzuiopasdfghjklyxcvbnm- "
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="14dp"
                 android:textAlignment="viewStart"
                 android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:gravity="start|center" />
 
             <ImageView
@@ -115,7 +116,7 @@
             android:id="@+id/txt_nodata"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/_12sdp"
+            android:textSize="@dimen/value"
             android:textColor="@color/maroon"
             android:textAlignment="center"
             android:visibility="gone"

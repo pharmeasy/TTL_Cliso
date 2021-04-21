@@ -62,8 +62,9 @@
                     android:layout_gravity="left|bottom"
                     android:layout_weight="1"
                     android:text="Android Name"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -80,8 +81,9 @@
                         android:layout_gravity="left|bottom"
                         android:layout_marginTop="-2dp"
                         android:text="TESTS: "
+                        android:textAllCaps="true"
                         android:textColor="@color/red"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/note" />
 
                     <TextView
                         android:id="@+id/puttestName"
@@ -92,9 +94,11 @@
                         android:layout_weight="3.4"
                         android:maxLines="2"
                         android:text="Android Version sijhdjkhsjkhfjkhdjkhjkdfjkhdfjdfjksdjdjdhjkdhjksdhjkhjksdfjdfjkdjksd"
+                        android:textAllCaps="true"
                         android:textColor="@color/grey"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/note" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,8 +113,9 @@
                         android:layout_gravity="left|bottom"
                         android:layout_marginTop="-2dp"
                         android:text="Amount: "
+                        android:textAllCaps="true"
                         android:textColor="@color/red"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/note" />
 
                     <TextView
                         android:id="@+id/show_amt_txt"
@@ -120,8 +125,9 @@
                         android:layout_marginLeft="3dp"
                         android:layout_weight="3.4"
                         android:text="Android Version"
+                        android:textAllCaps="true"
                         android:textColor="@color/grey"
-                        android:textSize="9sp" />
+                        android:textSize="@dimen/note" />
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView

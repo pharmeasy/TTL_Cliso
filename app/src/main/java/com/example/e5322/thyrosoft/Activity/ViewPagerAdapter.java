@@ -2,18 +2,18 @@ package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
 import android.os.Parcelable;
+import android.util.SparseArray;
+import android.view.ViewGroup;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Fragment.BillingSummary;
 import com.example.e5322.thyrosoft.Fragment.CHNfragment;
 import com.example.e5322.thyrosoft.Fragment.FilterReport;
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
-import com.example.e5322.thyrosoft.Fragment.Offline_woe;
 import com.example.e5322.thyrosoft.Fragment.RateCalculatorFragment;
 import com.example.e5322.thyrosoft.Fragment.Start_New_Woe;
 import com.example.e5322.thyrosoft.Fragment.TrackDetails;
@@ -46,44 +46,42 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
                 break;
             case 1:
                 // First Fragment of Second Tab
-                result = new Offline_woe();
+//                result = new Offline_woe();
+                result = new TrackDetails();
                 break;
 
             case 2:
                 // First Fragment of Third Tab
-                result = new TrackDetails();
+                result = new FilterReport();
                 break;
 
             case 3:
                 // First Fragment of Third Tab
-                result = new FilterReport();
+                result = new NHFFragment();
                 break;
 
             case 4:
                 // First Fragment of Third Tab
-                result = new NHFFragment();
+                result = new LedgerFragment();
                 break;
 
             case 5:
                 // First Fragment of Third Tab
-                result = new LedgerFragment();
+                result = new Wind_up_fragment();
                 break;
             case 6:
                 // First Fragment of Third Tab
-                result = new Wind_up_fragment();
+                result = new CHNfragment();
                 break;
             case 7:
                 // First Fragment of Third Tab
-                result = new CHNfragment();
+                result = new BillingSummary();
                 break;
             case 8:
                 // First Fragment of Third Tab
-                result = new BillingSummary();
-                break;
-            case 9:
-                // First Fragment of Third Tab
                 result = new RateCalculatorFragment();
                 break;
+
             default:
                 result = null;
                 break;
@@ -94,7 +92,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 10;
+        return 9;
     }
 
     @Override
@@ -104,24 +102,21 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 return resources.getString(R.string.page_1);
             case 1:
-                return resources.getString(R.string.page_2);
-            case 2:
+//                return resources.getString(R.string.page_2);
                 return resources.getString(R.string.page_3);
-            case 3:
+            case 2:
                 return resources.getString(R.string.page_4);
-
-            case 4:
+            case 3:
                 return resources.getString(R.string.petct);
-
-            case 5:
+            case 4:
                 return resources.getString(R.string.page_5);
-            case 6:
+            case 5:
                 return resources.getString(R.string.page_6);
-            case 7:
+            case 6:
                 return resources.getString(R.string.page_7);
-            case 8:
+            case 7:
                 return resources.getString(R.string.page_8);
-            case 9:
+            case 8:
                 return resources.getString(R.string.page_9);
 
             default:

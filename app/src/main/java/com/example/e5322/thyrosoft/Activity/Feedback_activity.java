@@ -115,12 +115,12 @@ public class Feedback_activity extends AppCompatActivity {
         query.setFilters(new InputFilter[]{EMOJI_FILTER});
         submitcomment = (Button) findViewById(R.id.submitcomment);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
-        email_pref = prefs.getString("email", null);
-        mobile_pref = prefs.getString("mobile_user", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+        email_pref = prefs.getString("email", "");
+        mobile_pref = prefs.getString("mobile_user", "");
 
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);

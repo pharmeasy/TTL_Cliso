@@ -565,10 +565,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         try {
             JSONObject jsonObject = null;
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-            user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            api_key = prefs.getString("API_KEY", null);
+            user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            api_key = prefs.getString("API_KEY", "");
 
             try {
                 DownloadReceiptRequestModel requestModel = new DownloadReceiptRequestModel();
@@ -664,10 +664,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         try {
             JSONObject jsonObject = null;
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-            user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            api_key = prefs.getString("API_KEY", null);
+            user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            api_key = prefs.getString("API_KEY", "");
 
             try {
                 DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -842,10 +842,10 @@ public class TrackDetails extends Fragment implements CAlendar_Inteface {
         try {
 
             SharedPreferences prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-            user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            api_key = prefs.getString("API_KEY", null);
+            user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            api_key = prefs.getString("API_KEY", "");
 
             jsonObject.put("API_Key", api_key);
             jsonObject.put("result_type", "Reported");

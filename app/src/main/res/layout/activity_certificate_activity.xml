@@ -32,7 +32,8 @@
         android:gravity="center"
         android:text="No records found"
         android:textColor="@color/black"
-        android:textSize="@dimen/_16sdp"
+        android:textSize="@dimen/label"
+         android:textAllCaps="true"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -55,7 +55,7 @@
                     android:paddingLeft="15dp"
                     android:paddingRight="18dp"
                     android:textColorHint="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -74,12 +74,12 @@
                     android:id="@+id/tv_noResult"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_centerInParent="true"
+                    android:gravity="center"
                     android:text="No records found!"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/DARKGray"
-                    android:textSize="@dimen/dp_20"
+                    android:textSize="@dimen/label"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -106,7 +106,7 @@
                     android:paddingRight="6dp"
                     android:paddingBottom="10dp"
                     android:textColor="@color/maroon"
-                    android:textSize="11dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
 

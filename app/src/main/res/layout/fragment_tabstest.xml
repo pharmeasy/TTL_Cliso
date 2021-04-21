@@ -20,8 +20,9 @@
             android:background="@color/cement_light"
             android:gravity="center"
             android:text="PATIENT DETAILS"
+            android:textAllCaps="true"
             android:textColor="@color/maroon"
-            android:textSize="15sp"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -47,6 +48,8 @@
                     android:layout_weight="3"
                     android:gravity="center"
                     android:text="Enter"
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/label"
                     android:textColor="@color/colorBlack" />
 
                 <ImageView
@@ -79,6 +82,8 @@
                     android:background="@color/lightgray"
                     android:gravity="center"
                     android:text="Entered"
+                    android:textSize="@dimen/label"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorBlack" />
 
                 <ImageView
@@ -108,7 +113,7 @@
                 android:layout_height="40dp"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/grey_curve_border"
+                android:background="@drawable/corner_curve_maroon"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
@@ -126,13 +131,13 @@
                     android:drawableRight="@drawable/ic_search_black_24dp"
                     android:ems="10"
                     android:gravity="center|left"
-                    android:hint=" Search by patient name or barcode"
+                    android:hint=" SEARCH BY PATIENT NAME OR BARCODE"
                     android:imeOptions="actionSearch"
                     android:padding="5dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="18dp"
                     android:textColorHint="@color/grey"
-                    android:textSize="13dp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
@@ -162,8 +167,9 @@
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp"
                     android:paddingTop="5dp"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="11dp" />
+                    android:textSize="@dimen/value" />
                 <!--android:textColor="@color/grey"-->
 
                 <View
@@ -183,8 +189,9 @@
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp"
                     android:paddingTop="5dp"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="11dp"></TextView>
+                    android:textSize="@dimen/value"/>
 
                 <View
                     android:layout_width="1dp"
@@ -203,8 +210,9 @@
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp"
                     android:paddingTop="5dp"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="11dp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
         </LinearLayout>

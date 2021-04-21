@@ -29,7 +29,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Booking Date"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-black"
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
@@ -46,9 +46,9 @@
                 android:text=":"
                 android:textAlignment="center"
                 android:layout_gravity="center"
-                android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -58,7 +58,7 @@
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif-condensed-medium"
@@ -74,14 +74,14 @@
                 android:layout_weight="0.2"
                 android:layout_height="@dimen/dp_26"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/value"
+                android:layout_marginRight="@dimen/value"
                 android:background="@drawable/btn_bg"
                 android:visibility="gone"
                 android:textAlignment="center"
                 android:text="@string/receipt"
                 android:textColor="@color/white"
-                android:textSize="@dimen/dp_10" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -99,7 +99,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Lead ID/Mobile"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-black"
                 android:textAllCaps="true"
                 android:textAlignment="viewStart"
@@ -118,7 +118,7 @@
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -128,7 +128,7 @@
                 android:layout_weight="0.6"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif-condensed-medium"
@@ -153,7 +153,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Name"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif-black"
@@ -172,7 +172,7 @@
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -182,7 +182,7 @@
                 android:layout_weight="0.6"
                 android:layout_height="wrap_content"
                 android:text=""
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
                 android:fontFamily="sans-serif-condensed-medium"
@@ -209,7 +209,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Status/Rate"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-black"
                 android:textAllCaps="true"
                 android:textAlignment="viewStart"
@@ -228,7 +228,7 @@
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -240,7 +240,7 @@
                 android:text=""
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:textAllCaps="true"
                 android:layout_gravity="center"
@@ -263,7 +263,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Appointment fixed on"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-black"
                 android:textAllCaps="true"
                 android:textAlignment="viewStart"
@@ -282,7 +282,7 @@
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -294,7 +294,7 @@
                 android:text=""
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:textAllCaps="true"
                 android:layout_gravity="center"
@@ -316,7 +316,7 @@
                 android:layout_weight="0.4"
                 android:layout_height="wrap_content"
                 android:text="Appointment Date "
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-black"
                 android:textAllCaps="true"
                 android:textAlignment="viewStart"
@@ -335,7 +335,7 @@
                 android:layout_gravity="center"
                 android:textAllCaps="true"
                 android:fontFamily="sans-serif-black"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:layout_margin="@dimen/dp_2"
                 android:textColor="@color/gray" />
 
@@ -347,7 +347,7 @@
                 android:text=""
                 android:textAlignment="viewStart"
                 android:paddingLeft="@dimen/dp_8"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:fontFamily="sans-serif-condensed-medium"
                 android:textAllCaps="true"
                 android:layout_gravity="center"

@@ -71,9 +71,11 @@
                 android:background="@drawable/border_background"
                 android:gravity="left|center"
                 android:padding="5dp"
+                android:textAllCaps="true"
                 android:text="slk"
                 android:textColor="@color/colorBlack"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value"
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -97,8 +99,9 @@
                         android:layout_weight="2"
                         android:gravity="center|left"
                         android:text="Date"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/date"
@@ -106,9 +109,10 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
+                        android:textAllCaps="true"
                         android:drawableRight="@drawable/small_cal"
                         android:gravity="center"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
 
@@ -126,8 +130,9 @@
                         android:layout_weight="2"
                         android:gravity="center|left"
                         android:text="Time"
+                        android:textAllCaps="true"
                         android:textColor="@color/colorBlack"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <Spinner
                         android:id="@+id/timehr"
@@ -175,7 +180,8 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:text=" Selected Tests"
-                    android:textSize="14sp" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="match_parent"
@@ -188,8 +194,9 @@
                     android:layout_height="wrap_content"
                     android:padding="3dp"
                     android:text=" Show Tests"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorBlack"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -206,7 +213,7 @@
                 android:layout_weight="1"
                 android:text="*Click on sample types to scan barcode "
                 android:textColor="@color/colorred"
-                android:textSize="12sp"
+                android:textSize="@dimen/value"
                 android:visibility="gone" />
 
             <LinearLayout
@@ -224,7 +231,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
                     android:background="@drawable/barcode_button"
-                    android:hint="Enter barcode"
+                    android:hint="ENTER BARCODE"
+                    android:textSize="@dimen/value"
                     android:inputType="textCapCharacters"
                     android:maxLength="8" />
 
@@ -241,7 +249,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:background="@drawable/barcode_button"
-                        android:hint="Re-enter barcode"
+                        android:hint="RE-ENTER BARCODE"
                         android:maxLength="8" />
 
                     <ImageView
@@ -277,7 +285,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:background="@color/colorWhite"
-                android:text="Next" />
+                android:text="Next"
+                android:textSize="@dimen/label"
+                android:textAllCaps="true"/>
         </LinearLayout>
 
     </ScrollView>

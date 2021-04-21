@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/header">
 
             <RadioGroup
                 android:id="@+id/radiogrp2"
@@ -33,7 +33,7 @@
                     android:buttonTint="@color/maroon"
                     android:checked="true"
                     android:text="DPS"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
                 <RadioButton
                     android:id="@+id/rd_home"
@@ -42,7 +42,7 @@
                     android:layout_marginLeft="@dimen/dp_10"
                     android:buttonTint="@color/maroon"
                     android:text="HOME"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
             </RadioGroup>
 
 
@@ -83,9 +83,9 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginEnd="@dimen/dp_5"
                     android:text="Available Count"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/maroon"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -94,9 +94,9 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/dp_5"
                     android:text=":"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -139,14 +139,15 @@
                         android:layout_marginLeft="10dp"
                         android:background="@drawable/background_edt"
                         android:digits="0123456789"
-                        android:importantForAutofill="no"
                         android:hint="PATIENT MOBILE NUMBER"
+                        android:importantForAutofill="no"
                         android:inputType="number"
                         android:maxLength="10"
                         android:maxLines="1"
                         android:nextFocusForward="@+id/home_kyc_format"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <Button
@@ -159,9 +160,9 @@
                     android:background="@color/maroon"
                     android:text="Send OTP"
                     android:textAlignment="center"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -174,9 +175,9 @@
                 android:layout_marginStart="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text=""
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:textColor="@color/maroon"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -213,7 +214,7 @@
                         android:maxLines="1"
                         android:nextFocusForward="@+id/home_kyc_format"
                         android:singleLine="true"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <Button
@@ -228,7 +229,7 @@
                     android:textAlignment="center"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="@dimen/value"
                     android:textStyle="normal" />
 
             </LinearLayout>
@@ -273,7 +274,7 @@
                     android:nextFocusForward="@+id/age"
                     android:singleLine="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -298,7 +299,7 @@
                     android:nextFocusForward="@+id/referedby"
                     android:padding="5dp"
                     android:singleLine="true"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -313,7 +314,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/transparent"
-                        android:gravity="center|left" />
+                        android:gravity="center|left"
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -331,7 +333,7 @@
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:src="@drawable/male_white"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/label" />
 
                     <ImageView
                         android:id="@+id/male_red"
@@ -339,7 +341,7 @@
                         android:layout_height="30dp"
                         android:layout_weight="1"
                         android:src="@drawable/red_male"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/label"
                         android:visibility="gone" />
 
                     <View
@@ -355,7 +357,7 @@
                         android:layout_weight="1"
                         android:src="@drawable/female_white"
                         android:text="FEMALE"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/label" />
 
                     <ImageView
                         android:id="@+id/female_red"
@@ -364,7 +366,7 @@
                         android:layout_weight="1"
                         android:src="@drawable/red_female"
                         android:text="FEMALE"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/label"
                         android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>
@@ -407,7 +409,8 @@
                     android:gravity="center|left"
                     android:nextFocusForward="@+id/kyc_format"
                     android:text="Change SCT"
-                    android:textSize="12sp" />
+                    android:textAllCaps="true"
+                    android:textSize="@dimen/value" />
 
 
                 <TextView
@@ -417,11 +420,11 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
                     android:gravity="center|left"
-                    android:textColor="@color/maroon"
                     android:nextFocusForward="@+id/kyc_format"
                     android:text="SCT :"
-                    android:textStyle="bold"
-                    android:textSize="12sp" />
+                    android:textColor="@color/maroon"
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txt_ctime"
@@ -431,10 +434,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_weight="5"
                     android:gravity="center|left"
-                    android:textColor="@color/maroon"
                     android:nextFocusForward="@+id/kyc_format"
                     android:text=""
-                    android:textSize="12sp" />
+                    android:textColor="@color/maroon"
+                    android:textSize="@dimen/label" />
 
             </LinearLayout>
 
@@ -445,8 +448,8 @@
                 android:layout_margin="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="2"
-                android:visibility="gone"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/date"
@@ -459,7 +462,7 @@
                     android:drawableRight="@drawable/red_small_cal"
                     android:gravity="right|center"
                     android:nextFocusForward="@+id/timehr"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
 
 
                 <LinearLayout
@@ -544,7 +547,7 @@
                     android:maxLines="6"
                     android:scrollbars="vertical"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/label" />
             </LinearLayout>
 
             <LinearLayout
@@ -575,7 +578,7 @@
                     android:maxLength="6"
                     android:maxLines="1"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/label" />
             </LinearLayout>
 
 
@@ -599,7 +602,7 @@
                     android:backgroundTint="@color/maroon"
                     android:ems="10"
                     android:textColor="@color/DARKGray"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
 
@@ -630,7 +633,7 @@
                     android:nextFocusForward="@+id/uncheck_ref"
                     android:singleLine="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value"/>
 
                 <ImageView
                     android:id="@+id/add_ref"
@@ -680,7 +683,7 @@
                     android:gravity="center|left"
                     android:nextFocusForward="@+id/kyc_format"
                     android:text="REF BY SELF"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
 
@@ -699,9 +702,9 @@
                     android:layout_weight="1"
                     android:background="@drawable/clear_button"
                     android:text="Clear"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/label" />
 
                 <Button
                     android:id="@+id/next_btn_patient"
@@ -713,9 +716,9 @@
                     android:background="@drawable/next_button"
                     android:padding="5dp"
                     android:text="Next"
-                    android:textAllCaps="false"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorWhite"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/label" />
             </LinearLayout>
 
 

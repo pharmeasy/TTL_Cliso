@@ -8,4 +8,5 @@
     android:paddingRight="10dp"
     android:paddingTop="10dp"
     android:textColor="@color/maroon"
-    android:textSize="12dp" />
+    android:textSize="@dimen/value"
+    android:textAllCaps="true"/>

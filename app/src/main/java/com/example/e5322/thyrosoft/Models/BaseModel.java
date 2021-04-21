@@ -3,6 +3,8 @@ package com.example.e5322.thyrosoft.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by E5322 on 06-06-2018.
  */
@@ -22,8 +24,10 @@ public class BaseModel implements Parcelable {
     private String subtypes;
     Childs[] childs;
     Barcodes[] barcodes;
+    private ArrayList<BrandDtlsDTO> BrandDtls;
     Rate rate;
     private int isAB;
+    private boolean isPOCT;
 
     protected BaseModel(Parcel in) {
         product = in.readString();
@@ -35,12 +39,13 @@ public class BaseModel implements Parcelable {
         type = in.readString();
         trf = in.readString();
         isCPL = in.readString();
+        isNHL = in.readInt();
         subtypes = in.readString();
         childs = in.createTypedArray(Childs.CREATOR);
         barcodes = in.createTypedArray(Barcodes.CREATOR);
         rate = in.readParcelable(Rate.class.getClassLoader());
         isAB = in.readInt();
-        isNHL = in.readInt();
+        isPOCT = in.readByte() != 0;
     }
 
     @Override
@@ -54,12 +59,13 @@ public class BaseModel implements Parcelable {
         dest.writeString(type);
         dest.writeString(trf);
         dest.writeString(isCPL);
+        dest.writeInt(isNHL);
         dest.writeString(subtypes);
         dest.writeTypedArray(childs, flags);
         dest.writeTypedArray(barcodes, flags);
         dest.writeParcelable(rate, flags);
         dest.writeInt(isAB);
-        dest.writeInt(isNHL);
+        dest.writeByte((byte) (isPOCT ? 1 : 0));
     }
 
     @Override
@@ -79,6 +85,21 @@ public class BaseModel implements Parcelable {
         }
     };
 
+    public boolean isPOCT() {
+        return isPOCT;
+    }
+
+    public void setPOCT(boolean POCT) {
+        isPOCT = POCT;
+    }
+
+    public ArrayList<BrandDtlsDTO> getBrandDtls() {
+        return BrandDtls;
+    }
+
+    public void setBrandDtls(ArrayList<BrandDtlsDTO> brandDtls) {
+        BrandDtls = brandDtls;
+    }
 
     public int getIsNHL() {
         return isNHL;
@@ -428,6 +449,52 @@ public class BaseModel implements Parcelable {
     }
 
     public BaseModel() {
+    }
+
+    public static class BrandDtlsDTO {
+        /**
+         * BrandName : BN
+         * BrandRate : 50
+         * RPTFile : https://cliso.thyrocare.com/assets/dummynhlreport.pdf
+         * Alias : NHL
+         */
+
+        private String BrandName;
+        private String BrandRate;
+        private String RPTFile;
+        private String Alias;
+
+        public String getBrandName() {
+            return BrandName;
+        }
+
+        public void setBrandName(String BrandName) {
+            this.BrandName = BrandName;
+        }
+
+        public String getBrandRate() {
+            return BrandRate;
+        }
+
+        public void setBrandRate(String BrandRate) {
+            this.BrandRate = BrandRate;
+        }
+
+        public String getRPTFile() {
+            return RPTFile;
+        }
+
+        public void setRPTFile(String RPTFile) {
+            this.RPTFile = RPTFile;
+        }
+
+        public String getAlias() {
+            return Alias;
+        }
+
+        public void setAlias(String Alias) {
+            this.Alias = Alias;
+        }
     }
 
 

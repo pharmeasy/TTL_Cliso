@@ -84,9 +84,9 @@ public class Communication_Activity extends AppCompatActivity {
         addCommunication = (FloatingActionButton) findViewById(R.id.addCommunication);
         offline_img = (LinearLayout) findViewById(R.id.offline_img);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        api_key = prefs.getString("API_KEY", null);
-        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", null);
+        user = prefs.getString("Username", "");
+        api_key = prefs.getString("API_KEY", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
         expandlistcommunication = (ExpandableListView) findViewById(R.id.expandlistcommunication);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -225,10 +225,10 @@ public class Communication_Activity extends AppCompatActivity {
         JSONObject jsonObject = null;
         try {
             SharedPreferences prefs = Communication_Activity.this.getSharedPreferences("Userdetails", MODE_PRIVATE);
-            String user = prefs.getString("Username", null);
-            String passwrd = prefs.getString("password", null);
-            String access = prefs.getString("ACCESS_TYPE", null);
-            String api_key = prefs.getString("API_KEY", null);
+            String user = prefs.getString("Username", "");
+            String passwrd = prefs.getString("password", "");
+            String access = prefs.getString("ACCESS_TYPE", "");
+            String api_key = prefs.getString("API_KEY", "");
 
             GetCommunicationsRequestModel requestModel = new GetCommunicationsRequestModel();
             requestModel.setApiKey(api_key);

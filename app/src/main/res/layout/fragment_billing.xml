@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragment_mainLayout"
     android:background="@color/white"
     tools:context=".Fragment.BillingSummary">
 
@@ -11,15 +11,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="10"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:weightSum="10">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="0.5"
             android:orientation="horizontal">
 
@@ -31,11 +31,11 @@
                 android:layout_weight="1"
                 android:background="@color/cement_light"
                 android:drawableRight="@drawable/calender_color_billing"
-                android:gravity="center"
                 android:drawablePadding="5dp"
+                android:gravity="center"
                 android:hint="20-01-2019"
                 android:textColor="@color/DARKGray"
-                android:textSize="15dp" />
+                android:textSize="@dimen/value" />
 
             <TextView
 
@@ -47,23 +47,23 @@
                 android:layout_weight="1"
                 android:background="@color/cement_light"
                 android:drawableRight="@drawable/calender_color_billing"
-                android:gravity="center"
                 android:drawablePadding="5dp"
+                android:gravity="center"
                 android:hint="30-01-2019"
                 android:textColor="@color/DARKGray"
-                android:textSize="15dp" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/parent_ll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:id="@+id/parent_ll"
+            android:layout_marginRight="10dp"
             android:layout_weight="9.5"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,91 +71,95 @@
                 android:background="@drawable/grey_curve_grey_bg">
 
                 <TextView
-                    android:gravity="center"
                     android:id="@+id/date"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="DATE"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/value" />
 
                 <View
-                    android:background="@color/grey"
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_width="1dp" />
+                    android:background="@color/grey" />
 
                 <TextView
-                    android:gravity="center"
                     android:id="@+id/WL"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="WL"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/value" />
 
                 <View
-                    android:background="@color/grey"
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_width="1dp" />
+                    android:background="@color/grey" />
 
                 <TextView
-                    android:gravity="center"
                     android:id="@+id/BILLING"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:text="BILLING"
-                    android:textColor="@color/colorBlack" />
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <ListView
                 android:id="@+id/list_billingSummary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <TextView
-                android:gravity="center"
                 android:id="@+id/txt_nodata"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No data Found"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/_150sdp"
                 android:layout_gravity="center"
-                android:textColor="@color/maroon" />
+                android:layout_marginTop="@dimen/_150sdp"
+                android:gravity="center"
+                android:text="No data Found"
+                android:textAllCaps="true"
+                android:textColor="@color/maroon"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
         </LinearLayout>
 
 
-
         <LinearLayout
+            android:id="@+id/offline_img"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="9.5"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:id="@+id/offline_img"
-            android:src="@drawable/offline_gifimg"
+            android:layout_marginRight="10dp"
+            android:layout_weight="9.5"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
+            android:src="@drawable/offline_gifimg"
+            android:visibility="gone">
+
             <pl.droidsonroids.gif.GifImageView
                 android:layout_width="match_parent"
-                android:layout_marginTop="100dp"
                 android:layout_height="0dp"
+                android:layout_marginTop="100dp"
                 android:layout_weight="3"
-                android:src="@drawable/offline_gifimg"
-                />
+                android:src="@drawable/offline_gifimg" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="top|center"
+                android:textAllCaps="true"
                 android:text="  Sorry ! You are offline..."
                 android:textColor="@color/maroon"
-                android:layout_gravity="center"
-                android:gravity="top|center"
-                android:textSize="18sp"
-                android:layout_weight="2"
-                />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 

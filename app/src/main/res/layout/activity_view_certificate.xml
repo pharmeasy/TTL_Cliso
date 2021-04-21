@@ -29,6 +29,7 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/button_bg"
         android:text="Download"
+        android:textSize="@dimen/label"
         android:textColor="@color/white" />
 
 

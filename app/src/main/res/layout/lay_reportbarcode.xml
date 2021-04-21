@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include layout="@layout/lay_toolbar" />
 
-
     <LinearLayout
-        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="43dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/enter_entered_border_curve"
         android:orientation="horizontal">
@@ -32,7 +31,9 @@
                 android:layout_weight="3"
                 android:gravity="center"
                 android:text="@string/scan_entry"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_enter"
@@ -64,7 +65,9 @@
                 android:background="@color/lightgray"
                 android:gravity="center"
                 android:text="@string/scan_summ"
-                android:textColor="@color/colorBlack" />
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_entered"
@@ -82,10 +85,6 @@
     <FrameLayout
         android:id="@+id/fragment_mainLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-
-
+        android:layout_height="match_parent" />
 
 </LinearLayout>

@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import androidx.core.content.ContextCompat;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
 
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.Sents;
 import com.example.e5322.thyrosoft.R;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -128,13 +128,8 @@ public class ExpandableListCommunicationSents extends BaseExpandableListAdapter 
             parent_question_ll.setBackgroundDrawable(ContextCompat.getDrawable(activity, R.drawable.filled_round_rect));
         }
 
-        if (sents[groupPosition].getResponse().equals("")) {
-            respond_ll.setVisibility(View.GONE);
-            view_response_ll.setVisibility(View.VISIBLE);
-        } else {
-            respond_ll.setVisibility(View.GONE);
-            view_response_ll.setVisibility(View.VISIBLE);
-        }
+        respond_ll.setVisibility(View.GONE);
+        view_response_ll.setVisibility(View.VISIBLE);
 
 
         return convertView;

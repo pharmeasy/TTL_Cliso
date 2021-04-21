@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.Activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,12 +16,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -46,6 +49,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.frags.RapidAntibodyFrag;
 import com.example.e5322.thyrosoft.BottomNavigationViewHelper;
 import com.example.e5322.thyrosoft.BuildConfig;
@@ -59,6 +63,7 @@ import com.example.e5322.thyrosoft.Kotlin.KTActivity.AccreditationActivity;
 import com.example.e5322.thyrosoft.Kotlin.KTActivity.FAQ_activity;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ProfileDetailsResponseModel;
 import com.example.e5322.thyrosoft.Models.Videopoppost;
 import com.example.e5322.thyrosoft.Models.Videopoppost_response;
@@ -123,7 +128,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     boolean iscomplete = false;
     boolean isVideosee = false;
     Activity activity;
-    SharedPreferences covid_pref;
+
     SharedPreferences pref_versioncheck;
     private int a = 0;
     private String TAG = getClass().getSimpleName();
@@ -134,6 +139,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     private DatabaseHelper db;
     private VideoView video_view;
     private int offline_draft_counts;
+    AppPreferenceManager appPreferenceManager;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -225,7 +231,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         );
         setContentView(R.layout.activity_main_ll);
         activity = this;
-
+        appPreferenceManager = new AppPreferenceManager(activity);
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
@@ -247,6 +253,16 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             window.setStatusBarColor(getResources().getColor(R.color.gray));
         }
 
+        if (Global.showratedialog) {
+            Global.showratedialog = false;
+            if (appPreferenceManager.getVersionResponseModel() != null && !GlobalClass.isNull(appPreferenceManager.getVersionResponseModel().getIsShow())) {
+                if (appPreferenceManager.getVersionResponseModel().getIsShow().equalsIgnoreCase("Y")) {
+                    ShowratePopup();
+                }
+            }
+        }
+
+
         pref_versioncheck = getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
         if (pref_versioncheck != null) {
             int versionCode = BuildConfig.VERSION_CODE;
@@ -257,7 +273,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 startActivity(new Intent(ManagingTabsActivity.this, Login.class));
                 finish();
             }
-
         }
 
         if (savedInstanceState == null) {
@@ -281,10 +296,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         ecode = (TextView) headerView.findViewById(R.id.ecode);
         imageViewprofile = (ImageView) headerView.findViewById(R.id.imageViewprofile);
 
+        if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
+            covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+        }
 
-
-        covid_pref = getSharedPreferences("COVIDETAIL", MODE_PRIVATE);
-        covidacc = covid_pref.getBoolean("covidacc", false);
 
         tv_generateLead = (TextView) findViewById(R.id.tv_generateLead);
 
@@ -348,15 +363,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         } else {
             if (access.equals("STAFF")) {
-                if (covidacc) {
-                    navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
-                    navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
-                } else {
-                    navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.crab_camp).setVisible(false);
-                    navigationView.getMenu().findItem(R.id.HHH).setVisible(false);
-                }
+                navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
+                navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+                navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
+
+
+                navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notification).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notice).setVisible(true);
@@ -368,12 +380,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 navigationView.getMenu().findItem(R.id.profile).setVisible(true);
                 navigationView.getMenu().findItem(R.id.synchronization).setVisible(true);
             } else if (access.equals("ADMIN")) {
-                if (covidacc) {
-                    navigationView.getMenu().findItem(R.id.covid_reg).setVisible(true);
-                } else {
-                    navigationView.getMenu().findItem(R.id.covid_reg).setVisible(false);
-                }
-                navigationView.getMenu().findItem(R.id.crab_camp).setVisible(true);
+
+                navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
+                navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
+                navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
+
+
                 navigationView.getMenu().findItem(R.id.HHH).setVisible(false);//todo hide DRT Module
                 navigationView.getMenu().findItem(R.id.communication).setVisible(true);
                 navigationView.getMenu().findItem(R.id.notification).setVisible(true);
@@ -424,8 +436,37 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             ecode.setText("(" + usercode + ")");
         }
 
-        ShowOfflineDialog();
+//        ShowOfflineDialog();
         GlobalClass.DisplayImgWithPlaceholderFromURL(activity, profile_image, imageViewprofile, R.drawable.userprofile);
+    }
+
+    private void ShowratePopup() {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setContentView(R.layout.rate_dialog);
+        ImageView iv_cancel = dialog.findViewById(R.id.iv_cancel);
+        TextView tv_rate = dialog.findViewById(R.id.tv_rate);
+
+        if (!GlobalClass.isNull(appPreferenceManager.getVersionResponseModel().getFlashText())) {
+            tv_rate.setText(Html.fromHtml(appPreferenceManager.getVersionResponseModel().getFlashText()));
+        } else {
+            dialog.dismiss();
+        }
+
+        iv_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+            }
+        });
+
+
+        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.99);
+        dialog.getWindow().setLayout(width, FrameLayout.LayoutParams.WRAP_CONTENT);
+        dialog.show();
+
     }
 
     private void ShowOfflineDialog() {
@@ -1217,7 +1258,27 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             if (!GlobalClass.isNetworkAvailable(ManagingTabsActivity.this)) {
                 GlobalClass.showAlertDialog(ManagingTabsActivity.this);
             } else {
-                SyncData();
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(ManagingTabsActivity.this);
+                builder1.setMessage("Do you want to Sync Data?");
+                builder1.setCancelable(true);
+                builder1.setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                SyncData();
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
 
             }
         } else if (id == R.id.faq_data) {
@@ -1436,9 +1497,9 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     public void logout() {
-        SharedPreferences.Editor covidprefeditor = getSharedPreferences("COVIDETAIL", MODE_PRIVATE).edit();
-        covidprefeditor.clear();
-        covidprefeditor.apply();
+
+
+        appPreferenceManager.clearAllPreferences();
 
         SharedPreferences.Editor getProfileName = getSharedPreferences("profilename", MODE_PRIVATE).edit();
         getProfileName.clear();

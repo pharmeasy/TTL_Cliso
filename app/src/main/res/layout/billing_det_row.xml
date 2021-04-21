@@ -22,9 +22,10 @@
             <TextView
                 android:textStyle="bold"
                 android:text="Barcode : "
+                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white" />
 
             <TextView
@@ -32,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/barcode"
                 android:text="8201000M1509879"
-                android:textSize="12dp"
+                android:textSize="@dimen/label"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -47,13 +48,14 @@
             <TextView
                 android:textStyle="bold"
                 android:text="Tests : "
+                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white" />
             <TextView
                 android:text="8201000M1509879"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -72,14 +74,15 @@
             <TextView
                 android:textStyle="bold"
                 android:text="Billed Amount : "
+                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white" />
 
             <TextView
                 android:text="8201000M1509879"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,14 +102,15 @@
                 android:text="Collected Amount : "
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:textColor="@color/white" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/collamount"
                 android:text="8201000M1509879"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white" />
         </LinearLayout>
 
@@ -121,13 +125,14 @@
             <TextView
                 android:textStyle="bold"
                 android:text="Type : "
+                android:textAllCaps="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white" />
             <TextView
                 android:text="8201000M1509879"
-                android:textSize="12dp"
+                android:textSize="@dimen/value"
                 android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

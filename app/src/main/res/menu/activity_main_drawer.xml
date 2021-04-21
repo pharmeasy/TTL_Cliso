@@ -10,7 +10,7 @@
         <item
             android:id="@+id/home_navigation"
             android:icon="@drawable/home_d"
-            android:title="Home"
+            android:title="HOME"
             android:visible="false" />
     </group>
 
@@ -20,7 +20,7 @@
         <item
             android:id="@+id/woe"
             android:icon="@drawable/woe_d"
-            android:title="Work orders"
+            android:title="WORK ORDERS"
             android:visible="false" />
     </group>
 
@@ -31,7 +31,7 @@
         <item
             android:id="@+id/guide_me"
             android:icon="@drawable/guide"
-            android:title="Whats new"
+            android:title="WHATS NEW"
             android:visible="false" />
     </group>
 
@@ -51,7 +51,7 @@
         <item
             android:id="@+id/woestagetwo"
             android:icon="@drawable/woestagetwo"
-            android:title="WOE Stage 2"
+            android:title="WOE STAGE 2"
             android:visible="false" />
     </group>
 
@@ -61,7 +61,7 @@
         <item
             android:id="@+id/offlinewoe"
             android:icon="@drawable/offlinewoe"
-            android:title="Offline WOE"
+            android:title="OFFLINE WOE"
             android:visible="false" />
     </group>
 
@@ -71,7 +71,7 @@
         <item
             android:id="@+id/result"
             android:icon="@drawable/result"
-            android:title="Results"
+            android:title="RESULTS"
             android:visible="false" />
 
     </group>
@@ -82,7 +82,7 @@
         <item
             android:id="@+id/trackdetails"
             android:icon="@drawable/track_details_d"
-            android:title="Receipt"
+            android:title="RECEIPT"
             android:visible="false" />
     </group>
 
@@ -92,7 +92,7 @@
         <item
             android:id="@+id/ratecal"
             android:icon="@drawable/calculator_d"
-            android:title="Rate calculator"
+            android:title="RATE CALCULATOR"
             android:visible="false" />
 
     </group>
@@ -103,7 +103,7 @@
         <item
             android:id="@+id/payment"
             android:icon="@drawable/payment_d"
-            android:title="Payment" />
+            android:title="PAYMENT" />
 
     </group>
 
@@ -113,7 +113,7 @@
         <item
             android:id="@+id/stock_availability"
             android:icon="@drawable/ic_material"
-            android:title="Stock Availability"
+            android:title="STOCK AVAILABILITY"
             android:visible="false" />
 
     </group>
@@ -124,7 +124,7 @@
         <item
             android:id="@+id/ledger"
             android:icon="@drawable/ledger_d"
-            android:title="Ledger"
+            android:title="LEDGER"
             android:visible="false" />
     </group>
 
@@ -135,7 +135,7 @@
         <item
             android:id="@+id/billing"
             android:icon="@drawable/billing_d"
-            android:title="Billing"
+            android:title="BILLING"
             android:visible="false" />
 
     </group>
@@ -146,7 +146,7 @@
         <item
             android:id="@+id/upload_document_navigation"
             android:icon="@drawable/upload_doc_d"
-            android:title="Upload Document" />
+            android:title="UPLOAD DOCUMENT" />
     </group>
 
     <group
@@ -155,7 +155,7 @@
         <item
             android:id="@+id/sgc_pgc_entry_data"
             android:icon="@drawable/sgc_pgc_d"
-            android:title="SGC PGC Entry" />
+            android:title="SGC PGC ENTRY" />
     </group>
 
     <group
@@ -194,7 +194,7 @@
         <item
             android:id="@+id/crab_camp"
             android:icon="@drawable/covid"
-            android:title="Covid Rapid Antibody"
+            android:title="COVID RAPID ANTIBODY"
             android:visible="false" />
     </group>
 
@@ -205,7 +205,7 @@
         <item
             android:id="@+id/HHH"
             android:icon="@drawable/covid"
-            android:title="DPT tests"
+            android:title="DPT TESTS"
             android:visible="false" />
     </group>
     <group
@@ -214,7 +214,7 @@
         <item
             android:id="@+id/otp_credit"
             android:icon="@drawable/ic_otp_credit_mis"
-            android:title="OTP credit" />
+            android:title="OTP CREDIT" />
 
     </group>
 
@@ -224,7 +224,7 @@
         <item
             android:id="@+id/broadCast"
             android:icon="@drawable/broadcast"
-            android:title="Broadcast"
+            android:title="BROADCAST"
             android:visible="true" />
     </group>
 
@@ -234,7 +234,7 @@
         <item
             android:id="@+id/communication"
             android:icon="@drawable/comm_d"
-            android:title="Communication" />
+            android:title="COMMUNICATION" />
     </group>
 
 
@@ -244,7 +244,7 @@
         <item
             android:id="@+id/vid_leggy"
             android:icon="@drawable/videoicon"
-            android:title="Video" />
+            android:title="VIDEO" />
 
     </group>
 
@@ -265,7 +265,7 @@
         <item
             android:id="@+id/leadgenrate"
             android:icon="@drawable/leadc"
-            android:title="Generate Lead" />
+            android:title="GENERATE LEAD" />
 
     </group>
 
@@ -275,7 +275,7 @@
         <item
             android:id="@+id/thyroshop"
             android:icon="@drawable/cart"
-            android:title="Download Thyroshop" />
+            android:title="DOWNLOAD THYROSHOP" />
     </group>
 
 
@@ -285,7 +285,7 @@
         <item
             android:id="@+id/notice"
             android:icon="@drawable/noticeboard"
-            android:title="Noticeboard" />
+            android:title="NOTICEBOARD" />
     </group>
 
     <group
@@ -294,7 +294,7 @@
         <item
             android:id="@+id/notification"
             android:icon="@drawable/notification"
-            android:title="Notification" />
+            android:title="NOTIFICATION" />
     </group>
 
 
@@ -304,7 +304,7 @@
         <item
             android:id="@+id/feedback"
             android:icon="@drawable/feedback"
-            android:title="Feedback" />
+            android:title="FEEDBACK" />
     </group>
 
     <group
@@ -322,7 +322,7 @@
         <item
             android:id="@+id/profile"
             android:icon="@drawable/profile"
-            android:title="My profile" />
+            android:title="MY PROFILE" />
     </group>
 
     <group
@@ -331,7 +331,7 @@
         <item
             android:id="@+id/phone"
             android:icon="@drawable/phone"
-            android:title="Phone" />
+            android:title="PHONE" />
     </group>
 
     <group
@@ -340,7 +340,7 @@
         <item
             android:id="@+id/whatsapp"
             android:icon="@drawable/what"
-            android:title="WhatsApp" />
+            android:title="WHATSAPP" />
     </group>
 
     <group
@@ -349,7 +349,7 @@
         <item
             android:id="@+id/synchronization"
             android:icon="@drawable/sync1"
-            android:title="Sync" />
+            android:title="SYNC" />
     </group>
 
     <group
@@ -368,7 +368,7 @@
         <item
             android:id="@+id/accr_data"
             android:icon="@drawable/accredation"
-            android:title="Accreditation"
+            android:title="ACCREDITATION"
             android:visible="true" />
 
     </group>
@@ -380,7 +380,7 @@
         <item
             android:id="@+id/offer_data"
             android:icon="@drawable/offer"
-            android:title="Special Offers"
+            android:title="SPECIAL OFFERS"
             android:visible="false" />
 
     </group>
@@ -391,7 +391,7 @@
         <item
             android:id="@+id/articles_data"
             android:icon="@drawable/health_article_icon"
-            android:title="Health Articles"
+            android:title="HEALTH ARTICLES"
             android:visible="true" />
 
     </group>
@@ -402,7 +402,7 @@
         <item
             android:id="@+id/company_contcat"
             android:icon="@drawable/company_contact"
-            android:title="Company Contact" />
+            android:title="COMPANY CONTACT" />
     </group>
 
     <group
@@ -411,7 +411,7 @@
         <item
             android:id="@+id/campIntimation"
             android:icon="@drawable/camp"
-            android:title="Camp Intimation"
+            android:title="CAMP INTIMATION"
             android:visible="false" />
     </group>
 
@@ -422,7 +422,7 @@
         <item
             android:id="@+id/item_certificate"
             android:icon="@drawable/billing_d"
-            android:title="Certificate"
+            android:title="CERTIFICATE"
             android:visible="false" />
 
     </group>
@@ -435,7 +435,7 @@
         <item
             android:id="@+id/logout"
             android:icon="@drawable/logout"
-            android:title="Logout" />
+            android:title="LOGOUT" />
     </group>
 
 </menu>

@@ -22,7 +22,8 @@
             android:layout_margin="@dimen/_5sdp"
             android:layout_weight="0.9"
             android:padding="@dimen/_5sdp"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/value" />
 
         <ImageView
             android:layout_width="0dp"
@@ -32,8 +33,6 @@
             android:src="@drawable/next_track_month"
             android:tint="@color/maroon" />
 
-
     </LinearLayout>
-
 
 </LinearLayout>

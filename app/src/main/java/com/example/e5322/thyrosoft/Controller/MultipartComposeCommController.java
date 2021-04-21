@@ -4,12 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ComposeCommunication_activity;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.ComposeCommPOSTModel;
@@ -65,7 +63,6 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             HttpPost httpPost = new HttpPost(strUrl);
 
             builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-
             builder.addPart("apiKey", new StringBody("" + composeCommPOSTModel.getApiKey()));
             builder.addPart("userCode", new StringBody("" + composeCommPOSTModel.getUserCode()));
             builder.addPart("type", new StringBody("" + composeCommPOSTModel.getType()));
@@ -73,13 +70,18 @@ public class MultipartComposeCommController extends AsyncTask<Void, Void, String
             builder.addPart("forwardTo", new StringBody("" + composeCommPOSTModel.getForwardTo()));
             builder.addPart("Source", new StringBody("" + composeCommPOSTModel.getSource()));
 
-            if (composeCommPOSTModel.getFile() != null && composeCommPOSTModel.getFile().exists()) {
+            if (composeCommPOSTModel.getFile() != null) {
                 builder.addBinaryBody("file", composeCommPOSTModel.getFile());
             }
 
-            Log.e(TAG, "Post params:- " + "\napiKey:" + composeCommPOSTModel.getApiKey() + "\nuserCode:" + composeCommPOSTModel.getUserCode()
-                    + "\ntype:" + composeCommPOSTModel.getType() + "\ncommunication:" + composeCommPOSTModel.getCommunication() + "\nforwardTo:" + composeCommPOSTModel.getForwardTo()
-                    + "\nSource:" + composeCommPOSTModel.getSource() + "\nfile:" + composeCommPOSTModel.getFile());
+            Log.e(TAG, "Post params:- "
+                    + "\napiKey:" + composeCommPOSTModel.getApiKey()
+                    + "\nuserCode:" + composeCommPOSTModel.getUserCode()
+                    + "\ntype:" + composeCommPOSTModel.getType()
+                    + "\ncommunication:" + composeCommPOSTModel.getCommunication()
+                    + "\nforwardTo:" + composeCommPOSTModel.getForwardTo()
+                    + "\nSource:" + composeCommPOSTModel.getSource()
+                    + "\nfile:" + composeCommPOSTModel.getFile());
 
             httpPost.setEntity(builder.build());
             httpPost.setHeader(Constants.HEADER_USER_AGENT,  GlobalClass.getHeaderValue(mActivity));

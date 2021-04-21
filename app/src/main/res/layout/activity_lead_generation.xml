@@ -29,7 +29,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Generate Lead"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -61,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:orientation="horizontal">
 
 
@@ -88,11 +89,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/alphabets"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Name*"
+                    android:textSize="@dimen/value"
+                    android:hint="NAME*"
                     android:maxLength="40"
                     android:padding="@dimen/_5sdp" />
 
@@ -101,10 +103,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawableLeft="@drawable/mobile"
                     android:drawablePadding="@dimen/_2sdp"
-                    android:hint="Mobile*"
+                    android:hint="MOBILE*"
+                    android:textSize="@dimen/value"
                     android:inputType="number"
                     android:maxLength="10"
                     android:padding="@dimen/_5sdp" />
@@ -252,11 +255,12 @@
                     android:visibility="visible"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:background="@drawable/custom_border_edittext_blue"
+                    android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/addressvalidation"
                     android:drawableLeft="@drawable/remark24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Remarks"
+                    android:textSize="@dimen/value"
+                    android:hint="REMARKS"
                     android:maxLength="200"
                     android:padding="@dimen/_5sdp" />
 
@@ -322,6 +326,7 @@
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
                 android:text="Submit"
+                android:textSize="@dimen/label"
                 android:textColor="@color/white" />
 
             <TextView
@@ -332,6 +337,9 @@
                 android:layout_margin="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_5"
                 android:text="Reset"
+                android:textAllCaps="true"
+                android:padding="5dp"
+                android:textSize="@dimen/value"
                 android:textColor="@android:color/holo_red_dark"
                 android:textStyle="bold" />
 

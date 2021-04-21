@@ -132,6 +132,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private ImageView male, female, male_red, female_red;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private Date minDate;
+    EditText edt_email;
 
     public SRFCovidWOEEnterFragment() {
         // Required empty public constructor
@@ -252,6 +253,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         tv_mobileno = view.findViewById(R.id.tv_mobileno);
         by_missed = view.findViewById(R.id.by_missed);
         by_generate = view.findViewById(R.id.by_generate);
+        edt_email = view.findViewById(R.id.edt_email);
 
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
@@ -577,7 +579,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         requestPermission();
                     }
                 } else {
-                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY,0);
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
             }
         });
@@ -985,6 +987,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 covidpostdata.setSPECIMENTIME(selTime);
                 covidpostdata.setBARCODE(edt_barcode.getText().toString().trim());
                 covidpostdata.setVIAIMAGE(vial_file);
+                covidpostdata.setEMAIL(edt_email.getText().toString());
                 if (selfie_file != null) {
                     covidpostdata.setSELFIE(selfie_file);
                 }
@@ -1106,8 +1109,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void buttonval() {
         if (Validation()) {
-            btn_submit.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-            btn_submit.setTextColor(getResources().getColor(R.color.maroon));
+            btn_submit.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+            btn_submit.setTextColor(getResources().getColor(R.color.white));
             btn_submit.setEnabled(true);
             btn_submit.setClickable(true);
         } else {
@@ -1124,6 +1127,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         edt_fname.setCursorVisible(true);
         edt_fname.getText().clear();
         edt_lname.getText().clear();
+        edt_email.getText().clear();
         edt_amt.getText().clear();
         edt_missed_mobile.getText().clear();
         edt_verifycc.getText().clear();
@@ -1210,20 +1214,20 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         txt_nofileother.setPaintFlags(0);
 
 
-        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
 
-        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_selfie.setTextColor(getResources().getColor(R.color.white));
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -1256,6 +1260,20 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 GlobalClass.showCustomToast(activity, "You cannot enter collected amount less than " + b2b, 0);
                 return false;
             }
+
+            if (GlobalClass.isNull(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+
+            if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+
+
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
@@ -1264,7 +1282,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     private void mobileverify(String mobileno) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         CoVerifyMobReq coVerifyMobReq = new CoVerifyMobReq();
         coVerifyMobReq.setApi_key(apikey);
         coVerifyMobReq.setMobile(mobileno);
@@ -1295,7 +1313,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
             @Override
             public void onFailure(Call<COVerifyMobileResponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
 
@@ -1581,6 +1599,12 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         if (GlobalClass.isNull(edt_srfid.getText().toString())) {
             return false;
         }
+
+        if (edt_srfid.getText().length() < 10) {
+            Global.showCustomToast(getActivity(), "SRF-ID should be minimum of 10 digits");
+            return false;
+        }
+
         if (GlobalClass.isNull(edt_age.getText().toString())) {
             return false;
         }
@@ -1754,20 +1778,20 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         txt_selfie.setTextColor(getResources().getColor(R.color.black));
         txt_selfie.setPaintFlags(0);
 
-        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
 
-        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
 
-        btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-        btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+        btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+        btn_selfie.setTextColor(getResources().getColor(R.color.white));
 
 
         if (countDownTimer != null) {
@@ -1980,8 +2004,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             txt_nofilepresc.setVisibility(View.VISIBLE);
                             txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
                             lin_pres_preview.setVisibility(View.GONE);
-                            btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_choosefile_presc.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_choosefile_presc.setTextColor(getResources().getColor(R.color.white));
                             txt_nofilepresc.setVisibility(View.VISIBLE);
                             buttonval();
                         } else if (type.equalsIgnoreCase("adhar")) {
@@ -2003,8 +2027,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                                 }
                                 if (aadharlist.size() == 1) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
@@ -2014,8 +2038,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                                     txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileadhar.setVisibility(View.VISIBLE);
                                     txt_adharfileupload.setVisibility(View.GONE);
                                 }
@@ -2030,8 +2054,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             txt_nofilevial.setVisibility(View.VISIBLE);
                             txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
                             lin_vial_images.setVisibility(View.GONE);
-                            btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_choosefile_vial.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_choosefile_vial.setTextColor(getResources().getColor(R.color.white));
                             txt_nofilevial.setVisibility(View.VISIBLE);
                             buttonval();
                         } else if (type.equalsIgnoreCase("other")) {
@@ -2052,22 +2076,22 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                                     }
                                 }
                                 if (otherlist.size() == 1) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (otherlist.size() == 2) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileother.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.GONE);
                                 }
@@ -2083,8 +2107,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             lin_selfie.setVisibility(View.GONE);
                             txt_selfie.setVisibility(View.VISIBLE);
                             btn_selfie.setEnabled(true);
-                            btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                            btn_selfie.setTextColor(getResources().getColor(R.color.maroon));
+                            btn_selfie.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                            btn_selfie.setTextColor(getResources().getColor(R.color.white));
                         }
                         dialog.dismiss();
                         maindialog.dismiss();

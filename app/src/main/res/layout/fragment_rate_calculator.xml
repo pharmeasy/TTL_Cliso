@@ -19,7 +19,6 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +33,6 @@
 
             </LinearLayout>
 
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,8 +46,9 @@
                     android:gravity="left|center"
                     android:padding="3dp"
                     android:text="Note :"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/dp_14"
+                    android:textSize="@dimen/note"
                     android:textStyle="bold" />
 
                 <TextView
@@ -60,8 +59,9 @@
                     android:gravity="left|center"
                     android:padding="3dp"
                     android:text="Minimum Billing will be Rs.30/-"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="@dimen/note" />
 
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                     android:background="@color/white"
                     android:gravity="center"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/dp_14" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -130,7 +130,8 @@
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
                     android:checked="true"
-                    android:text="CPL" />
+                    android:text="CPL"
+                    android:textSize="@dimen/value" />
 
                 <RadioButton
                     android:id="@+id/rpl_rdo"
@@ -138,7 +139,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
-                    android:text="RPL" />
+                    android:text="RPL"
+                    android:textSize="@dimen/value" />
             </RadioGroup>
 
             <ScrollView
@@ -169,8 +171,9 @@
                             android:gravity="center"
                             android:padding="3dp"
                             android:text="Test"
+                            android:textAllCaps="true"
                             android:textColor="@color/white"
-                            android:textSize="12dp" />
+                            android:textSize="@dimen/value" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -180,8 +183,9 @@
                             android:gravity="center"
                             android:padding="3dp"
                             android:text="Rates"
+                            android:textAllCaps="true"
                             android:textColor="@color/white"
-                            android:textSize="12dp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -203,8 +207,9 @@
                             android:scrollbars="vertical"
                             android:text="Select Test"
                             android:textAlignment="viewStart"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="11sp" />
+                            android:textSize="@dimen/value" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -228,7 +233,7 @@
                                     android:gravity="center"
                                     android:text="B2C :"
                                     android:textColor="@color/DARKGray"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/note" />
 
                                 <TextView
                                     android:id="@+id/show_rates"
@@ -239,7 +244,7 @@
                                     android:gravity="start"
                                     android:text="450"
                                     android:textColor="@color/maroon"
-                                    android:textSize="11sp"
+                                    android:textSize="@dimen/note"
                                     tools:ignore="RtlCompat" />
 
                             </LinearLayout>
@@ -259,8 +264,9 @@
                                     android:background="@color/white"
                                     android:gravity="center"
                                     android:text="Your Rate :"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/DARKGray"
-                                    android:textSize="11sp" />
+                                    android:textSize="@dimen/note" />
 
 
                                 <TextView
@@ -342,13 +348,13 @@
                     android:layout_height="25dp"
                     android:background="@drawable/grey_curve_border"
                     android:drawableLeft="@drawable/ic_search_black_24dp"
-                    android:hint="Search Test Name"
+                    android:hint="SEARCH TEST NAME"
                     android:paddingLeft="14dp"
                     android:paddingTop="1dp"
                     android:paddingRight="1dp"
                     android:paddingBottom="1dp"
                     android:textColorHint="@color/grey"
-                    android:textSize="10dp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -361,13 +367,14 @@
                 android:layout_marginBottom="2dp"
                 android:background="@drawable/grey_curve_border"
                 android:drawableLeft="@drawable/ic_search_black_24dp"
-                android:hint="Search Test Name"
+                android:hint="SEARCH TEST NAME"
                 android:paddingLeft="14dp"
                 android:paddingTop="1dp"
                 android:paddingRight="1dp"
                 android:paddingBottom="1dp"
+                android:textAllCaps="true"
                 android:textColorHint="@color/grey"
-                android:textSize="10dp" />
+                android:textSize="@dimen/value" />
 
 
             <LinearLayout
@@ -395,8 +402,9 @@
                         android:gravity="center"
                         android:padding="3dp"
                         android:text="Test"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="12dp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -406,8 +414,9 @@
                         android:gravity="center"
                         android:padding="3dp"
                         android:text="Rates"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="12dp" />
+                        android:textSize="@dimen/value" />
 
                 </LinearLayout>
 
@@ -428,8 +437,9 @@
                         android:padding="3dp"
                         android:scrollbars="vertical"
                         android:text="Select Test"
+                        android:textAllCaps="true"
                         android:textColor="@color/maroon"
-                        android:textSize="11sp" />
+                        android:textSize="@dimen/value" />
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -453,7 +463,7 @@
                                 android:gravity="center"
                                 android:text="B2C :"
                                 android:textColor="@color/DARKGray"
-                                android:textSize="11sp" />
+                                android:textSize="@dimen/value" />
 
                             <TextView
                                 android:id="@+id/out_lab_cost"
@@ -463,7 +473,7 @@
                                 android:layout_weight="1"
                                 android:text="741"
                                 android:textColor="@color/maroon"
-                                android:textSize="10dp"
+                                android:textSize="@dimen/value"
                                 tools:ignore="RtlCompat" />
 
                         </LinearLayout>
@@ -483,8 +493,9 @@
                                 android:background="@color/white"
                                 android:gravity="center"
                                 android:text="Your Rate :"
+                                android:textAllCaps="true"
                                 android:textColor="@color/DARKGray"
-                                android:textSize="11sp"
+                                android:textSize="@dimen/value"
                                 android:visibility="visible" />
 
                             <TextView
@@ -496,7 +507,7 @@
                                 android:gravity="start"
                                 android:text="820"
                                 android:textColor="@color/maroon"
-                                android:textSize="11sp" />
+                                android:textSize="@dimen/value" />
 
                         </LinearLayout>
 
@@ -546,8 +557,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Tests"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12dp" />
+                    android:textSize="@dimen/value" />
 
                 <View
                     android:layout_width="1dp"
@@ -565,8 +577,9 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Profile"
+                    android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="12dp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -611,8 +624,9 @@
                 android:layout_weight="2"
                 android:gravity="top|center"
                 android:text=" Sorry ! You are offline..."
+                android:textAllCaps="true"
                 android:textColor="@color/maroon"
-                android:textSize="18sp" />
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 

@@ -15,7 +15,7 @@
         android:padding="@dimen/dp_5"
         android:text="1"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_15"
+        android:textSize="@dimen/value"
         android:visibility="visible" />
 
     <TextView
@@ -29,8 +29,9 @@
         android:padding="@dimen/dp_5"
         android:singleLine="true"
         android:text="S KIT"
+        android:textAllCaps="true"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/value" />
 
     <TextView
         android:id="@+id/tv_opStock"
@@ -43,7 +44,7 @@
         android:padding="@dimen/dp_5"
         android:text="20"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/value" />
 
     <TextView
         android:id="@+id/tv_clStock"
@@ -56,7 +57,7 @@
         android:gravity="end"
         android:padding="@dimen/dp_5"
         android:textColor="@color/black"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/value" />
 
 
 </TableRow>

@@ -22,7 +22,7 @@ public class MessageConstants {
     public static String APP_NOT_AVAILABLE = "No App Available";
     public static String FILE_DOWN_SUCCSS = "File download successfully..";
 
-    public static String DOC_SUCC="Document uploaded successfully";
+    public static String DOC_SUCC = "Document uploaded successfully";
     public static String VERIFY = "Verify otp first";
     public static String PLEASEENTERSCANOPINION = "Please enter Scan Opinion";
     public static String PLEASEENTERCLINICALOPINION = "Please enter Clinical Opinion";
@@ -34,7 +34,7 @@ public class MessageConstants {
     public static String TOKEN_NOT_FOUND = "Token not found";
     public static CharSequence AUTH_FAILED = "Authorization has been denied for this request.";
     public static String PRICEERROR = "NHF rate is zero";
-    public static String NODATA="No Data Available";
+    public static String NODATA = "No Data Available";
     public static String WHATSAPP_NOT_INSTALLED = "WhatsApp not installed";
     public static String BAKTOST = "Kindly click on reset button to back";
     public static String MOBILE_NO_USED_10_TIMES = "This mobile number is already referred for more than 10 times in last 90 days.Kindly enter another mobile number.";
@@ -46,6 +46,5 @@ public class MessageConstants {
     public static String ENTER_AMOUNT = "Please enter amount to add in your account";
     public static String REMARKS_SHOULD_NOT_START_SPACE = "Remarks should not start with space";
     public static String INVALID_EMAIL = "Invalid email ID";
-
-
+    public static String ABSURD_VALUE = "Absurd Value. Redo and Re enter";
 }

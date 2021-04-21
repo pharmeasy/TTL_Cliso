@@ -21,6 +21,11 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/d2489343556b498b0e36daae02fc1c55/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/d38d8e939639ac3c898733657c089ceb/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/99a4cccafad3ff0bfb58ce0a207b0467/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/82293b2506e5a9f2b7dab742cd1155bf/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/9f0bfbce94fa5707310a180da9e6e6df/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/5eb509098b9887f372a97b855e83aa5d/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/bcba52217ab064029f599709764b7caf/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/6ed0c3a81fe301d74e758071cc1c6962/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/11c1f90ac33518ba584cbb40bfa62e71/AndroidManifest.xml" />
@@ -83,6 +88,21 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/99a4cccafad3ff0bfb58ce0a207b0467/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/99a4cccafad3ff0bfb58ce0a207b0467/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/99a4cccafad3ff0bfb58ce0a207b0467/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/82293b2506e5a9f2b7dab742cd1155bf/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/82293b2506e5a9f2b7dab742cd1155bf/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/82293b2506e5a9f2b7dab742cd1155bf/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/9f0bfbce94fa5707310a180da9e6e6df/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/9f0bfbce94fa5707310a180da9e6e6df/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/9f0bfbce94fa5707310a180da9e6e6df/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/5eb509098b9887f372a97b855e83aa5d/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/5eb509098b9887f372a97b855e83aa5d/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/5eb509098b9887f372a97b855e83aa5d/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/bcba52217ab064029f599709764b7caf/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/bcba52217ab064029f599709764b7caf/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/bcba52217ab064029f599709764b7caf/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/6ed0c3a81fe301d74e758071cc1c6962/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/6ed0c3a81fe301d74e758071cc1c6962/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-payu-custom-browser-7.2.5.aar/6ed0c3a81fe301d74e758071cc1c6962/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

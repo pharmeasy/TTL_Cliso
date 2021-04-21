@@ -25,7 +25,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Accreditation"
-            android:textSize="18sp"
+            android:textSize="@dimen/header"
+            android:textAllCaps="true"
             android:textStyle="bold" />
 
         <ImageView

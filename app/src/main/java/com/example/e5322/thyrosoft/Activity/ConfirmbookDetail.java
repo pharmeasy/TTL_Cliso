@@ -84,13 +84,13 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
         mPaymentParams = new PaymentParams();
 
         SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
-        name_tsp = getProfileName.getString("name", null);
-        usercode = getProfileName.getString("user_code", null);
-        email_id = getProfileName.getString("email", null);
+        name_tsp = getProfileName.getString("name", "");
+        usercode = getProfileName.getString("user_code", "");
+        email_id = getProfileName.getString("email", "");
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        api_key = prefs.getString("API_KEY", "");
 
         if (bundle != null) {
 

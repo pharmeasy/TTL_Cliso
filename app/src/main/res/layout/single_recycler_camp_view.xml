@@ -19,6 +19,8 @@
             android:gravity="center"
             android:id="@+id/camp_sr"
             android:text="Sr No"
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
             android:textColor="@color/maroon" />
 
         <View
@@ -35,6 +37,8 @@
             android:gravity="center"
             android:id="@+id/camp_date"
             android:text="Camp Date"
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
             android:textColor="@color/maroon" />
 
         <View
@@ -51,6 +55,8 @@
             android:layout_weight="3"
             android:gravity="center"
             android:text="Camp Profile"
+            android:textAllCaps="true"
+            android:textSize="@dimen/value"
             android:id="@+id/camp_profile"
             android:textColor="@color/maroon" />
 

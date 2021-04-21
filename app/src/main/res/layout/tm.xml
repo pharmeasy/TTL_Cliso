@@ -54,7 +54,9 @@
                             android:background="@color/lightgray"
                             android:gravity="center"
                             android:text="Wind-Up"
-                            android:textColor="@color/colorBlack" />
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/label" />
 
                         <ImageView
                             android:id="@+id/enter_arrow_enterss"
@@ -85,7 +87,9 @@
                             android:layout_weight="3"
                             android:gravity="center"
                             android:text="Consignment Entry"
-                            android:textColor="@color/colorBlack" />
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/label" />
 
                         <ImageView
                             android:id="@+id/enter_arrow_enteredss"
@@ -126,8 +130,9 @@
                             android:layout_weight="0.8"
                             android:padding="0dp"
                             android:text="Routing Code"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="12dp"
+                            android:textSize="@dimen/note"
                             android:textStyle="bold" />
 
                         <LinearLayout
@@ -152,26 +157,28 @@
                                 <RadioButton
 
                                     android:id="@+id/direct"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="1"
+                                    android:layout_weight="1.5"
                                     android:buttonTint="@color/maroon"
-                                    android:scrollbarSize="10dp"
-                                    android:text="Direct"
+                                    android:text="Direct to Mumbai"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="12dp" />
+                                    android:textSize="@dimen/note" />
 
                                 <RadioButton
                                     android:id="@+id/through_tsp"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_weight="2"
+                                    android:layout_weight="1.5"
                                     android:buttonTint="@color/maroon"
                                     android:text="Through another TSP"
+                                    android:textAllCaps="true"
                                     android:textColor="@color/maroon"
-                                    android:textSize="12dp" />
+                                    android:textSize="@dimen/note" />
                             </RadioGroup>
                         </LinearLayout>
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -192,8 +199,9 @@
                             android:layout_weight="1"
                             android:gravity="center|left"
                             android:text="Enter the source code"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <EditText
@@ -203,10 +211,10 @@
                             android:layout_weight="1"
                             android:background="@color/white"
                             android:digits="0123456789QWERTYUIOPLKJHGFDSAZXCVBNMqwertyuioplkjhgfdsazxcvbnm"
-                            android:hint="Flight Number"
+                            android:hint="FLIGHT NUMBER"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -223,7 +231,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:backgroundTint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -241,7 +249,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:backgroundTint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                         <!--<string-array name="filght_spinner_values">
                         <item>Select Airlines</item>
                         <item>JET Airways</item>
@@ -266,11 +274,11 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="5dp"
                             android:background="@color/white"
-                            android:hint="Flight Number"
+                            android:hint="FLIGHT NUMBER"
                             android:maxLength="25"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -289,7 +297,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:backgroundTint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -314,10 +322,10 @@
                             android:background="@color/white"
                             android:buttonTint="@color/maroon"
                             android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
-                            android:hint="Enter Bus Name"
+                            android:hint="ENTER BUS NAME"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/grey"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -344,14 +352,13 @@
                             android:background="@color/white"
                             android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                             android:gravity="center|left"
-                            android:hint="Enter Bus Number"
+                            android:hint="ENTER BUS NUMBER"
                             android:maxLength="15"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
-
 
 
                     <LinearLayout
@@ -370,7 +377,7 @@
                             android:layout_gravity="center"
                             android:layout_weight="1"
                             android:backgroundTint="@color/maroon"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -398,12 +405,12 @@
                             android:buttonTint="@color/maroon"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ."
                             android:gravity="center|left"
-                            android:hint="Enter name of person"
+                            android:hint="ENTER NAME OF PERSON"
                             android:maxLength="25"
                             android:padding="1dp"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -429,11 +436,11 @@
                             android:buttonTint="@color/maroon"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ."
                             android:gravity="center|left"
-                            android:hint="Enter name of person"
+                            android:hint="ENTER NAME OF PERSON"
                             android:maxLength="25"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -454,9 +461,9 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:text="Dispatch Time"
+                            android:text="DISPATCH TIME"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -467,12 +474,13 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:hint="Dispatch Time"
+                            android:hint="DISPATCH TIME"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/expected_depature_time_layout"
                         android:layout_width="match_parent"
@@ -490,9 +498,9 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:text="Expected Departure Time"
+                            android:text="EXPECTED DEPARTURE TIME"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -504,10 +512,10 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:hint="Departure Time"
+                            android:hint="DEPARTURE TIME"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -528,9 +536,9 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:text="Expected Time Arrival"
+                            android:text="EXPECTED TIME ARRIVAL"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -541,10 +549,10 @@
                             android:layout_weight="1"
                             android:buttonTint="@color/maroon"
                             android:gravity="center|left"
-                            android:hint="Expected Time Arrival"
+                            android:hint="EXPECTED TIME ARRIVAL"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/marronFaint"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
 
                     </LinearLayout>
 
@@ -567,18 +575,50 @@
                             android:background="@color/white"
                             android:buttonTint="@color/maroon"
                             android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
-                            android:hint="Consignment no"
+                            android:hint="CONSIGNMENT NO"
                             android:maxLength="15"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/grey"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/value" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_pouch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:visibility="gone"
+                        android:background="@drawable/corner_curve_maroon"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_addpouch"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_gravity="center"
+                            android:gravity="center|left"
+                            android:paddingLeft="10dp"
+                            android:text="Map SSP +"
+                            android:textAllCaps="true"
+                            android:textColor="@color/maroon"
+                            android:textSize="@dimen/value"
+                            android:textStyle="bold" />
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recy_scannedbarcode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="10dp"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/consignment_name_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="2dp"
                         android:background="@drawable/maroon_border_white_bg"
                         android:orientation="vertical"
@@ -587,19 +627,20 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginBottom="0dp"
                             android:layout_weight="1"
                             android:text="* Click to scan consignment barcode"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="7dp" />
+                            android:textSize="@dimen/note" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/_30sdp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginBottom="6dp"
@@ -623,10 +664,11 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="4"
                                 android:background="@color/maroon"
-                                android:hint="Consignment Barcode"
+                                android:hint="CONSIGNMENT BARCODE"
+                                android:textAllCaps="true"
                                 android:textColor="@color/white"
                                 android:textColorHint="@color/white"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
 
                             <ImageView
                                 android:id="@+id/img_edt"
@@ -654,17 +696,17 @@
                         <EditText
                             android:id="@+id/enter_barcode"
                             android:layout_width="match_parent"
-                            android:layout_height="20dp"
+                            android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:background="@color/white"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                            android:hint="Enter barcode"
+                            android:hint="ENTER BARCODE"
                             android:inputType="textCapCharacters"
                             android:maxLength="11"
                             android:paddingLeft="5dp"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/grey"
-                            android:textSize="15sp" />
+                            android:textSize="@dimen/value" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -680,13 +722,13 @@
                                 android:layout_weight="4"
                                 android:background="@color/white"
                                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                                android:hint="Re-enter barcode"
+                                android:hint="RE-ENTER BARCODE"
                                 android:inputType="textCapCharacters"
                                 android:maxLength="11"
                                 android:paddingLeft="5dp"
                                 android:textColor="@color/maroon"
                                 android:textColorHint="@color/grey"
-                                android:textSize="15sp" />
+                                android:textSize="@dimen/value" />
 
                             <ImageView
                                 android:id="@+id/setback"
@@ -698,7 +740,6 @@
 
 
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:id="@+id/total_sample_layout"
@@ -721,9 +762,9 @@
                             android:digits="0123456789"
                             android:gravity="center|left"
                             android:inputType="number"
-                            android:text="Total Sample"
+                            android:text="TOTAL SAMPLE"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -738,7 +779,7 @@
                             android:inputType="number"
                             android:text="RPL"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
 
                         <TextView
@@ -753,14 +794,14 @@
                             android:inputType="number"
                             android:text="CPL"
                             android:textColor="@color/maroon"
-                            android:textSize="12sp"
+                            android:textSize="@dimen/value"
                             android:textStyle="bold" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/bsv_barcode_scanning_ll"
                         android:layout_width="match_parent"
-                        android:layout_height="70dp"
+                        android:layout_height="wrap_content"
                         android:layout_margin="2dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/maroon_border_white_bg"
@@ -770,19 +811,20 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginLeft="5dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginBottom="0dp"
                             android:layout_weight="1"
                             android:text="* Click to scan BSV barcode"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="7dp" />
+                            android:textSize="@dimen/value" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
+                            android:layout_height="@dimen/_30sdp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
                             android:layout_marginBottom="6dp"
@@ -809,7 +851,7 @@
                                 android:hint="BSV Barcode"
                                 android:textColor="@color/white"
                                 android:textColorHint="@color/white"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/value" />
 
                             <ImageView
                                 android:id="@+id/img_edt_bsv"
@@ -821,7 +863,6 @@
                                 android:visibility="gone" />
 
                         </LinearLayout>
-
 
                     </LinearLayout>
 
@@ -841,13 +882,13 @@
                             android:layout_margin="5dp"
                             android:background="@color/white"
                             android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                            android:hint="Enter barcode"
+                            android:hint="ENTER BARCODE"
                             android:inputType="textCapCharacters"
                             android:maxLength="8"
                             android:paddingLeft="5dp"
                             android:textColor="@color/maroon"
                             android:textColorHint="@color/grey"
-                            android:textSize="15sp" />
+                            android:textSize="@dimen/value" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -863,13 +904,13 @@
                                 android:layout_weight="4"
                                 android:background="@color/white"
                                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                                android:hint="Re-enter barcode"
+                                android:hint="RE-ENTER BARCODE"
                                 android:inputType="textCapCharacters"
                                 android:maxLength="8"
                                 android:paddingLeft="5dp"
                                 android:textColor="@color/maroon"
                                 android:textColorHint="@color/grey"
-                                android:textSize="15sp" />
+                                android:textSize="@dimen/value" />
 
                             <ImageView
                                 android:id="@+id/setbackbsv"
@@ -886,7 +927,7 @@
                     <LinearLayout
                         android:id="@+id/submit_ll"
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
+                        android:layout_height="@dimen/_30sdp"
                         android:layout_gravity="center"
                         android:layout_margin="2dp"
                         android:layout_marginTop="20dp"
@@ -894,29 +935,28 @@
                         android:background="@drawable/white_corner_bg"
                         android:gravity="center"
                         android:orientation="vertical"
-                        android:padding="5dp"
                         android:visibility="gone">
 
                         <Button
                             android:id="@+id/Submit_consignment"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:background="@drawable/next_button"
-                            android:paddingLeft="50dp"
-                            android:paddingRight="50dp"
                             android:text="Submit"
-                            android:textAllCaps="false"
+                            android:textAllCaps="true"
                             android:textColor="@color/white"
-                            android:textSize="15sp" />
+                            android:textSize="@dimen/value" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/btn_to_next_ll"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                        android:layout_height="50dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="2dp"
                         android:layout_marginTop="15dp"
+                        android:layout_marginRight="2dp"
                         android:layout_marginBottom="7dp"
                         android:layout_weight="1"
                         android:background="@drawable/maroon_border_white_bg"
@@ -931,8 +971,9 @@
                             android:layout_weight="4.3"
                             android:gravity="right"
                             android:text="Next"
+                            android:textAllCaps="true"
                             android:textColor="@color/maroon"
-                            android:textSize="20dp"
+                            android:textSize="@dimen/label"
                             android:textStyle="bold" />
 
                         <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -952,7 +993,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
 
             </LinearLayout>
         </ScrollView>

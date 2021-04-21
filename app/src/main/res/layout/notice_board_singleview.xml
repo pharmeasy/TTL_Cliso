@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_ll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="10dp"
-    android:id="@+id/parent_ll"
     android:layout_margin="3dp"
+    android:layout_marginTop="10dp"
     android:background="@color/light_pink"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/ack_id"
@@ -29,9 +28,10 @@
             android:gravity="center"
             android:paddingLeft="7dp"
             android:paddingRight="7dp"
+            android:textAllCaps="true"
             android:text="Tap to acknowledge"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="@dimen/note"
             android:textStyle="bold" />
     </LinearLayout>
 
@@ -41,11 +41,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ack_id"
         android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
         android:layout_marginTop="7dp"
+        android:layout_marginRight="12dp"
         android:text="Sender"
+        android:textAllCaps="true"
         android:textColor="@color/DARKGray"
-        android:textSize="15sp"
+        android:textSize="@dimen/value"
         android:textStyle="bold" />
 
     <TextView
@@ -54,25 +55,26 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/senderId"
         android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
         android:layout_marginTop="7dp"
+        android:layout_marginRight="12dp"
         android:text="msg"
+        android:textAllCaps="true"
         android:textColor="@color/DARKGray"
-        android:textSize="14sp" />
+        android:textSize="@dimen/value" />
 
     <TextView
         android:id="@+id/notice_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/msgtext"
-        android:layout_marginTop="7dp"
-        android:layout_marginBottom="7dp"
         android:layout_marginLeft="12dp"
+        android:layout_marginTop="7dp"
         android:layout_marginRight="12dp"
+        android:layout_marginBottom="7dp"
+        android:textAllCaps="true"
         android:text="Friday, 11 Jan 2019 | 12:00 PM"
         android:textAlignment="textEnd"
         android:textColor="@color/DARKGray"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        />
+        android:textSize="@dimen/note"
+        android:textStyle="bold" />
 </RelativeLayout>

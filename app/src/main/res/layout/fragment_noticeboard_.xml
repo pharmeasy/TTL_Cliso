@@ -27,7 +27,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Noticeboard"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -52,7 +53,8 @@
             android:text="@string/cmsoon"
             android:textColor="@color/maroon"
             android:gravity="center"
-            android:textSize="16sp" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/label" />
 
 
     </LinearLayout>
@@ -83,11 +85,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:textAllCaps="true"
             android:text="  Sorry ! You are offline..."
             android:textColor="@color/maroon"
             android:layout_gravity="center"
             android:gravity="top|center"
-            android:textSize="18sp"
+            android:textSize="@dimen/label"
             android:layout_weight="2" />
 
     </LinearLayout>

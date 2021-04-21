@@ -28,7 +28,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="FAQ"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
         <ImageView
             android:layout_width="0dp"
@@ -60,7 +61,8 @@
             android:textStyle="bold"
             android:gravity="center|left"
             android:textColor="@color/grey"
-            android:text="Select Category" />
+            android:text="Select Category"
+            android:textAllCaps="true"/>
 
         <Spinner
             android:layout_weight="1"

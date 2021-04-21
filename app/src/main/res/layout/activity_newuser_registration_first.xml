@@ -1,206 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:weightSum="100"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/colorGray"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:weightSum="100">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="40"
         android:background="@drawable/gradient_background"
         android:orientation="vertical"
-        android:layout_weight="40"
-        android:layout_width="match_parent"
-        android:weightSum="48"
-        android:layout_margin="10dp"
-        android:layout_height="wrap_content"
-        >
+        android:weightSum="48">
+
         <Button
-            android:layout_margin="5dp"
-            android:background="@color/colorWhite"
+            style="@style/heading_text"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="5dp"
             android:layout_weight="6"
+            android:background="@color/colorWhite"
             android:text="Registration"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            style="@style/heading_text"
-            />
+            android:textSize="@dimen/value" />
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="7"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Name :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="Name :"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
             <EditText
                 android:id="@+id/reg_name"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:maxLines="1"
-
-                android:textSize="15sp"
+                android:hint="FIRST AND LAST NAME"
                 android:inputType="text"
-                android:textColorHint="@color/reportedtext"
-                android:hint="First and Last Name"
                 android:maxLength="20"
-                />
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textColorHint="@color/reportedtext"
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="7"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Landline :"
                 android:gravity="left|center"
-               style="@style/medium_text"
-                />
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
+                android:text="Landline :" />
+
             <EditText
                 android:id="@+id/reg_landline"
                 android:layout_width="0dp"
-                android:hint="Landline number"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:maxLength="7"
-                android:textSize="15sp"
                 android:digits="1234567890"
-                android:textColorHint="@color/reportedtext"
+                android:hint="LANDLINE NUMBER"
+                android:textSize="@dimen/value"
                 android:inputType="phone"
-                />
+                android:maxLength="7"
+                android:textColorHint="@color/reportedtext" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="7"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Current Profession :"
                 android:gravity="left|center"
-               style="@style/medium_text"
-                />
+                android:text="Current Profession :"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"/>
+
             <EditText
                 android:id="@+id/reg_profession"
                 android:layout_width="0dp"
-                android:maxLength="20"
-                android:layout_margin="5dp"
-                android:maxLines="1"
-                android:hint="Current Profession"
                 android:layout_height="match_parent"
+                android:layout_margin="5dp"
                 android:layout_weight="3"
-                android:textSize="15sp"
+                android:hint="CURRENT PROFESSION"
                 android:inputType="text"
+                android:maxLength="20"
+                android:maxLines="1"
                 android:textColorHint="@color/reportedtext"
+                android:textSize="@dimen/value"
 
                 />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="7"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Qualification :"
                 android:gravity="left|center"
-                style="@style/medium_text"
-                />
+                android:text="Qualification :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"/>
+
             <EditText
                 android:id="@+id/reg_qualification"
                 android:layout_width="0dp"
-                android:maxLength="20"
-                android:maxLines="1"
-                android:hint="Qualification"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:textColorHint="@color/reportedtext"
-                android:textSize="15sp"
+                android:hint="QUALIFICATIONS"
                 android:inputType="text"
-                />
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textColorHint="@color/reportedtext"
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginLeft="5dp"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
             android:layout_weight="7"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
+            android:weightSum="5">
+
             <TextView
+                style="@style/medium_text"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Interested location :"
                 android:gravity="left|center"
-              style="@style/medium_text"
-                />
+                android:text="Interested location :"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"/>
+
             <EditText
-                android:maxLength="20"
-                android:maxLines="1"
-                android:hint="Interested location"
                 android:id="@+id/reg_int_location"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:textColorHint="@color/reportedtext"
-                android:textSize="15sp"
+                android:hint="INTERESTED LOCATION"
                 android:inputType="text"
-                />
+                android:maxLength="20"
+                android:maxLines="1"
+                android:textColorHint="@color/reportedtext"
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
-            android:background="@drawable/border_background"
-            android:layout_gravity="end"
-            android:gravity="end"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="6"
+            android:layout_gravity="end"
             android:layout_margin="5dp"
+            android:layout_weight="6"
+            android:background="@drawable/border_background"
+            android:gravity="end"
             android:orientation="horizontal"
-            android:weightSum="5"
-            >
-           <Button
-               android:layout_gravity="bottom"
-               android:background="@drawable/btn_bg"
-               android:id="@+id/reg_next"
-               android:layout_width="match_parent"
-               android:layout_height="match_parent"
-               android:text="Next"
-               style="@style/white_simple_text"
-               android:textSize="15sp"
-               />
+            android:weightSum="5">
+
+            <Button
+                android:id="@+id/reg_next"
+                style="@style/white_simple_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom"
+                android:background="@drawable/btn_bg"
+                android:text="Next"
+                android:textAllCaps="true"
+                android:textSize="@dimen/label" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

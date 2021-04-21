@@ -27,7 +27,8 @@
             android:gravity="center"
             android:textColor="@color/maroon"
             android:text="Upload documents"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -50,7 +51,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:visibility="gone"
-            android:layout_margin="@dimen/_10sdp"
+            android:layout_margin="@dimen/value"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -62,8 +63,9 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
                 android:checked="true"
+                android:textAllCaps="true"
                 android:text="@string/misscallccc"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/by_generate"
@@ -73,7 +75,7 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
                 android:text="@string/generateccc"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
         </RadioGroup>
 
         <LinearLayout
@@ -92,10 +94,10 @@
                 android:background="@drawable/custom_border_edittext_blue"
                 android:digits="@string/alphabets"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="First Name*"
+                android:hint="FIRST NAME*"
                 android:maxLength="16"
                 android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/edt_lastname"
@@ -106,10 +108,10 @@
                 android:background="@drawable/custom_border_edittext_blue"
                 android:digits="@string/alphabets"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="Last Name*"
+                android:hint="LAST NAME*"
                 android:maxLength="16"
                 android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -117,7 +119,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/value"
             android:orientation="horizontal">
 
             <TextView
@@ -127,10 +129,10 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="false"
-                android:text="Name : "
+                android:textAllCaps="true"
+                android:text="NAME : "
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <TextView
@@ -141,10 +143,10 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:text="@string/app_name"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
         </LinearLayout>
@@ -153,7 +155,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/value"
             android:orientation="horizontal">
 
             <TextView
@@ -163,10 +165,10 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:text="Amount collected : "
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <TextView
@@ -177,10 +179,10 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:text="@string/app_name"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
         </LinearLayout>
@@ -201,7 +203,7 @@
                 android:layout_marginBottom="@dimen/_3sdp"
                 android:textAllCaps="false"
                 android:textColor="@color/maroon"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <ImageView
@@ -211,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_centerInParent="true"
-                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/value"
                 android:src="@drawable/otpverify" />
 
         </RelativeLayout>
@@ -233,11 +235,11 @@
                 android:background="@drawable/custom_border_edittext_blue"
                 android:drawableLeft="@drawable/mobile"
                 android:drawablePadding="@dimen/_2sdp"
-                android:hint="Mobile Number*"
+                android:hint="MOBILE NUMBER*"
                 android:inputType="number"
                 android:maxLength="10"
                 android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
             <Button
@@ -251,7 +253,7 @@
                 android:gravity="center"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -272,22 +274,22 @@
                 android:layout_marginBottom="@dimen/_3sdp"
                 android:textAllCaps="false"
                 android:textColor="@color/maroon"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tv_resetno"
                 android:layout_toRightOf="@+id/tv_mobileno"
-                android:layout_marginLeft="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:textColor="@color/maroon"
-                android:textSize="14sp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -308,11 +310,11 @@
                 android:layout_weight="1.5"
                 android:background="@drawable/custom_border_edittext_blue"
                 android:drawablePadding="@dimen/_2sdp"
-                android:hint="Verify CCC*"
+                android:hint="VERIFY CCC*"
                 android:inputType="number"
                 android:maxLength="6"
                 android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/btn_verify"
@@ -323,9 +325,9 @@
                 android:layout_weight="0.7"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
-                android:text="Verify"
+                android:text="VERIFY"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/btn_resend"
@@ -336,9 +338,9 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
-                android:text="Resend"
+                android:text="RESEND"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/tv_timer"
@@ -346,9 +348,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
-                android:textAllCaps="false"
                 android:textColor="@color/maroon"
-                android:textSize="14sp"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:textStyle="bold"
                 android:visibility="gone" />
 
@@ -358,7 +360,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/value"
             android:weightSum="3"
             android:orientation="horizontal">
 
@@ -371,8 +373,9 @@
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/pescription"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <Button
@@ -382,11 +385,12 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="Upload"
+                android:text="UPLOAD"
+                android:backgroundTint="@color/maroon"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofilepresc"
@@ -398,7 +402,7 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
             <LinearLayout
@@ -419,7 +423,7 @@
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -440,8 +444,9 @@
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/adhar"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <Button
@@ -453,9 +458,10 @@
                 android:layout_weight="0.8"
                 android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:backgroundTint="@color/maroon"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofileadhar"
@@ -467,7 +473,7 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:id="@+id/lin_adhar_images"
@@ -487,7 +493,7 @@
                     android:layout_gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -508,8 +514,9 @@
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/trf"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <Button
@@ -521,9 +528,10 @@
                 android:layout_weight="0.8"
                 android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:backgroundTint="@color/maroon"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofiletrf"
@@ -535,7 +543,7 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
             <LinearLayout
@@ -556,7 +564,7 @@
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
 
@@ -580,8 +588,9 @@
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/vialimg"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
 
             <Button
@@ -593,9 +602,10 @@
                 android:layout_weight="0.8"
                 android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:textColor="@color/white"
+                android:backgroundTint="@color/maroon"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofilevial"
@@ -607,7 +617,7 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
             <LinearLayout
@@ -627,7 +637,7 @@
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
             </LinearLayout>
 
@@ -649,7 +659,8 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/other"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:textStyle="bold" />
 
             <Button
@@ -661,9 +672,10 @@
                 android:layout_weight="0.8"
                 android:text="Upload"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:backgroundTint="@color/maroon"
+                android:textColor="@color/white"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <TextView
                 android:id="@+id/txt_nofileother"
@@ -675,7 +687,7 @@
                 android:drawablePadding="@dimen/_2sdp"
                 android:padding="@dimen/_5sdp"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/value" />
 
 
             <LinearLayout
@@ -695,7 +707,7 @@
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textSize="@dimen/value" />
 
 
             </LinearLayout>
@@ -714,13 +726,13 @@
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_toLeftOf="@+id/btn_reset"
-                android:background="@drawable/covidgreybtn"
+                android:background="@drawable/clear_button"
                 android:text="@string/submit"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:enabled="false"
                 android:clickable="false"
                 android:textColor="@color/black"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/label" />
 
             <Button
                 android:id="@+id/btn_reset"
@@ -730,11 +742,12 @@
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/maroon"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/maroon"
                 android:text="@string/btnreset"
                 android:layout_marginStart="@dimen/_3sdp"
-                android:textAllCaps="false"
-                android:textSize="@dimen/_12sdp" />
+                android:textAllCaps="true"
+                android:textSize="@dimen/label" />
 
 
         </RelativeLayout>

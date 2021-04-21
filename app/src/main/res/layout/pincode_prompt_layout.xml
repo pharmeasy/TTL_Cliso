@@ -4,46 +4,52 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Type Pincode  : "
+        android:textAllCaps="true"
+        android:textSize="@dimen/value"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
         android:id="@+id/editTextDialogUserInput"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="true"
         android:text="Please enter pincode first details will fetch automatically"
-        android:textSize="20sp"
         android:textColor="@color/colorPrimary"
-        android:layout_height="wrap_content" >
+        android:textSize="@dimen/value">
 
         <requestFocus />
 
     </TextView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
 
         >
+
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ok"
-            android:layout_weight="1"
             android:id="@+id/pincode_ok"
-            />
-        <Button
-            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cancel"
+            android:layout_weight="1"
+            android:text="Ok"
+            android:textSize="@dimen/label"/>
+
+        <Button
             android:id="@+id/pincode_cancel"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel"
+            android:textSize="@dimen/label"/>
     </LinearLayout>
 
 

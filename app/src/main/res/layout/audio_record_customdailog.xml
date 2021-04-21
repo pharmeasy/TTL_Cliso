@@ -27,7 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/start_record"
-            android:textSize="@dimen/sp_20" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/value" />
 
         <ImageView
             android:id="@+id/img_record"
@@ -50,7 +51,7 @@
                 android:background="@color/maroon"
                 android:text="@string/discard"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/label" />
 
             <Button
                 android:id="@+id/btn_save"
@@ -60,7 +61,7 @@
                 android:background="@color/maroon"
                 android:text="@string/save"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_20" />
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 

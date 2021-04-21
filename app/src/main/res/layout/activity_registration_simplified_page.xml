@@ -24,6 +24,8 @@
             android:layout_height="0dp"
             android:layout_weight="6"
             android:text="Registration"
+            android:textSize="@dimen/label"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
             style="@style/heading_text"
             />
@@ -41,7 +43,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Name :"
+                android:textAllCaps="true"
                 android:gravity="left|center"
+                android:textSize="@dimen/value"
                 style="@style/medium_text"
                 />
             <EditText
@@ -51,9 +55,10 @@
                 android:layout_weight="3"
                 android:maxLines="1"
                 android:inputType="textCapCharacters"
-                android:textSize="15sp"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:textColorHint="@color/reportedtext"
-                android:hint="First and Last Name"
+                android:hint="FIRST AND LAST NAME"
                 android:maxLength="20"
                 />
         </LinearLayout>
@@ -71,16 +76,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Addresss :"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:gravity="left|center"
                 style="@style/medium_text"
                 />
             <EditText
                 android:id="@+id/reg_address"
                 android:layout_width="0dp"
-                android:hint="Addresss"
+                android:hint="ADDRESSES"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:textSize="15sp"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890,./-"
                 android:textColorHint="@color/reportedtext"
                 android:inputType="textCapCharacters"
@@ -100,7 +108,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Pincode :"
+                android:textAllCaps="true"
                 android:gravity="left|center"
+                android:textSize="@dimen/value"
                 style="@style/medium_text"
                 />
             <EditText
@@ -109,10 +119,10 @@
                 android:maxLength="6"
                 android:layout_margin="5dp"
                 android:maxLines="1"
-                android:hint="Pincode"
+                android:hint="PINCODE"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:textSize="15sp"
+                android:textSize="@dimen/value"
                 android:inputType="number"
                 android:textColorHint="@color/reportedtext"
 
@@ -132,7 +142,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Mobile No :"
+                android:textAllCaps="true"
                 android:gravity="left|center"
+                android:textSize="@dimen/value"
                 style="@style/medium_text"
                 />
             <EditText
@@ -140,12 +152,12 @@
                 android:layout_width="0dp"
                 android:maxLength="10"
                 android:maxLines="1"
-                android:hint="Mobile No"
+                android:hint="MOBILE NO"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:inputType="number"
                 android:textColorHint="@color/reportedtext"
-                android:textSize="15sp"
+                android:textSize="@dimen/value"
                 />
         </LinearLayout>
 
@@ -162,19 +174,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="Email :"
+                android:textAllCaps="true"
                 android:gravity="left|center"
+                android:textSize="@dimen/value"
                 style="@style/medium_text"
                 />
             <EditText
                 android:maxLength="20"
                 android:maxLines="1"
-                android:hint="Email"
+                android:hint="EMAIL"
                 android:id="@+id/reg_emailAdd"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
                 android:textColorHint="@color/reportedtext"
-                android:textSize="15sp"
+                android:textSize="@dimen/value"
                 android:inputType="text"
                 />
         </LinearLayout>
@@ -197,8 +211,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Next"
+                android:textAllCaps="true"
                 style="@style/white_simple_text"
-                android:textSize="15sp"
+                android:textSize="@dimen/label"
                 />
         </LinearLayout>
     </LinearLayout>

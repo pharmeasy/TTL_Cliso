@@ -28,7 +28,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Leggy Video"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -39,8 +40,6 @@
             android:src="@drawable/color_homr" />
 
     </LinearLayout>
-
-
 
 
     <RelativeLayout
@@ -62,7 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/videoName"
@@ -73,7 +72,7 @@
             android:background="#90000000"
             android:padding="5dp"
             android:textColor="#646464"
-            android:textSize="16dp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <ImageView
@@ -105,8 +104,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:text="@string/LOADING"
-        android:textSize="@dimen/dp_15"
-        android:visibility="gone"/>
+        android:textSize="@dimen/label"
+        android:visibility="gone" />
 
 
 </RelativeLayout>

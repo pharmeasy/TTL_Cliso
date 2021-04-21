@@ -5,10 +5,6 @@
     android:orientation="vertical"
     android:background="@drawable/gradient_background"
     android:weightSum="6">
-
-
-
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -19,8 +15,9 @@
             style="@style/medium_text"
             android:gravity="center"
             android:text="Please enter your registered mobile number"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="16sp" />
+            android:textSize="@dimen/label" />
 
         <EditText
             android:id="@+id/edt_mobile_otp"
@@ -30,6 +27,7 @@
             android:layout_marginRight="5dp"
             android:padding="5dp"
             android:layout_weight="2.5"
+            android:textSize="@dimen/label"
             android:digits="0123456789"
             android:background="@drawable/edt_bg"
             android:inputType="phone"
@@ -52,7 +50,8 @@
                 android:background="@drawable/btn_bg"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="Cancel"
+                android:textSize="@dimen/label"/>
 
             <Button
                 android:id="@+id/ok"
@@ -63,7 +62,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="ok" />
+                android:text="ok"
+                android:textSize="@dimen/label"/>
         </LinearLayout>
 
 

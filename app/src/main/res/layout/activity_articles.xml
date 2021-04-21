@@ -5,8 +5,7 @@
     android:background="@color/lightestgrey"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/lay_toolbar"/>
+    <include layout="@layout/lay_toolbar" />
 
     <com.example.e5322.thyrosoft.Activity.VerticalViewPager
         android:id="@+id/healthTipViewpager"

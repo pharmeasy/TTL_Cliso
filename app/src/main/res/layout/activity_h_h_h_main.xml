@@ -31,7 +31,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="POCT Tests"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -43,10 +44,10 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="43dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="3dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/enter_entered_border_curve"
         android:orientation="horizontal">
@@ -68,7 +69,8 @@
                 android:gravity="center"
                 android:text="ENTER"
                 android:textAllCaps="true"
-                android:textColor="@color/colorBlack" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_enter"
@@ -101,7 +103,8 @@
                 android:gravity="center"
                 android:text="Entered"
                 android:textAllCaps="true"
-                android:textColor="@color/colorBlack" />
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/label" />
 
             <ImageView
                 android:id="@+id/enter_arrow_entered"
@@ -115,10 +118,10 @@
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
+
     <FrameLayout
         android:id="@+id/fragment_mainLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 </LinearLayout>
 

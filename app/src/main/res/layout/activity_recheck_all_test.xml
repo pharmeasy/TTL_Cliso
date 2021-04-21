@@ -26,7 +26,7 @@
             android:textColor="@color/colorBlack"
             style="@style/heading_text"
             android:gravity="center"
-            ></ImageView>
+            />
 
         <TextView
             android:layout_weight="4"
@@ -35,8 +35,10 @@
             android:id="@+id/title"
             android:textColor="@color/maroon"
             style="@style/heading_text"
+            android:textSize="@dimen/header"
+            android:textAllCaps="true"
             android:gravity="center"
-            ></TextView>
+            />
 
         <ImageView
             android:src="@drawable/color_homr"
@@ -47,7 +49,7 @@
             android:textColor="@color/colorBlack"
             style="@style/heading_text"
             android:gravity="center"
-            ></ImageView>
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -74,6 +76,8 @@
                     android:layout_weight="3"
                     android:layout_gravity="center"
                     android:text=" Selected Tests"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textColor="@color/colorBlack"
                     />
                 <Button
@@ -93,7 +97,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Selected Test"
+                android:hint="SELECTED TEST"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
                 android:textColor="@color/colorBlack"
                 android:id="@+id/show_selected_tests_list_test_ils"
                 android:gravity="center|left"
@@ -152,11 +158,12 @@
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/purple_btn_bg"
+            android:background="@drawable/border_curve_background"
+            android:backgroundTint="@color/maroon"
             android:minEms="8"
             android:text="Next"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="@dimen/label" />
     </LinearLayout>
 
 </LinearLayout>

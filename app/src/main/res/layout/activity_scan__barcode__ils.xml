@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -116,7 +115,7 @@
                     android:hint="SELECT LAB ALERTS"
                     android:textColor="@color/DARKGray"
                     android:textColorHint="@color/black"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -145,7 +144,7 @@
                         android:gravity="center|left"
                         android:text="TEST"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -166,9 +165,9 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="6dp"
                         android:gravity="center|left"
-                        android:text="Selected Test"
+                        android:text="SELECTED TEST"
                         android:textColor="@color/grey"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -203,7 +202,7 @@
                         android:padding="3dp"
                         android:text="Total Rate"
                         android:textColor="#000000"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/companycost_test"
@@ -238,7 +237,7 @@
                     android:padding="3dp"
                     android:text="Sample type"
                     android:textColor="@color/colorBlack"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/value"
                     android:visibility="gone" />
 
                 <Spinner
@@ -399,29 +398,33 @@
                     <RadioGroup
                         android:id="@+id/rg_brand"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:visibility="gone" />
 
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recy_brand"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 
                     <TextView
                         android:id="@+id/tv_viewsample"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
                         android:text="View Sample"
                         android:textColor="@color/button_color"
                         android:visibility="gone" />
 
 
                 </LinearLayout>
-
-
-
-
 
 
                 <LinearLayout
@@ -445,8 +448,6 @@
                 </LinearLayout>
 
 
-
-
             </LinearLayout>
 
             <LinearLayout
@@ -465,12 +466,12 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center|left"
                         android:padding="5dp"
                         android:text="TOTAL AMOUNT"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <TextView
                         android:id="@+id/setAmt"
@@ -482,7 +483,7 @@
                         android:background="@drawable/corner_curve_white"
                         android:gravity="center|left"
                         android:paddingLeft="5dp"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
                 <View
@@ -499,12 +500,12 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="1.5"
                         android:gravity="center|left"
                         android:padding="5dp"
                         android:text="COLLECTED"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/enterAmt"
@@ -514,16 +515,105 @@
                         android:layout_weight="2"
                         android:background="@drawable/corner_curve_white"
                         android:digits="0123456789"
-                        android:hint="amount"
+                        android:hint="AMOUNT"
                         android:inputType="phone"
                         android:maxLength="8"
                         android:paddingLeft="5dp"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_bs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/next_button"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center|left"
+                        android:padding="5dp"
+                        android:text="BLOOD SUGAR"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/value" />
+
+                    <EditText
+                        android:id="@+id/edt_bsValue"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/corner_curve_white"
+                        android:digits="0123456789"
+                        android:hint="@string/value"
+                        android:inputType="phone"
+                        android:maxLength="3"
+                        android:paddingLeft="5dp"
+                        android:textSize="@dimen/value" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_bp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorGray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/next_button"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center|left"
+                        android:padding="5dp"
+                        android:text="BLOOD PRESSURE"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/value" />
+
+                    <EditText
+                        android:id="@+id/edt_bpValue"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="2dp"
+                        android:layout_weight="2"
+                        android:background="@drawable/corner_curve_white"
+                        android:digits="0123456789"
+                        android:hint="@string/value"
+                        android:inputType="phone"
+                        android:maxLength="3"
+                        android:paddingLeft="5dp"
+                        android:textSize="@dimen/value" />
+
+                </LinearLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/ll_uploadTRF"
@@ -537,8 +627,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/upload_trf"
+                    android:textAllCaps="true"
                     android:textColor="@android:color/holo_red_dark"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/note" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rec_trf"
@@ -562,9 +653,9 @@
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="0.8"
                     android:drawablePadding="@dimen/_2sdp"
-                    android:text="Vial image*"
+                    android:text="VIAL IMAGE*"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp"
+                    android:textSize="@dimen/value"
                     android:textStyle="bold" />
 
                 <Button
@@ -574,11 +665,11 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:layout_weight="0.8"
-                    android:background="@drawable/covidbtn"
+                    android:background="@drawable/button_bg"
                     android:text="Upload"
-                    android:textAllCaps="false"
-                    android:textColor="@color/maroon"
-                    android:textSize="@dimen/_12sdp" />
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
 
                 <LinearLayout
                     android:id="@+id/lin_preview"
@@ -608,13 +699,14 @@
             <Button
                 android:id="@+id/next"
                 android:layout_width="150dp"
-                android:layout_height="40dp"
+                android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:background="@drawable/next_button"
                 android:gravity="center"
                 android:text="DONE"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/label" />
 
 
         </LinearLayout>

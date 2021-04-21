@@ -10,10 +10,10 @@ import com.example.e5322.thyrosoft.Models.CertificateRequestModel;
 import com.example.e5322.thyrosoft.Models.CertificateResponseModel;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
+import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
-import com.example.e5322.thyrosoft.Models.CovidaccessRes;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
@@ -28,6 +28,8 @@ import com.example.e5322.thyrosoft.Models.LeadResponseModel;
 import com.example.e5322.thyrosoft.Models.OTPrequest;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumRequestModel;
 import com.example.e5322.thyrosoft.Models.PayTmChecksumResponseModel;
+import com.example.e5322.thyrosoft.Models.PostBarcodeModel;
+import com.example.e5322.thyrosoft.Models.PostBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.PostLeadDataModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredRequestModel;
 import com.example.e5322.thyrosoft.Models.RATEnteredResponseModel;
@@ -64,6 +66,8 @@ public interface PostAPIInteface {
     @POST("COMMON.svc/CertificateDetails")
     Call<CertificateResponseModel> getCertificates(@Body CertificateRequestModel certificateRequestModel);
 
+    @POST(" ORDER.svc/PostConsignment")
+    Call<PostBarcodeResponseModel> postBarcodes(@Body PostBarcodeModel postBarcodeModel);
 
     @POST("PatientDetails")
     Call<Covidmis_response> getcovidmis(@Body CovidMIS_req covidMIS_req);
@@ -71,14 +75,14 @@ public interface PostAPIInteface {
     @POST("VerifyMobile")
     Call<COVerifyMobileResponse> covmobileVerification(@Body CoVerifyMobReq coVerifyMobReq);
 
-    @POST("CovidAccess")
-    Call<CovidaccessRes> checkcovidaccess(@Body CovidAccessReq covidaccessRes);
+    @POST("PrivilegeAcess")
+    Call<CovidAccessResponseModel> checkcovidaccess(@Body CovidAccessReq covidaccessRes);
 
     @POST("GeneratedOtp")
     Call<Covidotpresponse> generateotp(@Body COVIDgetotp_req coviDgetotp_req);
 
     @GET("GetCovidStatus")
-    Call<COVfiltermodel>getfilter();
+    Call<COVfiltermodel> getfilter();
 
     @POST("Verifyotp")
     Call<Covid_validateotp_res> validateotp(@Body Covid_validateotp_req covid_validateotp_req);

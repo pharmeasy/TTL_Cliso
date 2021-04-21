@@ -29,7 +29,8 @@
             android:layout_weight="4"
             android:gravity="center"
             android:text="Broadcast"
-            android:textSize="18sp"
+            android:textAllCaps="true"
+            android:textSize="@dimen/header"
             android:textStyle="bold" />
 
         <ImageView
@@ -82,8 +83,9 @@
                         android:layout_height="wrap_content"
                         android:gravity="top"
                         android:maxLines="3"
+                        android:textAllCaps="true"
                         android:textColor="@color/maroon"
-                        android:textSize="18sp"
+                        android:textSize="@dimen/header"
                         tools:text="Preventive Care: Focus maxline accepted checking" />
 
                     <TextView
@@ -91,7 +93,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/label"
+                        android:textAllCaps="true"
                         tools:text="25 Jul 2018 12:00 AM" />
 
                     <TextView
@@ -99,7 +102,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/label"
+                        android:textAllCaps="true"
                         tools:text="DR VELUMANI A" />
 
                 </LinearLayout>
@@ -167,7 +171,7 @@
                         android:maxLength="450"
                         android:padding="3dp"
                         android:singleLine="false"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/label" />
 
                     <Button
                         android:id="@+id/btn_submit"
@@ -182,7 +186,7 @@
                         android:text="Acknowledge"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
+                        android:textSize="@dimen/label"
                         android:visibility="visible" />
 
                 </LinearLayout>

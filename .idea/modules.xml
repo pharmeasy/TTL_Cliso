@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso_cloud_COVID.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso_cloud_COVID.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso_cloud_COVID.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso_cloud_COVID.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_cloud_COVID.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso_cloud_COVID.libraryViewPagerIndicator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso_cloud_COVID.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso_cloud_COVID.sdkui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Cliso.iml" filepath="$PROJECT_DIR$/.idea/modules/Cliso.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Cliso.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Cliso.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso.libraryViewPagerIndicator.iml" filepath="$PROJECT_DIR$/.idea/modules/libraryViewPagerIndicator/Cliso.libraryViewPagerIndicator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sdkui/Cliso.sdkui.iml" filepath="$PROJECT_DIR$/.idea/modules/sdkui/Cliso.sdkui.iml" />
     </modules>
   </component>
 </project>

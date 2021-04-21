@@ -10,17 +10,17 @@
     <string name="windup">Are you want to wind up all test</string>
     <string name="Yes">Yes</string>
     <string name="No">No</string>
-    <string name="dghandbill">Digital handbills</string>
+    <string name="dghandbill">DIGITAL HANDBILLS</string>
     <string name="dg_template">Templates</string>
     <string name="nodatafound">No records</string>
     <string name="fill_user">Fill the details</string>
     <string name="name_digits">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
-    <string name="bs_name">Name*</string>
-    <string name="bs_mobile_number">Mobile number*</string>
-    <string name="email_id_mand">Email ID*</string>
+    <string name="bs_name">NAME*</string>
+    <string name="bs_mobile_number">MOBILE NUMBER*</string>
+    <string name="email_id_mand">EMAIL ID*</string>
     <string name="email_digits">abcdefghijklmnopqrstuvwxyz1234567890.@-_</string>
     <string name="addressvalidationhandbill">abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,./-()&amp;</string>
-    <string name="addressnotmand">Camp Address</string>
+    <string name="addressnotmand">CAMP ADDRESS</string>
     <string name="pincodenotmand">Pincode</string>
     <string name="forservice">For Service</string>
     <string name="btn_preview">Submit</string>
@@ -31,11 +31,11 @@
     <string name="download">Download</string>
     <string name="generate">Generate</string>
 
-    <string name="bs_pt_name">Name*</string>
-    <string name="bs_enter_mobile_number">Mobile number*</string>
-    <string name="bs_enter_email_address">Email ID</string>
-    <string name="bs_age">Age*</string>
-    <string name="ppe">PPE Barcode</string>
+    <string name="bs_pt_name">NAME*</string>
+    <string name="bs_enter_mobile_number">MOBILE NUMBER*</string>
+    <string name="bs_enter_email_address">EMAIL ID</string>
+    <string name="bs_age">AGE*</string>
+    <string name="ppe">Barcode*</string>
     <string name="bs_value">Value*</string>
     <string name="upload_trf">*Upload TRF</string>
     <string name="billing">Per Day Billing \n(Last 30 days)</string>
@@ -108,8 +108,8 @@
     <string name="enter_pincode">Enter Pincode</string>
     <string name="incharge_name">Incharge Name</string>
     <string name="enter_address">Enter Address</string>
-    <string name="enter_phone_number_ex_022_7878787">Enter Phone Number ex. 022-7878787</string>
-    <string name="enter_website">Enter Website</string>
+    <string name="enter_phone_number_ex_022_7878787">ENTER PHONE NUMBER EX. 022-7878787</string>
+    <string name="enter_website">ENTER WEBSITE</string>
     <string name="visiting_card">Visiting Card</string>
     <string name="enter_client_name">Enter Client Name</string>
     <string name="enter_email_address">Enter Email Id</string>
@@ -164,8 +164,8 @@
     <string name="str_about_pet_ct">ABOUT PET CT SCAN</string>
     <string name="nodata">No Data Available</string>
     <string name="googlemapkey">AIzaSyA7O3Qip0AmZy38njI8SgPpV6KuEt2qQOQ</string>
-    <string name="enterccc">Verify</string>
-    <string name="btngenerateccc">Generate CCC</string>
+    <string name="enterccc">VERIFY</string>
+    <string name="btngenerateccc">GENERATE CCC</string>
     <string name="reset_mob">Reset Number?</string>
     <string name="allfields">Note : Submit button will enable once all mandatory fields entered</string>
     <string name="alphabets1">QWERTYUIOPASDFGHJKLZXCVBNM</string>
@@ -178,8 +178,6 @@
     <string-array name="arr_book">
         <item>Select Service Type*</item>
     </string-array>
-
-
 
 
     <string-array name="arr_gender">
@@ -220,9 +218,9 @@
     <string name="view_receipt_image"><u>View receipt image</u></string>
     <string name="stock_digits">0123456789-.</string>
     <string name="alphanumeric_digits">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789</string>
-    <string name="bs_bp_entry">BS &amp; BP entry</string>
-    <string name="covid_reg">Covid Registration</string>
-    <string name="srf_covid_woe">SRF Covid WOE</string>
+    <string name="bs_bp_entry">BS &amp; BP ENTRY</string>
+    <string name="covid_reg">COVID REGISTRATION</string>
+    <string name="srf_covid_woe">SRF COVID WOE</string>
     <string name="send_otp">Send OTP</string>
     <string name="reset">Reset</string>
     <string name="receipt">Receipt</string>
@@ -232,7 +230,7 @@
     <string name="verified">Verified</string>
     <string name="bs_otp">OTP*</string>
     <string name="number_digits">0123456789</string>
-    <string name="pincode_mand">Pincode*</string>
+    <string name="pincode_mand">PINCODE*</string>
     <string name="collected_amount">Collected amount</string>
     <string name="verify">Verify</string>
     <string name="re_upload">Re-upload</string>
@@ -251,8 +249,8 @@
     <string name="play">Play</string>
     <string name="play_recorded_audio">Play recorded audio</string>
     <string name="cmsoon">Coming Soon...</string>
-    <string name="misscallccc">By using missed call CCC</string>
-    <string name="generateccc">By using Generate CCC</string>
+    <string name="misscallccc">Missed call</string>
+    <string name="generateccc">OTP</string>
 
     <string name="updateText" translatable="false">Newer version of CliSo is available. Click UPDATE to upgrade now !</string>
     <string name="cancel" translatable="false">Cancel</string>
@@ -267,7 +265,7 @@
     <string name="title">Title</string>
     <string name="desc">Description</string>
 
-    <string name="rbarcode">Report Barcode Scan</string>
+    <string name="rbarcode">REPORT BARCODE SCAN</string>
     <string name="scan_entry">Scan Entry</string>
     <string name="scan_summ">Scan Summary</string>
     <string name="tltreport">Report Barcode Scan</string>
@@ -291,6 +289,10 @@
     <string name="uploadfile">Upload*</string>
     <string name="nofilechoosen">No file chosen</string>
     <string name="view"> <u>Preview</u></string>
-
+    <string name="select_all">Select All</string>
+    <string name="remove_all">Remove All</string>
+    <string name="value">VALUE</string>
+    <string name="ssp_barcode">SSP BARCODE</string>
+    <string name="notauth">Not Authorized</string>
 
 </resources>

@@ -3,189 +3,220 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorGray"
+    android:orientation="vertical"
     tools:context=".Fragment.Prefrences">
 
     <!-- TODO: Update blank fragment layout -->
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:background="@color/colorWhite"
-       android:layout_margin="10dp"
-       android:orientation="vertical">
-
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Brand"/>
-           <Spinner
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:id="@+id/spinnerbrand"
-            />
-
-
-
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Default type"/>
-           <Spinner
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:id="@+id/deftype"
-            />
-
-
-
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Report format"/>
-           <Spinner
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:id="@+id/report_type"
-            />
-
-
-
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Report Mail"/>
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:gravity="left"
-               android:text="BCC"
-               android:textColor="@color/colorBlack"
-               android:layout_height="wrap_content"
-               android:id="@+id/bcc"/>
-
-           <Switch
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/report_mail"
-               android:layout_marginRight="50dp"
-               android:layout_weight="1"
-               />
-
-       </LinearLayout>
-
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-
-               android:text="Auto Mail" />
-
-           <TextView
-               android:id="@+id/No"
-               android:textColor="@color/colorBlack"
-               android:gravity="left"
-android:text="NO"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_weight="1" />
-
-           <Switch
-               android:layout_weight="1"
-               android:id="@+id/auto_mail"
-               android:layout_marginRight="50dp"
-
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content" />
-
-       </LinearLayout>
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal">
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:layout_height="wrap_content"
-               android:text="Auto SMS"/>
-
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_weight="1"
-               android:textColor="@color/colorBlack"
-               android:gravity="left"
-               android:text="NO"
-
-               android:layout_height="wrap_content"
-               android:id="@+id/Nosms"/>
-
-           <Switch
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:id="@+id/auto_SMS"
-               android:layout_weight="1"
-               android:layout_marginRight="50dp"
-
-               />
-
-       </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Cancellation Action"/>
+        android:layout_margin="10dp"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
 
-        <Spinner
-           android:layout_width="match_parent"
-           android:layout_weight="1"
-           android:layout_height="wrap_content"
-           android:id="@+id/action"
-           />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Brand"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <Spinner
+                android:id="@+id/spinnerbrand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/value" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Default type"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <Spinner
+                android:id="@+id/deftype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/value" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Report format"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <Spinner
+                android:id="@+id/report_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/value" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Report Mail"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <TextView
+                android:id="@+id/bcc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="BCC"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
+
+            <Switch
+                android:id="@+id/report_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="50dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Auto Mail"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <TextView
+                android:id="@+id/No"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="NO"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
+
+            <Switch
+                android:id="@+id/auto_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="50dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Auto SMS"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
+
+            <TextView
+                android:id="@+id/Nosms"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="NO"
+                android:textAllCaps="true"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/value" />
+
+            <Switch
+                android:id="@+id/auto_SMS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="50dp"
+                android:layout_weight="1"
+
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/value"
+                android:textAllCaps="true"
+                android:text="Cancellation Action" />
+
+            <Spinner
+                android:id="@+id/action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/value"/>
+        </LinearLayout>
     </LinearLayout>
-   </LinearLayout>
-<Button
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/orange"
-    android:text="Save"
-    android:id="@+id/save"
-    android:textColor="@color/colorWhite"
-    android:layout_margin="10dp"/>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/orange"
+        android:text="Save"
+        android:textSize="@dimen/value"
+        android:textAllCaps="true"
+        android:textColor="@color/colorWhite" />
 
 
 </LinearLayout>

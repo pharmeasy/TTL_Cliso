@@ -27,7 +27,7 @@
             android:background="@color/colorWhite"
             android:gravity="center"
             android:src="@drawable/color_back"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack" />
 
         <TextView
             android:id="@+id/title"
@@ -37,7 +37,9 @@
             android:layout_weight="4"
             android:background="@color/colorWhite"
             android:gravity="center"
-            android:textColor="@color/maroon" />
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/header" />
 
         <ImageView
             android:id="@+id/home"
@@ -48,7 +50,7 @@
             android:background="@color/colorWhite"
             android:gravity="center"
             android:src="@drawable/color_homr"
-            android:textColor="@color/colorBlack"></ImageView>
+            android:textColor="@color/colorBlack" />
     </LinearLayout>
 
     <EditText
@@ -58,13 +60,14 @@
         android:layout_margin="5dp"
         android:background="@drawable/border_background"
         android:drawableLeft="@drawable/ic_search_black_36dp"
-        android:hint="Search"
+        android:hint="SEARCH"
         android:inputType="text"
         android:lines="1"
         android:maxLines="1"
         android:minHeight="20dp"
         android:singleLine="true"
-        android:textSize="12sp" />
+        android:textAllCaps="true"
+        android:textSize="@dimen/value" />
 
     <LinearLayout
         android:id="@+id/lineargetselectedtestforILS"
@@ -87,8 +90,9 @@
                 android:layout_gravity="center"
                 android:layout_weight="3"
                 android:text=" Select Test"
+                android:textAllCaps="true"
                 android:textColor="@color/colorBlack"
-                android:textSize="14sp" />
+                android:textSize="@dimen/value" />
 
             <Button
                 android:id="@+id/resetbutton"
@@ -111,10 +115,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:gravity="center|left"
-            android:hint="Selected Tests"
+            android:hint="SELECTED TESTS"
             android:padding="5dp"
+            android:textAllCaps="true"
             android:textColor="@color/colorBlack"
-            android:textSize="14sp" />
+            android:textSize="@dimen/value" />
     </LinearLayout>
 
 
@@ -125,14 +130,17 @@
         android:layout_margin="5dp"
         android:layout_weight="8"
         android:background="@drawable/button_background"
-        android:padding="5dp"></androidx.recyclerview.widget.RecyclerView>
+        android:padding="5dp" />
 
     <Button
         android:id="@+id/next_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/next_button"
+        android:background="@drawable/border_background"
+        android:backgroundTint="@color/maroon"
         android:text="Next"
-        android:textColor="@color/colorWhite" />
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/label" />
 </LinearLayout>

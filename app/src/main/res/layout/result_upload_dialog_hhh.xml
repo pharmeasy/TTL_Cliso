@@ -13,8 +13,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
-        />
+        android:layout_marginBottom="@dimen/dp_8" />
 
     <ImageView
         android:id="@+id/img_close"
@@ -46,21 +45,27 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Positive" />
+                android:text="Positive"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/rd_negative"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Negative" />
+                android:text="Negative"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
             <RadioButton
                 android:id="@+id/rd_invalid"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Invalid" />
+                android:text="Invalid"
+                android:textAllCaps="true"
+                android:textSize="@dimen/value" />
 
 
         </RadioGroup>
@@ -68,14 +73,15 @@
         <Button
             android:id="@+id/btn_submit"
             android:layout_width="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageview"
             android:layout_gravity="center"
+            android:layout_margin="@dimen/_5sdp"
             android:background="@drawable/next_button"
             android:text="Submit"
             android:textAllCaps="true"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/label" />
 
     </LinearLayout>
 

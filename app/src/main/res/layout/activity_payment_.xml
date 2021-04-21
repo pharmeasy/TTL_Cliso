@@ -19,10 +19,9 @@
 
         <ImageView
             android:id="@+id/back"
-            style="@style/heading_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/dp_15"
+
             android:layout_weight="0.3"
             android:gravity="center"
             android:src="@drawable/color_back"
@@ -42,9 +41,8 @@
         <ImageView
             android:id="@+id/home"
             style="@style/heading_text"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginRight="@dimen/dp_15"
             android:layout_weight="0.3"
             android:gravity="center"
             android:src="@drawable/color_homr"
@@ -104,7 +102,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gotham_bold"
                 android:text="Dear "
-                android:textSize="@dimen/dp_14" />
+                android:textAllCaps="true"
+                android:textSize="@dimen/label" />
 
             <TextView
                 android:id="@+id/txt_tsp_name"
@@ -114,7 +113,7 @@
                 android:fontFamily="@font/gotham_bold"
                 android:text=""
                 android:textColor="@color/maroon"
-                android:textSize="@dimen/dp_14" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
 
@@ -145,8 +144,9 @@
                         android:fontFamily="@font/gotham_bold"
                         android:gravity="center|left"
                         android:text="Your outstanding"
+                        android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/edt_closing_bal"
@@ -159,7 +159,7 @@
                         android:gravity="center"
                         android:text=""
                         android:textAlignment="center"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -176,8 +176,9 @@
                         android:fontFamily="@font/gotham_bold"
                         android:gravity="center|left"
                         android:text="@string/billing"
+                        android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/edt_per_billing"
@@ -193,7 +194,7 @@
                         android:text=""
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -210,8 +211,9 @@
                         android:fontFamily="@font/gotham_bold"
                         android:gravity="center|left"
                         android:text="@string/daysoutstand"
+                        android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/edt_day_per"
@@ -227,7 +229,7 @@
                         android:text=""
                         android:textAlignment="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
 
@@ -244,8 +246,9 @@
                         android:fontFamily="@font/gotham_bold"
                         android:gravity="center|left"
                         android:text=" Enter amount"
+                        android:textAllCaps="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
 
                     <EditText
                         android:id="@+id/edt_enter_amt"
@@ -259,7 +262,7 @@
                         android:inputType="phone|number"
                         android:maxLength="8"
                         android:textAlignment="center"
-                        android:textSize="@dimen/dp_14" />
+                        android:textSize="@dimen/value" />
                 </LinearLayout>
 
             </LinearLayout>

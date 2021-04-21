@@ -12,7 +12,7 @@
         android:id="@+id/back"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.3"
+        android:layout_weight="0.5"
         android:src="@drawable/color_back" />
 
     <TextView
@@ -20,17 +20,18 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_weight="4.4"
+        android:layout_weight="4"
         android:gravity="center"
         android:text=""
-        android:textSize="18sp"
+        android:textAllCaps="true"
+        android:textSize="@dimen/header"
         android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/home"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.3"
+        android:layout_weight="0.5"
         android:src="@drawable/color_homr" />
 
 </LinearLayout>

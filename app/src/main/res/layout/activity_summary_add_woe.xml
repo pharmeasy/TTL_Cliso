@@ -22,9 +22,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:gravity="center"
             android:background="@color/cement_light"
-            android:src="@drawable/color_back"></ImageView>
+            android:gravity="center"
+            android:src="@drawable/color_back" />
 
         <TextView
             android:id="@+id/title"
@@ -32,19 +32,21 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="4"
+            android:background="@color/cement_light"
             android:gravity="center"
             android:text="Summary"
-            android:background="@color/cement_light"
-            android:textColor="@color/maroon"></TextView>
+            android:textAllCaps="true"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/header" />
 
         <ImageView
             android:id="@+id/home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:gravity="center"
             android:background="@color/cement_light"
-            android:src="@drawable/color_homr"></ImageView>
+            android:gravity="center"
+            android:src="@drawable/color_homr" />
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -61,22 +63,24 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/underline_grey"
             android:gravity="center"
             android:text="Patient Old Info"
+            android:textAllCaps="true"
             android:textColor="@color/Graytoolbar"
-            android:textSize="14dp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -85,15 +89,16 @@
                 android:id="@+id/type_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Name  "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -105,13 +110,14 @@
                     android:id="@+id/pat_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="TTL/ILS"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -119,8 +125,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -129,15 +136,16 @@
                 android:id="@+id/sct_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Test "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -149,13 +157,14 @@
                     android:id="@+id/pat_test"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="05-12-2018  09:35 am"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -164,8 +173,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -174,15 +184,16 @@
                 android:id="@+id/ref_by_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Ref Dr "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -194,23 +205,24 @@
                     android:id="@+id/pat_patient_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Self"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -219,15 +231,15 @@
                 android:id="@+id/patient_name_tv"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="SCT "
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -239,27 +251,26 @@
                     android:id="@+id/pat_sct"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="Test / 11Years / Male"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/second_lin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/main_lin"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/corner_curve_cement_bg"
         android:orientation="vertical"
         android:paddingBottom="10dp">
@@ -267,22 +278,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="7dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/underline_grey"
             android:gravity="center"
             android:text="New Test added"
+            android:textAllCaps="true"
             android:textColor="@color/Graytoolbar"
-            android:textSize="14dp"
+            android:textSize="@dimen/label"
             android:textStyle="bold" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="7dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="3dp"
+            android:layout_marginRight="5dp"
             android:background="@drawable/next_button"
             android:orientation="horizontal"
             android:weightSum="5">
@@ -290,15 +302,16 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="2dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="1.5"
-                android:paddingBottom="3dp"
                 android:paddingTop="3dp"
+                android:paddingBottom="3dp"
                 android:text="Tests Name  "
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="10sp" />
+                android:textSize="@dimen/value" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -310,13 +323,14 @@
                     android:id="@+id/old_tests"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginRight="5dp"
                     android:layout_marginTop="6dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="6dp"
                     android:text="TTL/ILS"
+                    android:textAllCaps="true"
                     android:textColor="@color/grey"
-                    android:textSize="10sp" />
+                    android:textSize="@dimen/value" />
             </LinearLayout>
         </LinearLayout>
 
@@ -328,11 +342,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/second_lin"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-
         android:layout_marginTop="5dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="5dp"
         android:background="@drawable/sample_info_drawable"
         android:orientation="vertical">
 
@@ -340,14 +353,15 @@
             android:id="@+id/remark_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/underline_white"
             android:gravity="center"
             android:text="Remarks"
+            android:textAllCaps="true"
             android:textColor="@color/white"
-            android:textSize="14dp"
+            android:textSize="@dimen/value"
             android:textStyle="bold" />
 
         <EditText
@@ -359,29 +373,30 @@
             android:background="@drawable/maroon_border_white_bg"
             android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 .,*+-@"
             android:gravity="top"
-            android:hint="Enter text here"
+            android:hint="ENTER TEXT HERE"
             android:padding="10dp"
-            android:textSize="12sp" />
+            android:textAllCaps="true"
+            android:textSize="@dimen/value" />
 
     </LinearLayout>
 
 
     <Button
-        android:textColor="@color/white"
-        android:gravity="center"
         android:id="@+id/addWoeDone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
         android:background="@color/maroon"
-        android:paddingLeft="10dp"
         android:drawableLeft="@drawable/save_close"
-        android:text="Done" />
+        android:gravity="center"
+        android:paddingLeft="10dp"
+        android:text="Done"
+        android:textColor="@color/white" />
 
 
 </RelativeLayout>

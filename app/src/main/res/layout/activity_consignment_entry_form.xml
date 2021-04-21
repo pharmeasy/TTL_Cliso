@@ -29,8 +29,9 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:text="Transport Details"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="18sp" />
+                android:textSize="@dimen/header" />
 
         </LinearLayout>
 
@@ -47,7 +48,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="Routing Code" />
+                android:text="Routing Code"
+                android:textAllCaps="true"
+                android:textSize="@dimen/note" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,7 +71,8 @@
                         android:layout_weight="1"
                         android:buttonTint="@color/colorlevendor2"
                         android:text="Direct"
-                        android:textSize="12sp" />
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/note" />
 
                     <RadioButton
                         android:id="@+id/through_tsp"
@@ -77,7 +81,8 @@
                         android:layout_weight="1"
                         android:buttonTint="@color/colorlevendor2"
                         android:text="Through another TSP"
-                        android:textSize="12sp" />
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/note" />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>
@@ -98,7 +103,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:gravity="center|left"
-                android:text="Enter the source code" />
+                android:text="ENTER THE SOURCE CODE" />
 
             <EditText
                 android:id="@+id/source_code_pass"
@@ -107,8 +112,8 @@
                 android:layout_weight="1"
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
-                android:hint="Flight Number"
-                android:textSize="12sp" />
+                android:hint="FLIGHT NUMBER"
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -128,7 +133,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -148,7 +153,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -169,9 +174,9 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
-                android:hint="Flight Number"
+                android:hint="FLIGHT NUMBER"
                 android:maxLength="25"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -191,7 +196,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -213,8 +218,8 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "
-                android:hint="Enter Bus Name"
-                android:textSize="12sp" />
+                android:hint="ENTER BUS NAME"
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -239,9 +244,9 @@
                 android:buttonTint="@color/maroon"
                 android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
                 android:gravity="center|left"
-                android:hint="Enter Bus Number"
+                android:hint="ENTER BUS NUMBER"
                 android:maxLength="15"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -264,9 +269,9 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:gravity="center|left"
-                android:hint="Expected Departure Time"
+                android:hint="EXPECTED DEPARTURE TIME"
                 android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -289,9 +294,9 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:gravity="center|left"
-                android:hint="Expected time arrival"
+                android:hint="EXPECTED TIME ARRIVAL"
                 android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -312,7 +317,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -337,9 +342,9 @@
                 android:buttonTint="@color/maroon"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ."
                 android:gravity="center|left"
-                android:hint="Enter name of person"
+                android:hint="ENTER NAME OF PERSON"
                 android:maxLength="25"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -364,9 +369,9 @@
                 android:buttonTint="@color/maroon"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ."
                 android:gravity="center|left"
-                android:hint="Enter name of person"
+                android:hint="ENTER NAME OF PERSON"
                 android:maxLength="25"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -388,9 +393,9 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:gravity="center|left"
-                android:hint="Dispatch time"
+                android:hint="DISPATCH TIME"
                 android:textColor="@color/colorBlack"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -411,9 +416,9 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 0123456789"
-                android:hint="Consignment no"
+                android:hint="CONSIGNMENT NO"
                 android:maxLength="15"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
         </LinearLayout>
 
@@ -431,7 +436,7 @@
                 android:layout_height="12dp"
                 android:text="* Click to scan barcode"
                 android:textColor="@color/red"
-                android:textSize="10sp" />
+                android:textSize="@dimen/note" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -445,7 +450,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="15"
                     android:hint="Consignment Barcode"
-                    android:textSize="12sp" />
+                    android:textSize="@dimen/value" />
 
                 <ImageView
                     android:id="@+id/img_edt"
@@ -476,10 +481,10 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/barcode_button"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                android:hint="Enter barcode"
+                android:hint="ENTER BARCODE"
                 android:inputType="textCapCharacters"
                 android:maxLength="8"
-                android:textSize="15sp" />
+                android:textSize="@dimen/label" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -495,10 +500,10 @@
                     android:layout_weight="4"
                     android:background="@drawable/barcode_button"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="Re-enter barcode"
+                    android:hint="RE-ENTER BARCODE"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/label" />
 
                 <ImageView
                     android:id="@+id/setback"
@@ -508,9 +513,7 @@
                     android:src="@drawable/upbarcode" />
             </LinearLayout>
 
-
         </LinearLayout>
-
 
         <LinearLayout
             android:id="@+id/total_sample_layout"
@@ -531,9 +534,9 @@
                 android:background="@drawable/background_edt"
                 android:buttonTint="@color/maroon"
                 android:digits="0123456789"
-                android:hint="Total Sample"
+                android:hint="TOTAL SAMPLE"
                 android:inputType="number"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/rpl_edt_txt"
@@ -545,7 +548,7 @@
                 android:digits="0123456789"
                 android:hint="RPL"
                 android:inputType="number"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
 
             <EditText
                 android:id="@+id/cpl_edt_txt"
@@ -557,7 +560,7 @@
                 android:digits="0123456789"
                 android:hint="CPL"
                 android:inputType="number"
-                android:textSize="12sp" />
+                android:textSize="@dimen/value" />
         </LinearLayout>
 
         <LinearLayout
@@ -574,7 +577,7 @@
                 android:layout_height="12dp"
                 android:text="* Click to scan barcode"
                 android:textColor="@color/red"
-                android:textSize="10sp" />
+                android:textSize="@dimen/note" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -587,8 +590,8 @@
                     android:layout_width="300dp"
                     android:layout_height="match_parent"
                     android:layout_weight="4"
-                    android:hint="BSV Barcode"
-                    android:textSize="12sp" />
+                    android:hint="BSV BARCODE"
+                    android:textSize="@dimen/value" />
 
                 <ImageView
                     android:id="@+id/img_edt_bsv"
@@ -619,10 +622,10 @@
                 android:layout_margin="5dp"
                 android:background="@drawable/barcode_button"
                 android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                android:hint="Enter barcode"
+                android:hint="ENTER BARCODE"
                 android:inputType="textCapCharacters"
                 android:maxLength="8"
-                android:textSize="15sp" />
+                android:textSize="@dimen/label" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -638,10 +641,10 @@
                     android:layout_weight="4"
                     android:background="@drawable/barcode_button"
                     android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                    android:hint="Re-enter barcode"
+                    android:hint="RE-ENTER BARCODE"
                     android:inputType="textCapCharacters"
                     android:maxLength="8"
-                    android:textSize="15sp" />
+                    android:textSize="@dimen/label" />
 
                 <ImageView
                     android:id="@+id/setbackbsv"
@@ -668,10 +671,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/btn_bg"
-                android:hint="Submit"
+                android:hint="SUBMIT"
                 android:maxLength="15"
+                android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="12sp" />
+                android:textSize="@dimen/label" />
 
         </LinearLayout>
 
@@ -681,7 +685,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="2dp"
-
             android:background="@drawable/shadow"
             android:gravity="center"
             android:orientation="horizontal">
@@ -694,10 +697,11 @@
                 android:layout_weight="1"
                 android:drawableRight="@drawable/next_btn"
                 android:gravity="right|center"
-                android:hint="Next"
+                android:hint="NEXT"
                 android:paddingRight="10dp"
+                android:textAllCaps="true"
                 android:textColor="@color/colorBlack"
-                android:textSize="20sp" />
+                android:textSize="@dimen/header" />
 
         </LinearLayout>
 

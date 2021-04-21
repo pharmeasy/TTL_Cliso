@@ -27,6 +27,8 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
@@ -53,8 +56,10 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
+import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
@@ -183,6 +188,18 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     TextView txt_fileupload;
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
+
+
+    LinearLayout ll_letterhead;
+    RadioGroup rg_brand;
+    private String brabdurl;
+    TextView tv_viewsample;
+    private int isNhlAvailable;
+    private String getBrand_name;
+    ConnectionDetector connectionDetector;
+    MainModel mainModel;
+    private String nhl_rate;
+
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,6 +240,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         if (bundle1 != null) {
 
             testsData = bundle1.getString("writeTestName");
+            isNhlAvailable = bundle1.getInt("isNhlAvailable");
+            nhl_rate = bundle1.getString("NHL_rate");
             Log.e(TAG, "onCreate: size " + selectedOutlabTests.size());
 
             ArrayList<String> getProducts = new ArrayList<>();
@@ -287,16 +306,35 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         });
 
         prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", null);
-        passwrd = prefs.getString("password", null);
-        access = prefs.getString("ACCESS_TYPE", null);
-        api_key = prefs.getString("API_KEY", null);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+
+
+        SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+        Gson gson = new Gson();
+        final String json = appSharedPrefs.getString("MyObject", "");
+        mainModel = gson.fromJson(json, MainModel.class);
 
         //Log.v("" + selectedOutlabTests.toString());
 
         SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        brandName = prefs.getString("WOEbrand", null);
-        typeName = prefs.getString("woetype", null);
+        brandName = prefs.getString("WOEbrand", "");
+        typeName = prefs.getString("woetype", "");
+
+        if (brandName.equalsIgnoreCase("TTL-Others")) {
+            if (isNhlAvailable == 1) {
+                ll_letterhead.setVisibility(View.VISIBLE);
+                SetBrandLetterValues();
+            } else {
+                ll_letterhead.setVisibility(View.GONE);
+            }
+        }
+
+
+
+
 
         title.setText("Scan Barcode");
 
@@ -388,6 +426,104 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
     }
 
+
+    private void SetBrandLetterValues() {
+
+        final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
+
+        boolean viewsample = false;
+        for (int i = 0; i < getBrandList.size(); i++) {
+            final RadioButton rb_type = new RadioButton(mActivity);
+
+            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
+                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + b2b_rate);
+            } else if (getBrandList.get(i).getName().equalsIgnoreCase("NHL")) {
+                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + nhl_rate);
+            } else {
+                rb_type.setText(getBrandList.get(i).getName());
+            }
+
+            rg_brand.addView(rb_type);
+            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
+                rb_type.setChecked(true);
+            }
+            if (!viewsample) {
+                if (rb_type.isSelected() || rb_type.isChecked()) {
+                    if (!GlobalClass.isNull(getBrandList.get(i).getUrl())) {
+                        tv_viewsample.setVisibility(View.VISIBLE);
+                        brabdurl = getBrandList.get(i).getUrl();
+                        viewsample = true;
+                    } else {
+                        tv_viewsample.setVisibility(View.GONE);
+                    }
+                } else {
+                    tv_viewsample.setVisibility(View.GONE);
+                }
+            }
+
+
+        }
+
+        rg_brand.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
+                boolean isChecked = checkedRadioButton.isChecked();
+                if (isChecked) {
+                    viewsampleURL("" + checkedRadioButton.getText(), getBrandList);
+                }
+            }
+        });
+
+        tv_viewsample.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!GlobalClass.isNull(brabdurl)) {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(brabdurl));
+                    startActivity(browserIntent);
+                } else {
+                    Global.showCustomToast(Scan_Barcode_Outlabs_Activity.this, "URL not found");
+
+                }
+            }
+        });
+
+
+    }
+
+    private void viewsampleURL(String s, ArrayList<IsnhlmasterDTO> getBrandList) {
+
+        if (GlobalClass.CheckArrayList(getBrandList)) {
+            for (int i = 0; i < getBrandList.size(); i++) {
+                if (s.contains(getBrandList.get(i).getName())) {
+                    getBrand_name = getBrandList.get(i).getName();
+                    brabdurl = getBrandList.get(i).getUrl();
+                    break;
+                }
+
+            }
+        }
+    }
+
+
+    private ArrayList<IsnhlmasterDTO> GenerateBrandList() {
+        ArrayList<IsnhlmasterDTO> entity = new ArrayList<>();
+
+        if (mainModel != null) {
+            if (GlobalClass.CheckArrayList(mainModel.getIsnhlmaster())) {
+                for (int i = 0; i < mainModel.getIsnhlmaster().size(); i++) {
+                    IsnhlmasterDTO isnhlmasterDTO = new IsnhlmasterDTO();
+                    isnhlmasterDTO.setName("" + mainModel.getIsnhlmaster().get(i).getName());
+                    isnhlmasterDTO.setUrl("" + mainModel.getIsnhlmaster().get(i).getUrl());
+                    isnhlmasterDTO.setIsShowpopup(mainModel.getIsnhlmaster().get(i).isIsShowpopup());
+                    entity.add(isnhlmasterDTO);
+                }
+            }
+        }
+
+        return entity;
+    }
+
     private void initListeners() {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -453,6 +589,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         lab_alert_spin = (TextView) findViewById(R.id.lab_alert_spin);
         ll_uploadTRF = (LinearLayout) findViewById(R.id.ll_uploadTRF);
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
+        ll_letterhead = findViewById(R.id.ll_letterhead);
+        tv_viewsample = findViewById(R.id.tv_viewsample);
+        rg_brand = findViewById(R.id.rg_brand);
     }
 
     private void callTRFAdapter(ArrayList<TRFModel> trflist) {

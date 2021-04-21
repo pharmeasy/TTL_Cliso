@@ -26,6 +26,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -50,12 +56,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -525,7 +525,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Choose from Library",
+        final CharSequence[] items = {"Take Photo","Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Add Photo!");
