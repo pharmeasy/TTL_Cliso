@@ -852,17 +852,17 @@ public class Login extends Activity implements View.OnClickListener {
                         if (barProgressDialog != null && barProgressDialog.isShowing()) {
                             barProgressDialog.dismiss();
                         }
-                        if (error != null) {
-                            // Toast.makeText(Evening.this, item + " Booking not done successfully", Toast.LENGTH_SHORT).show();
-                        } else {
+
                             Toast.makeText(Login.this, ToastFile.invalid_log, Toast.LENGTH_SHORT).show();
                             System.out.println(error);
-                        }
+
                     }
                 });
-                queue.add(jsonObjectRequest);
                 Log.e(TAG, "deletePatientDetailsandTest: url" + jsonObjectRequest);
                 Log.e(TAG, "deletePatientDetailsandTest: json" + jsonObject);
+                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(300000, 3,
+                        DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                queue.add(jsonObjectRequest);
             } catch (Exception ex) {
                 if (barProgressDialog != null && barProgressDialog.isShowing()) {
                     barProgressDialog.dismiss();

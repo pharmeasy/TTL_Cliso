@@ -298,6 +298,8 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
             covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+        } else {
+            logout();
         }
 
 

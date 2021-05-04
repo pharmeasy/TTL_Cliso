@@ -53,8 +53,6 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
     private ArrayList<String> temparraylist;
     private AlertDialog.Builder alertDialogBuilder;
     ScannedBarcodeDetails scannedBarcodeDetails;
-    private int isNhlAvailable;
-    private String nhl_rate;
 
 
     @SuppressLint("NewApi")
@@ -83,8 +81,6 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         Selcted_Outlab_Test = Global.Selcted_Outlab_Test_global;
         testsnames = bundle.getString("selectedTest");
-        isNhlAvailable = bundle.getInt("isNhlAvailable");
-        nhl_rate = bundle.getString("NHL_rate");
         Log.e("TAG", "test names :" + testsnames);
         show_selected_tests_data.setText(testsnames);
 
@@ -197,8 +193,6 @@ public class Cliso_SelctSampleActivity extends AppCompatActivity {
                     Global.Selcted_Outlab_Test_global = Selcted_Outlab_Test;
                     // bundle.putString("payment", getAmount);
                     bundle.putString("writeTestName", selectedTestNames);
-                    bundle.putInt("isNhlAvailable", isNhlAvailable);
-                    bundle.putString("NHL_rate", nhl_rate);
                     bundle.putStringArrayList("TestCodesPass", getTestNameLits);
                     Global.FinalBarcodeDetailsList_global = BMC_FinalBarcodeDetailsList;
 //                    bundle.putParcelableArrayList("FinalBarcodeList", BMC_FinalBarcodeDetailsList);

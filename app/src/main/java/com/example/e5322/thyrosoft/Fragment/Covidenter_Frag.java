@@ -19,8 +19,10 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +68,7 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
@@ -126,7 +129,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     ImageView img_scanbarcode;
     private boolean timerflag = false;
     String TAG = getClass().getSimpleName();
-    Bitmap bitmapimage;
     File presc_file = null;
     File aadhar_file = null;
     File aadhar_file1 = null;
@@ -147,6 +149,12 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     private int selfie_flag = 0;
     RadioGroup radiogrp2;
     EditText edt_email;
+    AppPreferenceManager appPreferenceManager;
+
+    TextView tv_help;
+    ImageView img_camera_pres, img_gallery_pres, img_camera_aadhar, img_gallery_aadhar, img_camera_trf, img_gallery_trf;
+    ImageView img_camera_vial, img_gallery_vial, img_camera_other, img_gallery_other, img_camera_selfie;
+
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
@@ -168,6 +176,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         View viewMain = (View) inflater.inflate(R.layout.covid_enter, container, false);
         activity = getActivity();
         cd = new ConnectionDetector(activity);
+        appPreferenceManager = new AppPreferenceManager(activity);
         return viewMain;
 
     }
@@ -213,10 +222,10 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
     }
 
-    private void initView(View view) {
+    private void initView(final View view) {
         preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
-        usercode = preferences.getString("USER_CODE", null);
-        apikey = preferences.getString("API_KEY", null);
+        usercode = preferences.getString("USER_CODE", "");
+        apikey = preferences.getString("API_KEY", "");
 
         edt_fname = view.findViewById(R.id.edt_firstname);
         edt_amt = view.findViewById(R.id.edt_amt);
@@ -224,6 +233,9 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         edt_lname = view.findViewById(R.id.edt_lastname);
         edt_missed_mobile = view.findViewById(R.id.edt_missed_mobile);
         edt_verifycc = view.findViewById(R.id.edt_verifycc);
+
+        tv_help = view.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
 
         edt_fname.setFilters(new InputFilter[]{EMOJI_FILTER});
         int maxLength = 16;
@@ -270,6 +282,19 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         radiogrp2 = view.findViewById(R.id.radiogrp2);
 
 
+        img_camera_pres    = view.findViewById(R.id.img_camera_pres);
+        img_gallery_pres   = view.findViewById(R.id.img_gallery_pres);
+        img_camera_aadhar  = view.findViewById(R.id.img_camera_aadhar);
+        img_gallery_aadhar = view.findViewById(R.id.img_gallery_aadhar);
+        img_camera_trf     = view.findViewById(R.id.img_camera_trf);
+        img_gallery_trf    = view.findViewById(R.id.img_gallery_trf);
+        img_camera_vial    = view.findViewById(R.id.img_camera_vial);
+        img_gallery_vial   = view.findViewById(R.id.img_gallery_vial);
+        img_camera_other   = view.findViewById(R.id.img_camera_other);
+        img_gallery_other  = view.findViewById(R.id.img_gallery_other);
+        img_camera_selfie  = view.findViewById(R.id.img_camera_selfie);
+
+
         //TODO Textviews
         txt_barcode = view.findViewById(R.id.txt_barcode);
         txt_presfileupload = view.findViewById(R.id.txt_presfileupload);
@@ -314,12 +339,31 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         txt_vialrfileupload.setOnClickListener(this);
         txt_otherfileupload.setOnClickListener(this);
 
+        img_camera_pres.setOnClickListener(this);
+        img_gallery_pres.setOnClickListener(this);
+        img_camera_aadhar.setOnClickListener(this);
+        img_gallery_aadhar.setOnClickListener(this);
+        img_camera_trf.setOnClickListener(this);
+        img_gallery_trf.setOnClickListener(this);
+        img_camera_vial.setOnClickListener(this);
+        img_gallery_vial.setOnClickListener(this);
+        img_camera_other.setOnClickListener(this);
+        img_gallery_other.setOnClickListener(this);
+        img_camera_selfie.setOnClickListener(this);
+
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofiletrf.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileother.setText(getResources().getString(R.string.nofilechoosen));
         txt_selfie.setText(getResources().getString(R.string.nofilechoosen));
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
+
 
         edt_amt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -490,6 +534,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             }
         });
 
+
+        tv_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.SetBottomSheet(activity);
+            }
+        });
+
     }
 
     private void buttonval() {
@@ -544,7 +596,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 covidpostdata.setVIAIMAGE(vial_file);
                                 covidpostdata.setSELFIE(selfie_file);
                                 covidpostdata.setPPEBARCODE(txt_barcode.getText().toString().trim());
-                                covidpostdata.setEMAIL(edt_email.getText().toString());
+                                covidpostdata.setEMAIL("" + edt_email.getText().toString());
 
                                 if (presc_file != null) {
                                     covidpostdata.setPRESCRIPTION(presc_file);
@@ -647,6 +699,53 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
                 break;
 
+            case R.id.img_camera_pres:
+                if (verifyotp) {
+                    if (checkPermission()) {
+
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+
+            case R.id.img_gallery_pres:
+                if (verifyotp) {
+                    if (checkPermission()) {
+
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+
+
             case R.id.btn_choosefile_presc:
                 if (verifyotp) {
                     if (checkPermission()) {
@@ -692,6 +791,55 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 }
 
                 break;
+
+            case R.id.img_camera_aadhar:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            openCamera();
+                        }
+
+                    } else {
+                        requestPermission();
+                    }
+
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+                break;
+
+            case R.id.img_gallery_aadhar:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+
+                    } else {
+                        requestPermission();
+                    }
+
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+                break;
+
             case R.id.btn_choosefile_trf:
                 if (verifyotp) {
                     if (checkPermission()) {
@@ -704,6 +852,48 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             isother = false;
                             istrf = true;
                             selectImage();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_camera_trf:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (trf_file != null && trf_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            istrf = true;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_trf:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (trf_file != null && trf_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            istrf = true;
+                            chooseFromGallery();
                         }
                     } else {
                         requestPermission();
@@ -734,7 +924,52 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 }
                 break;
 
+            case R.id.img_camera_vial:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = true;
+                            isother = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_vial:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = true;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
             case R.id.btn_choosefile_other:
+
+
+            case R.id.img_camera_other:
                 if (verifyotp) {
                     if (checkPermission()) {
                         if (other_file != null && other_file1 != null) {
@@ -745,7 +980,28 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             istrf = false;
                             isvial = false;
                             isother = true;
-                            selectImage();
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_other:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (other_file != null && other_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = true;
+                            chooseFromGallery();
                         }
                     } else {
                         requestPermission();
@@ -820,6 +1076,14 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
         }
+
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
+
 
         timerflag = false;
         verifyotp = false;
@@ -937,17 +1201,28 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         }
 
 
-        if (GlobalClass.isNull(edt_email.getText().toString())){
-            Global.showCustomToast(getActivity(), "Enter Email-ID");
-            edt_email.requestFocus();
-            return false;
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            if (GlobalClass.isNull(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+
+            if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+        } else {
+            if (!TextUtils.isEmpty(edt_email.getText().toString())) {
+                if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                    Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                    edt_email.requestFocus();
+                    return false;
+                }
+            }
         }
 
-        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
-            Global.showCustomToast(getActivity(), "Enter valid Email-ID");
-            edt_email.requestFocus();
-            return false;
-        }
 
         return true;
     }
@@ -1098,7 +1373,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             try {
 
                 if (ispresciption) {
-                    bitmapimage = camera.getCameraBitmap();
+
                     String imageurl = camera.getCameraBitmapPath();
                     presc_file = new File(imageurl);
                     String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + presc_file;
@@ -1122,7 +1397,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 } else if (isadhar) {
 
                     if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         aadhar_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file1;
@@ -1135,7 +1410,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(imageurl);
                     } else {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         aadhar_file = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + aadhar_file;
@@ -1164,7 +1439,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 } else if (istrf) {
 
                     if (lin_trf_images.getVisibility() == View.VISIBLE && trf_file != null) {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         trf_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file1;
@@ -1177,7 +1452,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_nofiletrf.setVisibility(View.GONE);
                         trflist.add(imageurl);
                     } else {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         trf_file = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + trf_file;
@@ -1203,7 +1478,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     }
                     lin_trf_images.setVisibility(View.VISIBLE);
                 } else if (isvial) {
-                    bitmapimage = camera.getCameraBitmap();
+
                     String imageurl = camera.getCameraBitmapPath();
                     vial_file = new File(imageurl);
                     String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vial_file;
@@ -1224,7 +1499,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
                 } else if (isother) {
                     if (lin_other_images.getVisibility() == View.VISIBLE && other_file != null) {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         other_file1 = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + other_file1;
@@ -1237,7 +1512,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_nofileother.setVisibility(View.GONE);
                         otherlist.add(imageurl);
                     } else {
-                        bitmapimage = camera.getCameraBitmap();
+
                         String imageurl = camera.getCameraBitmapPath();
                         other_file = new File(imageurl);
                         String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + other_file;
@@ -1296,7 +1571,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         presc_file = FileUtil.from(activity, data.getData());
                     }
                     Uri uri = data.getData();
-                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                     presc_file = GlobalClass.getCompressedFile(activity, presc_file);
                     lin_pres_preview.setVisibility(View.VISIBLE);
                     txt_presfileupload.setVisibility(View.VISIBLE);
@@ -1320,7 +1595,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             }
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
@@ -1335,7 +1610,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             }
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
@@ -1368,7 +1643,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             }
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
@@ -1381,7 +1656,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             trf_file = FileUtil.from(activity, data.getData());
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         trf_file = GlobalClass.getCompressedFile(activity, trf_file);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
@@ -1409,7 +1684,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         vial_file = FileUtil.from(activity, data.getData());
                     }
                     Uri uri = data.getData();
-                    bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                     vial_file = GlobalClass.getCompressedFile(activity, vial_file);
                     lin_vial_images.setVisibility(View.VISIBLE);
                     txt_vialrfileupload.setVisibility(View.VISIBLE);
@@ -1431,7 +1706,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             }
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         other_file1 = GlobalClass.getCompressedFile(activity, other_file1);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
@@ -1445,7 +1720,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             other_file = FileUtil.from(activity, data.getData());
                         }
                         Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
+
                         other_file = GlobalClass.getCompressedFile(activity, other_file);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);

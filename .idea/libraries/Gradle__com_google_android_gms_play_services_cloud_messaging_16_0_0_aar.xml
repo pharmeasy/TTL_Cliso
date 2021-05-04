@@ -8,12 +8,18 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/8022e0e62c280566097700f7f809573c/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/8022e0e62c280566097700f7f809573c/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/8022e0e62c280566097700f7f809573c/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f559b6885e45a347c3e2a8e846079953/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f559b6885e45a347c3e2a8e846079953/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f559b6885e45a347c3e2a8e846079953/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f3657b0a2cd89b2f23a70963f6b084c3/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f3657b0a2cd89b2f23a70963f6b084c3/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f3657b0a2cd89b2f23a70963f6b084c3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/29514fd14c8af1eaee6af3e2ec2f158f/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/97f8f96185360d725dfba02205387144/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d596f2e9fd9d3b37f7393d74e7cca0cc/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3d7eebdfd4d699c669774ba2df179007/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4456e17999205846e9cb66dd38318422/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/bd3af7acff2d66eb016a0886e7ab716d/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f559b6885e45a347c3e2a8e846079953/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/f559b6885e45a347c3e2a8e846079953/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-cloud-messaging/16.0.0/66bcaa7ea2458690135561b6053cc71210dbd9dd/play-services-cloud-messaging-16.0.0-javadoc.jar!/" />

@@ -30,6 +30,8 @@
 -keep class org.apache.http.** { *; }
 -dontwarn org.apache.http.**
 -dontoptimize
+-keep class org.apache.log4j.** { *; }
+
 
 
 

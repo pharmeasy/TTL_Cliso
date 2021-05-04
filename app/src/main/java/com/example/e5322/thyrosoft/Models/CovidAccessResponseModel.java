@@ -7,7 +7,16 @@ public class CovidAccessResponseModel {
     private  boolean Rat;
     private  boolean Srf;
     private  boolean CovidRegistration;
+    private  boolean DRC;
 
+
+    public boolean isDRC() {
+        return DRC;
+    }
+
+    public void setDRC(boolean DRC) {
+        this.DRC = DRC;
+    }
 
     public String getResponse() {
         return response;

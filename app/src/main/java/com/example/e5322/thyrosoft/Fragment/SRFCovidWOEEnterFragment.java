@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -55,6 +58,7 @@ import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.SRFCovidWOEMainActivity;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
+import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.SRFCovidWOEmultipart_controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
@@ -66,6 +70,7 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
@@ -73,7 +78,8 @@ import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
 import com.rd.PageIndicatorView;
 
@@ -101,10 +107,7 @@ import static com.example.e5322.thyrosoft.API.Constants.caps_invalidApikey;
 
 public class SRFCovidWOEEnterFragment extends Fragment {
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
+
     private Activity activity;
     private ConnectionDetector cd;
     private List<String> presclist = new ArrayList<>();
@@ -114,9 +117,9 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private List<String> selfielist = new ArrayList<>();
     private CountDownTimer countDownTimer;
     private RadioButton by_missed, by_generate;
-    private LinearLayout mainlinear, lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_vial_images, lin_other_images;
+    private LinearLayout mainlinear, consignment_name_layout, lineareditbarcode, lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_vial_images, lin_other_images;
     private RelativeLayout rel_mobno, rel_verify_mobile;
-    private Button btn_choosefile_presc, btn_selfie, btn_choosefile_adhar, btn_choosefile_vial, btn_choosefile_other, btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
+    private Button btn_choosefile_presc, btn_barcd, btn_selfie, btn_choosefile_adhar, btn_choosefile_vial, btn_choosefile_other, btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
     private TextView txt_nofilepresc, txt_nofileadhar, txt_selfie, txt_nofilevial, txt_nofileother, tv_timer, tv_resetno, tv_mobileno, tv_verifiedmob, txt_presfileupload, txt_selfiefileupload, txt_adharfileupload, txt_vialrfileupload, txt_otherfileupload, tv_coll_date, tv_coll_time;
     private final int PICK_PHOTO_FROM_GALLERY = 202;
     private static final int REQUEST_CAMERA = 1;
@@ -129,20 +132,23 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private String usercode, apikey, gender = "", currentText, selDate = "", selTime = "", userChoosenTask, b2b, b2c;
     private int selfie_flag = 0, agesinteger;
     private Spinner spn_age, spn_scp;
-    private ImageView male, female, male_red, female_red;
+    private ImageView male, female, male_red, female_red, img_scan__barcode;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private Date minDate;
-    EditText edt_email;
+    EditText edt_email, enter_barcode, reenter;
+    AppPreferenceManager appPreferenceManager;
+    private ImageView setback;
+    IntentIntegrator scanIntegrator;
+
+    TextView tv_help;
 
     public SRFCovidWOEEnterFragment() {
         // Required empty public constructor
     }
 
-    public static SRFCovidWOEEnterFragment newInstance(String param1, String param2) {
+    public static SRFCovidWOEEnterFragment newInstance() {
         SRFCovidWOEEnterFragment fragment = new SRFCovidWOEEnterFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -151,8 +157,6 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -164,11 +168,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
         activity = getActivity();
         cd = new ConnectionDetector(activity);
-
+        appPreferenceManager = new AppPreferenceManager(activity);
         SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         usercode = preferences.getString("USER_CODE", "");
         apikey = preferences.getString("API_KEY", "");
-
+        scanIntegrator = IntentIntegrator.forSupportFragment(this);
         initUI(view);
         initListeners();
 
@@ -229,6 +233,18 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         txt_selfie = view.findViewById(R.id.txt_selfie);
         lin_selfie = view.findViewById(R.id.lin_selfie);
         btn_generate.setText(getResources().getString(R.string.enterccc));
+
+        tv_help = view.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
+
+        setback = view.findViewById(R.id.setback);
+        enter_barcode = view.findViewById(R.id.enter_barcode);
+        reenter = view.findViewById(R.id.reenter);
+        lineareditbarcode = view.findViewById(R.id.lineareditbarcode);
+        img_scan__barcode = view.findViewById(R.id.img_scan_barcode);
+        btn_barcd = view.findViewById(R.id.btn_barcd);
+        consignment_name_layout = view.findViewById(R.id.consignment_name_layout);
+
         rel_verify_mobile = view.findViewById(R.id.rel_verify_mobile);
         tv_verifiedmob = view.findViewById(R.id.tv_verifiedmob);
         lin_by_missed = view.findViewById(R.id.lin_missed_verify);
@@ -263,9 +279,76 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
         edt_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
         edt_re_enter_barcode.setTransformationMethod(new AsteriskPasswordTransformationMethod());
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
     }
 
     private void initListeners() {
+
+        tv_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.SetBottomSheet(activity);
+            }
+        });
+
+        btn_barcd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                consignment_name_layout.setVisibility(View.GONE);
+                lineareditbarcode.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        img_scan__barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanIntegrator.initiateScan();
+            }
+        });
+
+        setback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lineareditbarcode.setVisibility(View.GONE);
+                consignment_name_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        reenter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (enter_barcode.getText().length() != 8) {
+                    Toast.makeText(activity, "Enter Valid Enter Bracode", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (s.toString().equalsIgnoreCase(enter_barcode.getText().toString())) {
+                        verifyBarcode(s.toString());
+                    }else {
+                        if (s.length()==8){
+                            Toast.makeText(activity, "Bracode not Matched", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+
+
         male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -495,7 +578,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         if (!cd.isConnectingToInternet()) {
                             edt_barcode.setText(s);
                         } else {
-                            verifyBarcode(s);
+                            verifyBarcode(s.toString());
                         }
                     }
                 }
@@ -985,9 +1068,9 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 covidpostdata.setCOLLECTIONPINCODE(edt_coll_pincode.getText().toString().trim());
                 covidpostdata.setSPECIMENDATE(selDate);
                 covidpostdata.setSPECIMENTIME(selTime);
-                covidpostdata.setBARCODE(edt_barcode.getText().toString().trim());
+                covidpostdata.setBARCODE(btn_barcd.getText().toString().trim());
                 covidpostdata.setVIAIMAGE(vial_file);
-                covidpostdata.setEMAIL(edt_email.getText().toString());
+                covidpostdata.setEMAIL("" + edt_email.getText().toString());
                 if (selfie_file != null) {
                     covidpostdata.setSELFIE(selfie_file);
                 }
@@ -1058,7 +1141,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     }
 
-    private void verifyBarcode(Editable s) {
+    private void verifyBarcode(final String s) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
@@ -1070,17 +1153,20 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                     VerifyBarcodeResponseModel responseModel = new Gson().fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
                     if (responseModel != null) {
                         if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                            edt_barcode.setText(responseModel.getBarcode());
+                            btn_barcd.setText(s);
+                            lineareditbarcode.setVisibility(View.GONE);
+                            consignment_name_layout.setVisibility(View.VISIBLE);
                         } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
                             GlobalClass.redirectToLogin(activity);
                         } else {
                             edt_barcode.setText("");
+                            edt_re_enter_barcode.setText("");
                             GlobalClass.showCustomToast(activity, "" + responseModel.getResponse(), 0);
                         }
                     } else {
                         GlobalClass.showCustomToast(activity, ToastFile.something_went_wrong, 0);
                     }
-                } catch (JsonSyntaxException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -1129,6 +1215,9 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         edt_lname.getText().clear();
         edt_email.getText().clear();
         edt_amt.getText().clear();
+        btn_barcd.setText("BARCODE*");
+        enter_barcode.getText().clear();
+        reenter.getText().clear();
         edt_missed_mobile.getText().clear();
         edt_verifycc.getText().clear();
         edt_missed_mobile.setEnabled(true);
@@ -1164,6 +1253,12 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+        }
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
         }
 
         timerflag = false;
@@ -1261,6 +1356,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 return false;
             }
 
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
             if (GlobalClass.isNull(edt_email.getText().toString())) {
                 Global.showCustomToast(getActivity(), "Enter Email-ID");
                 edt_email.requestFocus();
@@ -1272,11 +1372,21 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 edt_email.requestFocus();
                 return false;
             }
-
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+        } else {
+            if (!TextUtils.isEmpty(edt_email.getText().toString())) {
+                if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                    Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                    edt_email.requestFocus();
+                    return false;
+                }
+            }
         }
+
+        if (btn_barcd.getText().toString().equalsIgnoreCase("BARCODE*")){
+            Global.showCustomToast(getActivity(), "Enter Bracode");
+            return false;
+        }
+
         return true;
     }
 
@@ -1405,7 +1515,19 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            Log.e(TAG, "onActivityResult: " + result);
+            if (result.getContents() != null) {
+                if (result.getContents().length() == 8) {
+                    verifyBarcode(result.getContents());
+                } else {
+                    Global.showCustomToast(getActivity(), "Invalid Bracode");
+                }
+            } else {
+                Global.showCustomToast(getActivity(), "omething Went Wrong");
+            }
+        } else if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             try {
                 String imageurl = camera.getCameraBitmapPath();
                 selfie_file = new File(imageurl);
@@ -1552,15 +1674,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals("Take Photo"))
-                        cameraIntent();
-                    else if (userChoosenTask.equals("Choose from Library"))
-                        galleryIntent();
-                }
-                break;
+        if (requestCode == Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            }
         }
     }
 
@@ -1650,7 +1767,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         if (GlobalClass.isNull(selTime)) {
             return false;
         }
-        if (GlobalClass.isNull(edt_barcode.getText().toString())) {
+       /* if (GlobalClass.isNull(edt_barcode.getText().toString())) {
             return false;
         }
         if (edt_barcode.getText().toString().length() < 8) {
@@ -1664,7 +1781,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         }
         if (!edt_barcode.getText().toString().trim().equalsIgnoreCase(edt_re_enter_barcode.getText().toString().trim())) {
             return false;
-        }
+        }*/
         if (vial_file == null) {
             return false;
         }

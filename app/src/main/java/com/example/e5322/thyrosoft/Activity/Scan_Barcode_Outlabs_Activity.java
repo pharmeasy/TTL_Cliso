@@ -27,8 +27,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -191,14 +189,12 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
 
     LinearLayout ll_letterhead;
-    RadioGroup rg_brand;
-    private String brabdurl;
-    TextView tv_viewsample;
-    private int isNhlAvailable;
-    private String getBrand_name;
+
+
     ConnectionDetector connectionDetector;
     MainModel mainModel;
-    private String nhl_rate;
+    private String EMAIL_ID;
+
 
     @SuppressLint("NewApi")
     @Override
@@ -232,16 +228,15 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         versionCode = pInfo.versionCode;
 
         initListeners();
-        FinalBarcodeDetailsList =   Global.FinalBarcodeDetailsList_global;
+        FinalBarcodeDetailsList = Global.FinalBarcodeDetailsList_global;
         Intent intent = getIntent();
 
         getTypeName = intent.getStringExtra("getTypeName");
-        selectedOutlabTests =  Global.Selcted_Outlab_Test_global;
+        selectedOutlabTests = Global.Selcted_Outlab_Test_global;
         if (bundle1 != null) {
 
             testsData = bundle1.getString("writeTestName");
-            isNhlAvailable = bundle1.getInt("isNhlAvailable");
-            nhl_rate = bundle1.getString("NHL_rate");
+
             Log.e(TAG, "onCreate: size " + selectedOutlabTests.size());
 
             ArrayList<String> getProducts = new ArrayList<>();
@@ -324,16 +319,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         typeName = prefs.getString("woetype", "");
 
         if (brandName.equalsIgnoreCase("TTL-Others")) {
-            if (isNhlAvailable == 1) {
-                ll_letterhead.setVisibility(View.VISIBLE);
-                SetBrandLetterValues();
-            } else {
-                ll_letterhead.setVisibility(View.GONE);
-            }
+
         }
-
-
-
 
 
         title.setText("Scan Barcode");
@@ -431,78 +418,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
         final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
 
-        boolean viewsample = false;
-        for (int i = 0; i < getBrandList.size(); i++) {
-            final RadioButton rb_type = new RadioButton(mActivity);
 
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + b2b_rate);
-            } else if (getBrandList.get(i).getName().equalsIgnoreCase("NHL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + nhl_rate);
-            } else {
-                rb_type.setText(getBrandList.get(i).getName());
-            }
-
-            rg_brand.addView(rb_type);
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setChecked(true);
-            }
-            if (!viewsample) {
-                if (rb_type.isSelected() || rb_type.isChecked()) {
-                    if (!GlobalClass.isNull(getBrandList.get(i).getUrl())) {
-                        tv_viewsample.setVisibility(View.VISIBLE);
-                        brabdurl = getBrandList.get(i).getUrl();
-                        viewsample = true;
-                    } else {
-                        tv_viewsample.setVisibility(View.GONE);
-                    }
-                } else {
-                    tv_viewsample.setVisibility(View.GONE);
-                }
-            }
-
-
-        }
-
-        rg_brand.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-                boolean isChecked = checkedRadioButton.isChecked();
-                if (isChecked) {
-                    viewsampleURL("" + checkedRadioButton.getText(), getBrandList);
-                }
-            }
-        });
-
-        tv_viewsample.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!GlobalClass.isNull(brabdurl)) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(brabdurl));
-                    startActivity(browserIntent);
-                } else {
-                    Global.showCustomToast(Scan_Barcode_Outlabs_Activity.this, "URL not found");
-
-                }
-            }
-        });
-
-
-    }
-
-    private void viewsampleURL(String s, ArrayList<IsnhlmasterDTO> getBrandList) {
-
-        if (GlobalClass.CheckArrayList(getBrandList)) {
-            for (int i = 0; i < getBrandList.size(); i++) {
-                if (s.contains(getBrandList.get(i).getName())) {
-                    getBrand_name = getBrandList.get(i).getName();
-                    brabdurl = getBrandList.get(i).getUrl();
-                    break;
-                }
-
-            }
-        }
     }
 
 
@@ -590,8 +506,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         ll_uploadTRF = (LinearLayout) findViewById(R.id.ll_uploadTRF);
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
         ll_letterhead = findViewById(R.id.ll_letterhead);
-        tv_viewsample = findViewById(R.id.tv_viewsample);
-        rg_brand = findViewById(R.id.rg_brand);
+
     }
 
     private void callTRFAdapter(ArrayList<TRFModel> trflist) {
@@ -683,6 +598,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             }
         }
     }
+
     private void passBarcodeData(final String s) {
         boolean isbacodeduplicate = false;
         for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
@@ -934,6 +850,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         maindialog.setCancelable(true);
         maindialog.show();
     }
+
     private void doFinalWoe() {
         if (FinalBarcodeDetailsList != null) {
             for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
@@ -951,33 +868,35 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 }
 
                 preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-                patientName = preferences.getString("name", null);
-                patientYear = preferences.getString("age", null);
-                patientYearType = preferences.getString("ageType", null);
-                patientGender = preferences.getString("gender", null);
-                brandName = preferences.getString("WOEbrand", null);
+                patientName = preferences.getString("name", "");
+                patientYear = preferences.getString("age", "");
+                patientYearType = preferences.getString("ageType", "");
+                patientGender = preferences.getString("gender", "");
+                brandName = preferences.getString("WOEbrand", "");
                 if (brandName.equalsIgnoreCase("EQNX")) {
                     brandName = "WHATERS";
                 } else {
-                    brandName = preferences.getString("WOEbrand", null);
+                    brandName = preferences.getString("WOEbrand", "");
                 }
-                typeName = preferences.getString("woetype", null);
-                sampleCollectionDate = preferences.getString("date", null);
-                sampleCollectionTime = preferences.getString("sct", null);
-                sr_number = preferences.getString("SR_NO", null);
+                typeName = preferences.getString("woetype", "");
+                sampleCollectionDate = preferences.getString("date", "");
+                sampleCollectionTime = preferences.getString("sct", "");
+                sr_number = preferences.getString("SR_NO", "");
                 pass_to_api = Integer.parseInt(sr_number);
-                referenceBy = preferences.getString("refBy", null);
-                sampleCollectionPoint = preferences.getString("labAddress", null);
-                sampleGivingClient = preferences.getString("labname", null);
-                refeID = preferences.getString("refId", null);
-                labAddress = preferences.getString("labAddress", null);
-                labID = preferences.getString("labIDaddress", null);
-                labName = preferences.getString("labname", null);
-                btechID = preferences.getString("btechIDToPass", null);
-                campID = preferences.getString("getcampIDtoPass", null);
-                homeaddress = preferences.getString("patientAddress", null);
-                getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
-                getPincode = preferences.getString("pincode", null);
+                referenceBy = preferences.getString("refBy", "");
+                sampleCollectionPoint = preferences.getString("labAddress", "");
+                sampleGivingClient = preferences.getString("labname", "");
+                refeID = preferences.getString("refId", "");
+                labAddress = preferences.getString("labAddress", "");
+                labID = preferences.getString("labIDaddress", "");
+                labName = preferences.getString("labname", "");
+                btechID = preferences.getString("btechIDToPass", "");
+                campID = preferences.getString("getcampIDtoPass", "");
+                homeaddress = preferences.getString("patientAddress", "");
+                getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
+                getPincode = preferences.getString("pincode", "");
+                EMAIL_ID = preferences.getString("EMAIL_ID", "");
+
                 getFinalEmailIdToPost = "";
 
 
@@ -1021,16 +940,18 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 woe.setCAMP_ID(campID);
                 woe.setCONT_PERSON("");
                 woe.setCONTACT_NO(getFinalPhoneNumberToPost);
-                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())){
+                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
                     woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
-                }else{
+                } else {
                     woe.setCUSTOMER_ID("");
                 }
-                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())){
+               /* if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())){
                     woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
                 }else{
                     woe.setEMAIL_ID(getFinalEmailIdToPost);
-                }
+                }*/
+
+                woe.setEMAIL_ID("" + EMAIL_ID);
                 woe.setDELIVERY_MODE(2);
                 woe.setENTERED_BY(user);
                 woe.setGENDER(patientGender);

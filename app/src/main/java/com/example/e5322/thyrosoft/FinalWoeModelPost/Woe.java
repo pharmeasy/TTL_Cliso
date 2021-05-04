@@ -229,6 +229,12 @@ public class Woe implements Parcelable {
     private String BS_VALUE;
     private String BP_VALUE;
 
+
+
+
+
+
+
     public String getBS_VALUE() {
         return BS_VALUE;
     }

@@ -24,7 +24,31 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/_10sdp"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
+
+                <RadioButton
+                    android:id="@+id/by_sendsms"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_weight="2"
+                    android:buttonTint="@color/maroon"
+                    android:checked="true"
+                    android:text="Send SMS"
+                    android:textSize="@dimen/_12sdp"
+                   />
+
+                <TextView
+                    android:id="@+id/tv_help"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Help"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12sdp"
+                    />
 
                 <RadioButton
                     android:id="@+id/by_missed"
@@ -33,7 +57,7 @@
                     android:layout_marginRight="@dimen/dp_10"
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
-                    android:checked="true"
+                 android:visibility="gone"
                     android:text="@string/misscallccc"
                     android:textAllCaps="true"
                     android:textSize="@dimen/value" />
@@ -46,6 +70,7 @@
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
                     android:text="@string/generateccc"
+                    android:visibility="gone"
                     android:textAllCaps="true"
                     android:textSize="@dimen/value" />
             </RadioGroup>
@@ -133,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1.5"
-                     android:background="@drawable/corner_curve_maroon"
+                    android:background="@drawable/corner_curve_maroon"
                     android:drawablePadding="@dimen/_2sdp"
                     android:hint="MOBILE NUMBER*"
                     android:inputType="number"
@@ -349,7 +374,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gender"
-                        android:textAllCaps="true"/>
+                        android:textAllCaps="true" />
 
                     <ImageView
                         android:id="@+id/male"
@@ -457,7 +482,7 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:background="@drawable/corner_curve_maroon"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="EMAIL ID*"
+                android:hint="EMAIL ID"
                 android:maxLength="50"
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/value" />
@@ -545,7 +570,8 @@
                     android:maxLength="8"
                     android:padding="@dimen/_5sdp"
                     android:singleLine="true"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -553,6 +579,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="2">
 
                 <EditText
@@ -575,6 +602,112 @@
                     android:textSize="@dimen/value" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/consignment_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/img_scan_barcode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/scan_barcode" />
+
+                <Button
+                    android:id="@+id/btn_barcd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/next_button"
+                    android:text="BARCODE*"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <ImageView
+                    android:id="@+id/img_edt_consignment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/edit_consign"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lineareditbarcode"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:background="@color/maroon"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/enter_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_margin="5dp"
+                    android:background="@color/white"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwertyuioplkjhgfdsazxcvbnm"
+                    android:hint="Enter barcode"
+                    android:inputType="textPassword"
+                    android:maxLength="8"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/maroon"
+                    android:textColorHint="@color/grey"
+                    android:textSize="@dimen/value"
+                    android:windowSoftInputMode="adjustPan" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/reenter"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="4"
+                        android:background="@color/white"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwertyuioplkjhgfdsazxcvbnm"
+                        android:hint="Re-enter barcode"
+                        android:inputType="textPassword"
+                        android:maxLength="8"
+                        android:paddingLeft="5dp"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
+                        android:textSize="@dimen/value"
+                        android:windowSoftInputMode="adjustPan" />
+
+                    <ImageView
+                        android:id="@+id/setback"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:src="@drawable/upbarcode"
+                        android:tint="@color/white" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -662,9 +795,9 @@
                     android:layout_weight="0.8"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="Aadhaar/Passport"
+                    android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="@dimen/value"
-                    android:textAllCaps="true"
                     android:textStyle="bold" />
 
                 <Button
@@ -938,8 +1071,8 @@
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginRight="@dimen/_3sdp"
                 android:text="@string/allfields"
-                android:textColor="@color/maroon"
                 android:textAllCaps="true"
+                android:textColor="@color/maroon"
                 android:textSize="@dimen/note"
                 android:textStyle="bold" />
 

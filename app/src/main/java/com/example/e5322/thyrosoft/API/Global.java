@@ -3,11 +3,13 @@ package com.example.e5322.thyrosoft.API;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Matrix;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -55,7 +58,7 @@ public class Global {
     public static ArrayList<Outlabdetails_OutLab> Selcted_Outlab_Test_global = new ArrayList<>();
     public static ArrayList<ScannedBarcodeDetails> FinalBarcodeDetailsList_global = new ArrayList<>();
     public static boolean OTPVERIFIED = false;
-    public static boolean showratedialog=false;
+    public static boolean showratedialog = false;
 
     private Context context;
     public static String HHHTest = "";
@@ -79,6 +82,26 @@ public class Global {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static void SetBottomSheet(Activity activity) {
+        SharedPreferences preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
+        String usercode = preferences.getString("USER_CODE", "");
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity, R.style.BottomSheetTheme);
+        View bottomSheet = LayoutInflater.from(activity).inflate(R.layout.custom_missed_call_verification_dialog, (ViewGroup) activity.findViewById(R.id.bottom_sheet_dialog_parent));
+        TextView tv_sms = bottomSheet.findViewById(R.id.tv_sms);
+        tv_sms.setText("SMS " + usercode + " to 9870666333");
+        bottomSheet.findViewById(R.id.cross_dismiss).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.dismiss();
+            }
+        });
+        bottomSheetDialog.setContentView(bottomSheet);
+        bottomSheetDialog.setCancelable(false);
+        bottomSheetDialog.show();
     }
 
     public static boolean checkHardcodeTest(String testCode) {

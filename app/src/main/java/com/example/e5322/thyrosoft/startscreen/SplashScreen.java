@@ -91,6 +91,7 @@ public class SplashScreen extends AppCompatActivity {
         setContentView(R.layout.splash_screen);
         try {
             activity = SplashScreen.this;
+//            FirebaseApp.initializeApp(SplashScreen.this);
             prefs_CovidSync = getSharedPreferences("CovidAccess_sync", 0);
             anim = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate);
             iv = (ImageView) findViewById(R.id.logo);

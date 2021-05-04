@@ -242,6 +242,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private int nhl_rate;
     ConnectionDetector connectionDetector;
     RecyclerView recy_brand;
+    private String EMAIL_ID;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -270,7 +271,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
 
         prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        brandName = prefe.getString("WOEbrand", null);
+        brandName = prefe.getString("WOEbrand", "");
         typeName = prefe.getString("woetype", null);
 
         btn_choosefile = findViewById(R.id.btn_choosefile);
@@ -419,6 +420,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         typename = savepatientDetails.getString("woetype", "");
         sr_number = savepatientDetails.getString("SR_NO", "");
         getPincode = savepatientDetails.getString("pincode", "");
+        EMAIL_ID = savepatientDetails.getString("EMAIL_ID", "");
 
         preferences = getSharedPreferences("patientDetails", MODE_PRIVATE);
         patientName = preferences.getString("name", "");
@@ -1243,11 +1245,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 } else {
                     woe.setCUSTOMER_ID("");
                 }
-                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
+               /* if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
                     woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
                 } else {
                     woe.setEMAIL_ID("");
-                }
+                }*/
+                woe.setEMAIL_ID(EMAIL_ID);
                 woe.setDELIVERY_MODE(2);
                 woe.setENTERED_BY(user);
                 woe.setGENDER(saveGenderId);
@@ -1276,6 +1279,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 woe.setWO_MODE("CLISO APP");
                 woe.setWO_STAGE(3);
                 woe.setULCcode("");
+
                 woe.setBS_VALUE(edt_bsValue.isShown() ? edt_bsValue.getText().toString().trim() : "");
                 woe.setBP_VALUE(edt_bpValue.isShown() ? edt_bpValue.getText().toString().trim() : "");
                 myPojoWoe.setWoe(woe);

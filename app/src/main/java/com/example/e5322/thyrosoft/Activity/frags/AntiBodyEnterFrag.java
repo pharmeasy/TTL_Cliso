@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,6 +163,8 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private String refbyname, campid;
     private String Patientid="";
 
+    TextView tv_help;
+
     public AntiBodyEnterFrag() {
         // Required empty public constructor
     }
@@ -196,6 +199,14 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
 
     private void initlistner() {
+
+        tv_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.SetBottomSheet(activity);
+            }
+        });
+
 
         by_missed.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -698,6 +709,9 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         btn_verify = root.findViewById(R.id.btn_verify);
         img_scanbarcode = root.findViewById(R.id.img_scanbarcode);
         spr_gender = root.findViewById(R.id.spr_gender);
+
+        tv_help = root.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
         spr_occu = root.findViewById(R.id.spr_occu);
         spr_camp = root.findViewById(R.id.spr_camp);
         edt_firstname = root.findViewById(R.id.edt_firstname);

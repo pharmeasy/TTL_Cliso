@@ -82,6 +82,43 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:2eff8c9d9949a49f816f49",
+        "android_client_info": {
+          "package_name": "com.example"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:534320592236:android:738a96ac5fdbfe1d816f49",
         "android_client_info": {
           "package_name": "com.example.e5322.thyrosoft"
@@ -471,6 +508,43 @@
         "mobilesdk_app_id": "1:534320592236:android:006ac0a5115b0ff7816f49",
         "android_client_info": {
           "package_name": "com.thyrocare.drtapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChc6RqnWnVP2X7uxsNJEukR81j4AYZ5v8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "534320592236-1fjser3lfb724crbk8modm0qpg1619nk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "534320592236-4jidprk54862k41gh4olrr8b9vu93j5u.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thyrocare.DiggyPromoter",
+                "app_store_id": "1503302361"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534320592236:android:cf3b910ead9a6c53816f49",
+        "android_client_info": {
+          "package_name": "com.thyrocare.drtfmeapp"
         }
       },
       "oauth_client": [

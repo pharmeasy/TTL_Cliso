@@ -32,8 +32,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +56,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcodeOutlabs;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
+import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
@@ -70,7 +69,6 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
@@ -118,10 +116,10 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     public static ArrayList<String> labAlerts;
     private static String stringofconvertedTime;
     private static String cutString;
-    Button  outlab_barcode;
+    Button outlab_barcode;
     SharedPreferences prefs;
     RequestQueue barcodeDetailsdata, POstQue;
-    String  outTestToSend, testsData;
+    String outTestToSend, testsData;
     EditText enterAmt, enter_barcode, reenter;
     String TAG = Scan_Barcode_Outlabs.class.getSimpleName();
     Button next;
@@ -144,7 +142,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     SharedPreferences preferences, prefe;
     ImageView img_edt, setback;
     ProgressDialog progressDialog;
-    String getAmount, nhl_rate;
+    String getAmount;
     String getWrittenAmt;
     LinearLayout manualbarcodelayout, scanBarcode, amt_collected_and_total_amt_ll;
     String user, passwrd, access, api_key, typeName, brandName, ERROR, RES_ID, barcode, response1, barcode_patient_id, afterBarcode, storeResponse, barcodeNumber, displayslectedtest, getSampleType;
@@ -224,12 +222,10 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     List<String> imagelist = new ArrayList<>();
 
     LinearLayout ll_letterhead;
-    RadioGroup rg_brand;
-    private String brabdurl;
-    TextView tv_viewsample;
-    private int isNhlAvailable;
-    private String getBrand_name;
     ConnectionDetector connectionDetector;
+    RecyclerView recy_brand;
+    private String getBrand_name;
+    private String EMAIL_ID;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -292,6 +288,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         setback = (ImageView) findViewById(R.id.setback);
         setAmt = (TextView) findViewById(R.id.setAmt);
+        recy_brand = (RecyclerView) findViewById(R.id.recy_brand);
         companycost_test = (TextView) findViewById(R.id.companycost_test);
         title = (TextView) findViewById(R.id.title);
         enterAmt = (EditText) findViewById(R.id.enterAmt);
@@ -319,8 +316,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         lin_preview = findViewById(R.id.lin_preview);
 
         ll_letterhead = findViewById(R.id.ll_letterhead);
-        tv_viewsample = findViewById(R.id.tv_viewsample);
-        rg_brand = findViewById(R.id.rg_brand);
 
         btn_choosefile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -335,6 +330,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 setviewpager(imagelist);
             }
         });
+
+
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         Gson gson = new Gson();
         final String json = appSharedPrefs.getString("MyObject", "");
@@ -386,8 +383,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         Globaly_Outlab_details = Global.Selcted_Outlab_Test_global;
         if (bundle1 != null) {
             testsData = bundle1.getString("selectedTest");
-            isNhlAvailable = bundle1.getInt("isNhlAvailable");
-            nhl_rate = bundle1.getString("NHL_rate");
             Log.e(TAG, "onCreate: size " + Globaly_Outlab_details.size());
             ArrayList<String> getProducts = new ArrayList<>();
             getProductCode = new ArrayList<>();
@@ -419,7 +414,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             Log.e(TAG, "onCreate: null");
         }
 
-
+        SetBrandLetterValues();
         SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(Scan_Barcode_Outlabs.this);
         Gson gsonbtech = new Gson();
         String jsonbtech = appSharedPrefsbtech.getString("getBtechnames", "");
@@ -467,16 +462,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         title.setText("Scan Barcode(" + typeName + ")");
 
 
-        if (brandName.equalsIgnoreCase("TTL-Others")) {
-            if (isNhlAvailable == 1) {
-                ll_letterhead.setVisibility(View.VISIBLE);
-                SetBrandLetterValues();
-            } else {
-                ll_letterhead.setVisibility(View.GONE);
-            }
-        }
-
-
 //        prefs = getSharedPreferences("showSelectedOutlabTest", MODE_PRIVATE);
 //        testName = prefs.getString("OutlabtestsSelected", null);
 //        show_selected_tests_data.setText(testName);
@@ -504,13 +489,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         ArrayList<String> saveLocation = new ArrayList<>();
 
         for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
-
-//            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")) {
-//                totalcount = 0;
-//
-//            } else {
-//                totalcount = totalcount + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2c());
-//            }
 
             if (!GlobalClass.isNull(Globaly_Outlab_details.get(i).getIsCPL())) {
                 if (Globaly_Outlab_details.get(i).getIsCPL().equalsIgnoreCase("1")) {
@@ -541,12 +519,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 }
             }
 
-
-//            if (Globaly_Outlab_details.get(i).getRate().getB2c().equals("")){
-//                b2b_rate=0;
-//            }else {
-//                b2b_rate = b2b_rate + Integer.parseInt(Globaly_Outlab_details.get(i).getRate().getB2b());
-//            }
 
             Log.e(TAG, "b2b_rate:  " + b2b_rate);
             Log.e(TAG, "oAmount to display" + totalcount);
@@ -639,6 +611,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
                             } else if (vialimg_file == null || !vialimg_file.exists()) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.vialimage, Toast.LENGTH_SHORT).show();
+                            } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
+                                if (GlobalClass.isNull(getBrand_name)) {
+                                    Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
+                                } else if (vialimg_file == null) {
+                                    Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    checklistData();
+                                }
                             } else {
                                 checklistData();
                             }
@@ -860,94 +840,74 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
 
     private void SetBrandLetterValues() {
 
-        final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
-
-        boolean viewsample = false;
-        for (int i = 0; i < getBrandList.size(); i++) {
-            final RadioButton rb_type = new RadioButton(mActivity);
-
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + b2b_rate);
-            } else if (getBrandList.get(i).getName().equalsIgnoreCase("NHL")) {
-                rb_type.setText(getBrandList.get(i).getName() + ": Rs. " + nhl_rate);
-            } else {
-                rb_type.setText(getBrandList.get(i).getName());
-            }
-
-            rg_brand.addView(rb_type);
-            if (getBrandList.get(i).getName().equalsIgnoreCase("TTL")) {
-                rb_type.setChecked(true);
-            }
-            if (!viewsample) {
-                if (rb_type.isSelected() || rb_type.isChecked()) {
-                    if (!GlobalClass.isNull(getBrandList.get(i).getUrl())) {
-                        tv_viewsample.setVisibility(View.VISIBLE);
-                        brabdurl = getBrandList.get(i).getUrl();
-                        viewsample = true;
-                    } else {
-                        tv_viewsample.setVisibility(View.GONE);
-                    }
-                } else {
-                    tv_viewsample.setVisibility(View.GONE);
-                }
-            }
-
-
-        }
-
-        rg_brand.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                RadioButton checkedRadioButton = (RadioButton) group.findViewById(checkedId);
-                boolean isChecked = checkedRadioButton.isChecked();
-                if (isChecked) {
-                    viewsampleURL("" + checkedRadioButton.getText(), getBrandList);
-                }
-            }
-        });
-
-        tv_viewsample.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!GlobalClass.isNull(brabdurl)) {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(brabdurl));
-                    startActivity(browserIntent);
-                } else {
-                    Global.showCustomToast(Scan_Barcode_Outlabs.this, "URL not found");
-
-                }
-            }
-        });
-
-
-    }
-
-    private void viewsampleURL(String s, ArrayList<IsnhlmasterDTO> getBrandList) {
-
-        if (GlobalClass.CheckArrayList(getBrandList)) {
+        if (Global.OTPVERIFIED) {
+            ll_letterhead.setVisibility(View.GONE);
+        } else {
+            final ArrayList<BaseModel.BrandDtlsDTO> getBrandList = GenerateBrandList();
+            final ArrayList<String> brandName = new ArrayList<>();
+            final ArrayList<String> newbrandName = new ArrayList<>();
             for (int i = 0; i < getBrandList.size(); i++) {
-                if (s.contains(getBrandList.get(i).getName())) {
-                    getBrand_name = getBrandList.get(i).getName();
-                    brabdurl = getBrandList.get(i).getUrl();
-                    break;
+                if (!GlobalClass.isNull(getBrandList.get(i).getAlias())) {
+                    brandName.add(getBrandList.get(i).getAlias());
                 }
-
             }
+            HashSet<String> duplicateremove = new HashSet<>(brandName);
+            newbrandName.clear();
+            newbrandName.addAll(duplicateremove);
+
+            ArrayList<String> finallist = new ArrayList<>();
+            if (GlobalClass.CheckArrayList(newbrandName)) {
+                for (int i = 0; i < newbrandName.size(); i++) {
+                    int cnt = 0;
+                    for (int j = 0; j < Globaly_Outlab_details.size(); j++) {
+                        for (int k = 0; k < Globaly_Outlab_details.get(j).getBrandDtls().size(); k++) {
+                            if (newbrandName.get(i).equalsIgnoreCase(Globaly_Outlab_details.get(j).getBrandDtls().get(k).getAlias())) {
+                                cnt++;
+                            }
+                        }
+                    }
+
+                    if (cnt == Globaly_Outlab_details.size()) {
+                        finallist.add(newbrandName.get(i));
+                    }
+                }
+            }
+
+            if (finallist.size() == 0) {
+                ll_letterhead.setVisibility(View.GONE);
+            } else {
+                ll_letterhead.setVisibility(View.VISIBLE);
+            }
+
+            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList);
+            brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
+                @Override
+                public void onchecked(String brand, String rate) {
+                    getBrand_name = brand;
+                }
+            });
+            recy_brand.setAdapter(brandAdapter);
+            brandAdapter.notifyDataSetChanged();
         }
+
+
     }
 
 
-    private ArrayList<IsnhlmasterDTO> GenerateBrandList() {
-        ArrayList<IsnhlmasterDTO> entity = new ArrayList<>();
+    private ArrayList<BaseModel.BrandDtlsDTO> GenerateBrandList() {
+        ArrayList<BaseModel.BrandDtlsDTO> entity = new ArrayList<>();
+        if (GlobalClass.CheckArrayList(Globaly_Outlab_details)) {
+            for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
+                if (GlobalClass.CheckArrayList(Globaly_Outlab_details.get(i).getBrandDtls())) {
+                    for (int j = 0; j < Globaly_Outlab_details.get(i).getBrandDtls().size(); j++) {
+                        BaseModel.BrandDtlsDTO brandDtlsDTO = new BaseModel.BrandDtlsDTO();
+                        brandDtlsDTO.setAlias("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getAlias());
+                        brandDtlsDTO.setBrandName("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getBrandName());
+                        brandDtlsDTO.setBrandRate("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getBrandRate());
+                        brandDtlsDTO.setRPTFile("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getRPTFile());
+                        entity.add(brandDtlsDTO);
 
-        if (mainModel != null) {
-            if (GlobalClass.CheckArrayList(mainModel.getIsnhlmaster())) {
-                for (int i = 0; i < mainModel.getIsnhlmaster().size(); i++) {
-                    IsnhlmasterDTO isnhlmasterDTO = new IsnhlmasterDTO();
-                    isnhlmasterDTO.setName("" + mainModel.getIsnhlmaster().get(i).getName());
-                    isnhlmasterDTO.setUrl("" + mainModel.getIsnhlmaster().get(i).getUrl());
-                    isnhlmasterDTO.setIsShowpopup(mainModel.getIsnhlmaster().get(i).isIsShowpopup());
-                    entity.add(isnhlmasterDTO);
+                    }
                 }
             }
         }
@@ -1378,42 +1338,44 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     private void doFinalWoe() {
         preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
 
-        patientName = preferences.getString("name", null);
-        patientYear = preferences.getString("age", null);
-        patientYearType = preferences.getString("ageType", null);
-        patientGender = preferences.getString("gender", null);
+        patientName = preferences.getString("name", "");
+        patientYear = preferences.getString("age", "");
+        patientYearType = preferences.getString("ageType", "");
+        patientGender = preferences.getString("gender", "");
 
-        brandName = preferences.getString("WOEbrand", null);
+//        brandName = preferences.getString("WOEbrand", null);
 
-        if (brandName.equalsIgnoreCase("EQNX")) {
-            brandName = "WHATERS";
-        } else {
-            brandName = preferences.getString("WOEbrand", null);
-        }
+        if (GlobalClass.isNull(getBrand_name)) {
+            getBrand_name = preferences.getString("WOEbrand", "");
+        } else if (brandName.equalsIgnoreCase("EQNX")) {
+            getBrand_name = "WHATERS";
+        } /*else {
+            brandName = preferences.getString("WOEbrand", "");
+        }*/
 
-        typeName = preferences.getString("woetype", null);
-        sampleCollectionDate = preferences.getString("date", null);
-        sampleCollectionTime = preferences.getString("sct", null);
-        sr_number = preferences.getString("SR_NO", null);
+        typeName = preferences.getString("woetype", "");
+        sampleCollectionDate = preferences.getString("date", "");
+        sampleCollectionTime = preferences.getString("sct", "");
+        sr_number = preferences.getString("SR_NO", "");
         pass_to_api = Integer.parseInt(sr_number);
 
-        referenceBy = preferences.getString("refBy", null);
+        referenceBy = preferences.getString("refBy", "");
         ////////////////////////////////////////////////////////////////////////
-        sampleCollectionPoint = preferences.getString("labAddress", null);
-        sampleGivingClient = preferences.getString("labname", null);
+        sampleCollectionPoint = preferences.getString("labAddress", "");
+        sampleGivingClient = preferences.getString("labname", "");
 
         ////////////////////////////////////////////////////////////////////////
 
-        refeID = preferences.getString("refId", null);
-        labAddress = preferences.getString("labAddress", null);
-        labID = preferences.getString("labIDaddress", null);
-        labName = preferences.getString("labname", null);
-        btechID = preferences.getString("btechIDToPass", null);
-        campID = preferences.getString("getcampIDtoPass", null);
-        homeaddress = preferences.getString("patientAddress", null);
-        getFinalPhoneNumberToPost = preferences.getString("kycinfo", null);
-        getPincode = preferences.getString("pincode", null);
-
+        refeID = preferences.getString("refId", "");
+        labAddress = preferences.getString("labAddress", "");
+        labID = preferences.getString("labIDaddress", "");
+        labName = preferences.getString("labname", "");
+        btechID = preferences.getString("btechIDToPass", "");
+        campID = preferences.getString("getcampIDtoPass", "");
+        homeaddress = preferences.getString("patientAddress", "");
+        getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
+        getPincode = preferences.getString("pincode", "");
+        EMAIL_ID = preferences.getString("EMAIL_ID", "");
         getFinalEmailIdToPost = "";
 
         DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1435,7 +1397,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             lab_alert_pass_toApi = lab_alert_spin.getText().toString();
         }
 
-        //sampleCollectionTime
 
         String getFulltime = sampleCollectionDate + " " + sampleCollectionTime;
         GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
@@ -1466,7 +1427,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         woe.setAPP_ID(versionNameTopass);
         woe.setADDITIONAL1("CPL");
         woe.setBCT_ID(btechID);
-        woe.setBRAND(brandName);
+        woe.setBRAND(getBrand_name);
         woe.setCAMP_ID(campID);
         woe.setCONT_PERSON("");
         woe.setCONTACT_NO(getFinalPhoneNumberToPost);
@@ -1476,11 +1437,13 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             woe.setCUSTOMER_ID("");
         }
 
-        if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
+        woe.setEMAIL_ID("" + EMAIL_ID);
+
+       /* if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
             woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
         } else {
             woe.setEMAIL_ID(getFinalEmailIdToPost);
-        }
+        }*/
         woe.setDELIVERY_MODE(2);
         woe.setENTERED_BY(user);
         woe.setGENDER(patientGender);
@@ -1583,6 +1546,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
                                         // if (trflist.size() > 0)
+                                        Global.OTPVERIFIED = false;
                                         new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
                                         /*else {
                                             getUploadFileResponse();

@@ -331,7 +331,7 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:background="@drawable/corner_curve_maroon"
                 android:drawablePadding="@dimen/_5sdp"
-                android:hint="EMAIL ID*"
+                android:hint="EMAIL ID"
                 android:maxLength="50"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
@@ -393,6 +393,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <TextView
@@ -432,6 +433,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:weightSum="2">
 
                 <EditText
@@ -455,6 +457,114 @@
                     android:textSize="@dimen/value" />
 
             </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/consignment_name_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <ImageView
+                    android:id="@+id/img_scan_barcode"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="0dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/scan_barcode" />
+
+                <Button
+                    android:id="@+id/btn_barcd"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_weight="4"
+                    android:background="@drawable/next_button"
+                    android:text="BARCODE*"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <ImageView
+                    android:id="@+id/img_edt_consignment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/edit_consign"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lineareditbarcode"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginLeft="@dimen/_5sdp"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:background="@color/maroon"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/enter_barcode"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_margin="5dp"
+                    android:background="@color/white"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwertyuioplkjhgfdsazxcvbnm"
+                    android:hint="Enter barcode"
+                    android:inputType="textPassword"
+                    android:maxLength="8"
+                    android:paddingLeft="5dp"
+                    android:windowSoftInputMode="adjustPan"
+                    android:textColor="@color/maroon"
+                    android:textColorHint="@color/grey"
+                    android:textSize="@dimen/value" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/reenter"
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="4"
+                        android:background="@color/white"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890qwertyuioplkjhgfdsazxcvbnm"
+                        android:hint="Re-enter barcode"
+                        android:inputType="textPassword"
+                        android:maxLength="8"
+                        android:paddingLeft="5dp"
+                        android:windowSoftInputMode="adjustPan"
+                        android:textColor="@color/maroon"
+                        android:textColorHint="@color/grey"
+                        android:textSize="@dimen/value" />
+
+                    <ImageView
+                        android:id="@+id/setback"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:tint="@color/white"
+                        android:src="@drawable/upbarcode" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

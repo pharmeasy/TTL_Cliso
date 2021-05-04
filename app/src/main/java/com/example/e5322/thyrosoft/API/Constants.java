@@ -53,6 +53,11 @@ public class Constants {
     public static String availcoupon = "Avail Coupon";
     public static String APKTYPE = "application/vnd.android.package-archive";
 
+
+    public static int MaxImageSize = 512; // In KB
+    public static int MaxImageWidth = 1080; // in pixels
+    public static int MaxImageHeight = 1080; // in pixels
+
     //TODO PET CT Constant
     public static final String PNAME = "pname";
     public static final String FNAME = "fname";
@@ -376,11 +381,9 @@ public class Constants {
     public static final String requesttype = "requesttype";
 
 
-    //     public static final String MAINURL = "https://api.thyrocare.com/APIs/"; // ---- Live(New)
-//    public static final String MAINURL = "https://www.thyrocare.com/APIs/"; // ---- Live
-    public static final String MAINURL = "https://www.thyrocare.com/APIs/"; // ---- Staging
+    public static final String MAINURL = "https://b2capi.thyrocare.com/APIs/";
 
-    //        public static String BASE_URL_TOCHECK ="https://api.thyrocare.com/APIs/"; // ---- Live (New)
+
 
     public static final String PARAMETER_SEP = "&";
     public static final String PARAMETER_EQUALS = "=";

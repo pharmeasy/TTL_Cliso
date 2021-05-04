@@ -9,13 +9,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,13 +67,14 @@ import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.Models.Hospital_req;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.WOERequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
-import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -133,7 +133,7 @@ public class RATEnterFrag extends Fragment {
     EditText edt_firstname, edt_lastname, edt_age, edt_amtcollected, edt_email;
     RadioButton rd_home, rd_dps;
     File aadhar_file = null;
-    Bitmap bitmapimage;
+
     File aadhar_file1 = null;
     private int PERMISSION_REQUEST_CODE = 200;
     boolean isadhar, istrf, isother;
@@ -150,7 +150,9 @@ public class RATEnterFrag extends Fragment {
     List<Hospital_model.HospitalDETAILSBean> hospitalDETAILSBeanList = new ArrayList<>();
     List<String> hospitalname = new ArrayList<>();
     private int agesinteger;
+    AppPreferenceManager appPreferenceManager;
 
+    TextView tv_help;
 
     public RATEnterFrag() {
         // Required empty public constructor
@@ -168,7 +170,10 @@ public class RATEnterFrag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_r_a_t_enter, container, false);
-        cd = new ConnectionDetector(getContext());
+
+        activity = getActivity();
+        cd = new ConnectionDetector(activity);
+        appPreferenceManager = new AppPreferenceManager(activity);
         initui(root);
         initlistner();
 
@@ -222,13 +227,20 @@ public class RATEnterFrag extends Fragment {
 
             @Override
             public void onFailure(Call<Hospital_model> call, Throwable t) {
-
             }
         });
 
     }
 
     private void initlistner() {
+
+
+        tv_help.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.SetBottomSheet(activity);
+            }
+        });
 
         spr_hospital.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -359,7 +371,7 @@ public class RATEnterFrag extends Fragment {
                             covidpostdata.setTESTCODE("CRAT");
                             covidpostdata.setAGE(edt_age.getText().toString());
                             covidpostdata.setBARCODE(txt_barcode.getText().toString());
-                            covidpostdata.setEMAIL(edt_email.getText().toString());
+                            covidpostdata.setEMAIL("" + edt_email.getText().toString());
 
                             if (!GlobalClass.isNull(hospt_ID)) {
                                 covidpostdata.setHOSPITAL(hospt_ID);
@@ -550,6 +562,11 @@ public class RATEnterFrag extends Fragment {
         rel_mobno.setVisibility(View.GONE);
         edt_missed_mobile.setText("");
 
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -612,17 +629,26 @@ public class RATEnterFrag extends Fragment {
             return false;
         }
 
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            if (GlobalClass.isNull(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
 
-        if (GlobalClass.isNull(edt_email.getText().toString())) {
-            Global.showCustomToast(getActivity(), "Enter Email-ID");
-            edt_email.requestFocus();
-            return false;
-        }
-
-        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
-            Global.showCustomToast(getActivity(), "Enter valid Email-ID");
-            edt_email.requestFocus();
-            return false;
+            if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+        } else {
+            if (!TextUtils.isEmpty(edt_email.getText().toString())) {
+                if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                    Global.showCustomToast(getActivity(), "Enter valid Email-ID");
+                    edt_email.requestFocus();
+                    return false;
+                }
+            }
         }
 
 
@@ -668,7 +694,15 @@ public class RATEnterFrag extends Fragment {
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Choose from Library", "Cancel"};
+
+        ImagePicker.Companion.with(RATEnterFrag.this)
+                .galleryOnly()
+                .compress(Constants.MaxImageSize)
+                .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
+                .start();
+
+
+      /*  final CharSequence[] items = {"Choose from Library", "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Add Photo!");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -688,7 +722,7 @@ public class RATEnterFrag extends Fragment {
                 }
             }
         });
-        builder.show();
+        builder.show();*/
     }
 
     private void openCamera() {
@@ -722,7 +756,7 @@ public class RATEnterFrag extends Fragment {
 
     private void initui(View root) {
 
-        activity = getActivity();
+
         preferences = activity.getSharedPreferences("Userdetails", Context.MODE_PRIVATE);
         usercode = preferences.getString("USER_CODE", "");
         apikey = preferences.getString("API_KEY", "");
@@ -743,6 +777,9 @@ public class RATEnterFrag extends Fragment {
         by_generate = root.findViewById(R.id.by_generate);
         btn_verify = root.findViewById(R.id.btn_verify);
         edt_email = root.findViewById(R.id.edt_email);
+
+        tv_help = root.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
 
         spr_gender = root.findViewById(R.id.spr_gender);
 
@@ -779,6 +816,13 @@ public class RATEnterFrag extends Fragment {
         txt_barcode = root.findViewById(R.id.txt_barcode);
         rd_home = root.findViewById(R.id.rd_home);
         rd_dps = root.findViewById(R.id.rd_dps);
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
+
 
         edt_age.addTextChangedListener(new TextWatcher() {
             @Override
@@ -931,7 +975,7 @@ public class RATEnterFrag extends Fragment {
 
             @Override
             public void onFailure(Call<Covidotpresponse> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
     }
@@ -1003,23 +1047,18 @@ public class RATEnterFrag extends Fragment {
 
             @Override
             public void onFailure(Call<Covid_validateotp_res> call, Throwable t) {
-
+                GlobalClass.hideProgress(activity, progressDialog);
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
 
         try {
-            if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
-                if (data == null) {
-                    Toast.makeText(activity, "Failed to load image!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUEST_CODE && data != null) {
                 if (isadhar) {
                     if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
                         if (data.getData() != null) {
@@ -1027,8 +1066,6 @@ public class RATEnterFrag extends Fragment {
                                 aadhar_file1 = FileUtil.from(activity, data.getData());
                             }
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         aadhar_file1 = GlobalClass.getCompressedFile(activity, aadhar_file1);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
@@ -1042,8 +1079,6 @@ public class RATEnterFrag extends Fragment {
                                 aadhar_file = FileUtil.from(activity, data.getData());
                             }
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         aadhar_file = GlobalClass.getCompressedFile(activity, aadhar_file);
                         lin_adhar_images.setVisibility(View.VISIBLE);
                         txt_adharfileupload.setVisibility(View.VISIBLE);
@@ -1064,7 +1099,6 @@ public class RATEnterFrag extends Fragment {
                         btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
 
                     }
-
                     lin_adhar_images.setVisibility(View.VISIBLE);
 
 
@@ -1076,8 +1110,6 @@ public class RATEnterFrag extends Fragment {
                                 trf_file1 = FileUtil.from(activity, data.getData());
                             }
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         trf_file1 = GlobalClass.getCompressedFile(activity, trf_file1);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
@@ -1089,8 +1121,6 @@ public class RATEnterFrag extends Fragment {
                         if (data.getData() != null) {
                             trf_file = FileUtil.from(activity, data.getData());
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         trf_file = GlobalClass.getCompressedFile(activity, trf_file);
                         lin_trf_images.setVisibility(View.VISIBLE);
                         txt_trffileupload.setVisibility(View.VISIBLE);
@@ -1120,8 +1150,6 @@ public class RATEnterFrag extends Fragment {
                                 other_file1 = FileUtil.from(activity, data.getData());
                             }
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         other_file1 = GlobalClass.getCompressedFile(activity, other_file1);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);
@@ -1134,8 +1162,6 @@ public class RATEnterFrag extends Fragment {
                         if (data.getData() != null) {
                             other_file = FileUtil.from(activity, data.getData());
                         }
-                        Uri uri = data.getData();
-                        bitmapimage = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), uri);
                         other_file = GlobalClass.getCompressedFile(activity, other_file);
                         lin_other_images.setVisibility(View.VISIBLE);
                         txt_otherfileupload.setVisibility(View.VISIBLE);

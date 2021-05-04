@@ -88,21 +88,21 @@
 
                     <ImageView
                         android:id="@+id/download"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/download_new" />
 
                     <ImageView
                         android:id="@+id/mail"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginLeft="20dp"
                         android:src="@drawable/mail_new" />
 
                     <ImageView
                         android:id="@+id/print"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginLeft="20dp"
                         android:src="@drawable/print_new" />
 

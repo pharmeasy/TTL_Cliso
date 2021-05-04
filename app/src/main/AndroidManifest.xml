@@ -50,8 +50,12 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:appComponentFactory,android:allowBackup">
-        <activity android:name=".Activity.SRFCovidWOEEditActivity"/>
-        <activity android:name=".Activity.SRFCovidWOEMainActivity" />
+        <activity
+            android:name=".Activity.SRFCovidWOEEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activity.SRFCovidWOEMainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activity.LeadGenerationActivity"
             android:screenOrientation="portrait" />
@@ -60,11 +64,11 @@
         <activity
             android:name=".Activity.ViewCertificate"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait"
-            />
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".Activity.Certificate_activity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activity.Certificate_activity"
+            android:screenOrientation="portrait" />
 
 
         <uses-library
@@ -119,15 +123,12 @@
             android:name=".Activity.VideoFullScreen"
             android:screenOrientation="landscape" />
 
-        <service android:name=".MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:stopWithTask="false">
             <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>

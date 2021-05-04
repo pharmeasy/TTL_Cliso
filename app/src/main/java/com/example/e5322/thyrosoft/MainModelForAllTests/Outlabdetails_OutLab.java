@@ -3,6 +3,7 @@ package com.example.e5322.thyrosoft.MainModelForAllTests;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -12,10 +13,9 @@ import java.util.Arrays;
 public class Outlabdetails_OutLab implements Parcelable {
     String code, name,isCPL, product, type, trf;
     int isNHL;
-
     Rate_OutLab rate;
     Sampletype_OutLab[] sampletype;
-
+    private ArrayList<BrandDtlsDTO> BrandDtls;
 
 
     public Outlabdetails_OutLab() {
@@ -135,8 +135,13 @@ public class Outlabdetails_OutLab implements Parcelable {
         this.sampletype = sampletype;
     }
 
+    public ArrayList<BrandDtlsDTO> getBrandDtls() {
+        return BrandDtls;
+    }
 
-
+    public void setBrandDtls(ArrayList<BrandDtlsDTO> brandDtls) {
+        BrandDtls = brandDtls;
+    }
 
     public static class Rate_OutLab implements Parcelable {
         String b2b, b2c,cplr,rplr,NHLRate;
@@ -261,6 +266,53 @@ public class Outlabdetails_OutLab implements Parcelable {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(outlabsampletype);
+        }
+    }
+
+
+    public static class BrandDtlsDTO {
+        /**
+         * BrandName : BN
+         * BrandRate : 50
+         * RPTFile : https://cliso.thyrocare.com/assets/dummynhlreport.pdf
+         * Alias : NHL
+         */
+
+        private String BrandName;
+        private String BrandRate;
+        private String RPTFile;
+        private String Alias;
+
+        public String getBrandName() {
+            return BrandName;
+        }
+
+        public void setBrandName(String BrandName) {
+            this.BrandName = BrandName;
+        }
+
+        public String getBrandRate() {
+            return BrandRate;
+        }
+
+        public void setBrandRate(String BrandRate) {
+            this.BrandRate = BrandRate;
+        }
+
+        public String getRPTFile() {
+            return RPTFile;
+        }
+
+        public void setRPTFile(String RPTFile) {
+            this.RPTFile = RPTFile;
+        }
+
+        public String getAlias() {
+            return Alias;
+        }
+
+        public void setAlias(String Alias) {
+            this.Alias = Alias;
         }
     }
 

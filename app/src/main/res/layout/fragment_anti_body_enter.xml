@@ -42,7 +42,30 @@
                 android:layout_weight="1"
                 android:layout_margin="@dimen/_2sdp"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="3">
+
+                <RadioButton
+                    android:id="@+id/by_sendsms"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_10"
+                    android:layout_weight="2"
+                    android:buttonTint="@color/maroon"
+                    android:checked="true"
+                    android:text="Send SMS"
+                    android:textSize="@dimen/_12sdp" />
+
+                <TextView
+                    android:id="@+id/tv_help"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:text="Help"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12sdp" />
 
                 <RadioButton
                     android:id="@+id/by_missed"
@@ -51,7 +74,8 @@
                     android:layout_marginRight="4dp"
                     android:layout_weight="1"
                     android:buttonTint="@color/maroon"
-                    android:checked="true"
+
+                    android:visibility="gone"
                     android:text="@string/misscallccc"
                     android:textAllCaps="true"
                     android:textSize="@dimen/value" />
@@ -61,6 +85,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:visibility="gone"
                     android:buttonTint="@color/maroon"
                     android:text="@string/generateccc"
                     android:textAllCaps="true"

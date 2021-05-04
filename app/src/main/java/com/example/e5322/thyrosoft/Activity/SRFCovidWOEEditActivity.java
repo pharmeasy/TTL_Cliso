@@ -17,6 +17,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -55,6 +58,7 @@ import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
@@ -63,6 +67,7 @@ import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.mindorks.paracamera.Camera;
 import com.rd.PageIndicatorView;
 
@@ -112,6 +117,15 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
     private Date minDate;
     private Covidmis_response.OutputBean woeDetailsModel;
 
+    EditText enter_barcode, reenter;
+    Button btn_barcd;
+    ImageView img_scan__barcode;
+    LinearLayout consignment_name_layout, lineareditbarcode;
+    private ImageView setback;
+    AppPreferenceManager appPreferenceManager;
+    public IntentIntegrator scanIntegrator;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +133,8 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
 
         activity = SRFCovidWOEEditActivity.this;
         cd = new ConnectionDetector(activity);
-
+        scanIntegrator = new IntentIntegrator(activity);
+        appPreferenceManager = new AppPreferenceManager(activity);
         Bundle bundle = getIntent().getExtras();
         woeDetailsModel = (Covidmis_response.OutputBean) bundle.getSerializable("covid_model");
 
@@ -205,9 +220,83 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         txt_nofileother = findViewById(R.id.txt_nofileother);
         btn_selfie = findViewById(R.id.btn_selfie);
         edt_email = findViewById(R.id.edt_email);
+
+
+
+        setback = findViewById(R.id.setback);
+        enter_barcode = findViewById(R.id.enter_barcode);
+        reenter = findViewById(R.id.reenter);
+        lineareditbarcode = findViewById(R.id.lineareditbarcode);
+        img_scan__barcode = findViewById(R.id.img_scan_barcode);
+        btn_barcd = findViewById(R.id.btn_barcd);
+        consignment_name_layout = findViewById(R.id.consignment_name_layout);
+
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
+
+
     }
 
     private void initListeners() {
+
+
+        btn_barcd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                consignment_name_layout.setVisibility(View.GONE);
+                lineareditbarcode.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        img_scan__barcode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scanIntegrator.initiateScan();
+            }
+        });
+
+        setback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                lineareditbarcode.setVisibility(View.GONE);
+                consignment_name_layout.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        reenter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (enter_barcode.getText().length() != 8) {
+                    Toast.makeText(activity, "Enter Valid Enter Bracode", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (s.toString().equalsIgnoreCase(enter_barcode.getText().toString())) {
+                        verifyBarcode(s.toString());
+                    }else {
+                        Toast.makeText(activity, "Bracode not Matched", Toast.LENGTH_SHORT).show();
+
+                    }
+                }
+            }
+        });
+
+
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -447,7 +536,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                             if (!cd.isConnectingToInternet()) {
                                 edt_barcode.setText(s);
                             } else {
-                                verifyBarcode(s);
+                                verifyBarcode(s.toString());
                             }
                         }
                     }
@@ -1102,7 +1191,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                 covidpostdata.setCOLLECTIONPINCODE(edt_coll_pincode.getText().toString().trim());
                 covidpostdata.setSPECIMENDATE(selDate);
                 covidpostdata.setSPECIMENTIME(selTime);
-                covidpostdata.setBARCODE(edt_barcode.getText().toString().trim());
+                covidpostdata.setBARCODE(btn_barcd.getText().toString().trim());
                 covidpostdata.setVIAIMAGE(vial_file);
                 covidpostdata.setEMAIL(edt_email.getText().toString());
                 if (selfie_file != null) {
@@ -1175,7 +1264,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
 
     }
 
-    private void verifyBarcode(Editable s) {
+    private void verifyBarcode(final String s) {
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
         RequestQueue requestQueue = GlobalClass.setVolleyReq(activity);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, Api.Cloud_base + apikey + "/" + s + "/getcheckbarcode", new com.android.volley.Response.Listener<JSONObject>() {
@@ -1187,7 +1276,9 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                     VerifyBarcodeResponseModel responseModel = new Gson().fromJson(String.valueOf(response), VerifyBarcodeResponseModel.class);
                     if (responseModel != null) {
                         if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("BARCODE DOES NOT EXIST")) {
-                            edt_barcode.setText(responseModel.getBarcode());
+                            btn_barcd.setText(s);
+                            lineareditbarcode.setVisibility(View.GONE);
+                            consignment_name_layout.setVisibility(View.VISIBLE);
                         } else if (!GlobalClass.isNull(responseModel.getERROR()) && responseModel.getERROR().equalsIgnoreCase(caps_invalidApikey)) {
                             GlobalClass.redirectToLogin(activity);
                         } else {
@@ -1250,6 +1341,9 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         edt_age.getText().clear();
         male_red.setVisibility(View.GONE);
         female.setVisibility(View.VISIBLE);
+        btn_barcd.setText("BARCODE*");
+        enter_barcode.getText().clear();
+        reenter.getText().clear();
         female_red.setVisibility(View.GONE);
         male.setVisibility(View.VISIBLE);
         edt_patient_address.getText().clear();
@@ -1271,6 +1365,12 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         other_file1 = null;
         selfie_file = null;
         selfie_flag = 0;
+
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            edt_email.setHint("EMAIL ID*");
+        } else {
+            edt_email.setHint("EMAIL ID");
+        }
 
         lin_pres_preview.setVisibility(View.GONE);
         lin_adhar_images.setVisibility(View.GONE);
@@ -1351,15 +1451,31 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         }
 
 
-        if (GlobalClass.isNull(edt_email.getText().toString())) {
-            Global.showCustomToast(activity, "Enter Email-ID");
-            edt_email.requestFocus();
-            return false;
+        if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
+            if (GlobalClass.isNull(edt_email.getText().toString())) {
+                Global.showCustomToast(activity, "Enter Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+
+            if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                Global.showCustomToast(activity, "Enter valid Email-ID");
+                edt_email.requestFocus();
+                return false;
+            }
+        } else {
+            if (!TextUtils.isEmpty(edt_email.getText().toString())) {
+                if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
+                    Global.showCustomToast(activity, "Enter valid Email-ID");
+                    edt_email.requestFocus();
+                    return false;
+                }
+            }
         }
 
-        if (!GlobalClass.isValidEmail(edt_email.getText().toString())) {
-            Global.showCustomToast(activity, "Enter valid Email-ID");
-            edt_email.requestFocus();
+
+        if (btn_barcd.getText().toString().equalsIgnoreCase("BARCODE*")){
+            Global.showCustomToast(activity, "Enter Bracode");
             return false;
         }
 
@@ -1673,7 +1789,8 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         if (GlobalClass.isNull(selTime)) {
             return false;
         }
-        if (GlobalClass.isNull(edt_barcode.getText().toString())) {
+
+       /* if (GlobalClass.isNull(edt_barcode.getText().toString())) {
             return false;
         }
         if (edt_barcode.getText().toString().length() < 8) {
@@ -1687,7 +1804,9 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         }
         if (!edt_barcode.getText().toString().trim().equalsIgnoreCase(edt_re_enter_barcode.getText().toString().trim())) {
             return false;
-        }
+        }*/
+
+
         if (editDetailsFlag) {
             if (viallist != null && viallist.size() > 0) {
                 return true;

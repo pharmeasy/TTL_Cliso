@@ -1,19 +1,10 @@
 <component name="libraryTable">
   <library name="Gradle: com.google.firebase:firebase-installations-interop:16.0.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/0acebeaed156f92f59e53a4bdebab0d7/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/0acebeaed156f92f59e53a4bdebab0d7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/0acebeaed156f92f59e53a4bdebab0d7/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/b525ab15c42f453a997129fe54435fe7/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/cf1e7e4faf22da133ff731c3ce35aa24/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/cf1e7e4faf22da133ff731c3ce35aa24/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/cf1e7e4faf22da133ff731c3ce35aa24/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/ddb37490ddc1fdbf4ffadd7ba41f345d/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/2ed86c5a404fa1ead5e454eee506bb63/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/2ed86c5a404fa1ead5e454eee506bb63/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/2ed86c5a404fa1ead5e454eee506bb63/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/31c0def2fc0b42362bb441ed79ae2b65/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/31c0def2fc0b42362bb441ed79ae2b65/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-installations-interop-16.0.0.aar/31c0def2fc0b42362bb441ed79ae2b65/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-installations-interop/16.0.0/1ae747557debcaf69a3a8082bf136399d29643de/firebase-installations-interop-16.0.0-javadoc.jar!/" />

@@ -6,11 +6,17 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/2495d968c80588ca1a322e0a9f047dcc/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/2495d968c80588ca1a322e0a9f047dcc/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/0e737e43787ce8bf6152967025ec12e8/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/0e737e43787ce8bf6152967025ec12e8/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/0e737e43787ce8bf6152967025ec12e8/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/b4941514af7306937af5fea6aeb40704/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/b4941514af7306937af5fea6aeb40704/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/b4941514af7306937af5fea6aeb40704/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/305a64a64ebc6aa32aac5d43fe07f8a9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/37ff2260248ace6e1cb759eb8f3e7011/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9be0f7b19a4e37752f602cbb005962da/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ac66ab9c7e58d09cda688c02c7d30bf3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dbc1e1e57f7495929f6b8e9665c4a0c9/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/54b4f00661b8ce95d8d88dc62779736c/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/0e737e43787ce8bf6152967025ec12e8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/espresso-core-3.1.0.aar/0e737e43787ce8bf6152967025ec12e8/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

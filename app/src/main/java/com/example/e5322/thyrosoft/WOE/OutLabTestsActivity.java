@@ -158,9 +158,9 @@ public class OutLabTestsActivity extends AppCompatActivity {
                     Toast.makeText(OutLabTestsActivity.this, ToastFile.slt_test, Toast.LENGTH_SHORT).show();
                 } else {
                     if (Selcted_Outlab_Test != null) {
-                        int isNhlAvailable = 0;
-                        int nhlrate = 0;
-                        if (brandName.equalsIgnoreCase("TTL-OTHERS")) {
+
+
+                     /*   if (brandName.equalsIgnoreCase("TTL-OTHERS")) {
                             if (!source_type.equalsIgnoreCase("OLC")) {
                                 if (Global.OTPVERIFIED) {
                                     isNhlAvailable = 0;
@@ -170,11 +170,8 @@ public class OutLabTestsActivity extends AppCompatActivity {
                             } else {
                                 isNhlAvailable = getValueFromSelectedList(Selcted_Outlab_Test);
                             }
-                        }
+                        }*/
 
-                        for (int i = 0; i < Selcted_Outlab_Test.size(); i++) {
-                            nhlrate = nhlrate + Integer.parseInt(Selcted_Outlab_Test.get(i).getRate().getNHLRate());
-                        }
                         String sendTestNames = show_selected_tests_list_test_ils.getText().toString();
                         if (Selcted_Outlab_Test.size() == 1) {
                             intent = new Intent(OutLabTestsActivity.this, Scan_Barcode_Outlabs.class);
@@ -187,8 +184,6 @@ public class OutLabTestsActivity extends AppCompatActivity {
                         // bundle.putParcelableArrayList("getOutlablist", Selcted_Outlab_Test);
                         bundle.putString("selectedTest", sendTestNames);
                         bundle.putString("getTypeName", getTypeName);
-                        bundle.putString("NHL_rate", String.valueOf(nhlrate));
-                        bundle.putInt("isNhlAvailable", isNhlAvailable);
                         GlobalClass.selectedTestnamesOutlab = sendTestNames;
                         intent.putExtras(bundle);
                         startActivity(intent);
