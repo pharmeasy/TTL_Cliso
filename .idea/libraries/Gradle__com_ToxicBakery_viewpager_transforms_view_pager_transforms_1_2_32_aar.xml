@@ -84,8 +84,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e94662b67407e3309a90ca8a663455a3/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e380d3a71dd636837853de1829c84f35/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/35be40e5505c41a7d39586511d04cfbe/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/00fa43f82b5a240219e89682bba40b6b/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/00fa43f82b5a240219e89682bba40b6b/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-view-pager-transforms-1.2.32.aar/0618a61a94923a4fdabf01980f14ea02/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.ToxicBakery.viewpager.transforms/view-pager-transforms/1.2.32/50788cc6dc23c6c591bfd6df4712732a3a44a2/view-pager-transforms-1.2.32-javadoc.jar!/" />

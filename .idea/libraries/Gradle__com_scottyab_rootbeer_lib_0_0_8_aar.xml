@@ -10,9 +10,9 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/79965f767f6c8741dceaae1a7e436ad6/AndroidManifest.xml" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/6430c2a18ffb91d7adb31c22dd0c0edd/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/6430c2a18ffb91d7adb31c22dd0c0edd/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/6430c2a18ffb91d7adb31c22dd0c0edd/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/deeb6e20f133d3820b9a48ab7e25f0f1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/deeb6e20f133d3820b9a48ab7e25f0f1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/rootbeer-lib-0.0.8.aar/deeb6e20f133d3820b9a48ab7e25f0f1/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

@@ -63,6 +63,7 @@ public class Global {
     private Context context;
     public static String HHHTest = "";
     public static boolean isoffline = false;
+    public static boolean isKYC = false;
 
 
     public static ArrayList<String> tabname_home = new ArrayList<>();
@@ -92,7 +93,7 @@ public class Global {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(activity, R.style.BottomSheetTheme);
         View bottomSheet = LayoutInflater.from(activity).inflate(R.layout.custom_missed_call_verification_dialog, (ViewGroup) activity.findViewById(R.id.bottom_sheet_dialog_parent));
         TextView tv_sms = bottomSheet.findViewById(R.id.tv_sms);
-        tv_sms.setText("SMS " + usercode + " to 9870666333");
+        tv_sms.setText("" + usercode + " to 9870666333");
         bottomSheet.findViewById(R.id.cross_dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

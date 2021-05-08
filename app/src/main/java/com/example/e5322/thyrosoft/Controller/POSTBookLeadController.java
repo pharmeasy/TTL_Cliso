@@ -42,8 +42,6 @@ public class POSTBookLeadController {
                 progressDialog = GlobalClass.ShowprogressDialog(mActivity);
             }
             System.out.println(jsonObject);
-
-
             String url = Api.LEAD_BOOKING;
             System.out.println("postBookLeadAPI"+ url);
             System.out.println("postBookLeadAPI post data " + jsonObject);

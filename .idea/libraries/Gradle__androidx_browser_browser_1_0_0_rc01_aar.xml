@@ -1,12 +1,12 @@
 <component name="libraryTable">
   <library name="Gradle: androidx.browser:browser:1.0.0-rc01@aar">
     <ANNOTATIONS>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/5faeb2d7aa8d92c7106b4709e1440dd3/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/c8b47f4302e91a1c46142ed246370e96/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/5faeb2d7aa8d92c7106b4709e1440dd3/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/5faeb2d7aa8d92c7106b4709e1440dd3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/5faeb2d7aa8d92c7106b4709e1440dd3/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/c8b47f4302e91a1c46142ed246370e96/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/c8b47f4302e91a1c46142ed246370e96/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/browser-1.0.0-rc01.aar/c8b47f4302e91a1c46142ed246370e96/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

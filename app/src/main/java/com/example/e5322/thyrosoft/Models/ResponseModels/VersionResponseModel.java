@@ -2,7 +2,6 @@ package com.example.e5322.thyrosoft.Models.ResponseModels;
 
 public class VersionResponseModel {
 
-
     /**
      * Version : 1.0.1.55
      * isoffline : true
@@ -20,6 +19,15 @@ public class VersionResponseModel {
     private String url;
     private String isShow;
     private String FlashText;
+    private boolean isKYC;
+
+    public boolean isKYC() {
+        return isKYC;
+    }
+
+    public void setKYC(boolean KYC) {
+        isKYC = KYC;
+    }
 
     public String getIsShow() {
         return isShow;

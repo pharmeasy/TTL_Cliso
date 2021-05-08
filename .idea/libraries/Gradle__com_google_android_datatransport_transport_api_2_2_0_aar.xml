@@ -2,9 +2,10 @@
   <library name="Gradle: com.google.android.datatransport:transport-api:2.2.0@aar">
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/afecf028d81bcc9f2f6fe5e115243d29/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/be5924e3413ed58ad521e89a05f3631c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/be5924e3413ed58ad521e89a05f3631c/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/be5924e3413ed58ad521e89a05f3631c/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/6f5699d724feb4828ef6ebde458b4cc0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/6f5699d724feb4828ef6ebde458b4cc0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/transport-api-2.2.0.aar/6f5699d724feb4828ef6ebde458b4cc0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.datatransport/transport-api/2.2.0/f3ef3a5b401818d979e05ca4fa1f0eb06e69eeb0/transport-api-2.2.0-javadoc.jar!/" />

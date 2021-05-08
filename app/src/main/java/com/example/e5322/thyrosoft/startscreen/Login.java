@@ -114,7 +114,7 @@ public class Login extends Activity implements View.OnClickListener {
         login = (Button) findViewById(R.id.login);
         appPreferenceManager = new AppPreferenceManager(activity);
         login.setOnClickListener(Login.this);
-
+        globalClass = new GlobalClass(activity);
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -646,11 +646,6 @@ public class Login extends Activity implements View.OnClickListener {
 
     }
 
-
-    private void generateEmailPhoneOTP() {
-
-    }
-
     private void sendOtp() {
 
         generateOTP = GlobalClass.setVolleyReq(Login.this);
@@ -853,8 +848,8 @@ public class Login extends Activity implements View.OnClickListener {
                             barProgressDialog.dismiss();
                         }
 
-                            Toast.makeText(Login.this, ToastFile.invalid_log, Toast.LENGTH_SHORT).show();
-                            System.out.println(error);
+                        Toast.makeText(Login.this, ToastFile.invalid_log, Toast.LENGTH_SHORT).show();
+                        System.out.println(error);
 
                     }
                 });
@@ -873,15 +868,14 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void checkcovidaccess() {
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-
         CovidAccessReq covidAccessReq = new CovidAccessReq();
         covidAccessReq.setSourceCode(User);
-
+        globalClass.showProgressDialog(this);
         Call<CovidAccessResponseModel> covidaccessResCall = postAPIInteface.checkcovidaccess(covidAccessReq);
         covidaccessResCall.enqueue(new Callback<CovidAccessResponseModel>() {
             @Override
             public void onResponse(Call<CovidAccessResponseModel> call, retrofit2.Response<CovidAccessResponseModel> response) {
-
+                globalClass.dismissProgressDialog();
                 try {
                     SharedPreferences.Editor editor = getSharedPreferences("CovidAccess_sync", 0).edit();
                     editor.clear();
@@ -900,6 +894,7 @@ public class Login extends Activity implements View.OnClickListener {
 
             @Override
             public void onFailure(Call<CovidAccessResponseModel> call, Throwable t) {
+                globalClass.dismissProgressDialog();
                 gotoHome();
             }
         });
@@ -907,6 +902,7 @@ public class Login extends Activity implements View.OnClickListener {
 
     private void gotoHome() {
         Intent a = new Intent(Login.this, ManagingTabsActivity.class);
+        a.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         a.putExtra(Constants.COMEFROM, true);
         startActivity(a);
         TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Login), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);

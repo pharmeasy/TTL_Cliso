@@ -443,31 +443,35 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     }
 
     private void ShowratePopup() {
-        final Dialog dialog = new Dialog(activity);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-        dialog.setContentView(R.layout.rate_dialog);
-        ImageView iv_cancel = dialog.findViewById(R.id.iv_cancel);
-        TextView tv_rate = dialog.findViewById(R.id.tv_rate);
+        try {
+            final Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.rate_dialog);
+            ImageView iv_cancel = dialog.findViewById(R.id.iv_cancel);
+            TextView tv_rate = dialog.findViewById(R.id.tv_rate);
 
-        if (!GlobalClass.isNull(appPreferenceManager.getVersionResponseModel().getFlashText())) {
-            tv_rate.setText(Html.fromHtml(appPreferenceManager.getVersionResponseModel().getFlashText()));
-        } else {
-            dialog.dismiss();
-        }
-
-        iv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            if (!GlobalClass.isNull(appPreferenceManager.getVersionResponseModel().getFlashText())) {
+                tv_rate.setText(Html.fromHtml(appPreferenceManager.getVersionResponseModel().getFlashText()));
+            } else {
                 dialog.dismiss();
-
             }
-        });
+
+            iv_cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+
+                }
+            });
 
 
-        int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.99);
-        dialog.getWindow().setLayout(width, FrameLayout.LayoutParams.WRAP_CONTENT);
-        dialog.show();
+            int width = (int) (activity.getResources().getDisplayMetrics().widthPixels * 0.99);
+            dialog.getWindow().setLayout(width, FrameLayout.LayoutParams.WRAP_CONTENT);
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -364,6 +364,16 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             edt_email.setHint("EMAIL ID");
         }
 
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
+        }
+
 
         edt_amt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1075,6 +1085,17 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+        }
+
+
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
         }
 
 

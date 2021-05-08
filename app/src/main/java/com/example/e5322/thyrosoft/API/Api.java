@@ -20,7 +20,7 @@ public class Api {
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
     public static String Velso= "https://velso.thyrocare.cloud/api/";
-
+//
 
     //TODO staging
 /*  public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";

@@ -520,6 +520,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
         enter_arrow_enter.setVisibility(View.VISIBLE);
 
+
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
+        }
+
+
         // Inflate the layout for this fragment
         Date d = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");

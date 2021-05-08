@@ -64,17 +64,13 @@ public class VersionCheckAPIController {
                         appPreferenceManager.setVersionResponseModel(new Gson().fromJson(String.valueOf(response), VersionResponseModel.class));
 
                         globalClass.printLog("Error", TAG, "VersionCheckAPIResponse", String.valueOf(response));
-
-
                         String apiVersion = response.getString("Version");
                         String ApkUrl = response.getString("url");
                         String RESPONSE = response.getString("response");
-                        String resId = response.getString("resId");
-                        String isShow = response.getString("isShow");
-                        String FlashText = response.getString("FlashText");
-                        int syncproduct = response.getInt("syncproduct");
                         Boolean isoff = (response.optBoolean("isoffline", false));
+                        Boolean isKYC = (response.optBoolean("isKYC", false));
                         Global.isoffline = isoff;
+                        Global.isKYC = isKYC;
 
                         if (response != null) {
                             splashScreenActivity.getVersionResponse(apiVersion, ApkUrl, RESPONSE);

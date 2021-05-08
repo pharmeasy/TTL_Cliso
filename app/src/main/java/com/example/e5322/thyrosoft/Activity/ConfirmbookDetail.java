@@ -119,8 +119,6 @@ public class ConfirmbookDetail extends AppCompatActivity implements View.OnClick
             amt_coll = bundle.getString(Constants.AMT_Coll, "");
         }
 
-
-        /*TODO VIES INITILIZATION*/
         tv_toolname = findViewById(R.id.txt_name);
         tv_toolname.setText("Booking Detail");
 

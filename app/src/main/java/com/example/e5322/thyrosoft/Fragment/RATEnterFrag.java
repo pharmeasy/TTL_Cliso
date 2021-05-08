@@ -119,7 +119,7 @@ public class RATEnterFrag extends Fragment {
     private boolean timerflag = false;
     RelativeLayout rel_mobno;
     LinearLayout lin_generate_verify, lin_by_missed, ll_enterView;
-    RadioButton by_missed, by_generate;
+    RadioButton by_missed, by_generate,by_sendsms;
     ImageView img_scanbarcode;
     RequestQueue requestQueue;
     private Camera camera;
@@ -562,6 +562,26 @@ public class RATEnterFrag extends Fragment {
         rel_mobno.setVisibility(View.GONE);
         edt_missed_mobile.setText("");
 
+
+        if (by_missed.isChecked() || by_sendsms.isChecked()) {
+            btn_generate.setText(getResources().getString(R.string.enterccc));
+        } else {
+            btn_generate.setText(getResources().getString(R.string.btngenerateccc));
+        }
+
+
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
+        }
+
+
+
         if (appPreferenceManager.getCovidAccessResponseModel().isDRC()) {
             edt_email.setHint("EMAIL ID*");
         } else {
@@ -775,6 +795,7 @@ public class RATEnterFrag extends Fragment {
         lin_by_missed = root.findViewById(R.id.lin_missed_verify);
         by_missed = root.findViewById(R.id.by_missed);
         by_generate = root.findViewById(R.id.by_generate);
+        by_sendsms = root.findViewById(R.id.by_sendsms);
         btn_verify = root.findViewById(R.id.btn_verify);
         edt_email = root.findViewById(R.id.edt_email);
 
@@ -821,6 +842,17 @@ public class RATEnterFrag extends Fragment {
             edt_email.setHint("EMAIL ID*");
         } else {
             edt_email.setHint("EMAIL ID");
+        }
+
+
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
         }
 
 

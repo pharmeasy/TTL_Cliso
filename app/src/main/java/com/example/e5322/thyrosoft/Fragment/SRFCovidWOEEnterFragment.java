@@ -116,7 +116,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private List<String> otherlist = new ArrayList<>();
     private List<String> selfielist = new ArrayList<>();
     private CountDownTimer countDownTimer;
-    private RadioButton by_missed, by_generate;
+    private RadioButton by_missed, by_generate,by_sendsms;
     private LinearLayout mainlinear, consignment_name_layout, lineareditbarcode, lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_vial_images, lin_other_images;
     private RelativeLayout rel_mobno, rel_verify_mobile;
     private Button btn_choosefile_presc, btn_barcd, btn_selfie, btn_choosefile_adhar, btn_choosefile_vial, btn_choosefile_other, btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
@@ -269,6 +269,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         tv_mobileno = view.findViewById(R.id.tv_mobileno);
         by_missed = view.findViewById(R.id.by_missed);
         by_generate = view.findViewById(R.id.by_generate);
+        by_sendsms = view.findViewById(R.id.by_sendsms);
         edt_email = view.findViewById(R.id.edt_email);
 
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
@@ -284,6 +285,16 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             edt_email.setHint("EMAIL ID*");
         } else {
             edt_email.setHint("EMAIL ID");
+        }
+
+        if (Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
         }
     }
 
@@ -1249,7 +1260,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         edt_barcode.getText().clear();
         edt_re_enter_barcode.getText().clear();
 
-        if (by_missed.isChecked()) {
+        if (by_missed.isChecked() || by_sendsms.isChecked()) {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
             btn_generate.setText(getResources().getString(R.string.btngenerateccc));
@@ -1259,6 +1270,16 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             edt_email.setHint("EMAIL ID*");
         } else {
             edt_email.setHint("EMAIL ID");
+        }
+
+        if ( Global.isKYC){
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        }else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
         }
 
         timerflag = false;

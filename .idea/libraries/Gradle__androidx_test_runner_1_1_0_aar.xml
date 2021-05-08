@@ -15,8 +15,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5b3cb71f05ddaeb7c9da06bda2856ae9/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8701bb12641af34be7ca8952e7641bac/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/c4c57e7d54f73fc0af417f23e4e7532e/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/24fe98363f1b4ac8096a945c9dc3ce8d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/24fe98363f1b4ac8096a945c9dc3ce8d/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/3edee7543f685cc703a679bc0a2d4e02/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/3edee7543f685cc703a679bc0a2d4e02/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/runner-1.1.0.aar/3edee7543f685cc703a679bc0a2d4e02/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

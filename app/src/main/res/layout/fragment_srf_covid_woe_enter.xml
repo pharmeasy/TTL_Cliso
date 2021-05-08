@@ -31,24 +31,13 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/dp_10"
-                    android:layout_weight="2"
+                    android:layout_weight="1"
                     android:buttonTint="@color/maroon"
                     android:checked="true"
                     android:text="Send SMS"
                     android:textSize="@dimen/_12sdp"
                    />
 
-                <TextView
-                    android:id="@+id/tv_help"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="Help"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/_12sdp"
-                    />
 
                 <RadioButton
                     android:id="@+id/by_missed"
@@ -179,6 +168,17 @@
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="@dimen/value" />
+
+                <TextView
+                    android:id="@+id/tv_help"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_margin="@dimen/_4sdp"
+                    android:text="Help"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/_12sdp" />
 
             </LinearLayout>
 

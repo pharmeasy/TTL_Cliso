@@ -20,14 +20,32 @@
             android:layout_gravity="end"
             android:src="@drawable/blackcross" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="15dp"
+            android:text="To verify using SMS"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Send SMS:"
+            android:textColor="@color/maroon"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_sms"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:layout_marginTop="15dp"
-            android:text="SMS"
+            android:text=""
+            android:layout_marginTop="@dimen/_2sdp"
             android:layout_marginBottom="@dimen/_20sdp"
             android:textColor="@color/maroon"
             android:textSize="@dimen/_15sdp"
