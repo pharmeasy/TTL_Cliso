@@ -17,7 +17,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
@@ -54,6 +53,7 @@ import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.SRFCovidWOEmultipart_controller;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
@@ -65,6 +65,7 @@ import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -652,7 +653,9 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                         isadhar = false;
                         isvial = true;
                         isother = false;
-                        selectImage();
+//                        selectImage();
+                        GlobalClass.cropImageActivity(SRFCovidWOEEditActivity.this,2);
+
                     }
                         /*}
                     }*/
@@ -1235,8 +1238,13 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
     }
 
     private void displayrate() {
+
+        CovidRateReqModel covidRateReqModel=new CovidRateReqModel();
+        covidRateReqModel.setUsercode(""+usercode);
+        covidRateReqModel.setAPIKEY(""+apikey);
+
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates();
+        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
@@ -1572,7 +1580,34 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
+        }  else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            if (data == null) {
+                GlobalClass.showCustomToast(activity, "Failed to load image!", 0);
+                return;
+            }
+            try {
+                if (data.getData() != null) {
+                    vial_file = ImagePicker.Companion.getFile(data);
+                }
+                vial_file = GlobalClass.getCompressedFile(activity, vial_file);
+                lin_vial_images.setVisibility(View.VISIBLE);
+                txt_vialrfileupload.setVisibility(View.VISIBLE);
+                txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                txt_nofilevial.setVisibility(View.GONE);
+                viallist.add(vial_file.toString());
+                if (vial_file != null) {
+                    isvial = false;
+                    btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                    btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                    buttonval();
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }else if (requestCode == PICK_PHOTO_FROM_GALLERY && resultCode == RESULT_OK) {
             if (data == null) {
                 GlobalClass.showCustomToast(activity, "Failed to load image!", 0);
                 return;

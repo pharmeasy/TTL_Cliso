@@ -79,6 +79,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/1292af566fde8170ed26eecc567f955b/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/1292af566fde8170ed26eecc567f955b/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/1292af566fde8170ed26eecc567f955b/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/e52c4ea1c7ec436032b2b6ff069f34b0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/e52c4ea1c7ec436032b2b6ff069f34b0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/jetified-magicretry-1.0.6.aar/e52c4ea1c7ec436032b2b6ff069f34b0/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

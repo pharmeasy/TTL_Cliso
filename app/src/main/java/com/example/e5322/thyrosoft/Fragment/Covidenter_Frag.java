@@ -62,6 +62,7 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
+import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
@@ -74,6 +75,7 @@ import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -192,9 +194,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
 
     private void displayrate() {
+        CovidRateReqModel covidRateReqModel = new CovidRateReqModel();
+        covidRateReqModel.setUsercode("" + usercode);
+        covidRateReqModel.setAPIKEY("" + apikey);
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-
-        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates();
+        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
@@ -282,17 +286,17 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         radiogrp2 = view.findViewById(R.id.radiogrp2);
 
 
-        img_camera_pres    = view.findViewById(R.id.img_camera_pres);
-        img_gallery_pres   = view.findViewById(R.id.img_gallery_pres);
-        img_camera_aadhar  = view.findViewById(R.id.img_camera_aadhar);
+        img_camera_pres = view.findViewById(R.id.img_camera_pres);
+        img_gallery_pres = view.findViewById(R.id.img_gallery_pres);
+        img_camera_aadhar = view.findViewById(R.id.img_camera_aadhar);
         img_gallery_aadhar = view.findViewById(R.id.img_gallery_aadhar);
-        img_camera_trf     = view.findViewById(R.id.img_camera_trf);
-        img_gallery_trf    = view.findViewById(R.id.img_gallery_trf);
-        img_camera_vial    = view.findViewById(R.id.img_camera_vial);
-        img_gallery_vial   = view.findViewById(R.id.img_gallery_vial);
-        img_camera_other   = view.findViewById(R.id.img_camera_other);
-        img_gallery_other  = view.findViewById(R.id.img_gallery_other);
-        img_camera_selfie  = view.findViewById(R.id.img_camera_selfie);
+        img_camera_trf = view.findViewById(R.id.img_camera_trf);
+        img_gallery_trf = view.findViewById(R.id.img_gallery_trf);
+        img_camera_vial = view.findViewById(R.id.img_camera_vial);
+        img_gallery_vial = view.findViewById(R.id.img_gallery_vial);
+        img_camera_other = view.findViewById(R.id.img_camera_other);
+        img_gallery_other = view.findViewById(R.id.img_gallery_other);
+        img_camera_selfie = view.findViewById(R.id.img_camera_selfie);
 
 
         //TODO Textviews
@@ -364,11 +368,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             edt_email.setHint("EMAIL ID");
         }
 
-        if ( Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
@@ -755,7 +759,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
 
 
-
             case R.id.btn_choosefile_presc:
                 if (verifyotp) {
                     if (checkPermission()) {
@@ -924,7 +927,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             istrf = false;
                             isvial = true;
                             isother = false;
-                            selectImage();
+//                            selectImage();
+                            GlobalClass.cropImageFragment(this, 1);
                         }
                     } else {
                         requestPermission();
@@ -945,7 +949,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             istrf = false;
                             isvial = true;
                             isother = false;
-                            openCamera();
+//                            openCamera();
+                            GlobalClass.cropImageFragment(this, 0);
                         }
                     } else {
                         requestPermission();
@@ -966,7 +971,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                             istrf = false;
                             isvial = true;
                             isother = false;
-                            chooseFromGallery();
+//                            chooseFromGallery();
+                            GlobalClass.cropImageFragment(this, 2);
                         }
                     } else {
                         requestPermission();
@@ -977,7 +983,6 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.btn_choosefile_other:
-
 
             case R.id.img_camera_other:
                 if (verifyotp) {
@@ -1088,11 +1093,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         }
 
 
-        if ( Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
@@ -1577,6 +1582,30 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     selfielist.add(selfie_file.toString());
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                if (isvial) {
+                    String imageurl = ImagePicker.Companion.getFile(data).toString();
+                    vial_file = new File(imageurl);
+                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vial_file;
+                    vial_file = new File(destFile);
+                    GlobalClass.copyFile(new File(imageurl), vial_file);
+                    lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilevial.setVisibility(View.GONE);
+                    if (vial_file != null) {
+                        isvial = false;
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                    }
+                    viallist.add(imageurl);
+                    buttonval();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

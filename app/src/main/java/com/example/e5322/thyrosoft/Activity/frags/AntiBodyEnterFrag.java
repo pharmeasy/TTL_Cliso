@@ -128,13 +128,12 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private Camera camera;
     ProgressDialog progressDialog;
     MultiSelectSpinner spn_symptoms;
-    private int PICK_PHOTO_FROM_GALLERY = 202;
+    private final int PICK_PHOTO_FROM_GALLERY = 202;
     String TAG = getClass().getSimpleName();
     TextView tv_timer, tv_resetno, tv_mobileno, tv_verifiedmob, txt_barcode, txt_adharfileupload, txt_nofileadhar;
     private boolean timerflag = false;
     RelativeLayout rel_mobno;
     ArrayList<CampIdResponseModel.OutputBean> Campid = new ArrayList<>();
-    private String outputDateStr;
     LinearLayout lin_generate_verify, lin_by_missed, ll_enterView, lin_adhar_images;
     RadioButton by_missed, by_generate;
     RelativeLayout rel_verify_mobile;
@@ -161,7 +160,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
     List<String> arrayList = Arrays.asList(/*"Select",*/ "Fever", "Shortness of Breath", "Cough", "Sore Throat", "NA");
     private String refbyname, campid;
-    private String Patientid="";
+    private String Patientid = "";
 
     TextView tv_help;
 
@@ -170,7 +169,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     }
 
 
-    public static AntiBodyEnterFrag newInstance(String param1, String param2) {
+    public static AntiBodyEnterFrag newInstance() {
         AntiBodyEnterFrag fragment = new AntiBodyEnterFrag();
         Bundle args = new Bundle();
 
@@ -245,7 +244,6 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                     } else {
                         selectImage();
                     }
-
                 } else {
                     requestPermission();
                 }
@@ -277,7 +275,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
                                 edt_pincode.setText(Campid.get(i).getPincode());
                                 edt_pincode.setEnabled(false);
                                 edt_pincode.setTextColor(Color.BLACK);
-                               // edt_email.setText(Campid.get(i).get);
+                                // edt_email.setText(Campid.get(i).get);
 
                                 refbyname = Campid.get(i).getReferringDoctorName();
                                 campid = Campid.get(i).getCampID();
@@ -469,7 +467,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
                     if (response.body().getRES_ID().equalsIgnoreCase(Constants.RES0000)) {
                         CallPatientData(response.body().getBarcode_patient_id());
-                        Patientid=response.body().getBarcode_patient_id();
+                        Patientid = response.body().getBarcode_patient_id();
                     } else {
                         CFAlertDialog.Builder builder = new CFAlertDialog.Builder(activity)
                                 .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
@@ -588,7 +586,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private boolean Validate() {
 
 
-        if (spr_camp.getSelectedItem().toString().equalsIgnoreCase("Select Camp-ID")){
+        if (spr_camp.getSelectedItem().toString().equalsIgnoreCase("Select Camp-ID")) {
             Toast.makeText(activity, "Select Camp-ID", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -623,8 +621,8 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
             return false;
         }
 
-        if(edt_age.getText().toString().equals("0")){
-            GlobalClass.showCustomToast(getActivity(),ToastFile.ENTER_CORRECT_AGE, 0);
+        if (edt_age.getText().toString().equals("0")) {
+            GlobalClass.showCustomToast(getActivity(), ToastFile.ENTER_CORRECT_AGE, 0);
             edt_lastname.requestFocus();
             return false;
         }
@@ -940,7 +938,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
     private void validateotp() {
 
         final ProgressDialog progressDialog = GlobalClass.ShowprogressDialog(activity);
-        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity,Api.Cloud_base).create(PostAPIInteface.class);
+        PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Covid_validateotp_req covid_validateotp_req = new Covid_validateotp_req();
         covid_validateotp_req.setApi_key(apikey);
         covid_validateotp_req.setMobile(edt_missed_mobile.getText().toString());

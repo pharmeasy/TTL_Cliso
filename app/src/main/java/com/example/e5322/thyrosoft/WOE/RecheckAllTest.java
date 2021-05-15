@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Adapter.ExpandableTestMasterListDisplayAdapter;
@@ -59,16 +59,11 @@ public class RecheckAllTest extends AppCompatActivity {
     // ArrayList<BaseModel> selectedTestsList;
     MainModel mainModel;
     MainModel dummyModel;
-    B2B_MASTERSMainModel dummyB2BmasterModel;
-    ArrayList<BaseModel> popArrayList;
-    ArrayList<BaseModel> profileArrayList;
-    ArrayList<BaseModel> testArrayList;
     MainModel onlySelected;
     private GlobalClass globalClass;
     RequestQueue requestQueuepoptestILS;
     private ExpandableTestMasterListDisplayAdapter expAdapter;
     private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
-    private ArrayList<B2B_MASTERSMainModel> finalproductlist;
     ProgressDialog progressDialog;
     TextView show_selected_tests_list_test_ils;
     LinearLayout selected_test_display, lineargetselectedtestforILS;
@@ -77,11 +72,11 @@ public class RecheckAllTest extends AppCompatActivity {
     List<String> getTestCodes;
     List<String> fixedLenghtList;
     ArrayList<String> sample_type_array;
-    String TAG = RecheckWoeActivity.class.getSimpleName().toString();
+    String TAG = RecheckWoeActivity.class.getSimpleName();
     ImageView back, home;
-    String user, passwrd, access, api_key, convertDate;
+    String user, passwrd, access, api_key;
     SharedPreferences prefs, getBarcodeDetails;
-    String RES_ID, barcode, ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE, SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS;
+    String RES_ID,  ALERT, BARCODE, BVT_HRS, LABCODE, PATIENT, REF_DR, REQUESTED_ADDITIONAL_TESTS, REQUESTED_ON, SDATE, SL_NO, STATUS, SU_CODE1, SU_CODE2, TESTS;
     TextView title;
     private String passTheTests;
 

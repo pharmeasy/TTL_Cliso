@@ -64,6 +64,7 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
 import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
+import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidotpresponse;
@@ -77,6 +78,7 @@ import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -116,7 +118,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private List<String> otherlist = new ArrayList<>();
     private List<String> selfielist = new ArrayList<>();
     private CountDownTimer countDownTimer;
-    private RadioButton by_missed, by_generate,by_sendsms;
+    private RadioButton by_missed, by_generate, by_sendsms;
     private LinearLayout mainlinear, consignment_name_layout, lineareditbarcode, lin_by_missed, lin_selfie, lin_generate_verify, lin_pres_preview, lin_adhar_images, lin_vial_images, lin_other_images;
     private RelativeLayout rel_mobno, rel_verify_mobile;
     private Button btn_choosefile_presc, btn_barcd, btn_selfie, btn_choosefile_adhar, btn_choosefile_vial, btn_choosefile_other, btn_generate, btn_submit, btn_verify, btn_resend, btn_reset;
@@ -139,7 +141,6 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     AppPreferenceManager appPreferenceManager;
     private ImageView setback;
     IntentIntegrator scanIntegrator;
-
     TextView tv_help;
 
     public SRFCovidWOEEnterFragment() {
@@ -287,11 +288,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             edt_email.setHint("EMAIL ID");
         }
 
-        if (Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
@@ -350,8 +351,8 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 } else {
                     if (s.toString().equalsIgnoreCase(enter_barcode.getText().toString())) {
                         verifyBarcode(s.toString());
-                    }else {
-                        if (s.length()==8){
+                    } else {
+                        if (s.length() == 8) {
                             Toast.makeText(activity, "Bracode not Matched", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -713,7 +714,9 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                             isadhar = false;
                             isvial = true;
                             isother = false;
-                            selectImage();
+//                            selectImage();
+                            GlobalClass.cropImageFragment(SRFCovidWOEEnterFragment.this, 2);
+
                         }
                     } else {
                         requestPermission();
@@ -1123,8 +1126,13 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     }
 
     private void displayrate() {
+        CovidRateReqModel covidRateReqModel = new CovidRateReqModel();
+        covidRateReqModel.setUsercode("" + usercode);
+        covidRateReqModel.setAPIKEY("" + apikey);
+
+
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
-        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates();
+        Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
             @Override
             public void onResponse(Call<Covidratemodel> call, Response<Covidratemodel> response) {
@@ -1272,11 +1280,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             edt_email.setHint("EMAIL ID");
         }
 
-        if ( Global.isKYC){
+        if (Global.isKYC) {
             by_sendsms.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.GONE);
             by_missed.setVisibility(View.GONE);
-        }else {
+        } else {
             by_missed.setVisibility(View.VISIBLE);
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
@@ -1403,7 +1411,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             }
         }
 
-        if (btn_barcd.getText().toString().equalsIgnoreCase("BARCODE*")){
+        if (btn_barcd.getText().toString().equalsIgnoreCase("BARCODE*")) {
             Global.showCustomToast(getActivity(), "Enter Bracode");
             return false;
         }
@@ -1561,6 +1569,30 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 btn_selfie.setTextColor(getResources().getColor(R.color.black));
                 btn_selfie.setEnabled(false);
                 selfielist.add(selfie_file.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }  else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                if (isvial) {
+                    if (data.getData() != null) {
+                        vial_file = ImagePicker.Companion.getFile(data);
+//                        vial_file = FileUtil.from(activity, data.getData());
+                    }
+                    vial_file = GlobalClass.getCompressedFile(activity, vial_file);
+                    lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilevial.setVisibility(View.GONE);
+                    viallist.add(vial_file.toString());
+                    if (vial_file != null) {
+                        isvial = false;
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1739,7 +1771,6 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         }
 
         if (edt_srfid.getText().length() < 10) {
-            Global.showCustomToast(getActivity(), "SRF-ID should be minimum of 10 digits");
             return false;
         }
 
@@ -1806,6 +1837,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         if (vial_file == null) {
             return false;
         }
+
         return true;
     }
 

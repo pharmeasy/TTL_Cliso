@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 public class Woe implements Parcelable {
     private String REF_DR_NAME;
+    private String PaymentId;
 
     private String SPECIMEN_COLLECTION_TIME;
 
@@ -12,6 +13,7 @@ public class Woe implements Parcelable {
 
     protected Woe(Parcel in) {
         REF_DR_NAME = in.readString();
+        PaymentId = in.readString();
         SPECIMEN_COLLECTION_TIME = in.readString();
         WATER_SOURCE = in.readString();
         REMARKS = in.readString();
@@ -62,6 +64,7 @@ public class Woe implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(REF_DR_NAME);
+        dest.writeString(PaymentId);
         dest.writeString(SPECIMEN_COLLECTION_TIME);
         dest.writeString(WATER_SOURCE);
         dest.writeString(REMARKS);
@@ -305,6 +308,14 @@ public class Woe implements Parcelable {
 
     public void setSUB_SOURCE_CODE(String SUB_SOURCE_CODE) {
         this.SUB_SOURCE_CODE = SUB_SOURCE_CODE;
+    }
+
+    public String getPaymentId() {
+        return PaymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        PaymentId = paymentId;
     }
 
     public String getCUSTOMER_ID() {

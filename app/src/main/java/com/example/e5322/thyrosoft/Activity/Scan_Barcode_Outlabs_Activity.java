@@ -41,7 +41,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
-import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
@@ -67,6 +66,7 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.example.e5322.thyrosoft.WOE.SummaryActivity;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -189,9 +189,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
 
     LinearLayout ll_letterhead;
-
-
-    ConnectionDetector connectionDetector;
+    EditText edt_confirm_amt;
     MainModel mainModel;
     private String EMAIL_ID;
 
@@ -211,7 +209,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         }
         myDb = new DatabaseHelper(Scan_Barcode_Outlabs_Activity.this);
         initUI();
-
+        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         barcodescanninglist.setVisibility(View.VISIBLE);
         recycler_barcode.setVisibility(View.VISIBLE);
         linearLayoutManager1 = new LinearLayoutManager(Scan_Barcode_Outlabs_Activity.this);
@@ -331,8 +329,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         btn_choosefile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
+//                openCamera();
+                GlobalClass.cropImageActivity(mActivity,0);
                 isvial = true;
+
             }
         });
         txt_fileupload.setOnClickListener(new View.OnClickListener() {
@@ -477,6 +477,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         GlobalClass.showShortToast(mActivity, "Please enter the amount");
                     } else if (Integer.parseInt(getCollectedAmt) < b2b_rate) {
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                    } else if (GlobalClass.isNull(edt_confirm_amt.getText().toString())) {
+                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
+                    } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getCollectedAmt)) {
+                        Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
                     } else if (vialimg_file == null || !vialimg_file.exists()) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
                     } else {
@@ -506,6 +510,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         ll_uploadTRF = (LinearLayout) findViewById(R.id.ll_uploadTRF);
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
         ll_letterhead = findViewById(R.id.ll_letterhead);
+        edt_confirm_amt = findViewById(R.id.edt_confirm_amt);
 
     }
 
@@ -593,6 +598,26 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     storeTRFImage(trf_img);
                 } catch (IOException e) {
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+                try {
+                    if (isvial) {
+                        imagelist.clear();
+                        // vialbitmap = camera.getCameraBitmap();
+                        //   String imageurlvial = camera.getCameraBitmapPath();
+//                        vialimg_file = new File(imageurlvial);
+                        vialimg_file = ImagePicker.Companion.getFile(data);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(ImagePicker.Companion.getFile(data), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -863,239 +888,255 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 barcodeExistsFlag = false;
                 GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
             } else {
-                if (getRemark == null) {
-                    getRemark = "Manual";
-                }
+                if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
+                    Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("name", preferences.getString("name", ""));
+                    intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+                    intent.putExtra("amount", b2b_rate);
+                    intent.putExtra("email", EMAIL_ID);
+                    startActivity(intent);
 
-                preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-                patientName = preferences.getString("name", "");
-                patientYear = preferences.getString("age", "");
-                patientYearType = preferences.getString("ageType", "");
-                patientGender = preferences.getString("gender", "");
-                brandName = preferences.getString("WOEbrand", "");
-                if (brandName.equalsIgnoreCase("EQNX")) {
-                    brandName = "WHATERS";
+
                 } else {
-                    brandName = preferences.getString("WOEbrand", "");
+                    WOE();
                 }
-                typeName = preferences.getString("woetype", "");
-                sampleCollectionDate = preferences.getString("date", "");
-                sampleCollectionTime = preferences.getString("sct", "");
-                sr_number = preferences.getString("SR_NO", "");
-                pass_to_api = Integer.parseInt(sr_number);
-                referenceBy = preferences.getString("refBy", "");
-                sampleCollectionPoint = preferences.getString("labAddress", "");
-                sampleGivingClient = preferences.getString("labname", "");
-                refeID = preferences.getString("refId", "");
-                labAddress = preferences.getString("labAddress", "");
-                labID = preferences.getString("labIDaddress", "");
-                labName = preferences.getString("labname", "");
-                btechID = preferences.getString("btechIDToPass", "");
-                campID = preferences.getString("getcampIDtoPass", "");
-                homeaddress = preferences.getString("patientAddress", "");
-                getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
-                getPincode = preferences.getString("pincode", "");
-                EMAIL_ID = preferences.getString("EMAIL_ID", "");
 
-                getFinalEmailIdToPost = "";
+            }
+        } else {
+            GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
+        }
+    }
+
+    private void WOE() {
+        if (getRemark == null) {
+            getRemark = "Manual";
+        }
+
+        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        patientName = preferences.getString("name", "");
+        patientYear = preferences.getString("age", "");
+        patientYearType = preferences.getString("ageType", "");
+        patientGender = preferences.getString("gender", "");
+        brandName = preferences.getString("WOEbrand", "");
+        if (brandName.equalsIgnoreCase("EQNX")) {
+            brandName = "WHATERS";
+        } else {
+            brandName = preferences.getString("WOEbrand", "");
+        }
+        typeName = preferences.getString("woetype", "");
+        sampleCollectionDate = preferences.getString("date", "");
+        sampleCollectionTime = preferences.getString("sct", "");
+        sr_number = preferences.getString("SR_NO", "");
+        pass_to_api = Integer.parseInt(sr_number);
+        referenceBy = preferences.getString("refBy", "");
+        sampleCollectionPoint = preferences.getString("labAddress", "");
+        sampleGivingClient = preferences.getString("labname", "");
+        refeID = preferences.getString("refId", "");
+        labAddress = preferences.getString("labAddress", "");
+        labID = preferences.getString("labIDaddress", "");
+        labName = preferences.getString("labname", "");
+        btechID = preferences.getString("btechIDToPass", "");
+        campID = preferences.getString("getcampIDtoPass", "");
+        homeaddress = preferences.getString("patientAddress", "");
+        getFinalPhoneNumberToPost = preferences.getString("kycinfo", "");
+        getPincode = preferences.getString("pincode", "");
+        EMAIL_ID = preferences.getString("EMAIL_ID", "");
+
+        getFinalEmailIdToPost = "";
 
 
-                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-                Date date = null;
-                try {
-                    date = inputFormat.parse(sampleCollectionDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                outputDateStr = outputFormat.format(date);
-                //sampleCollectionTime
-                Log.e(TAG, "fetchData: " + outputDateStr);
-                if (patientYearType.equalsIgnoreCase("Years")) {
-                    ageType = "Y";
-                } else if (patientYearType.equalsIgnoreCase("Months")) {
-                    ageType = "M";
-                } else if (patientYearType.equalsIgnoreCase("Days")) {
-                    ageType = "D";
-                }
-                String getFulltime = sampleCollectionDate + " " + sampleCollectionTime;
-                GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
+        DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+        Date date = null;
+        try {
+            date = inputFormat.parse(sampleCollectionDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        outputDateStr = outputFormat.format(date);
+        //sampleCollectionTime
+        Log.e(TAG, "fetchData: " + outputDateStr);
+        if (patientYearType.equalsIgnoreCase("Years")) {
+            ageType = "Y";
+        } else if (patientYearType.equalsIgnoreCase("Months")) {
+            ageType = "M";
+        } else if (patientYearType.equalsIgnoreCase("Days")) {
+            ageType = "D";
+        }
+        String getFulltime = sampleCollectionDate + " " + sampleCollectionTime;
+        GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
 
-                POstQue = GlobalClass.setVolleyReq(Scan_Barcode_Outlabs_Activity.this);
+        POstQue = GlobalClass.setVolleyReq(Scan_Barcode_Outlabs_Activity.this);
 
 
-                MyPojoWoe myPojoWoe = new MyPojoWoe();
-                Woe woe = new Woe();
-                woe.setAADHAR_NO("");
-                woe.setADDRESS(homeaddress);
-                woe.setAGE(patientYear);
-                woe.setAGE_TYPE(ageType);
-                woe.setALERT_MESSAGE(lab_alert_pass_toApi);
-                woe.setAMOUNT_COLLECTED(getCollectedAmt);
-                woe.setAMOUNT_DUE("");
-                woe.setAPP_ID(versionNameTopass);
-                woe.setADDITIONAL1("CPL");
-                woe.setBCT_ID(btechID);
-                woe.setBRAND(brandName);
-                woe.setCAMP_ID(campID);
-                woe.setCONT_PERSON("");
-                woe.setCONTACT_NO(getFinalPhoneNumberToPost);
-                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
-                    woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
-                } else {
-                    woe.setCUSTOMER_ID("");
-                }
+        MyPojoWoe myPojoWoe = new MyPojoWoe();
+        Woe woe = new Woe();
+        woe.setAADHAR_NO("");
+        woe.setADDRESS(homeaddress);
+        woe.setAGE(patientYear);
+        woe.setAGE_TYPE(ageType);
+        woe.setALERT_MESSAGE(lab_alert_pass_toApi);
+        woe.setAMOUNT_COLLECTED(getCollectedAmt);
+        woe.setAMOUNT_DUE("");
+        woe.setAPP_ID(versionNameTopass);
+        woe.setADDITIONAL1("CPL");
+        woe.setBCT_ID(btechID);
+        woe.setBRAND(brandName);
+        woe.setCAMP_ID(campID);
+        woe.setCONT_PERSON("");
+        woe.setCONTACT_NO(getFinalPhoneNumberToPost);
+        if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
+            woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
+        } else {
+            woe.setCUSTOMER_ID("");
+        }
                /* if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())){
                     woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
                 }else{
                     woe.setEMAIL_ID(getFinalEmailIdToPost);
                 }*/
 
-                woe.setEMAIL_ID("" + EMAIL_ID);
-                woe.setDELIVERY_MODE(2);
-                woe.setENTERED_BY(user);
-                woe.setGENDER(patientGender);
-                woe.setLAB_ADDRESS(labAddress);
-                woe.setLAB_ID(labID);
-                woe.setLAB_NAME(labName);
-                woe.setLEAD_ID("");
-                woe.setMAIN_SOURCE(user);
-                woe.setORDER_NO("");
-                woe.setOS("unknown");
-                woe.setPATIENT_NAME(patientName);
-                woe.setPINCODE(getPincode);
-                woe.setPRODUCT(passProducts);
-                woe.setPurpose("mobile application");
-                woe.setREF_DR_ID(refeID);
-                woe.setREF_DR_NAME(referenceBy);
-                woe.setREMARKS("MOBILE");
-                woe.setSPECIMEN_COLLECTION_TIME(outputDateStr + " " + GlobalClass.cutString + ".000");
-                woe.setSPECIMEN_SOURCE("");
-                woe.setSR_NO(pass_to_api);
-                woe.setSTATUS("N");
-                woe.setSUB_SOURCE_CODE(user);
-                woe.setTOTAL_AMOUNT(getAmount);
-                woe.setTYPE(typeName);
-                woe.setWATER_SOURCE("");
-                woe.setWO_MODE("CLISO APP");
-                woe.setWO_STAGE(3);
-                woe.setULCcode("");
+        woe.setEMAIL_ID("" + EMAIL_ID);
+        woe.setDELIVERY_MODE(2);
+        woe.setENTERED_BY(user);
+        woe.setGENDER(patientGender);
+        woe.setLAB_ADDRESS(labAddress);
+        woe.setLAB_ID(labID);
+        woe.setLAB_NAME(labName);
+        woe.setLEAD_ID("");
+        woe.setMAIN_SOURCE(user);
+        woe.setORDER_NO("");
+        woe.setOS("unknown");
+        woe.setPATIENT_NAME(patientName);
+        woe.setPINCODE(getPincode);
+        woe.setPRODUCT(passProducts);
+        woe.setPurpose("mobile application");
+        woe.setREF_DR_ID(refeID);
+        woe.setREF_DR_NAME(referenceBy);
+        woe.setREMARKS("MOBILE");
+        woe.setSPECIMEN_COLLECTION_TIME(outputDateStr + " " + GlobalClass.cutString + ".000");
+        woe.setSPECIMEN_SOURCE("");
+        woe.setSR_NO(pass_to_api);
+        woe.setSTATUS("N");
+        woe.setSUB_SOURCE_CODE(user);
+        woe.setTOTAL_AMOUNT(getAmount);
+        woe.setTYPE(typeName);
+        woe.setWATER_SOURCE("");
+        woe.setWO_MODE("CLISO APP");
+        woe.setWO_STAGE(3);
+        woe.setULCcode("");
 
-                myPojoWoe.setWoe(woe);
+        myPojoWoe.setWoe(woe);
 
-                barcodelists = new ArrayList<>();
-                getBarcodeArrList = new ArrayList<>();
+        barcodelists = new ArrayList<>();
+        getBarcodeArrList = new ArrayList<>();
 
-                for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
-                    barcodelist = new BarcodelistModel();
-                    barcodelist.setSAMPLE_TYPE(FinalBarcodeDetailsList.get(i).getSpecimen_type());
-                    barcodelist.setBARCODE(FinalBarcodeDetailsList.get(i).getBarcode());
-                    getBarcodeArrList.add(FinalBarcodeDetailsList.get(i).getBarcode());
-                    barcodelist.setTESTS(FinalBarcodeDetailsList.get(i).getProducts());
-                    barcodelists.add(barcodelist);
-                }
-                myPojoWoe.setBarcodelistModel(barcodelists);
-                myPojoWoe.setWoe_type("WOE");
-                myPojoWoe.setApi_key(api_key);
+        for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+            barcodelist = new BarcodelistModel();
+            barcodelist.setSAMPLE_TYPE(FinalBarcodeDetailsList.get(i).getSpecimen_type());
+            barcodelist.setBARCODE(FinalBarcodeDetailsList.get(i).getBarcode());
+            getBarcodeArrList.add(FinalBarcodeDetailsList.get(i).getBarcode());
+            barcodelist.setTESTS(FinalBarcodeDetailsList.get(i).getProducts());
+            barcodelists.add(barcodelist);
+        }
+        myPojoWoe.setBarcodelistModel(barcodelists);
+        myPojoWoe.setWoe_type("WOE");
+        myPojoWoe.setApi_key(api_key);
 
-                if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs_Activity.this) || Global.isoffline) {
-                    Gson trfgson1 = new GsonBuilder().create();
-                    String trfjson1 = trfgson1.toJson(trflist);
-                    myPojoWoe.setTrfjson(trfjson1);
-                    myPojoWoe.setVialimage(vialimg_file);
-                }
+        if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs_Activity.this) || Global.isoffline) {
+            Gson trfgson1 = new GsonBuilder().create();
+            String trfjson1 = trfgson1.toJson(trflist);
+            myPojoWoe.setTrfjson(trfjson1);
+            myPojoWoe.setVialimage(vialimg_file);
+        }
 
 
-                Gson gson = new GsonBuilder().create();
-                String json = gson.toJson(myPojoWoe);
-                JSONObject jsonObj = null;
-                try {
-                    jsonObj = new JSONObject(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(myPojoWoe);
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                if (Global.isoffline) {
-                    StoreWOEoffline(json);
-                } else {
-                    if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs_Activity.this)) {
-                        StoreWOEoffline(json);
-                    } else {
+        if (Global.isoffline) {
+            StoreWOEoffline(json);
+        } else {
+            if (!GlobalClass.isNetworkAvailable(Scan_Barcode_Outlabs_Activity.this)) {
+                StoreWOEoffline(json);
+            } else {
 
-                        if (!flagcallonce) {
-                            flagcallonce = true;
-                            barProgressDialog = new ProgressDialog(Scan_Barcode_Outlabs_Activity.this);
-                            barProgressDialog.setTitle("Kindly wait ...");
-                            barProgressDialog.setMessage(ToastFile.processing_request);
-                            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-                            barProgressDialog.setProgress(0);
-                            barProgressDialog.setMax(20);
-                            barProgressDialog.show();
-                            barProgressDialog.setCanceledOnTouchOutside(false);
-                            barProgressDialog.setCancelable(false);
-                            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    try {
-                                        Log.e(TAG, "onResponse: RESPONSE" + response);
-                                        if (barProgressDialog != null && barProgressDialog.isShowing()) {
-                                            barProgressDialog.dismiss();
-                                        }
-                                        Gson woeGson = new Gson();
-                                        WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
-                                        barcode_patient_id = woeResponseModel.getBarcode_patient_id();
-                                        Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
-                                        message = woeResponseModel.getMessage();
-                                        if (woeResponseModel != null) {
-                                            if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
-
-                                                Log.e(TAG, "onResponse message --->: " + message);
-                                                //                                                if (trflist.size() > 0)
-                                                new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                if (!flagcallonce) {
+                    flagcallonce = true;
+                    barProgressDialog = new ProgressDialog(Scan_Barcode_Outlabs_Activity.this);
+                    barProgressDialog.setTitle("Kindly wait ...");
+                    barProgressDialog.setMessage(ToastFile.processing_request);
+                    barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                    barProgressDialog.setProgress(0);
+                    barProgressDialog.setMax(20);
+                    barProgressDialog.show();
+                    barProgressDialog.setCanceledOnTouchOutside(false);
+                    barProgressDialog.setCancelable(false);
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                Log.e(TAG, "onResponse: RESPONSE" + response);
+                                if (barProgressDialog != null && barProgressDialog.isShowing()) {
+                                    barProgressDialog.dismiss();
+                                }
+                                Gson woeGson = new Gson();
+                                WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
+                                barcode_patient_id = woeResponseModel.getBarcode_patient_id();
+                                Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
+                                message = woeResponseModel.getMessage();
+                                if (woeResponseModel != null) {
+                                    if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
+                                        GlobalClass.transID = "";
+                                        Log.e(TAG, "onResponse message --->: " + message);
+                                        //                                                if (trflist.size() > 0)
+                                        new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
 //                                                else {
 //                                                    getUploadFileResponse();
 //                                                }
-                                            } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
-                                                GlobalClass.redirectToLogin(Scan_Barcode_Outlabs_Activity.this);
-                                            } else {
-                                                flagcallonce = false;
-                                                TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                            }
-                                        } else {
-                                            flagcallonce = false;
-                                            TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }, new com.android.volley.Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                    flagcallonce = false;
-                                    if (error != null) {
+                                    } else if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase(caps_invalidApikey)) {
+                                        GlobalClass.redirectToLogin(Scan_Barcode_Outlabs_Activity.this);
                                     } else {
-                                        System.out.println(error);
+                                        flagcallonce = false;
+                                        TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     }
+                                } else {
+                                    flagcallonce = false;
+                                    TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
-                            });
-                            GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
-                            POstQue.add(jsonObjectRequest1);
-                            Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
-                            Log.e(TAG, "saveandClose: json" + jsonObj);
-                        } else {
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            flagcallonce = false;
+                            if (error != null) {
+                            } else {
+                                System.out.println(error);
+                            }
+                        }
+                    });
+                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+                    POstQue.add(jsonObjectRequest1);
+                    Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
+                    Log.e(TAG, "saveandClose: json" + jsonObj);
+                } else {
 //                            if (trflist.size() > 0)
-                            new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                    new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
 //                            else {
 //                                getUploadFileResponse();
 //                            }
-                        }
-                    }
                 }
-
             }
-        } else {
-            GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
         }
     }
 
@@ -1152,5 +1193,13 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         specimenttype1 = specimenttype;
         position1 = position;
         scanIntegrator.initiateScan();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!GlobalClass.isNull(GlobalClass.transID)) {
+            WOE();
+        }
     }
 }

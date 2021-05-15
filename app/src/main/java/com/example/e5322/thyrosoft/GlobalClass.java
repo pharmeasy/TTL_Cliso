@@ -101,6 +101,7 @@ import com.example.e5322.thyrosoft.Summary_MainModel.Barcodelist;
 import com.example.e5322.thyrosoft.Summary_MainModel.Summary_model;
 import com.example.e5322.thyrosoft.TestListModel.Tests;
 import com.example.e5322.thyrosoft.startscreen.SplashScreen;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -196,8 +197,6 @@ public class GlobalClass {
     public static String getAllPhoneNumber, getEmailAddre, getYesterdaysDate;
     public static String branditem, saveMobileNUmber, typeItem, subSourceCodeItem, srNo_item, mobile_number, email_id, id_value, globalNameAadhar, globalAgeAadhar, globalGenderAadhar, responseVariable, setSR_NO;
     public static String getDate, setWindUpCount, getscannedData;
-    public static String getPhoneofTTlDPS, getEmailofTTlDPS;
-    //Selected test for WOE adapter lisy
     public static ArrayList<String> selctedTestNames = new ArrayList<>();
     public static ArrayList<String> selctedTestNamesILS = new ArrayList<>();
     public static ArrayList<String> windupBarcodeList = new ArrayList<>();
@@ -250,6 +249,7 @@ public class GlobalClass {
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<BarcodeResponseModel.BarcodeDTO> barcodeArrayList = new ArrayList<>();
+    public static String transID="";
     private static Dialog dialog;
     private static String stringofconvertedTime;
     private final Context context;
@@ -394,6 +394,20 @@ public class GlobalClass {
         StringBuilder random = new StringBuilder();
         Random rnd = new Random();
         while (random.length() < 6) { // length of the random string.
+            int index = (int) (rnd.nextFloat() * alphanumeric.length());
+            random.append(alphanumeric.charAt(index));
+        }
+        String generatedstr = random.toString();
+        return generatedstr;
+    }
+
+
+
+    public static String generateRandomOrderID() {
+        String alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder random = new StringBuilder();
+        Random rnd = new Random();
+        while (random.length() < 15) { // length of the random string.
             int index = (int) (rnd.nextFloat() * alphanumeric.length());
             random.append(alphanumeric.charAt(index));
         }
@@ -1394,16 +1408,6 @@ public class GlobalClass {
         String imeiNo = "";
         try {
             TelephonyManager telephonyManager = (TelephonyManager) activity.getSystemService(TELEPHONY_SERVICE);
-            if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return "";
-            }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 imeiNo = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
             } else {
@@ -1708,5 +1712,29 @@ public class GlobalClass {
             returnFlag = obj != null && !isNull(obj.getBpmsg()) ? obj.getBpmsg() : MessageConstants.ABSURD_VALUE;
         }
         return returnFlag;
+    }
+
+    public static void cropImageActivity(Activity activity, int flag) {
+        if (flag == 1) {
+            ImagePicker.Companion.with(activity).crop(3f, 2f).start();
+        } else if (flag == 0) {
+            ImagePicker.Companion.with(activity).crop(3f, 2f).cameraOnly().start();
+        }
+        else if(flag == 2)
+        {
+            ImagePicker.Companion.with(activity).crop(3f, 2f).galleryOnly().start();
+        }
+    }
+
+    public static void cropImageFragment(Fragment fragment, int flag) {
+        if (flag == 1) {
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).start();
+        } else if (flag == 0) {
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).cameraOnly().start();
+        }
+        else if(flag == 2)
+        {
+            ImagePicker.Companion.with(fragment).crop(3f, 2f).galleryOnly().start();
+        }
     }
 }

@@ -32,6 +32,7 @@ import com.example.e5322.thyrosoft.Models.LeadRespModel;
 import com.example.e5322.thyrosoft.Models.OTPCreditMISRequestModel;
 import com.example.e5322.thyrosoft.Models.PaitientDataResponseModel;
 import com.example.e5322.thyrosoft.Models.PaitientdataRequestModel;
+import com.example.e5322.thyrosoft.Models.PayUReqModel;
 import com.example.e5322.thyrosoft.Models.PostValidateRequest;
 import com.example.e5322.thyrosoft.Models.PostVideoTime_module;
 import com.example.e5322.thyrosoft.Models.ResponseModels.GetBroadcastsResponseModel;
@@ -43,7 +44,14 @@ import com.example.e5322.thyrosoft.Models.ScanBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.ScansummaryModel;
 import com.example.e5322.thyrosoft.Models.ServiceModel;
 import com.example.e5322.thyrosoft.Models.SlotModel;
+import com.example.e5322.thyrosoft.Models.StartPayTmRespModel;
+import com.example.e5322.thyrosoft.Models.StartPayURespModel;
+import com.example.e5322.thyrosoft.Models.StartPaytmReqModel;
 import com.example.e5322.thyrosoft.Models.ValidateOTPmodel;
+import com.example.e5322.thyrosoft.Models.VerifyPayTMReqModel;
+import com.example.e5322.thyrosoft.Models.VerifyPayTMRespModel;
+import com.example.e5322.thyrosoft.Models.VerifyPayURespModel;
+import com.example.e5322.thyrosoft.Models.VerifyPayUreqModel;
 import com.example.e5322.thyrosoft.Models.VerifyotpModel;
 import com.example.e5322.thyrosoft.Models.VerifyotpRequest;
 import com.example.e5322.thyrosoft.Models.VideoLangaugesResponseModel;
@@ -145,6 +153,19 @@ public interface APIInteface {
 
     @POST("Common.svc/GetPOCTWOEPatientImagedetails")
     Call<PatientResponseModel> getResponse(@Body PatientDetailRequestModel patientDetailRequestModel);
+
+    @POST("techsoapi/api/PayThyrocare/StartTransaction")
+    Call<StartPayTmRespModel> startPaytmTrans(@Body StartPaytmReqModel startPaytmReqModel);
+
+    @POST("techsoapi/api/PayThyrocare/StartTransaction")
+    Call<StartPayURespModel> startPayUTrans(@Body PayUReqModel payUReqModel);
+
+    @POST("techsoapi/api/PayThyrocare/RecheckResponse")
+    Call<VerifyPayTMRespModel> VerifyPayTM(@Body VerifyPayTMReqModel verifyPayTMReqModel);
+
+
+    @POST("techsoapi/api/PayThyrocare/RecheckResponse")
+    Call<VerifyPayURespModel> VerifyPayU(@Body VerifyPayUreqModel verifyPayUreqModel);
 
     @POST("Mapping")
     Call<FirebaseModel> pushtoken(@Body Firebasepost firebasepost);

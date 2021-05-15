@@ -101,6 +101,8 @@ public class BundleConstants {
     public static TextView tv_prepostanalytics_count;
     public static boolean addremvflag =false ;
 
+    public static final String PAYMENT_STATUS = "PaymentStatus";
+
     public static int loadSize = 20;
     public static final String B_TECH_NAME = "bTechName"; //TODO NEHA
     public static final String FROM_DATE = "fromdate"; //TODO NEHA

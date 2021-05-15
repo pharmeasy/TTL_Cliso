@@ -12,6 +12,7 @@ import com.example.e5322.thyrosoft.Models.CoVerifyMobReq;
 import com.example.e5322.thyrosoft.Models.CovidAccessReq;
 import com.example.e5322.thyrosoft.Models.CovidAccessResponseModel;
 import com.example.e5322.thyrosoft.Models.CovidMIS_req;
+import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_req;
 import com.example.e5322.thyrosoft.Models.Covid_validateotp_res;
 import com.example.e5322.thyrosoft.Models.Covidmis_response;
@@ -61,7 +62,7 @@ public interface PostAPIInteface {
     Call<Hospital_model> GetWOEHospital(@Body Hospital_req hospital_req);
 
     @POST("CovidRates")
-    Call<Covidratemodel> displayrates();
+    Call<Covidratemodel> displayrates(@Body CovidRateReqModel covidRateReqModel);
 
     @POST("COMMON.svc/CertificateDetails")
     Call<CertificateResponseModel> getCertificates(@Body CertificateRequestModel certificateRequestModel);

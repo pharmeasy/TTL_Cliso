@@ -96,7 +96,7 @@ import static com.example.e5322.thyrosoft.API.Constants.NHF;
 public class ManagingTabsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public static String getdate;
-    private static FragmentManager fragmentManager;
+
     public SharedPreferences sharedpreferences;
     /*    SharedPreferences.Editor editorUserActivity;
         SharedPreferences shr_user_log;*/
@@ -122,13 +122,10 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
     TextView txt_toltime, txt_ctime;
     RelativeLayout rel_time;
     long milliseconds, minutes, seconds;
-    Handler handler;
     ImageView ic_play, ic_pause;
-    Runnable runnable;
     boolean iscomplete = false;
     boolean isVideosee = false;
     Activity activity;
-
     SharedPreferences pref_versioncheck;
     private int a = 0;
     private String TAG = getClass().getSimpleName();
@@ -245,7 +242,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         BottomNavigationViewHelper.removeShiftMode(bottomNavigationView);
         bottomNavigationView.setItemIconTintList(null);
 
-
         if (GlobalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -261,7 +257,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                 }
             }
         }
-
 
         pref_versioncheck = getSharedPreferences("pref_versioncheck", MODE_PRIVATE);
         if (pref_versioncheck != null) {
@@ -298,8 +293,6 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         if (appPreferenceManager != null && appPreferenceManager.getCovidAccessResponseModel() != null) {
             covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
-        } else {
-            logout();
         }
 
 

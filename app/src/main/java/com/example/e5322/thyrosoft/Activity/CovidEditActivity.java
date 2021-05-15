@@ -44,6 +44,7 @@ import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
@@ -112,8 +113,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             name = bundle.getString("name");
             UniqueId = bundle.getString("UniqueId");
             amtcoll = bundle.getString("amtcoll");
-           ppebarcode = bundle.getString("ppebarcode");
-           // Log.e(TAG, "uniqueid-->" + UniqueId);
+            ppebarcode = bundle.getString("ppebarcode");
+            // Log.e(TAG, "uniqueid-->" + UniqueId);
         }
 
         initview();
@@ -430,7 +431,9 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             istrf = false;
                             isvial = true;
                             isother = false;
-                            selectImage();
+//                            selectImage();
+                            GlobalClass.cropImageActivity(CovidEditActivity.this, 1);
+
                         }
                     } else {
                         requestPermission();
@@ -525,7 +528,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo","Choose from Library",
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle("Add Photo!");
@@ -766,6 +769,30 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                     lin_other_images.setVisibility(View.VISIBLE);
                 }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            try {
+                if (isvial) {
+                    String imageurl = ImagePicker.Companion.getFile(data).toString();
+                    vial_file = ImagePicker.Companion.getFile(data);
+                    String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vial_file;
+                    vial_file = new File(destFile);
+                    GlobalClass.copyFile(new File(imageurl), vial_file);
+                    lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilevial.setVisibility(View.GONE);
+                    if (vial_file != null) {
+                        isvial = false;
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                    }
+                    viallist.add(imageurl);
+                    buttonval();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1031,7 +1058,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         maindialog.getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 
         final ViewPager viewPager = (ViewPager) maindialog.findViewById(R.id.viewPager);
-        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(activity, imagelist,0);
+        final ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(activity, imagelist, 0);
         viewPager.setAdapter(viewPagerAdapter);
         viewPagerAdapter.notifyDataSetChanged();
 

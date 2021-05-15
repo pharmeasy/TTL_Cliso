@@ -54,6 +54,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.WOEPaymentActivity;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcodeOutlabs;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
@@ -78,6 +79,7 @@ import com.example.e5322.thyrosoft.ScannedBarcodeDetails;
 import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -226,6 +228,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     RecyclerView recy_brand;
     private String getBrand_name;
     private String EMAIL_ID;
+    EditText edt_confirm_amt;
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -316,11 +319,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         lin_preview = findViewById(R.id.lin_preview);
 
         ll_letterhead = findViewById(R.id.ll_letterhead);
+        edt_confirm_amt = findViewById(R.id.edt_confirm_amt);
 
         btn_choosefile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
+//                openCamera();
+                GlobalClass.cropImageActivity(Scan_Barcode_Outlabs.this, 0);
+
                 isvial = true;
             }
         });
@@ -331,7 +337,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             }
         });
 
-
+        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         Gson gson = new Gson();
         final String json = appSharedPrefs.getString("MyObject", "");
@@ -609,6 +615,10 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.colAmt, Toast.LENGTH_SHORT).show();
                             } else if (Integer.parseInt(getWrittenAmt) < b2b_rate) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, getResources().getString(R.string.amtcollval) + " " + b2b_rate, Toast.LENGTH_SHORT).show();
+                            } else if (GlobalClass.isNull(edt_confirm_amt.getText().toString())) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
+                            } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getWrittenAmt)) {
+                                Toast.makeText(Scan_Barcode_Outlabs.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
                             } else if (vialimg_file == null || !vialimg_file.exists()) {
                                 Toast.makeText(Scan_Barcode_Outlabs.this, ToastFile.vialimage, Toast.LENGTH_SHORT).show();
                             } else if (ll_letterhead.getVisibility() == View.VISIBLE) {
@@ -1002,6 +1012,26 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
+            }else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+                try {
+                    if (isvial) {
+                        imagelist.clear();
+//                        vialbitmap = camera.getCameraBitmap();
+                        //                    String imageurlvial = camera.getCameraBitmapPath();
+                        String imageurlvial = ImagePicker.Companion.getFile(data).toString();
+                        vialimg_file = new File(imageurlvial);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(new File(imageurlvial), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1336,7 +1366,24 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     }
 
     private void doFinalWoe() {
-        preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
+            Intent intent = new Intent(Scan_Barcode_Outlabs.this, WOEPaymentActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("name", preferences.getString("name", ""));
+            intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+            intent.putExtra("amount", b2b_rate);
+            intent.putExtra("email", EMAIL_ID);
+            startActivity(intent);
+
+
+        } else {
+            WOE();
+        }
+
+    }
+
+    private void WOE() {
+
 
         patientName = preferences.getString("name", "");
         patientYear = preferences.getString("age", "");
@@ -1530,7 +1577,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                     barProgressDialog.show();
                     barProgressDialog.setCanceledOnTouchOutside(false);
                     barProgressDialog.setCancelable(false);
-                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(Request.Method.POST, Api.finalWorkOrderEntry, jsonObj, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
@@ -1547,6 +1594,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
                                         // if (trflist.size() > 0)
                                         Global.OTPVERIFIED = false;
+                                        GlobalClass.transID = "";
                                         new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
                                         /*else {
                                             getUploadFileResponse();
@@ -1565,7 +1613,7 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                    }, new com.android.volley.Response.ErrorListener() {
+                    }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             flagcallonce = false;
@@ -1588,8 +1636,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 }
             }
         }
-
-
     }
 
     private void StoreWOEOffline(String json) {
@@ -1632,6 +1678,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             camera = null;
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!GlobalClass.isNull(GlobalClass.transID)) {
+            WOE();
         }
     }
 }

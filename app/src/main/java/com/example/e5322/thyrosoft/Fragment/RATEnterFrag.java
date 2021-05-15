@@ -1441,8 +1441,8 @@ public class RATEnterFrag extends Fragment {
 
                                 if (aadharlist.size() == 1) {
                                     lin_adhar_images.setVisibility(View.VISIBLE);
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (aadharlist.size() == 2) {
@@ -1452,8 +1452,8 @@ public class RATEnterFrag extends Fragment {
                                     txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileadhar.setVisibility(View.VISIBLE);
                                     txt_adharfileupload.setVisibility(View.GONE);
 
@@ -1485,8 +1485,8 @@ public class RATEnterFrag extends Fragment {
                                 }
 
                                 if (trflist.size() == 1) {
-                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
                                     lin_trf_images.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setText("1 " + getResources().getString(R.string.imgupload));
@@ -1499,8 +1499,8 @@ public class RATEnterFrag extends Fragment {
                                     txt_trffileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_trffileupload.setPaintFlags(txt_trffileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_trf.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_trf.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofiletrf.setVisibility(View.VISIBLE);
                                     txt_trffileupload.setVisibility(View.GONE);
                                 }
@@ -1532,22 +1532,22 @@ public class RATEnterFrag extends Fragment {
                                 }
 
                                 if (otherlist.size() == 1) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else if (otherlist.size() == 2) {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     lin_other_images.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
                                     txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                                 } else {
-                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidbtn));
-                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.maroon));
+                                    btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.btn_bg));
+                                    btn_choosefile_other.setTextColor(getResources().getColor(R.color.white));
                                     txt_nofileother.setVisibility(View.VISIBLE);
                                     txt_otherfileupload.setVisibility(View.GONE);
                                 }

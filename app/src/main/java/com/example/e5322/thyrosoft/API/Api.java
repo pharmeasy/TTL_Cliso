@@ -6,7 +6,7 @@ package com.example.e5322.thyrosoft.API;
 
 public class Api {
     //TODO live
-    public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
+/*    public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
     public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";
     public static String URL_with_http = "https://b2capi.thyrocare.com/API/B2B/";
     public static String SGC = "https://b2capi.thyrocare.com/API/BDN/api/";
@@ -19,11 +19,11 @@ public class Api {
     public static String IMAGE_UPLOAD = "https://b2capi.thyrocare.com/API/";
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
-    public static String Velso= "https://velso.thyrocare.cloud/api/";
+    public static String Velso = "https://velso.thyrocare.cloud/api/";
+    public static String Techso = "http://techsostng.thyrocare.cloud/";*/
 //
-
     //TODO staging
-/*  public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String Cloud_base = "http://stagingclisoapi.thyrocare.com/v1/";
     public static String SGC = "https://www.thyrocare.com/API_BETA/BDN/api/";
@@ -35,8 +35,9 @@ public class Api {
     public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
     public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
-    public static String Velso= "https://velso.thyrocare.cloud/api/";
-    public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";*/
+    public static String Velso = "https://velso.thyrocare.cloud/api/";
+    public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
+    public static String Techso = " http://techsostng.thyrocare.cloud/";
 
 
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
@@ -66,9 +67,9 @@ public class Api {
     public static String multiple_windup = LIVEAPI + "WO.svc/postwindup";
     public static String sendGeoLocation = LIVEAPI + "COMMON.svc/litelog";
     public static String getData = LIVEAPI + "wo.svc/";
-    public static String getAllTests = Cloud_base ;
+    public static String getAllTests = Cloud_base;
     public static String addrecheckWOE = LIVEAPI + "WO.svc/postaddrecheck";
-    public static String scanBarcodeWithValidation = Cloud_base ;
+    public static String scanBarcodeWithValidation = Cloud_base;
     public static String finalWorkOrderEntry = Cloud_base + "postworkorder";
     public static String finalWorkOrderEntryNew = Cloud_base + "postworkorder";
     public static String uploadDocument = SGC + "UploadDocument/PostRegister";
@@ -92,7 +93,7 @@ public class Api {
     public static String getPartientDetailsList = LIVEAPI + "WO.svc/";//validate OTP url
     public static String windupApi = LIVEAPI + "WO.svc/";//lead id
     public static String addTestsUsingBarcode = Cloud_base;//lead id
-    public static String checkBarcode = Cloud_base ;//lead id
+    public static String checkBarcode = Cloud_base;//lead id
     public static String getBCTforSummary = LIVEAPI + "WO.svc/";//lead id
     public static String checkVersion = Cloud_base + "getVersion";//lead id
     public static String checkNumber = Cloud_base + "ValidateMob/";//lead id

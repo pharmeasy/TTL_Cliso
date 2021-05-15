@@ -54,6 +54,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Activity.WOEPaymentActivity;
 import com.example.e5322.thyrosoft.Adapter.AdapterBarcode_New;
 import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
@@ -79,6 +80,7 @@ import com.example.e5322.thyrosoft.SqliteDb.DatabaseHelper;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.example.e5322.thyrosoft.WOE.ProductWithBarcode;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -125,7 +127,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     public String getFinalPhoneNumberToPost;
     SharedPreferences prefs, profile_pref;
     String setLocation = null;
-    EditText enterAmt, edt_bsValue, edt_bpValue;
+    EditText enterAmt, edt_confirm_amt, edt_bsValue, edt_bpValue;
     TextView title;
     Button next;
     ImageView back;
@@ -264,6 +266,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         cpl_rdo = (RadioButton) findViewById(R.id.cpl_rdo);
         rpl_rdo = (RadioButton) findViewById(R.id.rpl_rdo);
         enterAmt = (EditText) findViewById(R.id.enterAmt);
+        edt_confirm_amt = (EditText) findViewById(R.id.edt_confirm_amt);
         next = (Button) findViewById(R.id.next);
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
@@ -298,7 +301,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         btn_choosefile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCamera();
+//                openCamera();
+                GlobalClass.cropImageActivity(Scan_Barcode_ILS_New.this, 0);
+
                 isvial = true;
             }
         });
@@ -829,6 +834,10 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Please enter collected amount", Toast.LENGTH_SHORT).show();
                     } else if (Integer.parseInt(getCollectedAmt) > Integer.parseInt(totalamt)) {
                         Toast.makeText(Scan_Barcode_ILS_New.this, "Collected amount should not be greater than total amount", Toast.LENGTH_SHORT).show();
+                    } else if (GlobalClass.isNull(edt_confirm_amt.getText().toString())) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Confirm Amount Collected", Toast.LENGTH_SHORT).show();
+                    } else if (!edt_confirm_amt.getText().toString().equalsIgnoreCase(getCollectedAmt)) {
+                        Toast.makeText(Scan_Barcode_ILS_New.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
                     } else if (!checkBSBPValidation()) {
 
                     } else if (!checkRateVal()) {
@@ -1102,6 +1111,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     public void checklistData() {
+
         if (connectionDetector.isConnectingToInternet()) {
             if (trflist.size() > 0) {
                 for (int i = 0; i < trflist.size(); i++) {
@@ -1123,9 +1133,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         } else {
             GlobalClass.showCustomToast(mActivity, ToastFile.intConnection, 1);
         }
-
-
     }
+
 
     public void callTRFAdapter(ArrayList<TRFModel> trflist) {
         if (trflist.size() > 0) {
@@ -1158,329 +1167,379 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     barcodeExistsFlag = true;
                 }
             }
-
-
             if (barcodeExistsFlag) {
                 barcodeExistsFlag = false;
                 Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.scan_barcode_all, Toast.LENGTH_SHORT).show();
             } else {
-                if (getRemark == null) {
-                    getRemark = "Manual";
-                }
+                if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
+                    Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("name", nameString);
+                    intent.putExtra("mobile", kycinfo);
+                    intent.putExtra("amount", b2b_rate);
+                    intent.putExtra("email", EMAIL_ID);
+                    startActivity(intent);
+                /*    final String[] paymentItems = new String[]{"Cash", "Digital"};
+                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                    builder.setTitle("Choose payment mode")
+                            .setItems(paymentItems, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (paymentItems[which].equals("Cash")) {
 
-                savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-                nameString = savepatientDetails.getString("name", "");
-                getFinalAge = savepatientDetails.getString("age", "");
-                saveGenderId = savepatientDetails.getString("gender", "");
-                getFinalTime = savepatientDetails.getString("sct", "");
-                getageType = savepatientDetails.getString("ageType", "");
-                getFinalDate = savepatientDetails.getString("date", "");
+                                        androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                                        builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
+                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        WOE();
+                                                    }
+                                                })
+                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                })
+                                                .show();
+                                    } else {
+                                        Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.putExtra("name", nameString);
+                                        intent.putExtra("mobile", kycinfo);
+                                        intent.putExtra("amount", b2b_rate);
+                                        intent.putExtra("email", EMAIL_ID);
+                                        startActivity(intent);
 
+                                    }
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).show();*/
 
-                if (GlobalClass.isNull(getBrand_name)) {
-                    getBrand_name = savepatientDetails.getString("WOEbrand", "");
-                }
-
-                getPincode = savepatientDetails.getString("pincode", "");
-                if (!GlobalClass.isNull(getFinalDate)) {
-                    sampleCollectionDate = getFinalDate;
-                }
-
-                DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
-                DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = null;
-
-                if (!GlobalClass.isNull(sampleCollectionDate)) {
-                    try {
-                        date = inputFormat.parse(sampleCollectionDate);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    outputDateStr = outputFormat.format(date);
-
-                    //sampleCollectionTime
-                    Log.e(TAG, "fetchData: " + outputDateStr);
-                }
-
-                if (!GlobalClass.isNull(getageType)) {
-                    if (getageType.equalsIgnoreCase("Years")) {
-                        ageType = "Y";
-                    } else if (getageType.equalsIgnoreCase("Months")) {
-                        ageType = "M";
-                    } else if (getageType.equalsIgnoreCase("Days")) {
-                        ageType = "D";
-                    }
-                    //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
-                }
-
-                try {
-                    String getFulltime = sampleCollectionDate + " " + getFinalTime;
-                    GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
-                    //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-                MyPojoWoe myPojoWoe = new MyPojoWoe();
-                Woe woe = new Woe();
-                woe.setAADHAR_NO("");
-                woe.setADDRESS(patientAddress);
-                woe.setAGE(getFinalAge);
-                woe.setAGE_TYPE(ageType);
-                woe.setALERT_MESSAGE(lab_alert_pass_toApi);
-                woe.setAMOUNT_COLLECTED(getCollectedAmt);
-                woe.setAMOUNT_DUE(null);
-                woe.setADDITIONAL1(setLocation);
-                woe.setAPP_ID(version);
-                woe.setBCT_ID(btechIDToPass);
-
-                woe.setBRAND(getBrand_name);
-
-                woe.setCAMP_ID(getcampIDtoPass);
-                woe.setCONT_PERSON("");
-                woe.setCONTACT_NO(kycinfo);
-                if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
-                    woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
                 } else {
-                    woe.setCUSTOMER_ID("");
+                    WOE();
                 }
+
+            }
+        } else {
+            Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.allw_scan, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void WOE() {
+        if (getRemark == null) {
+            getRemark = "Manual";
+        }
+
+        savepatientDetails = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        nameString = savepatientDetails.getString("name", "");
+        getFinalAge = savepatientDetails.getString("age", "");
+        saveGenderId = savepatientDetails.getString("gender", "");
+        getFinalTime = savepatientDetails.getString("sct", "");
+        getageType = savepatientDetails.getString("ageType", "");
+        getFinalDate = savepatientDetails.getString("date", "");
+
+
+        if (GlobalClass.isNull(getBrand_name)) {
+            getBrand_name = savepatientDetails.getString("WOEbrand", "");
+        }
+
+        getPincode = savepatientDetails.getString("pincode", "");
+        if (!GlobalClass.isNull(getFinalDate)) {
+            sampleCollectionDate = getFinalDate;
+        }
+
+        DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = null;
+
+        if (!GlobalClass.isNull(sampleCollectionDate)) {
+            try {
+                date = inputFormat.parse(sampleCollectionDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            outputDateStr = outputFormat.format(date);
+
+            //sampleCollectionTime
+            Log.e(TAG, "fetchData: " + outputDateStr);
+        }
+
+        if (!GlobalClass.isNull(getageType)) {
+            if (getageType.equalsIgnoreCase("Years")) {
+                ageType = "Y";
+            } else if (getageType.equalsIgnoreCase("Months")) {
+                ageType = "M";
+            } else if (getageType.equalsIgnoreCase("Days")) {
+                ageType = "D";
+            }
+            //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
+        }
+
+        try {
+            String getFulltime = sampleCollectionDate + " " + getFinalTime;
+            GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        MyPojoWoe myPojoWoe = new MyPojoWoe();
+        Woe woe = new Woe();
+        woe.setAADHAR_NO("");
+        woe.setADDRESS(patientAddress);
+        woe.setAGE(getFinalAge);
+        woe.setAGE_TYPE(ageType);
+        woe.setALERT_MESSAGE(lab_alert_pass_toApi);
+        woe.setAMOUNT_COLLECTED(getCollectedAmt);
+        woe.setAMOUNT_DUE(null);
+        woe.setADDITIONAL1(setLocation);
+        woe.setAPP_ID(version);
+        woe.setBCT_ID(btechIDToPass);
+
+        woe.setBRAND(getBrand_name);
+
+        woe.setCAMP_ID(getcampIDtoPass);
+        woe.setCONT_PERSON("");
+        woe.setCONTACT_NO(kycinfo);
+        if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getPatientId())) {
+            woe.setCUSTOMER_ID(Constants.selectedPatientData.getPatientId());  // TODO If user has selected patient details from Dropdownlist
+        } else {
+            woe.setCUSTOMER_ID("");
+        }
                /* if (Constants.selectedPatientData != null && !GlobalClass.isNull(Constants.selectedPatientData.getEmail())) {
                     woe.setEMAIL_ID(Constants.selectedPatientData.getEmail());   // TODO If user has selected patient details from Dropdownlist
                 } else {
                     woe.setEMAIL_ID("");
                 }*/
-                woe.setEMAIL_ID(EMAIL_ID);
-                woe.setDELIVERY_MODE(2);
-                woe.setENTERED_BY(user);
-                woe.setGENDER(saveGenderId);
-                woe.setLAB_ADDRESS(labAddress);
-                woe.setLAB_ID(labIDaddress);
-                woe.setLAB_NAME(labname);
-                woe.setLEAD_ID("");
-                woe.setMAIN_SOURCE(user);
-                woe.setORDER_NO("");
-                woe.setOS("unknown");
-                woe.setPATIENT_NAME(nameString);
-                woe.setPINCODE(getPincode);
-                woe.setPRODUCT(testsCodesPassingToProduct);
-                woe.setPurpose("mobile application");
-                woe.setREF_DR_ID(referenceID);
-                woe.setREF_DR_NAME(referrredBy);
-                woe.setREMARKS("MOBILE - " + getRemark);
-                woe.setSPECIMEN_COLLECTION_TIME(outputDateStr + " " + GlobalClass.cutString + ".000");
-                woe.setSPECIMEN_SOURCE("");
-                woe.setSR_NO(pass_to_api);
-                woe.setSTATUS("N");
-                woe.setSUB_SOURCE_CODE(user);
-                woe.setTOTAL_AMOUNT(totalamt);
-                woe.setTYPE(typename);
-                woe.setWATER_SOURCE("");
-                woe.setWO_MODE("CLISO APP");
-                woe.setWO_STAGE(3);
-                woe.setULCcode("");
+        woe.setEMAIL_ID(EMAIL_ID);
+        woe.setDELIVERY_MODE(2);
+        woe.setENTERED_BY(user);
+        woe.setGENDER(saveGenderId);
+        woe.setLAB_ADDRESS(labAddress);
+        woe.setLAB_ID(labIDaddress);
+        woe.setLAB_NAME(labname);
+        woe.setLEAD_ID("");
+        woe.setMAIN_SOURCE(user);
+        woe.setORDER_NO("");
+        woe.setOS("unknown");
+        woe.setPATIENT_NAME(nameString);
+        woe.setPINCODE(getPincode);
+        woe.setPRODUCT(testsCodesPassingToProduct);
+        woe.setPurpose("mobile application");
+        woe.setREF_DR_ID(referenceID);
+        woe.setREF_DR_NAME(referrredBy);
+        woe.setREMARKS("MOBILE - " + getRemark);
+        woe.setSPECIMEN_COLLECTION_TIME(outputDateStr + " " + GlobalClass.cutString + ".000");
+        woe.setSPECIMEN_SOURCE("");
+        woe.setSR_NO(pass_to_api);
+        woe.setSTATUS("N");
+        woe.setSUB_SOURCE_CODE(user);
+        woe.setTOTAL_AMOUNT(totalamt);
+        woe.setTYPE(typename);
+        woe.setWATER_SOURCE("");
+        woe.setWO_MODE("CLISO APP");
+        woe.setWO_STAGE(3);
+        woe.setULCcode("");
+        woe.setPaymentId("" + GlobalClass.transID);
+        woe.setBS_VALUE(edt_bsValue.isShown() ? edt_bsValue.getText().toString().trim() : "");
+        woe.setBP_VALUE(edt_bpValue.isShown() ? edt_bpValue.getText().toString().trim() : "");
+        myPojoWoe.setWoe(woe);
 
-                woe.setBS_VALUE(edt_bsValue.isShown() ? edt_bsValue.getText().toString().trim() : "");
-                woe.setBP_VALUE(edt_bpValue.isShown() ? edt_bpValue.getText().toString().trim() : "");
-                myPojoWoe.setWoe(woe);
+        barcodelists = new ArrayList<>();
+        getBarcodeArrList = new ArrayList<>();
 
-                barcodelists = new ArrayList<>();
-                getBarcodeArrList = new ArrayList<>();
+        for (int p = 0; p < GlobalClass.finalspecimenttypewiselist.size(); p++) {
+            barcodelist = new BarcodelistModel();
+            barcodelist.setSAMPLE_TYPE(GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type().equalsIgnoreCase("(F)FLUORIDE") ? "FLUORIDE" : GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type());
+            barcodelist.setBARCODE(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
+            getBarcodeArrList.add(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
+            barcodelist.setTESTS(GlobalClass.finalspecimenttypewiselist.get(p).getProducts());
+            barcodelists.add(barcodelist);
+        }
 
-                for (int p = 0; p < GlobalClass.finalspecimenttypewiselist.size(); p++) {
-                    barcodelist = new BarcodelistModel();
-                    barcodelist.setSAMPLE_TYPE(GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type().equalsIgnoreCase("(F)FLUORIDE") ? "FLUORIDE" : GlobalClass.finalspecimenttypewiselist.get(p).getSpecimen_type());
-                    barcodelist.setBARCODE(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
-                    getBarcodeArrList.add(GlobalClass.finalspecimenttypewiselist.get(p).getBarcode());
-                    barcodelist.setTESTS(GlobalClass.finalspecimenttypewiselist.get(p).getProducts());
-                    barcodelists.add(barcodelist);
-                }
+        myPojoWoe.setBarcodelistModel(barcodelists);
+        myPojoWoe.setWoe_type("WOE");
+        myPojoWoe.setApi_key(api_key);//api_key
 
-                myPojoWoe.setBarcodelistModel(barcodelists);
-                myPojoWoe.setWoe_type("WOE");
-                myPojoWoe.setApi_key(api_key);//api_key
+        if (Global.isoffline || !GlobalClass.isNetworkAvailable(Scan_Barcode_ILS_New.this)) {
+            Gson trfgson = new GsonBuilder().create();
+            String trfjson = trfgson.toJson(trflist);
+            myPojoWoe.setTrfjson(trfjson);
 
-                if (Global.isoffline || !GlobalClass.isNetworkAvailable(Scan_Barcode_ILS_New.this)) {
-                    Gson trfgson = new GsonBuilder().create();
-                    String trfjson = trfgson.toJson(trflist);
-                    myPojoWoe.setTrfjson(trfjson);
+            myPojoWoe.setVialimage(vialimg_file);
+        }
 
-                    myPojoWoe.setVialimage(vialimg_file);
-                }
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(myPojoWoe);
+        JSONObject jsonObj = null;
 
-                Gson gson = new GsonBuilder().create();
-                String json = gson.toJson(myPojoWoe);
-                JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(json);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                try {
-                    jsonObj = new JSONObject(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        if (Global.isoffline) {
+            StoreOfflineWOE(json);
+        } else {
+            if (!GlobalClass.isNetworkAvailable(Scan_Barcode_ILS_New.this)) {
+                StoreOfflineWOE(json);
+            } else {
+                if (!flagcallonce) {
+                    flagcallonce = true;
+                    /*barProgressDialog.show();*/
 
-                if (Global.isoffline) {
-                    StoreOfflineWOE(json);
-                } else {
-                    if (!GlobalClass.isNetworkAvailable(Scan_Barcode_ILS_New.this)) {
-                        StoreOfflineWOE(json);
-                    } else {
-                        if (!flagcallonce) {
-                            flagcallonce = true;
-                            /*barProgressDialog.show();*/
+                    barProgressDialog = GlobalClass.ShowprogressDialog(Scan_Barcode_ILS_New.this);
+                    //POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
+                    if (POstQue == null) {
+                        POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
+                    }
+                    JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
 
-                            barProgressDialog = GlobalClass.ShowprogressDialog(Scan_Barcode_ILS_New.this);
-                            //POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
-                            if (POstQue == null) {
-                                POstQue = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
-                            }
-                            JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.finalWorkOrderEntryNew, jsonObj, new com.android.volley.Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-                                    try {
+                                GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
 
-                                        GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
+                                Log.e(TAG, "onResponse: RESPONSE" + response);
 
-                                        Log.e(TAG, "onResponse: RESPONSE" + response);
+                                Gson woeGson = new Gson();
+                                WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
 
-                                        Gson woeGson = new Gson();
-                                        WOEResponseModel woeResponseModel = woeGson.fromJson(String.valueOf(response), WOEResponseModel.class);
+                                if (woeResponseModel != null) {
+                                    barcode_patient_id = woeResponseModel.getBarcode_patient_id();
 
-                                        if (woeResponseModel != null) {
-                                            barcode_patient_id = woeResponseModel.getBarcode_patient_id();
+                                    Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
 
-                                            Log.e(TAG, "BARCODE PATIENT ID --->" + barcode_patient_id);
+                                    message = woeResponseModel.getMessage();
+                                    status = woeResponseModel.getStatus();
+                                    barcode_id = woeResponseModel.getBarcode_id();
 
-                                            message = woeResponseModel.getMessage();
-                                            status = woeResponseModel.getStatus();
-                                            barcode_id = woeResponseModel.getBarcode_id();
+                                    if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
+                                        SharedPreferences.Editor editor = getSharedPreferences("showSelectedTest", 0).edit();
+                                        editor.remove("testsSElected");
+                                        editor.remove("getProductNames");
+                                        editor.apply();
+                                        Global.OTPVERIFIED = false;
+                                        GlobalClass.transID="";
+                                        sendGPSDetails = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
+                                        JSONObject jsonObject = null;
+                                        try {
+                                            GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
+                                            requestModel.setUsername(user);
+                                            requestModel.setIMEI(GlobalClass.getIMEINo(mActivity));
+                                            requestModel.setCity(getCityName);
+                                            requestModel.setState(getStateName);
+                                            requestModel.setCountry(getCountryName);
+                                            requestModel.setLongitude(longitudePassTOAPI);
+                                            requestModel.setLatitude(latitudePassTOAPI);
+                                            requestModel.setDeviceName(GlobalClass.getDeviceName());
 
-                                            if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
-                                                SharedPreferences.Editor editor = getSharedPreferences("showSelectedTest", 0).edit();
-                                                editor.remove("testsSElected");
-                                                editor.remove("getProductNames");
-                                                editor.apply();
-                                                Global.OTPVERIFIED = false;
-                                                sendGPSDetails = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
-                                                JSONObject jsonObject = null;
+                                            Gson geoGson = new Gson();
+                                            String json = geoGson.toJson(requestModel);
+                                            jsonObject = new JSONObject(json);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
                                                 try {
-                                                    GeoLocationRequestModel requestModel = new GeoLocationRequestModel();
-                                                    requestModel.setUsername(user);
-                                                    requestModel.setIMEI(GlobalClass.getIMEINo(mActivity));
-                                                    requestModel.setCity(getCityName);
-                                                    requestModel.setState(getStateName);
-                                                    requestModel.setCountry(getCountryName);
-                                                    requestModel.setLongitude(longitudePassTOAPI);
-                                                    requestModel.setLatitude(latitudePassTOAPI);
-                                                    requestModel.setDeviceName(GlobalClass.getDeviceName());
+                                                    Log.e(TAG, "onResponse: " + response);
+                                                    String finalJson = response.toString();
+                                                    JSONObject parentObjectOtp = new JSONObject(finalJson);
 
-                                                    Gson geoGson = new Gson();
-                                                    String json = geoGson.toJson(requestModel);
-                                                    jsonObject = new JSONObject(json);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
-                                                }
-
-                                                JsonObjectRequest jsonObjectRequest1 = new JsonObjectRequest(com.android.volley.Request.Method.POST, Api.sendGeoLocation, jsonObject, new com.android.volley.Response.Listener<JSONObject>() {
-                                                    @Override
-                                                    public void onResponse(JSONObject response) {
-                                                        try {
-                                                            Log.e(TAG, "onResponse: " + response);
-                                                            String finalJson = response.toString();
-                                                            JSONObject parentObjectOtp = new JSONObject(finalJson);
-
-                                                            String Response = parentObjectOtp.getString("Response");
-                                                            String resId = parentObjectOtp.getString("resId");
-                                                            if (resId.equals("RES0000")) {
-                                                                //after sending the woe succrssfully
-                                                            } else {
-                                                                TastyToast.makeText(Scan_Barcode_ILS_New.this, "" + Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                            }
-                                                            //   if (trflist.size() > 0)
-                                                            new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
+                                                    String Response = parentObjectOtp.getString("Response");
+                                                    String resId = parentObjectOtp.getString("resId");
+                                                    if (resId.equals("RES0000")) {
+                                                        //after sending the woe succrssfully
+                                                    } else {
+                                                        TastyToast.makeText(Scan_Barcode_ILS_New.this, "" + Response, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    }
+                                                    //   if (trflist.size() > 0)
+                                                    new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
 //                                                            else {
 //                                                                getUploadFileResponse();
 //                                                            }
-                                                        } catch (JSONException e) {
-                                                            TastyToast.makeText(Scan_Barcode_ILS_New.this, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                }, new com.android.volley.Response.ErrorListener() {
-                                                    @Override
-                                                    public void onErrorResponse(VolleyError error) {
-                                                        if (error != null) {
-                                                        } else {
-                                                            System.out.println(error);
-                                                        }
-                                                    }
-                                                });
-                                                sendGPSDetails.add(jsonObjectRequest1);
-                                                Log.e(TAG, "onResponse: url" + jsonObjectRequest1);
-                                                Log.e(TAG, "onResponse: json" + jsonObject);
-                                            } else if (!GlobalClass.isNull(message) && message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
-                                                flagcallonce = false;
-                                                TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                                final AlertDialog alertDialog = new AlertDialog.Builder(Scan_Barcode_ILS_New.this).create();
-                                                alertDialog.setTitle("Update Ledger !");
-                                                alertDialog.setMessage(ToastFile.update_ledger);
-                                                alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        Intent i = new Intent(Scan_Barcode_ILS_New.this, Payment_Activity.class);
-                                                        i.putExtra("COMEFROM", "Scan_Barcode_ILS_New");
-                                                        startActivity(i);
-                                                    }
-                                                });
-                                                alertDialog.show();
-                                            } else if (!GlobalClass.isNull(status) && status.equalsIgnoreCase(caps_invalidApikey)) {
-                                                GlobalClass.redirectToLogin(Scan_Barcode_ILS_New.this);
-                                            } else {
-                                                flagcallonce = false;
-                                                TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                } catch (JSONException e) {
+                                                    TastyToast.makeText(Scan_Barcode_ILS_New.this, "", TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                                    e.printStackTrace();
+                                                }
                                             }
-                                        } else {
-                                            flagcallonce = false;
-                                            TastyToast.makeText(Scan_Barcode_ILS_New.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
-                                        }
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }, new com.android.volley.Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-                                /*if (Scan_Barcode_ILS_New.this instanceof Activity) {
-                                    if (!((Activity) Scan_Barcode_ILS_New.this).isFinishing())
-                                        barProgressDialog.dismiss();
-                                }*/
-                                    GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
-                                    flagcallonce = false;
-                                    if (error != null) {
+                                        }, new com.android.volley.Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                if (error != null) {
+                                                } else {
+                                                    System.out.println(error);
+                                                }
+                                            }
+                                        });
+                                        sendGPSDetails.add(jsonObjectRequest1);
+                                        Log.e(TAG, "onResponse: url" + jsonObjectRequest1);
+                                        Log.e(TAG, "onResponse: json" + jsonObject);
+                                    } else if (!GlobalClass.isNull(message) && message.equals("YOUR CREDIT LIMIT IS NOT SUFFICIENT TO COMPLETE WORK ORDER")) {
+                                        flagcallonce = false;
+                                        TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+                                        final AlertDialog alertDialog = new AlertDialog.Builder(Scan_Barcode_ILS_New.this).create();
+                                        alertDialog.setTitle("Update Ledger !");
+                                        alertDialog.setMessage(ToastFile.update_ledger);
+                                        alertDialog.setButton("Yes", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                Intent i = new Intent(Scan_Barcode_ILS_New.this, Payment_Activity.class);
+                                                i.putExtra("COMEFROM", "Scan_Barcode_ILS_New");
+                                                startActivity(i);
+                                            }
+                                        });
+                                        alertDialog.show();
+                                    } else if (!GlobalClass.isNull(status) && status.equalsIgnoreCase(caps_invalidApikey)) {
+                                        GlobalClass.redirectToLogin(Scan_Barcode_ILS_New.this);
                                     } else {
-                                        System.out.println(error);
+                                        flagcallonce = false;
+                                        TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                     }
+                                } else {
+                                    flagcallonce = false;
+                                    TastyToast.makeText(Scan_Barcode_ILS_New.this, ToastFile.something_went_wrong, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
                                 }
-                            });
-                            jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
-                                    150000,
-                                    3,
-                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                            POstQue.add(jsonObjectRequest1);
-                            Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
-                            Log.e(TAG, "fetchData: JSON" + jsonObj);
-                        } else {
-//                            if (trflist.size() > 0)
-                            new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
-//                            else {
-//                                getUploadFileResponse();
-//                            }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
+                    }, new com.android.volley.Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        /*if (Scan_Barcode_ILS_New.this instanceof Activity) {
+                            if (!((Activity) Scan_Barcode_ILS_New.this).isFinishing())
+                                barProgressDialog.dismiss();
+                        }*/
+                            GlobalClass.hideProgress(Scan_Barcode_ILS_New.this, barProgressDialog);
+                            flagcallonce = false;
+                            if (error != null) {
+                            } else {
+                                System.out.println(error);
+                            }
+                        }
+                    });
+                    jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                            150000,
+                            3,
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                    POstQue.add(jsonObjectRequest1);
+                    Log.e(TAG, "fetchData: URL" + jsonObjectRequest1);
+                    Log.e(TAG, "fetchData: JSON" + jsonObj);
+                } else {
+                    new AsyncTaskPost_uploadfile(Scan_Barcode_ILS_New.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();
                 }
-
-
             }
-        } else {
-            Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.allw_scan, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1602,6 +1661,26 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     storeTRFImage(trf_img);
                 } catch (IOException e) {
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+                try {
+                    if (isvial) {
+                        imagelist.clear();
+                        // vialbitmap = camera.getCameraBitmap();
+                        //   String imageurlvial = camera.getCameraBitmapPath();
+//                        vialimg_file = new File(imageurlvial);
+                        vialimg_file = ImagePicker.Companion.getFile(data);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + vialimg_file;
+                        vialimg_file = new File(destFile);
+                        GlobalClass.copyFile(ImagePicker.Companion.getFile(data), vialimg_file);
+                        lin_preview.setVisibility(View.VISIBLE);
+                        txt_fileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist.add(vialimg_file.toString());
+                        isvial = false;
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -1859,4 +1938,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!GlobalClass.isNull(GlobalClass.transID)) {
+            WOE();
+        }
+    }
 }
