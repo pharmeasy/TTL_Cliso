@@ -56,7 +56,6 @@
                 android:layout_margin="@dimen/_5sdp"
                 android:orientation="vertical">
 
-
                 <LinearLayout
                     android:id="@+id/ll_purpose"
                     android:layout_width="match_parent"
@@ -65,7 +64,6 @@
                     android:background="@drawable/corner_curve_maroon"
                     android:orientation="horizontal">
 
-
                     <Spinner
                         android:id="@+id/spr_leadpurpose"
                         android:layout_width="match_parent"
@@ -73,16 +71,14 @@
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/_5sdp"
                         android:background="@color/transparent" />
-
                 </LinearLayout>
 
-
                 <TextView
+                    android:id="@+id/tv_spr_purpose"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:layout_margin="@dimen/_5sdp"
-                    android:id="@+id/tv_spr_purpose"/>
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/edt_name"
@@ -93,10 +89,10 @@
                     android:digits="@string/alphabets"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:textSize="@dimen/value"
                     android:hint="NAME*"
                     android:maxLength="40"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_mobile"
@@ -107,16 +103,15 @@
                     android:drawableLeft="@drawable/mobile"
                     android:drawablePadding="@dimen/_2sdp"
                     android:hint="MOBILE*"
-                    android:textSize="@dimen/value"
                     android:inputType="number"
                     android:maxLength="10"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/value" />
 
                 <EditText
                     android:id="@+id/edt_mail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/custom_border_edittext_blue"
                     android:digits="@string/email_id"
@@ -124,32 +119,32 @@
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="Email"
                     android:maxLength="60"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/edt_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:visibility="gone"
                     android:background="@drawable/custom_border_edittext_blue"
                     android:digits="@string/addressvalidation"
                     android:drawableLeft="@drawable/address"
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="Address"
                     android:maxLength="200"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/edt_pincode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:visibility="gone"
                     android:background="@drawable/custom_border_edittext_blue"
                     android:drawableLeft="@drawable/pincode24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:hint="Pincode"
+                    android:hint="Pincode*"
                     android:inputType="number"
                     android:maxLength="6"
                     android:padding="@dimen/_5sdp" />
@@ -163,15 +158,14 @@
                     android:padding="@dimen/_5sdp"
                     android:visibility="gone" />
 
-
                 <LinearLayout
                     android:id="@+id/ll_upload"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
                     android:layout_marginTop="@dimen/dp_5"
                     android:orientation="horizontal"
-                    android:padding="@dimen/_5sdp">
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone">
 
                     <RelativeLayout
                         android:id="@+id/rel_upload_img"
@@ -207,7 +201,6 @@
                             android:layout_marginRight="@dimen/dp_3"
                             android:visibility="invisible"
                             app:srcCompat="@drawable/ic_tick_green" />
-
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -244,43 +237,40 @@
                             android:layout_marginRight="@dimen/dp_3"
                             android:visibility="invisible"
                             app:srcCompat="@drawable/ic_tick_green" />
-
                     </RelativeLayout>
-
                 </LinearLayout>
 
                 <EditText
                     android:id="@+id/edt_remarks"
                     android:layout_width="match_parent"
-                    android:visibility="visible"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
                     android:background="@drawable/corner_curve_maroon"
                     android:digits="@string/addressvalidation"
                     android:drawableLeft="@drawable/remark24"
                     android:drawablePadding="@dimen/_5sdp"
-                    android:textSize="@dimen/value"
                     android:hint="REMARKS"
                     android:maxLength="200"
-                    android:padding="@dimen/_5sdp" />
-
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/value"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/ll_channel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/_5sdp"
-                    android:visibility="gone"
                     android:orientation="horizontal"
+                    android:visibility="gone"
                     android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/custom_border_edittext_blue"
-                        android:orientation="horizontal"
                         android:layout_marginRight="@dimen/dp_3"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:background="@drawable/custom_border_edittext_blue"
+                        android:orientation="horizontal">
 
                         <Spinner
                             android:id="@+id/spr_channel"
@@ -289,18 +279,14 @@
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/_5sdp"
                             android:background="@color/transparent" />
-
-
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:background="@drawable/custom_border_edittext_blue"
-                        android:orientation="horizontal"
-                        android:layout_weight="1">
-
+                        android:orientation="horizontal">
 
                         <Spinner
                             android:id="@+id/spr_from"
@@ -309,12 +295,8 @@
                             android:layout_gravity="center"
                             android:layout_margin="@dimen/_5sdp"
                             android:background="@color/transparent" />
-
                     </LinearLayout>
-
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <Button
@@ -326,8 +308,8 @@
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
                 android:text="Submit"
-                android:textSize="@dimen/label"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/label" />
 
             <TextView
                 android:id="@+id/tv_reset"
@@ -336,17 +318,12 @@
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/dp_10"
                 android:layout_marginBottom="@dimen/dp_5"
+                android:padding="5dp"
                 android:text="Reset"
                 android:textAllCaps="true"
-                android:padding="5dp"
-                android:textSize="@dimen/value"
                 android:textColor="@android:color/holo_red_dark"
+                android:textSize="@dimen/value"
                 android:textStyle="bold" />
-
         </LinearLayout>
-
-
     </ScrollView>
-
-
 </LinearLayout>

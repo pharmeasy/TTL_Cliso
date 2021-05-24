@@ -18,6 +18,7 @@ import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
 import com.example.e5322.thyrosoft.Models.GetScanReq;
 import com.example.e5322.thyrosoft.Models.GetScanResponse;
+import com.example.e5322.thyrosoft.Models.GetTestCodeResponseModel;
 import com.example.e5322.thyrosoft.Models.GetVideoResponse_Model;
 import com.example.e5322.thyrosoft.Models.GetVideopost_model;
 import com.example.e5322.thyrosoft.Models.HealthTipsApiResponseModel;
@@ -119,6 +120,11 @@ public interface APIInteface {
 
     @GET("MasterData/GetCenterMaster/{user}")
     Call<List<CenterList_Model>> getcenterList(@Header("Authorization") String header, @Path("user") String user);
+
+
+    @GET("GetTestCode/{user}")
+    Call<GetTestCodeResponseModel> getTestCode(@Path("user") String user);
+
 
 
     @GET("MasterData/GetSlots/{date}/{centerId}")

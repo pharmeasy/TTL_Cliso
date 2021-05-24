@@ -154,7 +154,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     public static ArrayList<BCT_LIST> getBtechList;
     public static CAMP_LIST[] camp_lists;
     AlertDialog alertDialog;
-    DatePickerDialog datePickerDialog;
     boolean sizeflag = false;
     View view, viewMain;
     Date dCompare;
@@ -365,6 +364,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     EditText edt_email;
     RadioButton by_sendsms;
     LinearLayout ll_email;
+    List<String> hourSin, minuteSpin;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -389,162 +389,35 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-        mContext = getContext();
-        cd = new ConnectionDetector(getActivity());
         viewMain = (View) inflater.inflate(R.layout.fragment_start__new__woe, container, false);
-        appPreferenceManager = new AppPreferenceManager(getActivity());
+        init();
+        SetCurrenttime();
+        listner();
 
-        covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+        return viewMain;
+    }
 
-        name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);
-        img_restPatientData = (ImageView) viewMain.findViewById(R.id.img_restPatientData);
-        age = (EditText) viewMain.findViewById(R.id.age);
-        id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
-        barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
-        pincode_edt = (EditText) viewMain.findViewById(R.id.pincode_edt);
-        kyc_format = (EditText) viewMain.findViewById(R.id.kyc_format);
-        home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
-        patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
-        vial_number = (EditText) viewMain.findViewById(R.id.vial_number);
-        ll_email = (LinearLayout) viewMain.findViewById(R.id.ll_email);
+    private void SetCurrenttime() {
+        try {
+            Calendar rightNow = Calendar.getInstance();
+            int currentHourIn24Format = rightNow.get(Calendar.HOUR_OF_DAY);
+            int currentminIn24Format = rightNow.get(Calendar.MINUTE);
+            String value = GlobalClass.getvalue(currentminIn24Format);
+            timehr.setSelection(currentHourIn24Format + 1);
+            for (int i = 0; i < minuteSpin.size(); i++) {
+                if (value.equalsIgnoreCase(minuteSpin.get(i))) {
+                    timesecond.setSelection(i);
+                    break;
+                }
+            }
 
-        et_mobno = viewMain.findViewById(R.id.et_mobno);
-        et_otp = viewMain.findViewById(R.id.et_otp);
-
-
-        chk_otp = viewMain.findViewById(R.id.chk_otp);
-        lin_ckotp = viewMain.findViewById(R.id.lin_ckotp);
-
-        male = (ImageView) viewMain.findViewById(R.id.male);
-        male_red = (ImageView) viewMain.findViewById(R.id.male_red);
-        female = (ImageView) viewMain.findViewById(R.id.female);
-        female_red = (ImageView) viewMain.findViewById(R.id.female_red);
-        next_btn = (Button) viewMain.findViewById(R.id.next_btn_patient);
-        edt_email = (EditText) viewMain.findViewById(R.id.edt_email);
-
-        btn_snd_otp = viewMain.findViewById(R.id.btn_sendotp);
-        btn_snd_otp.setOnClickListener(this);
-        tv_help = viewMain.findViewById(R.id.tv_help);
-        tv_help.setText(Html.fromHtml("<u> Help</u>"));
-        btn_verifyotp = viewMain.findViewById(R.id.btn_verifyotp);
-        btn_verifyotp.setOnClickListener(this);
-
-        spinyr = (Spinner) viewMain.findViewById(R.id.spinyr);
-        scrollView2 = (ScrollView) viewMain.findViewById(R.id.scrollView2);
-        dateShow = (TextView) viewMain.findViewById(R.id.date);
-        leadbarcodename = (TextView) viewMain.findViewById(R.id.leadbarcodename);
-        leadidbarcodetest = (TextView) viewMain.findViewById(R.id.leadidbarcodetest);
-        leadbarcoderefdr = (TextView) viewMain.findViewById(R.id.leadbarcoderefdr);
-        leadbarcodesct = (TextView) viewMain.findViewById(R.id.leadbarcodesct);
-        leadname = (TextView) viewMain.findViewById(R.id.leadname);
-        leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
-        leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
-        add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
-        tv_verifiedmob = (TextView) viewMain.findViewById(R.id.tv_verifiedmob);
-        GlobalClass.setflagToRefreshData = false;
-        timehr = (Spinner) viewMain.findViewById(R.id.timehr);
-        timesecond = (Spinner) viewMain.findViewById(R.id.timesecond);
-        selectTypeSpinner = (Spinner) viewMain.findViewById(R.id.selectTypeSpinner);
-        brand_spinner = (Spinner) viewMain.findViewById(R.id.brand_spinner);
-        camp_spinner_olc = (Spinner) viewMain.findViewById(R.id.camp_spinner_olc);
-        btechname = (Spinner) viewMain.findViewById(R.id.btech_spinner);
-        timeampm = (Spinner) viewMain.findViewById(R.id.timeampm);
-        samplecollectionponit = (TextView) viewMain.findViewById(R.id.samplecollectionponit);
-        referedbyText = (AutoCompleteTextView) viewMain.findViewById(R.id.referedby);//
-        radio = (TextView) viewMain.findViewById(R.id.radio);
-        tv_timer = viewMain.findViewById(R.id.tv_timer);
-        refby_linear = (LinearLayout) viewMain.findViewById(R.id.refby_linear);
-        ll_miscallotp = (LinearLayout) viewMain.findViewById(R.id.ll_miscallotp);
-        camp_layout_woe = (LinearLayout) viewMain.findViewById(R.id.camp_layout_woe);
-        btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
-        labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
-        home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
-        pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
-
-        btn_generate = viewMain.findViewById(R.id.btn_generate);
-        btn_generate.setText(getResources().getString(R.string.enterccc));
-        edt_missed_mobile = viewMain.findViewById(R.id.edt_missed_mobile);
-        btn_resend = viewMain.findViewById(R.id.btn_resend);
-        tv_timer_new = viewMain.findViewById(R.id.tv_timer);
-        edt_verifycc = viewMain.findViewById(R.id.edt_verifycc);
-        tv_resetno = viewMain.findViewById(R.id.tv_resetno);
-        rel_mobno = viewMain.findViewById(R.id.rel_mobno);
-        rel_verify_mobile = viewMain.findViewById(R.id.rel_verify_mobile);
-        radiogrp2 = viewMain.findViewById(R.id.radiogrp2);
-
-        by_sendsms = viewMain.findViewById(R.id.by_sendsms);
-        radiogrp2.check(by_sendsms.getId());
-
-        lin_generate_verify = viewMain.findViewById(R.id.lin_generate_verify);
-        tv_mobileno = viewMain.findViewById(R.id.tv_mobileno);
-        lin_by_missed = viewMain.findViewById(R.id.lin_missed_verify);
-        by_missed = viewMain.findViewById(R.id.by_missed);
-        by_generate = viewMain.findViewById(R.id.by_generate);
-        btn_verify = viewMain.findViewById(R.id.btn_verify);
-        mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
-        Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
-        ll_mobileno_otp = viewMain.findViewById(R.id.ll_mobileno_otp);
-        lin_otp = viewMain.findViewById(R.id.lin_otp);
-
-        enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
-        leadbarcodelayout = (LinearLayout) viewMain.findViewById(R.id.leadbarcodelayout);
-        ref_check_linear = (LinearLayout) viewMain.findViewById(R.id.ref_check_linear);
-        namePatients = (LinearLayout) viewMain.findViewById(R.id.namePatients);
-        AGE_layout = (LinearLayout) viewMain.findViewById(R.id.AGE_layout);
-        time_layout = (LinearLayout) viewMain.findViewById(R.id.time_layout);
-        id_layout = (LinearLayout) viewMain.findViewById(R.id.id_layout);
-        barcode_layout = (LinearLayout) viewMain.findViewById(R.id.barcode_layout);
-        leadlayout = (LinearLayout) viewMain.findViewById(R.id.leadlayout);
-        unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
-        enetered = (TextView) viewMain.findViewById(R.id.enetered);
-        enter = (TextView) viewMain.findViewById(R.id.enter);
-        tv_mob_note = (TextView) viewMain.findViewById(R.id.tv_mob_note);
-        enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
-        enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
-        uncheck_ref = (ImageView) viewMain.findViewById(R.id.uncheck_ref);
-        ref_check = (ImageView) viewMain.findViewById(R.id.ref_check);
-        btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
-
-        getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
-
-        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        usercode = prefs.getString("USER_CODE", "");
-        api_key = prefs.getString("API_KEY", "");
-        source_type = prefs.getString("SOURCE_TYPE", "");
-
-        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
-        enter_arrow_enter.setVisibility(View.VISIBLE);
-
-
-        if ( Global.isKYC){
-            by_sendsms.setVisibility(View.VISIBLE);
-            by_generate.setVisibility(View.GONE);
-            by_missed.setVisibility(View.GONE);
-        }else {
-            by_missed.setVisibility(View.VISIBLE);
-            by_generate.setVisibility(View.VISIBLE);
-            by_sendsms.setVisibility(View.VISIBLE);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
 
 
-        // Inflate the layout for this fragment
-        Date d = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        String showDate = sdf.format(d);
-        dateShow.setText(showDate);
-        myCalendar = Calendar.getInstance();
-        myCalendar.add(Calendar.DAY_OF_MONTH, -2);
-        myCalendar.setTime(d);
-        minDate = myCalendar.getTime().getTime();
-        myDb = new DatabaseHelper(mContext);
-
-        name.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40), new InputFilter.AllCaps()});
-        //   name.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
+    private void listner() {
 
         btn_generate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -623,29 +496,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
-//        patientAddress.setFilters(new InputFilter[]{new InputFilter.AllCaps()});
-
-        if (GlobalClass.flagToSendfromnavigation == true) {
-            GlobalClass.flagToSendfromnavigation = false;
-            enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
-            enter_arrow_enter.setVisibility(View.GONE);
-            enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
-            enter_arrow_entered.setVisibility(View.VISIBLE);
-            scrollView2.setVisibility(View.GONE);
-        } else {
-            scrollView2.setVisibility(View.VISIBLE);
-        }
-
-        GlobalClass.isAutoTimeSelected(getActivity());
-
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            Log.e("SDK_INT", "" + Build.VERSION.SDK_INT);
-            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow_woe, 0);
-            samplecollectionponit.setCompoundDrawablePadding(5);
-        } else {
-            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
-        }
-
         viewMain.findViewById(R.id.unchecked_entered_ll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -663,32 +513,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 scrollView2.setVisibility(View.VISIBLE);
             }
         });
-
-        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-        saveDetails.remove("name");
-        saveDetails.remove("age");
-        saveDetails.remove("gender");
-        saveDetails.remove("sct");
-        saveDetails.remove("date");
-        saveDetails.remove("ageType");
-        saveDetails.remove("labname");
-        saveDetails.remove("labAddress");
-        saveDetails.remove("patientAddress");
-        saveDetails.remove("refBy");
-        saveDetails.remove("refId");
-        saveDetails.remove("labIDaddress");
-        saveDetails.remove("btechIDToPass");
-        saveDetails.remove("btechNameToPass");
-        saveDetails.remove("getcampIDtoPass");
-        saveDetails.remove("kycinfo");
-        saveDetails.remove("woetype");
-        saveDetails.remove("WOEbrand");
-        saveDetails.remove("SR_NO");
-        saveDetails.remove("EMAIL_ID");
-        saveDetails.commit();
-
-        getCurrentDateandTime = new Date();
-
         btn_clear_data.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -874,13 +698,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
         });
 
-
-        ref_check.setVisibility(View.GONE);
-        uncheck_ref.setVisibility(View.VISIBLE);
-        referenceBy = null;
-        checkifChecked = null;
-        refby_linear.setVisibility(View.VISIBLE);
-
         ref_check_linear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -911,12 +728,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 add_ref.setVisibility(View.GONE);
             }
         });
-
-        if (GlobalClass.setScp_Constant != null) {
-            samplecollectionponit.setText(GlobalClass.setScp_Constant);
-        } else {
-            samplecollectionponit.setText("");
-        }
 
         pincode_edt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1029,6 +840,389 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             }
 
         });
+        name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+
+                    if (enteredString.length() > 0) {
+                        name.setText(enteredString.substring(1));
+                    } else {
+                        name.setText("");
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        patientAddress.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String enteredString = s.toString();
+                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
+                    Toast.makeText(getActivity(), ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        patientAddress.setText(enteredString.substring(1));
+                    } else {
+                        patientAddress.setText("");
+                    }
+                }
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+
+        male.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (genderId == false) {
+                    genderId = true;
+                    saveGenderId = "M";
+                    male_red.setVisibility(View.VISIBLE);
+                    female.setVisibility(View.VISIBLE);
+                    female_red.setVisibility(View.GONE);
+                    male.setVisibility(View.GONE);
+                } else if (genderId == true) {
+                    genderId = false;
+                    saveGenderId = "M";
+                    male_red.setVisibility(View.VISIBLE);
+                    female.setVisibility(View.VISIBLE);
+                    female_red.setVisibility(View.GONE);
+                    male.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+        female.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (genderId == false) {
+                    genderId = true;
+                    saveGenderId = "F";
+                    female_red.setVisibility(View.VISIBLE);
+                    male.setVisibility(View.VISIBLE);
+                    male_red.setVisibility(View.GONE);
+                    female.setVisibility(View.GONE);
+
+                } else if (genderId == true) {
+                    genderId = false;
+                    saveGenderId = "F";
+                    female_red.setVisibility(View.VISIBLE);
+                    male.setVisibility(View.VISIBLE);
+                    male_red.setVisibility(View.GONE);
+                    female.setVisibility(View.GONE);
+
+                }
+
+            }
+        });
+
+
+        age.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    agesinteger = Integer.parseInt(s.toString());
+                } else {
+
+                }
+                String enteredString = s.toString();
+
+                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
+                    Toast.makeText(mContext,
+                            ToastFile.crt_age,
+                            Toast.LENGTH_SHORT).show();
+                    if (enteredString.length() > 0) {
+                        age.setText(enteredString.substring(1));
+                    } else {
+                        age.setText("");
+                    }
+                }
+                if (age.getText().toString().equals("")) {
+
+                } else {
+                    if (agesinteger < 12) {
+                        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.Patientsagespinner,
+                                R.layout.name_age_spinner);
+                        PatientsagespinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinyr.setAdapter(PatientsagespinnerAdapter);
+                    }
+                    if (agesinteger > 12) {
+                        ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyrday,
+                                R.layout.name_age_spinner);
+                        Patientsagespinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinyr.setAdapter(Patientsagespinner);
+                    }
+                    if (agesinteger > 29) {
+                        ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyr,
+                                R.layout.name_age_spinner);
+                        Patientsagesyr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinyr.setAdapter(Patientsagesyr);
+                    }
+                }
+            }
+        });
+
+
+    }
+
+    private void init() {
+        mContext = getContext();
+        cd = new ConnectionDetector(getActivity());
+        appPreferenceManager = new AppPreferenceManager(getActivity());
+
+        covidacc = appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration();
+
+        name = (AutoCompleteTextView) viewMain.findViewById(R.id.name);
+        img_restPatientData = (ImageView) viewMain.findViewById(R.id.img_restPatientData);
+        age = (EditText) viewMain.findViewById(R.id.age);
+        id_for_woe = (EditText) viewMain.findViewById(R.id.id_for_woe);
+        barcode_woe = (EditText) viewMain.findViewById(R.id.barcode_woe);
+        pincode_edt = (EditText) viewMain.findViewById(R.id.pincode_edt);
+        kyc_format = (EditText) viewMain.findViewById(R.id.kyc_format);
+        home_kyc_format = (EditText) viewMain.findViewById(R.id.home_kyc_format);
+        patientAddress = (EditText) viewMain.findViewById(R.id.patientAddress);
+        vial_number = (EditText) viewMain.findViewById(R.id.vial_number);
+        ll_email = (LinearLayout) viewMain.findViewById(R.id.ll_email);
+
+        et_mobno = viewMain.findViewById(R.id.et_mobno);
+        et_otp = viewMain.findViewById(R.id.et_otp);
+
+
+        chk_otp = viewMain.findViewById(R.id.chk_otp);
+        lin_ckotp = viewMain.findViewById(R.id.lin_ckotp);
+
+        male = (ImageView) viewMain.findViewById(R.id.male);
+        male_red = (ImageView) viewMain.findViewById(R.id.male_red);
+        female = (ImageView) viewMain.findViewById(R.id.female);
+        female_red = (ImageView) viewMain.findViewById(R.id.female_red);
+        next_btn = (Button) viewMain.findViewById(R.id.next_btn_patient);
+        edt_email = (EditText) viewMain.findViewById(R.id.edt_email);
+
+        btn_snd_otp = viewMain.findViewById(R.id.btn_sendotp);
+        btn_snd_otp.setOnClickListener(this);
+        tv_help = viewMain.findViewById(R.id.tv_help);
+        tv_help.setText(Html.fromHtml("<u> Help</u>"));
+        btn_verifyotp = viewMain.findViewById(R.id.btn_verifyotp);
+        btn_verifyotp.setOnClickListener(this);
+
+        spinyr = (Spinner) viewMain.findViewById(R.id.spinyr);
+        scrollView2 = (ScrollView) viewMain.findViewById(R.id.scrollView2);
+        dateShow = (TextView) viewMain.findViewById(R.id.date);
+        leadbarcodename = (TextView) viewMain.findViewById(R.id.leadbarcodename);
+        leadidbarcodetest = (TextView) viewMain.findViewById(R.id.leadidbarcodetest);
+        leadbarcoderefdr = (TextView) viewMain.findViewById(R.id.leadbarcoderefdr);
+        leadbarcodesct = (TextView) viewMain.findViewById(R.id.leadbarcodesct);
+        leadname = (TextView) viewMain.findViewById(R.id.leadname);
+        leadidtest = (TextView) viewMain.findViewById(R.id.leadidtest);
+        leadrefdr = (TextView) viewMain.findViewById(R.id.leadrefdr);
+        add_ref = (ImageView) viewMain.findViewById(R.id.add_ref);
+        tv_verifiedmob = (TextView) viewMain.findViewById(R.id.tv_verifiedmob);
+        GlobalClass.setflagToRefreshData = false;
+        timehr = (Spinner) viewMain.findViewById(R.id.timehr);
+        timesecond = (Spinner) viewMain.findViewById(R.id.timesecond);
+        selectTypeSpinner = (Spinner) viewMain.findViewById(R.id.selectTypeSpinner);
+        brand_spinner = (Spinner) viewMain.findViewById(R.id.brand_spinner);
+        camp_spinner_olc = (Spinner) viewMain.findViewById(R.id.camp_spinner_olc);
+        btechname = (Spinner) viewMain.findViewById(R.id.btech_spinner);
+        timeampm = (Spinner) viewMain.findViewById(R.id.timeampm);
+        samplecollectionponit = (TextView) viewMain.findViewById(R.id.samplecollectionponit);
+        referedbyText = (AutoCompleteTextView) viewMain.findViewById(R.id.referedby);//
+        radio = (TextView) viewMain.findViewById(R.id.radio);
+        tv_timer = viewMain.findViewById(R.id.tv_timer);
+        refby_linear = (LinearLayout) viewMain.findViewById(R.id.refby_linear);
+        ll_miscallotp = (LinearLayout) viewMain.findViewById(R.id.ll_miscallotp);
+        camp_layout_woe = (LinearLayout) viewMain.findViewById(R.id.camp_layout_woe);
+        btech_linear_layout = (LinearLayout) viewMain.findViewById(R.id.btech_linear_layout);
+        labname_linear = (LinearLayout) viewMain.findViewById(R.id.labname_linear);
+        home_layout = (LinearLayout) viewMain.findViewById(R.id.home_linear_data);
+        pincode_linear_data = (LinearLayout) viewMain.findViewById(R.id.pincode_linear_data);
+
+        btn_generate = viewMain.findViewById(R.id.btn_generate);
+        btn_generate.setText(getResources().getString(R.string.enterccc));
+        edt_missed_mobile = viewMain.findViewById(R.id.edt_missed_mobile);
+        btn_resend = viewMain.findViewById(R.id.btn_resend);
+        tv_timer_new = viewMain.findViewById(R.id.tv_timer);
+        edt_verifycc = viewMain.findViewById(R.id.edt_verifycc);
+        tv_resetno = viewMain.findViewById(R.id.tv_resetno);
+        rel_mobno = viewMain.findViewById(R.id.rel_mobno);
+        rel_verify_mobile = viewMain.findViewById(R.id.rel_verify_mobile);
+        radiogrp2 = viewMain.findViewById(R.id.radiogrp2);
+
+        by_sendsms = viewMain.findViewById(R.id.by_sendsms);
+        radiogrp2.check(by_sendsms.getId());
+
+        lin_generate_verify = viewMain.findViewById(R.id.lin_generate_verify);
+        tv_mobileno = viewMain.findViewById(R.id.tv_mobileno);
+        lin_by_missed = viewMain.findViewById(R.id.lin_missed_verify);
+        by_missed = viewMain.findViewById(R.id.by_missed);
+        by_generate = viewMain.findViewById(R.id.by_generate);
+        btn_verify = viewMain.findViewById(R.id.btn_verify);
+        mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.mobile_number_kyc);
+        Home_mobile_number_kyc = (LinearLayout) viewMain.findViewById(R.id.Home_mobile_number_kyc);
+        ll_mobileno_otp = viewMain.findViewById(R.id.ll_mobileno_otp);
+        lin_otp = viewMain.findViewById(R.id.lin_otp);
+
+        enter_ll_unselected = (LinearLayout) viewMain.findViewById(R.id.enter_ll_unselected);
+        leadbarcodelayout = (LinearLayout) viewMain.findViewById(R.id.leadbarcodelayout);
+        ref_check_linear = (LinearLayout) viewMain.findViewById(R.id.ref_check_linear);
+        namePatients = (LinearLayout) viewMain.findViewById(R.id.namePatients);
+        AGE_layout = (LinearLayout) viewMain.findViewById(R.id.AGE_layout);
+        time_layout = (LinearLayout) viewMain.findViewById(R.id.time_layout);
+        id_layout = (LinearLayout) viewMain.findViewById(R.id.id_layout);
+        barcode_layout = (LinearLayout) viewMain.findViewById(R.id.barcode_layout);
+        leadlayout = (LinearLayout) viewMain.findViewById(R.id.leadlayout);
+        unchecked_entered_ll = (LinearLayout) viewMain.findViewById(R.id.unchecked_entered_ll);
+        enetered = (TextView) viewMain.findViewById(R.id.enetered);
+        enter = (TextView) viewMain.findViewById(R.id.enter);
+        tv_mob_note = (TextView) viewMain.findViewById(R.id.tv_mob_note);
+        enter_arrow_enter = (ImageView) viewMain.findViewById(R.id.enter_arrow_enter);
+        enter_arrow_entered = (ImageView) viewMain.findViewById(R.id.enter_arrow_entered);
+        uncheck_ref = (ImageView) viewMain.findViewById(R.id.uncheck_ref);
+        ref_check = (ImageView) viewMain.findViewById(R.id.ref_check);
+        btn_clear_data = (Button) viewMain.findViewById(R.id.btn_clear_data);
+
+        getshared = getActivity().getApplicationContext().getSharedPreferences("profile", MODE_PRIVATE);
+
+        prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        usercode = prefs.getString("USER_CODE", "");
+        api_key = prefs.getString("API_KEY", "");
+        source_type = prefs.getString("SOURCE_TYPE", "");
+
+        enter.setBackground(getResources().getDrawable(R.drawable.enter_button));
+        enter_arrow_enter.setVisibility(View.VISIBLE);
+
+
+        if (Global.isKYC) {
+            by_sendsms.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.GONE);
+            by_missed.setVisibility(View.GONE);
+        } else {
+            by_missed.setVisibility(View.VISIBLE);
+            by_generate.setVisibility(View.VISIBLE);
+            by_sendsms.setVisibility(View.VISIBLE);
+        }
+
+
+        // Inflate the layout for this fragment
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        String showDate = sdf.format(d);
+        dateShow.setText(showDate);
+        myCalendar = Calendar.getInstance();
+        myCalendar.add(Calendar.DAY_OF_MONTH, -2);
+        myCalendar.setTime(d);
+        minDate = myCalendar.getTime().getTime();
+        myDb = new DatabaseHelper(mContext);
+
+        name.setFilters(new InputFilter[]{new InputFilter.LengthFilter(40), new InputFilter.AllCaps()});
+
+        if (GlobalClass.flagToSendfromnavigation == true) {
+            GlobalClass.flagToSendfromnavigation = false;
+            enter.setBackgroundColor(getResources().getColor(R.color.lightgray));
+            enter_arrow_enter.setVisibility(View.GONE);
+            enetered.setBackground(getResources().getDrawable(R.drawable.enter_button));
+            enter_arrow_entered.setVisibility(View.VISIBLE);
+            scrollView2.setVisibility(View.GONE);
+        } else {
+            scrollView2.setVisibility(View.VISIBLE);
+        }
+
+        GlobalClass.isAutoTimeSelected(getActivity());
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            Log.e("SDK_INT", "" + Build.VERSION.SDK_INT);
+            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow_woe, 0);
+            samplecollectionponit.setCompoundDrawablePadding(5);
+        } else {
+            samplecollectionponit.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
+        }
+
+        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+        saveDetails.remove("name");
+        saveDetails.remove("age");
+        saveDetails.remove("gender");
+        saveDetails.remove("sct");
+        saveDetails.remove("date");
+        saveDetails.remove("ageType");
+        saveDetails.remove("labname");
+        saveDetails.remove("labAddress");
+        saveDetails.remove("patientAddress");
+        saveDetails.remove("refBy");
+        saveDetails.remove("refId");
+        saveDetails.remove("labIDaddress");
+        saveDetails.remove("btechIDToPass");
+        saveDetails.remove("btechNameToPass");
+        saveDetails.remove("getcampIDtoPass");
+        saveDetails.remove("kycinfo");
+        saveDetails.remove("woetype");
+        saveDetails.remove("WOEbrand");
+        saveDetails.remove("SR_NO");
+        saveDetails.remove("EMAIL_ID");
+        saveDetails.commit();
+
+        getCurrentDateandTime = new Date();
+
+
+        ref_check.setVisibility(View.GONE);
+        uncheck_ref.setVisibility(View.VISIBLE);
+        referenceBy = null;
+        checkifChecked = null;
+        refby_linear.setVisibility(View.VISIBLE);
+
+        if (GlobalClass.setScp_Constant != null) {
+            samplecollectionponit.setText(GlobalClass.setScp_Constant);
+        } else {
+            samplecollectionponit.setText("");
+        }
+
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
         Gson gson = new Gson();
@@ -1315,9 +1509,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             });
         }
 
-        List<String> hourSin = Arrays.asList("HR", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
+        hourSin = Arrays.asList("HR*", "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23");
 
-        List<String> minuteSpin = Arrays.asList("MIN", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
+        minuteSpin = Arrays.asList("MIN*", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
 
         List<String> ampmSpine = Arrays.asList("AM/PM", "AM", "PM");
 
@@ -1380,173 +1574,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
 
 
-        name.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), ToastFile.crt_name, Toast.LENGTH_SHORT).show();
-
-                    if (enteredString.length() > 0) {
-                        name.setText(enteredString.substring(1));
-                    } else {
-                        name.setText("");
-                    }
-
-                }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        patientAddress.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                String enteredString = s.toString();
-                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
-                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
-                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
-                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")) {
-                    Toast.makeText(getActivity(), ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
-                    if (enteredString.length() > 0) {
-                        patientAddress.setText(enteredString.substring(1));
-                    } else {
-                        patientAddress.setText("");
-                    }
-                }
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-
-        male.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (genderId == false) {
-                    genderId = true;
-                    saveGenderId = "M";
-                    male_red.setVisibility(View.VISIBLE);
-                    female.setVisibility(View.VISIBLE);
-                    female_red.setVisibility(View.GONE);
-                    male.setVisibility(View.GONE);
-                } else if (genderId == true) {
-                    genderId = false;
-                    saveGenderId = "M";
-                    male_red.setVisibility(View.VISIBLE);
-                    female.setVisibility(View.VISIBLE);
-                    female_red.setVisibility(View.GONE);
-                    male.setVisibility(View.GONE);
-                }
-
-            }
-        });
-
-        female.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (genderId == false) {
-                    genderId = true;
-                    saveGenderId = "F";
-                    female_red.setVisibility(View.VISIBLE);
-                    male.setVisibility(View.VISIBLE);
-                    male_red.setVisibility(View.GONE);
-                    female.setVisibility(View.GONE);
-
-                } else if (genderId == true) {
-                    genderId = false;
-                    saveGenderId = "F";
-                    female_red.setVisibility(View.VISIBLE);
-                    male.setVisibility(View.VISIBLE);
-                    male_red.setVisibility(View.GONE);
-                    female.setVisibility(View.GONE);
-
-                }
-
-            }
-        });
-
-
-        age.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    agesinteger = Integer.parseInt(s.toString());
-                } else {
-
-                }
-                String enteredString = s.toString();
-
-                if (enteredString.startsWith(".") || enteredString.startsWith("0")) {
-                    Toast.makeText(mContext,
-                            ToastFile.crt_age,
-                            Toast.LENGTH_SHORT).show();
-                    if (enteredString.length() > 0) {
-                        age.setText(enteredString.substring(1));
-                    } else {
-                        age.setText("");
-                    }
-                }
-                if (age.getText().toString().equals("")) {
-
-                } else {
-                    if (agesinteger < 12) {
-                        ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(mContext, R.array.Patientsagespinner,
-                                R.layout.name_age_spinner);
-                        PatientsagespinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinyr.setAdapter(PatientsagespinnerAdapter);
-                    }
-                    if (agesinteger > 12) {
-                        ArrayAdapter Patientsagespinner = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyrday,
-                                R.layout.name_age_spinner);
-                        Patientsagespinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinyr.setAdapter(Patientsagespinner);
-                    }
-                    if (agesinteger > 29) {
-                        ArrayAdapter Patientsagesyr = ArrayAdapter.createFromResource(mContext, R.array.Patientspinyr,
-                                R.layout.name_age_spinner);
-                        Patientsagesyr.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinyr.setAdapter(Patientsagesyr);
-                    }
-                }
-            }
-        });
-        return viewMain;
     }
 
     private void SetBrandSpinner() {
@@ -1921,7 +1948,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         });
     }
 
-    // TODO Tejas
     private void SetAutoCompleteViewAdapterToView(boolean applyLogic) {
         name.setAdapter(null);
         resetpatientFields();
@@ -1973,6 +1999,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         }
         GlobalClass.SetText(patientAddress, selectedPatientData.getAddress());
         GlobalClass.SetText(pincode_edt, selectedPatientData.getPincode());
+        GlobalClass.SetText(edt_email, selectedPatientData.getEmail());
 
 
         if (!GlobalClass.isNull(selectedPatientData.getGender())) {
@@ -2011,7 +2038,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         male.setVisibility(View.VISIBLE);
         female.setVisibility(View.VISIBLE);
     }
-    // TODO Tejas
 
     private void disablefields() {
 
@@ -2170,7 +2196,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         disablefields();
                         timerflag = true;
                         Global.OTPVERIFIED = true;
-
+                        edt_email.setHint("EMAIL-ID*");
 
                         if (yourCountDownTimer != null) {
                             yourCountDownTimer.cancel();
@@ -2303,25 +2329,25 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
 
                                             } catch (ParseException e) {
 
-                                                if (getDateToCompare.contains("AM")) {
+                                               /* if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -2418,13 +2444,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                       Toast.makeText(mContext, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
                                                   }
                                               }
-                                            }*/ else if (sctHr.equals("HR")) {
+                                            }*/ else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
+                                            } */ else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
                                                 Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
@@ -2620,22 +2646,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                               /* if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -2761,13 +2787,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            } /*else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -2868,23 +2894,23 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                              /*  if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -3005,13 +3031,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            } /*else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -3104,22 +3130,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                              /*  if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -3220,13 +3246,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                                 } else if (conertage > 120) {
                                                     Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                                } else if (sctHr.equals("HR")) {
+                                                } else if (sctHr.equals("HR*")) {
                                                     Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                                } else if (sctMin.equals("MIN")) {
+                                                } else if (sctMin.equals("MIN*")) {
                                                     Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                                } else if (sctSEc.equals("AM/PM")) {
+                                                } /*else if (sctSEc.equals("AM/PM")) {
                                                     Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                                } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                }*/ else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                     Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                                 } else if (scpoint.equals("Select Camp")) {
                                                     Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
@@ -3853,13 +3879,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -4207,13 +4233,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -4416,22 +4442,21 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
-
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                                /*if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -4541,13 +4566,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            } /*else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
+                                            } */ else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
                                                 Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
@@ -4735,8 +4760,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                                 }
 
-                                            } else {
-
                                             }
 
                                         }
@@ -4750,22 +4773,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                                /*if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -4859,13 +4882,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (patientAddressdataToPass.equals("")) {
+                                            } */ else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.length() < 25) {
                                                 Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
@@ -4962,12 +4985,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
@@ -5079,13 +5102,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (referenceBy == null || referenceBy.equals("")) {
+                                            }*/ else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(getActivity(), ToastFile.ent_addre, Toast.LENGTH_SHORT).show();
@@ -5203,22 +5226,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                               /* if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -5306,13 +5329,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            }/* else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (scpoint.equals("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals(null)) {
+                                            } */ else if (scpoint.equals("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals(null)) {
                                                 Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
@@ -5491,8 +5514,6 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                                 }
 
-                                            } else {
-
                                             }
 
                                         }
@@ -5506,22 +5527,22 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
-                                                if (getDateToCompare.contains("AM")) {
+                                               /* if (getDateToCompare.contains("AM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "a.m.";
                                                 } else if (getDateToCompare.contains("PM")) {
                                                     getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
                                                     getDateToCompare = getDateToCompare + "p.m.";
-                                                }
+                                                }*/
 
                                                 String input = getDateToCompare;
                                                 //Format of the date defined in the input String
@@ -5627,13 +5648,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            } /*else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -5728,12 +5749,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                            getFinalTime = sctHr + ":" + sctMin ;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
 
-                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                            SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                                             try {
                                                 dCompare = sdfform.parse(getDateToCompare);
                                             } catch (ParseException e) {
@@ -5848,13 +5869,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
                                             } else if (saveGenderId == null || saveGenderId == "") {
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
-                                            } else if (sctHr.equals("HR")) {
+                                            } else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
-                                            } else if (sctMin.equals("MIN")) {
+                                            } else if (sctMin.equals("MIN*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
-                                            } else if (sctSEc.equals("AM/PM")) {
+                                            } /*else if (sctSEc.equals("AM/PM")) {
                                                 Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
-                                            } else if (dCompare.after(getCurrentDateandTime)) {
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else if (patientAddressdataToPass.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
@@ -5926,7 +5947,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
             final String getFinalDate = dateShow.getText().toString();
 
             if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
@@ -5940,7 +5962,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
                                 startActivity(i);
@@ -5949,7 +5971,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", getFinalAge);
                                 saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", getAgeType);
                                 saveDetails.putString("labname", "");
@@ -5978,7 +6000,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 GlobalClass.setReferenceBy_Name = referenceBy;
                 startActivity(i);
@@ -5987,7 +6009,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", getFinalAge);
                 saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", getAgeType);
                 saveDetails.putString("labname", "");
@@ -6046,7 +6068,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
             final String getFinalDate = dateShow.getText().toString();
 
 
@@ -6062,7 +6085,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 i.putExtra("woetype", typename);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
@@ -6072,7 +6095,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", getFinalAge);
                                 saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", getAgeType);
                                 saveDetails.putString("labname", "");
@@ -6099,7 +6122,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 i.putExtra("woetype", typename);
                 GlobalClass.setReferenceBy_Name = referenceBy;
@@ -6109,7 +6132,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", getFinalAge);
                 saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", getAgeType);
                 saveDetails.putString("labname", "");
@@ -6193,7 +6216,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sctMin = timesecond.getSelectedItem().toString();
         sctSEc = timeampm.getSelectedItem().toString();
         final String getFinalAge = age.getText().toString();
-        final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+        final String getFinalTime = sctHr + ":" + sctMin ;
+        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
         final String getFinalDate = dateShow.getText().toString();
 
         if (referenceBy.equalsIgnoreCase("SELF") || GlobalClass.isNull(referredID)) {
@@ -6208,7 +6232,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             i.putExtra("name", nameString);
                             i.putExtra("age", getFinalAge);
                             i.putExtra("gender", saveGenderId);
-                            i.putExtra("sct", getFinalTime);
+                            i.putExtra("sct", timetopass);
                             i.putExtra("date", getFinalDate);
                             i.putExtra("woetype", typename);
                             startActivity(i);
@@ -6219,7 +6243,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             saveDetails.putString("name", nameString);
                             saveDetails.putString("age", getFinalAge);
                             saveDetails.putString("gender", saveGenderId);
-                            saveDetails.putString("sct", getFinalTime);
+                            saveDetails.putString("sct", timetopass);
                             saveDetails.putString("date", getFinalDate);
                             saveDetails.putString("ageType", getAgeType);
                             saveDetails.putString("labname", labLabNAmeTopass);
@@ -6248,7 +6272,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             i.putExtra("name", nameString);
             i.putExtra("age", getFinalAge);
             i.putExtra("gender", saveGenderId);
-            i.putExtra("sct", getFinalTime);
+            i.putExtra("sct", timetopass);
             i.putExtra("date", getFinalDate);
             i.putExtra("woetype", typename);
             startActivity(i);
@@ -6259,7 +6283,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("name", nameString);
             saveDetails.putString("age", getFinalAge);
             saveDetails.putString("gender", saveGenderId);
-            saveDetails.putString("sct", getFinalTime);
+            saveDetails.putString("sct", timetopass);
             saveDetails.putString("date", getFinalDate);
             saveDetails.putString("ageType", getAgeType);
             saveDetails.putString("labname", labLabNAmeTopass);
@@ -6293,7 +6317,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
             final String getFinalDate = dateShow.getText().toString();
 
             if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
@@ -6307,7 +6332,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
                                 startActivity(i);
@@ -6316,7 +6341,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", "");
                                 saveDetails.putString("gender", "");
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", "");
                                 saveDetails.putString("labname", "");
@@ -6345,7 +6370,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 GlobalClass.setReferenceBy_Name = referenceBy;
                 startActivity(i);
@@ -6354,7 +6379,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", "");
                 saveDetails.putString("gender", "");
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", "");
                 saveDetails.putString("labname", "");
@@ -6411,7 +6436,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
             final String getFinalDate = dateShow.getText().toString();
 
 
@@ -6427,7 +6453,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 i.putExtra("woetype", typename);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
@@ -6437,7 +6463,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", "");
                                 saveDetails.putString("gender", "");
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", "");
                                 saveDetails.putString("labname", "");
@@ -6464,7 +6490,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 i.putExtra("woetype", typename);
                 GlobalClass.setReferenceBy_Name = referenceBy;
@@ -6474,7 +6500,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", "");
                 saveDetails.putString("gender", "");
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", "");
                 saveDetails.putString("labname", "");
@@ -6554,7 +6580,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sctMin = timesecond.getSelectedItem().toString();
         sctSEc = timeampm.getSelectedItem().toString();
         final String getFinalAge = age.getText().toString();
-        final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+        final String getFinalTime = sctHr + ":" + sctMin ;
+        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
         final String getFinalDate = dateShow.getText().toString();
 
         if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
@@ -6569,7 +6596,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             i.putExtra("name", nameString);
                             i.putExtra("age", getFinalAge);
                             i.putExtra("gender", saveGenderId);
-                            i.putExtra("sct", getFinalTime);
+                            i.putExtra("sct", timetopass);
                             i.putExtra("date", getFinalDate);
                             i.putExtra("woetype", typename);
                             startActivity(i);
@@ -6580,7 +6607,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             saveDetails.putString("name", nameString);
                             saveDetails.putString("age", "");
                             saveDetails.putString("gender", "");
-                            saveDetails.putString("sct", getFinalTime);
+                            saveDetails.putString("sct", timetopass);
                             saveDetails.putString("date", getFinalDate);
                             saveDetails.putString("ageType", "");
                             saveDetails.putString("labname", labLabNAmeTopass);
@@ -6609,7 +6636,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             i.putExtra("name", nameString);
             i.putExtra("age", getFinalAge);
             i.putExtra("gender", saveGenderId);
-            i.putExtra("sct", getFinalTime);
+            i.putExtra("sct", timetopass);
             i.putExtra("date", getFinalDate);
             i.putExtra("woetype", typename);
             startActivity(i);
@@ -6620,7 +6647,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("name", nameString);
             saveDetails.putString("age", "");
             saveDetails.putString("gender", "");
-            saveDetails.putString("sct", getFinalTime);
+            saveDetails.putString("sct", timetopass);
             saveDetails.putString("date", getFinalDate);
             saveDetails.putString("ageType", "");
             saveDetails.putString("labname", labLabNAmeTopass);
@@ -6669,8 +6696,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
             final String getFinalDate = dateShow.getText().toString();
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
 
             if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
                 new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
@@ -6683,7 +6711,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
                                 startActivity(i);
@@ -6692,7 +6720,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", getFinalAge);
                                 saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", getAgeType);
                                 saveDetails.putString("labname", "");
@@ -6721,7 +6749,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 GlobalClass.setReferenceBy_Name = referenceBy;
                 startActivity(i);
@@ -6730,7 +6758,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", getFinalAge);
                 saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", getAgeType);
                 saveDetails.putString("labname", "");
@@ -6805,9 +6833,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             sctMin = timesecond.getSelectedItem().toString();
             sctSEc = timeampm.getSelectedItem().toString();
             final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+            final String getFinalTime = sctHr + ":" + sctMin ;
             final String getFinalDate = dateShow.getText().toString();
-
+            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
 
             if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
                 new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
@@ -6824,7 +6852,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 i.putExtra("name", nameString);
                                 i.putExtra("age", getFinalAge);
                                 i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", getFinalTime);
+                                i.putExtra("sct", timetopass);
                                 i.putExtra("date", getFinalDate);
                                 GlobalClass.setReferenceBy_Name = referenceBy;
                                 startActivity(i);
@@ -6833,7 +6861,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                 saveDetails.putString("name", nameString);
                                 saveDetails.putString("age", getFinalAge);
                                 saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", getFinalTime);
+                                saveDetails.putString("sct", timetopass);
                                 saveDetails.putString("date", getFinalDate);
                                 saveDetails.putString("ageType", getAgeType);
                                 saveDetails.putString("labname", "");
@@ -6867,7 +6895,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 i.putExtra("name", nameString);
                 i.putExtra("age", getFinalAge);
                 i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", getFinalTime);
+                i.putExtra("sct", timetopass);
                 i.putExtra("date", getFinalDate);
                 GlobalClass.setReferenceBy_Name = referenceBy;
                 startActivity(i);
@@ -6876,7 +6904,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 saveDetails.putString("name", nameString);
                 saveDetails.putString("age", getFinalAge);
                 saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", getFinalTime);
+                saveDetails.putString("sct", timetopass);
                 saveDetails.putString("date", getFinalDate);
                 saveDetails.putString("ageType", getAgeType);
                 saveDetails.putString("labname", "");
@@ -6961,8 +6989,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sctMin = timesecond.getSelectedItem().toString();
         sctSEc = timeampm.getSelectedItem().toString();
         final String getFinalAge = age.getText().toString();
-        final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+        final String getFinalTime = sctHr + ":" + sctMin;
         final String getFinalDate = dateShow.getText().toString();
+
+        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
 
         if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
 //                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
@@ -6975,7 +7005,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             i.putExtra("name", nameString);
             i.putExtra("age", getFinalAge);
             i.putExtra("gender", saveGenderId);
-            i.putExtra("sct", getFinalTime);
+            i.putExtra("sct", timetopass);
             i.putExtra("date", getFinalDate);
             GlobalClass.setReferenceBy_Name = referenceBy;
             startActivity(i);
@@ -6985,7 +7015,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             saveDetails.putString("name", nameString);
             saveDetails.putString("age", getFinalAge);
             saveDetails.putString("gender", saveGenderId);
-            saveDetails.putString("sct", getFinalTime);
+            saveDetails.putString("sct", timetopass);
             saveDetails.putString("date", getFinalDate);
             saveDetails.putString("ageType", getAgeType);
             saveDetails.putString("labname", labLabNAmeTopass);
@@ -7013,18 +7043,18 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             i.putExtra("name", nameString);
             i.putExtra("age", getFinalAge);
             i.putExtra("gender", saveGenderId);
-            i.putExtra("sct", getFinalTime);
+            i.putExtra("sct", timetopass);
             i.putExtra("date", getFinalDate);
             GlobalClass.setReferenceBy_Name = referenceBy;
             startActivity(i);
 
-            GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
+//            GlobalClass.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm:ss");
             Log.e(TAG, "onClick: lab add and lab id " + labAddressTopass + labIDTopass);
             SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
             saveDetails.putString("name", nameString);
             saveDetails.putString("age", getFinalAge);
             saveDetails.putString("gender", saveGenderId);
-            saveDetails.putString("sct", getFinalTime);
+            saveDetails.putString("sct", timetopass);
             saveDetails.putString("date", getFinalDate);
             saveDetails.putString("ageType", getAgeType);
             saveDetails.putString("labname", labLabNAmeTopass);

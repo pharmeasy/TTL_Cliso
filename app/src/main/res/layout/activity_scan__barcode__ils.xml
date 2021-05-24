@@ -503,7 +503,7 @@
                         android:layout_weight="1.5"
                         android:gravity="center|left"
                         android:padding="5dp"
-                        android:text="COLLECTED"
+                        android:text="COLLECTED*"
                         android:textColor="@color/white"
                         android:textSize="@dimen/value" />
 
@@ -539,7 +539,7 @@
                         android:layout_weight="1.5"
                         android:gravity="center|left"
                         android:padding="5dp"
-                        android:text="CONFIRM COLLECTED"
+                        android:text="CONFIRM COLLECTED*"
                         android:textColor="@color/white"
                         android:textSize="@dimen/value" />
 

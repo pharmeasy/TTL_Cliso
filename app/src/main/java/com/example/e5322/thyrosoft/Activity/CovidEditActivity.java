@@ -100,6 +100,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     SharedPreferences preferences;
     String mobileno, name, UniqueId, amtcoll, ppebarcode;
     TextView txt_presfileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
+    private String Testcode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +115,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             UniqueId = bundle.getString("UniqueId");
             amtcoll = bundle.getString("amtcoll");
             ppebarcode = bundle.getString("ppebarcode");
+            Testcode = bundle.getString("Testcode");
             // Log.e(TAG, "uniqueid-->" + UniqueId);
         }
 
@@ -305,7 +307,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setMOBILE(mobileno);
                             covidpostdata.setNAME(name);
                             covidpostdata.setVIAIMAGE(vial_file);
-                            covidpostdata.setTESTCODE("COVID-19");
+                            covidpostdata.setTESTCODE("" + Testcode);
                             covidpostdata.setAMOUNTCOLLECTED(amtcoll);
                             covidpostdata.setPPEBARCODE(ppebarcode);
 

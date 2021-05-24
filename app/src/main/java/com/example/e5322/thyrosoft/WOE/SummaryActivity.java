@@ -35,6 +35,7 @@ import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.DeleteWOEResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -273,8 +274,7 @@ public class SummaryActivity extends AppCompatActivity {
                 ll_patient_gender.setVisibility(View.GONE);
             }
         }
-
-        sampleCollectionTime=GlobalClass.changetimeformate(sampleCollectionTime);
+        sampleCollectionTime=DateUtils.Req_Date_Req(sampleCollectionTime, "hh:mm a", "HH:mm");
         pat_sct.setText(sampleCollectionDate + " " + sampleCollectionTime);
         pat_ref.setText(referenceBy);
         alertMsg = "";

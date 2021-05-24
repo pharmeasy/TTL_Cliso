@@ -58,7 +58,7 @@ import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Activity.SRFCovidWOEMainActivity;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
-import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.GetTestCodeController;
 import com.example.e5322.thyrosoft.Controller.SRFCovidWOEmultipart_controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
@@ -71,6 +71,7 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.GetTestCodeResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -129,7 +130,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private Camera camera;
     private String TAG = SRFCovidWOEEnterFragment.class.getSimpleName();
     private File presc_file = null, aadhar_file = null, aadhar_file1 = null, vial_file = null, other_file = null, other_file1 = null, selfie_file = null;
-    private boolean ispresciption, isadhar, isvial, isother, timerflag = false, genderId = false, flag = true, verifyotp = false;
+    private boolean ispresciption, isadhar, isvial, isother, timerflag = false, genderId = false, flag = true, verifyotp = false, iscamera = false;
     private EditText edt_fname, edt_amt, edt_lname, edt_missed_mobile, edt_verifycc, edt_srfid, edt_age, edt_patient_address, edt_patient_pincode, edt_coll_address, edt_coll_pincode, edt_barcode, edt_re_enter_barcode;
     private String usercode, apikey, gender = "", currentText, selDate = "", selTime = "", userChoosenTask, b2b, b2c;
     private int selfie_flag = 0, agesinteger;
@@ -142,6 +143,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     private ImageView setback;
     IntentIntegrator scanIntegrator;
     TextView tv_help;
+
+    ImageView img_camera_prescription, img_gallery_prescription, img_camera_aadhar, img_gallery_aadhar;
+    ImageView img_camera_vial, img_gallery_vial, img_camera_other, img_gallery_other, img_camera_selfie;
+
+    Spinner spr_test;
 
     public SRFCovidWOEEnterFragment() {
         // Required empty public constructor
@@ -176,6 +182,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         scanIntegrator = IntentIntegrator.forSupportFragment(this);
         initUI(view);
         initListeners();
+        GetTestCode();
 
         setAgeSpinner(R.array.Patientsagespinner);
         spn_age.setSelection(0);
@@ -193,10 +200,18 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         c1.set(Calendar.DAY_OF_MONTH, mDay - 2);
         minDate = c1.getTime();
 
-        if (cd.isConnectingToInternet()) {
-            displayrate();
-        }
+
         return view;
+    }
+
+    private void GetTestCode() {
+        if (cd.isConnectingToInternet()) {
+            GetTestCodeController getTestCodeController = new GetTestCodeController(this);
+            getTestCodeController.CallAPI(usercode);
+        } else {
+            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
+        }
+
     }
 
     private void initUI(View view) {
@@ -221,6 +236,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         male_red = view.findViewById(R.id.male_red);
         female = view.findViewById(R.id.female);
         female_red = view.findViewById(R.id.female_red);
+        spr_test = view.findViewById(R.id.spr_test);
         btn_choosefile_presc = view.findViewById(R.id.btn_choosefile_presc);
         btn_choosefile_adhar = view.findViewById(R.id.btn_choosefile_adhar);
         btn_choosefile_vial = view.findViewById(R.id.btn_choosefile_vial);
@@ -273,6 +289,17 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         by_sendsms = view.findViewById(R.id.by_sendsms);
         edt_email = view.findViewById(R.id.edt_email);
 
+        img_camera_prescription = view.findViewById(R.id.img_camera_prescription);
+        img_gallery_prescription = view.findViewById(R.id.img_gallery_prescription);
+        img_camera_aadhar = view.findViewById(R.id.img_camera_aadhar);
+        img_gallery_aadhar = view.findViewById(R.id.img_gallery_aadhar);
+        img_camera_vial = view.findViewById(R.id.img_camera_vial);
+        img_gallery_vial = view.findViewById(R.id.img_gallery_vial);
+        img_camera_other = view.findViewById(R.id.img_camera_other);
+        img_gallery_other = view.findViewById(R.id.img_gallery_other);
+        img_camera_selfie = view.findViewById(R.id.img_camera_selfie);
+
+
         txt_nofilepresc.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofileadhar.setText(getResources().getString(R.string.nofilechoosen));
         txt_nofilevial.setText(getResources().getString(R.string.nofilechoosen));
@@ -300,6 +327,241 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     }
 
     private void initListeners() {
+
+
+        spr_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (!spr_test.getSelectedItem().toString().equalsIgnoreCase("Select Test*")) {
+                    displayrate(spr_test.getSelectedItem().toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
+        img_camera_selfie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (selfie_flag == 0) {
+                        boolean result = Utility.checkPermission(activity);
+                        if (result)
+                            ispresciption = false;
+                        isadhar = false;
+                        isvial = false;
+                        isother = false;
+                        iscamera = true;
+                        openCamera();
+                    } else {
+                        GlobalClass.showCustomToast(activity, "Only 1 selfie can be Uploaded", 0);
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+
+
+        img_gallery_other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (other_file != null && other_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = true;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+
+        img_camera_other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (other_file != null && other_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = true;
+                            iscamera = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+
+        img_gallery_vial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = true;
+                            isother = false;
+//                            chooseFromGallery();
+                            GlobalClass.cropImageFragment(SRFCovidWOEEnterFragment.this, 2);
+
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+
+        img_camera_vial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = true;
+                            isother = false;
+//                            openCamera();
+                            GlobalClass.cropImageFragment(SRFCovidWOEEnterFragment.this, 0);
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+
+        img_camera_aadhar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            isvial = false;
+                            isother = false;
+                            iscamera = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+            }
+        });
+        img_gallery_aadhar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+            }
+        });
+
+        img_camera_prescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            iscamera = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+            }
+        });
+        img_gallery_prescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+            }
+        });
+
 
         tv_help.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,13 +609,13 @@ public class SRFCovidWOEEnterFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {
                 if (enter_barcode.getText().length() != 8) {
-                    Toast.makeText(activity, "Enter Valid Enter Bracode", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, "Enter Valid Enter Barcode", Toast.LENGTH_SHORT).show();
                 } else {
                     if (s.toString().equalsIgnoreCase(enter_barcode.getText().toString())) {
                         verifyBarcode(s.toString());
                     } else {
                         if (s.length() == 8) {
-                            Toast.makeText(activity, "Bracode not Matched", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, "Barcode not Matched", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }
@@ -1074,6 +1336,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                 covidpostdata.setSRFID(edt_srfid.getText().toString().trim());
                 covidpostdata.setAGE(edt_age.getText().toString().trim());
                 covidpostdata.setAGETYPE(age_type);
+                covidpostdata.setTESTCODE("" + spr_test.getSelectedItem().toString());
                 covidpostdata.setGENDER(gender);
                 covidpostdata.setPATIENTADDRESS(edt_patient_address.getText().toString().trim());
                 covidpostdata.setPATIENTPINCODE(edt_patient_pincode.getText().toString().trim());
@@ -1125,11 +1388,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         }
     }
 
-    private void displayrate() {
+    private void displayrate(String Testcode) {
         CovidRateReqModel covidRateReqModel = new CovidRateReqModel();
         covidRateReqModel.setUsercode("" + usercode);
         covidRateReqModel.setAPIKEY("" + apikey);
-
+        covidRateReqModel.setTestcode("" + Testcode);
 
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
@@ -1412,10 +1675,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         }
 
         if (btn_barcd.getText().toString().equalsIgnoreCase("BARCODE*")) {
-            Global.showCustomToast(getActivity(), "Enter Bracode");
+            Global.showCustomToast(getActivity(), "Enter Barcode");
             return false;
         }
 
+        if (spr_test.getSelectedItem().toString().equalsIgnoreCase("Select Test*")) {
+            Global.showCustomToast(getActivity(), "Kindly Select Test");
+            return false;
+        }
         return true;
     }
 
@@ -1546,33 +1813,124 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-            Log.e(TAG, "onActivityResult: " + result);
             if (result.getContents() != null) {
                 if (result.getContents().length() == 8) {
                     verifyBarcode(result.getContents());
                 } else {
-                    Global.showCustomToast(getActivity(), "Invalid Bracode");
+                    Global.showCustomToast(getActivity(), "Invalid Barcode");
                 }
             } else {
-                Global.showCustomToast(getActivity(), "omething Went Wrong");
+                Global.showCustomToast(getActivity(), "Something Went Wrong");
             }
         } else if (requestCode == Camera.REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
             try {
-                String imageurl = camera.getCameraBitmapPath();
-                selfie_file = new File(imageurl);
-                txt_selfie.setVisibility(View.GONE);
-                lin_selfie.setVisibility(View.VISIBLE);
-                selfie_flag = 1;
-                txt_selfiefileupload.setText("1 " + getResources().getString(R.string.imgupload));
-                txt_selfiefileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
-                btn_selfie.setTextColor(getResources().getColor(R.color.black));
-                btn_selfie.setEnabled(false);
-                selfielist.add(selfie_file.toString());
+                if (iscamera) {
+                    String imageurl = camera.getCameraBitmapPath();
+                    selfie_file = new File(imageurl);
+                    txt_selfie.setVisibility(View.GONE);
+                    lin_selfie.setVisibility(View.VISIBLE);
+                    selfie_flag = 1;
+                    txt_selfiefileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_selfiefileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    btn_selfie.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                    btn_selfie.setTextColor(getResources().getColor(R.color.black));
+                    btn_selfie.setEnabled(false);
+                    selfielist.add(selfie_file.toString());
+                } else if (ispresciption) {
+                    presc_file = new File(camera.getCameraBitmapPath());
+                    lin_pres_preview.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setVisibility(View.VISIBLE);
+                    txt_presfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_presfileupload.setPaintFlags(txt_presfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilepresc.setVisibility(View.GONE);
+                    presclist = new ArrayList<>();
+                    presclist.clear();
+                    presclist.add(presc_file.toString());
+                    if (presc_file != null) {
+                        ispresciption = false;
+                        btn_choosefile_presc.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_presc.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
+                    }
+                } else if (isadhar) {
+                    if (lin_adhar_images.getVisibility() == View.VISIBLE && aadhar_file != null) {
+                        aadhar_file1 = new File(camera.getCameraBitmapPath());
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file1.toString());
+                    } else {
+                        aadhar_file = new File(camera.getCameraBitmapPath());
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileadhar.setVisibility(View.GONE);
+                        aadharlist.add(aadhar_file.toString());
+                    }
+                    if (aadhar_file != null && aadhar_file1 != null) {
+                        isadhar = false;
+                        lin_adhar_images.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setVisibility(View.VISIBLE);
+                        txt_adharfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        btn_choosefile_adhar.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_adhar.setTextColor(getResources().getColor(R.color.black));
+                    }
+                    buttonval();
+                    lin_adhar_images.setVisibility(View.VISIBLE);
+                } else if (isvial) {
+                    vial_file = new File(camera.getCameraBitmapPath());
+                    lin_vial_images.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setVisibility(View.VISIBLE);
+                    txt_vialrfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                    txt_vialrfileupload.setPaintFlags(txt_vialrfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    txt_nofilevial.setVisibility(View.GONE);
+                    viallist.add(vial_file.toString());
+                    if (vial_file != null) {
+                        isvial = false;
+                        btn_choosefile_vial.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_vial.setTextColor(getResources().getColor(R.color.black));
+                        buttonval();
+                    }
+                } else if (isother) {
+                    if (lin_other_images.getVisibility() == View.VISIBLE && other_file != null) {
+                        other_file1 = new File(camera.getCameraBitmapPath());
+
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file1.toString());
+                    } else {
+                        other_file = new File(camera.getCameraBitmapPath());
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        txt_nofileother.setVisibility(View.GONE);
+                        otherlist.add(other_file.toString());
+                    }
+                    if (other_file != null && other_file1 != null) {
+                        isother = false;
+                        btn_choosefile_other.setBackground(getResources().getDrawable(R.drawable.covidgreybtn));
+                        btn_choosefile_other.setTextColor(getResources().getColor(R.color.black));
+                        lin_other_images.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setVisibility(View.VISIBLE);
+                        txt_otherfileupload.setText("2 " + getResources().getString(R.string.imgupload));
+                        txt_otherfileupload.setPaintFlags(txt_otherfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+                    }
+                    buttonval();
+                    lin_other_images.setVisibility(View.VISIBLE);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }  else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+        } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
             try {
                 if (isvial) {
                     if (data.getData() != null) {
@@ -2307,5 +2665,22 @@ public class SRFCovidWOEEnterFragment extends Fragment {
 
         maindialog.setCancelable(true);
         maindialog.show();
+    }
+
+    public void getTestCode(GetTestCodeResponseModel body) {
+        if (!GlobalClass.isNull(body.getResID()) && body.getResID().equalsIgnoreCase("RES0000")) {
+            if (GlobalClass.CheckArrayList(body.getTestCodeMappinpList())) {
+                body.getTestCodeMappinpList().add(0, "Select Test*");
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.name_age_spinner, body.getTestCodeMappinpList());
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spr_test.setAdapter(adapter);
+
+            } else {
+                GlobalClass.showShortToast(activity, body.getResponse());
+            }
+        } else {
+            GlobalClass.showShortToast(activity, body.getResponse());
+        }
     }
 }

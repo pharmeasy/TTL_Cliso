@@ -192,6 +192,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     EditText edt_confirm_amt;
     MainModel mainModel;
     private String EMAIL_ID;
+    private int PaymentType;
 
 
     @SuppressLint("NewApi")
@@ -224,6 +225,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         }
         versionNameTopass = pInfo.versionName;
         versionCode = pInfo.versionCode;
+
+    /*    SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
+        PaymentType = getProfileName.getInt("PaymentType", 0);*/
+        PaymentType=0;
 
         initListeners();
         FinalBarcodeDetailsList = Global.FinalBarcodeDetailsList_global;
@@ -889,13 +894,61 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
             } else {
                 if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
-                    Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("name", preferences.getString("name", ""));
-                    intent.putExtra("mobile", preferences.getString("kycinfo", ""));
-                    intent.putExtra("amount", b2b_rate);
-                    intent.putExtra("email", EMAIL_ID);
-                    startActivity(intent);
+                    if (PaymentType==1){
+                        Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", preferences.getString("name", ""));
+                        intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+                        intent.putExtra("amount", b2b_rate);
+                        intent.putExtra("email", EMAIL_ID);
+                        startActivity(intent);
+                    }else if(PaymentType==2) {
+                        final String[] paymentItems = new String[]{"Cash", "Digital"};
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                        builder.setTitle("Choose payment mode")
+                                .setItems(paymentItems, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (paymentItems[which].equals("Cash")) {
+
+                                            androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                                            builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
+                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            WOE();
+                                                        }
+                                                    })
+                                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else {
+                                            Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("name",  preferences.getString("name", ""));
+                                            intent.putExtra("mobile", preferences.getString("kycinfo", ""));
+                                            intent.putExtra("amount", b2b_rate);
+                                            intent.putExtra("email", EMAIL_ID);
+                                            startActivity(intent);
+
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }else {
+                        WOE();
+                    }
+
 
 
                 } else {

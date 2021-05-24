@@ -33,18 +33,16 @@
                 android:textSize="@dimen/_12sdp" />
 
 
-
             <RadioButton
                 android:id="@+id/by_missed"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:buttonTint="@color/maroon"
                 android:text="@string/misscallccc"
                 android:textSize="@dimen/_12sdp"
-              />
+                android:visibility="gone" />
 
             <RadioButton
                 android:id="@+id/by_generate"
@@ -52,15 +50,12 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:buttonTint="@color/maroon"
                 android:text="@string/generateccc"
                 android:textSize="@dimen/_12sdp"
-                />
+                android:visibility="gone" />
 
         </RadioGroup>
-
-
 
 
         <LinearLayout
@@ -296,6 +291,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_4sdp"
+            android:background="@drawable/corner_curve_maroon">
+
+            <Spinner
+                android:id="@+id/spr_test"
+                style="@style/medium_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/transparent"
+                android:textSize="@dimen/value" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2">
 
@@ -369,6 +382,10 @@
 
 
         </LinearLayout>
+
+
+
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -487,10 +504,10 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/button_bg"
                 android:text="UPLOAD"
-                android:visibility="gone"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_nofilepresc"
@@ -593,9 +610,9 @@
                 android:background="@drawable/button_bg"
                 android:text="@string/upload"
                 android:textAllCaps="true"
-                android:visibility="gone"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_nofileadhar"
@@ -697,9 +714,9 @@
                 android:background="@drawable/button_bg"
                 android:text="@string/upload"
                 android:textAllCaps="true"
-                android:visibility="gone"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_nofiletrf"
@@ -805,9 +822,9 @@
                 android:background="@drawable/button_bg"
                 android:text="@string/upload"
                 android:textAllCaps="true"
-                android:visibility="gone"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_nofilevial"
@@ -909,10 +926,10 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/button_bg"
                 android:text="UPLOAD"
-                android:visibility="gone"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_nofileother"
@@ -1005,10 +1022,10 @@
                 android:layout_weight="0.8"
                 android:background="@drawable/button_bg"
                 android:text="UPLOAD"
-                android:visibility="gone"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/txt_selfie"

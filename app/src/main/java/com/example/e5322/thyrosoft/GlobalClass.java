@@ -249,7 +249,7 @@ public class GlobalClass {
     public static ArrayList<Ledger_DetailsModel> CREDITLIST = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<Ledger_DetailsModel> DEBIT = new ArrayList<Ledger_DetailsModel>();
     public static ArrayList<BarcodeResponseModel.BarcodeDTO> barcodeArrayList = new ArrayList<>();
-    public static String transID="";
+    public static String transID = "";
     private static Dialog dialog;
     private static String stringofconvertedTime;
     private final Context context;
@@ -400,7 +400,6 @@ public class GlobalClass {
         String generatedstr = random.toString();
         return generatedstr;
     }
-
 
 
     public static String generateRandomOrderID() {
@@ -1444,6 +1443,39 @@ public class GlobalClass {
         }
     }
 
+    public static String getvalue(int currentHourIn24Format) {
+        String getval = "";
+
+        if (currentHourIn24Format <= 5) {
+            getval = "00";
+        } else if (currentHourIn24Format <= 10) {
+            getval = "05";
+        }else if (currentHourIn24Format <= 15){
+            getval = "10";
+        }else if (currentHourIn24Format <= 20){
+            getval = "15";
+        }else if (currentHourIn24Format <= 25){
+            getval = "20";
+        }else if (currentHourIn24Format <= 30){
+            getval = "25";
+        }else if (currentHourIn24Format <= 35){
+            getval = "30";
+        }else if (currentHourIn24Format <= 40){
+            getval = "35";
+        }else if (currentHourIn24Format <= 45){
+            getval = "40";
+        }else if (currentHourIn24Format <= 50){
+            getval = "45";
+        }else if (currentHourIn24Format <= 55){
+            getval = "50";
+        }else if (currentHourIn24Format <= 60){
+            getval = "55";
+        }
+
+
+        return getval;
+    }
+
     public void showProgressDialog(Activity activity) {
         if (progressDialog != null && !progressDialog.isShowing())
             if (!((Activity) context).isFinishing()) {
@@ -1719,9 +1751,7 @@ public class GlobalClass {
             ImagePicker.Companion.with(activity).crop(3f, 2f).start();
         } else if (flag == 0) {
             ImagePicker.Companion.with(activity).crop(3f, 2f).cameraOnly().start();
-        }
-        else if(flag == 2)
-        {
+        } else if (flag == 2) {
             ImagePicker.Companion.with(activity).crop(3f, 2f).galleryOnly().start();
         }
     }
@@ -1731,9 +1761,7 @@ public class GlobalClass {
             ImagePicker.Companion.with(fragment).crop(3f, 2f).start();
         } else if (flag == 0) {
             ImagePicker.Companion.with(fragment).crop(3f, 2f).cameraOnly().start();
-        }
-        else if(flag == 2)
-        {
+        } else if (flag == 2) {
             ImagePicker.Companion.with(fragment).crop(3f, 2f).galleryOnly().start();
         }
     }

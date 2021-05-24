@@ -217,8 +217,8 @@ public class WOEPaymentActivity extends AppCompatActivity {
         usercode = getProfileName.getString("user_code", "");
         name = getIntent().getStringExtra("name");
         mobile = getIntent().getStringExtra("mobile");
-        amount = getIntent().getStringExtra("amount");
-//        amount = "1";
+//        amount = getIntent().getStringExtra("amount");
+        amount = "1";
         email = getIntent().getStringExtra("email");
 
         img_add_money_payTm = findViewById(R.id.img_add_money_payTm);
@@ -403,7 +403,7 @@ public class WOEPaymentActivity extends AppCompatActivity {
                             .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-
+                                    CancelTransaction();
                                 }
                             }).show();
                     break;
@@ -422,7 +422,7 @@ public class WOEPaymentActivity extends AppCompatActivity {
                     .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-
+                            CancelTransaction();
                         }
                     }).show();
         }

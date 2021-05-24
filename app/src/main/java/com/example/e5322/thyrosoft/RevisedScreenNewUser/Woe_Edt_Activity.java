@@ -102,6 +102,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_edit__woe);
 
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         brand_name = (TextView) findViewById(R.id.brand_name);
         selectType_txt = (TextView) findViewById(R.id.selectType_txt);
         samplecollectionponit = (TextView) findViewById(R.id.samplecollectionponit);
@@ -121,6 +123,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
         home = (ImageView) findViewById(R.id.home);
         cb_convert = (CheckBox) findViewById(R.id.cb_convert);
         labname_linear = (LinearLayout) findViewById(R.id.labname_linear);
+
+
 
         try {
             ArrayAdapter PatientsagespinnerAdapter = ArrayAdapter.createFromResource(Woe_Edt_Activity.this, R.array.Patientsagespinner,

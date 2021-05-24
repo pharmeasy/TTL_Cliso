@@ -244,6 +244,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION()
                     + "\nADHAR:" + covidpostdata.getADHAR()
                     + "\nADHAR1:" + covidpostdata.getADHAR1()
+                    + "\nTESTCODE:" + covidpostdata.getTESTCODE()
                     + "\nTRF:" + covidpostdata.getTRF()
                     + "\nTRF1:" + covidpostdata.getTRF1()
                     + "\nEMAIL:" + covidpostdata.getEMAIL()

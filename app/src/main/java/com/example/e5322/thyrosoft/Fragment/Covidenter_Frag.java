@@ -30,6 +30,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -38,6 +40,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +60,7 @@ import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
+import com.example.e5322.thyrosoft.Controller.GetTestCodeController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
@@ -69,6 +73,7 @@ import com.example.e5322.thyrosoft.Models.Covidotpresponse;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.GetTestCodeResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
@@ -157,6 +162,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
     ImageView img_camera_pres, img_gallery_pres, img_camera_aadhar, img_gallery_aadhar, img_camera_trf, img_gallery_trf;
     ImageView img_camera_vial, img_gallery_vial, img_camera_other, img_gallery_other, img_camera_selfie;
 
+    Spinner spr_test;
+
 
     public static InputFilter EMOJI_FILTER = new InputFilter() {
         @Override
@@ -188,15 +195,24 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         if (cd.isConnectingToInternet()) {
-            displayrate();
+            GetTesctCode();
+        } else {
+            GlobalClass.toastyError(getContext(), MessageConstants.CHECK_INTERNET_CONN, false);
         }
     }
 
+    private void GetTesctCode() {
+        GetTestCodeController getTestCodeController = new GetTestCodeController(this);
+        getTestCodeController.CallAPI(usercode);
+    }
 
-    private void displayrate() {
+
+    private void displayrate(String Testcode) {
         CovidRateReqModel covidRateReqModel = new CovidRateReqModel();
         covidRateReqModel.setUsercode("" + usercode);
         covidRateReqModel.setAPIKEY("" + apikey);
+        covidRateReqModel.setTestcode("" + Testcode);
+
         PostAPIInteface postAPIInteface = RetroFit_APIClient.getInstance().getClient(activity, Api.Cloud_base).create(PostAPIInteface.class);
         Call<Covidratemodel> covidratemodelCall = postAPIInteface.displayrates(covidRateReqModel);
         covidratemodelCall.enqueue(new Callback<Covidratemodel>() {
@@ -284,6 +300,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         //TODO Relativelayout
         rel_mobno = view.findViewById(R.id.rel_mobno);
         radiogrp2 = view.findViewById(R.id.radiogrp2);
+        spr_test = view.findViewById(R.id.spr_test);
 
 
         img_camera_pres = view.findViewById(R.id.img_camera_pres);
@@ -377,6 +394,21 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
             by_generate.setVisibility(View.VISIBLE);
             by_sendsms.setVisibility(View.VISIBLE);
         }
+
+        spr_test.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (!spr_test.getSelectedItem().toString().equalsIgnoreCase("Select Test*")) {
+                    displayrate(spr_test.getSelectedItem().toString());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
         edt_amt.addTextChangedListener(new TextWatcher() {
@@ -606,7 +638,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                                 covidpostdata.setMOBILE(edt_missed_mobile.getText().toString());
                                 covidpostdata.setNAME(fullname);
                                 covidpostdata.setAMOUNTCOLLECTED(edt_amt.getText().toString().trim());
-                                covidpostdata.setTESTCODE("COVID-19");
+                                covidpostdata.setTESTCODE("" + spr_test.getSelectedItem().toString());
                                 covidpostdata.setVIAIMAGE(vial_file);
                                 covidpostdata.setSELFIE(selfie_file);
                                 covidpostdata.setPPEBARCODE(txt_barcode.getText().toString().trim());
@@ -1247,6 +1279,11 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                     return false;
                 }
             }
+        }
+
+        if (spr_test.getSelectedItem().toString().equalsIgnoreCase("Select Test*")) {
+            Global.showCustomToast(getActivity(), "Kindly Select Test");
+            return false;
         }
 
 
@@ -2483,4 +2520,20 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         maindialog.show();
     }
 
+    public void getTestCode(GetTestCodeResponseModel body) {
+        if (!GlobalClass.isNull(body.getResID()) && body.getResID().equalsIgnoreCase("RES0000")) {
+            if (GlobalClass.CheckArrayList(body.getTestCodeMappinpList())) {
+                body.getTestCodeMappinpList().add(0, "Select Test*");
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.name_age_spinner, body.getTestCodeMappinpList());
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spr_test.setAdapter(adapter);
+
+            } else {
+                GlobalClass.showShortToast(activity, body.getResponse());
+            }
+        } else {
+            GlobalClass.showShortToast(activity, body.getResponse());
+        }
+    }
 }

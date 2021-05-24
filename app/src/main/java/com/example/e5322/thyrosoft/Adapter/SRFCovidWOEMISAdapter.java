@@ -54,6 +54,7 @@ public class SRFCovidWOEMISAdapter extends RecyclerView.Adapter<SRFCovidWOEMISAd
 
         GlobalClass.SetText(viewholder.txt_name, covidMISmodel.getPatientName().trim());
         GlobalClass.SetText(viewholder.txt_mob, covidMISmodel.getMobile().trim());
+        GlobalClass.SetText(viewholder.testcode, covidMISmodel.getTestCode().trim());
 
         if (!GlobalClass.isNull(covidMISmodel.getPPEBarcode())) {
             viewholder.txt_ppebrcd.setVisibility(View.VISIBLE);
@@ -178,7 +179,7 @@ public class SRFCovidWOEMISAdapter extends RecyclerView.Adapter<SRFCovidWOEMISAd
     }
 
     public class Viewholder extends RecyclerView.ViewHolder {
-        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason, txt_ppebrcd;
+        TextView txt_name, txt_amt, txt_mob, txt_ccc, txt_time, txt_reason, txt_ppebrcd,testcode;
         Button btn_resubmit, btn_viewupload;
         LinearLayout lin_reason, ll_main;
 
@@ -196,6 +197,7 @@ public class SRFCovidWOEMISAdapter extends RecyclerView.Adapter<SRFCovidWOEMISAd
             txt_time = itemView.findViewById(R.id.txt_time);
             lin_reason = itemView.findViewById(R.id.lin_reason);
             ll_main = itemView.findViewById(R.id.ll_main);
+            testcode = itemView.findViewById(R.id.testcode);
         }
     }
 

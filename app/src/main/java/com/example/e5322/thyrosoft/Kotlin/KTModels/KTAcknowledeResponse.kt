@@ -4,4 +4,7 @@ data class KTAcknowledeResponse(
     val messages: Any,
     val resId: String,
     val response: String
+
+
+
 )

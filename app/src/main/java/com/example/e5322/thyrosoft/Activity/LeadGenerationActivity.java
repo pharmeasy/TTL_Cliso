@@ -225,6 +225,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                         if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Select*")) {
                             tv_spr_purpose.setVisibility(View.GONE);
                             edt_name.setVisibility(View.GONE);
+                            edt_pincode.setVisibility(View.GONE);
                             edt_mobile.setVisibility(View.GONE);
                             edt_remarks.setVisibility(View.GONE);
                             ll_upload.setVisibility(View.GONE);
@@ -250,6 +251,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                             if (spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Order") || spr_leadpurpose.getSelectedItem().toString().equalsIgnoreCase("Orders")) {
                                 ll_upload.setVisibility(View.VISIBLE);
                                 edt_name.setVisibility(View.VISIBLE);
+                                edt_pincode.setVisibility(View.VISIBLE);
                                 edt_mobile.setVisibility(View.VISIBLE);
                                 edt_remarks.setVisibility(View.VISIBLE);
                                 ll_channel.setVisibility(View.GONE);
@@ -258,6 +260,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
                                 ll_upload.setVisibility(View.GONE);
                                 edt_remarks.setHint("Remarks");
                                 edt_name.setVisibility(View.VISIBLE);
+                                edt_pincode.setVisibility(View.VISIBLE);
                                 edt_mobile.setVisibility(View.VISIBLE);
                                 edt_remarks.setVisibility(View.VISIBLE);
                                 // ll_channel.setVisibility(View.VISIBLE);
@@ -366,7 +369,6 @@ public class LeadGenerationActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
 
                 if (cd.isConnectingToInternet()) {
                     if (Validate()) {
@@ -622,6 +624,11 @@ public class LeadGenerationActivity extends AppCompatActivity {
             }
         }
 
+        if (edt_pincode.getText().toString().equals("")) {
+            edt_pincode.setError("Kindly Enter Pincode");
+            edt_pincode.requestFocus();
+            return false;
+        }
 
         if (!GlobalClass.isNull(edt_pincode.getText().toString())) {
             if (edt_pincode.getText().toString().equals("")) {
@@ -863,7 +870,7 @@ public class LeadGenerationActivity extends AppCompatActivity {
             ll_purpose.setVisibility(View.VISIBLE);
             if (!GlobalClass.isNull(leadPurposeResponseModel.getRespId()) && leadPurposeResponseModel.getRespId().equalsIgnoreCase("RES00001")) {
                 if (GlobalClass.CheckArrayList(leadPurposeResponseModel.getPurposeList())) {
-                    leadpurpsearay.add(0,"Select*");
+                    leadpurpsearay.add(0, "Select*");
                     for (int i = 0; i < leadPurposeResponseModel.getPurposeList().size(); i++) {
                         if (!GlobalClass.isNull(leadPurposeResponseModel.getPurposeList().get(i).getData())) {
                             leadpurpsearay.add(leadPurposeResponseModel.getPurposeList().get(i).getData());
@@ -1531,4 +1538,3 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
 
 }
-

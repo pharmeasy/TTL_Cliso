@@ -73,8 +73,17 @@ public class Covidmis_response implements Serializable {
         private String Amount_Collected;
         private String Remarks;
         private String PPEBarcode;
+        private String TestCode;
         private String SRFID, Age, AgeType, Barcode, PatientAddress, PatientPincode, Gender, CollectionAddress, CollectionPincode, SCT, SCP,Selfie;
 
+
+        public String getTestCode() {
+            return TestCode;
+        }
+
+        public void setTestCode(String testCode) {
+            TestCode = testCode;
+        }
 
         public String getEMAIL() {
             return EMAIL;

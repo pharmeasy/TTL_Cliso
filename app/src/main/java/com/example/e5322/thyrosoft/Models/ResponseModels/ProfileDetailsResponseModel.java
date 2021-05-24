@@ -3,7 +3,7 @@ package com.example.e5322.thyrosoft.Models.ResponseModels;
 public class ProfileDetailsResponseModel {
     private String Billamount, Days, PriOTP, UnbilledWOE, Unbilledmaterial, aadhar_no, ac_code, address, balance, closing_balance, credit_limit, doj, email,
             mobile, name, number, pincode, response, source_code, tsp_image, user_code;
-    private int ratePercent,maxAmount,TPCPercent;
+    private int ratePercent,maxAmount,TPCPercent,PaymentType;
 
     public int getTPCPercent() {
         return TPCPercent;
@@ -195,5 +195,13 @@ public class ProfileDetailsResponseModel {
 
     public void setMaxAmount(int maxAmount) {
         this.maxAmount = maxAmount;
+    }
+
+    public int getPaymentType() {
+        return PaymentType;
+    }
+
+    public void setPaymentType(int paymentType) {
+        PaymentType = paymentType;
     }
 }

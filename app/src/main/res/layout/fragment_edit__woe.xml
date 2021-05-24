@@ -158,25 +158,23 @@
                 android:layout_margin="3dp"
                 android:layout_weight="1"
                 android:background="@drawable/border_background_maroon"
-                android:orientation="horizontal"
-                android:weightSum="5">
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/name_edt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_margin="1dp"
-                    android:layout_marginLeft="10dp"
+                    android:windowSoftInputMode="adjustPan"
                     android:background="@drawable/background_edt"
                     android:digits="@string/Namevalidation"
                     android:hint="ENTER YOUR NAME"
                     android:inputType="textCapCharacters"
                     android:maxLength="50"
                     android:maxLines="1"
-                    android:textAllCaps="true"
                     android:textSize="@dimen/value"/>
 
-                <requestFocus />
+
             </LinearLayout>
 
 

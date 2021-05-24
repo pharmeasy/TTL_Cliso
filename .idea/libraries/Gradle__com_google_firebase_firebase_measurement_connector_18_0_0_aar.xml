@@ -18,9 +18,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/afd97b5812c50f2ee8cb0555593be342/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f87b710d68a8582736c575d5dcb8b8c8/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/cbc6bb3d733fc29ee27f5800a90041d2/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/676382b8763be42040edc8c5fe077a40/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/676382b8763be42040edc8c5fe077a40/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/676382b8763be42040edc8c5fe077a40/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/904fd7c158e578e7752555bc12307338/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/904fd7c158e578e7752555bc12307338/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/904fd7c158e578e7752555bc12307338/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

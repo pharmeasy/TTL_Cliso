@@ -4,7 +4,7 @@
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/fa488bf7831e4170dec7525ef34341ed/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/06ebcdd7106bce741d6e3c946cd2dcbb/annotations.zip!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/438ef7bf716b4d285b77d14bf737a8b8/annotations.zip!/" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/28381bd7ab4aa5066d2b08507411c81b/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc3a71a6a873e77edc1fdcb80033e391/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/fa488bf7831e4170dec7525ef34341ed/AndroidManifest.xml" />
@@ -16,9 +16,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/438ef7bf716b4d285b77d14bf737a8b8/res" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/438ef7bf716b4d285b77d14bf737a8b8/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/438ef7bf716b4d285b77d14bf737a8b8/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/28381bd7ab4aa5066d2b08507411c81b/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/28381bd7ab4aa5066d2b08507411c81b/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/core-1.0.0.aar/28381bd7ab4aa5066d2b08507411c81b/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc3a71a6a873e77edc1fdcb80033e391/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc3a71a6a873e77edc1fdcb80033e391/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bc3a71a6a873e77edc1fdcb80033e391/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

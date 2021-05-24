@@ -88,6 +88,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
             builder.addPart("PATIENTADDRESS", new StringBody("" + covidpostdata.getPATIENTADDRESS()));
             builder.addPart("PATIENTPINCODE", new StringBody("" + covidpostdata.getPATIENTPINCODE()));
             builder.addPart("SCP", new StringBody("" + covidpostdata.getSCP()));
+            builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
             builder.addPart("COLLECTIONADDRESS", new StringBody("" + covidpostdata.getCOLLECTIONADDRESS()));
             builder.addPart("COLLECTIONPINCODE", new StringBody("" + covidpostdata.getCOLLECTIONPINCODE()));
             builder.addPart("SPECIMENDATE", new StringBody("" + covidpostdata.getSPECIMENDATE()));
@@ -131,12 +132,32 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
                 builder.addPart("SELFIE", new InputStreamBody(otherfilestream1, "image/jpeg", "file_name.jpg"));
             }
 
-            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID() + "\nSOURCECODE:" + covidpostdata.getSOURCECODE() + "\nMOBILE:" + covidpostdata.getMOBILE() + "\nNAME:" + covidpostdata.getNAME()
-                    + "\nSRFID:" + covidpostdata.getSRFID() + "\nAGE:" + covidpostdata.getAGE() + "\nAGETYPE:" + covidpostdata.getAGETYPE() + "\nGENDER:" + covidpostdata.getGENDER() + "\nPATIENTADDRESS:" + covidpostdata.getPATIENTADDRESS()
-                    + "\nPATIENTPINCODE:" + covidpostdata.getPATIENTPINCODE() + "\nSCP:" + covidpostdata.getSCP() + "\nCOLLECTIONADDRESS:" + covidpostdata.getCOLLECTIONADDRESS() + "\nCOLLECTIONPINCODE:" + covidpostdata.getCOLLECTIONPINCODE() + "\nSPECIMENDATE:" + covidpostdata.getSPECIMENDATE()
-                    + "\nSPECIMENTIME:" + covidpostdata.getSPECIMENTIME() + "\nBARCODE:" + covidpostdata.getBARCODE()
-                    + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() + "\nADHAR:" + covidpostdata.getADHAR() + "\nADHAR1:" + covidpostdata.getADHAR1()
-                    + "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() + "\nOTHER:" + covidpostdata.getOTHER() + "\nOTHER1:" + covidpostdata.getOTHER1() + "\nSELFIE:" + covidpostdata.getSELFIE() +"\nWOEMODE:CLISO APP SRF");
+            Log.e(TAG, "\"Post params:- " + "" + "\nUNIQUEID:" + covidpostdata.getUNIQUEID() +
+                    "\nSOURCECODE:" + covidpostdata.getSOURCECODE() +
+                    "\nMOBILE:" + covidpostdata.getMOBILE() +
+                    "\nNAME:" + covidpostdata.getNAME() +
+                    "\nSRFID:" + covidpostdata.getSRFID() +
+                    "\nAGE:" + covidpostdata.getAGE() +
+                    "\nAGETYPE:" + covidpostdata.getAGETYPE() +
+                    "\nGENDER:" + covidpostdata.getGENDER() +
+                    "\nPATIENTADDRESS:" + covidpostdata.getPATIENTADDRESS() +
+                    "\nPATIENTPINCODE:" + covidpostdata.getPATIENTPINCODE() +
+                    "\nSCP:" + covidpostdata.getSCP() +
+                    "\nTESTCODE:" + covidpostdata.getTESTCODE() +
+                    "\nCOLLECTIONADDRESS:" + covidpostdata.getCOLLECTIONADDRESS() +
+                    "\nCOLLECTIONPINCODE:" + covidpostdata.getCOLLECTIONPINCODE() +
+                    "\nSPECIMENDATE:" + covidpostdata.getSPECIMENDATE() +
+                    "\nSPECIMENTIME:" + covidpostdata.getSPECIMENTIME() +
+                    "\nBARCODE:" + covidpostdata.getBARCODE() +
+                    "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED() +
+                    "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION() +
+                    "\nADHAR:" + covidpostdata.getADHAR() +
+                    "\nADHAR1:" + covidpostdata.getADHAR1() +
+                    "\nVIALIMAGE:" + covidpostdata.getVIAIMAGE() +
+                    "\nOTHER:" + covidpostdata.getOTHER() +
+                    "\nOTHER1:" + covidpostdata.getOTHER1() +
+                    "\nSELFIE:" + covidpostdata.getSELFIE() +
+                    "\nWOEMODE:CLISO APP SRF");
             httpPost.setEntity(builder.build());
             httpPost.setHeader(Constants.HEADER_USER_AGENT, GlobalClass.getHeaderValue(mActivity));
             HttpResponse httpResponse = httpclient.execute(httpPost);

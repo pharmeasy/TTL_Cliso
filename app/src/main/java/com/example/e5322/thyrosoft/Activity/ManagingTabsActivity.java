@@ -1453,6 +1453,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                                     saveProfileDetails.putInt(Constants.rate_percent, responseModel.getRatePercent());
                                     saveProfileDetails.putInt(Constants.tpcPercent, responseModel.getTPCPercent());
                                     saveProfileDetails.putInt(Constants.max_amt, responseModel.getMaxAmount());
+//                                    saveProfileDetails.putInt("PaymentType", responseModel.getPaymentType());
                                     saveProfileDetails.apply();
 
 

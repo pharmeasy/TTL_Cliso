@@ -287,6 +287,25 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_5sdp"
+                android:padding="@dimen/_4sdp"
+                android:background="@drawable/corner_curve_maroon">
+
+                <Spinner
+                    android:id="@+id/spr_test"
+                    style="@style/medium_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@color/transparent"
+                    android:textSize="@dimen/value" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -486,6 +505,9 @@
                 android:maxLength="50"
                 android:padding="@dimen/_5sdp"
                 android:textSize="@dimen/value" />
+
+
+
 
 
             <EditText
@@ -741,7 +763,45 @@
                     android:text="UPLOAD"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_prescription"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_prescription"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofilepresc"
@@ -795,9 +855,9 @@
                     android:layout_weight="0.8"
                     android:drawablePadding="@dimen/_2sdp"
                     android:text="Aadhaar/Passport"
-                    android:textAllCaps="true"
                     android:textColor="@color/black"
                     android:textSize="@dimen/value"
+                    android:textAllCaps="true"
                     android:textStyle="bold" />
 
                 <Button
@@ -811,7 +871,46 @@
                     android:text="Upload"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
+
 
                 <TextView
                     android:id="@+id/txt_nofileadhar"
@@ -834,7 +933,8 @@
                     android:layout_weight="1.4"
                     android:drawablePadding="@dimen/_2sdp"
                     android:padding="@dimen/_5sdp"
-                    android:visibility="gone">
+                    android:visibility="gone"
+                    tools:ignore="RtlHardcoded">
 
                     <TextView
                         android:id="@+id/txt_adharfileupload"
@@ -881,7 +981,45 @@
                     android:text="@string/upload"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_vial"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_vial"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofilevial"
@@ -951,7 +1089,45 @@
                     android:text="Upload"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_other"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_other"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofileother"
@@ -1023,7 +1199,32 @@
                     android:text="Upload"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_selfie"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_selfie"

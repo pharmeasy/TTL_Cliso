@@ -34,6 +34,7 @@ import com.example.e5322.thyrosoft.Adapter.GetPatientSampleDetails;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.GlobalClass;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.RequestModels.DeleteWOERequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.DeleteWOEResponseModel;
 import com.example.e5322.thyrosoft.R;
@@ -331,13 +332,13 @@ public class SummaryActivity_New extends AppCompatActivity {
         //   finalspecimenttypewiselist= bundle.getParcelableArrayList("getOutlablist");
         preferences = getSharedPreferences("patientDetails", MODE_PRIVATE);
 
-        patientName = preferences.getString("name", null);
-        patientYear = preferences.getString("year", null);
-        patientYearType = preferences.getString("yearType", null);
-        patientGender = preferences.getString("gender", null);
+        patientName = preferences.getString("name", "");
+        patientYear = preferences.getString("year", "");
+        patientYearType = preferences.getString("yearType", "");
+        patientGender = preferences.getString("gender", "");
 
-        getFinalTime = GlobalClass.changetimeformate(getFinalTime);
-
+//        getFinalTime = GlobalClass.changetimeformate(getFinalTime);
+        getFinalTime= DateUtils.Req_Date_Req(getFinalTime, "hh:mm a", "HH:mm");
         Log.e(TAG, "getFinalDate---->" + getFinalDate);
         Log.e(TAG, "getFinalTime---->" + getFinalTime);
 

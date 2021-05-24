@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -335,7 +336,8 @@
                 android:maxLength="50"
                 android:textColor="@color/black"
                 android:padding="@dimen/_5sdp"
-                android:textSize="@dimen/value" />
+                android:textSize="@dimen/value"
+                android:inputType="textEmailAddress"/>
 
             <EditText
                 android:id="@+id/edt_coll_address"
@@ -599,7 +601,45 @@
                     android:backgroundTint="@color/maroon"
                     android:textColor="@color/white"
                     android:textAllCaps="false"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:id="@+id/ll_prescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_prescription"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_prescription"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofilepresc"
@@ -669,7 +709,45 @@
                     android:textAllCaps="false"
                     android:backgroundTint="@color/maroon"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+                <LinearLayout
+                    android:id="@+id/ll_aadhar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofileadhar"
@@ -740,7 +818,46 @@
                     android:textAllCaps="true"
                     android:backgroundTint="@color/maroon"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_vial"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_vial"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_vial"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofilevial"
@@ -811,7 +928,46 @@
                     android:textAllCaps="true"
                     android:backgroundTint="@color/maroon"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_other"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_other"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_other"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_nofileother"
@@ -885,7 +1041,33 @@
                     android:textAllCaps="true"
                     android:backgroundTint="@color/maroon"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:id="@+id/ll_selfie"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_selfie"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/txt_selfie"

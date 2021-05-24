@@ -21,7 +21,7 @@ public class Api {
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
     public static String Velso = "https://velso.thyrocare.cloud/api/";
     public static String Techso = "http://techsostng.thyrocare.cloud/";*/
-//
+
     //TODO staging
     public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";

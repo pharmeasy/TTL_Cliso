@@ -245,6 +245,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     ConnectionDetector connectionDetector;
     RecyclerView recy_brand;
     private String EMAIL_ID;
+    private int PaymentType;
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -276,6 +277,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         prefe = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         brandName = prefe.getString("WOEbrand", "");
         typeName = prefe.getString("woetype", null);
+
+   /*     SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
+        PaymentType = getProfileName.getInt("PaymentType", 0);*/
+        PaymentType = 0;
+
 
         btn_choosefile = findViewById(R.id.btn_choosefile);
         txt_fileupload = findViewById(R.id.txt_fileupload);
@@ -1172,55 +1178,60 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.scan_barcode_all, Toast.LENGTH_SHORT).show();
             } else {
                 if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
-                    Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("name", nameString);
-                    intent.putExtra("mobile", kycinfo);
-                    intent.putExtra("amount", b2b_rate);
-                    intent.putExtra("email", EMAIL_ID);
-                    startActivity(intent);
-                /*    final String[] paymentItems = new String[]{"Cash", "Digital"};
-                    androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
-                    builder.setTitle("Choose payment mode")
-                            .setItems(paymentItems, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (paymentItems[which].equals("Cash")) {
+                    if (PaymentType==1){
+                        Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.putExtra("name", nameString);
+                        intent.putExtra("mobile", kycinfo);
+                        intent.putExtra("amount", b2b_rate);
+                        intent.putExtra("email", EMAIL_ID);
+                        startActivity(intent);
+                    }else if (PaymentType==2){
+                        final String[] paymentItems = new String[]{"Cash", "Digital"};
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                        builder.setTitle("Choose payment mode")
+                                .setItems(paymentItems, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (paymentItems[which].equals("Cash")) {
 
-                                        androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
-                                        builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
-                                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        WOE();
-                                                    }
-                                                })
-                                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                })
-                                                .show();
-                                    } else {
-                                        Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        intent.putExtra("name", nameString);
-                                        intent.putExtra("mobile", kycinfo);
-                                        intent.putExtra("amount", b2b_rate);
-                                        intent.putExtra("email", EMAIL_ID);
-                                        startActivity(intent);
+                                            androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
+                                            builder1.setMessage("Confirm amount received ₹ " + b2b_rate + "")
+                                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            WOE();
+                                                        }
+                                                    })
+                                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.dismiss();
+                                                        }
+                                                    })
+                                                    .show();
+                                        } else {
+                                            Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
+                                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            intent.putExtra("name", nameString);
+                                            intent.putExtra("mobile", kycinfo);
+                                            intent.putExtra("amount", b2b_rate);
+                                            intent.putExtra("email", EMAIL_ID);
+                                            startActivity(intent);
 
+                                        }
+                                        dialog.dismiss();
                                     }
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            }).show();*/
+                                })
+                                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+                    }else {
+                        WOE();
+                    }
 
                 } else {
                     WOE();
@@ -1282,12 +1293,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             //  Log.e(TAG, " getFinalTime---->" + getFinalTime + "  getOnlyTime---> " + getOnlyTime + " ---- cutString ---->" + GlobalClass.cutString);
         }
 
-        try {
-            String getFulltime = sampleCollectionDate + " " + getFinalTime;
-            GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        String getFulltime = sampleCollectionDate + " " + getFinalTime;
+        GlobalClass.Req_Date_Req(getFulltime, "hh:mm a", "HH:mm:ss");
 
 
         MyPojoWoe myPojoWoe = new MyPojoWoe();
@@ -1428,7 +1436,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                         editor.remove("getProductNames");
                                         editor.apply();
                                         Global.OTPVERIFIED = false;
-                                        GlobalClass.transID="";
+                                        GlobalClass.transID = "";
                                         sendGPSDetails = GlobalClass.setVolleyReq(Scan_Barcode_ILS_New.this);
                                         JSONObject jsonObject = null;
                                         try {
@@ -1663,7 +1671,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-            }else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
                 try {
                     if (isvial) {
                         imagelist.clear();
