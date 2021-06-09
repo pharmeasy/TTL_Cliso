@@ -28,6 +28,7 @@ public class BaseModel implements Parcelable {
     Rate rate;
     private int isAB;
     private boolean isPOCT;
+    private boolean isPrescription;
 
     protected BaseModel(Parcel in) {
         product = in.readString();
@@ -46,6 +47,7 @@ public class BaseModel implements Parcelable {
         rate = in.readParcelable(Rate.class.getClassLoader());
         isAB = in.readInt();
         isPOCT = in.readByte() != 0;
+        isPrescription = in.readByte() != 0;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class BaseModel implements Parcelable {
         dest.writeParcelable(rate, flags);
         dest.writeInt(isAB);
         dest.writeByte((byte) (isPOCT ? 1 : 0));
+        dest.writeByte((byte) (isPrescription ? 1 : 0));
     }
 
     @Override
@@ -84,6 +87,15 @@ public class BaseModel implements Parcelable {
             return new BaseModel[size];
         }
     };
+
+
+    public boolean isPrescription() {
+        return isPrescription;
+    }
+
+    public void setPrescription(boolean prescription) {
+        isPrescription = prescription;
+    }
 
     public boolean isPOCT() {
         return isPOCT;

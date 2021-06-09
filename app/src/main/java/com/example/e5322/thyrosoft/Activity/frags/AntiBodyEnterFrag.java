@@ -565,6 +565,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         covidpostdata.setENTERBY(usercode);
         covidpostdata.setHOSPITAL(edt_address.getText().toString());
         covidpostdata.setWOEID(Patientid);
+        covidpostdata.setAPIKEY(apikey);
         if (spr_gender.getSelectedItem().toString().equalsIgnoreCase("Male")) {
             covidpostdata.setGENDER("M");
         } else {

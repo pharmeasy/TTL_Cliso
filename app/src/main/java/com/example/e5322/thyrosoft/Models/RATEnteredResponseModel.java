@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.Models;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RATEnteredResponseModel {
 
@@ -82,6 +81,7 @@ public class RATEnteredResponseModel {
         private int status;
         private String uploadTIME;
         private String result;
+        private boolean isResubmitted;
 
         public String getResult() {
             return result;
@@ -161,6 +161,14 @@ public class RATEnteredResponseModel {
 
         public void setUploadTIME(String uploadTIME) {
             this.uploadTIME = uploadTIME;
+        }
+
+        public boolean isResubmitted() {
+            return isResubmitted;
+        }
+
+        public void setResubmitted(boolean resubmitted) {
+            isResubmitted = resubmitted;
         }
     }
 }

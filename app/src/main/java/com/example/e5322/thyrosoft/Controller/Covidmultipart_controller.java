@@ -8,6 +8,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.CovidEditActivity;
+import com.example.e5322.thyrosoft.Activity.RATEditActivity;
 import com.example.e5322.thyrosoft.Activity.frags.AntiBodyEnterFrag;
 import com.example.e5322.thyrosoft.Fragment.Covidenter_Frag;
 import com.example.e5322.thyrosoft.Fragment.RATEnterFrag;
@@ -41,6 +42,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
     Covidpostdata covidpostdata;
     CovidEditActivity covidEditActivity;
     AntiBodyEnterFrag antiBodyEnterFrag;
+    RATEditActivity ratEditActivity;
 
     public Covidmultipart_controller(Covidenter_Frag covidenter_frag, Activity activity, Covidpostdata covidpostdata) {
         this.covidenter_frag = covidenter_frag;
@@ -71,6 +73,14 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         this.mActivity = activity;
         status_code = 0;
         flag = 4;
+        this.covidpostdata = covidpostdata;
+    }
+
+    public Covidmultipart_controller(RATEditActivity ratEditActivity, Activity activity, Covidpostdata covidpostdata) {
+        this.ratEditActivity = ratEditActivity;
+        this.mActivity = activity;
+        status_code = 0;
+        flag = 5;
         this.covidpostdata = covidpostdata;
     }
 
@@ -105,6 +115,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("GENDER", new StringBody("" + covidpostdata.getGENDER()));
                 builder.addPart("ENTERBY", new StringBody("" + covidpostdata.getENTERBY()));
                 builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
+                builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
                 if (covidpostdata.getHOSPITAL() != null) {
                     builder.addPart("HOSPITAL", new StringBody("" + covidpostdata.getHOSPITAL()));
                 }
@@ -118,6 +129,10 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     FileInputStream adharfilestream1 = new FileInputStream(covidpostdata.getADHAR1());
                     builder.addPart("ADHAR1", new InputStreamBody(adharfilestream1, "image/jpeg", "file_name.jpg"));
                 }
+
+
+                builder.addPart("TECHNICIAN", new StringBody("" + covidpostdata.getTECHNICIAN()));
+                Log.e(TAG, "\"Post params:- " + "" + "\nTECHNICIAN:" + covidpostdata.getTECHNICIAN());
 
 
                 FileInputStream trffilestream = new FileInputStream(covidpostdata.getTRF());
@@ -166,6 +181,7 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("ENTERBY", new StringBody("" + covidpostdata.getENTERBY()));
                 builder.addPart("HOSPITAL", new StringBody("" + covidpostdata.getHOSPITAL()));
                 builder.addPart("WOEID", new StringBody("" + covidpostdata.getWOEID()));
+                builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
 
 
                 if (covidpostdata.getADHAR1() != null) {
@@ -175,6 +191,35 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 if (covidpostdata.getADHAR() != null) {
                     FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
                     builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
+                }
+            } else if (flag == 5) {
+                builder.addPart("UNIQUEID", new StringBody("" + covidpostdata.getUNIQUEID()));
+                builder.addPart("SOURCECODE", new StringBody("" + covidpostdata.getSOURCECODE()));
+                builder.addPart("MOBILE", new StringBody("" + covidpostdata.getMOBILE()));
+                builder.addPart("NAME", new StringBody("" + covidpostdata.getNAME()));
+                builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
+                builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
+                builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
+
+                FileInputStream adharfilestream = new FileInputStream(covidpostdata.getADHAR());
+                builder.addPart("ADHAR", new InputStreamBody(adharfilestream, "image/jpeg", "file_name.jpg"));
+                if (covidpostdata.getADHAR1() != null) {
+                    FileInputStream adharfilestream1 = new FileInputStream(covidpostdata.getADHAR1());
+                    builder.addPart("ADHAR1", new InputStreamBody(adharfilestream1, "image/jpeg", "file_name.jpg"));
+                }
+                FileInputStream trffilestream = new FileInputStream(covidpostdata.getTRF());
+                builder.addPart("TRF", new InputStreamBody(trffilestream, "image/jpeg", "file_name.jpg"));
+                if (covidpostdata.getTRF1() != null) {
+                    FileInputStream trffilestream1 = new FileInputStream(covidpostdata.getTRF1());
+                    builder.addPart("TRF1", new InputStreamBody(trffilestream1, "image/jpeg", "file_name.jpg"));
+                }
+                if (covidpostdata.getOTHER() != null) {
+                    FileInputStream otherfilestream1 = new FileInputStream(covidpostdata.getOTHER());
+                    builder.addPart("OTHER", new InputStreamBody(otherfilestream1, "image/jpeg", "file_name.jpg"));
+                }
+                if (covidpostdata.getOTHER1() != null) {
+                    FileInputStream otherfilestream2 = new FileInputStream(covidpostdata.getOTHER1());
+                    builder.addPart("OTHER1", new InputStreamBody(otherfilestream2, "image/jpeg", "file_name.jpg"));
                 }
             } else {
                 if (flag == 2) {
@@ -187,6 +232,12 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                 builder.addPart("TESTCODE", new StringBody("" + covidpostdata.getTESTCODE()));
                 builder.addPart("PPEBARCODE", new StringBody("" + covidpostdata.getPPEBARCODE()));
                 builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
+                builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
+
+                if (flag == 1) {
+                    builder.addPart("TECHNICIAN", new StringBody("" + covidpostdata.getTECHNICIAN()));
+                    Log.e(TAG, "\"Post params:- " + "" + "\nTECHNICIAN:" + covidpostdata.getTECHNICIAN());
+                }
 
                 if (covidpostdata.getPRESCRIPTION() != null) {
                     FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
@@ -240,11 +291,14 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     + "\nMOBILE:" + covidpostdata.getMOBILE()
                     + "\nNAME:" + covidpostdata.getNAME()
                     + "\nPPEBARCODE:" + covidpostdata.getPPEBARCODE()
+                    + "\nBARCODE:" + covidpostdata.getBARCODE()
+                    + "\nTESTCODE:" + covidpostdata.getTESTCODE()
                     + "\nAMOUNTCOLLECTED:" + covidpostdata.getAMOUNTCOLLECTED()
                     + "\nPRESCRIPTION:" + covidpostdata.getPRESCRIPTION()
                     + "\nADHAR:" + covidpostdata.getADHAR()
                     + "\nADHAR1:" + covidpostdata.getADHAR1()
                     + "\nTESTCODE:" + covidpostdata.getTESTCODE()
+                    + "\nAPIKEY:" + covidpostdata.getAPIKEY()
                     + "\nTRF:" + covidpostdata.getTRF()
                     + "\nTRF1:" + covidpostdata.getTRF1()
                     + "\nEMAIL:" + covidpostdata.getEMAIL()
@@ -286,6 +340,8 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
                     ratEnterFrag.getUploadResponse(response);
                 } else if (flag == 4) {
                     antiBodyEnterFrag.getUploadResponse(response);
+                } else if (flag == 5) {
+                    ratEditActivity.getUploadResponse(response);
                 }
 
             } else {

@@ -25,9 +25,9 @@
             android:layout_gravity="center"
             android:layout_weight="4"
             android:gravity="center"
-            android:textColor="@color/maroon"
             android:text="Upload documents"
             android:textAllCaps="true"
+            android:textColor="@color/maroon"
             android:textSize="@dimen/header"
             android:textStyle="bold" />
 
@@ -50,9 +50,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="gone"
             android:layout_margin="@dimen/value"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="2">
 
             <RadioButton
@@ -63,8 +63,8 @@
                 android:layout_weight="1"
                 android:buttonTint="@color/maroon"
                 android:checked="true"
-                android:textAllCaps="true"
                 android:text="@string/misscallccc"
+                android:textAllCaps="true"
                 android:textSize="@dimen/value" />
 
             <RadioButton
@@ -81,8 +81,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="2">
 
             <EditText
@@ -118,9 +118,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:layout_marginTop="@dimen/value"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -129,8 +129,8 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="true"
                 android:text="NAME : "
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value"
                 android:textStyle="bold" />
@@ -143,8 +143,8 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="true"
                 android:text="@string/app_name"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value" />
 
@@ -154,9 +154,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:layout_marginTop="@dimen/value"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -165,8 +165,8 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="true"
                 android:text="Amount collected : "
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value"
                 android:textStyle="bold" />
@@ -179,8 +179,8 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginBottom="@dimen/_3sdp"
-                android:textAllCaps="true"
                 android:text="@string/app_name"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value" />
 
@@ -190,8 +190,8 @@
         <RelativeLayout
             android:id="@+id/rel_verify_mobile"
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp">
 
             <TextView
                 android:id="@+id/tv_verifiedmob"
@@ -208,12 +208,12 @@
 
             <ImageView
                 android:id="@+id/iv_tick_img"
-                android:layout_toRightOf="@+id/tv_verifiedmob"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="@dimen/value"
+                android:layout_toRightOf="@+id/tv_verifiedmob"
+                android:gravity="center"
                 android:src="@drawable/otpverify" />
 
         </RelativeLayout>
@@ -223,8 +223,8 @@
             android:id="@+id/lin_missed_verify"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/edt_missed_mobile"
@@ -279,14 +279,14 @@
 
             <TextView
                 android:id="@+id/tv_resetno"
-                android:layout_toRightOf="@+id/tv_mobileno"
-                android:layout_marginLeft="@dimen/value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|left"
                 android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginLeft="@dimen/value"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginBottom="@dimen/_3sdp"
+                android:layout_toRightOf="@+id/tv_mobileno"
                 android:textAllCaps="true"
                 android:textColor="@color/maroon"
                 android:textSize="@dimen/value"
@@ -348,8 +348,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0.8"
-                android:textColor="@color/maroon"
                 android:textAllCaps="true"
+                android:textColor="@color/maroon"
                 android:textSize="@dimen/value"
                 android:textStyle="bold"
                 android:visibility="gone" />
@@ -361,8 +361,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/value"
-            android:weightSum="3"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <TextView
                 android:id="@+id/txt_presciption"
@@ -385,12 +385,48 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="UPLOAD"
-                android:backgroundTint="@color/maroon"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/white"
+                android:backgroundTint="@color/maroon"
+                android:text="UPLOAD"
                 android:textAllCaps="true"
-                android:textSize="@dimen/value" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:background="@drawable/border_background_maroon"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5">
+
+                <ImageView
+                    android:id="@+id/img_camera_pre"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_3"
+                    android:background="@color/black" />
+
+                <ImageView
+                    android:id="@+id/img_gallery_pre"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:src="@drawable/ic_gallery"
+                    android:tint="@color/black" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txt_nofilepresc"
@@ -422,8 +458,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -432,8 +468,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="3"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <TextView
                 android:id="@+id/txt_adhar"
@@ -456,12 +492,48 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
                 android:backgroundTint="@color/maroon"
-                android:textColor="@color/white"
+                android:text="@string/uploadfile"
                 android:textAllCaps="true"
-                android:textSize="@dimen/value" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:background="@drawable/border_background_maroon"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5">
+
+                <ImageView
+                    android:id="@+id/img_camera_aadhar"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_3"
+                    android:background="@color/black" />
+
+                <ImageView
+                    android:id="@+id/img_gallery_aadhar"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:src="@drawable/ic_gallery"
+                    android:tint="@color/black" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txt_nofileadhar"
@@ -492,8 +564,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -526,12 +598,48 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
                 android:backgroundTint="@color/maroon"
-                android:textColor="@color/white"
+                android:text="@string/uploadfile"
                 android:textAllCaps="true"
-                android:textSize="@dimen/value" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:background="@drawable/border_background_maroon"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5">
+
+                <ImageView
+                    android:id="@+id/img_camera_trf"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_3"
+                    android:background="@color/black" />
+
+                <ImageView
+                    android:id="@+id/img_gallery_trf"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:src="@drawable/ic_gallery"
+                    android:tint="@color/black" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txt_nofiletrf"
@@ -563,9 +671,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/value" />
-
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -600,12 +707,48 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="@string/uploadfile"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/white"
                 android:backgroundTint="@color/maroon"
+                android:text="@string/uploadfile"
                 android:textAllCaps="true"
-                android:textSize="@dimen/value" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:background="@drawable/border_background_maroon"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5">
+
+                <ImageView
+                    android:id="@+id/img_camera_vial"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_3"
+                    android:background="@color/black" />
+
+                <ImageView
+                    android:id="@+id/img_gallery_vial"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:src="@drawable/ic_gallery"
+                    android:tint="@color/black" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txt_nofilevial"
@@ -636,12 +779,13 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -658,9 +802,9 @@
                 android:layout_weight="0.8"
                 android:drawablePadding="@dimen/_2sdp"
                 android:text="@string/other"
+                android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/value"
-                android:textAllCaps="true"
                 android:textStyle="bold" />
 
             <Button
@@ -670,12 +814,48 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_weight="0.8"
-                android:text="Upload"
                 android:background="@drawable/covidbtn"
                 android:backgroundTint="@color/maroon"
-                android:textColor="@color/white"
+                android:text="Upload"
                 android:textAllCaps="true"
-                android:textSize="@dimen/value" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/value"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.8"
+                android:background="@drawable/border_background_maroon"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5">
+
+                <ImageView
+                    android:id="@+id/img_camera_other"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:src="@drawable/ic_camera"
+                    android:tint="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="@dimen/dp_2"
+                    android:layout_height="30dp"
+                    android:layout_margin="@dimen/dp_3"
+                    android:background="@color/black" />
+
+                <ImageView
+                    android:id="@+id/img_gallery_other"
+                    android:layout_width="@dimen/dp_30"
+                    android:layout_height="@dimen/dp_30"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:src="@drawable/ic_gallery"
+                    android:tint="@color/black" />
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/txt_nofileother"
@@ -706,8 +886,8 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_3sdp"
                     android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -718,6 +898,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
+
             <Button
                 android:id="@+id/btn_submit"
                 android:layout_width="@dimen/_100sdp"
@@ -727,10 +908,10 @@
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_toLeftOf="@+id/btn_reset"
                 android:background="@drawable/clear_button"
+                android:clickable="false"
+                android:enabled="false"
                 android:text="@string/submit"
                 android:textAllCaps="true"
-                android:enabled="false"
-                android:clickable="false"
                 android:textColor="@color/black"
                 android:textSize="@dimen/label" />
 
@@ -739,14 +920,14 @@
                 android:layout_width="@dimen/_100sdp"
                 android:layout_height="@dimen/_26sdp"
                 android:layout_gravity="center"
+                android:layout_marginStart="@dimen/_3sdp"
                 android:layout_marginLeft="@dimen/_3sdp"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:background="@drawable/covidbtn"
-                android:textColor="@color/white"
                 android:backgroundTint="@color/maroon"
                 android:text="@string/btnreset"
-                android:layout_marginStart="@dimen/_3sdp"
                 android:textAllCaps="true"
+                android:textColor="@color/white"
                 android:textSize="@dimen/label" />
 
 

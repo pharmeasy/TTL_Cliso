@@ -169,6 +169,7 @@
     <string name="reset_mob">Reset Number?</string>
     <string name="allfields">Note : Submit button will enable once all mandatory fields entered</string>
     <string name="alphabets1">QWERTYUIOPASDFGHJKLZXCVBNM</string>
+    <string name="alphabetsandnumber">QWERTYUIOPASDFGHJKLZXCVBNM 0123456789</string>
     <string name="imgupload">Image Uploaded</string>
     <string name="viewupload">View Uploads</string>
     <string-array name="arr_city">

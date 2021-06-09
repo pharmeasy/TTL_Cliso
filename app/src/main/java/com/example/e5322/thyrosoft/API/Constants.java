@@ -92,6 +92,7 @@ public class Constants {
     public static final String PREF_PRODUCTS_CACHING = "syncpref";
     public static final String PREF_Profile_CACHING = "syncprofile";
     public static final String PREF_Video_CACHING = "syncvideo";
+    public static final String PREF_SCT_CACHING = "sctselected";
     public static final String PREF_POCT_CACHING = "POCT";
 
 
@@ -429,6 +430,8 @@ public class Constants {
     public static String HEMOGRAM_CBC_name = "HEMOGRAM/CBC";
     public static String HBA_name = "HBA";
     public static String HBA_name_1 = "HbA1c";
+
+    public static String setSCPmsg = "Select Technician*";
 
     public static String TECHSO_RECEIPTS_API = "/api/Ledger/OrderReceipt/";
     public static String GENERATE_PAYMENT_COLLECTION_LINK = VERSION_API_URL + "/PayThyrocare/StartTransaction";

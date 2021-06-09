@@ -42,6 +42,24 @@ Covidpostdata {
     File OTHER1;
     File SELFIE;
 
+    String TECHNICIAN;
+    String APIKEY;
+
+    public String getTECHNICIAN() {
+        return TECHNICIAN;
+    }
+
+    public void setTECHNICIAN(String TECHNICIAN) {
+        this.TECHNICIAN = TECHNICIAN;
+    }
+
+    public String getAPIKEY() {
+        return APIKEY;
+    }
+
+    public void setAPIKEY(String APIKEY) {
+        this.APIKEY = APIKEY;
+    }
 
     public String getPPEBARCODE() {
         return PPEBARCODE;

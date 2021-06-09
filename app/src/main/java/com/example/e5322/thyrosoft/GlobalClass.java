@@ -1259,6 +1259,8 @@ public class GlobalClass {
                 editor = activity.getSharedPreferences(Constants.PREF_Profile_CACHING, 0).edit();
             } else if (type.equalsIgnoreCase("Video")) {
                 editor = activity.getSharedPreferences(Constants.PREF_Video_CACHING, 0).edit();
+            } else if (type.equalsIgnoreCase("SCTTech")) {
+                editor = activity.getSharedPreferences(Constants.PREF_SCT_CACHING, 0).edit();
             } else if (type.equalsIgnoreCase("POCT")) {
                 editor = activity.getSharedPreferences(Constants.PREF_POCT_CACHING, 0).edit();
             }
@@ -1275,9 +1277,13 @@ public class GlobalClass {
             preferences = mActivity.getSharedPreferences(Constants.PREF_Profile_CACHING, 0);
         } else if (type.equalsIgnoreCase("Video")) {
             preferences = mActivity.getSharedPreferences(Constants.PREF_Video_CACHING, 0);
+        } else if (type.equalsIgnoreCase("SCTTech")) {
+            preferences = mActivity.getSharedPreferences(Constants.PREF_SCT_CACHING, 0);
         } else if (type.equalsIgnoreCase("POCT")) {
             preferences = mActivity.getSharedPreferences(Constants.PREF_POCT_CACHING, 0);
         }
+
+
         if (GlobalClass.isNull(preferences.getString("date", ""))) {
             return true;
         }
@@ -1388,6 +1394,8 @@ public class GlobalClass {
     public static void volleyRetryPolicy(JsonObjectRequest request) {
         RetryPolicy policy = new DefaultRetryPolicy(60000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
         request.setRetryPolicy(policy);
+
+
     }
 
     public static void volleyRetryPolicy(StringRequest request) {
@@ -1450,25 +1458,25 @@ public class GlobalClass {
             getval = "00";
         } else if (currentHourIn24Format <= 10) {
             getval = "05";
-        }else if (currentHourIn24Format <= 15){
+        } else if (currentHourIn24Format <= 15) {
             getval = "10";
-        }else if (currentHourIn24Format <= 20){
+        } else if (currentHourIn24Format <= 20) {
             getval = "15";
-        }else if (currentHourIn24Format <= 25){
+        } else if (currentHourIn24Format <= 25) {
             getval = "20";
-        }else if (currentHourIn24Format <= 30){
+        } else if (currentHourIn24Format <= 30) {
             getval = "25";
-        }else if (currentHourIn24Format <= 35){
+        } else if (currentHourIn24Format <= 35) {
             getval = "30";
-        }else if (currentHourIn24Format <= 40){
+        } else if (currentHourIn24Format <= 40) {
             getval = "35";
-        }else if (currentHourIn24Format <= 45){
+        } else if (currentHourIn24Format <= 45) {
             getval = "40";
-        }else if (currentHourIn24Format <= 50){
+        } else if (currentHourIn24Format <= 50) {
             getval = "45";
-        }else if (currentHourIn24Format <= 55){
+        } else if (currentHourIn24Format <= 55) {
             getval = "50";
-        }else if (currentHourIn24Format <= 60){
+        } else if (currentHourIn24Format <= 60) {
             getval = "55";
         }
 

@@ -40,15 +40,20 @@ import com.example.e5322.thyrosoft.Models.RequestModels.PaytmVerifyChecksumReque
 import com.example.e5322.thyrosoft.Models.ResponseModels.AckBroadcastMsgResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.PatientDetailsAPiResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.PaytmVerifyChecksumResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.UploadPrescResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.Tokenresponse;
 import com.example.e5322.thyrosoft.Models.VideosResponseModel;
 import com.example.e5322.thyrosoft.Models.WOERequestModel;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface PostAPIInteface {
 
@@ -123,4 +128,11 @@ public interface PostAPIInteface {
 
     @POST("getPatients")
     Call<PatientDetailsAPiResponseModel> CallGetPatientDetailsAPI(@Body GetPatientDetailsRequestModel requestModel);
+    @Multipart
+    @POST("DocumentUpload")
+    Call<UploadPrescResponseModel> UploadPrescriptionAPI(@Part MultipartBody.Part ImgUrl,
+                                               @Part("SourceCode") RequestBody SourceCode,
+                                               @Part("Patientid") RequestBody Patientid,
+                                               @Part("DocType") RequestBody DocType,
+                                               @Part("ENTRYBY") RequestBody ENTRYBY);
 }

@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 public class Outlabdetails_OutLab implements Parcelable {
     String code, name,isCPL, product, type, trf;
+    private boolean isPrescription;
     int isNHL;
     Rate_OutLab rate;
     Sampletype_OutLab[] sampletype;
@@ -31,6 +32,7 @@ public class Outlabdetails_OutLab implements Parcelable {
         isNHL = in.readInt();
         rate = in.readParcelable(Rate_OutLab.class.getClassLoader());
         sampletype = in.createTypedArray(Sampletype_OutLab.CREATOR);
+        isPrescription = in.readByte() != 0;
     }
 
     @Override
@@ -44,6 +46,7 @@ public class Outlabdetails_OutLab implements Parcelable {
         dest.writeInt(isNHL);
         dest.writeParcelable(rate, flags);
         dest.writeTypedArray(sampletype, flags);
+        dest.writeByte((byte) (isPrescription ? 1 : 0));
     }
 
     @Override
@@ -62,6 +65,14 @@ public class Outlabdetails_OutLab implements Parcelable {
             return new Outlabdetails_OutLab[size];
         }
     };
+
+    public boolean isPrescription() {
+        return isPrescription;
+    }
+
+    public void setPrescription(boolean prescription) {
+        isPrescription = prescription;
+    }
 
     public int getIsNHL() {
         return isNHL;

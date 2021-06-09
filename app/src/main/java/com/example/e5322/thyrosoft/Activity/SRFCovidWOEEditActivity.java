@@ -507,7 +507,6 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                         verifyBarcode(s.toString());
                     } else {
                         Toast.makeText(activity, "Barcode not Matched", Toast.LENGTH_SHORT).show();
-
                     }
                 }
             }
@@ -1414,6 +1413,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                 covidpostdata.setAGE(edt_age.getText().toString().trim());
                 covidpostdata.setAGETYPE(age_type);
                 covidpostdata.setGENDER(gender);
+                covidpostdata.setTESTCODE("" + woeDetailsModel.getTestCode());
                 covidpostdata.setPATIENTADDRESS(edt_patient_address.getText().toString().trim());
                 covidpostdata.setPATIENTPINCODE(edt_patient_pincode.getText().toString().trim());
                 covidpostdata.setSCP(spn_scp.getSelectedItem().toString());
@@ -1424,6 +1424,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
                 covidpostdata.setBARCODE(btn_barcd.getText().toString().trim());
                 covidpostdata.setVIAIMAGE(vial_file);
                 covidpostdata.setEMAIL(edt_email.getText().toString());
+                covidpostdata.setAPIKEY(apikey);
                 if (selfie_file != null) {
                     covidpostdata.setSELFIE(selfie_file);
                 }

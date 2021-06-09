@@ -1351,6 +1351,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
 
         getProfileDetails(this);
         CheckVideoData();
+        ClearScpSRFData();
 
         Intent i = new Intent(ManagingTabsActivity.this, ManagingTabsActivity.class);
         startActivity(i);
@@ -1528,6 +1529,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         prefsEditor1.clear();
         prefsEditor1.commit();
 
+        ClearScpSRFData();
         clearApplicationData();
 
         Constants.covidwoe_flag = "0";
@@ -1541,6 +1543,12 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
         Intent f = new Intent(getApplicationContext(), Login.class);
         startActivity(f);
         finish();
+    }
+
+    private void ClearScpSRFData() {
+        SharedPreferences.Editor asdas = getSharedPreferences("SCPDATA", 0).edit();
+        asdas.clear();
+        asdas.commit();
     }
 
     public void clearApplicationData() {

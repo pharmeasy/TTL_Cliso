@@ -22,6 +22,7 @@ public class ControllersGlobalInitialiser extends MultiDexApplication {
     public static GenerateTokenController generateTokenController;
     public static POSTBookLeadController POSTBookLeadController;
     public static VersionCheckAPIController versionCheckAPIController;
+    public static getSCPSRFAPIController getSCPSRFAPIController;
     public static GetOTPCreditMISController getOTPCreditMISController;
     public static Viewgenhandbill_Contoller viewgenhandbill_contoller;
     public static Handbilltemplate_Controller handbilltemplate_controller;

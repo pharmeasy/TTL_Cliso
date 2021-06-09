@@ -1,12 +1,10 @@
 package com.example.e5322.thyrosoft.API;
 
-/**
- * Created by E5322 on 24-03-2018.
- */
+
 
 public class Api {
     //TODO live
-/*    public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
+    public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
     public static String Cloud_base = "https://clisoapi.thyrocare.com/v1/";
     public static String URL_with_http = "https://b2capi.thyrocare.com/API/B2B/";
     public static String SGC = "https://b2capi.thyrocare.com/API/BDN/api/";
@@ -20,10 +18,11 @@ public class Api {
     public static String SCANSOAPI = "http://scanso.nueclear.com/api/";
     public static String NUECLEAR = "http://api.nueclear.com/WebAPI/API";
     public static String Velso = "https://velso.thyrocare.cloud/api/";
-    public static String Techso = "http://techsostng.thyrocare.cloud/";*/
+    public static String Techso = "http://techsostng.thyrocare.cloud/";
+
 
     //TODO staging
-    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
+/*    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
     public static String Cloud_base = "http://stagingclisoapi.thyrocare.com/v1/";
     public static String SGC = "https://www.thyrocare.com/API_BETA/BDN/api/";
@@ -37,7 +36,7 @@ public class Api {
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
     public static String Velso = "https://velso.thyrocare.cloud/api/";
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
-    public static String Techso = " http://techsostng.thyrocare.cloud/";
+    public static String Techso = " http://techsostng.thyrocare.cloud/";*/
 
 
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";

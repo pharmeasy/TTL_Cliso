@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -48,6 +49,7 @@ import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -58,6 +60,7 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
 import com.example.e5322.thyrosoft.Models.MyPojo;
+import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
@@ -194,6 +197,13 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     private String EMAIL_ID;
     private int PaymentType;
 
+    LinearLayout ll_prescription, lin_preview_pres;
+    Button btn_choosefile_presc;
+    TextView txt_fileupload_pres;
+    private boolean isprescition = false, ispresc = false;
+    List<String> imagelist_per = new ArrayList<>();
+    private File presc_file;
+
 
     @SuppressLint("NewApi")
     @Override
@@ -226,9 +236,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         versionNameTopass = pInfo.versionName;
         versionCode = pInfo.versionCode;
 
-    /*    SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
-        PaymentType = getProfileName.getInt("PaymentType", 0);*/
-        PaymentType=0;
+//        SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
+//        PaymentType = getProfileName.getInt("PaymentType", 0);
+        PaymentType = 0;
 
         initListeners();
         FinalBarcodeDetailsList = Global.FinalBarcodeDetailsList_global;
@@ -245,6 +255,17 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             ArrayList<String> getProducts = new ArrayList<>();
             getProductCode = new ArrayList<>();
             trflist.clear();
+
+
+            if (GlobalClass.isArraylistNotNull(selectedOutlabTests)) {
+                for (int i = 0; i < selectedOutlabTests.size(); i++) {
+                    if (selectedOutlabTests.get(i).isPrescription()) {
+                        isprescition = selectedOutlabTests.get(i).isPrescription();
+                        ll_prescription.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                }
+            }
 
             try {
                 for (int i = 0; i < selectedOutlabTests.size(); i++) {
@@ -321,11 +342,6 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         brandName = prefs.getString("WOEbrand", "");
         typeName = prefs.getString("woetype", "");
 
-        if (brandName.equalsIgnoreCase("TTL-Others")) {
-
-        }
-
-
         title.setText("Scan Barcode");
 
         btn_choosefile = findViewById(R.id.btn_choosefile);
@@ -335,7 +351,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             @Override
             public void onClick(View v) {
 //                openCamera();
-                GlobalClass.cropImageActivity(mActivity,0);
+                GlobalClass.cropImageActivity(mActivity, 0);
                 isvial = true;
 
             }
@@ -488,6 +504,12 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         Toast.makeText(Scan_Barcode_Outlabs_Activity.this, "Amount Mismatched", Toast.LENGTH_SHORT).show();
                     } else if (vialimg_file == null || !vialimg_file.exists()) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                    } else if (isprescition) {
+                        if (presc_file != null) {
+                            checklistData();
+                        } else {
+                            Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         checklistData();
                     }
@@ -516,6 +538,31 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
         ll_letterhead = findViewById(R.id.ll_letterhead);
         edt_confirm_amt = findViewById(R.id.edt_confirm_amt);
+
+
+        ll_prescription = findViewById(R.id.ll_prescription);
+        btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
+        lin_preview_pres = findViewById(R.id.lin_preview_pres);
+        txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
+
+        btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ImagePicker.Companion.with(Scan_Barcode_Outlabs_Activity.this)
+                        .compress(Constants.MaxImageSize)
+                        .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
+                        .start();
+                ispresc = true;
+            }
+        });
+
+        txt_fileupload_pres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(imagelist_per);
+            }
+        });
 
     }
 
@@ -605,7 +652,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                     Toast.makeText(mActivity, "Failed to read image data!", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-            }else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
+            } else if (requestCode == ImagePicker.REQUEST_CODE && resultCode == RESULT_OK) {
                 try {
                     if (isvial) {
                         imagelist.clear();
@@ -621,6 +668,17 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         imagelist.add(vialimg_file.toString());
                         isvial = false;
+                    } else if (ispresc) {
+                        imagelist_per.clear();
+                        presc_file = ImagePicker.Companion.getFile(data);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + presc_file;
+                        presc_file = new File(destFile);
+                        GlobalClass.copyFile(ImagePicker.Companion.getFile(data), presc_file);
+                        lin_preview_pres.setVisibility(View.VISIBLE);
+                        txt_fileupload_pres.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload_pres.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist_per.add(presc_file.toString());
+                        ispresc = false;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -790,25 +848,37 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
     public void getUploadFileResponse() {
         TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-        Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, SummaryActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("payment", getCollectedAmt);
-        bundle.putString("TotalAmt", getAmount);
-        bundle.putString("selectedTest", testsData);
-        bundle.putString("patient_id", barcode_patient_id);
-        bundle.putString("Outlbbarcodes", barcodes1);
-        bundle.putParcelableArrayList("sendArraylist", FinalBarcodeDetailsList);
+        if (isprescition){
+            UploadPrescRequestModel uploadPrescRequestModel = new UploadPrescRequestModel();
+            uploadPrescRequestModel.setENTRYBY(user);
+            uploadPrescRequestModel.setDocType("DCPRESCRIPTION");
+            uploadPrescRequestModel.setImgUrl(presc_file);
+            uploadPrescRequestModel.setPatientid(barcode_patient_id);
+            uploadPrescRequestModel.setSourceCode(user);
+            UploadPrescController uploadPrescController = new UploadPrescController(this);
+            uploadPrescController.UploadPrescAPICall(uploadPrescRequestModel);
+        }else {
+            Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, SummaryActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("payment", getCollectedAmt);
+            bundle.putString("TotalAmt", getAmount);
+            bundle.putString("selectedTest", testsData);
+            bundle.putString("patient_id", barcode_patient_id);
+            bundle.putString("Outlbbarcodes", barcodes1);
+            bundle.putParcelableArrayList("sendArraylist", FinalBarcodeDetailsList);
 
-        for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
-            testToPass = new ArrayList<>();
-            testToPass.add(FinalBarcodeDetailsList.get(i).getProducts());
-            outTestToSend = FinalBarcodeDetailsList.get(i).getProducts();
-            showtest = TextUtils.join(",", testToPass);
+            for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+                testToPass = new ArrayList<>();
+                testToPass.add(FinalBarcodeDetailsList.get(i).getProducts());
+                outTestToSend = FinalBarcodeDetailsList.get(i).getProducts();
+                showtest = TextUtils.join(",", testToPass);
+            }
+
+            bundle.putString("tetsts", displayslectedtest);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 
-        bundle.putString("tetsts", displayslectedtest);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 
     public void checklistData() {
@@ -894,7 +964,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 GlobalClass.showShortToast(mActivity, ToastFile.scan_barcode_all);
             } else {
                 if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
-                    if (PaymentType==1){
+                    if (PaymentType == 1) {
                         Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", preferences.getString("name", ""));
@@ -902,7 +972,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                         intent.putExtra("amount", b2b_rate);
                         intent.putExtra("email", EMAIL_ID);
                         startActivity(intent);
-                    }else if(PaymentType==2) {
+                    } else if (PaymentType == 2) {
                         final String[] paymentItems = new String[]{"Cash", "Digital"};
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
                         builder.setTitle("Choose payment mode")
@@ -929,7 +999,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                         } else {
                                             Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, WOEPaymentActivity.class);
                                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            intent.putExtra("name",  preferences.getString("name", ""));
+                                            intent.putExtra("name", preferences.getString("name", ""));
                                             intent.putExtra("mobile", preferences.getString("kycinfo", ""));
                                             intent.putExtra("amount", b2b_rate);
                                             intent.putExtra("email", EMAIL_ID);
@@ -945,10 +1015,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                         dialog.dismiss();
                                     }
                                 }).show();
-                    }else {
+                    } else {
                         WOE();
                     }
-
 
 
                 } else {
@@ -1178,7 +1247,10 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                             }
                         }
                     });
-                    GlobalClass.volleyRetryPolicy(jsonObjectRequest1);
+                    jsonObjectRequest1.setRetryPolicy(new DefaultRetryPolicy(
+                            150000,
+                            3,
+                            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     POstQue.add(jsonObjectRequest1);
                     Log.e(TAG, "saveandClose: URL" + jsonObjectRequest1);
                     Log.e(TAG, "saveandClose: json" + jsonObj);
@@ -1254,5 +1326,27 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         if (!GlobalClass.isNull(GlobalClass.transID)) {
             WOE();
         }
+    }
+
+    public void getprescupload() {
+        Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, SummaryActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("payment", getCollectedAmt);
+        bundle.putString("TotalAmt", getAmount);
+        bundle.putString("selectedTest", testsData);
+        bundle.putString("patient_id", barcode_patient_id);
+        bundle.putString("Outlbbarcodes", barcodes1);
+        bundle.putParcelableArrayList("sendArraylist", FinalBarcodeDetailsList);
+
+        for (int i = 0; i < FinalBarcodeDetailsList.size(); i++) {
+            testToPass = new ArrayList<>();
+            testToPass.add(FinalBarcodeDetailsList.get(i).getProducts());
+            outTestToSend = FinalBarcodeDetailsList.get(i).getProducts();
+            showtest = TextUtils.join(",", testToPass);
+        }
+
+        bundle.putString("tetsts", displayslectedtest);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

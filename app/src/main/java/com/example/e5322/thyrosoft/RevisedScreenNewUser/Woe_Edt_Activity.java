@@ -181,7 +181,6 @@ public class Woe_Edt_Activity extends AppCompatActivity {
             cb_convert.setVisibility(View.GONE);
         }
 
-
         cb_convert.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

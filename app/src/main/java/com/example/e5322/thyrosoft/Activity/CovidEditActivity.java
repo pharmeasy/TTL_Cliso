@@ -102,6 +102,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
     TextView txt_presfileupload, txt_adharfileupload, txt_trffileupload, txt_vialrfileupload, txt_otherfileupload;
     private String Testcode;
 
+    ImageView img_camera_pre, img_gallery_pre, img_camera_aadhar, img_gallery_aadhar, img_camera_trf, img_gallery_trf, img_camera_vial, img_gallery_vial, img_camera_other, img_gallery_other;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,6 +195,28 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         lin_trf_images = findViewById(R.id.lin_trf_images);
         lin_vial_images = findViewById(R.id.lin_vial_images);
         lin_other_images = findViewById(R.id.lin_other_images);
+
+        img_camera_pre = findViewById(R.id.img_camera_pre);
+        img_gallery_pre = findViewById(R.id.img_gallery_pre);
+        img_camera_aadhar = findViewById(R.id.img_camera_aadhar);
+        img_gallery_aadhar = findViewById(R.id.img_gallery_aadhar);
+        img_camera_trf = findViewById(R.id.img_camera_trf);
+        img_gallery_trf = findViewById(R.id.img_gallery_trf);
+        img_camera_vial = findViewById(R.id.img_camera_vial);
+        img_gallery_vial = findViewById(R.id.img_gallery_vial);
+        img_camera_other = findViewById(R.id.img_camera_other);
+        img_gallery_other = findViewById(R.id.img_gallery_other);
+
+        img_camera_pre.setOnClickListener(this);
+        img_gallery_pre.setOnClickListener(this);
+        img_camera_aadhar.setOnClickListener(this);
+        img_gallery_aadhar.setOnClickListener(this);
+        img_camera_trf.setOnClickListener(this);
+        img_gallery_trf.setOnClickListener(this);
+        img_camera_vial.setOnClickListener(this);
+        img_gallery_vial.setOnClickListener(this);
+        img_camera_other.setOnClickListener(this);
+        img_gallery_other.setOnClickListener(this);
 
         btn_reset.setOnClickListener(this);
         btn_submit.setOnClickListener(this);
@@ -310,6 +334,8 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
                             covidpostdata.setTESTCODE("" + Testcode);
                             covidpostdata.setAMOUNTCOLLECTED(amtcoll);
                             covidpostdata.setPPEBARCODE(ppebarcode);
+
+                            covidpostdata.setAPIKEY(apikey);
 
                             if (presc_file != null) {
                                 covidpostdata.setPRESCRIPTION(presc_file);
@@ -493,6 +519,226 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
             case R.id.txt_otherfileupload:
                 if (otherlist != null && otherlist.size() > 0) {
                     setviewpager(otherlist, "other");
+                }
+                break;
+
+            case R.id.img_camera_pre:
+                if (verifyotp) {
+                    if (checkPermission()) {
+
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+
+            case R.id.img_gallery_pre:
+                if (verifyotp) {
+                    if (checkPermission()) {
+
+                        if (presc_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one image", 0);
+                        } else {
+                            ispresciption = true;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+            case R.id.img_camera_aadhar:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            openCamera();
+                        }
+
+                    } else {
+                        requestPermission();
+                    }
+
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+                break;
+
+            case R.id.img_gallery_aadhar:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (aadhar_file != null && aadhar_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = true;
+                            istrf = false;
+                            isvial = false;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+
+                    } else {
+                        requestPermission();
+                    }
+
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+
+                break;
+
+            case R.id.img_camera_trf:
+
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (trf_file != null && trf_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            istrf = true;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_trf:
+
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (trf_file != null && trf_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            isvial = false;
+                            isother = false;
+                            istrf = true;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_camera_vial:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = true;
+                            isother = false;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_vial:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (vial_file != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only one images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = true;
+                            isother = false;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_camera_other:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (other_file != null && other_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = true;
+                            openCamera();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
+                }
+                break;
+
+            case R.id.img_gallery_other:
+                if (verifyotp) {
+                    if (checkPermission()) {
+                        if (other_file != null && other_file1 != null) {
+                            GlobalClass.showCustomToast(activity, "You can upload only two images", 0);
+                        } else {
+                            ispresciption = false;
+                            isadhar = false;
+                            istrf = false;
+                            isvial = false;
+                            isother = true;
+                            chooseFromGallery();
+                        }
+                    } else {
+                        requestPermission();
+                    }
+                } else {
+                    GlobalClass.showCustomToast(activity, MessageConstants.VERIFY, 0);
                 }
                 break;
 

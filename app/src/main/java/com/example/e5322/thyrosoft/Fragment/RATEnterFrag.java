@@ -38,6 +38,8 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -52,10 +54,12 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
+import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.getSCPSRFAPIController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
@@ -69,12 +73,14 @@ import com.example.e5322.thyrosoft.Models.Hospital_model;
 import com.example.e5322.thyrosoft.Models.Hospital_req;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
+import com.example.e5322.thyrosoft.Models.ResponseModels.getSCPTechnicianModel;
 import com.example.e5322.thyrosoft.Models.WOERequestModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.Retrofit.PostAPIInteface;
 import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -100,6 +106,7 @@ import retrofit2.Response;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.e5322.thyrosoft.ToastFile.invalid_brcd;
 
 
@@ -153,6 +160,10 @@ public class RATEnterFrag extends Fragment {
     AppPreferenceManager appPreferenceManager;
 
     TextView tv_help;
+
+    TextView samplecollectionponit;
+    private getSCPTechnicianModel.getTechnicianlist selectedSCT;
+    private ArrayList<getSCPTechnicianModel.getTechnicianlist> filterPatientsArrayList;
 
     public RATEnterFrag() {
         // Required empty public constructor
@@ -372,6 +383,8 @@ public class RATEnterFrag extends Fragment {
                             covidpostdata.setAGE(edt_age.getText().toString());
                             covidpostdata.setBARCODE(txt_barcode.getText().toString());
                             covidpostdata.setEMAIL("" + edt_email.getText().toString());
+                            covidpostdata.setTECHNICIAN(selectedSCT.getNED_NUMBER());
+                            covidpostdata.setAPIKEY(apikey);
 
                             if (!GlobalClass.isNull(hospt_ID)) {
                                 covidpostdata.setHOSPITAL(hospt_ID);
@@ -383,6 +396,7 @@ public class RATEnterFrag extends Fragment {
                                 covidpostdata.setGENDER("F");
                             }
 
+                            covidpostdata.setAPIKEY(apikey);
 
                             if (aadhar_file != null && aadhar_file1 != null) {
                                 covidpostdata.setADHAR(aadhar_file);
@@ -538,6 +552,13 @@ public class RATEnterFrag extends Fragment {
                 }
             }
         });
+
+        samplecollectionponit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CallAPIForSCP();
+            }
+        });
     }
 
     private void ClearFields() {
@@ -561,7 +582,7 @@ public class RATEnterFrag extends Fragment {
         tv_mobileno.setVisibility(View.GONE);
         rel_mobno.setVisibility(View.GONE);
         edt_missed_mobile.setText("");
-
+        samplecollectionponit.setText(Constants.setSCPmsg);
 
         if (by_missed.isChecked() || by_sendsms.isChecked()) {
             btn_generate.setText(getResources().getString(R.string.enterccc));
@@ -696,6 +717,11 @@ public class RATEnterFrag extends Fragment {
 
         if (trf_file == null && trf_file1 == null) {
             Global.showCustomToast(getActivity(), ToastFile.SELECT_TRFDHIMAGE);
+            return false;
+        }
+
+        if (samplecollectionponit.getText().toString().trim().equalsIgnoreCase(Constants.setSCPmsg)) {
+            Toast.makeText(activity, ToastFile.slt_technicain, Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -843,6 +869,9 @@ public class RATEnterFrag extends Fragment {
         } else {
             edt_email.setHint("EMAIL ID");
         }
+
+        samplecollectionponit = root.findViewById(R.id.samplecollectionponit);
+        samplecollectionponit.setText(Constants.setSCPmsg);
 
 
         if ( Global.isKYC){
@@ -1612,5 +1641,161 @@ public class RATEnterFrag extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private void showDialogue(final ArrayList<getSCPTechnicianModel.getTechnicianlist> obj) {
+
+        LayoutInflater li = LayoutInflater.from(activity);
+        View promptsView = li.inflate(R.layout.custom_alert_scp, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                activity);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+        LinearLayoutManager linearLayoutManager = null;
+
+        EditText search_view = (EditText) promptsView.findViewById(R.id.search_view);
+        TextView title = (TextView) promptsView.findViewById(R.id.spinerTitle);
+        ImageView close = (ImageView) promptsView.findViewById(R.id.close);
+        final RecyclerView scp_name = (RecyclerView) promptsView.findViewById(R.id.scp_name);
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        linearLayoutManager = new LinearLayoutManager(activity);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        scp_name.setLayoutManager(linearLayoutManager);
+
+
+        title.setText(Constants.setSCPmsg);
+
+        final ArrayList<getSCPTechnicianModel.getTechnicianlist> labDetailsArrayList = new ArrayList<>();
+
+        for (int i = 0; i < obj.size(); i++) {
+            labDetailsArrayList.add(obj.get(i));
+        }
+
+        final SCollectionPAdapter sampleCollectionAdapter = new SCollectionPAdapter(RATEnterFrag.this, activity, labDetailsArrayList);
+        sampleCollectionAdapter.setOnItemClickListener(new SCollectionPAdapter.OnItemClickListener() {
+            @Override
+            public void onPassSgcID(getSCPTechnicianModel.getTechnicianlist pos) {
+                samplecollectionponit.setText(pos.getNAME() + " - " + pos.getNED_NUMBER());
+                selectedSCT = pos;
+                alertDialog.dismiss();
+            }
+        });
+        scp_name.setAdapter(sampleCollectionAdapter);
+
+        search_view.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String s1 = s.toString().toLowerCase();
+
+                filterPatientsArrayList = new ArrayList<>();
+                String labname = "";
+                String clientId = "";
+                if (labDetailsArrayList != null) {
+                    for (int i = 0; i < labDetailsArrayList.size(); i++) {
+
+                        final String text1 = labDetailsArrayList.get(i).getNAME().toLowerCase();
+                        final String text2 = labDetailsArrayList.get(i).getNED_NUMBER().toLowerCase();
+
+                        if (labDetailsArrayList.get(i).getNED_NUMBER() != null || !labDetailsArrayList.get(i).getNED_NUMBER().equals("")) {
+                            clientId = labDetailsArrayList.get(i).getNED_NUMBER().toLowerCase();
+                        }
+                        if (labDetailsArrayList.get(i).getNAME() != null || !labDetailsArrayList.get(i).getNAME().equals("")) {
+                            labname = labDetailsArrayList.get(i).getNAME().toLowerCase();
+                        }
+
+                        if (text1.contains(s1) || (clientId != null && clientId.contains(s1)) ||
+                                (labname != null && labname.contains(s1))) {
+                            String testname = (labDetailsArrayList.get(i).getNAME());
+                            filterPatientsArrayList.add(labDetailsArrayList.get(i));
+
+                        } else {
+
+                        }
+                        sampleCollectionAdapter.filteredArraylist(filterPatientsArrayList);
+                        sampleCollectionAdapter.notifyDataSetChanged();
+                    }
+                }
+                // filter your list from your input
+                //you can use runnable postDelayed like 500 ms to delay search text
+            }
+        });
+
+        if (GlobalClass.setFlagToClose) {
+            alertDialog.dismiss();
+        }
+    }
+
+    private void CallAPIForSCP() {
+        SharedPreferences sdfsd_pref = activity.getSharedPreferences("SCPDATA", MODE_PRIVATE);
+        if (GlobalClass.isNull(sdfsd_pref.getString("scplist", ""))) {
+            CallAPItogetSCPData();
+        } else {
+            if (GlobalClass.checkSync(activity, "SCTTech")) {
+                CallAPItogetSCPData();
+            } else {
+                setFinalSCPList(sdfsd_pref.getString("scplist", ""));
+            }
+        }
+
+
+    }
+
+    private void CallAPItogetSCPData() {
+        if (GlobalClass.isNetworkAvailable(activity)) {
+            try {
+                ControllersGlobalInitialiser.getSCPSRFAPIController = new getSCPSRFAPIController(RATEnterFrag.this, activity);
+                ControllersGlobalInitialiser.getSCPSRFAPIController.getSCPtechnician(true, usercode, apikey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setFinalSCPList(String response) {
+        if (response != null) {
+            if (!response.toString().trim().equalsIgnoreCase("")) {
+                Gson gson = new Gson();
+                getSCPTechnicianModel getSCP_model = gson.fromJson(response, getSCPTechnicianModel.class);
+                if (getSCP_model != null) {
+                    if (getSCP_model.getResId() != null) {
+                        if (getSCP_model.getResId().toString().trim().equalsIgnoreCase(Constants.RES0000)) {
+                            GlobalClass.storeCachingDate(activity, "SCTTech");
+                            showDialogue(getSCP_model.getTechnicianlist());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void setSCPresData(String scpdata) {
+        SharedPreferences.Editor saveProfileDetails = activity.getSharedPreferences("SCPDATA", 0).edit();
+        saveProfileDetails.putString("scplist", scpdata);
+        saveProfileDetails.apply();
     }
 }

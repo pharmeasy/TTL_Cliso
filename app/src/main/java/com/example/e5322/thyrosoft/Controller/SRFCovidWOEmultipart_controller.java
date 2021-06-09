@@ -96,6 +96,12 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
             builder.addPart("BARCODE", new StringBody("" + covidpostdata.getBARCODE()));
             builder.addPart("EMAIL", new StringBody("" + covidpostdata.getEMAIL()));
             builder.addPart("WOEMODE",new StringBody("CLISO APP SRF"));
+            builder.addPart("APIKEY", new StringBody("" + covidpostdata.getAPIKEY()));
+
+            if(flag == 1){
+                builder.addPart("TECHNICIAN", new StringBody("" + covidpostdata.getTECHNICIAN()));
+                Log.e(TAG, "\"Post params:- " + "" + "\nTECHNICIAN:" + covidpostdata.getTECHNICIAN());
+            }
 
             if (covidpostdata.getPRESCRIPTION() != null) {
                 FileInputStream fileInputStream = new FileInputStream(covidpostdata.getPRESCRIPTION());
@@ -143,6 +149,7 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
                     "\nPATIENTADDRESS:" + covidpostdata.getPATIENTADDRESS() +
                     "\nPATIENTPINCODE:" + covidpostdata.getPATIENTPINCODE() +
                     "\nSCP:" + covidpostdata.getSCP() +
+                    "\nAPIKEY:" + covidpostdata.getAPIKEY() +
                     "\nTESTCODE:" + covidpostdata.getTESTCODE() +
                     "\nCOLLECTIONADDRESS:" + covidpostdata.getCOLLECTIONADDRESS() +
                     "\nCOLLECTIONPINCODE:" + covidpostdata.getCOLLECTIONPINCODE() +

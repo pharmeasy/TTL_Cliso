@@ -61,6 +61,7 @@ import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -72,6 +73,7 @@ import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.GeoLocationRequestModel;
+import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
 import com.example.e5322.thyrosoft.Models.TRFModel;
 import com.example.e5322.thyrosoft.R;
@@ -228,12 +230,14 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     private String getRemark;
     private String getPincode;
     private File vialimg_file;
+    private File presc_file;
     Button btn_choosefile;
     LinearLayout lin_preview;
-    private boolean isvial = false, isPOCTTest = false;
+    private boolean isvial = false, isPOCTTest = false, ispresc = false;
     TextView txt_fileupload;
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
+    List<String> imagelist_per = new ArrayList<>();
     MainModel mainModel;
     Spinner spr_leterhead;
     private String LetterheadURL;
@@ -246,6 +250,11 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     RecyclerView recy_brand;
     private String EMAIL_ID;
     private int PaymentType;
+    LinearLayout ll_prescription, lin_preview_pres;
+    Button btn_choosefile_presc;
+    TextView txt_fileupload_pres;
+    private boolean isprescition = false;
+
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -278,8 +287,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         brandName = prefe.getString("WOEbrand", "");
         typeName = prefe.getString("woetype", null);
 
-   /*     SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
-        PaymentType = getProfileName.getInt("PaymentType", 0);*/
+//        SharedPreferences getProfileName = getSharedPreferences("profile", MODE_PRIVATE);
+//        PaymentType = getProfileName.getInt("PaymentType", 0);
         PaymentType = 0;
 
 
@@ -297,6 +306,31 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         ll_bp = findViewById(R.id.ll_bp);
         edt_bsValue = findViewById(R.id.edt_bsValue);
         edt_bpValue = findViewById(R.id.edt_bpValue);
+
+        ll_prescription = findViewById(R.id.ll_prescription);
+        btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
+        lin_preview_pres = findViewById(R.id.lin_preview_pres);
+        txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
+
+        btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ImagePicker.Companion.with(Scan_Barcode_ILS_New.this)
+                        .compress(Constants.MaxImageSize)
+                        .maxResultSize(Constants.MaxImageWidth, Constants.MaxImageHeight)
+                        .start();
+                ispresc = true;
+            }
+        });
+
+        txt_fileupload_pres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setviewpager(imagelist_per);
+            }
+        });
+
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
         Gson gson = new Gson();
@@ -552,11 +586,21 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
         });
 
+        if (GlobalClass.isArraylistNotNull(selctedTest)) {
+            for (int i = 0; i < selctedTest.size(); i++) {
+                if (selctedTest.get(i).isPrescription()) {
+                    isprescition = selctedTest.get(i).isPrescription();
+                    ll_prescription.setVisibility(View.VISIBLE);
+                    break;
+                }
+            }
+        }
         if (selctedTest != null && selctedTest.size() > 0) {
             for (int i = 0; i < selctedTest.size(); i++) {
                 totalcount = totalcount + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                 Log.e(TAG, "TRF list data --->" + selctedTest.get(i).getTrf());
                 Log.e(TAG, "Location list data --->" + selctedTest.get(i).getLocation());
+
                 if (selctedTest.get(i).getTrf() != null && !selctedTest.get(i).getTrf().equals("")) {
                     if (selctedTest.get(i).getTrf().equalsIgnoreCase("Yes")) {
                         TRFModel trfModel = new TRFModel();
@@ -778,60 +822,13 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                     B2B_RATE = 0;//TODO renamed from CPL_RATE to B2B_RATE to remove CPL rates
                     RPL_RATE = 0;
                     HARDCODE_CPL_RATE = 0;
-                    boolean isCOVIDPresent = false;
-                    /*for (int i = 0; i < selctedTest.size(); i++) {
-                        if (Global.checkHardcodeTest(selctedTest.get(i).getCode())) {
-                            isCOVIDPresent = true;
-                            break;
-                        }
-                    }*/
 
                     for (int i = 0; i < selctedTest.size(); i++) {
-                        //todo commented to hide CPL RPL rates as per the input 09-10-2020
-                        /*if (Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
-                            if (!GlobalClass.isNull(selctedTest.get(i).getIsCPL()) && selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
-                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                } else {
-                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                }
-                            } else {
-                                if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
-                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                                } else {
-                                    HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                }
-                            }
-                        } else {*/
-                            /*if (!GlobalClass.isNull(selctedTest.get(i).getRate().getCplr())) {
-                                CPL_RATE = CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getCplr());
-                            } else {*/
-                       /* if (Global.checkHardcodeTest(selctedTest.get(i).getCode())) {
-                            HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                        } else {
-                            B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                        }*/
                         if (selctedTest.get(i).getIsAB() == 1) {
                             HARDCODE_CPL_RATE = HARDCODE_CPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                         } else {
                             B2B_RATE = B2B_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
                         }
-
-
-                           /*}
-                        }*/
-
-                        /*if (rateWiseLocation.contains("RPL")) {
-                            if (selctedTest.get(i).getIsCPL().equalsIgnoreCase("0")) {
-                                *//*if (!Global.checkCovidTest(selctedTest.get(i).getIsAB())) {
-                                    if (!GlobalClass.isNull(selctedTest.get(i).getRate().getRplr())) {
-                                        RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getRplr());
-                                    } else {*//*
-                                RPL_RATE = RPL_RATE + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
-                                    *//*}
-                                }*//*
-                            }
-                        }*/
                     }
 
                     getCollectedAmt = enterAmt.getText().toString();
@@ -855,6 +852,12 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             Toast.makeText(mActivity, "Select Brand", Toast.LENGTH_SHORT).show();
                         } else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                        } else if (isprescition) {
+                            if (presc_file != null) {
+                                checklistData();
+                            } else {
+                                Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             checklistData();
                         }
@@ -863,11 +866,23 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                        } else if (isprescition) {
+                            if (presc_file != null) {
+                                checklistData();
+                            } else {
+                                Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             checklistData();
                         }
                     } else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                    } else if (isprescition) {
+                        if (presc_file != null) {
+                            checklistData();
+                        } else {
+                            Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         checklistData();
                     }
@@ -892,11 +907,23 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                             TastyToast.makeText(Scan_Barcode_ILS_New.this, "Please select location", TastyToast.LENGTH_SHORT, TastyToast.WARNING);
                         } else if (vialimg_file == null) {
                             Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                        } else if (isprescition) {
+                            if (presc_file != null) {
+                                checklistData();
+                            } else {
+                                Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                            }
                         } else {
                             checklistData();
                         }
                     } else if (vialimg_file == null) {
                         Toast.makeText(mActivity, "Upload Vial Image", Toast.LENGTH_SHORT).show();
+                    } else if (isprescition) {
+                        if (presc_file != null) {
+                            checklistData();
+                        } else {
+                            Toast.makeText(mActivity, "Please upload Prescription", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
                         checklistData();
                     }
@@ -1178,7 +1205,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 Toast.makeText(Scan_Barcode_ILS_New.this, ToastFile.scan_barcode_all, Toast.LENGTH_SHORT).show();
             } else {
                 if (typeName.equalsIgnoreCase("DPS") || typeName.equalsIgnoreCase("HOME")) {
-                    if (PaymentType==1){
+                    if (PaymentType == 1) {
                         Intent intent = new Intent(Scan_Barcode_ILS_New.this, WOEPaymentActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.putExtra("name", nameString);
@@ -1186,7 +1213,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         intent.putExtra("amount", b2b_rate);
                         intent.putExtra("email", EMAIL_ID);
                         startActivity(intent);
-                    }else if (PaymentType==2){
+                    } else if (PaymentType == 2) {
                         final String[] paymentItems = new String[]{"Cash", "Digital"};
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(mActivity);
                         builder.setTitle("Choose payment mode")
@@ -1229,7 +1256,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                         dialog.dismiss();
                                     }
                                 }).show();
-                    }else {
+                    } else {
                         WOE();
                     }
 
@@ -1431,6 +1458,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                                     barcode_id = woeResponseModel.getBarcode_id();
 
                                     if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
+
+
                                         SharedPreferences.Editor editor = getSharedPreferences("showSelectedTest", 0).edit();
                                         editor.remove("testsSElected");
                                         editor.remove("getProductNames");
@@ -1687,6 +1716,17 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         txt_fileupload.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         imagelist.add(vialimg_file.toString());
                         isvial = false;
+                    } else if (ispresc) {
+                        imagelist_per.clear();
+                        presc_file = ImagePicker.Companion.getFile(data);
+                        String destFile = Environment.getExternalStorageDirectory().getAbsolutePath() + presc_file;
+                        presc_file = new File(destFile);
+                        GlobalClass.copyFile(ImagePicker.Companion.getFile(data), presc_file);
+                        lin_preview_pres.setVisibility(View.VISIBLE);
+                        txt_fileupload_pres.setText("1 " + getResources().getString(R.string.imgupload));
+                        txt_fileupload_pres.setPaintFlags(txt_fileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                        imagelist_per.add(presc_file.toString());
+                        ispresc = false;
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1914,20 +1954,34 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     }
 
     public void getUploadFileResponse() {
-        TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-        Intent intent = new Intent(Scan_Barcode_ILS_New.this, SummaryActivity_New.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("tetsts", getTestSelection);
-        bundle.putString("brandname", getBrand_name);
-        bundle.putString("location", setLocation);
-        bundle.putString("passProdcucts", testsCodesPassingToProduct);
-        bundle.putString("TotalAmt", totalamt);
-        bundle.putString("CollectedAmt", getCollectedAmt);
-        bundle.putParcelableArrayList("sendArraylist", GlobalClass.finalspecimenttypewiselist);
-        bundle.putString("patientId", barcode_patient_id);
-        bundle.putString("draft", "");
-        intent.putExtras(bundle);
-        startActivity(intent);
+
+        if (isprescition) {
+            UploadPrescRequestModel uploadPrescRequestModel = new UploadPrescRequestModel();
+            uploadPrescRequestModel.setENTRYBY(user);
+            uploadPrescRequestModel.setDocType("DCPRESCRIPTION");
+            uploadPrescRequestModel.setImgUrl(presc_file);
+            uploadPrescRequestModel.setPatientid(barcode_patient_id);
+            uploadPrescRequestModel.setSourceCode(user);
+            UploadPrescController uploadPrescController = new UploadPrescController(this);
+            uploadPrescController.UploadPrescAPICall(uploadPrescRequestModel);
+        } else {
+            TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+            Intent intent = new Intent(Scan_Barcode_ILS_New.this, SummaryActivity_New.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("tetsts", getTestSelection);
+            bundle.putString("brandname", getBrand_name);
+            bundle.putString("location", setLocation);
+            bundle.putString("passProdcucts", testsCodesPassingToProduct);
+            bundle.putString("TotalAmt", totalamt);
+            bundle.putString("CollectedAmt", getCollectedAmt);
+            bundle.putParcelableArrayList("sendArraylist", GlobalClass.finalspecimenttypewiselist);
+            bundle.putString("patientId", barcode_patient_id);
+            bundle.putString("draft", "");
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
+
     }
 
     @Override
@@ -1952,5 +2006,22 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         if (!GlobalClass.isNull(GlobalClass.transID)) {
             WOE();
         }
+    }
+
+    public void getprescupload() {
+        TastyToast.makeText(Scan_Barcode_ILS_New.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
+        Intent intent = new Intent(Scan_Barcode_ILS_New.this, SummaryActivity_New.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("tetsts", getTestSelection);
+        bundle.putString("brandname", getBrand_name);
+        bundle.putString("location", setLocation);
+        bundle.putString("passProdcucts", testsCodesPassingToProduct);
+        bundle.putString("TotalAmt", totalamt);
+        bundle.putString("CollectedAmt", getCollectedAmt);
+        bundle.putParcelableArrayList("sendArraylist", GlobalClass.finalspecimenttypewiselist);
+        bundle.putString("patientId", barcode_patient_id);
+        bundle.putString("draft", "");
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

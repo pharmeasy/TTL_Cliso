@@ -2,10 +2,10 @@ package com.example.e5322.thyrosoft.Adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.e5322.thyrosoft.Activity.RATEditActivity;
 import com.example.e5322.thyrosoft.Activity.frags.AnitbodyEnteredFrag;
 import com.example.e5322.thyrosoft.Fragment.RATEnteredFrag;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -25,9 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -51,7 +52,7 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
 
-    public RATEnteredAdapter(AnitbodyEnteredFrag anitbodyEnteredFrag, ArrayList<RATEnteredResponseModel.PatientDETAILSBean> patientDETAILSBeans, String pcurrentTIME,int timespan) {
+    public RATEnteredAdapter(AnitbodyEnteredFrag anitbodyEnteredFrag, ArrayList<RATEnteredResponseModel.PatientDETAILSBean> patientDETAILSBeans, String pcurrentTIME, int timespan) {
         this.context = anitbodyEnteredFrag.getContext();
         activity = anitbodyEnteredFrag.getActivity();
         this.patientDETAILSBeans = patientDETAILSBeans;
@@ -63,10 +64,10 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_name, tv_mobile, tv_barcode, tv_view, tv_siitime, tv_resulttime, txt_txt, tv_result;
-        Button btn_upload;
+        TextView tv_name, tv_mobile, tv_barcode, tv_view, tv_siitime, tv_resulttime, txt_txt, tv_result, tv_remarks;
+        Button btn_upload, btn_reSubmit;
         CountDownTimer timer;
-        LinearLayout lin_result;
+        LinearLayout lin_result, lin_remarks;
 
 
         public MyViewHolder(View view) {
@@ -77,12 +78,13 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             tv_barcode = view.findViewById(R.id.tv_barcode);
             tv_view = view.findViewById(R.id.tv_view);
             btn_upload = view.findViewById(R.id.btn_upload);
+            btn_reSubmit = view.findViewById(R.id.btn_reSubmit);
             tv_siitime = view.findViewById(R.id.tv_siitime);
             tv_resulttime = view.findViewById(R.id.tv_resulttime);
             tv_result = view.findViewById(R.id.tv_result);
+            tv_remarks = view.findViewById(R.id.tv_remarks);
             lin_result = view.findViewById(R.id.lin_result);
-
-
+            lin_remarks = view.findViewById(R.id.lin_remarks);
         }
     }
 
@@ -110,14 +112,22 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 userViewHolder.tv_view.setVisibility(View.GONE);
                 userViewHolder.tv_result.setVisibility(View.GONE);
                 userViewHolder.lin_result.setVisibility(View.GONE);
+                userViewHolder.lin_remarks.setVisibility(View.GONE);
+                userViewHolder.btn_reSubmit.setVisibility(View.GONE);
             } else if (patientDETAILSBeans.get(i).getStatus() == 1) {
                 userViewHolder.tv_view.setVisibility(View.VISIBLE);
                 userViewHolder.tv_view.setText(Html.fromHtml("<u>" + "Upload 1" + "</u>"));
                 userViewHolder.tv_view.setTextColor(Color.BLUE);
                 userViewHolder.tv_result.setVisibility(View.GONE);
                 userViewHolder.lin_result.setVisibility(View.GONE);
+                userViewHolder.lin_remarks.setVisibility(View.GONE);
+                userViewHolder.btn_reSubmit.setVisibility(View.GONE);
 //                userViewHolder.btn_upload.setText("Please wait to upload result image");
-                SetTimetoBtn(userViewHolder.btn_upload, patientDETAILSBeans.get(i));
+                if (patientDETAILSBeans.get(i).isResubmitted()) {
+                    manageUploadResultImg(userViewHolder.btn_upload);
+                } else {
+                    SetTimetoBtn(userViewHolder.btn_upload, patientDETAILSBeans.get(i));
+                }
             } else if (patientDETAILSBeans.get(i).getStatus() == 2) {
                 userViewHolder.tv_view.setVisibility(View.VISIBLE);
                 userViewHolder.tv_view.setText(Html.fromHtml("<u>" + "Upload 2" + "</u>"));
@@ -125,14 +135,12 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 userViewHolder.tv_barcode.setVisibility(View.VISIBLE);
                 userViewHolder.tv_barcode.setText(Html.fromHtml("<u>" + "Upload 1" + "</u>"));
                 userViewHolder.tv_barcode.setTextColor(Color.BLUE);
-
-
-
-
                 userViewHolder.btn_upload.setVisibility(View.GONE);
                 userViewHolder.tv_siitime.setVisibility(View.VISIBLE);
                 userViewHolder.tv_resulttime.setVisibility(View.VISIBLE);
                 userViewHolder.lin_result.setVisibility(View.VISIBLE);
+                userViewHolder.lin_remarks.setVisibility(View.GONE);
+                userViewHolder.btn_reSubmit.setVisibility(View.GONE);
                 if (!GlobalClass.isNull(patientDETAILSBeans.get(i).getResult())) {
                     if (patientDETAILSBeans.get(i).getResult().equalsIgnoreCase("POSITIVE")) {
                         userViewHolder.tv_result.setTextColor(context.getResources().getColor(R.color.darkgreen));
@@ -157,12 +165,22 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 userViewHolder.tv_view.setVisibility(View.VISIBLE);
                 userViewHolder.tv_siitime.setVisibility(View.VISIBLE);
                 userViewHolder.lin_result.setVisibility(View.GONE);
+                userViewHolder.lin_remarks.setVisibility(View.GONE);
+                userViewHolder.btn_reSubmit.setVisibility(View.GONE);
                 if (!GlobalClass.isNull(patientDETAILSBeans.get(i).getUploadTIME())) {
                     userViewHolder.tv_siitime.setText("Sample Insertion Time(SIT): " + patientDETAILSBeans.get(i).getUploadTIME());
                 } else {
                     userViewHolder.tv_siitime.setText("Sample Insertion Time(SIT): " + "");
                 }
                 userViewHolder.tv_view.setText(Html.fromHtml("<u>" + "Upload 1" + "</u>"));
+            } else if (patientDETAILSBeans.get(i).getStatus() == -1) {
+                userViewHolder.btn_upload.setVisibility(View.GONE);
+                userViewHolder.tv_view.setVisibility(View.GONE);
+                userViewHolder.tv_siitime.setVisibility(View.GONE);
+                userViewHolder.lin_result.setVisibility(View.GONE);
+                userViewHolder.lin_remarks.setVisibility(View.VISIBLE);
+                userViewHolder.btn_reSubmit.setVisibility(View.VISIBLE);
+                GlobalClass.SetText(userViewHolder.tv_remarks, "REJECTED");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,7 +196,18 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 if (!GlobalClass.isNull(patientDETAILSBeans.get(i).getSiiURL())) {
                     GlobalClass.showImageDialog(activity, null, patientDETAILSBeans.get(i).getSiiURL().replaceAll("\\\\", "//"), 2);
                 }
+            }
+        });
 
+        userViewHolder.btn_reSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, RATEditActivity.class);
+                intent.putExtra("Mobile", patientDETAILSBeans.get(i).getMobile());
+                intent.putExtra("name", patientDETAILSBeans.get(i).getName());
+                intent.putExtra("PatientID", patientDETAILSBeans.get(i).getPatientID());
+                intent.putExtra("barcode", patientDETAILSBeans.get(i).getBarcode());
+                context.startActivity(intent);
             }
         });
 
@@ -252,19 +281,22 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void SetTimetoBtn(Button btn_upload, RATEnteredResponseModel.PatientDETAILSBean patientDETAILSBean) {
         if (validateTimeAfter(patientDETAILSBean.getUploadTIME())) {
             if (timeflag == 1) {
-                btn_upload.setText("Upload result image");
-                btn_upload.setBackground(context.getResources().getDrawable(R.drawable.btn_bg_green));
-                btn_upload.setEnabled(true);
+                manageUploadResultImg(btn_upload);
             } else if (timeflag == 2) {
                 btn_upload.setText("Upload result image till " + getTimetoShowafter120(patientDETAILSBean.getUploadTIME()));
                 btn_upload.setBackground(context.getResources().getDrawable(R.drawable.btn_bg));
                 btn_upload.setEnabled(true);
             }
-
         } else {
             btn_upload.setEnabled(false);
             btn_upload.setText("Upload result between " + getTimetoShow(patientDETAILSBean.getUploadTIME()) + "-" + getTimetoShowafter(patientDETAILSBean.getUploadTIME()));
         }
+    }
+
+    private void manageUploadResultImg(Button btn_upload) {
+        btn_upload.setText("Upload result image");
+        btn_upload.setBackground(context.getResources().getDrawable(R.drawable.btn_bg_green));
+        btn_upload.setEnabled(true);
     }
 
     private String getTimetoShow(String uploadTIME) {
@@ -302,7 +334,7 @@ public class RATEnteredAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            c.add(Calendar.MINUTE, timespan-30);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
+            c.add(Calendar.MINUTE, timespan - 30);  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
             SimpleDateFormat sdf1 = new SimpleDateFormat("HH:mm");
             st = sdf1.format(c.getTime());
 

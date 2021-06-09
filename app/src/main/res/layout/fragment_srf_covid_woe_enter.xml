@@ -77,7 +77,7 @@
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:background="@drawable/corner_curve_maroon"
-                    android:digits="@string/alphabets1"
+                    android:digits="@string/alphabetsandnumber"
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="FIRST NAME*"
                     android:inputType="textCapCharacters"
@@ -92,7 +92,7 @@
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_weight="1"
                     android:background="@drawable/corner_curve_maroon"
-                    android:digits="@string/alphabets1"
+                    android:digits="@string/alphabetsandnumber"
                     android:drawablePadding="@dimen/_5sdp"
                     android:hint="LAST NAME*"
                     android:inputType="textCapCharacters"
@@ -507,7 +507,32 @@
                 android:textSize="@dimen/value" />
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1.8"
+                android:background="@drawable/corner_curve_maroon"
+                android:orientation="horizontal"
+                android:padding="3dp"
+                android:weightSum="5">
 
+                <TextView
+                    android:id="@+id/samplecollectionponit"
+                    style="@style/medium_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:"
+                    android:drawableRight="@drawable/down_arrow_woe"
+                    android:ems="10"
+                    android:padding="3dp"
+                    android:gravity="center|left"
+                    android:hint="SEARCH SAMPLE COLLECTION POINT"
+                    android:textAllCaps="true"
+                    android:textColor="@color/DARKGray"
+                    android:textColorHint="@color/black"
+                    android:textSize="@dimen/value" />
+            </LinearLayout>
 
 
             <EditText
