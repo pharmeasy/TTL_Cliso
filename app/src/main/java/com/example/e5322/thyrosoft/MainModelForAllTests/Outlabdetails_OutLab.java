@@ -293,6 +293,8 @@ public class Outlabdetails_OutLab implements Parcelable {
         private String BrandRate;
         private String RPTFile;
         private String Alias;
+        private String ILSRate;
+        private String FullName;
 
         public String getBrandName() {
             return BrandName;
@@ -324,6 +326,22 @@ public class Outlabdetails_OutLab implements Parcelable {
 
         public void setAlias(String Alias) {
             this.Alias = Alias;
+        }
+
+        public String getILSRate() {
+            return ILSRate;
+        }
+
+        public void setILSRate(String ILSRate) {
+            this.ILSRate = ILSRate;
+        }
+
+        public String getFullName() {
+            return FullName;
+        }
+
+        public void setFullName(String fullName) {
+            FullName = fullName;
         }
     }
 

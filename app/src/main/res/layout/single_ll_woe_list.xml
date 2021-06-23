@@ -32,7 +32,8 @@
             android:layout_weight="1"
             android:text="Android Name"
             android:textColor="@color/DARKGray"
-            android:textSize="12dp" />
+            android:textSize="13dp"
+            android:textStyle="bold" />
 
 
         <LinearLayout
@@ -125,6 +126,7 @@
             android:src="@drawable/edit"
             android:tag="image_tag"
             android:tint="@color/black" />
+
         <ImageView
             android:id="@+id/deleteWoe"
             android:layout_width="24dp"

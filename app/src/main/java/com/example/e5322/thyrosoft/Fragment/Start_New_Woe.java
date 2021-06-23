@@ -174,7 +174,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     Brand_type[] brandType;
     Button btn_generate, btn_resend, btn_verify;
     EditText edt_missed_mobile, edt_verifycc;
-    RadioButton by_missed, by_generate;
+    RadioButton by_missed, by_generate, by_sendsms;
     RelativeLayout rel_verify_mobile;
     RelativeLayout rel_mobno;
     LinearLayout lin_generate_verify, lin_by_missed;
@@ -362,9 +362,10 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
     TextView tv_help;
     EditText edt_email;
-    RadioButton by_sendsms;
+
     LinearLayout ll_email;
     List<String> hourSin, minuteSpin;
+    private String CLIENT_TYPE;
 
     public Start_New_Woe() {
         // Required empty public constructor
@@ -460,6 +461,14 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                 btn_generate.setText(getResources().getString(R.string.enterccc));
             }
         });
+
+        by_sendsms.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btn_generate.setText(getResources().getString(R.string.enterccc));
+            }
+        });
+
         by_generate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1131,6 +1140,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         prefs = getActivity().getSharedPreferences("Userdetails", MODE_PRIVATE);
         user = prefs.getString("Username", "");
         passwrd = prefs.getString("password", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
         access = prefs.getString("ACCESS_TYPE", "");
         usercode = prefs.getString("USER_CODE", "");
         api_key = prefs.getString("API_KEY", "");
@@ -1579,11 +1589,20 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     private void SetBrandSpinner() {
         try {
             if (GlobalClass.CheckArrayList(spinnerBrandName)) {
-                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, spinnerBrandName);
-                adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                brand_spinner.setAdapter(adapter2);
+                if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                    spinnerBrandName.clear();
+                    spinnerBrandName.add("NHL");
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, spinnerBrandName);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    brand_spinner.setAdapter(adapter2);
+                } else {
+                    ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, spinnerBrandName);
+                    adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    brand_spinner.setAdapter(adapter2);
+                }
                 brand_spinner.setSelection(0);
                 startDataSetting();
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1848,7 +1867,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             TastyToast.makeText(getContext(), response.body().getResponse(), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             timerflag = true;
                             Global.OTPVERIFIED = true;
-                            edt_email.setHint("EMAIL-ID*");
+//                            edt_email.setHint("EMAIL-ID*");
 
                             if (yourCountDownTimer != null) {
                                 yourCountDownTimer.cancel();
@@ -2196,7 +2215,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         disablefields();
                         timerflag = true;
                         Global.OTPVERIFIED = true;
-                        edt_email.setHint("EMAIL-ID*");
+//                        edt_email.setHint("EMAIL-ID*");
 
                         if (yourCountDownTimer != null) {
                             yourCountDownTimer.cancel();
@@ -2329,7 +2348,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -2428,6 +2447,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -2438,12 +2466,12 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
                                             } else if (conertage > 120) {
                                                 Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
-                                            }/*else if (mobile_number_kyc.getVisibility() == View.VISIBLE){
-                                              if(!GlobalClass.isNull(kycdata)){
-                                                  if(kycdata.length()<10){
-                                                      Toast.makeText(mContext, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
-                                                  }
-                                              }
+                                            } /*else if (mobile_number_kyc.getVisibility() == View.VISIBLE) {
+                                                if (!GlobalClass.isNull(kycdata)) {
+                                                    if (kycdata.length() < 10) {
+                                                        Toast.makeText(mContext, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
                                             }*/ else if (sctHr.equals("HR*")) {
                                                 Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
                                             } else if (sctMin.equals("MIN*")) {
@@ -2459,7 +2487,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
                                                 Toast.makeText(mContext, ToastFile.slt_sample_cll_point, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                               /* if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        TTL_ILS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -2467,17 +2503,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         TTL_ILS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            TTL_ILS();
-                                                        }
-                                                    } else {
-                                                        TTL_ILS();
-                                                    }
+                                                    TTL_ILS();
                                                 }
+//                                                }
                                             }
                                         }
                                     });
@@ -2514,7 +2542,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     brand_string = brand_spinner.getSelectedItem().toString();
                                     type_string = selectTypeSpinner.getSelectedItem().toString();
                                     next_btn.setVisibility(View.VISIBLE);
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     camp_layout_woe.setVisibility(View.GONE);
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
@@ -2646,7 +2674,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -2766,16 +2794,19 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
-                                                Toast.makeText(mContext, "Enter Mobile Number", Toast.LENGTH_SHORT).show();
-                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                            } /*else if (!GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                                                if (edt_missed_mobile.getText().toString().length() < 10) {
+                                                    Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                                }
+
+                                            }*/ else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                     edt_missed_mobile.getText().toString().startsWith("1") ||
                                                     edt_missed_mobile.getText().toString().startsWith("2") ||
                                                     edt_missed_mobile.getText().toString().startsWith("3") ||
                                                     edt_missed_mobile.getText().toString().startsWith("4") ||
                                                     edt_missed_mobile.getText().toString().startsWith("5")) {
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
-                                            } else if (edt_missed_mobile.getText().toString().length() < 10) {
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
@@ -2808,7 +2839,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                              /*  if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        TTL_DPS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -2816,17 +2855,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         TTL_DPS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            TTL_DPS();
-                                                        }
-                                                    } else {
-                                                        TTL_DPS();
-                                                    }
+                                                    TTL_DPS();
                                                 }
+//                                                }
 
                                             }
                                         }
@@ -2865,7 +2896,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     camp_layout_woe.setVisibility(View.GONE);
                                     btech_linear_layout.setVisibility(View.VISIBLE);
                                     pincode_linear_data.setVisibility(View.VISIBLE);
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     home_layout.setVisibility(View.VISIBLE);
                                     ll_email.setVisibility(View.VISIBLE);
 
@@ -2894,7 +2925,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -3010,18 +3041,20 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                                            }/* else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
                                                 Toast.makeText(mContext, "Enter Mobile Number", Toast.LENGTH_SHORT).show();
-                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                            }*/ else if (edt_missed_mobile.getText().toString().startsWith("0") ||
                                                     edt_missed_mobile.getText().toString().startsWith("1") ||
                                                     edt_missed_mobile.getText().toString().startsWith("2") ||
                                                     edt_missed_mobile.getText().toString().startsWith("3") ||
                                                     edt_missed_mobile.getText().toString().startsWith("4") ||
                                                     edt_missed_mobile.getText().toString().startsWith("5")) {
                                                 Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
-                                            } else if (edt_missed_mobile.getText().toString().length() < 10) {
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
                                                 Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
-                                            } else if (nameString.equals("")) {
+                                            } /*else if (edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                            }*/ else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
@@ -3052,7 +3085,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                            /*    if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        TTL_HOME();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -3060,17 +3101,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         TTL_HOME();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            TTL_HOME();
-                                                        }
-                                                    } else {
-                                                        TTL_HOME();
-                                                    }
+                                                    TTL_HOME();
                                                 }
+//                                                }
 
 
                                             }
@@ -3130,7 +3163,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -3573,7 +3606,1340 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                         }
                     });
+                } else if (brand_spinner.getSelectedItem().toString().equalsIgnoreCase("NHL")) {
+                    {
+                        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(mContext, R.layout.name_age_spinner, getTypeListfirst);
+                        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        selectTypeSpinner.setAdapter(adapter2);
+                        selectTypeSpinner.setSelection(0);
+                        selectTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, final long id) {
+
+                                resetOTPFields();
+                                SetAutoCompleteViewAdapterToView(false);  // TODO code to reset patient details selected from Dropdownlist
+
+                                Global.OTPVERIFIED = false;
+                                vial_number.getText().clear();
+                                id_for_woe.getText().clear();
+
+                                if (selectTypeSpinner.getSelectedItem().equals("ILS")) {
+                                    Enablefields();
+                                    try {
+                                        if (yourCountDownTimer != null) {
+                                            yourCountDownTimer.cancel();
+                                            yourCountDownTimer = null;
+                                            btn_snd_otp.setEnabled(true);
+                                            btn_snd_otp.setClickable(true);
+                                        }
+
+                                        samplecollectionponit.setText("SEARCH SAMPLE COLLECTION POINT");
+                                        et_mobno.getText().clear();
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
+                                        et_mobno.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                        lin_otp.setVisibility(View.GONE);
+                                        tv_timer.setVisibility(View.GONE);
+                                        edt_missed_mobile.setHint("Mobile Number");
+
+                                        ll_miscallotp.setVisibility(View.VISIBLE);
+                                        radiogrp2.check(by_sendsms.getId());
+                                        ll_email.setVisibility(View.VISIBLE);
+                                        leadlayout.setVisibility(View.GONE);
+                                        id_layout.setVisibility(View.GONE);
+                                        barcode_layout.setVisibility(View.GONE);
+                                        leadlayout.setVisibility(View.GONE);
+                                        next_btn.setVisibility(View.VISIBLE);
+                                        vial_number.setVisibility(View.VISIBLE);
+                                        camp_layout_woe.setVisibility(View.GONE);
+                                        btech_linear_layout.setVisibility(View.GONE);
+                                        home_layout.setVisibility(View.GONE);
+                                        pincode_linear_data.setVisibility(View.GONE);
+                                        leadbarcodelayout.setVisibility(View.GONE);
+                                        mobile_number_kyc.setVisibility(View.GONE);
+
+                                  /*  if(source_type.equalsIgnoreCase("PUC")){
+                                        mobile_number_kyc.setVisibility(View.VISIBLE);
+                                    }else{
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                    }*/
+
+                                        labname_linear.setVisibility(View.VISIBLE);
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        namePatients.setVisibility(View.VISIBLE);
+                                        AGE_layout.setVisibility(View.VISIBLE);
+                                        time_layout.setVisibility(View.VISIBLE);
+                                        refby_linear.setVisibility(View.VISIBLE);
+                                        ref_check_linear.setVisibility(View.VISIBLE);
+                                        uncheck_ref.setVisibility(View.VISIBLE);
+                                        ref_check.setVisibility(View.GONE);
+
+                                        referedbyText.setText("");
+
+                                        brand_string = brand_spinner.getSelectedItem().toString();
+                                        type_string = selectTypeSpinner.getSelectedItem().toString();
+                                        id_woe = id_for_woe.getText().toString();
+                                        barcode_woe_str = barcode_woe.getText().toString();
+                                        referenceBy = "";
+//                                            btnClick();
+                                        next_btn.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                nameString = name.getText().toString();
+                                                nameString = nameString.replaceAll("\\s+", " ");
+
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                getFinalTime = sctHr + ":" + sctMin;
+                                                getFinalDate = dateShow.getText().toString();
+
+                                                String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                                SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+
+                                                try {
+                                                    dCompare = sdfform.parse(getDateToCompare);
+
+                                                } catch (ParseException e) {
+
+                                               /* if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }*/
+
+                                                    String input = getDateToCompare;
+                                                    //Format of the date defined in the input String
+                                                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                    //Desired format: 24 hour format: Change the pattern as per the need
+                                                    DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                    Date date = null;
+                                                    String output = null;
+                                                    try {
+                                                        dCompare = df.parse(input);
+                                                        output = outputformat.format(dCompare);
+                                                        System.out.println(output);
+                                                    } catch (ParseException pe) {
+                                                        pe.printStackTrace();
+                                                    }
+                                                    e.printStackTrace();
+                                                }
+
+                                                typename = selectTypeSpinner.getSelectedItem().toString();
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+                                                getVial_numbver = vial_number.getText().toString();
+
+                                                ageString = age.getText().toString();
+                                                woereferedby = referedbyText.getText().toString();
+                                                GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                scpoint = samplecollectionponit.getText().toString();
+                                                getLabName = samplecollectionponit.getText().toString();
+                                                GlobalClass.setScp_Constant = samplecollectionponit.getText().toString();
+                                                leadlayout.setVisibility(View.GONE);
+                                           /* if(source_type.equalsIgnoreCase("PUC")){
+                                                kycdata = kyc_format.getText().toString();
+                                            }else{
+                                                kycdata = "";
+                                            }*/
+
+                                                btechIDToPass = "";
+                                                btechnameTopass = "";
+                                                getcampIDtoPass = "";
+
+                                                if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                    if (referenceBy == null) {
+                                                        Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                            referenceBy = "SELF";
+                                                            referredID = "";
+                                                            woereferedby = referenceBy;
+                                                        } else {
+                                                            referenceBy = referedbyText.getText().toString();
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (!ageString.equals("")) {
+                                                    conertage = Integer.parseInt(ageString);
+                                                }
+
+                                                if (getVial_numbver.equals("")) {
+                                                    vial_number.setError(ToastFile.vial_no);
+                                                    Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.length() < 2) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                                } else if (ageString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                                } else if (saveGenderId == null || saveGenderId == "") {
+                                                    Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                                } else if (conertage > 120) {
+                                                    Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                                }/*else if (mobile_number_kyc.getVisibility() == View.VISIBLE){
+                                              if(!GlobalClass.isNull(kycdata)){
+                                                  if(kycdata.length()<10){
+                                                      Toast.makeText(mContext, ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+                                                  }
+                                              }
+                                            }*/ else if (sctHr.equals("HR*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                                } else if (sctMin.equals("MIN*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                                }/* else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            } */ else if (scpoint.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT") || scpoint.equals("") || scpoint.equals(null)) {
+                                                    Toast.makeText(mContext, ToastFile.crt_scp, Toast.LENGTH_SHORT).show();
+                                                } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                    Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                                } else if (dCompare.after(getCurrentDateandTime)) {
+                                                    Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                                } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_sample_cll_point, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                 /*   if (Global.OTPVERIFIED) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_ILS();
+                                                        }
+                                                    } else {*/
+                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_ILS();
+                                                        }
+                                                    } else {
+                                                        TTL_ILS();
+                                                    }
+//                                                    }
+                                                }
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else if (selectTypeSpinner.getSelectedItem().equals("DPS")) {
+                                    try {
+                                        if (getOTPFlag().equalsIgnoreCase("NO")) {
+                                            Enablefields();
+                                            mobile_number_kyc.setVisibility(View.VISIBLE);
+                                            ll_mobileno_otp.setVisibility(View.GONE);
+                                            ll_miscallotp.setVisibility(View.GONE);
+                                            tv_mob_note.setVisibility(View.GONE);
+                                        } else if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                            // Disablefields();
+                                            ll_miscallotp.setVisibility(View.VISIBLE);
+                                            radiogrp2.check(by_sendsms.getId());
+                                        } else {
+                                            GlobalClass.redirectToLogin(getActivity());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                    try {
+                                        leadlayout.setVisibility(View.GONE);
+                                        id_layout.setVisibility(View.GONE);
+                                        barcode_layout.setVisibility(View.GONE);
+                                        leadbarcodelayout.setVisibility(View.GONE);
+                                        leadlayout.setVisibility(View.GONE);
+                                        brand_string = brand_spinner.getSelectedItem().toString();
+                                        type_string = selectTypeSpinner.getSelectedItem().toString();
+                                        next_btn.setVisibility(View.VISIBLE);
+//                                        edt_missed_mobile.setHint("Mobile Number*");
+                                        camp_layout_woe.setVisibility(View.GONE);
+                                        btech_linear_layout.setVisibility(View.VISIBLE);
+                                        pincode_linear_data.setVisibility(View.VISIBLE);
+                                        home_layout.setVisibility(View.VISIBLE);
+                                        vial_number.setVisibility(View.VISIBLE);
+                                        ll_email.setVisibility(View.VISIBLE);
+
+                                        labname_linear.setVisibility(View.GONE);
+                                        ref_check.setVisibility(View.GONE);
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        ref_check_linear.setVisibility(View.VISIBLE);
+                                        uncheck_ref.setVisibility(View.VISIBLE);
+
+                                        referedbyText.setText("");
+                                        woereferedby = referedbyText.getText().toString();
+
+                                        refby_linear.setVisibility(View.VISIBLE);
+                                        referenceBy = "";
+
+
+                                        namePatients.setVisibility(View.VISIBLE);
+                                        AGE_layout.setVisibility(View.VISIBLE);
+                                        time_layout.setVisibility(View.VISIBLE);
+                                        referenceBy = "";
+                                        getTSP_AddressStringTopass = getTSP_Address;
+
+                                        kyc_format.addTextChangedListener(new TextWatcher() {
+                                            @Override
+                                            public void onTextChanged(CharSequence s, int start, int before,
+                                                                      int count) {
+                                                String enteredString = s.toString();
+                                                if (enteredString.startsWith(" ") || enteredString.startsWith("!") || enteredString.startsWith("@") ||
+                                                        enteredString.startsWith("#") || enteredString.startsWith("$") ||
+                                                        enteredString.startsWith("%") || enteredString.startsWith("^") ||
+                                                        enteredString.startsWith("&") || enteredString.startsWith("*") || enteredString.startsWith(".")
+                                                        || enteredString.startsWith("0") || enteredString.startsWith("1") || enteredString.startsWith("2")
+                                                        || enteredString.startsWith("3") || enteredString.startsWith("4") || enteredString.startsWith("5")) {
+                                                    TastyToast.makeText(getActivity(), ToastFile.crt_mob_num, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                    if (enteredString.length() > 0) {
+                                                        kyc_format.setText(enteredString.substring(1));
+                                                    } else {
+                                                        kyc_format.setText("");
+                                                    }
+                                                }
+                                            }
+
+                                            @Override
+                                            public void beforeTextChanged(CharSequence s, int start, int count,
+                                                                          int after) {
+                                            }
+
+                                            @Override
+                                            public void afterTextChanged(Editable s) {
+                                                final String checkNumber = s.toString();
+                                                if (checkNumber.length() < 10) {
+                                                    flag = true;
+                                                }
+
+                                                if (flag == true) {
+                                                    if (checkNumber.length() == 10) {
+
+                                                        if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                            flag = false;
+                                                            kyc_format.setText(checkNumber);
+                                                        } else {
+                                                            flag = false;
+                                                            barProgressDialog = new ProgressDialog(mContext);
+                                                            barProgressDialog.setTitle("Kindly wait ...");
+                                                            barProgressDialog.setMessage(ToastFile.processing_request);
+                                                            barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
+                                                            barProgressDialog.setProgress(0);
+                                                            barProgressDialog.setMax(20);
+                                                            barProgressDialog.show();
+                                                            barProgressDialog.setCanceledOnTouchOutside(false);
+                                                            barProgressDialog.setCancelable(false);
+
+                                                            RequestQueue reques5tQueueCheckNumber = GlobalClass.setVolleyReq(getActivity());
+                                                            StringRequest jsonObjectRequestPop = new StringRequest(StringRequest.Method.GET, Api.checkNumber + checkNumber, new
+                                                                    Response.Listener<String>() {
+                                                                        @Override
+                                                                        public void onResponse(String response) {
+                                                                            Log.e(TAG, "onResponse: response" + response);
+
+                                                                            String getResponse = response;
+                                                                            if (response.equals("\"proceed\"")) {
+
+                                                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                                kyc_format.setText(checkNumber);
+                                                                            } else {
+                                                                                GlobalClass.hideProgress(getActivity(), barProgressDialog);
+                                                                                kyc_format.setText("");
+                                                                                TastyToast.makeText(getActivity(), getResponse, TastyToast.LENGTH_SHORT, TastyToast.ERROR);
+
+                                                                            }
+                                                                        }
+                                                                    }, new Response.ErrorListener() {
+                                                                @Override
+                                                                public void onErrorResponse(VolleyError error) {
+                                                                    if (error.networkResponse == null) {
+                                                                        if (error.getClass().equals(TimeoutError.class)) {
+                                                                            // Show timeout error message
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });
+                                                            jsonObjectRequestPop.setRetryPolicy(new DefaultRetryPolicy(
+                                                                    300000,
+                                                                    3,
+                                                                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                                                            reques5tQueueCheckNumber.add(jsonObjectRequestPop);
+                                                            Log.e(TAG, "afterTextChanged: URL" + jsonObjectRequestPop);
+                                                        }
+
+
+                                                    }
+
+                                                }
+                                            }
+                                        });
+
+                                        next_btn.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                nameString = name.getText().toString();
+                                                nameString = nameString.replaceAll("\\s+", " ");
+
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                getFinalTime = sctHr + ":" + sctMin;
+                                                getFinalDate = dateShow.getText().toString();
+
+                                                String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                                SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                try {
+                                                    dCompare = sdfform.parse(getDateToCompare);
+                                                } catch (ParseException e) {
+                                               /* if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }*/
+
+                                                    String input = getDateToCompare;
+                                                    //Format of the date defined in the input String
+                                                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                    //Desired format: 24 hour format: Change the pattern as per the need
+                                                    DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                    Date date = null;
+                                                    String output = null;
+                                                    try {
+                                                        dCompare = df.parse(input);
+                                                        output = outputformat.format(dCompare);
+                                                        System.out.println(output);
+                                                    } catch (ParseException pe) {
+                                                        pe.printStackTrace();
+                                                    }
+                                                    e.printStackTrace();
+                                                }
+
+                                                typename = selectTypeSpinner.getSelectedItem().toString();
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+                                                getVial_numbver = vial_number.getText().toString();
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+
+                                                ageString = age.getText().toString();
+                                                woereferedby = referedbyText.getText().toString();
+                                                GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                patientAddressdataToPass = patientAddress.getText().toString();
+                                                pincode_pass = pincode_edt.getText().toString();
+
+
+                                                if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                    kycdata = edt_missed_mobile.getText().toString();
+                                                } else {
+                                                    kycdata = kyc_format.getText().toString();
+                                                }
+
+                                                labAddressTopass = "";
+                                                labIDTopass = "";
+                                                getcampIDtoPass = "";
+
+                                                if (btechname.getSelectedItem() != null)
+                                                    btechnameTopass = btechname.getSelectedItem().toString();
+
+                                                try {
+                                                    if (btechnameTopass != null) {
+                                                        if (myPojo != null && myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                            for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                                if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                                    btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+
+                                                if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                    if (referenceBy == null) {
+                                                        Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                            referenceBy = "SELF";
+                                                            referredID = "";
+                                                            woereferedby = referenceBy;
+                                                        } else {
+                                                            referenceBy = referedbyText.getText().toString();
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                try {
+                                                    if (woereferedby != null) {
+                                                        if (obj != null && obj.getMASTERS() != null && obj.getMASTERS().getREF_DR() != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+
+
+                                                if (!ageString.equals("")) {
+                                                    conertage = Integer.parseInt(ageString);
+                                                }
+
+                                                if (getVial_numbver.equals("")) {
+                                                    vial_number.setError(ToastFile.vial_no);
+                                                    Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                                }/* else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                                                    Toast.makeText(mContext, "Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                                                } */ else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                    Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                                } /*else if (edt_missed_mobile.getText().toString().length() < 10) {
+                                                    Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                                } */ else if (nameString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.length() < 2) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                                } else if (ageString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                                } else if (conertage > 120) {
+                                                    Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                                } else if (saveGenderId == null || saveGenderId == "") {
+                                                    Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                                } else if (sctHr.equals("HR*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                                } else if (sctMin.equals("MIN*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                                } /*else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
+                                                    Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                                } else if (patientAddressdataToPass.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                                } else if (patientAddressdataToPass.length() < 25) {
+                                                    Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                                } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                                } else if (pincode_pass.length() < 6) {
+                                                    Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                                } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                                    Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                    Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    /*if (Global.OTPVERIFIED) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_DPS();
+                                                        }
+                                                    } else {*/
+                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_DPS();
+                                                        }
+                                                    } else {
+                                                        TTL_DPS();
+                                                    }
+//                                                    }
+
+                                                }
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else if (selectTypeSpinner.getSelectedItem().equals("HOME")) {
+                                    try {
+                                        if (getOTPFlag().equalsIgnoreCase("NO")) {
+                                            Enablefields();
+                                            Home_mobile_number_kyc.setVisibility(View.VISIBLE);
+                                            ll_mobileno_otp.setVisibility(View.GONE);
+                                            ll_miscallotp.setVisibility(View.GONE);
+                                            tv_mob_note.setVisibility(View.GONE);
+                                        } else if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                            // Disablefields();
+                                            ll_miscallotp.setVisibility(View.VISIBLE);
+                                            radiogrp2.check(by_sendsms.getId());
+                                        } else {
+                                            GlobalClass.redirectToLogin(getActivity());
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    try {
+                                        leadlayout.setVisibility(View.GONE);
+                                        id_layout.setVisibility(View.GONE);
+                                        barcode_layout.setVisibility(View.GONE);
+                                        leadlayout.setVisibility(View.GONE);
+                                        leadbarcodelayout.setVisibility(View.GONE);
+                                        brand_string = brand_spinner.getSelectedItem().toString();
+                                        type_string = selectTypeSpinner.getSelectedItem().toString();
+                                        next_btn.setVisibility(View.VISIBLE);
+                                        camp_layout_woe.setVisibility(View.GONE);
+                                        btech_linear_layout.setVisibility(View.VISIBLE);
+                                        pincode_linear_data.setVisibility(View.VISIBLE);
+//                                        edt_missed_mobile.setHint("Mobile Number*");
+                                        home_layout.setVisibility(View.VISIBLE);
+                                        ll_email.setVisibility(View.VISIBLE);
+
+                                        vial_number.setVisibility(View.VISIBLE);
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                        labname_linear.setVisibility(View.GONE);
+                                        patientAddress.setText("");
+                                        ref_check.setVisibility(View.GONE);
+                                        ref_check_linear.setVisibility(View.VISIBLE);
+                                        uncheck_ref.setVisibility(View.VISIBLE);
+                                        refby_linear.setVisibility(View.VISIBLE);
+                                        referedbyText.setText("");
+                                        referenceBy = "";
+
+
+                                        namePatients.setVisibility(View.VISIBLE);
+                                        AGE_layout.setVisibility(View.VISIBLE);
+                                        time_layout.setVisibility(View.VISIBLE);
+//                                             btnClick();
+                                        next_btn.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+
+                                                nameString = name.getText().toString();
+                                                nameString = nameString.replaceAll("\\s+", " ");
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                getFinalTime = sctHr + ":" + sctMin;
+                                                getFinalDate = dateShow.getText().toString();
+
+                                                String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                                SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+
+                                                try {
+                                                    dCompare = sdfform.parse(getDateToCompare);
+                                                } catch (ParseException e) {
+                                              /*  if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }*/
+
+                                                    String input = getDateToCompare;
+                                                    //Format of the date defined in the input String
+                                                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                    //Desired format: 24 hour format: Change the pattern as per the need
+                                                    DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                    Date date = null;
+                                                    String output = null;
+                                                    try {
+                                                        dCompare = df.parse(input);
+                                                        output = outputformat.format(dCompare);
+                                                        System.out.println(output);
+                                                    } catch (ParseException pe) {
+                                                        pe.printStackTrace();
+                                                    }
+                                                    e.printStackTrace();
+                                                }
+
+                                                typename = selectTypeSpinner.getSelectedItem().toString();
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+                                                getVial_numbver = vial_number.getText().toString();
+
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+
+                                                ageString = age.getText().toString();
+                                                woereferedby = referedbyText.getText().toString();
+                                                GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                patientAddressdataToPass = patientAddress.getText().toString();
+                                                pincode_pass = pincode_edt.getText().toString();
+                                                // btechnameTopass = btechname.getSelectedItem().toString();
+
+                                                if (btechname.getSelectedItem() != null)
+                                                    btechnameTopass = btechname.getSelectedItem().toString();
+
+
+                                                if (getOTPFlag().equalsIgnoreCase("YES")) {
+                                                    kycdata = edt_missed_mobile.getText().toString();
+                                                } else {
+                                                    kycdata = home_kyc_format.getText().toString();
+                                                }
+
+
+                                                labIDTopass = "";
+                                                labAddressTopass = "";
+                                                getcampIDtoPass = "";
+
+                                                if (btechnameTopass != null) {
+                                                    if (myPojo.getMASTERS().getBCT_LIST() != null) {
+                                                        for (int j = 0; j < myPojo.getMASTERS().getBCT_LIST().length; j++) {
+                                                            if (btechnameTopass.equals(myPojo.getMASTERS().getBCT_LIST()[j].getNAME())) {
+                                                                btechIDToPass = myPojo.getMASTERS().getBCT_LIST()[j].getNED_NUMBER();
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+
+                                                if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                    if (referenceBy == null || referenceBy.length() <= 1) {
+                                                        Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                            referenceBy = "SELF";
+                                                            referredID = "";
+                                                            woereferedby = referenceBy;
+                                                        } else {
+
+                                                            referenceBy = referedbyText.getText().toString();
+                                                        }
+                                                    }
+
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
+                                                }
+
+
+                                                if (!ageString.equals("")) {
+                                                    conertage = Integer.parseInt(ageString);
+                                                }
+
+                                                if (getVial_numbver.equals("")) {
+                                                    vial_number.setError(ToastFile.vial_no);
+                                                    Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                                } /*else if (GlobalClass.isNull(edt_missed_mobile.getText().toString())) {
+                                                    Toast.makeText(mContext, "Enter Mobile Number", Toast.LENGTH_SHORT).show();
+                                                }*/else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                        edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                    Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                                } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                    Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                                }/* else if (edt_missed_mobile.getText().toString().length() < 10) {
+                                                    Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                                }*/ else if (nameString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                                } else if (nameString.length() < 2) {
+                                                    Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                                } else if (ageString.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                                } else if (conertage > 120) {
+                                                    Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                                } else if (saveGenderId == null || saveGenderId == "") {
+                                                    Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                                } else if (sctHr.equals("HR*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                                } else if (sctMin.equals("MIN*")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                                } /*else if (sctSEc.equals("AM/PM")) {
+                                                Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                            }*/ else if (dCompare.after(getCurrentDateandTime)) {
+                                                    Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                                } else if (patientAddressdataToPass.equals("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_addr, Toast.LENGTH_SHORT).show();
+                                                } else if (patientAddressdataToPass.length() < 25) {
+                                                    Toast.makeText(mContext, ToastFile.addre25long, Toast.LENGTH_SHORT).show();
+                                                } else if (pincode_pass.equalsIgnoreCase("")) {
+                                                    Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                                } else if (pincode_pass.length() < 6) {
+                                                    Toast.makeText(mContext, ToastFile.crt_pincode, Toast.LENGTH_SHORT).show();
+                                                } else if (btechnameTopass.equalsIgnoreCase(ToastFile.slt_btech_name)) {
+                                                    Toast.makeText(getActivity(), ToastFile.btech_name, Toast.LENGTH_SHORT).show();
+                                                } else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                    Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                 /*   if (Global.OTPVERIFIED) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_HOME();
+                                                        }
+                                                    } else {*/
+                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
+                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                            edt_email.requestFocus();
+                                                        } else {
+                                                            TTL_HOME();
+                                                        }
+                                                    } else {
+                                                        TTL_HOME();
+                                                    }
+//                                                    }
+
+
+                                                }
+
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else if (selectTypeSpinner.getSelectedItem().equals("CAMP")) {
+                                    Enablefields();
+                                    try {
+                                        leadlayout.setVisibility(View.GONE);
+                                        id_layout.setVisibility(View.GONE);
+                                        barcode_layout.setVisibility(View.GONE);
+                                        pincode_linear_data.setVisibility(View.GONE);
+                                        ll_miscallotp.setVisibility(View.GONE);
+                                        leadlayout.setVisibility(View.GONE);
+                                        leadbarcodelayout.setVisibility(View.GONE);
+                                        brand_string = brand_spinner.getSelectedItem().toString();
+                                        type_string = selectTypeSpinner.getSelectedItem().toString();
+                                        next_btn.setVisibility(View.VISIBLE);
+                                        camp_layout_woe.setVisibility(View.GONE);
+                                        btech_linear_layout.setVisibility(View.VISIBLE);
+                                        home_layout.setVisibility(View.GONE);
+                                        vial_number.setVisibility(View.VISIBLE);
+                                        ref_check.setVisibility(View.GONE);
+                                        ll_email.setVisibility(View.VISIBLE);
+                                        labname_linear.setVisibility(View.GONE);
+                                        ll_mobileno_otp.setVisibility(View.GONE);
+                                        tv_mob_note.setVisibility(View.GONE);
+                                        mobile_number_kyc.setVisibility(View.GONE);
+                                        Home_mobile_number_kyc.setVisibility(View.GONE);
+                                        camp_layout_woe.setVisibility(View.VISIBLE);
+                                        btech_linear_layout.setVisibility(View.GONE);
+                                        home_layout.setVisibility(View.GONE);
+                                        labname_linear.setVisibility(View.GONE);
+                                        ref_check_linear.setVisibility(View.GONE);
+                                        refby_linear.setVisibility(View.GONE);
+                                        referedbyText.setText("");
+                                        ref_check_linear.setVisibility(View.VISIBLE);
+                                        uncheck_ref.setVisibility(View.VISIBLE);
+                                        refby_linear.setVisibility(View.VISIBLE);
+                                        namePatients.setVisibility(View.VISIBLE);
+                                        AGE_layout.setVisibility(View.VISIBLE);
+                                        time_layout.setVisibility(View.VISIBLE);
+
+                                        patientAddress.setText("");
+                                        referenceBy = "";
+
+                                        next_btn.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                nameString = name.getText().toString();
+                                                nameString = nameString.replaceAll("\\s+", " ");
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                getFinalTime = sctHr + ":" + sctMin;
+                                                getFinalDate = dateShow.getText().toString();
+
+                                                String getDateToCompare = getFinalDate + " " + getFinalTime;
+
+                                                SimpleDateFormat sdfform = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                try {
+                                                    dCompare = sdfform.parse(getDateToCompare);
+                                                } catch (ParseException e) {
+                                              /*  if (getDateToCompare.contains("AM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "a.m.";
+                                                } else if (getDateToCompare.contains("PM")) {
+                                                    getDateToCompare = getDateToCompare.substring(0, getDateToCompare.length() - 2);
+                                                    getDateToCompare = getDateToCompare + "p.m.";
+                                                }*/
+
+                                                    String input = getDateToCompare;
+                                                    //Format of the date defined in the input String
+                                                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                                                    //Desired format: 24 hour format: Change the pattern as per the need
+                                                    DateFormat outputformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                                                    Date date = null;
+                                                    String output = null;
+                                                    try {
+                                                        dCompare = df.parse(input);
+                                                        output = outputformat.format(dCompare);
+                                                        System.out.println(output);
+                                                    } catch (ParseException pe) {
+                                                        pe.printStackTrace();
+                                                    }
+                                                    e.printStackTrace();
+                                                }
+
+                                                typename = selectTypeSpinner.getSelectedItem().toString();
+                                                brandNames = brand_spinner.getSelectedItem().toString();
+                                                getVial_numbver = vial_number.getText().toString();
+                                                if (typename.equals("CAMP")) {
+
+                                                    ageString = age.getText().toString();
+                                                    woereferedby = referedbyText.getText().toString();
+                                                    GlobalClass.setReferenceBy_Name = referedbyText.getText().toString();
+                                                    // scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                                    if (camp_spinner_olc.getSelectedItem().toString() != null) {
+                                                        scpoint = camp_spinner_olc.getSelectedItem().toString();
+                                                    }
+                                                    kycdata = kyc_format.getText().toString();
+
+                                                    kycdata = "";
+                                                    labIDTopass = "";
+                                                    btechIDToPass = "";
+                                                    btechnameTopass = "";
+                                                    labAddressTopass = "";
+
+                                                    if (woereferedby.equals("") || woereferedby.equals(null)) {
+                                                        if (referenceBy == null) {
+                                                            Toast.makeText(mContext, "Please select Ref by", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            if (referenceBy.equalsIgnoreCase("SELF")) {
+                                                                referenceBy = "SELF";
+                                                                referredID = "";
+                                                                woereferedby = referenceBy;
+                                                            } else {
+
+                                                                referenceBy = referedbyText.getText().toString();
+                                                            }
+                                                        }
+
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+
+
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                }
+                                                            }
+                                                        }
+                                                    } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+
+
+                                                    if (scpoint != null) {
+                                                        if (myPojo.getMASTERS().getCAMP_LIST() != null) {
+                                                            for (int k = 0; k < myPojo.getMASTERS().getCAMP_LIST().length; k++) {
+                                                                if (scpoint.equals(myPojo.getMASTERS().getCAMP_LIST()[k].getVENUE())) {
+                                                                    getcampIDtoPass = myPojo.getMASTERS().getCAMP_LIST()[k].getCAMP_ID();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                    if (!ageString.equals("")) {
+                                                        conertage = Integer.parseInt(ageString);
+                                                    }
+
+                                                    if (getVial_numbver.equals("")) {
+                                                        vial_number.setError(ToastFile.vial_no);
+                                                        Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                                    } else if (nameString.equals("")) {
+                                                        Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
+                                                    } else if (nameString.length() < 2) {
+                                                        Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
+                                                    } else if (ageString.equals("")) {
+                                                        Toast.makeText(mContext, ToastFile.ent_age, Toast.LENGTH_SHORT).show();
+                                                    } else if (saveGenderId == null || saveGenderId == "") {
+                                                        Toast.makeText(mContext, ToastFile.ent_gender, Toast.LENGTH_SHORT).show();
+                                                    } else if (conertage > 120) {
+                                                        Toast.makeText(mContext, ToastFile.invalidage, Toast.LENGTH_SHORT).show();
+                                                    } else if (sctHr.equals("HR*")) {
+                                                        Toast.makeText(mContext, ToastFile.slt_hr, Toast.LENGTH_SHORT).show();
+                                                    } else if (sctMin.equals("MIN*")) {
+                                                        Toast.makeText(mContext, ToastFile.slt_min, Toast.LENGTH_SHORT).show();
+                                                    } /*else if (sctSEc.equals("AM/PM")) {
+                                                    Toast.makeText(mContext, ToastFile.slt_ampm, Toast.LENGTH_SHORT).show();
+                                                }*/ else if (referenceBy == null || referenceBy.equals("") || referenceBy.length() <= 1) {
+                                                        Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
+                                                    } else if (scpoint.equals("Select Camp")) {
+                                                        Toast.makeText(getActivity(), "Please select camp name", Toast.LENGTH_SHORT).show();
+                                                    } else if (dCompare.after(getCurrentDateandTime) && getCurrentDateandTime != null) {
+                                                        Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
+                                                    } else {
+
+                                                        if (woereferedby != null) {
+                                                            if (obj != null) {
+                                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                        referenceBy = woereferedby;
+                                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
+                                                                    }
+                                                                }
+                                                            }
+                                                        } else {
+                                                            referenceBy = woereferedby;
+                                                            referredID = "";
+                                                        }
+
+                                                        final String getAgeType = spinyr.getSelectedItem().toString();
+                                                        String sctDate = dateShow.getText().toString();
+                                                        sctHr = timehr.getSelectedItem().toString();
+                                                        sctMin = timesecond.getSelectedItem().toString();
+                                                        sctSEc = timeampm.getSelectedItem().toString();
+                                                        final String getFinalAge = age.getText().toString();
+                                                        final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                        final String getFinalDate = dateShow.getText().toString();
+
+
+                                                        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+
+                                                            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                                    .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                                    .setConfirmText("Ok")
+                                                                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                        @Override
+                                                                        public void onClick(SweetAlertDialog sDialog) {
+                                                                            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                            i.putExtra("name", nameString);
+                                                                            i.putExtra("age", getFinalAge);
+                                                                            i.putExtra("gender", saveGenderId);
+                                                                            i.putExtra("sct", getFinalTime);
+                                                                            i.putExtra("date", getFinalDate);
+                                                                            GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                            startActivity(i);
+                                                                            Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
+                                                                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                            saveDetails.putString("name", nameString);
+                                                                            saveDetails.putString("age", getFinalAge);
+                                                                            saveDetails.putString("gender", saveGenderId);
+                                                                            saveDetails.putString("sct", getFinalTime);
+                                                                            saveDetails.putString("date", getFinalDate);
+                                                                            saveDetails.putString("ageType", getAgeType);
+                                                                            saveDetails.putString("labname", "");
+                                                                            saveDetails.putString("labAddress", scpoint);
+                                                                            saveDetails.putString("patientAddress", scpoint);
+                                                                            saveDetails.putString("refBy", referenceBy);
+                                                                            saveDetails.putString("refId", referredID);
+                                                                            saveDetails.putString("labIDaddress", labIDTopass);
+                                                                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                            saveDetails.putString("kycinfo", kycdata);
+                                                                            saveDetails.putString("WOEbrand", brandNames);
+                                                                            saveDetails.putString("woetype", typename);
+                                                                            saveDetails.putString("SR_NO", getVial_numbver);
+                                                                            saveDetails.putString("pincode", "");
+                                                                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                                            saveDetails.commit();
+                                                                            sDialog.dismissWithAnimation();
+                                                                        }
+                                                                    })
+                                                                    .show();
+
+                                                        } else {
+                                                            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                            i.putExtra("name", nameString);
+                                                            i.putExtra("age", getFinalAge);
+                                                            i.putExtra("gender", saveGenderId);
+                                                            i.putExtra("sct", getFinalTime);
+                                                            i.putExtra("date", getFinalDate);
+                                                            GlobalClass.setReferenceBy_Name = referenceBy;
+                                                            startActivity(i);
+                                                            Log.e(TAG, "onClick: lab add and lab id " + scpoint + labIDTopass);
+                                                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                            saveDetails.putString("name", nameString);
+                                                            saveDetails.putString("age", getFinalAge);
+                                                            saveDetails.putString("gender", saveGenderId);
+                                                            saveDetails.putString("sct", getFinalTime);
+                                                            saveDetails.putString("date", getFinalDate);
+                                                            saveDetails.putString("ageType", getAgeType);
+                                                            saveDetails.putString("labname", "");
+                                                            saveDetails.putString("labAddress", scpoint);
+                                                            saveDetails.putString("patientAddress", scpoint);
+                                                            saveDetails.putString("refBy", referenceBy);
+                                                            saveDetails.putString("refId", referredID);
+                                                            saveDetails.putString("labIDaddress", labIDTopass);
+                                                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                            saveDetails.putString("kycinfo", kycdata);
+                                                            saveDetails.putString("WOEbrand", brandNames);
+                                                            saveDetails.putString("woetype", typename);
+                                                            saveDetails.putString("SR_NO", getVial_numbver);
+                                                            saveDetails.putString("pincode", "");
+                                                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                            saveDetails.commit();
+                                                        }
+
+
+                                                    }
+                                                }
+
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
+                                } else if (selectTypeSpinner.getSelectedItem().equals("ORDERS")) {
+                                    LeadIdwoe();
+                                } else if (selectTypeSpinner.getSelectedItem().equals("ADD")) {
+                                    barcode_woe.setText("");
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.VISIBLE);
+                                    ll_miscallotp.setVisibility(View.GONE);
+                                    vial_number.setVisibility(View.GONE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    ll_email.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    patientAddress.setText("");
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+                                    ref_check_linear.setVisibility(View.GONE);
+                                    refby_linear.setVisibility(View.GONE);
+                                    namePatients.setVisibility(View.GONE);
+                                    AGE_layout.setVisibility(View.GONE);
+                                    time_layout.setVisibility(View.GONE);
+                                    next_btn.setVisibility(View.GONE);
+
+                                    barcode_woe.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+                                            if (s.length() < 8) {
+                                                leadbarcodelayout.setVisibility(View.GONE);
+                                            }
+                                            if (s.length() == 8) {
+                                                String passBarcode = s.toString();
+                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    GlobalClass.showAlertDialog(getActivity());
+                                                } else {
+                                                    RecheckType(passBarcode);
+                                                }
+                                            }
+                                        }
+                                    });
+                                    referenceBy = "";
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            if (type_string.equals("")) {
+                                                Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                            } else if (barcode_woe.getText().toString().equals("")) {
+                                                Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
+                                                GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
+                                                GlobalClass.id_value = id_for_woe.getText().toString();
+
+                                                SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("AddTestType", 0).edit();
+                                                savePrefe.putString("ALERT", ALERT);
+                                                savePrefe.putString("BARCODE", BARCODE);
+                                                savePrefe.putString("BVT_HRS", BVT_HRS);
+                                                savePrefe.putString("LABCODE", LABCODE);
+                                                savePrefe.putString("PATIENT", PATIENT);
+                                                savePrefe.putString("REF_DR", REF_DR);
+                                                savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
+                                                savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
+                                                savePrefe.putString("RES_ID", RES_ID);
+                                                savePrefe.putString("SDATE", SDATE);
+                                                savePrefe.putString("SL_NO", SL_NO);
+                                                savePrefe.putString("STATUS", STATUS);
+                                                savePrefe.putString("SU_CODE1", SU_CODE1);
+                                                savePrefe.putString("SU_CODE2", SU_CODE2);
+                                                savePrefe.putString("TESTS", TESTS);
+                                                savePrefe.commit();
+
+                                                Intent a = new Intent(getActivity(), AddWOETestsForSerum.class);
+                                                startActivity(a);
+
+                                            }
+                                        }
+                                    });
+                                } else if (selectTypeSpinner.getSelectedItem().equals("RECHECK")) {
+                                    barcode_woe.setText("");
+                                    ll_mobileno_otp.setVisibility(View.GONE);
+                                    tv_mob_note.setVisibility(View.GONE);
+                                    leadbarcodelayout.setVisibility(View.GONE);
+                                    id_layout.setVisibility(View.GONE);
+                                    pincode_linear_data.setVisibility(View.GONE);
+                                    barcode_layout.setVisibility(View.VISIBLE);
+                                    vial_number.setVisibility(View.GONE);
+                                    camp_layout_woe.setVisibility(View.GONE);
+                                    btech_linear_layout.setVisibility(View.GONE);
+                                    home_layout.setVisibility(View.GONE);
+                                    ll_miscallotp.setVisibility(View.GONE);
+                                    labname_linear.setVisibility(View.GONE);
+                                    patientAddress.setText("");
+                                    ll_email.setVisibility(View.GONE);
+                                    mobile_number_kyc.setVisibility(View.GONE);
+                                    Home_mobile_number_kyc.setVisibility(View.GONE);
+                                    ref_check_linear.setVisibility(View.GONE);
+                                    refby_linear.setVisibility(View.GONE);
+                                    namePatients.setVisibility(View.GONE);
+                                    AGE_layout.setVisibility(View.GONE);
+
+                                    time_layout.setVisibility(View.GONE);
+                                    leadlayout.setVisibility(View.GONE);
+                                    brand_string = brand_spinner.getSelectedItem().toString();
+                                    type_string = selectTypeSpinner.getSelectedItem().toString();
+
+
+                                    next_btn.setVisibility(View.GONE);
+                                    barcode_woe.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable s) {
+                                            if (s.length() < 8) {
+                                                leadbarcodelayout.setVisibility(View.GONE);
+                                            }
+                                            if (s.length() == 8) {
+                                                if (!GlobalClass.isNetworkAvailable(getActivity())) {
+                                                    GlobalClass.showAlertDialog(getActivity());
+                                                } else {
+                                                    String passBarcode = s.toString();
+                                                    RecheckType(passBarcode);
+                                                }
+                                            }
+                                        }
+                                    });
+                                    referenceBy = "";
+
+                                    next_btn.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+
+                                            if (brand_string.equals("Select brand name")) {
+                                                Toast.makeText(getActivity(), "Please select brand name", Toast.LENGTH_SHORT).show();
+                                            } else if (type_string.equals("")) {
+                                                Toast.makeText(getActivity(), "Please select type name", Toast.LENGTH_SHORT).show();
+                                            } else if (barcode_woe.getText().toString().equals("")) {
+                                                Toast.makeText(getActivity(), ToastFile.entr_brcd, Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                SharedPreferences.Editor savePrefe = getActivity().getSharedPreferences("RecheckTestType", 0).edit();
+                                                savePrefe.putString("ALERT", ALERT);
+                                                savePrefe.putString("BARCODE", BARCODE);
+                                                savePrefe.putString("BVT_HRS", BVT_HRS);
+                                                savePrefe.putString("LABCODE", LABCODE);
+                                                savePrefe.putString("PATIENT", PATIENT);
+                                                savePrefe.putString("REF_DR", REF_DR);
+                                                savePrefe.putString("REQUESTED_ADDITIONAL_TESTS", REQUESTED_ADDITIONAL_TESTS);
+                                                savePrefe.putString("REQUESTED_ON", REQUESTED_ON);
+                                                savePrefe.putString("RES_ID", RES_ID);
+                                                savePrefe.putString("SDATE", SDATE);
+                                                savePrefe.putString("SL_NO", SL_NO);
+                                                savePrefe.putString("STATUS", STATUS);
+                                                savePrefe.putString("SU_CODE1", SU_CODE1);
+                                                savePrefe.putString("SU_CODE2", SU_CODE2);
+                                                savePrefe.putString("TESTS", TESTS);
+
+                                                savePrefe.commit();
+                                                GlobalClass.branditem = brand_spinner.getSelectedItem().toString();
+                                                GlobalClass.typeItem = selectTypeSpinner.getSelectedItem().toString();
+                                                Intent a = new Intent(getActivity(), RecheckAllTest.class);
+                                                startActivity(a);
+
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                    }
                 }
+
                 if (position > 0) {
                     vial_number.getText().clear();
                     id_for_woe.getText().clear();
@@ -3598,7 +4964,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             ll_miscallotp.setVisibility(View.GONE);
                                             tv_mob_note.setVisibility(View.GONE);
                                         } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                            Disablefields();
+//                                            Disablefields();
                                             ll_miscallotp.setVisibility(View.VISIBLE);
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
@@ -3624,7 +4990,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     home_layout.setVisibility(View.VISIBLE);
                                     vial_number.setVisibility(View.VISIBLE);
 
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     labname_linear.setVisibility(View.GONE);
                                     ref_check.setVisibility(View.GONE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
@@ -3919,131 +5285,131 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                     e.printStackTrace();
                                                 }
 
-                                                if (kycdata.length() == 0) {
+                                            /*    if (kycdata.length() == 0) {
                                                     Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
                                                     Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
-                                                } else {
+                                                } else {*/
 
-                                                    try {
-                                                        if (woereferedby != null) {
-                                                            if (obj != null) {
-                                                                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                        referenceBy = woereferedby;
-                                                                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                                    }
+                                                try {
+                                                    if (woereferedby != null) {
+                                                        if (obj != null) {
+                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                    referenceBy = woereferedby;
+                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                                 }
                                                             }
-                                                        } else {
-                                                            referenceBy = woereferedby;
-                                                            referredID = "";
                                                         }
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-
-
-                                                    final String getAgeType = spinyr.getSelectedItem().toString();
-                                                    String sctDate = dateShow.getText().toString();
-                                                    sctHr = timehr.getSelectedItem().toString();
-                                                    sctMin = timesecond.getSelectedItem().toString();
-                                                    sctSEc = timeampm.getSelectedItem().toString();
-                                                    final String getFinalAge = age.getText().toString();
-                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                                    final String getFinalDate = dateShow.getText().toString();
-
-
-                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                                .setConfirmText("Ok")
-                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                    @Override
-                                                                    public void onClick(SweetAlertDialog sDialog) {
-                                                                        if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                                                            getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                                                                        }
-
-                                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                        i.putExtra("name", nameString);
-                                                                        i.putExtra("age", getFinalAge);
-                                                                        i.putExtra("gender", saveGenderId);
-                                                                        i.putExtra("sct", getFinalTime);
-                                                                        i.putExtra("date", getFinalDate);
-                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                        startActivity(i);
-                                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
-                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                        saveDetails.putString("name", nameString);
-                                                                        saveDetails.putString("age", getFinalAge);
-                                                                        saveDetails.putString("gender", saveGenderId);
-                                                                        saveDetails.putString("sct", getFinalTime);
-                                                                        saveDetails.putString("date", getFinalDate);
-                                                                        saveDetails.putString("ageType", getAgeType);
-                                                                        saveDetails.putString("labname", "");
-                                                                        saveDetails.putString("labAddress", getTSP_Address);
-                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                                        saveDetails.putString("refBy", referenceBy);
-                                                                        saveDetails.putString("refId", referredID);
-                                                                        saveDetails.putString("labIDaddress", "");
-                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                        saveDetails.putString("kycinfo", kycdata);
-                                                                        saveDetails.putString("woetype", typename);
-                                                                        saveDetails.putString("WOEbrand", brandNames);
-                                                                        saveDetails.putString("SR_NO", getVial_numbver);
-                                                                        saveDetails.putString("pincode", pincode_pass);
-                                                                        saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                                                        saveDetails.commit();
-                                                                        sDialog.dismissWithAnimation();
-                                                                    }
-                                                                })
-                                                                .show();
-
                                                     } else {
+                                                        referenceBy = woereferedby;
+                                                        referredID = "";
+                                                    }
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
 
-                                                        if (myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                                            getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                                                        }
 
-                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                        i.putExtra("name", nameString);
-                                                        i.putExtra("age", getFinalAge);
-                                                        i.putExtra("gender", saveGenderId);
-                                                        i.putExtra("sct", getFinalTime);
-                                                        i.putExtra("date", getFinalDate);
-                                                        GlobalClass.setReferenceBy_Name = referenceBy;
-                                                        startActivity(i);
-                                                        Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
-                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                        saveDetails.putString("name", nameString);
-                                                        saveDetails.putString("age", getFinalAge);
-                                                        saveDetails.putString("gender", saveGenderId);
-                                                        saveDetails.putString("sct", getFinalTime);
-                                                        saveDetails.putString("date", getFinalDate);
-                                                        saveDetails.putString("ageType", getAgeType);
-                                                        saveDetails.putString("labname", "");
-                                                        saveDetails.putString("labAddress", getTSP_Address);
-                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                        saveDetails.putString("refBy", referenceBy);
-                                                        saveDetails.putString("refId", referredID);
-                                                        saveDetails.putString("labIDaddress", "");
-                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                        saveDetails.putString("kycinfo", kycdata);
-                                                        saveDetails.putString("woetype", typename);
-                                                        saveDetails.putString("WOEbrand", brandNames);
-                                                        saveDetails.putString("SR_NO", getVial_numbver);
-                                                        saveDetails.putString("pincode", pincode_pass);
-                                                        saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                                        saveDetails.commit();
+                                                final String getAgeType = spinyr.getSelectedItem().toString();
+                                                String sctDate = dateShow.getText().toString();
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                final String getFinalAge = age.getText().toString();
+                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                final String getFinalDate = dateShow.getText().toString();
+
+
+                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                            .setConfirmText("Ok")
+                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                @Override
+                                                                public void onClick(SweetAlertDialog sDialog) {
+                                                                    if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                                        getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                                                                    }
+
+                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                    i.putExtra("name", nameString);
+                                                                    i.putExtra("age", getFinalAge);
+                                                                    i.putExtra("gender", saveGenderId);
+                                                                    i.putExtra("sct", getFinalTime);
+                                                                    i.putExtra("date", getFinalDate);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    startActivity(i);
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
+                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                    saveDetails.putString("name", nameString);
+                                                                    saveDetails.putString("age", getFinalAge);
+                                                                    saveDetails.putString("gender", saveGenderId);
+                                                                    saveDetails.putString("sct", getFinalTime);
+                                                                    saveDetails.putString("date", getFinalDate);
+                                                                    saveDetails.putString("ageType", getAgeType);
+                                                                    saveDetails.putString("labname", "");
+                                                                    saveDetails.putString("labAddress", getTSP_Address);
+                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                    saveDetails.putString("refBy", referenceBy);
+                                                                    saveDetails.putString("refId", referredID);
+                                                                    saveDetails.putString("labIDaddress", "");
+                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                    saveDetails.putString("kycinfo", kycdata);
+                                                                    saveDetails.putString("woetype", typename);
+                                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", pincode_pass);
+                                                                    saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                                    saveDetails.commit();
+                                                                    sDialog.dismissWithAnimation();
+                                                                }
+                                                            })
+                                                            .show();
+
+                                                } else {
+
+                                                    if (myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                                        getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
                                                     }
 
-
+                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                    i.putExtra("name", nameString);
+                                                    i.putExtra("age", getFinalAge);
+                                                    i.putExtra("gender", saveGenderId);
+                                                    i.putExtra("sct", getFinalTime);
+                                                    i.putExtra("date", getFinalDate);
+                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                    startActivity(i);
+                                                    Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
+                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                    saveDetails.putString("name", nameString);
+                                                    saveDetails.putString("age", getFinalAge);
+                                                    saveDetails.putString("gender", saveGenderId);
+                                                    saveDetails.putString("sct", getFinalTime);
+                                                    saveDetails.putString("date", getFinalDate);
+                                                    saveDetails.putString("ageType", getAgeType);
+                                                    saveDetails.putString("labname", "");
+                                                    saveDetails.putString("labAddress", getTSP_Address);
+                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                    saveDetails.putString("refBy", referenceBy);
+                                                    saveDetails.putString("refId", referredID);
+                                                    saveDetails.putString("labIDaddress", "");
+                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                    saveDetails.putString("kycinfo", kycdata);
+                                                    saveDetails.putString("woetype", typename);
+                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", pincode_pass);
+                                                    saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                    saveDetails.commit();
                                                 }
+
+
+//                                                }
                                             }
                                         }
                                     });
@@ -4057,7 +5423,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                             tv_mob_note.setVisibility(View.GONE);
                                         } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                            Disablefields();
+//                                            Disablefields();
                                             ll_miscallotp.setVisibility(View.VISIBLE);
                                             radiogrp2.check(by_sendsms.getId());
                                         } else {
@@ -4081,7 +5447,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     pincode_linear_data.setVisibility(View.VISIBLE);
                                     home_layout.setVisibility(View.VISIBLE);
 
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     vial_number.setVisibility(View.VISIBLE);
                                     mobile_number_kyc.setVisibility(View.GONE);
                                     labname_linear.setVisibility(View.GONE);
@@ -4255,116 +5621,116 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
 
-                                                if (kycdata.length() == 0) {
+                                               /* if (kycdata.length() == 0) {
                                                     Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
                                                 } else if (kycdata.length() < 10) {
                                                     Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
-                                                } else {
+                                                } else {*/
 
-                                                    if (woereferedby != null) {
-                                                        if (obj != null) {
-                                                            for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                                                                if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                                                    referenceBy = woereferedby;
-                                                                    referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                                                                }
+                                                if (woereferedby != null) {
+                                                    if (obj != null) {
+                                                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                                                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                                                                referenceBy = woereferedby;
+                                                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
                                                             }
                                                         }
-                                                    } else {
-                                                        referenceBy = woereferedby;
-                                                        referredID = "";
                                                     }
-
-                                                    final String getAgeType = spinyr.getSelectedItem().toString();
-                                                    String sctDate = dateShow.getText().toString();
-                                                    sctHr = timehr.getSelectedItem().toString();
-                                                    sctMin = timesecond.getSelectedItem().toString();
-                                                    sctSEc = timeampm.getSelectedItem().toString();
-                                                    final String getFinalAge = age.getText().toString();
-                                                    final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
-                                                    final String getFinalDate = dateShow.getText().toString();
-
-                                                    if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                                                        new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                                                                .setContentText("You can register the PGC to avoid 10 Rs debit")
-                                                                .setConfirmText("Ok")
-                                                                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                                                    @Override
-                                                                    public void onClick(SweetAlertDialog sDialog) {
-                                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                                        i.putExtra("name", nameString);
-                                                                        i.putExtra("age", getFinalAge);
-                                                                        i.putExtra("gender", saveGenderId);
-                                                                        i.putExtra("sct", getFinalTime);
-                                                                        i.putExtra("date", getFinalDate);
-                                                                        GlobalClass.setReferenceBy_Name = referenceBy;
-                                                                        startActivity(i);
-                                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                                        saveDetails.putString("name", nameString);
-                                                                        saveDetails.putString("age", getFinalAge);
-                                                                        saveDetails.putString("gender", saveGenderId);
-                                                                        saveDetails.putString("sct", getFinalTime);
-                                                                        saveDetails.putString("date", getFinalDate);
-                                                                        saveDetails.putString("ageType", getAgeType);
-                                                                        saveDetails.putString("labname", "");
-                                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                                        saveDetails.putString("refBy", referenceBy);
-                                                                        saveDetails.putString("refId", referredID);
-                                                                        saveDetails.putString("labIDaddress", labIDTopass);
-                                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                                        saveDetails.putString("kycinfo", kycdata);
-                                                                        saveDetails.putString("woetype", typename);
-                                                                        saveDetails.putString("WOEbrand", brandNames);
-                                                                        saveDetails.putString("SR_NO", getVial_numbver);
-                                                                        saveDetails.putString("pincode", pincode_pass);
-                                                                        saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                                                        saveDetails.commit();
-                                                                        sDialog.dismissWithAnimation();
-                                                                    }
-                                                                })
-                                                                .show();
-
-                                                    } else {
-                                                        Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                                        i.putExtra("name", nameString);
-                                                        i.putExtra("age", getFinalAge);
-                                                        i.putExtra("gender", saveGenderId);
-                                                        i.putExtra("sct", getFinalTime);
-                                                        i.putExtra("date", getFinalDate);
-                                                        GlobalClass.setReferenceBy_Name = referenceBy;
-                                                        startActivity(i);
-                                                        Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                                        SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                                        saveDetails.putString("name", nameString);
-                                                        saveDetails.putString("age", getFinalAge);
-                                                        saveDetails.putString("gender", saveGenderId);
-                                                        saveDetails.putString("sct", getFinalTime);
-                                                        saveDetails.putString("date", getFinalDate);
-                                                        saveDetails.putString("ageType", getAgeType);
-                                                        saveDetails.putString("labname", "");
-                                                        saveDetails.putString("labAddress", patientAddressdataToPass);
-                                                        saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                                        saveDetails.putString("refBy", referenceBy);
-                                                        saveDetails.putString("refId", referredID);
-                                                        saveDetails.putString("labIDaddress", labIDTopass);
-                                                        saveDetails.putString("btechIDToPass", btechIDToPass);
-                                                        saveDetails.putString("btechNameToPass", btechnameTopass);
-                                                        saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                                        saveDetails.putString("kycinfo", kycdata);
-                                                        saveDetails.putString("woetype", typename);
-                                                        saveDetails.putString("WOEbrand", brandNames);
-                                                        saveDetails.putString("SR_NO", getVial_numbver);
-                                                        saveDetails.putString("pincode", pincode_pass);
-                                                        saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                                        saveDetails.commit();
-                                                    }
-
-
+                                                } else {
+                                                    referenceBy = woereferedby;
+                                                    referredID = "";
                                                 }
+
+                                                final String getAgeType = spinyr.getSelectedItem().toString();
+                                                String sctDate = dateShow.getText().toString();
+                                                sctHr = timehr.getSelectedItem().toString();
+                                                sctMin = timesecond.getSelectedItem().toString();
+                                                sctSEc = timeampm.getSelectedItem().toString();
+                                                final String getFinalAge = age.getText().toString();
+                                                final String getFinalTime = sctHr + ":" + sctMin + " " + sctSEc;
+                                                final String getFinalDate = dateShow.getText().toString();
+
+                                                if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                                                            .setContentText("You can register the PGC to avoid 10 Rs debit")
+                                                            .setConfirmText("Ok")
+                                                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                                                @Override
+                                                                public void onClick(SweetAlertDialog sDialog) {
+                                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                                    i.putExtra("name", nameString);
+                                                                    i.putExtra("age", getFinalAge);
+                                                                    i.putExtra("gender", saveGenderId);
+                                                                    i.putExtra("sct", getFinalTime);
+                                                                    i.putExtra("date", getFinalDate);
+                                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                                    startActivity(i);
+                                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                                    saveDetails.putString("name", nameString);
+                                                                    saveDetails.putString("age", getFinalAge);
+                                                                    saveDetails.putString("gender", saveGenderId);
+                                                                    saveDetails.putString("sct", getFinalTime);
+                                                                    saveDetails.putString("date", getFinalDate);
+                                                                    saveDetails.putString("ageType", getAgeType);
+                                                                    saveDetails.putString("labname", "");
+                                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                                    saveDetails.putString("refBy", referenceBy);
+                                                                    saveDetails.putString("refId", referredID);
+                                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                                    saveDetails.putString("kycinfo", kycdata);
+                                                                    saveDetails.putString("woetype", typename);
+                                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                                    saveDetails.putString("pincode", pincode_pass);
+                                                                    saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                                    saveDetails.commit();
+                                                                    sDialog.dismissWithAnimation();
+                                                                }
+                                                            })
+                                                            .show();
+
+                                                } else {
+                                                    Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                                                    i.putExtra("name", nameString);
+                                                    i.putExtra("age", getFinalAge);
+                                                    i.putExtra("gender", saveGenderId);
+                                                    i.putExtra("sct", getFinalTime);
+                                                    i.putExtra("date", getFinalDate);
+                                                    GlobalClass.setReferenceBy_Name = referenceBy;
+                                                    startActivity(i);
+                                                    Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                                                    SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                                                    saveDetails.putString("name", nameString);
+                                                    saveDetails.putString("age", getFinalAge);
+                                                    saveDetails.putString("gender", saveGenderId);
+                                                    saveDetails.putString("sct", getFinalTime);
+                                                    saveDetails.putString("date", getFinalDate);
+                                                    saveDetails.putString("ageType", getAgeType);
+                                                    saveDetails.putString("labname", "");
+                                                    saveDetails.putString("labAddress", patientAddressdataToPass);
+                                                    saveDetails.putString("patientAddress", patientAddressdataToPass);
+                                                    saveDetails.putString("refBy", referenceBy);
+                                                    saveDetails.putString("refId", referredID);
+                                                    saveDetails.putString("labIDaddress", labIDTopass);
+                                                    saveDetails.putString("btechIDToPass", btechIDToPass);
+                                                    saveDetails.putString("btechNameToPass", btechnameTopass);
+                                                    saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                                                    saveDetails.putString("kycinfo", kycdata);
+                                                    saveDetails.putString("woetype", typename);
+                                                    saveDetails.putString("WOEbrand", brandNames);
+                                                    saveDetails.putString("SR_NO", getVial_numbver);
+                                                    saveDetails.putString("pincode", pincode_pass);
+                                                    saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                                                    saveDetails.commit();
+                                                }
+
+
+//                                                }
 
                                             }
 
@@ -4442,7 +5808,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -4562,7 +5928,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (nameString.equals("")) {
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                            }else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
@@ -4581,7 +5956,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
                                                 Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                              /*  if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        OutLabs_Eqnx_ILS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -4589,17 +5972,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         OutLabs_Eqnx_ILS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            OutLabs_Eqnx_ILS();
-                                                        }
-                                                    } else {
-                                                        OutLabs_Eqnx_ILS();
-                                                    }
+                                                    OutLabs_Eqnx_ILS();
                                                 }
+//                                                }
 
                                             }
 
@@ -4617,7 +5992,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                        Disablefields();
+//                                        Disablefields();
                                         ll_miscallotp.setVisibility(View.VISIBLE);
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
@@ -4628,7 +6003,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                     //mobile_number_kyc.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
                                     ll_email.setVisibility(View.VISIBLE);
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -4773,7 +6148,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -4878,6 +6253,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -4904,7 +6288,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
-                                                if (Global.OTPVERIFIED) {
+                                             /*   if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        Outlabs_EQNX_DPS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -4912,17 +6304,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         Outlabs_EQNX_DPS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            Outlabs_EQNX_DPS();
-                                                        }
-                                                    } else {
-                                                        Outlabs_EQNX_DPS();
-                                                    }
+                                                    Outlabs_EQNX_DPS();
                                                 }
+//                                                }
 
 
                                             }
@@ -4940,13 +6324,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                        Disablefields();
+//                                        Disablefields();
                                         ll_miscallotp.setVisibility(View.VISIBLE);
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     ll_email.setVisibility(View.VISIBLE);
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
@@ -4985,7 +6369,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -5098,6 +6482,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
+                                            }else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
@@ -5124,7 +6517,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                 Toast.makeText(mContext, ToastFile.sct_grt_than_crnt_tm, Toast.LENGTH_SHORT).show();
                                             } else {
 
-                                                if (Global.OTPVERIFIED) {
+                                              /*  if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        Outlab_EQNX_Home();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -5132,17 +6533,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         Outlab_EQNX_Home();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            Outlab_EQNX_Home();
-                                                        }
-                                                    } else {
-                                                        Outlab_EQNX_Home();
-                                                    }
+                                                    Outlab_EQNX_Home();
                                                 }
+//                                                }
 
                                             }
 
@@ -5226,7 +6619,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -5319,7 +6712,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (nameString.equals("")) {
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                            }else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
@@ -5344,7 +6746,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (getLabName.equalsIgnoreCase("SEARCH SAMPLE COLLECTION POINT")) {
                                                 Toast.makeText(mContext, "Please select sample collection point", Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                               /* if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        OutLabs_others_ILS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -5352,17 +6762,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         OutLabs_others_ILS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            OutLabs_others_ILS();
-                                                        }
-                                                    } else {
-                                                        OutLabs_others_ILS();
-                                                    }
+                                                    OutLabs_others_ILS();
                                                 }
+//                                                }
                                             }
 
 
@@ -5378,13 +6780,13 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                        Disablefields();
+//                                        Disablefields();
                                         ll_miscallotp.setVisibility(View.VISIBLE);
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
                                         GlobalClass.redirectToLogin(getActivity());
                                     }
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -5527,7 +6929,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -5638,7 +7040,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (nameString.equals("")) {
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                            }else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
@@ -5669,7 +7080,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                               /* if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        Outlab_others_DPS();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -5677,17 +7096,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         Outlab_others_DPS();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            Outlab_others_DPS();
-                                                        }
-                                                    } else {
-                                                        Outlab_others_DPS();
-                                                    }
+                                                    Outlab_others_DPS();
                                                 }
+//                                                }
 
                                             }
 
@@ -5704,7 +7115,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                         ll_miscallotp.setVisibility(View.GONE);
                                         tv_mob_note.setVisibility(View.GONE);
                                     } else if (getOTPFlag().equalsIgnoreCase("YES")) {
-                                        Disablefields();
+//                                        Disablefields();
                                         ll_miscallotp.setVisibility(View.VISIBLE);
                                         radiogrp2.check(by_sendsms.getId());
                                     } else {
@@ -5713,7 +7124,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
 
                                     ll_email.setVisibility(View.VISIBLE);
                                     Home_mobile_number_kyc.setVisibility(View.GONE);
-                                    edt_missed_mobile.setHint("Mobile Number*");
+//                                    edt_missed_mobile.setHint("Mobile Number*");
                                     leadlayout.setVisibility(View.GONE);
                                     id_layout.setVisibility(View.GONE);
                                     barcode_layout.setVisibility(View.GONE);
@@ -5749,7 +7160,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             sctHr = timehr.getSelectedItem().toString();
                                             sctMin = timesecond.getSelectedItem().toString();
                                             sctSEc = timeampm.getSelectedItem().toString();
-                                            getFinalTime = sctHr + ":" + sctMin ;
+                                            getFinalTime = sctHr + ":" + sctMin;
                                             getFinalDate = dateShow.getText().toString();
 
                                             String getDateToCompare = getFinalDate + " " + getFinalTime;
@@ -5859,7 +7270,16 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             if (getVial_numbver.equals("")) {
                                                 vial_number.setError(ToastFile.vial_no);
                                                 Toast.makeText(mContext, ToastFile.vial_no, Toast.LENGTH_SHORT).show();
-                                            } else if (nameString.equals("")) {
+                                            } else if (edt_missed_mobile.getText().toString().startsWith("0") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("1") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("2") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("3") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("4") ||
+                                                    edt_missed_mobile.getText().toString().startsWith("5")) {
+                                                Toast.makeText(mContext, "Enter Valid Number", Toast.LENGTH_SHORT).show();
+                                            } else if (edt_missed_mobile.getText().toString().length() > 0 && edt_missed_mobile.getText().toString().length() < 10) {
+                                                Toast.makeText(mContext, ToastFile.crt_mob_num, Toast.LENGTH_SHORT).show();
+                                            }else if (nameString.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_name, Toast.LENGTH_SHORT).show();
                                             } else if (nameString.length() < 2) {
                                                 Toast.makeText(mContext, ToastFile.crt_name_woe, Toast.LENGTH_SHORT).show();
@@ -5890,7 +7310,15 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                             } else if (referenceBy == null || referenceBy.equals("")) {
                                                 Toast.makeText(mContext, ToastFile.crt_ref_by, Toast.LENGTH_SHORT).show();
                                             } else {
-                                                if (Global.OTPVERIFIED) {
+                                              /*  if (Global.OTPVERIFIED) {
+                                                    if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
+                                                        GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
+                                                        edt_email.requestFocus();
+                                                    } else {
+                                                        Outlab_others_Home();
+                                                    }
+                                                } else {*/
+                                                if (!GlobalClass.isNull(edt_email.getText().toString())) {
                                                     if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
                                                         GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
                                                         edt_email.requestFocus();
@@ -5898,17 +7326,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                                                         Outlab_others_Home();
                                                     }
                                                 } else {
-                                                    if (!GlobalClass.isNull(edt_email.getText().toString())) {
-                                                        if (!GlobalClass.emailValidation(edt_email.getText().toString())) {
-                                                            GlobalClass.showCustomToast(getActivity(), MessageConstants.VALID_EMAIL, 1);
-                                                            edt_email.requestFocus();
-                                                        } else {
-                                                            Outlab_others_Home();
-                                                        }
-                                                    } else {
-                                                        Outlab_others_Home();
-                                                    }
+                                                    Outlab_others_Home();
                                                 }
+//                                                }
 
                                             }
 
@@ -5936,100 +7356,100 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void Outlab_others_Home() {
-        if (kycdata.length() == 0) {
+   /*     if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+        } else {*/
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalDate = dateShow.getText().toString();
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("You can register the PGC to avoid 10 Rs debit")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", getFinalAge);
+                            saveDetails.putString("gender", saveGenderId);
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", getAgeType);
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", patientAddressdataToPass);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", labIDTopass);
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+
         } else {
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-            final String getFinalDate = dateShow.getText().toString();
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("You can register the PGC to avoid 10 Rs debit")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", getFinalAge);
-                                saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", getAgeType);
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", patientAddressdataToPass);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", labIDTopass);
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-
-            } else {
-                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", getFinalAge);
-                saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", getAgeType);
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", patientAddressdataToPass);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", labIDTopass);
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
-            }
+            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", getFinalAge);
+            saveDetails.putString("gender", saveGenderId);
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", getAgeType);
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", patientAddressdataToPass);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", labIDTopass);
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
         }
+//        }
     }
 
     private void Outlab_others_DPS() {
@@ -6056,103 +7476,103 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             referredID = "";
         }
 
-        if (kycdata.length() == 0) {
+     /*   if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+        } else {*/
+
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalDate = dateShow.getText().toString();
+
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("You can register the PGC to avoid 10 Rs debit")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            i.putExtra("woetype", typename);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", getFinalAge);
+                            saveDetails.putString("gender", saveGenderId);
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", getAgeType);
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", getTSP_Address);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", "");
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                        }
+                    })
+                    .show();
         } else {
-
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-            final String getFinalDate = dateShow.getText().toString();
-
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("You can register the PGC to avoid 10 Rs debit")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
-                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                i.putExtra("woetype", typename);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", getFinalAge);
-                                saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", getAgeType);
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", getTSP_Address);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", "");
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                            }
-                        })
-                        .show();
-            } else {
-                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                i.putExtra("woetype", typename);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", getFinalAge);
-                saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", getAgeType);
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", getTSP_Address);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", "");
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
-            }
+            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            i.putExtra("woetype", typename);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", getFinalAge);
+            saveDetails.putString("gender", saveGenderId);
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", getAgeType);
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", getTSP_Address);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", "");
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
         }
+//        }
     }
 
     private void OutLabs_others_ILS() {
@@ -6216,8 +7636,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sctMin = timesecond.getSelectedItem().toString();
         sctSEc = timeampm.getSelectedItem().toString();
         final String getFinalAge = age.getText().toString();
-        final String getFinalTime = sctHr + ":" + sctMin ;
-        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
         final String getFinalDate = dateShow.getText().toString();
 
         if (referenceBy.equalsIgnoreCase("SELF") || GlobalClass.isNull(referredID)) {
@@ -6306,102 +7726,102 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void Outlab_EQNX_Home() {
-        if (kycdata.length() == 0) {
+    /*    if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+        } else {*/
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalDate = dateShow.getText().toString();
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("You can register the PGC to avoid 10 Rs debit")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", "");
+                            saveDetails.putString("gender", "");
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", "");
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", patientAddressdataToPass);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", labIDTopass);
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+
         } else {
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-            final String getFinalDate = dateShow.getText().toString();
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("You can register the PGC to avoid 10 Rs debit")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", "");
-                                saveDetails.putString("gender", "");
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", "");
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", patientAddressdataToPass);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", labIDTopass);
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-
-            } else {
-                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", "");
-                saveDetails.putString("gender", "");
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", "");
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", patientAddressdataToPass);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", labIDTopass);
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
-            }
-
-
+            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", "");
+            saveDetails.putString("gender", "");
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", "");
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", patientAddressdataToPass);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", labIDTopass);
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
         }
+
+
+//        }
     }
 
     private void Outlabs_EQNX_DPS() {
@@ -6424,104 +7844,104 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             referredID = "";
         }
 
-        if (kycdata.length() == 0) {
+     /*   if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
+        } else {*/
+
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalDate = dateShow.getText().toString();
+
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("You can register the PGC to avoid 10 Rs debit")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            sDialog.dismissWithAnimation();
+                            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            i.putExtra("woetype", typename);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", "");
+                            saveDetails.putString("gender", "");
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", "");
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", getTSP_Address);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", "");
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                        }
+                    })
+                    .show();
         } else {
-
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-            final String getFinalDate = dateShow.getText().toString();
-
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("You can register the PGC to avoid 10 Rs debit")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                sDialog.dismissWithAnimation();
-                                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                i.putExtra("woetype", typename);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", "");
-                                saveDetails.putString("gender", "");
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", "");
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", getTSP_Address);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", "");
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                            }
-                        })
-                        .show();
-            } else {
-                Intent i = new Intent(mContext, OutLabTestsActivity.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                i.putExtra("woetype", typename);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", "");
-                saveDetails.putString("gender", "");
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", "");
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", getTSP_Address);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", "");
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
-            }
-
+            Intent i = new Intent(mContext, OutLabTestsActivity.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            i.putExtra("woetype", typename);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", "");
+            saveDetails.putString("gender", "");
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", "");
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", getTSP_Address);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", "");
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
         }
+
+//        }
     }
 
     private void OutLabs_Eqnx_ILS() {
@@ -6580,8 +8000,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         sctMin = timesecond.getSelectedItem().toString();
         sctSEc = timeampm.getSelectedItem().toString();
         final String getFinalAge = age.getText().toString();
-        final String getFinalTime = sctHr + ":" + sctMin ;
-        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
         final String getFinalDate = dateShow.getText().toString();
 
         if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
@@ -6670,117 +8090,117 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
     }
 
     private void TTL_HOME() {
-        if (kycdata.length() == 0) {
+    /*    if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
-        } else {
+        } else {*/
 
-            if (woereferedby != null) {
-                if (obj != null) {
-                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                            referenceBy = woereferedby;
-                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                        }
+        if (woereferedby != null) {
+            if (obj != null) {
+                for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                    if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                        referenceBy = woereferedby;
+                        referredID = obj.getMASTERS().getREF_DR()[i].getId();
                     }
                 }
-            } else {
-                referenceBy = woereferedby;
-                referredID = "";
             }
-
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String getFinalDate = dateShow.getText().toString();
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("Register PGC to avoid Rs. 50 extra billing")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", getFinalAge);
-                                saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", getAgeType);
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", patientAddressdataToPass);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", labIDTopass);
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-
-            } else {
-                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", getFinalAge);
-                saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", getAgeType);
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", patientAddressdataToPass);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", labIDTopass);
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
-            }
-
-
+        } else {
+            referenceBy = woereferedby;
+            referredID = "";
         }
+
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String getFinalDate = dateShow.getText().toString();
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("Register PGC to avoid Rs. 50 extra billing")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", getFinalAge);
+                            saveDetails.putString("gender", saveGenderId);
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", getAgeType);
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", patientAddressdataToPass);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", labIDTopass);
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+
+        } else {
+            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + patientAddressdataToPass + labIDTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", getFinalAge);
+            saveDetails.putString("gender", saveGenderId);
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", getAgeType);
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", patientAddressdataToPass);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", labIDTopass);
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
+        }
+
+
+//        }
     }
 
     private void TTL_DPS() {
@@ -6802,131 +8222,131 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
             e.printStackTrace();
         }
 
-        if (kycdata.length() == 0) {
+     /*   if (kycdata.length() == 0) {
             Toast.makeText(getActivity(), ToastFile.crt_kyc_empty, Toast.LENGTH_SHORT).show();
         } else if (kycdata.length() < 10) {
             Toast.makeText(getActivity(), ToastFile.crt_MOB_num, Toast.LENGTH_SHORT).show();
-        } else {
+        } else {*/
 
-            try {
-                if (woereferedby != null) {
-                    if (obj != null) {
-                        for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
-                            if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
-                                referenceBy = woereferedby;
-                                referredID = obj.getMASTERS().getREF_DR()[i].getId();
-                            }
+        try {
+            if (woereferedby != null) {
+                if (obj != null) {
+                    for (int i = 0; i < obj.getMASTERS().getREF_DR().length; i++) {
+                        if (woereferedby.equalsIgnoreCase(obj.getMASTERS().getREF_DR()[i].getName())) {
+                            referenceBy = woereferedby;
+                            referredID = obj.getMASTERS().getREF_DR()[i].getId();
                         }
                     }
-                } else {
-                    referenceBy = woereferedby;
-                    referredID = "";
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            final String getAgeType = spinyr.getSelectedItem().toString();
-            String sctDate = dateShow.getText().toString();
-            sctHr = timehr.getSelectedItem().toString();
-            sctMin = timesecond.getSelectedItem().toString();
-            sctSEc = timeampm.getSelectedItem().toString();
-            final String getFinalAge = age.getText().toString();
-            final String getFinalTime = sctHr + ":" + sctMin ;
-            final String getFinalDate = dateShow.getText().toString();
-            final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
-
-            if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setContentText("Register PGC to avoid Rs. 50 extra billing")
-                        .setConfirmText("Ok")
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sDialog) {
-                                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                                    getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                                }
-
-                                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                                i.putExtra("name", nameString);
-                                i.putExtra("age", getFinalAge);
-                                i.putExtra("gender", saveGenderId);
-                                i.putExtra("sct", timetopass);
-                                i.putExtra("date", getFinalDate);
-                                GlobalClass.setReferenceBy_Name = referenceBy;
-                                startActivity(i);
-                                Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
-                                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                                saveDetails.putString("name", nameString);
-                                saveDetails.putString("age", getFinalAge);
-                                saveDetails.putString("gender", saveGenderId);
-                                saveDetails.putString("sct", timetopass);
-                                saveDetails.putString("date", getFinalDate);
-                                saveDetails.putString("ageType", getAgeType);
-                                saveDetails.putString("labname", "");
-                                saveDetails.putString("labAddress", getTSP_Address);
-                                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                                saveDetails.putString("refBy", referenceBy);
-                                saveDetails.putString("refId", referredID);
-                                saveDetails.putString("labIDaddress", "");
-                                saveDetails.putString("btechIDToPass", btechIDToPass);
-                                saveDetails.putString("btechNameToPass", btechnameTopass);
-                                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                                saveDetails.putString("kycinfo", kycdata);
-                                saveDetails.putString("woetype", typename);
-                                saveDetails.putString("WOEbrand", brandNames);
-                                saveDetails.putString("SR_NO", getVial_numbver);
-                                saveDetails.putString("pincode", pincode_pass);
-                                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                                saveDetails.commit();
-                                sDialog.dismissWithAnimation();
-                            }
-                        })
-                        .show();
-
             } else {
+                referenceBy = woereferedby;
+                referredID = "";
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-                if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
-                    getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
-                }
 
-                Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
-                i.putExtra("name", nameString);
-                i.putExtra("age", getFinalAge);
-                i.putExtra("gender", saveGenderId);
-                i.putExtra("sct", timetopass);
-                i.putExtra("date", getFinalDate);
-                GlobalClass.setReferenceBy_Name = referenceBy;
-                startActivity(i);
-                Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
-                SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
-                saveDetails.putString("name", nameString);
-                saveDetails.putString("age", getFinalAge);
-                saveDetails.putString("gender", saveGenderId);
-                saveDetails.putString("sct", timetopass);
-                saveDetails.putString("date", getFinalDate);
-                saveDetails.putString("ageType", getAgeType);
-                saveDetails.putString("labname", "");
-                saveDetails.putString("labAddress", getTSP_Address);
-                saveDetails.putString("patientAddress", patientAddressdataToPass);
-                saveDetails.putString("refBy", referenceBy);
-                saveDetails.putString("refId", referredID);
-                saveDetails.putString("labIDaddress", "");
-                saveDetails.putString("btechIDToPass", btechIDToPass);
-                saveDetails.putString("btechNameToPass", btechnameTopass);
-                saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
-                saveDetails.putString("kycinfo", kycdata);
-                saveDetails.putString("woetype", typename);
-                saveDetails.putString("WOEbrand", brandNames);
-                saveDetails.putString("SR_NO", getVial_numbver);
-                saveDetails.putString("pincode", pincode_pass);
-                saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
-                saveDetails.commit();
+        final String getAgeType = spinyr.getSelectedItem().toString();
+        String sctDate = dateShow.getText().toString();
+        sctHr = timehr.getSelectedItem().toString();
+        sctMin = timesecond.getSelectedItem().toString();
+        sctSEc = timeampm.getSelectedItem().toString();
+        final String getFinalAge = age.getText().toString();
+        final String getFinalTime = sctHr + ":" + sctMin;
+        final String getFinalDate = dateShow.getText().toString();
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+
+        if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
+            new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                    .setContentText("Register PGC to avoid Rs. 50 extra billing")
+                    .setConfirmText("Ok")
+                    .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                        @Override
+                        public void onClick(SweetAlertDialog sDialog) {
+                            if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                                getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
+                            }
+
+                            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+                            i.putExtra("name", nameString);
+                            i.putExtra("age", getFinalAge);
+                            i.putExtra("gender", saveGenderId);
+                            i.putExtra("sct", timetopass);
+                            i.putExtra("date", getFinalDate);
+                            GlobalClass.setReferenceBy_Name = referenceBy;
+                            startActivity(i);
+                            Log.e(TAG, "onClick: lab add and lab id " + getTSP_Address + labIDTopass);
+                            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+                            saveDetails.putString("name", nameString);
+                            saveDetails.putString("age", getFinalAge);
+                            saveDetails.putString("gender", saveGenderId);
+                            saveDetails.putString("sct", timetopass);
+                            saveDetails.putString("date", getFinalDate);
+                            saveDetails.putString("ageType", getAgeType);
+                            saveDetails.putString("labname", "");
+                            saveDetails.putString("labAddress", getTSP_Address);
+                            saveDetails.putString("patientAddress", patientAddressdataToPass);
+                            saveDetails.putString("refBy", referenceBy);
+                            saveDetails.putString("refId", referredID);
+                            saveDetails.putString("labIDaddress", "");
+                            saveDetails.putString("btechIDToPass", btechIDToPass);
+                            saveDetails.putString("btechNameToPass", btechnameTopass);
+                            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+                            saveDetails.putString("kycinfo", kycdata);
+                            saveDetails.putString("woetype", typename);
+                            saveDetails.putString("WOEbrand", brandNames);
+                            saveDetails.putString("SR_NO", getVial_numbver);
+                            saveDetails.putString("pincode", pincode_pass);
+                            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+                            saveDetails.commit();
+                            sDialog.dismissWithAnimation();
+                        }
+                    })
+                    .show();
+
+        } else {
+
+            if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getTSP_MASTER() != null) {
+                getTSP_Address = myPojo.getMASTERS().getTSP_MASTER().getAddress();
             }
 
-
+            Intent i = new Intent(mContext, ProductLisitngActivityNew.class);
+            i.putExtra("name", nameString);
+            i.putExtra("age", getFinalAge);
+            i.putExtra("gender", saveGenderId);
+            i.putExtra("sct", timetopass);
+            i.putExtra("date", getFinalDate);
+            GlobalClass.setReferenceBy_Name = referenceBy;
+            startActivity(i);
+            Log.e(TAG, "onClick: lab add and lab id " + getTSP_AddressStringTopass + labIDTopass);
+            SharedPreferences.Editor saveDetails = mContext.getSharedPreferences("savePatientDetails", 0).edit();
+            saveDetails.putString("name", nameString);
+            saveDetails.putString("age", getFinalAge);
+            saveDetails.putString("gender", saveGenderId);
+            saveDetails.putString("sct", timetopass);
+            saveDetails.putString("date", getFinalDate);
+            saveDetails.putString("ageType", getAgeType);
+            saveDetails.putString("labname", "");
+            saveDetails.putString("labAddress", getTSP_Address);
+            saveDetails.putString("patientAddress", patientAddressdataToPass);
+            saveDetails.putString("refBy", referenceBy);
+            saveDetails.putString("refId", referredID);
+            saveDetails.putString("labIDaddress", "");
+            saveDetails.putString("btechIDToPass", btechIDToPass);
+            saveDetails.putString("btechNameToPass", btechnameTopass);
+            saveDetails.putString("getcampIDtoPass", getcampIDtoPass);
+            saveDetails.putString("kycinfo", kycdata);
+            saveDetails.putString("woetype", typename);
+            saveDetails.putString("WOEbrand", brandNames);
+            saveDetails.putString("SR_NO", getVial_numbver);
+            saveDetails.putString("pincode", pincode_pass);
+            saveDetails.putString("EMAIL_ID", "" + edt_email.getText().toString());
+            saveDetails.commit();
         }
+
+
+//        }
     }
 
     private void TTL_ILS() {
@@ -6992,7 +8412,7 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
         final String getFinalTime = sctHr + ":" + sctMin;
         final String getFinalDate = dateShow.getText().toString();
 
-        final String timetopass= DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
+        final String timetopass = DateUtils.Req_Date_Req(getFinalTime, "HH:mm", "hh:mm a");
 
         if (referenceBy.equalsIgnoreCase("SELF") || referredID.equalsIgnoreCase("")) {
 //                                                    new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
@@ -8448,8 +9868,9 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                             break;
                         }
                     }
+                    Intent i;
                     if (sizeflag) {
-                        Intent i = new Intent(getActivity(), MultipleLeadActivity.class);
+                        i = new Intent(getActivity(), MultipleLeadActivity.class);
                         i.putExtra("MyClass", leadOrderIdMainModel);
                         i.putExtra("LeadID", leadLEAD_ID);
                         i.putExtra("SAMPLE_TYPE", leadSAMPLE_TYPE);
@@ -8461,9 +9882,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         editor.putString("typeName", leadTYPE);
                         editor.putString("SR_NO", getVial_numbver);
                         // To retrieve object in second Activity
-                        startActivity(i);
                     } else {
-                        Intent i = new Intent(getActivity(), ScanBarcodeLeadId.class);
+                        i = new Intent(getActivity(), ScanBarcodeLeadId.class);
                         i.putExtra("MyClass", leadOrderIdMainModel);
                         i.putExtra("LeadID", leadLEAD_ID);
                         i.putExtra("SAMPLE_TYPE", leadSAMPLE_TYPE);
@@ -8474,8 +9894,8 @@ public class Start_New_Woe extends RootFragment implements View.OnClickListener 
                         editor.putString("typeName", leadTYPE);
                         editor.putString("SR_NO", getVial_numbver);
                         // To retrieve object in second Activity
-                        startActivity(i);
                     }
+                    startActivity(i);
 
                 }
             }

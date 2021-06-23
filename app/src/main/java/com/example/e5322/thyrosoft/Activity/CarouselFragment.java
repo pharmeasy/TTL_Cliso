@@ -75,11 +75,11 @@ public class CarouselFragment extends Fragment {
 
         covidacc = getOfModulesAccess();
 
-        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+     /*   if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
             tabLayout.setTabMode(TabLayout.MODE_FIXED);
         } else {
             tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
-        }
+        }*/
 
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -121,8 +121,10 @@ public class CarouselFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
-            nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
-            pager.setAdapter(nhf_pageradapter);
+      /*      nhf_pageradapter = new NHF_pageradapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(nhf_pageradapter);*/
+            adminCovidAdapter = new AdminCovidAdapter(getResources(), getChildFragmentManager());
+            pager.setAdapter(adminCovidAdapter);
         } else {
             if (access.equalsIgnoreCase(Constants.STAFF)) {
 

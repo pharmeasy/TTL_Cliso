@@ -27,12 +27,14 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
     private Activity activity;
     private int lastCheckedPosition = -1;
     OnClickListener onClickListener;
+    String typeName;
+    private String brandnametopass = "";
 
-
-    public BrandAdapter(Activity activity, ArrayList<String> brandName, ArrayList<BaseModel.BrandDtlsDTO> getMainData) {
+    public BrandAdapter(Activity activity, ArrayList<String> brandName, ArrayList<BaseModel.BrandDtlsDTO> getMainData, String typeName) {
         this.brandName = brandName;
         this.getMainData = getMainData;
         this.activity = activity;
+        this.typeName = typeName;
 
     }
 
@@ -49,14 +51,15 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull final BrandAdapter.ViewHolder holder, final int position) {
 
 
-        holder.rb_brandname.setText("" + brandName.get(position));
+//        holder.rb_brandname.setText("" + brandName.get(position));
+        setBrandName(holder.rb_brandname, brandName.get(position));
 
         holder.rb_brandname.setChecked(position == lastCheckedPosition);
 
-        if (brandName.size()==1){
+        if (brandName.size() == 1) {
             holder.rb_brandname.setChecked(true);
             if (onClickListener != null) {
-                onClickListener.onchecked(holder.rb_brandname.getText().toString(), holder.tv_brandrate.getText().toString());
+                onClickListener.onchecked(brandnametopass, holder.tv_brandrate.getText().toString());
             }
         }
 
@@ -65,7 +68,7 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     if (onClickListener != null) {
-                        onClickListener.onchecked(holder.rb_brandname.getText().toString(), holder.tv_brandrate.getText().toString());
+                        onClickListener.onchecked(brandnametopass, holder.tv_brandrate.getText().toString());
                     }
                 }
             }
@@ -77,10 +80,33 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
 
     }
 
+    private void setBrandName(RadioButton rb_brandname, String position) {
+
+
+        if (GlobalClass.isArraylistNotNull(getMainData)) {
+            for (int i = 0; i < getMainData.size(); i++) {
+                if (!GlobalClass.isNull(getMainData.get(i).getAlias())) {
+                    if (position.equalsIgnoreCase(getMainData.get(i).getAlias())) {
+                        if (!GlobalClass.isNull(getMainData.get(i).getFullName())) {
+                            rb_brandname.setText(getMainData.get(i).getFullName());
+                        } else {
+                            rb_brandname.setText(position);
+                        }
+                        brandnametopass = position;
+                        break;
+
+                    }
+                }
+
+            }
+        }
+    }
+
+
     private void setUrl(TextView tv_url, RadioButton rb_brandname) {
         String url = "";
         for (int i = 0; i < getMainData.size(); i++) {
-            if (getMainData.get(i).getAlias().equalsIgnoreCase(rb_brandname.getText().toString())) {
+            if (getMainData.get(i).getFullName().equalsIgnoreCase(rb_brandname.getText().toString())) {
                 if (!GlobalClass.isNull(getMainData.get(i).getRPTFile())) {
                     url = getMainData.get(i).getRPTFile();
                 }
@@ -108,11 +134,20 @@ public class BrandAdapter extends RecyclerView.Adapter<BrandAdapter.ViewHolder> 
     private void setRate(TextView tv_brandrate, RadioButton rb_brandname) {
         int rate = 0;
         for (int i = 0; i < getMainData.size(); i++) {
-            if (getMainData.get(i).getAlias().equalsIgnoreCase(rb_brandname.getText().toString())) {
-                if (!GlobalClass.isNull(getMainData.get(i).getBrandRate())) {
-                    rate = rate + Integer.parseInt(getMainData.get(i).getBrandRate());
+            if (!GlobalClass.isNull(getMainData.get(i).getFullName())){
+                if (getMainData.get(i).getFullName().equalsIgnoreCase(rb_brandname.getText().toString())) {
+                    if (typeName.equalsIgnoreCase("ILS")) {
+                        if (!GlobalClass.isNull(getMainData.get(i).getILSRate())) {
+                            rate = rate + Integer.parseInt(getMainData.get(i).getILSRate());
+                        }
+                    } else {
+                        if (!GlobalClass.isNull(getMainData.get(i).getBrandRate())) {
+                            rate = rate + Integer.parseInt(getMainData.get(i).getBrandRate());
+                        }
+                    }
                 }
             }
+
         }
         tv_brandrate.setText("Rs: " + rate + "/-");
     }

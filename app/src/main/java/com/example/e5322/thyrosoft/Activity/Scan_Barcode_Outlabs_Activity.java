@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -42,12 +43,15 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
+import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.CLISO_ScanBarcodeAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -57,8 +61,10 @@ import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
+import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
-import com.example.e5322.thyrosoft.Models.IsnhlmasterDTO;
+import com.example.e5322.thyrosoft.Models.GetLocationReqModel;
+import com.example.e5322.thyrosoft.Models.GetLocationRespModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.WOEResponseModel;
@@ -88,6 +94,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -189,7 +196,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     TextView txt_fileupload;
     Bitmap vialbitmap;
     List<String> imagelist = new ArrayList<>();
-
+    ConnectionDetector connectionDetector;
 
     LinearLayout ll_letterhead;
     EditText edt_confirm_amt;
@@ -204,6 +211,11 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
     List<String> imagelist_per = new ArrayList<>();
     private File presc_file;
 
+    private String ADDITIONAL1 = "";
+    TextView tv_location, tv_lab;
+    RecyclerView recy_brand;
+    private String getBrand_name="";
+
 
     @SuppressLint("NewApi")
     @Override
@@ -211,7 +223,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan__barcode__ils);
         mActivity = Scan_Barcode_Outlabs_Activity.this;
-
+        connectionDetector = new ConnectionDetector(mActivity);
         if (Global.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -256,6 +268,14 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             getProductCode = new ArrayList<>();
             trflist.clear();
 
+            ArrayList<String> getTestCode = new ArrayList<>();
+            if (GlobalClass.isArraylistNotNull(selectedOutlabTests)) {
+                for (int i = 0; i < selectedOutlabTests.size(); i++) {
+                    if (!GlobalClass.isNull(selectedOutlabTests.get(i).getProduct())) {
+                        getTestCode.add(selectedOutlabTests.get(i).getProduct());
+                    }
+                }
+            }
 
             if (GlobalClass.isArraylistNotNull(selectedOutlabTests)) {
                 for (int i = 0; i < selectedOutlabTests.size(); i++) {
@@ -285,6 +305,14 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+
+            if (connectionDetector.isConnectingToInternet()) {
+                GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
+                getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
+                getLocationReqModel.setTSP("" + user);
+                GetLocationController getLocationController = new GetLocationController(this);
+                getLocationController.CallAPI(getLocationReqModel);
             }
 
             show_selected_tests_data.setText(testsData);
@@ -362,7 +390,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                 setviewpager(imagelist);
             }
         });
-
+        SetBrandLetterValues();
         scanIntegrator = new IntentIntegrator(Scan_Barcode_Outlabs_Activity.this);
         linearLayoutManager = new LinearLayoutManager(Scan_Barcode_Outlabs_Activity.this);
         recycler_barcode.setLayoutManager(linearLayoutManager);
@@ -437,23 +465,78 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
     private void SetBrandLetterValues() {
 
-        final ArrayList<IsnhlmasterDTO> getBrandList = GenerateBrandList();
+        if (Global.OTPVERIFIED) {
+            ll_letterhead.setVisibility(View.GONE);
+        } else {
+            final ArrayList<BaseModel.BrandDtlsDTO> getBrandList = GenerateBrandList();
+            final ArrayList<String> brandName = new ArrayList<>();
+            final ArrayList<String> newbrandName = new ArrayList<>();
+            for (int i = 0; i < getBrandList.size(); i++) {
+                if (!GlobalClass.isNull(getBrandList.get(i).getAlias())) {
+                    brandName.add(getBrandList.get(i).getAlias());
+                }
+            }
+            HashSet<String> duplicateremove = new HashSet<>(brandName);
+            newbrandName.clear();
+            newbrandName.addAll(duplicateremove);
+
+            ArrayList<String> finallist = new ArrayList<>();
+            if (GlobalClass.CheckArrayList(newbrandName)) {
+                for (int i = 0; i < newbrandName.size(); i++) {
+                    int cnt = 0;
+                    for (int j = 0; j < selectedOutlabTests.size(); j++) {
+                        for (int k = 0; k < selectedOutlabTests.get(j).getBrandDtls().size(); k++) {
+                            if (newbrandName.get(i).equalsIgnoreCase(selectedOutlabTests.get(j).getBrandDtls().get(k).getAlias())) {
+                                cnt++;
+                            }
+                        }
+                    }
+
+                    if (cnt == selectedOutlabTests.size()) {
+                        finallist.add(newbrandName.get(i));
+                    }
+                }
+            }
+
+            if (finallist.size() == 0) {
+                ll_letterhead.setVisibility(View.GONE);
+            } else {
+                ll_letterhead.setVisibility(View.VISIBLE);
+            }
+
+            SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+            typeName = prefs.getString("woetype", "");
+            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList, typeName);
+            brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
+                @Override
+                public void onchecked(String brand, String rate) {
+                    getBrand_name = brand;
+                }
+            });
+            recy_brand.setAdapter(brandAdapter);
+            brandAdapter.notifyDataSetChanged();
+        }
 
 
     }
 
 
-    private ArrayList<IsnhlmasterDTO> GenerateBrandList() {
-        ArrayList<IsnhlmasterDTO> entity = new ArrayList<>();
+    private ArrayList<BaseModel.BrandDtlsDTO> GenerateBrandList() {
+        ArrayList<BaseModel.BrandDtlsDTO> entity = new ArrayList<>();
+        if (GlobalClass.CheckArrayList(selectedOutlabTests)) {
+            for (int i = 0; i < selectedOutlabTests.size(); i++) {
+                if (GlobalClass.CheckArrayList(selectedOutlabTests.get(i).getBrandDtls())) {
+                    for (int j = 0; j < selectedOutlabTests.get(i).getBrandDtls().size(); j++) {
+                        BaseModel.BrandDtlsDTO brandDtlsDTO = new BaseModel.BrandDtlsDTO();
+                        brandDtlsDTO.setAlias("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getAlias());
+                        brandDtlsDTO.setBrandName("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getBrandName());
+                        brandDtlsDTO.setBrandRate("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getBrandRate());
+                        brandDtlsDTO.setILSRate("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getILSRate());
+                        brandDtlsDTO.setRPTFile("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getRPTFile());
+                        brandDtlsDTO.setFullName("" + selectedOutlabTests.get(i).getBrandDtls().get(j).getFullName());
+                        entity.add(brandDtlsDTO);
 
-        if (mainModel != null) {
-            if (GlobalClass.CheckArrayList(mainModel.getIsnhlmaster())) {
-                for (int i = 0; i < mainModel.getIsnhlmaster().size(); i++) {
-                    IsnhlmasterDTO isnhlmasterDTO = new IsnhlmasterDTO();
-                    isnhlmasterDTO.setName("" + mainModel.getIsnhlmaster().get(i).getName());
-                    isnhlmasterDTO.setUrl("" + mainModel.getIsnhlmaster().get(i).getUrl());
-                    isnhlmasterDTO.setIsShowpopup(mainModel.getIsnhlmaster().get(i).isIsShowpopup());
-                    entity.add(isnhlmasterDTO);
+                    }
                 }
             }
         }
@@ -538,7 +621,9 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         rec_trf = (RecyclerView) findViewById(R.id.rec_trf);
         ll_letterhead = findViewById(R.id.ll_letterhead);
         edt_confirm_amt = findViewById(R.id.edt_confirm_amt);
-
+        tv_location = findViewById(R.id.tv_location);
+        tv_lab = findViewById(R.id.tv_lab);
+        recy_brand = findViewById(R.id.recy_brand);
 
         ll_prescription = findViewById(R.id.ll_prescription);
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
@@ -848,7 +933,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
 
     public void getUploadFileResponse() {
         TastyToast.makeText(Scan_Barcode_Outlabs_Activity.this, message, TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
-        if (isprescition){
+        if (isprescition) {
             UploadPrescRequestModel uploadPrescRequestModel = new UploadPrescRequestModel();
             uploadPrescRequestModel.setENTRYBY(user);
             uploadPrescRequestModel.setDocType("DCPRESCRIPTION");
@@ -857,7 +942,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             uploadPrescRequestModel.setSourceCode(user);
             UploadPrescController uploadPrescController = new UploadPrescController(this);
             uploadPrescController.UploadPrescAPICall(uploadPrescRequestModel);
-        }else {
+        } else {
             Intent intent = new Intent(Scan_Barcode_Outlabs_Activity.this, SummaryActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("payment", getCollectedAmt);
@@ -1102,7 +1187,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         woe.setAMOUNT_COLLECTED(getCollectedAmt);
         woe.setAMOUNT_DUE("");
         woe.setAPP_ID(versionNameTopass);
-        woe.setADDITIONAL1("CPL");
+//        woe.setADDITIONAL1("CPL");
+        woe.setADDITIONAL1(ADDITIONAL1);
         woe.setBCT_ID(btechID);
         woe.setBRAND(brandName);
         woe.setCAMP_ID(campID);
@@ -1348,5 +1434,32 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         bundle.putString("tetsts", displayslectedtest);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public void getLocationResponse(GetLocationRespModel getLocationRespModel) {
+        try {
+            if (!GlobalClass.isNull(getLocationRespModel.getResID()) && getLocationRespModel.getResID().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(getLocationRespModel.getProcessAt())) {
+                    tv_lab.setText("" + getLocationRespModel.getProcessAt());
+                    if (getLocationRespModel.getProcessAt().equalsIgnoreCase("CPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorred));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("ZPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.tabindicatorColor));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("RPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    }
+                    tv_location.setText(Html.fromHtml("<b>Note: </b> This sample will be processed at "));
+                    ADDITIONAL1 = getLocationRespModel.getProcessAt();
+                } else {
+                    tv_location.setVisibility(View.GONE);
+                }
+            } else {
+                Toast.makeText(mActivity, "" + getLocationRespModel.getResponse(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

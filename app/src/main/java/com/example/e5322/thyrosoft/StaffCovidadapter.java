@@ -25,13 +25,6 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-    /**
-     * Create pager adapter
-     *
-     * @param resources
-     * @param fm
-     */
-
 
     public StaffCovidadapter(final Resources resources, FragmentManager fm) {
         super(fm);
@@ -114,10 +107,8 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
                 return resources.getString(R.string.covid);
             case 1:
                 return "RAT WOE";
-
             case 2:
                 return resources.getString(R.string.page_1);
-
             case 3:
 //                return resources.getString(R.string.page_2);
                 return resources.getString(R.string.page_3);
@@ -129,9 +120,7 @@ public class StaffCovidadapter extends FragmentPagerAdapter {
 
             case 6:
                 return resources.getString(R.string.page_6);
-
             case 7:
-
                 return resources.getString(R.string.page_7);
             case 8:
                 return resources.getString(R.string.page_9);

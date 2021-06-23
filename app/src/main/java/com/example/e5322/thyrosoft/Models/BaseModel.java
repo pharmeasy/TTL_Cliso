@@ -475,6 +475,8 @@ public class BaseModel implements Parcelable {
         private String BrandRate;
         private String RPTFile;
         private String Alias;
+        private String FullName;
+        private String ILSRate;
 
         public String getBrandName() {
             return BrandName;
@@ -506,6 +508,22 @@ public class BaseModel implements Parcelable {
 
         public void setAlias(String Alias) {
             this.Alias = Alias;
+        }
+
+        public String getFullName() {
+            return FullName;
+        }
+
+        public void setFullName(String fullName) {
+            FullName = fullName;
+        }
+
+        public String getILSRate() {
+            return ILSRate;
+        }
+
+        public void setILSRate(String ILSRate) {
+            this.ILSRate = ILSRate;
         }
     }
 

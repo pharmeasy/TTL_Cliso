@@ -19,9 +19,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2e68c233890339a91e5a03525adf9ffc/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/1ab40a941b81a62bde93b9b230ca7adf/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/PhotoView-2.3.0.aar/35a6f9b0dca3548e3cf1f3de7d1fbc18/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/789cab0a1a4496d1db8561170b1497d6/AndroidManifest.xml" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/789cab0a1a4496d1db8561170b1497d6/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/789cab0a1a4496d1db8561170b1497d6/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5d4039f21d8377aaf2af782a858a62a2/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.chrisbanes/PhotoView/2.3.0/d8422d470ae4cb6b59ba36da3186028a9be71151/PhotoView-2.3.0-javadoc.jar!/" />

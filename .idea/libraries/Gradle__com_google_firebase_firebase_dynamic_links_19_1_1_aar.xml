@@ -19,9 +19,10 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9f3de69591a9629dfeeb165bd5330856/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-19.1.1.aar/eb9c4adca7afe802167e105798178020/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-19.1.1.aar/fcdc6795b007e04d2ea7a9bd3253e204/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c32fbaee9dfb1f2a37e0a26b625e831b/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c32fbaee9dfb1f2a37e0a26b625e831b/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c32fbaee9dfb1f2a37e0a26b625e831b/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e5c8dffc4d0a89269ac4f6539294ca0f/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e5c8dffc4d0a89269ac4f6539294ca0f/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e5c8dffc4d0a89269ac4f6539294ca0f/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-dynamic-links/19.1.1/f185435efc8ad947ea82f990e99072e4ba90b8ad/firebase-dynamic-links-19.1.1-javadoc.jar!/" />

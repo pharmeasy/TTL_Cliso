@@ -12,13 +12,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
@@ -37,10 +40,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class Noticeboard_activity extends AppCompatActivity {
     View view;
@@ -102,12 +101,12 @@ public class Noticeboard_activity extends AppCompatActivity {
             noticeboard_list.setVisibility(View.GONE);
         } else {
             Log.e(TAG, "CLIENT_TYPE: " + CLIENT_TYPE);
-            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+       /*     if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
                 lin_cmsoon.setVisibility(View.VISIBLE);
             } else {
                 lin_cmsoon.setVisibility(View.GONE);
 //                getNoticeBoardData();
-            }
+            }*/
             getNoticeBoardData();
             offline_img.setVisibility(View.GONE);
             noticeboard_list.setVisibility(View.VISIBLE);

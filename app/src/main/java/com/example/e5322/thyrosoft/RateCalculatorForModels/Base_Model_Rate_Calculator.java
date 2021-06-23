@@ -3,6 +3,10 @@ package com.example.e5322.thyrosoft.RateCalculatorForModels;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.e5322.thyrosoft.Models.BaseModel;
+
+import java.util.ArrayList;
+
 /**
  * Created by Priyanka on 09-06-2018.
  */
@@ -30,6 +34,8 @@ public class Base_Model_Rate_Calculator implements Parcelable {
 
     String type;
     private int isAB;
+
+    private ArrayList<BaseModel.BrandDtlsDTO> BrandDtls;
 
 
     protected Base_Model_Rate_Calculator(Parcel in) {
@@ -81,6 +87,15 @@ public class Base_Model_Rate_Calculator implements Parcelable {
             return new Base_Model_Rate_Calculator[size];
         }
     };
+
+
+    public ArrayList<BaseModel.BrandDtlsDTO> getBrandDtls() {
+        return BrandDtls;
+    }
+
+    public void setBrandDtls(ArrayList<BaseModel.BrandDtlsDTO> brandDtls) {
+        BrandDtls = brandDtls;
+    }
 
     public int getIsAB() {
         return isAB;

@@ -16,6 +16,8 @@ import com.example.e5322.thyrosoft.Models.DynamicPaymentResponseModel;
 import com.example.e5322.thyrosoft.Models.FirebaseModel;
 import com.example.e5322.thyrosoft.Models.Firebasepost;
 import com.example.e5322.thyrosoft.Models.GetLeadgerBalnce;
+import com.example.e5322.thyrosoft.Models.GetLocationReqModel;
+import com.example.e5322.thyrosoft.Models.GetLocationRespModel;
 import com.example.e5322.thyrosoft.Models.GetScanReq;
 import com.example.e5322.thyrosoft.Models.GetScanResponse;
 import com.example.e5322.thyrosoft.Models.GetTestCodeResponseModel;
@@ -210,5 +212,10 @@ public interface APIInteface {
 
     @POST("SubmitNHLdata")
     Call<ConvertBTBNResponseModel> ConvertBttoBn(@Body ConvertBTBNRequestModel convertBTBNRequestModel);
+
+    @POST("GetTestCode")
+    Call<GetLocationRespModel> GetLocation(@Body  GetLocationReqModel getLocationReqModel);
+
+
 
 }

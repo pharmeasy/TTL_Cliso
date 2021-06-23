@@ -127,7 +127,7 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         holder.image_tag.setVisibility(View.GONE);
 
         if (patients.get(position).getConfirm_status().equals("NO")) {
-         //   holder.checkbox.setVisibility(View.VISIBLE);
+            //   holder.checkbox.setVisibility(View.VISIBLE);
             //holder.iv_checked_img.setVisibility(View.GONE);
             holder.linear.setBackgroundResource(R.color.light_pink);
             getNoStatus.add(patients.get(position).getName());
@@ -147,6 +147,18 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         api_key = prefs.getString("API_KEY", null);
 
         holder.patientName.setText(patients.get(position).getName());
+
+        if (!GlobalClass.isNull(patients.get(position).getLocation())) {
+            if (patients.get(position).getLocation().equalsIgnoreCase("CPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.colorred));
+            } else if (patients.get(position).getLocation().equalsIgnoreCase("ZPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.tabindicatorColor));
+            } else if (patients.get(position).getLocation().equalsIgnoreCase("RPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.colorPrimary));
+            }
+        }
+
+
         holder.puttestName.setText(patients.get(position).getTests());
         holder.show_amt_txt.setText(patients.get(position).getB2B());
 
@@ -253,8 +265,6 @@ public class Windup_adapter extends RecyclerView.Adapter<Windup_adapter.ViewHold
         this.searchBarcode = filterdNames;
         notifyDataSetChanged();
     }
-
-
 
 
     private class SampleTypeAdpaterWithBarcode extends RecyclerView.Adapter<SampleTypeAdpaterWithBarcode.ViewHolder> {

@@ -6,6 +6,7 @@ public class Patients
     private String B2B;
     private String pdflink;
     private String sct;
+    private String Location;
 
     private String chn_test;
 
@@ -52,6 +53,15 @@ public class Patients
     private String Ref_By;
 
     private String Category;
+
+
+    public String getLocation() {
+        return Location;
+    }
+
+    public void setLocation(String location) {
+        Location = location;
+    }
 
     public String getCategory() {
         return Category;

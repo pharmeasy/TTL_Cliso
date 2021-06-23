@@ -10,9 +10,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/1a5819a3bfb9fa60f52f10e46574392d/AndroidManifest.xml" />
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/1a5819a3bfb9fa60f52f10e46574392d/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/payu-sdk-4.4.5.aar/1a5819a3bfb9fa60f52f10e46574392d/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72a61acec2cd67fc9880408ef25a0194/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72a61acec2cd67fc9880408ef25a0194/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/72a61acec2cd67fc9880408ef25a0194/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f1e78d767c74a58887db74f9aef96537/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f1e78d767c74a58887db74f9aef96537/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f1e78d767c74a58887db74f9aef96537/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

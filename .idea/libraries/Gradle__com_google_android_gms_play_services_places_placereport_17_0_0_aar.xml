@@ -20,8 +20,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-17.0.0.aar/8b2ee515713f7dcdbfbdfa9eafebec6c/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-17.0.0.aar/fc4157b17c7691a564b1ef0cab43b9b8/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2af1d7326f066c86e02348bca7f17f4c/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2af1d7326f066c86e02348bca7f17f4c/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2af1d7326f066c86e02348bca7f17f4c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cddb437d1081926c9467367958349f0e/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cddb437d1081926c9467367958349f0e/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cddb437d1081926c9467367958349f0e/AndroidManifest.xml" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

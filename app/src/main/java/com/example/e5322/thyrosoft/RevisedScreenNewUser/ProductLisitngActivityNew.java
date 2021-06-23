@@ -3,7 +3,6 @@ package com.example.e5322.thyrosoft.RevisedScreenNewUser;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +47,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
-import com.example.e5322.thyrosoft.Adapter.ExpandableTestMasterListDisplayAdapter;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -98,27 +96,20 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     Button btn_save, btn_clear;
     ArrayList<BaseModel> Selcted_Test = new ArrayList<>();
     ImageView back, home;
-    // ArrayList<BaseModel> selectedTestsList;
     MainModel mainModel;
     ULCResponseModel ulcResponseModel;
     private Global globalClass;
-    RequestQueue requestQueuepoptestILS;
-    SharedPreferences preferences, prefe;
+    SharedPreferences prefe;
     String brandName, typeName;
     String shr_brandname;
-    ArrayList<BaseModel> testRateMasterModels = new ArrayList<BaseModel>();
+    ArrayList<BaseModel> testRateMasterModels = new ArrayList<>();
     ArrayList<BaseModel> filteredFiles;
     String TAG = ProductLisitngActivityNew.class.getSimpleName();
-    private ExpandableTestMasterListDisplayAdapter expAdapter;
     private ArrayList<B2B_MASTERSMainModel> b2bmasterarraylist;
-    private ArrayList<B2B_MASTERSMainModel> finalproductlist;
-    ProgressDialog progressDialog;
     TextView show_selected_tests_list_test_ils1, test_txt;
     ProgressDialog barProgressDialog;
-    // List<String> showTestNmaes;
     ArrayList<String> showTestNmaes = new ArrayList<>();
-    List<String> getOnlyProducts;
-    String user, passwrd, access, api_key, convertDate;
+    String user, passwrd, access, api_key;
     SharedPreferences prefs, pref_brand;
     SharedPreferences.Editor editor_brand;
     LinearLayout before_discount_layout2, ulc_nonulc_ll, ulc_ll, product_list_ll, ulc_code_edt_ll, ulc_woe_ll;
@@ -127,10 +118,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     TextView companycost_test;
     private int totalcount;
     boolean testflag = false;
-    private ArrayList<BaseModel> tempselectedTests;
-    private List<String> tempselectedTests1;
-    private MainModel mainModelRate;
-    private String displayslectedtest;
+    ArrayList<BaseModel> tempselectedTests;
+    List<String> tempselectedTests1;
     Button go_button, ulc_woe_btn;
     RecyclerView recycler_ulc_woe;
     ScannedBarcodeDetails scannedBarcodeDetails;
@@ -141,7 +130,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     LinearLayoutManager linearLayoutManagerBarcode;
     private AlertDialog.Builder alertDialogBuilder;
     private String parentTestCode;
-    private boolean flag = true;
+
     private String specimenttype1;
     private int position1;
     private IntentIntegrator scanIntegrator;
@@ -158,7 +147,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     private String sampleGivingClient;
     private String refeID;
     private String labAddress;
-    int days = 0;
     private String labID;
     private String labName;
     private String btechID;
@@ -170,14 +158,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
     ArrayList<BarcodelistModel> barcodelists;
     BarcodelistModel barcodelist;
     private ArrayList<String> getBarcodeArrList;
-    boolean flagcallonce = false;
     private DatabaseHelper myDb;
     private String RES_ID;
     private String barcode_patient_id;
     private String message;
     private String status;
     private String barcode_id;
-    private RequestQueue sendGPSDetails;
     private String checkUlcNumber;
     private boolean flagforOnce = false;
     Button verify_ulc;
@@ -225,7 +211,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         recycler_all_test.addItemDecoration(new DividerItemDecoration(ProductLisitngActivityNew.this, DividerItemDecoration.VERTICAL));
         recycler_all_test.setItemAnimator(new DefaultItemAnimator());
 
-
         if (globalClass.checkForApi21()) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -240,8 +225,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
             e.printStackTrace();
         }
         version = pInfo.versionName;
-        //get the app version Code for checking
-
 
         barProgressDialog = new ProgressDialog(ProductLisitngActivityNew.this);
         barProgressDialog.setTitle("Kindly wait ...");
@@ -249,11 +232,7 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
         barProgressDialog.setCanceledOnTouchOutside(false);
         barProgressDialog.setCancelable(false);
-
-        SearchManager searchManager = (SearchManager) mActivity.getSystemService(Context.SEARCH_SERVICE);
-
         before_discount_layout2.setVisibility(View.GONE);
-
 
         SharedPreferences preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         patientName = preferences.getString("name", null);
@@ -267,11 +246,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         sr_number = preferences.getString("SR_NO", null);
         pass_to_api = Integer.parseInt(sr_number);
         referenceBy = preferences.getString("refBy", null);
-        ////////////////////////////////////////////////////////////////////////
         sampleCollectionPoint = preferences.getString("labAddress", null);
         sampleGivingClient = preferences.getString("labname", null);
-        ////////////////////////////////////////////////////////////////////////
-
         refeID = preferences.getString("refId", null);
         labAddress = preferences.getString("labAddress", null);
         labID = preferences.getString("labIDaddress", null);
@@ -801,8 +777,6 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     }
 
 
-
-
                     if (getTestNameLits.contains("PPBS") && getTestNameLits.contains("RBS")) {
                         showTestNmaes.remove("RANDOM BLOOD SUGAR");
                     }
@@ -967,6 +941,8 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
 
         RequestQueue requestQueuepoptestILS = GlobalClass.setVolleyReq(this);
         Log.e(TAG, "Product URL --->" + Api.getAllTests + api_key + "/ALL/getproducts");
+        // https://clisoapi.thyrocare.com/v1/nVBoST2makUkW6Di6hOlZh9So2WmpVBvOGA2)koap4g=/ALL/getproducts
+
         JsonObjectRequest jsonObjectRequestPop = new JsonObjectRequest(Request.Method.GET, Api.getAllTests + api_key + "/ALL/getproducts", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -1060,8 +1036,66 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
                     callAdapter(testRateMasterModels);
 
                 }
+            } else if (brandName.equalsIgnoreCase("NHL")) {
+                SetOnlyNHLLogic();
             }
 
+        }
+    }
+
+    private void SetOnlyNHLLogic() {
+        try {
+            for (int i = 0; i < b2bmasterarraylist.size(); i++) {
+                Product_Rate_MasterModel product_rate_masterModel = new Product_Rate_MasterModel();
+                product_rate_masterModel.setTestType(Constants.PRODUCT_POP);
+                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPOP());
+
+                for (int j = 0; j < b2bmasterarraylist.get(i).getPOP().size(); j++) {
+                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylist.get(i).getPOP().get(j).getBrandDtls())) {
+                        for (int k = 0; k < b2bmasterarraylist.get(i).getPOP().get(j).getBrandDtls().size(); k++) {
+                            if (b2bmasterarraylist.get(i).getPOP().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                            }
+                        }
+                    }
+                }
+
+                product_rate_masterModel = new Product_Rate_MasterModel();
+                product_rate_masterModel.setTestType(Constants.PRODUCT_PROFILE);
+                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getPROFILE());
+
+                for (int j = 0; j < b2bmasterarraylist.get(i).getPROFILE().size(); j++) {
+                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylist.get(i).getPROFILE().get(j).getBrandDtls())) {
+                        for (int k = 0; k < b2bmasterarraylist.get(i).getPROFILE().get(j).getBrandDtls().size(); k++) {
+                            if (b2bmasterarraylist.get(i).getPROFILE().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                            }
+                        }
+                    }
+                }
+
+                product_rate_masterModel = new Product_Rate_MasterModel();
+                product_rate_masterModel.setTestType(Constants.PRODUCT_TEST);
+                product_rate_masterModel.setTestRateMasterModels(b2bmasterarraylist.get(i).getTESTS());
+
+                for (int j = 0; j < b2bmasterarraylist.get(i).getTESTS().size(); j++) {
+                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylist.get(i).getTESTS().get(j).getBrandDtls())) {
+                        for (int k = 0; k < b2bmasterarraylist.get(i).getTESTS().get(j).getBrandDtls().size(); k++) {
+                            if (b2bmasterarraylist.get(i).getTESTS().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                testRateMasterModels.add(product_rate_masterModel.getTestRateMasterModels().get(j));
+                            }
+                        }
+                    }
+                }
+            }
+
+       /*     HashSet<BaseModel> filterlist = new HashSet<>();
+            filterlist.addAll(testRateMasterModels);
+            testRateMasterModels.clear();
+            testRateMasterModels.addAll(filterlist);*/
+            callAdapter(testRateMasterModels);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

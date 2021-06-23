@@ -20,6 +20,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -61,6 +62,7 @@ import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -71,6 +73,8 @@ import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.MainModelForAllTests.Outlabdetails_OutLab;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.GetLocationReqModel;
+import com.example.e5322.thyrosoft.Models.GetLocationRespModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
@@ -240,6 +244,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
     List<String> imagelist_per = new ArrayList<>();
     private File presc_file;
 
+    private String ADDITIONAL1 = "";
+    TextView tv_location, tv_lab;
+
 
     public static String Req_Date_Req(String time, String inputPattern, String outputPattern) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
@@ -294,6 +301,11 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         setContentView(R.layout.activity_scan__barcode__ils);
         mActivity = Scan_Barcode_Outlabs.this;
         connectionDetector = new ConnectionDetector(mActivity);
+
+        SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+        brandName = prefs.getString("WOEbrand", "");
+        typeName = prefs.getString("woetype", "");
+
         recycler_barcode = (RecyclerView) findViewById(R.id.recycler_barcode);
         show_selected_tests_data = (TextView) findViewById(R.id.show_selected_tests_data);
         img_edt = (ImageView) findViewById(R.id.img_edt);
@@ -336,7 +348,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
         lin_preview_pres = findViewById(R.id.lin_preview_pres);
         txt_fileupload_pres = findViewById(R.id.txt_fileupload_pres);
-
+        tv_location = findViewById(R.id.tv_location);
+        tv_lab = findViewById(R.id.tv_lab);
 
         btn_choosefile_presc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -435,6 +448,14 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
             getProductCode = new ArrayList<>();
             trflist.clear();
 
+            ArrayList<String> getTestCode = new ArrayList<>();
+            if (GlobalClass.isArraylistNotNull(Globaly_Outlab_details)) {
+                for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
+                    if (!GlobalClass.isNull(Globaly_Outlab_details.get(i).getProduct())) {
+                        getTestCode.add(Globaly_Outlab_details.get(i).getProduct());
+                    }
+                }
+            }
 
             if (GlobalClass.isArraylistNotNull(Globaly_Outlab_details)) {
                 for (int i = 0; i < Globaly_Outlab_details.size(); i++) {
@@ -467,10 +488,22 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 e.printStackTrace();
             }
 
+
+            if (connectionDetector.isConnectingToInternet()) {
+                GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
+                getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
+                getLocationReqModel.setTSP("" + user);
+                GetLocationController getLocationController = new GetLocationController(this);
+                getLocationController.CallAPI(getLocationReqModel);
+            }
+
             show_selected_tests_data.setText(testsData);
         } else {
             Log.e(TAG, "onCreate: null");
         }
+
+
+
 
         SetBrandLetterValues();
         SharedPreferences appSharedPrefsbtech = PreferenceManager.getDefaultSharedPreferences(Scan_Barcode_Outlabs.this);
@@ -512,10 +545,6 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         api_key = prefs.getString("API_KEY", "");
 
         Log.v(TAG, "" + Globaly_Outlab_details.toString());
-
-        SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
-        brandName = prefs.getString("WOEbrand", "");
-        typeName = prefs.getString("woetype", "");
 
         title.setText("Scan Barcode(" + typeName + ")");
 
@@ -953,7 +982,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                 ll_letterhead.setVisibility(View.VISIBLE);
             }
 
-            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList);
+            SharedPreferences prefs = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
+            typeName = prefs.getString("woetype", "");
+            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList, typeName);
             brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
                 @Override
                 public void onchecked(String brand, String rate) {
@@ -978,7 +1009,9 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
                         brandDtlsDTO.setAlias("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getAlias());
                         brandDtlsDTO.setBrandName("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getBrandName());
                         brandDtlsDTO.setBrandRate("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getBrandRate());
+                        brandDtlsDTO.setILSRate("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getILSRate());
                         brandDtlsDTO.setRPTFile("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getRPTFile());
+                        brandDtlsDTO.setFullName("" + Globaly_Outlab_details.get(i).getBrandDtls().get(j).getFullName());
                         entity.add(brandDtlsDTO);
 
                     }
@@ -1607,7 +1640,8 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         woe.setAMOUNT_COLLECTED(getWrittenAmt);
         woe.setAMOUNT_DUE("");
         woe.setAPP_ID(versionNameTopass);
-        woe.setADDITIONAL1("CPL");
+//        woe.setADDITIONAL1("CPL");
+        woe.setADDITIONAL1(ADDITIONAL1);
         woe.setBCT_ID(btechID);
         woe.setBRAND(getBrand_name);
         woe.setCAMP_ID(campID);
@@ -1848,5 +1882,33 @@ public class Scan_Barcode_Outlabs extends AppCompatActivity {
         bundle.putString("tetsts", displayslectedtest);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public void getLocationResponse(GetLocationRespModel getLocationRespModel) {
+        try {
+            if (!GlobalClass.isNull(getLocationRespModel.getResID()) && getLocationRespModel.getResID().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(getLocationRespModel.getProcessAt())) {
+                    tv_lab.setText("" + getLocationRespModel.getProcessAt());
+                    if (getLocationRespModel.getProcessAt().equalsIgnoreCase("CPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorred));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("ZPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.tabindicatorColor));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("RPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    }
+                    tv_location.setText(Html.fromHtml("<b>Note: </b> This sample will be processed at "));
+                    ADDITIONAL1 = getLocationRespModel.getProcessAt();
+                } else {
+                    tv_location.setVisibility(View.GONE);
+                }
+            } else {
+                Toast.makeText(mActivity, "" + getLocationRespModel.getResponse(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
     }
 }

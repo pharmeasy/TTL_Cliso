@@ -126,7 +126,7 @@
     <string name="page_7">CHN</string>
     <string name="page_8">Billing</string>
     <string name="page_9">Rate calculator</string>
-    <string name="petct">PET CT</string>
+    <string name="petct">SCAN</string>
     <string name="remarks_val">Remarks should not start with special characters</string>
     <string name="space_val_remarks">Remarks should not start with space</string>
     <string name="email_no_space">Email ID should not start with space</string>

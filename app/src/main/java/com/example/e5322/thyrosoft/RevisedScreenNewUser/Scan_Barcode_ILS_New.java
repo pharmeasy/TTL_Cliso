@@ -24,6 +24,7 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -60,6 +61,7 @@ import com.example.e5322.thyrosoft.Adapter.BrandAdapter;
 import com.example.e5322.thyrosoft.Adapter.TRFDisplayAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
+import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
 import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
@@ -71,6 +73,8 @@ import com.example.e5322.thyrosoft.Interface.RecyclerInterface;
 import com.example.e5322.thyrosoft.MainModelForAllTests.MainModel;
 import com.example.e5322.thyrosoft.Models.BaseModel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
+import com.example.e5322.thyrosoft.Models.GetLocationReqModel;
+import com.example.e5322.thyrosoft.Models.GetLocationRespModel;
 import com.example.e5322.thyrosoft.Models.MyPojo;
 import com.example.e5322.thyrosoft.Models.RequestModels.GeoLocationRequestModel;
 import com.example.e5322.thyrosoft.Models.RequestModels.UploadPrescRequestModel;
@@ -255,6 +259,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
     TextView txt_fileupload_pres;
     private boolean isprescition = false;
 
+    private String ADDITIONAL1 = "";
+    TextView tv_location, tv_lab;
+
 
     @SuppressLint({"WrongViewCast", "NewApi"})
     @Override
@@ -306,6 +313,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         ll_bp = findViewById(R.id.ll_bp);
         edt_bsValue = findViewById(R.id.edt_bsValue);
         edt_bpValue = findViewById(R.id.edt_bpValue);
+        tv_location = findViewById(R.id.tv_location);
+        tv_lab = findViewById(R.id.tv_lab);
 
         ll_prescription = findViewById(R.id.ll_prescription);
         btn_choosefile_presc = findViewById(R.id.btn_choosefile_presc);
@@ -585,16 +594,43 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 GlobalClass.goToHome(Scan_Barcode_ILS_New.this);
             }
         });
+        ArrayList<String> getTestCode = new ArrayList<>();
 
-        if (GlobalClass.isArraylistNotNull(selctedTest)) {
-            for (int i = 0; i < selctedTest.size(); i++) {
-                if (selctedTest.get(i).isPrescription()) {
-                    isprescition = selctedTest.get(i).isPrescription();
-                    ll_prescription.setVisibility(View.VISIBLE);
-                    break;
+        try {
+            if (GlobalClass.isArraylistNotNull(selctedTest)) {
+                for (int i = 0; i < selctedTest.size(); i++) {
+                    if (!GlobalClass.isNull(selctedTest.get(i).getProduct())) {
+                        getTestCode.add(selctedTest.get(i).getProduct());
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        try {
+            if (GlobalClass.isArraylistNotNull(selctedTest)) {
+                for (int i = 0; i < selctedTest.size(); i++) {
+                    if (selctedTest.get(i).isPrescription()) {
+                        isprescition = selctedTest.get(i).isPrescription();
+                        ll_prescription.setVisibility(View.VISIBLE);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (connectionDetector.isConnectingToInternet()) {
+            GetLocationReqModel getLocationReqModel = new GetLocationReqModel();
+            getLocationReqModel.setTest("" + TextUtils.join(",", getTestCode));
+            getLocationReqModel.setTSP("" + user);
+            GetLocationController getLocationController = new GetLocationController(this);
+            getLocationController.CallAPI(getLocationReqModel);
+        }
+
+
         if (selctedTest != null && selctedTest.size() > 0) {
             for (int i = 0; i < selctedTest.size(); i++) {
                 totalcount = totalcount + Integer.parseInt(selctedTest.get(i).getRate().getB2b());
@@ -650,7 +686,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
         }
 
-        if (saveLocation != null && !saveLocation.isEmpty()) {
+  /*      if (saveLocation != null && !saveLocation.isEmpty()) {
 //            for (int i = 0; i < rateWiseLocation.size(); i++) {
             if (saveLocation.contains("CPL")) {
                 location_radio_grp.setVisibility(View.GONE);
@@ -663,7 +699,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
             }
 //            }
         }
-
+*/
         rpl_rdo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -990,7 +1026,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                 ll_letterhead.setVisibility(View.VISIBLE);
             }
 
-            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList);
+            BrandAdapter brandAdapter = new BrandAdapter(this, finallist, getBrandList, typeName);
             brandAdapter.setOnItemClickListener(new BrandAdapter.OnClickListener() {
                 @Override
                 public void onchecked(String brand, String rate) {
@@ -1013,7 +1049,9 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
                         brandDtlsDTO.setAlias("" + selctedTest.get(i).getBrandDtls().get(j).getAlias());
                         brandDtlsDTO.setBrandName("" + selctedTest.get(i).getBrandDtls().get(j).getBrandName());
                         brandDtlsDTO.setBrandRate("" + selctedTest.get(i).getBrandDtls().get(j).getBrandRate());
+                        brandDtlsDTO.setILSRate("" + selctedTest.get(i).getBrandDtls().get(j).getILSRate());
                         brandDtlsDTO.setRPTFile("" + selctedTest.get(i).getBrandDtls().get(j).getRPTFile());
+                        brandDtlsDTO.setFullName("" + selctedTest.get(i).getBrandDtls().get(j).getFullName());
                         entity.add(brandDtlsDTO);
 
                     }
@@ -1334,7 +1372,8 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         woe.setALERT_MESSAGE(lab_alert_pass_toApi);
         woe.setAMOUNT_COLLECTED(getCollectedAmt);
         woe.setAMOUNT_DUE(null);
-        woe.setADDITIONAL1(setLocation);
+//        woe.setADDITIONAL1(setLocation);
+        woe.setADDITIONAL1(ADDITIONAL1);
         woe.setAPP_ID(version);
         woe.setBCT_ID(btechIDToPass);
 
@@ -2023,5 +2062,31 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
         bundle.putString("draft", "");
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    public void getLocationResponse(GetLocationRespModel getLocationRespModel) {
+        try {
+            if (!GlobalClass.isNull(getLocationRespModel.getResID()) && getLocationRespModel.getResID().equalsIgnoreCase(Constants.RES0000)) {
+                if (!GlobalClass.isNull(getLocationRespModel.getProcessAt())) {
+                    tv_lab.setText("" + getLocationRespModel.getProcessAt());
+                    if (getLocationRespModel.getProcessAt().equalsIgnoreCase("CPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorred));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("ZPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.tabindicatorColor));
+                    } else if (getLocationRespModel.getProcessAt().equalsIgnoreCase("RPL")) {
+                        tv_lab.setTextColor(mActivity.getResources().getColor(R.color.colorPrimary));
+                    }
+                    tv_location.setText(Html.fromHtml("<b>Note: </b> This sample will be processed at "));
+                    ADDITIONAL1 = getLocationRespModel.getProcessAt();
+                } else {
+                    tv_location.setVisibility(View.GONE);
+                }
+            } else {
+                Toast.makeText(mActivity, "" + getLocationRespModel.getResponse(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

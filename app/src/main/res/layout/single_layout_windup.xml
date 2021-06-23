@@ -64,7 +64,8 @@
                     android:text="Android Name"
                     android:textAllCaps="true"
                     android:textColor="@color/DARKGray"
-                    android:textSize="@dimen/value" />
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
 
 
                 <LinearLayout

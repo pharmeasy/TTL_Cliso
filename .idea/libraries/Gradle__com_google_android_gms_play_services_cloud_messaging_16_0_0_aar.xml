@@ -20,8 +20,9 @@
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/bd3af7acff2d66eb016a0886e7ab716d/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/play-services-cloud-messaging-16.0.0.aar/9c20d1f4ad0895e68ff596414a19e5b0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00f8510b00d2959790e1ee4aaad0c74e/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00f8510b00d2959790e1ee4aaad0c74e/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/00f8510b00d2959790e1ee4aaad0c74e/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aaaac5a4d7ab733f29b735d6b078b00c/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aaaac5a4d7ab733f29b735d6b078b00c/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aaaac5a4d7ab733f29b735d6b078b00c/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-cloud-messaging/16.0.0/66bcaa7ea2458690135561b6053cc71210dbd9dd/play-services-cloud-messaging-16.0.0-javadoc.jar!/" />

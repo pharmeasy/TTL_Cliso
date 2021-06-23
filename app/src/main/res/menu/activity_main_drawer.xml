@@ -275,7 +275,7 @@
         <item
             android:id="@+id/thyroshop"
             android:icon="@drawable/cart"
-            android:title="DOWNLOAD THYROSHOP" />
+            android:title="DOWNLOAD THYROMART" />
     </group>
 
 

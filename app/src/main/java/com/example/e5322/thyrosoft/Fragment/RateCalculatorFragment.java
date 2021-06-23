@@ -154,6 +154,7 @@ public class RateCalculatorFragment extends Fragment {
     private TextView txt_more;
     //    private ArrayList<String> locationsList;
     private Activity mActivity;
+    private String CLIENT_TYPE = "";
 
     public RateCalculatorFragment() {
         // Required empty public constructor
@@ -212,6 +213,7 @@ public class RateCalculatorFragment extends Fragment {
         passwrd = prefs.getString("password", "");
         access = prefs.getString("ACCESS_TYPE", "");
         api_key = prefs.getString("API_KEY", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
 
         //todo get rate percent from profile details
         preferences = getActivity().getSharedPreferences("profile", MODE_PRIVATE);
@@ -243,10 +245,17 @@ public class RateCalculatorFragment extends Fragment {
             getBrandName = new ArrayList<>();
             if (myPojo != null && myPojo.getMASTERS() != null) {
                 if (myPojo.getMASTERS().getBRAND_LIST() != null) {
-                    for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
-                        getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                    if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                        getBrandName.clear();
+                        getBrandName.add("NHL");
+                    } else {
+                        for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
+                            getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                        }
                     }
-                    brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getBrandName));
+                    brand_name_rt_cal.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.spinnerproperty, getBrandName));
+
+
                 }
             }
         } else {
@@ -610,39 +619,41 @@ public class RateCalculatorFragment extends Fragment {
                     prefsEditor1.apply();
 
                     try {
-                        getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
-                        getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                        try {
+                            getSpinnerSelectedItem = brand_name_rt_cal.getSelectedItem().toString();
+                            getRatesofB2bandB2C(getSpinnerSelectedItem, mContext);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-                    try {
-                        if (obj != null && obj.getB2B_MASTERS() != null && obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
-                            outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
-                            outlabdetails_outLabs = new ArrayList<>();
-                            if (outlab_testlist_getalltests != null) {
-                                for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
-                                    if (getSpinnerSelectedItem.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
-                                        if (outlabdetails_outLabs != null) {
-                                            outlabdetails_outLabs = null;
-                                            outlabdetails_outLabs = new ArrayList<>();
-                                            outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                        try {
+                            if (obj != null && obj.getB2B_MASTERS() != null && obj.getB2B_MASTERS().getOUTLAB_TESTLIST() != null) {
+                                outlab_testlist_getalltests = obj.getB2B_MASTERS().getOUTLAB_TESTLIST();
+                                outlabdetails_outLabs = new ArrayList<>();
+                                if (outlab_testlist_getalltests != null) {
+                                    for (int i = 0; i < outlab_testlist_getalltests.size(); i++) {
+                                        if (getSpinnerSelectedItem.equalsIgnoreCase(outlab_testlist_getalltests.get(i).getLOCATION())) {
+                                            if (outlabdetails_outLabs != null) {
+                                                outlabdetails_outLabs = null;
+                                                outlabdetails_outLabs = new ArrayList<>();
+                                                outlabdetails_outLabs = outlab_testlist_getalltests.get(i).getOutlabdetails();
+                                            }
                                         }
                                     }
                                 }
+
                             }
-
+                        } catch (Exception e) {
+                            Log.e(TAG, "ON ERROR MESSAGE -->" + e.getLocalizedMessage());
                         }
-                    } catch (Exception e) {
-                        Log.e(TAG, "ON ERROR MESSAGE -->" + e.getLocalizedMessage());
-                    }
 
-                    b2bmasterarraylistRate = new ArrayList<>();
-                    b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
-                    ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
-                    ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
-                    try {
+                        b2bmasterarraylistRate = new ArrayList<>();
+                        b2bmasterarraylistRate.add(mainModelRate.B2B_MASTERS);
+                        ArrayList<Base_Model_Rate_Calculator> testRateMasterModels = new ArrayList<>();
+                        ArrayList<Base_Model_Rate_Calculator> finalproduct_list = new ArrayList<>();
                         if (b2bmasterarraylistRate != null) {
+
+
                             if (getSpinnerSelectedItem.equalsIgnoreCase("TTL")) {
                                 for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                                     for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
@@ -714,6 +725,51 @@ public class RateCalculatorFragment extends Fragment {
                                     getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
                                 }
                             }
+                        } else if (getSpinnerSelectedItem.equalsIgnoreCase("NHL")) {
+
+                            for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
+                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getPOP().size(); j++) {
+
+                                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylistRate.get(i).getPOP().get(j).getBrandDtls())) {
+                                        for (int k = 0; k < b2bmasterarraylistRate.get(i).getPOP().get(j).getBrandDtls().size(); k++) {
+                                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIsCart("no");
+                                            b2bmasterarraylistRate.get(i).getPOP().get(j).setIs_lock("no");
+                                            if (b2bmasterarraylistRate.get(i).getPOP().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                                getAllTests.add(b2bmasterarraylistRate.get(i).getPOP().get(j));
+                                            }
+                                        }
+                                    }
+
+                                }
+
+                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getPROFILE().size(); j++) {
+                                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylistRate.get(i).getPROFILE().get(j).getBrandDtls())) {
+                                        for (int k = 0; k < b2bmasterarraylistRate.get(i).getPROFILE().get(j).getBrandDtls().size(); k++) {
+                                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIsCart("no");
+                                            b2bmasterarraylistRate.get(i).getPROFILE().get(j).setIs_lock("no");
+                                            if (b2bmasterarraylistRate.get(i).getPROFILE().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                                getAllTests.add(b2bmasterarraylistRate.get(i).getPROFILE().get(j));
+                                            }
+                                        }
+                                    }
+
+                                }
+
+
+                                for (int j = 0; j < b2bmasterarraylistRate.get(i).getTESTS().size(); j++) {
+                                    finalproductlist.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
+                                    if (GlobalClass.isArraylistNotNull(b2bmasterarraylistRate.get(i).getTESTS().get(j).getBrandDtls())) {
+                                        for (int k = 0; k < b2bmasterarraylistRate.get(i).getTESTS().get(j).getBrandDtls().size(); k++) {
+                                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIsCart("no");
+                                            b2bmasterarraylistRate.get(i).getTESTS().get(j).setIs_lock("no");
+                                            if (b2bmasterarraylistRate.get(i).getTESTS().get(j).getBrandDtls().get(k).getBrandName().equalsIgnoreCase("BN")) {
+                                                getAllTests.add(b2bmasterarraylistRate.get(i).getTESTS().get(j));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                         } else {
                             for (int i = 0; i < b2bmasterarraylistRate.size(); i++) {
                                 for (int j = 0; j < b2bmasterarraylistRate.get(i).getSMT().size(); j++) {
@@ -756,6 +812,7 @@ public class RateCalculatorFragment extends Fragment {
                 }
             }
         }*/
+
 
         rateCAlAdapter = new RateCAlAdapter(mContext, finalproductlist, totalproductlist, selectedTestsListRateCal, new InterfaceRateCAlculator() {
             @Override
@@ -1032,6 +1089,21 @@ public class RateCalculatorFragment extends Fragment {
                         getAllproduct();
                     }
                 }
+            } else if (getSpinnerSelectedItem.equalsIgnoreCase("NHL")) {
+
+                outlabtestsearch.setVisibility(View.GONE);
+                lineargetselectedtestforILS.setVisibility(View.GONE);
+                outlab_list.setVisibility(View.GONE);
+                if (!brand_name_rt_cal.getSelectedItem().toString().equalsIgnoreCase("TTL")) {
+                    if (selectedTestsListRateCal != null) {
+                        selectedTestsListRateCal.clear();
+                    }
+                }
+                getDataFromSharedPref();
+
+                containerlist.setVisibility(View.VISIBLE);
+                search_option_ttl.setVisibility(View.VISIBLE);
+
             } else {
                 show_selected_tests_list_test_ils.scrollTo(0, 0);
                 outlab_list.setVisibility(View.VISIBLE);
@@ -1089,10 +1161,15 @@ public class RateCalculatorFragment extends Fragment {
                         getBrandName = new ArrayList<>();
 
                         if (myPojo != null && myPojo.getMASTERS() != null && myPojo.getMASTERS().getBRAND_LIST() != null) {
-                            for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
-                                getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                            if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+                                getBrandName.clear();
+                                getBrandName.add("NHL");
+                            } else {
+                                for (int i = 0; i < myPojo.getMASTERS().getBRAND_LIST().length; i++) {
+                                    getBrandName.add(myPojo.getMASTERS().getBRAND_LIST()[i].getBrand_name());
+                                }
                             }
-                            brand_name_rt_cal.setAdapter(new ArrayAdapter<String>(getActivity(), R.layout.spinnerproperty, getBrandName));
+                            brand_name_rt_cal.setAdapter(new ArrayAdapter<>(getActivity(), R.layout.spinnerproperty, getBrandName));
                         }
                     } catch (JsonSyntaxException e) {
                         e.printStackTrace();

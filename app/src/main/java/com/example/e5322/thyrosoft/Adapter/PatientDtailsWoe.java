@@ -160,10 +160,10 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             holder.tv_brandlabel.setVisibility(View.VISIBLE);
             holder.tv_brand.setVisibility(View.VISIBLE);
             holder.tv_brand.setText(patients.get(position).getCategory());
-            if (patients.get(position).getCategory().equalsIgnoreCase("BN")){
+            if (patients.get(position).getCategory().equalsIgnoreCase("BN")) {
                 holder.tv_brand.setTextColor(Color.RED);
                 holder.tv_brand.setTypeface(Typeface.DEFAULT_BOLD);
-            }else {
+            } else {
                 holder.tv_brand.setTextColor(Color.BLACK);
                 holder.tv_brand.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             }
@@ -172,8 +172,20 @@ public class PatientDtailsWoe extends RecyclerView.Adapter<PatientDtailsWoe.View
             holder.tv_brandlabel.setVisibility(View.GONE);
             holder.tv_brand.setVisibility(View.GONE);
         }
+        holder.patientName.setText("" + patients.get(position).getName());
 
-        holder.patientName.setText(patients.get(position).getName());
+        if (!GlobalClass.isNull(patients.get(position).getLocation())) {
+            if (patients.get(position).getLocation().equalsIgnoreCase("CPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.colorred));
+            } else if (patients.get(position).getLocation().equalsIgnoreCase("ZPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.tabindicatorColor));
+            } else if (patients.get(position).getLocation().equalsIgnoreCase("RPL")) {
+                holder.patientName.setTextColor(context1.getResources().getColor(R.color.colorPrimary));
+            }
+
+        }
+
+
         holder.put_testName.setText(patients.get(position).getTests());
 
 

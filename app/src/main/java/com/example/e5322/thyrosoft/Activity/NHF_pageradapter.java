@@ -1,11 +1,12 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.content.res.Resources;
+import android.util.SparseArray;
+import android.view.ViewGroup;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.util.SparseArray;
-import android.view.ViewGroup;
 
 import com.example.e5322.thyrosoft.Fragment.LedgerFragment;
 import com.example.e5322.thyrosoft.Fragment.NHFFragment;
@@ -16,13 +17,6 @@ public class NHF_pageradapter extends FragmentPagerAdapter {
     private final Resources resources;
 
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
-
-    /**
-     * Create pager adapter
-     *
-     * @param resources
-     * @param fm
-     */
 
 
     public NHF_pageradapter(final Resources resources, FragmentManager fm) {

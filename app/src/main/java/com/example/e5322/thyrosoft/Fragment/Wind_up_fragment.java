@@ -117,8 +117,7 @@ public class Wind_up_fragment extends RootFragment implements CountInterface {
     Button defaultFragment;
     RecyclerView recyclerView;
     LinearLayoutManager linearLayoutManager;
-    View view_line, view_line1;
-    TextView enetered, enter;
+
     TextView enetered_consign, enter_consign, title_txt;
     //layouts defined in fragment
     LinearLayout layoutCartItems, layoutCartPayments, layoutCartNoItems, enter_entered_layout_consign, enter_ll_unselected_consign, unchecked_entered_ll_consign, packaging_details_ll;

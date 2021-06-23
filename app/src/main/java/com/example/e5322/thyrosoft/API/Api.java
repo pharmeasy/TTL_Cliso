@@ -20,23 +20,24 @@ public class Api {
     public static String Velso = "https://velso.thyrocare.cloud/api/";
     public static String Techso = "http://techsostng.thyrocare.cloud/";
 
-
     //TODO staging
-/*    public static String LIVEAPI = "https://www.thyrocare.com/API_BETA/B2B/";
-    public static String URL_with_http = "https://www.thyrocare.com/API_BETA/B2B/";
+/*
+  public static String LIVEAPI = "https://b2capi.thyrocare.com/API_BETA/B2B/";
+    public static String URL_with_http = "https://b2capi.thyrocare.com/API_BETA/B2B/";
     public static String Cloud_base = "http://stagingclisoapi.thyrocare.com/v1/";
-    public static String SGC = "https://www.thyrocare.com/API_BETA/BDN/api/";
-    public static String Static_API = "https://www.thyrocare.com/API_BETA/B2B/";
-    public static String THYROCARE = "https://www.thyrocare.com/API_BETA/";
-    public static String COVID = "https://www.thyrocare.com/API_BETA/";
-    public static String SUGARSO = "https://www.thyrocare.com/API_BETA/SugarSo/api/";
-    public static String SERVER_BASE_API_URL_PROD = "https://www.thyrocare.com/API_BETA/BDN/api";
-    public static String BASE_URL_TOCHECK = "https://www.thyrocare.com/API_BETA/";
-    public static String IMAGE_UPLOAD = "https://www.thyrocare.com/API_BETA/";
+    public static String SGC = "https://b2capi.thyrocare.com/API_BETA/BDN/api/";
+    public static String Static_API = "https://b2capi.thyrocare.com/API_BETA/B2B/";
+    public static String THYROCARE = "https://b2capi.thyrocare.com/API_BETA/";
+    public static String COVID = "https://b2capi.thyrocare.com/API_BETA/";
+    public static String SUGARSO = "https://b2capi.thyrocare.com/API_BETA/SugarSo/api/";
+    public static String SERVER_BASE_API_URL_PROD = "https://b2capi.thyrocare.com/API_BETA/BDN/api";
+    public static String BASE_URL_TOCHECK = "https://b2capi.thyrocare.com/API_BETA/";
+    public static String IMAGE_UPLOAD = "https://b2capi.thyrocare.com/API_BETA/";
     public static String SCANSOAPI = "http://stagingscanso.nueclear.com/api/";
     public static String Velso = "https://velso.thyrocare.cloud/api/";
     public static String NUECLEAR = "http://api.nueclear.local/WebAPI/API";
-    public static String Techso = " http://techsostng.thyrocare.cloud/";*/
+    public static String Techso = " http://techsostng.thyrocare.cloud/";
+*/
 
 
     public static String imgURL = "http://www.charbi.com/assets/photo/Emp/";
