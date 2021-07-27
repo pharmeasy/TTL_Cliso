@@ -104,21 +104,14 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        barProgressDialog = new ProgressDialog(mActivity);
-        barProgressDialog.setTitle("Kindly wait ...");
-        barProgressDialog.setMessage(ToastFile.processing_request);
-        barProgressDialog.setProgressStyle(barProgressDialog.STYLE_SPINNER);
-        barProgressDialog.setCanceledOnTouchOutside(false);
-        barProgressDialog.setCancelable(false);
+        barProgressDialog = GlobalClass.progress(mActivity, false);
         barProgressDialog.show();
     }
 
     @Override
     protected String doInBackground(Void... voids) {
         String strUrl = Api.UPLOAD_TRF_RECEIPT;
-
         Log.v(TAG, strUrl);
-
         InputStream inputStream = null;
         String result = "";
 
@@ -155,7 +148,6 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
                 }
             }
 
-
             Log.e(TAG, "Post params:- " + "KEY" + ":" + apiKey + "\n"
                     + "SOURCECODE" + ":" + sourceCode + "\n"
                     + "PATIENTID" + ":" + patientID + "\n"
@@ -187,8 +179,7 @@ public class AsyncTaskPost_uploadfile extends AsyncTask<Void, Void, String> {
     @Override
     protected void onPostExecute(String response) {
         super.onPostExecute(response);
-        if (barProgressDialog != null && barProgressDialog.isShowing())
-            barProgressDialog.dismiss();
+        GlobalClass.hideProgress(mActivity, barProgressDialog);
         if (status_code == 200) {
             if (response != null && !response.isEmpty()) {
                 Log.e(TAG, "ON Response: " + response);

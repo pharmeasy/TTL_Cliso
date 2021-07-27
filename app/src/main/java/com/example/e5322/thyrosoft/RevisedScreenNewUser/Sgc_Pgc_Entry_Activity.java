@@ -45,6 +45,7 @@ import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.RequestModels.ClientRegisterRequestModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.ClientRegisterResponseModel;
@@ -864,8 +865,12 @@ public class Sgc_Pgc_Entry_Activity extends AppCompatActivity implements GoogleA
                         if (!GlobalClass.isNull(responseModel.getResponse()) && responseModel.getResponse().equalsIgnoreCase("Success")) {
 
                             if (type.equalsIgnoreCase("PGCEntry")) {
+                                new LogUserActivityTagging(activity, "PGC-REGISTRATION",getmobile_number);
+
                                 TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "PGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             } else {
+                                new LogUserActivityTagging(activity, "SGC-REGISTRATION",getmobile_number);
+
                                 TastyToast.makeText(Sgc_Pgc_Entry_Activity.this, "SGC Registered Successfully", TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             }
 

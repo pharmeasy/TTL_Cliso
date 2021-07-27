@@ -32,6 +32,11 @@ public class Constants {
 
     //shared preference Name
 
+    public static final String WOE = "WOE";
+    public static final String REGISTRATION = "REGISTRATION";
+    public static final String REPORT_DOWNLOAD = "REPORT DOWNLOAD";
+    public static String LEAD = "LEAD" ;
+
     public static String PROFILEPREF = "profile";
 
     public static String APP_ID = "1";
@@ -478,6 +483,8 @@ public class Constants {
     public static final String WEBSITE = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "APPPROD" : "APP_STAGING";
     public static final String CALLBACK_URL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "https://securegw.paytm.in/theia/paytmCallback?ORDER_ID=" : "https://pguat.paytm.com/paytmchecksum/paytmCallback.jsp";
 
+    public static final String M_ID_NHL = MAINURL.equalsIgnoreCase(BASE_URL_TOCHECK) ? "NOTGIVEN" : "Nuecle44833388083843";
+
 
     public static final String PAYTM_UPDATE_PAYMENT_URL = "PaymentGateway.svc/PaytmResponse";
     public static final String PAYTM_PAYMENT_REQUEST_URL = "PaymentGateway.svc/PaytmRequest";
@@ -681,5 +688,12 @@ public class Constants {
 
     public static final String VIDEOPATH = "Path";
     public static final String VIDEOID = "id";
+
+    public static String removelastchar(String str, int removelength) {
+        if (str != null && str.length() > 0) {
+            str = str.substring(0, str.length() - removelength);
+        }
+        return str;
+    }
 
 }

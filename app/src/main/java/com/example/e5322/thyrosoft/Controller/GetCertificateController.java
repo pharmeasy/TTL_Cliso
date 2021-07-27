@@ -33,6 +33,7 @@ public class GetCertificateController {
             PostAPIInteface apiInterface = RetroFit_APIClient.getInstance().getClient(mactivity, Api.LIVEAPI).create(PostAPIInteface.class);
             Call<CertificateResponseModel> responseCall = apiInterface.getCertificates(certificateRequestModel);
 
+
             final ProgressDialog finalProgressDialog = progressDialog;
             responseCall.enqueue(new Callback<CertificateResponseModel>() {
                 @Override

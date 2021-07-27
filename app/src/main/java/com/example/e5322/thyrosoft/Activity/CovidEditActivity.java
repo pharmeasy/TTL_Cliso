@@ -38,6 +38,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
@@ -1253,7 +1254,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobileno) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -1262,7 +1263,7 @@ public class CovidEditActivity extends AppCompatActivity implements View.OnClick
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
-
+                new LogUserActivityTagging(activity,"WOE-COVID",mobileno);
                 Intent i = new Intent(activity, ManagingTabsActivity.class);
                 startActivity(i);
                 Constants.covidfrag_flag = "1";

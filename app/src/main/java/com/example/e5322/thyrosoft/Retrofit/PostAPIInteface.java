@@ -72,7 +72,7 @@ public interface PostAPIInteface {
     @POST("COMMON.svc/CertificateDetails")
     Call<CertificateResponseModel> getCertificates(@Body CertificateRequestModel certificateRequestModel);
 
-    @POST(" ORDER.svc/PostConsignment")
+    @POST("ORDER.svc/PostConsignment")
     Call<PostBarcodeResponseModel> postBarcodes(@Body PostBarcodeModel postBarcodeModel);
 
     @POST("PatientDetails")
@@ -102,7 +102,7 @@ public interface PostAPIInteface {
     @POST("GetWOEPatientImagedetails")
     Call<RATEnteredResponseModel> GetEnteredResponse(@Body RATEnteredRequestModel enteredRequestModel);
 
-    @POST("Appuser")
+    @POST("CommonServices/Appuser")
     Call<AppuserResponse> PostUserLog(@Body AppuserReq appuserReq);
 
     @POST("MASTER.svc/Emailvalidate")

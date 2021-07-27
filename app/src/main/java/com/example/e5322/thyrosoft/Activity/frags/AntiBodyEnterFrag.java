@@ -57,6 +57,7 @@ import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
 import com.example.e5322.thyrosoft.Models.COVerifyMobileResponse;
@@ -1447,7 +1448,7 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
         });
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -1456,6 +1457,8 @@ public class AntiBodyEnterFrag extends Fragment implements MultiSelectSpinner.On
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
+                new LogUserActivityTagging(activity,"WOE-COVID",mobile);
+
                 ClearFields();
                 progressDialog.dismiss();
             } else {

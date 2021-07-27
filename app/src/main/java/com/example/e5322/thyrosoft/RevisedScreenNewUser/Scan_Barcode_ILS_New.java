@@ -63,6 +63,7 @@ import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -1498,6 +1499,7 @@ public class Scan_Barcode_ILS_New extends AppCompatActivity implements RecyclerI
 
                                     if (!GlobalClass.isNull(status) && status.equalsIgnoreCase("SUCCESS")) {
 
+                                        new LogUserActivityTagging(mActivity,"WOE-NOVID",barcode_patient_id);
 
                                         SharedPreferences.Editor editor = getSharedPreferences("showSelectedTest", 0).edit();
                                         editor.remove("testsSElected");

@@ -12,7 +12,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -65,6 +68,7 @@ import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.GetTestCodeController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.getSCPSRFAPIController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.COVIDgetotp_req;
@@ -86,8 +90,15 @@ import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
@@ -104,6 +115,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -1493,6 +1506,8 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(imageurl);
+
+                        CallAadharImageOCR(aadhar_file1);
                     } else {
 
                         String imageurl = camera.getCameraBitmapPath();
@@ -1506,6 +1521,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(imageurl);
+                        CallAadharImageOCR(aadhar_file);
                     }
 
                     if (aadhar_file != null && aadhar_file1 != null) {
@@ -1711,6 +1727,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file1.toString());
+                        CallAadharImageOCR(aadhar_file1);
                     } else {
                         if (data.getData() != null) {
                             if (aadhar_file == null) {
@@ -1726,7 +1743,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file.toString());
-
+                        CallAadharImageOCR(aadhar_file);
                     }
 
                     if (aadhar_file != null && aadhar_file1 != null) {
@@ -2270,7 +2287,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         return true;
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobileNo) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -2279,7 +2296,7 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
-
+                new LogUserActivityTagging(activity,"WOE-COVID",mobileNo);
                 Intent i = new Intent(getActivity(), ManagingTabsActivity.class);
                 startActivity(i);
                 Constants.covidfrag_flag = "1";
@@ -2716,5 +2733,284 @@ public class Covidenter_Frag extends Fragment implements View.OnClickListener {
         SharedPreferences.Editor saveProfileDetails = activity.getSharedPreferences("SCPDATA", 0).edit();
         saveProfileDetails.putString("scplist", scpdata);
         saveProfileDetails.apply();
+    }
+
+
+    private void CallAadharImageOCR(File aadhar_imgfile) {
+        try {
+            String filePath = aadhar_imgfile.getPath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            CalltextRecFromImage(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CalltextRecFromImage(Bitmap bitmap) {
+        try {
+            InputImage image = InputImage.fromBitmap(bitmap, 0);
+
+            TextRecognizer recognizer = TextRecognition.getClient();
+
+            // [START run_detector]
+            Task<Text> result = recognizer.process(image)
+                    .addOnSuccessListener(new OnSuccessListener<Text>() {
+                        @Override
+                        public void onSuccess(Text visionText) {
+                            for (Text.TextBlock block : visionText.getTextBlocks()) {
+                                Rect boundingBox = block.getBoundingBox();
+                                Point[] cornerPoints = block.getCornerPoints();
+                                String text = block.getText();
+
+                                for (Text.Line line : block.getLines()) {
+                                    // ...
+                                    for (Text.Element element : line.getElements()) {
+                                        // ...
+                                    }
+                                }
+                            }
+                            processTextBlock(visionText);
+                        }
+                    }).addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Task failed with an exception
+                                    // ...
+                                }
+                            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processTextBlock(Text result) {
+        try {
+            String resultText = result.getText();
+            if (result.getTextBlocks().size() != 0) {
+
+                for (int j = 0; j < result.getTextBlocks().size(); j++) {
+                    Text.TextBlock block = result.getTextBlocks().get(j);
+                    String blockText = block.getText();
+                    setNameFromList(blockText, j, result.getTextBlocks());
+                    for (int i = 0; i < block.getLines().size(); i++) {
+                        Text.Line line = block.getLines().get(i);
+                        String lineText = line.getText();
+                        Point[] lineCornerPoints = line.getCornerPoints();
+                        Rect lineFrame = line.getBoundingBox();
+
+                        setName(lineText, i, block.getLines());
+                    }
+                }
+
+                getLastNameFromFinalLastString(result.getTextBlocks());
+                getFirstNameFromFinalLastString(result.getTextBlocks());
+                // [END mlkit_process_text_block]
+            } else {
+//                Toast.makeText(activity, "Please select proper image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setNameFromList(String lineText, int i, List<Text.TextBlock> lines) {
+        try {
+            if (lines != null) {
+                if (lineText.toString().trim().contains("D0B") || lineText.toString().trim().contains("DOB") || lineText.toString().trim().contains("Year Of Birth") || lineText.toString().trim().contains("Year of Birth") || lineText.toString().trim().contains("Birth")) {
+                    if (isValidNameOnly(lines.get(i - 1).getText())) {
+                        SetName(lines.get(i - 1).getText());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setName(String lineText, int i, List<Text.Line> lines) {
+        try {
+            if (lines != null) {
+                if (lines.size() > i + 1) {
+                    Text.Line line = lines.get(i + 1);
+                    if (line.getText().toString().trim().contains("D0B") || line.getText().toString().trim().contains("DOB") || line.getText().toString().trim().contains("Year Of Birth") || line.getText().toString().trim().contains("Year of Birth") || line.getText().toString().trim().contains("Birth")) {
+                        //                    txt_aadharname.setText("Name: " + lineText);
+                        SetName(lineText);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void SetName(String lineText) {
+        try {
+            if (lineText != null) {
+                if (!lineText.toString().trim().equalsIgnoreCase("")) {
+                    String[] splited = lineText.split("\\s+");
+                    if (splited.length != 0) {
+                        if (splited.length == 1) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+
+                            }
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                edt_lname.setText("");
+                            }
+                        } else if (splited.length == 2) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+                            }
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[1].toString().trim().contains("GOVERN") || splited[1].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_lname.setText(splited[1].toString().trim());
+                                }
+                            }
+
+                        } else if (splited.length == 3) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+                            }
+
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[2].toString().trim().contains("GOVERN") || splited[2].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_lname.setText(splited[2].toString().trim());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static String regxName = "([A-Z][a-z]*\\s*)+";
+
+    public static boolean isValidNameOnly(String str) {
+        String regex = regxName;
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    private void getFirstNameFromFinalLastString(List<Text.TextBlock> allText) {
+        try {
+            String st="";
+            if (allText != null) {
+                if (allText.size() != 0) {
+                    for (int i = 0; i < allText.size(); i++) {
+                        String stsd = allText.get(i).getText().toString().trim();
+                        if (stsd.startsWith("P<") || stsd.startsWith("p<")) {
+                            st = getFinalFirstname(stsd);
+                        }
+                    }
+                }
+            }
+
+            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                edt_fname.setText(st);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFinalFirstname(String fstr) {
+        String st = "";
+        try {
+            String[] splited = fstr.split("<<");
+            if (splited.length != 0 && splited.length > 1) {
+                String stksh = splited[1].toString().trim();
+                stksh = stksh.replaceAll("\\s+", "");
+                stksh = stksh.replaceAll("<", "");
+                System.out.println("Nitya --- "+stksh);
+                st = stksh;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return st;
+    }
+
+    private void getLastNameFromFinalLastString(List<Text.TextBlock> allText) {
+        try {
+            String st = "";
+            if (allText != null) {
+                if (allText.size() != 0) {
+                    for (int i = 0; i < allText.size(); i++) {
+                        String stsd = allText.get(i).getText().toString().trim();
+                        if (stsd.startsWith("P<") || stsd.startsWith("p<")) {
+                            System.out.println("Nitya =Name= " + stsd);
+                            st = getFinalSurname(stsd);
+                        }
+                    }
+                }
+            }
+
+            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                edt_lname.setText(st);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFinalSurname(String fstr) {
+        String st = "";
+        try {
+            String[] splited = fstr.split("<");
+            if (splited.length != 0 && splited.length > 1) {
+                String stksh = splited[1].toString().trim();
+                stksh = stksh.substring(3, stksh.length());
+                st = stksh;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return st;
+    }
+
+    public static boolean isValidPassPortNumber(String str) {
+//        String regex = "^[A-Z]{1}[0-9]{7}$";
+        String regex = "^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$";
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    public static String getPassPortCode(String str) {
+        String regex = "^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return "" + m.group(0);
+        }
+        return "";
     }
 }

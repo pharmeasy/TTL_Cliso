@@ -333,15 +333,15 @@ public class Covidmultipart_controller extends AsyncTask<Void, Void, String> {
         if (status_code == 200) {
             if (response != null && !response.isEmpty()) {
                 if (flag == 1) {
-                    covidenter_frag.getUploadResponse(response);
+                    covidenter_frag.getUploadResponse(response,covidpostdata.getMOBILE());
                 } else if (flag == 2) {
-                    covidEditActivity.getUploadResponse(response);
+                    covidEditActivity.getUploadResponse(response,covidpostdata.getMOBILE());
                 } else if (flag == 3) {
-                    ratEnterFrag.getUploadResponse(response);
+                    ratEnterFrag.getUploadResponse(response,covidpostdata.getMOBILE());
                 } else if (flag == 4) {
-                    antiBodyEnterFrag.getUploadResponse(response);
+                    antiBodyEnterFrag.getUploadResponse(response,covidpostdata.getMOBILE());
                 } else if (flag == 5) {
-                    ratEditActivity.getUploadResponse(response);
+                    ratEditActivity.getUploadResponse(response,covidpostdata.getMOBILE());
                 }
 
             } else {

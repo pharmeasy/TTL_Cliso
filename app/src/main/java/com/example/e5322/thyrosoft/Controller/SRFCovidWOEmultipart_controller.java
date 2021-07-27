@@ -189,10 +189,10 @@ public class SRFCovidWOEmultipart_controller extends AsyncTask<Void, Void, Strin
             if (status_code == 200) {
                 if (response != null && !response.isEmpty()) {
                     if (flag == 1) {
-                        srfCovidWOEEnterFragment.getUploadResponse(response);
+                        srfCovidWOEEnterFragment.getUploadResponse(response,covidpostdata.getMOBILE() );
                     }
                     if (flag == 2) {
-                        srfCovidWOEEditActivity.getUploadResponse(response);
+                        srfCovidWOEEditActivity.getUploadResponse(response,covidpostdata.getMOBILE() );
                     }
                 } else {
                     Global.showCustomToast(mActivity, response);

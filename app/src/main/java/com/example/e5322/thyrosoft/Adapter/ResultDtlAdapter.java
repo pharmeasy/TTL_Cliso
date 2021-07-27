@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +24,11 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
+import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.TrackDetModel;
 import com.example.e5322.thyrosoft.R;
@@ -93,7 +93,7 @@ public class ResultDtlAdapter extends BaseAdapter {
 
         TextView name = (TextView) convertView.findViewById(R.id.name);
         TextView Refby = (TextView) convertView.findViewById(R.id.Refby);
-        TextView barcode = (TextView) convertView.findViewById(R.id.barcode);
+        final TextView barcode = (TextView) convertView.findViewById(R.id.barcode);
         TextView tests = (TextView) convertView.findViewById(R.id.tests);
         ImageView download = (ImageView) convertView.findViewById(R.id.download);
         ImageView print = (ImageView) convertView.findViewById(R.id.print);
@@ -158,6 +158,7 @@ public class ResultDtlAdapter extends BaseAdapter {
             public void onClick(View v) {
                 try {
                     if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        new LogUserActivityTagging((Activity)mContext,Constants.REPORT_DOWNLOAD,""+barcode.getText().toString()+"- DOWNLOAD");
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackdet.get(position).getPdflink()));
                         mContext.startActivity(browserIntent);
                     }
@@ -172,6 +173,8 @@ public class ResultDtlAdapter extends BaseAdapter {
             public void onClick(View v) {
                 try {
                     if (trackdet.get(position).getPdflink() != null && !trackdet.get(position).getPdflink().isEmpty() && trackdet.get(position).getPdflink().length() > 0) {
+                        new LogUserActivityTagging((Activity)mContext,Constants.REPORT_DOWNLOAD,""+barcode.getText().toString()+"- SHARE");
+
                         sharePDFLink(trackdet.get(position).getPdflink());
                     }
                 } catch (Exception e) {
@@ -184,6 +187,8 @@ public class ResultDtlAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try {
+                    new LogUserActivityTagging((Activity)mContext,Constants.REPORT_DOWNLOAD,""+barcode.getText().toString()+"- PRINT");
+
                     Intent browserIntent = new Intent(
                             Intent.ACTION_VIEW,
                             Uri.parse(trackdet.get(position).getPdflink()));
@@ -216,7 +221,7 @@ public class ResultDtlAdapter extends BaseAdapter {
         mContext.startActivity(Intent.createChooser(share, "Share PDF link!"));
     }
 
-    private void GetData(String patient_ID, String barcode, String email, String date) {
+    private void GetData(String patient_ID, final String barcode, String email, String date) {
 
         PostQue = GlobalClass.setVolleyReq(mContext);
 
@@ -247,6 +252,7 @@ public class ResultDtlAdapter extends BaseAdapter {
                             String finalJson = response.toString();
                             JSONObject parentObjectOtp = new JSONObject(finalJson);
 //                            JSONArray jsonArray = response.optJSONArray(Constants.billingDetails);
+                            new LogUserActivityTagging((Activity)mContext,Constants.REPORT_DOWNLOAD,""+barcode+"- MAIL");
 
                             if (parentObjectOtp != null) {
                                 String response1 = parentObjectOtp.getString("response");

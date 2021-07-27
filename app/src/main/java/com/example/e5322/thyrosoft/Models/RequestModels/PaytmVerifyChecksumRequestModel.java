@@ -5,6 +5,16 @@ public class PaytmVerifyChecksumRequestModel {
     private String api_key;
     private String ORDERID;
     private String mID;
+    private String Company;
+
+
+    public String getCompany() {
+        return Company;
+    }
+
+    public void setCompany(String company) {
+        Company = company;
+    }
 
     public String getApi_key() {
         return api_key;

@@ -1,32 +1,24 @@
 package com.example.e5322.thyrosoft.Controller;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Activity.Installation;
+import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.MessageConstants;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.AppuserReq;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import androidx.core.app.ActivityCompat;
-
 import static android.content.Context.MODE_PRIVATE;
-import static android.content.Context.TELEPHONY_SERVICE;
 
 public class LogUserActivityTagging {
-    String User, token;
+    String User, token, str_modType;
     SharedPreferences sharedPreferences;
 
-    public LogUserActivityTagging(Activity activity, String screen) {
+    public LogUserActivityTagging(Activity activity, String screen, String remark) {
         try {
             sharedPreferences = activity.getSharedPreferences("Userdetails", MODE_PRIVATE);
             User = sharedPreferences.getString("Username", "");
@@ -71,21 +63,35 @@ public class LogUserActivityTagging {
             } else if (!GlobalClass.isNull(screen) && screen.equalsIgnoreCase(Constants.LOGOUT)) {
                 editorUserActivity.putString(Constants.SHR_MODTYPE, Constants.LOGOUT);
                 editorUserActivity.putString(Constants.SHR_ISLOGIN, "N");
+            } else if (!GlobalClass.isNull(screen)) {
+                str_modType = screen;
             }
-
             editorUserActivity.apply();
 
             AppuserReq requestModel = new AppuserReq();
             requestModel.setAppId(Constants.USER_APPID);
             requestModel.setIMIENo(GlobalClass.getIMEINo(activity));
             requestModel.setIslogin(sharedPreferencesUserActivity.getString(Constants.SHR_ISLOGIN, ""));
-            requestModel.setModType(sharedPreferencesUserActivity.getString(Constants.SHR_MODTYPE, ""));
+            if (!GlobalClass.isNull(str_modType)) {
+                requestModel.setModType(str_modType);
+            } else if (!GlobalClass.isNull(str_modType) && GlobalClass.CheckEqualIgnoreCase(str_modType, Constants.REPORT_DOWNLOAD)) {
+                requestModel.setModType(Constants.REPORT_DOWNLOAD);
+            } else {
+                requestModel.setModType(sharedPreferencesUserActivity.getString(Constants.SHR_MODTYPE, ""));
+            }
             requestModel.setOS(sharedPreferencesUserActivity.getString(Constants.SHR_OS, ""));
             requestModel.setVersion(sharedPreferencesUserActivity.getString(Constants.SHR_VERSION, ""));
             requestModel.setUserID(sharedPreferencesUserActivity.getString(Constants.SHR_USERNAME, ""));
             requestModel.setToken(sharedPreferencesUserActivity.getString(Constants.SHR_TOKEN, ""));
-
-
+            requestModel.setLat(Global.getCurrentLatLong(activity).getmLatitude());
+            requestModel.setLongi(Global.getCurrentLatLong(activity).getmLongitude());
+            requestModel.setIpadd(Global.getIPAddress(true));
+            requestModel.setMacadd(Global.getMACAddress());
+            if (!GlobalClass.isNull(remark)) {
+                requestModel.setRemark(remark);
+            } else {
+                requestModel.setRemark("");
+            }
             try {
                 if (ControllersGlobalInitialiser.logUserActivityController != null) {
                     ControllersGlobalInitialiser.logUserActivityController = null;

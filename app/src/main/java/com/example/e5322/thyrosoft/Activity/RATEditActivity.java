@@ -35,6 +35,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.Covidmultipart_controller;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Covidpostdata;
 import com.example.e5322.thyrosoft.Models.FileUtil;
@@ -517,7 +518,7 @@ public class RATEditActivity extends AppCompatActivity {
         }
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -526,7 +527,7 @@ public class RATEditActivity extends AppCompatActivity {
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
-
+                new LogUserActivityTagging(activity,"WOE-NOVID",mobile);
                 Intent i = new Intent(activity, ManagingTabsActivity.class);
                 startActivity(i);
                 Constants.ratfrag_flag = "1";

@@ -244,7 +244,12 @@ public class ProductLisitngActivityNew extends Activity implements RecyclerInter
         sampleCollectionDate = preferences.getString("date", null);
         sampleCollectionTime = preferences.getString("sct", null);
         sr_number = preferences.getString("SR_NO", null);
-        pass_to_api = Integer.parseInt(sr_number);
+        if (!GlobalClass.isNull(sr_number)) {
+            pass_to_api = Integer.parseInt(sr_number);
+        } else {
+            pass_to_api = 0;
+        }
+
         referenceBy = preferences.getString("refBy", null);
         sampleCollectionPoint = preferences.getString("labAddress", null);
         sampleGivingClient = preferences.getString("labname", null);

@@ -11,13 +11,9 @@ import android.content.pm.PackageManager;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +28,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.example.e5322.thyrosoft.API.Api;
 import com.example.e5322.thyrosoft.API.ConnectionDetector;
 import com.example.e5322.thyrosoft.API.Constants;
@@ -44,6 +44,7 @@ import com.example.e5322.thyrosoft.Controller.EmailValidationController;
 import com.example.e5322.thyrosoft.Controller.GETValidateBSOTPController;
 import com.example.e5322.thyrosoft.Controller.GetOTPController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.BSTestDataModel;
 import com.example.e5322.thyrosoft.Models.BS_POSTDataModel;
@@ -886,7 +887,7 @@ public class BS_EntryFragment extends Fragment {
                 .show();
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -895,6 +896,7 @@ public class BS_EntryFragment extends Fragment {
 
             if (RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
+                new LogUserActivityTagging(activity,"WOE-BS",mobile);
                 Intent intent = new Intent(activity, Blood_sugar_entry_activity.class);
                 activity.startActivity(intent);
                 activity.finish();

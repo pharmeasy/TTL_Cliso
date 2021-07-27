@@ -47,6 +47,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Controller.LeadChannelController;
 import com.example.e5322.thyrosoft.Controller.LeadPurposeController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.PostLeadsController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.FileUtil;
@@ -893,6 +894,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
 
     public void getpostresponse(LeadRespModel leadResponseModel) {
         if (!GlobalClass.isNull(leadResponseModel.getRespId()) && leadResponseModel.getRespId().equalsIgnoreCase("RES02024")) {
+            new LogUserActivityTagging(mActivity, Constants.LEAD, mobile);
+
             clearfileds();
         }
         Global.showCustomToast(mActivity, leadResponseModel.getResponse());
@@ -1240,6 +1243,8 @@ public class LeadGenerationActivity extends AppCompatActivity {
                     AlertDialog.Builder alertDialogBuilder;
                     if (testBookingResponseModel.getRES_ID().equals("RES0000")) {
 //                        Global.showCustomToast(mActivity, "Test booking done successfully !");
+                        new LogUserActivityTagging(mActivity, Constants.LEAD, "" + testBookingResponseModel.getORDERRESPONSE().getPostOrderDataResponse().get(0).getLEAD_ID());
+
                         clearfileds();
 
                         CustomDialogforSuccess = new Dialog(mActivity);

@@ -64,44 +64,6 @@
                     android:textSize="@dimen/value" />
             </RadioGroup>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <EditText
-                    android:id="@+id/edt_firstname"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="1"
-                    android:background="@drawable/corner_curve_maroon"
-                    android:digits="@string/alphabetsandnumber"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:hint="FIRST NAME*"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="16"
-                    android:padding="@dimen/_5sdp"
-                    android:textSize="@dimen/value" />
-
-                <EditText
-                    android:id="@+id/edt_lastname"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="1"
-                    android:background="@drawable/corner_curve_maroon"
-                    android:digits="@string/alphabetsandnumber"
-                    android:drawablePadding="@dimen/_5sdp"
-                    android:hint="LAST NAME*"
-                    android:inputType="textCapCharacters"
-                    android:maxLength="16"
-                    android:padding="@dimen/_5sdp"
-                    android:textSize="@dimen/value" />
-
-            </LinearLayout>
-
             <RelativeLayout
                 android:id="@+id/rel_verify_mobile"
                 android:layout_width="match_parent"
@@ -286,6 +248,154 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/txt_adhar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="0.8"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:text="Aadhaar/Passport"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/value"
+                    android:textAllCaps="true"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_choosefile_adhar"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_26sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="0.8"
+                    android:background="@drawable/button_bg"
+                    android:text="Upload"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value"
+                    android:visibility="gone"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:background="@drawable/border_background_maroon"
+                    android:padding="@dimen/dp_5"
+                    >
+
+                    <ImageView
+                        android:id="@+id/img_camera_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_camera"
+                        android:tint="@color/black"
+                        android:layout_marginRight="@dimen/dp_5"
+                        android:layout_gravity="center"
+                        />
+                    <LinearLayout
+                        android:layout_width="@dimen/dp_2"
+                        android:layout_height="30dp"
+                        android:background="@color/black"
+                        android:layout_margin="@dimen/dp_3"/>
+
+                    <ImageView
+                        android:id="@+id/img_gallery_aadhar"
+                        android:layout_width="@dimen/dp_30"
+                        android:layout_height="@dimen/dp_30"
+                        android:src="@drawable/ic_gallery"
+                        android:tint="@color/black"
+                        android:layout_marginLeft="@dimen/dp_5"
+                        />
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:id="@+id/txt_nofileadhar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="1.4"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/_12sdp" />
+
+                <LinearLayout
+                    android:id="@+id/lin_adhar_images"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="1.4"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone"
+                    tools:ignore="RtlHardcoded">
+
+                    <TextView
+                        android:id="@+id/txt_adharfileupload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <EditText
+                    android:id="@+id/edt_firstname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:digits="@string/alphabetsandnumber"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:hint="FIRST NAME*"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="16"
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/value" />
+
+                <EditText
+                    android:id="@+id/edt_lastname"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/corner_curve_maroon"
+                    android:digits="@string/alphabetsandnumber"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:hint="LAST NAME*"
+                    android:inputType="textCapCharacters"
+                    android:maxLength="16"
+                    android:padding="@dimen/_5sdp"
+                    android:textSize="@dimen/value" />
+
+            </LinearLayout>
 
 
             <LinearLayout
@@ -865,114 +975,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
-
-                <TextView
-                    android:id="@+id/txt_adhar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:text="Aadhaar/Passport"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/value"
-                    android:textAllCaps="true"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_choosefile_adhar"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_26sdp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
-                    android:background="@drawable/button_bg"
-                    android:text="Upload"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/value"
-                    android:visibility="gone"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:background="@drawable/border_background_maroon"
-                    android:padding="@dimen/dp_5"
-                    >
-
-                    <ImageView
-                        android:id="@+id/img_camera_aadhar"
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="@dimen/dp_30"
-                        android:src="@drawable/ic_camera"
-                        android:tint="@color/black"
-                        android:layout_marginRight="@dimen/dp_5"
-                        android:layout_gravity="center"
-                        />
-                    <LinearLayout
-                        android:layout_width="@dimen/dp_2"
-                        android:layout_height="30dp"
-                        android:background="@color/black"
-                        android:layout_margin="@dimen/dp_3"/>
-
-                    <ImageView
-                        android:id="@+id/img_gallery_aadhar"
-                        android:layout_width="@dimen/dp_30"
-                        android:layout_height="@dimen/dp_30"
-                        android:src="@drawable/ic_gallery"
-                        android:tint="@color/black"
-                        android:layout_marginLeft="@dimen/dp_5"
-                        />
-                </LinearLayout>
-
-
-
-                <TextView
-                    android:id="@+id/txt_nofileadhar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
-
-                <LinearLayout
-                    android:id="@+id/lin_adhar_images"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:visibility="gone"
-                    tools:ignore="RtlHardcoded">
-
-                    <TextView
-                        android:id="@+id/txt_adharfileupload"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/_12sdp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

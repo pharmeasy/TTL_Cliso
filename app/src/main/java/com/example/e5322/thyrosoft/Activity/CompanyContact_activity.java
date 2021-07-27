@@ -1,42 +1,37 @@
 package com.example.e5322.thyrosoft.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.Request;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.Company_Adapter;
+import com.example.e5322.thyrosoft.Controller.GetCompanyContactController;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.Company_Contact_Model;
+import com.example.e5322.thyrosoft.Models.ConatctsResponseModel;
+import com.example.e5322.thyrosoft.Models.ContactsReqModel;
 import com.example.e5322.thyrosoft.R;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.ViewModel.Cmpdt_Viewmodel;
-import com.google.gson.Gson;
-import com.sdsmdg.tastytoast.TastyToast;
-
-import org.json.JSONObject;
 
 public class CompanyContact_activity extends AppCompatActivity {
 
@@ -52,6 +47,10 @@ public class CompanyContact_activity extends AppCompatActivity {
     private String passSpinner_value;
     private String TAG = CompanyContact_activity.class.getSimpleName();
     private Global globalClass;
+    private SharedPreferences prefs;
+    private String api_key = "";
+    LinearLayout ll_spinner;
+    private String CLIENT_TYPE = "";
 
     @SuppressLint("NewApi")
     @Override
@@ -65,11 +64,16 @@ public class CompanyContact_activity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void initView() {
 
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        api_key = prefs.getString("API_KEY", "");
+        CLIENT_TYPE = prefs.getString("CLIENT_TYPE", "");
         contact_list = (RecyclerView) findViewById(R.id.contact_list);
         contact_type_spinner = (Spinner) findViewById(R.id.contact_type_spinner);
 
         back = (ImageView) findViewById(R.id.back);
         home = (ImageView) findViewById(R.id.home);
+        ll_spinner = (LinearLayout) findViewById(R.id.ll_spinner);
+
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,19 +114,37 @@ public class CompanyContact_activity extends AppCompatActivity {
 
             }
         });
+
+        if (CLIENT_TYPE.equalsIgnoreCase(Constants.NHF)) {
+            ll_spinner.setVisibility(View.GONE);
+            getCompany_contact_details();
+        } else {
+            ll_spinner.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getCompany_contact_details() {
-        String getSpinnertype = contact_type_spinner.getSelectedItem().toString();
-        requestQueue_CompanyContact = GlobalClass.setVolleyReq(CompanyContact_activity.this);
+        String getSpinnertype = "" + contact_type_spinner.getSelectedItem().toString();
+//        requestQueue_CompanyContact = GlobalClass.setVolleyReq(CompanyContact_activity.this);
 
         if (getSpinnertype.equalsIgnoreCase("STATE OFFICER")) {
-            passSpinner_value = "STATE%20OFFICER";
+            passSpinner_value = "STATE OFFICER";
         } else {
             passSpinner_value = getSpinnertype;
         }
 
-        Log.e(TAG, "getCompany_contact_details: " + Api.static_pages_link + passSpinner_value + "/" + "Contact_Details");
+        ContactsReqModel contactsReqModel = new ContactsReqModel();
+        contactsReqModel.setApikey("" + api_key);
+        if (ll_spinner.getVisibility() == View.VISIBLE) {
+            contactsReqModel.setType(passSpinner_value);
+        } else {
+            contactsReqModel.setType("");
+        }
+        GetCompanyContactController getCompanyContactController = new GetCompanyContactController(this);
+        getCompanyContactController.CallAPI(contactsReqModel);
+
+
+       /* Log.e(TAG, "getCompany_contact_details: " + Api.static_pages_link + passSpinner_value + "/" + "Contact_Details");
         JsonObjectRequest jsonObjectRequestFAQ = new JsonObjectRequest(Request.Method.GET, Api.static_pages_link + passSpinner_value + "/" + "Contact_Details", new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -159,8 +181,7 @@ public class CompanyContact_activity extends AppCompatActivity {
         });
         GlobalClass.volleyRetryPolicy(jsonObjectRequestFAQ);
         requestQueue_CompanyContact.add(jsonObjectRequestFAQ);
-        Log.e(TAG, "getCompany_contact_details: URL" + jsonObjectRequestFAQ);
-
+        Log.e(TAG, "getCompany_contact_details: URL" + jsonObjectRequestFAQ);*/
 
     }
 
@@ -179,4 +200,22 @@ public class CompanyContact_activity extends AppCompatActivity {
         super.onLowMemory();
     }
 
+    public void getcontacts(ConatctsResponseModel getLocationRespModel) {
+        if (getLocationRespModel != null) {
+            if (!GlobalClass.isNull(getLocationRespModel.getResponse()) && getLocationRespModel.getResponse().equalsIgnoreCase("Success")) {
+                if (GlobalClass.isArraylistNotNull(getLocationRespModel.getContact_Array_list())) {
+                    company_adapter = new Company_Adapter(CompanyContact_activity.this, getLocationRespModel.getContact_Array_list());
+                    contact_list.setAdapter(company_adapter);
+                    company_adapter.notifyDataSetChanged();
+                } else {
+                    Toast.makeText(CompanyContact_activity.this, "" + company_contact_model.getResponse(), Toast.LENGTH_SHORT).show();
+                }
+
+            } else {
+                Toast.makeText(CompanyContact_activity.this, "" + ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(CompanyContact_activity.this, ToastFile.something_went_wrong, Toast.LENGTH_SHORT).show();
+        }
+    }
 }

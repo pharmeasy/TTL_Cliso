@@ -17,8 +17,8 @@ android {
         minSdkVersion 19
         targetSdkVersion 29
         multiDexEnabled true
-        versionCode 124
-        versionName "1.0.2.24"
+        versionCode 127
+        versionName "1.0.2.27"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         useLibrary 'org.apache.http.legacy' // used for HTTP client
         vectorDrawables.useSupportLibrary = true
@@ -172,6 +172,8 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-crashlytics:17.4.1'
     implementation 'com.google.firebase:firebase-analytics:18.0.3'
+
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.1.3'
 
 
 

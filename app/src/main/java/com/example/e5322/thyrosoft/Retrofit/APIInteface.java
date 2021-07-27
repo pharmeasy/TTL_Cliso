@@ -9,6 +9,8 @@ import com.example.e5322.thyrosoft.Models.CampIdRequestModel;
 import com.example.e5322.thyrosoft.Models.CampIdResponseModel;
 import com.example.e5322.thyrosoft.Models.CenterList_Model;
 import com.example.e5322.thyrosoft.Models.Cmpdt_Model;
+import com.example.e5322.thyrosoft.Models.ConatctsResponseModel;
+import com.example.e5322.thyrosoft.Models.ContactsReqModel;
 import com.example.e5322.thyrosoft.Models.ConvertBTBNRequestModel;
 import com.example.e5322.thyrosoft.Models.ConvertBTBNResponseModel;
 import com.example.e5322.thyrosoft.Models.DyanamicPaymentReqModel;
@@ -215,6 +217,9 @@ public interface APIInteface {
 
     @POST("GetTestCode")
     Call<GetLocationRespModel> GetLocation(@Body  GetLocationReqModel getLocationReqModel);
+
+    @POST("FAQ.svc/GetContacts")
+    Call<ConatctsResponseModel> GetConatcts(@Body ContactsReqModel contactsReqModel);
 
 
 

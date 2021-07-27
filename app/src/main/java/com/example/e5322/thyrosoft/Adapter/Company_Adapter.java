@@ -5,19 +5,19 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import com.example.e5322.thyrosoft.Controller.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.e5322.thyrosoft.GlobalClass;
-import com.example.e5322.thyrosoft.Models.PincodeMOdel.OLCcontact_Array_list;
+import com.example.e5322.thyrosoft.Models.ConatctsResponseModel;
 import com.example.e5322.thyrosoft.R;
 
 import java.io.InputStream;
@@ -27,8 +27,8 @@ import static com.example.e5322.thyrosoft.API.Api.imgURL;
 
 public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHolder> {
 
-    private ArrayList<OLCcontact_Array_list> contact_array_lists_to_pass;
-   // private ArrayList<Cmpdt_Model.ContactArrayListBean> contact_array_lists_to_pass;
+    private ArrayList<ConatctsResponseModel.ContactArrayListDTO> contact_array_lists_to_pass;
+    // private ArrayList<Cmpdt_Model.ContactArrayListBean> contact_array_lists_to_pass;
     private Context context1;
     private Bitmap bmp;
     private GlobalClass globalClass;
@@ -41,7 +41,7 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
         return new ViewHolder(itemView);
     }
 
-    public Company_Adapter(Context context,ArrayList<OLCcontact_Array_list> contact_array_lists_to_pass) {
+    public Company_Adapter(Context context, ArrayList<ConatctsResponseModel.ContactArrayListDTO> contact_array_lists_to_pass) {
         this.contact_array_lists_to_pass = contact_array_lists_to_pass;
         this.context1 = context;
         globalClass = new GlobalClass(context);
@@ -50,10 +50,10 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull final Company_Adapter.ViewHolder holder, final int position) {
 
-        holder.name.setText(contact_array_lists_to_pass.get(position).getNAME());
-        holder.designation.setText(contact_array_lists_to_pass.get(position).getDESIGNATION());
+        holder.name.setText(""+contact_array_lists_to_pass.get(position).getNAME());
+        holder.designation.setText(""+contact_array_lists_to_pass.get(position).getDESIGNATION());
         holder.role.setText("Role: " + contact_array_lists_to_pass.get(position).getROLE());
-        holder.email_id.setText(contact_array_lists_to_pass.get(position).getEMAIL_ID());
+        holder.email_id.setText(""+contact_array_lists_to_pass.get(position).getEMAIL_ID().toLowerCase());
 
         Linkify.addLinks(holder.email_id, Linkify.EMAIL_ADDRESSES);
         holder.email_id.setMovementMethod(LinkMovementMethod.getInstance());
@@ -87,7 +87,6 @@ public class Company_Adapter extends RecyclerView.Adapter<Company_Adapter.ViewHo
                 InputStream in = new java.net.URL(urldisplay).openStream();
                 bmp = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
-                Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
             return bmp;

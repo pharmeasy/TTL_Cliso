@@ -11,7 +11,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -40,6 +44,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -62,6 +67,7 @@ import com.example.e5322.thyrosoft.Adapter.SCollectionPAdapter;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.Controller.ControllersGlobalInitialiser;
 import com.example.e5322.thyrosoft.Controller.GetTestCodeController;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.SRFCovidWOEmultipart_controller;
 import com.example.e5322.thyrosoft.Controller.getSCPSRFAPIController;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -77,6 +83,7 @@ import com.example.e5322.thyrosoft.Models.Covidratemodel;
 import com.example.e5322.thyrosoft.Models.FileUtil;
 import com.example.e5322.thyrosoft.Models.GetTestCodeResponseModel;
 import com.example.e5322.thyrosoft.Models.PincodeMOdel.AppPreferenceManager;
+import com.example.e5322.thyrosoft.Models.PincodeMOdel.DateUtils;
 import com.example.e5322.thyrosoft.Models.ResponseModels.VerifyBarcodeResponseModel;
 import com.example.e5322.thyrosoft.Models.ResponseModels.getSCPTechnicianModel;
 import com.example.e5322.thyrosoft.R;
@@ -85,7 +92,14 @@ import com.example.e5322.thyrosoft.Retrofit.RetroFit_APIClient;
 import com.example.e5322.thyrosoft.ToastFile;
 import com.example.e5322.thyrosoft.Utility;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.mindorks.paracamera.Camera;
@@ -98,11 +112,14 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -158,6 +175,10 @@ public class SRFCovidWOEEnterFragment extends Fragment {
     static SRFCovidWOEEnterFragment fragment;
     private getSCPTechnicianModel.getTechnicianlist selectedSCT;
     private ArrayList<getSCPTechnicianModel.getTechnicianlist> filterPatientsArrayList;
+    private boolean isgetDOB = false;
+    private boolean isCapturedAddress = false;
+    ArrayList<String> getAddressList;
+    ArrayList<String> l_pincode = new ArrayList<>();
 
     public SRFCovidWOEEnterFragment() {
         // Required empty public constructor
@@ -640,26 +661,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                genderId = !genderId;
-                gender = "M";
-                male_red.setVisibility(View.VISIBLE);
-                female.setVisibility(View.VISIBLE);
-                female_red.setVisibility(View.GONE);
-                male.setVisibility(View.GONE);
-                buttonval();
+                maleBtnClick();
             }
         });
 
         female.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                genderId = !genderId;
-                gender = "F";
-                female_red.setVisibility(View.VISIBLE);
-                male.setVisibility(View.VISIBLE);
-                male_red.setVisibility(View.GONE);
-                female.setVisibility(View.GONE);
-                buttonval();
+                femaleBtnClick();
             }
         });
 
@@ -1557,6 +1566,11 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         edt_re_enter_barcode.getText().clear();
         samplecollectionponit.setText(Constants.setSCPmsg);
 
+        isgetDOB = false;
+
+        l_pincode.clear();
+        getAddressList = null;
+
         if (by_missed.isChecked() || by_sendsms.isChecked()) {
             btn_generate.setText(getResources().getString(R.string.enterccc));
         } else {
@@ -1887,6 +1901,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file1.toString());
+                        CallAadharImageOCR(aadhar_file1);
                     } else {
                         aadhar_file = new File(camera.getCameraBitmapPath());
                         lin_adhar_images.setVisibility(View.VISIBLE);
@@ -1895,6 +1910,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file.toString());
+                        CallAadharImageOCR(aadhar_file);
                     }
                     if (aadhar_file != null && aadhar_file1 != null) {
                         isadhar = false;
@@ -2019,6 +2035,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file1.toString());
+                        CallAadharImageOCR(aadhar_file1);
                     } else {
                         if (data.getData() != null) {
                             if (aadhar_file == null) {
@@ -2032,6 +2049,7 @@ public class SRFCovidWOEEnterFragment extends Fragment {
                         txt_adharfileupload.setPaintFlags(txt_adharfileupload.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                         txt_nofileadhar.setVisibility(View.GONE);
                         aadharlist.add(aadhar_file.toString());
+                        CallAadharImageOCR(aadhar_file);
                     }
                     if (aadhar_file != null && aadhar_file1 != null) {
                         isadhar = false;
@@ -2486,13 +2504,14 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         return true;
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
             String RESPONSE = jsonObject.optString("Response");
             String RESPONSEID = jsonObject.optString("ResId");
             if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
+                new LogUserActivityTagging(activity,"WOE-SRF(COVID)",mobile);
                 Global.showCustomToast(activity, RESPONSE);
                 Constants.SRFcovidWOEfrag_flag = "1";
                 clearonreset();
@@ -2870,4 +2889,657 @@ public class SRFCovidWOEEnterFragment extends Fragment {
         saveProfileDetails.putString("scplist", scpdata);
         saveProfileDetails.apply();
     }
+
+
+    private void CallAadharImageOCR(File aadhar_imgfile) {
+        try {
+            String filePath = aadhar_imgfile.getPath();
+            Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            CalltextRecFromImage(bitmap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CalltextRecFromImage(Bitmap bitmap) {
+        try {
+            InputImage image = InputImage.fromBitmap(bitmap, 0);
+
+            TextRecognizer recognizer = TextRecognition.getClient();
+
+            // [START run_detector]
+            Task<Text> result = recognizer.process(image)
+                    .addOnSuccessListener(new OnSuccessListener<Text>() {
+                        @Override
+                        public void onSuccess(Text visionText) {
+                            for (Text.TextBlock block : visionText.getTextBlocks()) {
+                                Rect boundingBox = block.getBoundingBox();
+                                Point[] cornerPoints = block.getCornerPoints();
+                                String text = block.getText();
+
+                                for (Text.Line line : block.getLines()) {
+                                    // ...
+                                    for (Text.Element element : line.getElements()) {
+                                        // ...
+                                    }
+                                }
+                            }
+                            processTextBlock(visionText);
+                        }
+                    }).addOnFailureListener(
+                            new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    // Task failed with an exception
+                                    // ...
+                                }
+                            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processTextBlock(Text result) {
+        try {
+            String resultText = result.getText();
+            if (result.getTextBlocks().size() != 0) {
+
+                for (int j = 0; j < result.getTextBlocks().size(); j++) {
+                    Text.TextBlock block = result.getTextBlocks().get(j);
+                    String blockText = block.getText();
+                    setNameFromList(blockText, j, result.getTextBlocks());
+                    for (int i = 0; i < block.getLines().size(); i++) {
+                        Text.Line line = block.getLines().get(i);
+                        String lineText = line.getText();
+                        Point[] lineCornerPoints = line.getCornerPoints();
+                        Rect lineFrame = line.getBoundingBox();
+
+                        setName(lineText, i, block.getLines());
+                        setGender(lineText);
+                        setDOB(lineText);
+
+                        setAddressToList(lineText);
+                        setPinCode(lineText);
+
+                        setPassPortCode(lineText);
+                        setPassportGender(lineText);
+
+                    }
+                }
+
+                if (edt_patient_address.getText().toString().trim().equalsIgnoreCase("")) {
+                    setAddresstoView(edt_patient_address, getAddressList);
+                }
+                if (edt_patient_pincode.getText().toString().trim().equalsIgnoreCase("")) {
+                    edt_patient_pincode.setText(getPincodeFromList());
+                }
+
+                getLastNameFromFinalLastString(result.getTextBlocks());
+                getFirstNameFromFinalLastString(result.getTextBlocks());
+                getPassPortDOBDate(result.getTextBlocks(), getPassPortFromList());
+                // [END mlkit_process_text_block]
+            } else {
+//                Toast.makeText(activity, "Please select proper image", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getPincodeFromList() {
+        String st = "";
+        if (l_pincode != null) {
+            for (int i = 0; i < l_pincode.size(); i++) {
+                st = st + l_pincode.get(0).toString().trim();
+                return st;
+            }
+        }
+        return st;
+    }
+
+    private void setAddresstoView(TextView txt_address, ArrayList<String> getAddressList) {
+        String st = "";
+        if (getAddressList != null) {
+            if (getAddressList.size() != 0) {
+                for (int i = 0; i < getAddressList.size(); i++) {
+                    st = st + getAddressList.get(i).toString().trim() + ",";
+                }
+            }
+        }
+
+        st = Constants.removelastchar(st, 1);
+        st = st.replace("Address", "");
+        txt_address.setText(st);
+    }
+
+    private void setNameFromList(String lineText, int i, List<Text.TextBlock> lines) {
+        try {
+            if (lines != null) {
+                if (lineText.toString().trim().contains("D0B") || lineText.toString().trim().contains("DOB") || lineText.toString().trim().contains("Year Of Birth") || lineText.toString().trim().contains("Year of Birth") || lineText.toString().trim().contains("Birth")) {
+                    if (isValidNameOnly(lines.get(i - 1).getText())) {
+                        SetName(lines.get(i - 1).getText());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setName(String lineText, int i, List<Text.Line> lines) {
+        try {
+            if (lines != null) {
+                if (lines.size() > i + 1) {
+                    Text.Line line = lines.get(i + 1);
+                    if (line.getText().toString().trim().contains("D0B") || line.getText().toString().trim().contains("DOB") || line.getText().toString().trim().contains("Year Of Birth") || line.getText().toString().trim().contains("Year of Birth") || line.getText().toString().trim().contains("Birth")) {
+                        SetName(lineText);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void SetName(String lineText) {
+        try {
+            if (lineText != null) {
+                if (!lineText.toString().trim().equalsIgnoreCase("")) {
+                    String[] splited = lineText.split("\\s+");
+                    if (splited.length != 0) {
+                        if (splited.length == 1) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+
+                            }
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                edt_lname.setText("");
+                            }
+                        } else if (splited.length == 2) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+                            }
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[1].toString().trim().contains("GOVERN") || splited[1].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_lname.setText(splited[1].toString().trim());
+                                }
+                            }
+                        } else if (splited.length == 3) {
+                            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[0].toString().trim().contains("GOVERN") || splited[0].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_fname.setText(splited[0].toString().trim());
+                                }
+                            }
+
+                            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                                if (splited[2].toString().trim().contains("GOVERN") || splited[2].toString().trim().contains("INDIA")) {
+
+                                } else {
+                                    edt_lname.setText(splited[2].toString().trim());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    static String regxName = "([A-Z][a-z]*\\s*)+";
+
+    public static boolean isValidNameOnly(String str) {
+        String regex = regxName;
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    private void setGender(String lineText) {
+        try {
+            if (lineText.contains("MALE") || lineText.contains("Male")) {
+                maleBtnClick();
+            } else if (lineText.contains("FEMALE") || lineText.contains("Female")) {
+                femaleBtnClick();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void setDOB(String lineText) {
+        if (lineText.contains("DOB") || lineText.contains("D0B")) {
+            if (getBirthdate(lineText).toString().trim().length() != 0) {
+                setDate(getBirthdate(lineText).toString().trim());
+            }
+        } else if (lineText.contains("Year Of Birth") || lineText.contains("Year of Birth")) {
+            if (getBirthYear(lineText).toString().trim().length() != 0) {
+                setDateFromYear(getBirthYear(lineText).toString().trim());
+            }
+        }
+    }
+
+    private void setDate(String datetext) {
+        try {
+            if (isValidDateFormat(datetext)) {
+                if (!isgetDOB) {
+                    isgetDOB = true;
+                    CalCulateAgeFromDate(datetext);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setDateFromYear(String datetext) {
+        try {
+            if (!isgetDOB) {
+                isgetDOB = true;
+                CalCulateAgeFromYear(datetext);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CalCulateAgeFromDate(String datetext) {
+        try {
+            if (datetext != null) {
+                if (datetext.toString().trim().equalsIgnoreCase("")) {
+
+                } else {
+                    try {
+                        String age = DateUtils.getAge(Integer.parseInt(DateUtils.Req_Date_Req(datetext, mAadhardateFormat, "yyyy")), Integer.parseInt(DateUtils.Req_Date_Req(datetext, mAadhardateFormat, "MM")), Integer.parseInt(DateUtils.Req_Date_Req(datetext, mAadhardateFormat, "dd")));
+                        if (age != null) {
+                            if (age.toString().trim().equalsIgnoreCase("")) {
+
+                            } else {
+                                if (edt_age.getText().toString().trim().equalsIgnoreCase("")) {
+                                    edt_age.setText(age);
+                                }
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void CalCulateAgeFromYear(String datetext) {
+        try {
+            if (datetext != null) {
+                if (datetext.toString().trim().equalsIgnoreCase("")) {
+
+                } else {
+                    try {
+                        String age = DateUtils.getAge(Integer.parseInt(DateUtils.Req_Date_Req(datetext, "yyyy", "yyyy")), 1, 1);
+                        if (age != null) {
+                            if (age.toString().trim().equalsIgnoreCase("")) {
+
+                            } else {
+                                if (edt_age.getText().toString().trim().equalsIgnoreCase("")) {
+                                    edt_age.setText(age);
+                                }
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    String mAadhardateFormat = "dd/MM/yyyy";
+
+    private boolean isValidDateFormat(String datetext) {
+        SimpleDateFormat sdfrmt = new SimpleDateFormat(mAadhardateFormat);
+        try {
+            Date javaDate = sdfrmt.parse(datetext);
+        } catch (ParseException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String getBirthdate(String str) {
+        String st = "";
+//        Pattern p = Pattern.compile("^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}$");
+        Pattern p = Pattern.compile("(^1[01]|[12][0-9]|0[1-9])/(3[0-2]|0[1-9])/[0-9]{4}$");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            st = "" + m.group(0);
+        }
+        return st;
+    }
+
+    public static String getBirthYear(String str) {
+        Pattern p = Pattern.compile("[0-9]{4}$");
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return "" + m.group(0);
+        }
+        return "";
+    }
+
+    private void setAddressToList(String lineText) {
+        System.out.println("Nitya >> Add >> " + lineText);
+        if (lineText.toString().trim().contains("Address")) {
+            isCapturedAddress = true;
+            if (isCapturedAddress) {
+                if (getAddressList != null) {
+                    getAddressList = null;
+                }
+                getAddressList = new ArrayList<>();
+                if (!getAddressList.contains(lineText))
+                    getAddressList.add(lineText);
+            }
+        }
+
+        if (isCapturedAddress) {
+            if (!getAddressList.contains(lineText))
+                getAddressList.add(lineText);
+            if (getPincode(lineText).toString().trim().length() == 6) {
+                isCapturedAddress = false;
+            }
+        }
+    }
+
+    private void setPinCode(String lineText) {
+        if (getPincode(lineText).toString().trim().length() == 6) {
+            if (!l_pincode.contains(getPincode(lineText)))
+                l_pincode.add(getPincode(lineText));
+        }
+    }
+
+    public static String getPincode(String str) {
+        try {
+            String[] splited = str.split("\\s+");
+            if (splited.length != 0) {
+                for (int i = 0; i < splited.length; i++) {
+                    if (splited[i].toString().trim().length() == 6) {
+                        Pattern p = Pattern.compile("(|^)\\d{6}");
+                        Matcher m = p.matcher(splited[i].toString().trim());
+                        if (m.find()) {
+                            return "" + m.group(0);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    private void getFirstNameFromFinalLastString(List<Text.TextBlock> allText) {
+        try {
+            String st = "";
+            if (allText != null) {
+                if (allText.size() != 0) {
+                    for (int i = 0; i < allText.size(); i++) {
+                        String stsd = allText.get(i).getText().toString().trim();
+                        if (stsd.startsWith("P<") || stsd.startsWith("p<")) {
+                            st = getFinalFirstname(stsd);
+                        }
+                    }
+                }
+            }
+
+            if (edt_fname.getText().toString().trim().equalsIgnoreCase("")) {
+                edt_fname.setText(st);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFinalFirstname(String fstr) {
+        String st = "";
+        try {
+            String[] splited = fstr.split("<<");
+            if (splited.length != 0 && splited.length > 1) {
+                String stksh = splited[1].toString().trim();
+                stksh = stksh.replaceAll("\\s+", "");
+                stksh = stksh.replaceAll("<", "");
+                System.out.println("Nitya --- " + stksh);
+                st = stksh;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return st;
+    }
+
+    private void getLastNameFromFinalLastString(List<Text.TextBlock> allText) {
+        try {
+            String st = "";
+            if (allText != null) {
+                if (allText.size() != 0) {
+                    for (int i = 0; i < allText.size(); i++) {
+                        String stsd = allText.get(i).getText().toString().trim();
+                        if (stsd.startsWith("P<") || stsd.startsWith("p<")) {
+                            System.out.println("Nitya =Name= " + stsd);
+                            st = getFinalSurname(stsd);
+                        }
+                    }
+                }
+            }
+
+            if (edt_lname.getText().toString().trim().equalsIgnoreCase("")) {
+                edt_lname.setText(st);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String getFinalSurname(String fstr) {
+        String st = "";
+        try {
+            String[] splited = fstr.split("<");
+            if (splited.length != 0 && splited.length > 1) {
+                String stksh = splited[1].toString().trim();
+                stksh = stksh.substring(3, stksh.length());
+                st = stksh;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return st;
+    }
+
+    ArrayList<String> l_PassPortcard = new ArrayList<>();
+
+    private void setPassPortCode(String lineText) {
+        try {
+            if (isValidPassPortNumber(lineText)) {
+                if (!l_PassPortcard.contains(getPassPortCode(lineText)))
+                    l_PassPortcard.add(getPassPortCode(lineText));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isValidPassPortNumber(String str) {
+//        String regex = "^[A-Z]{1}[0-9]{7}$";
+        String regex = "^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$";
+        Pattern p = Pattern.compile(regex);
+        if (str == null) {
+            return false;
+        }
+        Matcher m = p.matcher(str);
+        return m.matches();
+    }
+
+    public static String getPassPortCode(String str) {
+        String regex = "^[A-PR-WYa-pr-wy][1-9]\\d\\s?\\d{4}[1-9]$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(str);
+        if (m.find()) {
+            return "" + m.group(0);
+        }
+        return "";
+    }
+
+    private String getPassPortFromList() {
+        String st = "";
+        try {
+            if (l_PassPortcard != null) {
+                for (int i = 0; i < l_PassPortcard.size(); i++) {
+                    st = st + l_PassPortcard.get(0).toString().trim();
+                    return st;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return st;
+    }
+
+    private void getPassPortDOBDate(List<Text.TextBlock> allText, String passPorttext) {
+        try {
+            if (allText != null) {
+                if (allText.size() != 0) {
+                    for (int i = 0; i < allText.size(); i++) {
+                        String stsd = allText.get(i).getText().toString().trim();
+                        if (stsd.contains(passPorttext.toString().trim())) {
+                            if (stsd.length() > 9) {
+                                System.out.println("Nitya == " + stsd);
+                                getDateDateFromString(stsd.replaceAll("\\s+", ""));
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getDateDateFromString(String dkgdgd) {
+        try {
+            int speciallchar = 0;
+            if (dkgdgd != null) {
+                for (int i = 0; i < dkgdgd.length(); i++) {
+                    if (dkgdgd.charAt(i) == '<') {
+                        System.out.println(i);
+                        speciallchar = i;
+                        break;
+                    }
+                }
+                if (speciallchar != 0) {
+                    String sdgsdg = dkgdgd.substring(speciallchar + 5, speciallchar + 5 + 6);
+                    System.out.println(">>" + sdgsdg);
+                    setDOBFinalDate(sdgsdg);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setDOBFinalDate(String str) {
+        try {
+            if (str != null) {
+                CalCulateAgeFromPassDate(str);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setPassportGender(String lineText) {
+        try {
+            if (lineText.toString().trim().equals("F") || lineText.toString().trim().equals("f")) {
+                femaleBtnClick();
+            } else if (lineText.toString().trim().equals("M") || lineText.toString().trim().equals("m")) {
+                maleBtnClick();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CalCulateAgeFromPassDate(String datetext) {
+        try {
+            if (datetext != null) {
+                if (datetext.toString().trim().equalsIgnoreCase("")) {
+
+                } else {
+                    try {
+                        String age = DateUtils.getAge(Integer.parseInt(DateUtils.Req_Date_Req(datetext, "yyMMdd", "yyyy")), Integer.parseInt(DateUtils.Req_Date_Req(datetext, "yyMMdd", "MM")), Integer.parseInt(DateUtils.Req_Date_Req(datetext, "yyMMdd", "dd")));
+                        if (age != null) {
+                            if (age.toString().trim().equalsIgnoreCase("")) {
+
+                            } else {
+                                if (edt_age.getText().toString().trim().equalsIgnoreCase("")) {
+                                    edt_age.setText(age);
+                                }
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void femaleBtnClick() {
+        genderId = !genderId;
+        gender = "F";
+        female_red.setVisibility(View.VISIBLE);
+        male.setVisibility(View.VISIBLE);
+        male_red.setVisibility(View.GONE);
+        female.setVisibility(View.GONE);
+        buttonval();
+    }
+
+    private void maleBtnClick() {
+        genderId = !genderId;
+        gender = "M";
+        male_red.setVisibility(View.VISIBLE);
+        female.setVisibility(View.VISIBLE);
+        female_red.setVisibility(View.GONE);
+        male.setVisibility(View.GONE);
+        buttonval();
+    }
+
 }

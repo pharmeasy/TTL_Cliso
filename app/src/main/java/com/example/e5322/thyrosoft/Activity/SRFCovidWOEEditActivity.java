@@ -51,6 +51,7 @@ import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Adapter.AsteriskPasswordTransformationMethod;
 import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.SRFCovidWOEmultipart_controller;
 import com.example.e5322.thyrosoft.GlobalClass;
 import com.example.e5322.thyrosoft.Models.CovidRateReqModel;
@@ -2225,7 +2226,7 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
         return true;
     }
 
-    public void getUploadResponse(String response) {
+    public void getUploadResponse(String response,String mobile) {
         JSONObject jsonObject = null;
         try {
             jsonObject = new JSONObject(response);
@@ -2233,6 +2234,8 @@ public class SRFCovidWOEEditActivity extends AppCompatActivity {
             String RESPONSEID = jsonObject.optString("ResId");
             if (!GlobalClass.isNull(RESPONSEID) && RESPONSEID.equalsIgnoreCase(Constants.RES0000)) {
                 Global.showCustomToast(activity, RESPONSE);
+                new LogUserActivityTagging(activity,"WOE-SRF(COVID)",mobile);
+
                 Intent i = new Intent(activity, SRFCovidWOEMainActivity.class);
                 startActivity(i);
                 finish();

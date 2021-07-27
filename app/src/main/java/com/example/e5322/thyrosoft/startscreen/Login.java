@@ -814,7 +814,7 @@ public class Login extends Activity implements View.OnClickListener {
                                         checkcovidaccess();
 
 
-                                        new LogUserActivityTagging(activity, Constants.SHLOGIN);
+                                        new LogUserActivityTagging(activity, Constants.SHLOGIN,"");
 
 
                                         USER_CODE11 = loginResponseModel.getUSER_CODE();

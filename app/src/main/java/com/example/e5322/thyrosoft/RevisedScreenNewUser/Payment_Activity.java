@@ -148,6 +148,7 @@ public class Payment_Activity extends AppCompatActivity {
     private String ordno;
     private String COME_FROM_SCREEN = "";
     private String unbillwoe, unbillmt, crd_amt;
+    private String CLIENT_TYP = "";
 
     @SuppressLint("NewApi")
     @Override
@@ -199,6 +200,7 @@ public class Payment_Activity extends AppCompatActivity {
         api_key = prefs.getString("API_KEY", null);
         email_pref = prefs.getString("email", null);
         mobile_pref = prefs.getString("mobile_user", null);
+        CLIENT_TYP = prefs.getString("CLIENT_TYPE", "");
 
         COME_FROM_SCREEN = getIntent().getStringExtra("COMEFROM");
 
@@ -637,11 +639,7 @@ public class Payment_Activity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                try {
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
         queue.add(jsonObjectRequest);
@@ -1249,7 +1247,13 @@ public class Payment_Activity extends AppCompatActivity {
         //Kindly create complete Map and checksum on your server side and then put it here in paramMap.
 
         final Map<String, String> paramMap = new HashMap<String, String>();
-        paramMap.put("MID", Constants.M_ID);
+        //TODO NHL conditions
+        if (CLIENT_TYP.equalsIgnoreCase(Constants.NHF)) {
+            paramMap.put("MID", Constants.M_ID_NHL);
+        } else {
+            paramMap.put("MID", Constants.M_ID);
+        }
+
         paramMap.put("ORDER_ID", orderno);
         paramMap.put("CUST_ID", mobile_pref);
         paramMap.put("INDUSTRY_TYPE_ID", Constants.INDUSTRY_TYPE_ID);
@@ -1374,6 +1378,11 @@ public class Payment_Activity extends AppCompatActivity {
             requestModel.setApi_key(APIKEYFORPAYMENTGATEWAY_PAYU);
             requestModel.setMID(MID);
             requestModel.setORDERID(ORDERID);
+            if (CLIENT_TYP.equalsIgnoreCase(Constants.NHF)) {
+                requestModel.setCompany("NHL");
+            }else {
+                requestModel.setCompany("TTL");
+            }
 
             if (cd.isConnectingToInternet()) {
                 VerifyPayTmChecksumController verifyPayTmChecksumController = new VerifyPayTmChecksumController(Payment_Activity.this);

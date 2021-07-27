@@ -375,7 +375,8 @@ public class SplashScreen extends AppCompatActivity {
 
 
     private void callIntent() {
-        new LogUserActivityTagging(activity, "");
+        new LogUserActivityTagging(activity, "","");
+
         if (!GlobalClass.isNull(user) && !GlobalClass.isNull(passwrd) ) {
             long PreviousTime = prefs_CovidSync.getLong("PreivousTimeOfSync", 0);
             long currenttime = System.currentTimeMillis();

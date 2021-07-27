@@ -53,6 +53,7 @@ import com.example.e5322.thyrosoft.Adapter.ViewPagerAdapter;
 import com.example.e5322.thyrosoft.AsyncTaskPost_uploadfile;
 import com.example.e5322.thyrosoft.Controller.GetLocationController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.Controller.UploadPrescController;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
@@ -232,6 +233,13 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
         }
         myDb = new DatabaseHelper(Scan_Barcode_Outlabs_Activity.this);
         initUI();
+        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
+        user = prefs.getString("Username", "");
+        passwrd = prefs.getString("password", "");
+        access = prefs.getString("ACCESS_TYPE", "");
+        api_key = prefs.getString("API_KEY", "");
+
+
         preferences = getSharedPreferences("savePatientDetails", MODE_PRIVATE);
         barcodescanninglist.setVisibility(View.VISIBLE);
         recycler_barcode.setVisibility(View.VISIBLE);
@@ -352,11 +360,7 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
             }
         });
 
-        prefs = getSharedPreferences("Userdetails", MODE_PRIVATE);
-        user = prefs.getString("Username", "");
-        passwrd = prefs.getString("password", "");
-        access = prefs.getString("ACCESS_TYPE", "");
-        api_key = prefs.getString("API_KEY", "");
+
 
 
         SharedPreferences appSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
@@ -1303,6 +1307,8 @@ public class Scan_Barcode_Outlabs_Activity extends AppCompatActivity implements 
                                 if (woeResponseModel != null) {
                                     if (!GlobalClass.isNull(woeResponseModel.getStatus()) && woeResponseModel.getStatus().equalsIgnoreCase("SUCCESS")) {
                                         GlobalClass.transID = "";
+                                        new LogUserActivityTagging(mActivity,"WOE-NOVID",barcode_patient_id);
+
                                         Log.e(TAG, "onResponse message --->: " + message);
                                         //                                                if (trflist.size() > 0)
                                         new AsyncTaskPost_uploadfile(Scan_Barcode_Outlabs_Activity.this, mActivity, api_key, user, barcode_patient_id, trflist, vialimg_file).execute();

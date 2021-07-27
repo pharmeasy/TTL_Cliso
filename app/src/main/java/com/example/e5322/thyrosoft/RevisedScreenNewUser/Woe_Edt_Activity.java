@@ -39,6 +39,7 @@ import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.ManagingTabsActivity;
 import com.example.e5322.thyrosoft.Controller.ConvertBTtoBNController;
 import com.example.e5322.thyrosoft.Controller.Log;
+import com.example.e5322.thyrosoft.Controller.LogUserActivityTagging;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.BarcodelistModel;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.MyPojoWoe;
 import com.example.e5322.thyrosoft.FinalWoeModelPost.Woe;
@@ -580,6 +581,8 @@ public class Woe_Edt_Activity extends AppCompatActivity {
                         barProgressDialog.dismiss();
                     }
                     if (status.equalsIgnoreCase("SUCCESS")) {
+                        new LogUserActivityTagging(Woe_Edt_Activity.this,"WOE-NOVID",barcode_patient_id);
+
                         if (isconvert) {
                             Convert();
                         } else {

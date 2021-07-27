@@ -333,7 +333,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
             navigationView.getMenu().findItem(R.id.srf_covid).setVisible(appPreferenceManager.getCovidAccessResponseModel().isSrf());
             navigationView.getMenu().findItem(R.id.covid_reg).setVisible(appPreferenceManager.getCovidAccessResponseModel().isCovidRegistration());
             navigationView.getMenu().findItem(R.id.crab_camp).setVisible(covidacc);
-            navigationView.getMenu().findItem(R.id.payment).setVisible(true);
+            navigationView.getMenu().findItem(R.id.payment).setVisible(false);
             navigationView.getMenu().findItem(R.id.otp_credit).setVisible(false);
             navigationView.getMenu().findItem(R.id.feedback).setVisible(true);
             navigationView.getMenu().findItem(R.id.profile).setVisible(true);
@@ -1226,7 +1226,7 @@ public class ManagingTabsActivity extends AppCompatActivity implements Navigatio
                         public void onClick(DialogInterface dialog, int id) {
                             TastyToast.makeText(getApplicationContext(), getResources().getString(R.string.Success), TastyToast.LENGTH_SHORT, TastyToast.SUCCESS);
                             //   distoye();
-                            new LogUserActivityTagging(activity, Constants.LOGOUT);
+                            new LogUserActivityTagging(activity, Constants.LOGOUT,"");
                             logout();
                         }
                     })

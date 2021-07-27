@@ -1,7 +1,6 @@
 package com.example.e5322.thyrosoft.API;
 
 
-
 public class Api {
     //TODO live
     public static String LIVEAPI = "https://b2capi.thyrocare.com/API/B2B/";
@@ -22,7 +21,7 @@ public class Api {
 
     //TODO staging
 /*
-  public static String LIVEAPI = "https://b2capi.thyrocare.com/API_BETA/B2B/";
+    public static String LIVEAPI = "https://b2capi.thyrocare.com/API_BETA/B2B/";
     public static String URL_with_http = "https://b2capi.thyrocare.com/API_BETA/B2B/";
     public static String Cloud_base = "http://stagingclisoapi.thyrocare.com/v1/";
     public static String SGC = "https://b2capi.thyrocare.com/API_BETA/BDN/api/";

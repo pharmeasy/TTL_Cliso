@@ -278,6 +278,75 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/txt_adhar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:layout_weight="0.8"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:text="@string/adhar"
+                    android:textAllCaps="true"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/value"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_choosefile_adhar"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/_26sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="0.8"
+                    android:background="@drawable/button_bg"
+                    android:text="@string/upload"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/value" />
+
+                <TextView
+                    android:id="@+id/txt_nofileadhar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="1.4"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/value" />
+
+                <LinearLayout
+                    android:id="@+id/lin_adhar_images"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center"
+                    android:layout_marginLeft="@dimen/_3sdp"
+                    android:layout_weight="1.4"
+                    android:drawablePadding="@dimen/_2sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/txt_adharfileupload"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/value"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:weightSum="2">
 
                 <EditText
@@ -517,74 +586,7 @@
             </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="3">
 
-                <TextView
-                    android:id="@+id/txt_adhar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/_5sdp"
-                    android:layout_weight="0.8"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:text="@string/adhar"
-                    android:textAllCaps="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/value"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_choosefile_adhar"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/_26sdp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="0.8"
-                    android:background="@drawable/button_bg"
-                    android:text="@string/upload"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/value" />
-
-                <TextView
-                    android:id="@+id/txt_nofileadhar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/value" />
-
-                <LinearLayout
-                    android:id="@+id/lin_adhar_images"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center"
-                    android:layout_marginLeft="@dimen/_3sdp"
-                    android:layout_weight="1.4"
-                    android:drawablePadding="@dimen/_2sdp"
-                    android:padding="@dimen/_5sdp"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/txt_adharfileupload"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/value"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

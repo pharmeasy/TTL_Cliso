@@ -5,10 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 
-import com.example.e5322.thyrosoft.API.Constants;
-import com.example.e5322.thyrosoft.Controller.Log;
-
 import com.example.e5322.thyrosoft.API.Api;
+import com.example.e5322.thyrosoft.API.Constants;
 import com.example.e5322.thyrosoft.API.Global;
 import com.example.e5322.thyrosoft.Activity.frags.BS_EntryFragment;
 import com.example.e5322.thyrosoft.GlobalClass;
@@ -121,7 +119,7 @@ public class AsyncTaskPost_Multipartfile extends AsyncTask<Void, Void, String> {
         }
         if (status_code == 200) {
             if (response != null && !response.isEmpty()) {
-                bs_entryFragment.getUploadResponse(response);
+                bs_entryFragment.getUploadResponse(response,BSPostDataModel.getMobile());
             } else {
                 Global.showCustomToast(mActivity, response);
             }
